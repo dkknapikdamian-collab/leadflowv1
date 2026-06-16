@@ -19,6 +19,9 @@ export const STAGE232A_R4_MISSING_ITEM_MODAL_BLOCKER_FIELDS =
 export const STAGE232A_R5_MISSING_ITEM_MODAL_VISUAL_SOURCE_TRUTH =
   'MissingItemQuickActionModal reuses lead-form-vnext visual source of truth from quick lead creation';
 
+export const STAGE232A_R10_MISSING_ITEM_MODAL_QUICK_LEAD_VISUAL_SOURCE_TRUTH =
+  'MissingItemQuickActionModal uses the same quick-lead visual shell tokens: dark modal surface, lead-form sections, white inputs, sticky footer and consistent buttons';
+
 export interface MissingItemQuickActionModalProps {
   open: boolean;
   context: MissingItemModalContext;
@@ -49,8 +52,8 @@ export function MissingItemQuickActionModal(props: MissingItemQuickActionModalPr
   const noteField = MISSING_ITEM_MODAL_FIELDS.find((field) => field.name === 'note');
 
   return (
-    <div className="missing-item-modal-backdrop" data-stage227c2-missing-item-modal="true" data-stage232a-missing-blocker-modal="true" data-stage232a-missing-visual-source="lead-form-vnext" role="presentation">
-      <section className="missing-item-modal-card lead-form-vnext-content" role="dialog" aria-modal="true" aria-labelledby="missing-item-modal-title" aria-describedby="missing-item-modal-description">
+    <div className="missing-item-modal-backdrop" data-stage227c2-missing-item-modal="true" data-stage232a-missing-blocker-modal="true" data-stage232a-missing-visual-source="lead-form-vnext" data-stage232a-r10-missing-modal-visual-source="quick-lead-form" role="presentation">
+      <section className="missing-item-modal-card lead-form-vnext-content" data-stage232a-r10-missing-modal-card="true" role="dialog" aria-modal="true" aria-labelledby="missing-item-modal-title" aria-describedby="missing-item-modal-description">
         <header className="missing-item-modal-header lead-form-vnext-header">
           <span className="lead-form-vnext-kicker">{MISSING_ITEM_QUICK_ACTION_LABEL}</span>
           <h2 id="missing-item-modal-title">{MISSING_ITEM_MODAL_COPY.title}</h2>

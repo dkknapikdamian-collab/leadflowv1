@@ -4,6 +4,7 @@
 // CF_RUNTIME_00_STAGE232A_R7_CASE_ITEMS_SCHEMA_COMPAT
 // CF_RUNTIME_00_STAGE232A_R8_LEAD_MISSING_UI_SOURCE_COMPAT\n// CF_RUNTIME_00_STAGE232A_R8_R6_R6_GUARD_COMPAT
 // CF_RUNTIME_00_STAGE232A_R9_BLOCKER_TOP_CARD_SUMMARY\n// CF_RUNTIME_00_STAGE232A_R9_R2_R8_GUARD_COMPAT
+// CF_RUNTIME_00_STAGE232A_R10_LEAD_DETAIL_VISUAL_SOURCE_TRUTH
 // CF_RUNTIME_00_R19_MASS_SCOPE_CLOSURE_ALLOWED
 // CF_RUNTIME_00_R18_SHEBANG_SCOPE_ALLOWED
 // CF_RUNTIME_00_R17_TRIAL14_SCOPE_ALLOWED
@@ -189,6 +190,13 @@ const allowedChangePrefixes = [
   '_project/runs/STAGE232A_R9_BLOCKER_TOP_CARD_SUMMARY_AND_ALL_MISSING.md',
   'scripts/check-stage232a-r9-blocker-top-card-summary.cjs',
   'tests/stage232a-r9-blocker-top-card-summary.test.cjs',
+  '_project/obsidian_updates/2026-06-16_STAGE232A_R10_LEAD_DETAIL_VISUAL_SOURCE_TRUTH.md',
+  '_project/runs/STAGE232A_R10_LEAD_DETAIL_VISUAL_SOURCE_TRUTH.md',
+  'src/components/detail/MissingItemQuickActionModal.tsx',
+  'src/styles/stage232a-missing-item-visual-source.css',
+  'src/styles/visual-stage14-lead-detail-vnext.css',
+  'scripts/check-stage232a-r10-lead-detail-visual-source-truth.cjs',
+  'tests/stage232a-r10-lead-detail-visual-source-truth.test.cjs',
   'tests/stage107-templates-delete-and-visual-contract.test.cjs',
 ];
 

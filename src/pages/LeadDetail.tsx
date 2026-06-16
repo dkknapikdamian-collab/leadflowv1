@@ -34,6 +34,8 @@ const STAGE232A_R8_LEAD_MISSING_BLOCKER_UI_SOURCE_TRUTH = 'LeadDetail renders ac
 void STAGE232A_R8_LEAD_MISSING_BLOCKER_UI_SOURCE_TRUTH;
 const STAGE232A_R9_BLOCKER_TOP_CARD_SUMMARY_AND_ALL_MISSING = 'LeadDetail blocker top card is summary only: always add Brak, link to all Braki list, no resolve/delete per-item actions in top card';
 void STAGE232A_R9_BLOCKER_TOP_CARD_SUMMARY_AND_ALL_MISSING;
+const STAGE232A_R10_LEAD_DETAIL_VISUAL_SOURCE_TRUTH = 'LeadDetail top decision cards share the same tone palette as the expandable action groups and Brak modal follows quick-lead form visual truth';
+void STAGE232A_R10_LEAD_DETAIL_VISUAL_SOURCE_TRUTH;
 void STAGE232A_R6_LEAD_MISSING_BLOCKER_ACTIVE_LIST_AND_TOP_CARD_SOURCE_TRUTH;
 import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';

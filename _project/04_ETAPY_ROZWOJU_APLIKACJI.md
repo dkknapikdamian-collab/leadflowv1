@@ -1992,3 +1992,32 @@ Testy:
 - build
 - verify:closeflow:quiet
 - git diff --check
+
+
+## 2026-06-16 22:45 Europe/Warsaw - STAGE232A_R10_LEAD_DETAIL_VISUAL_SOURCE_TRUTH
+
+Status: PASS_LOCAL_DO_SPRAWDZENIA
+
+Problem:
+- Top decision cards na LeadDetail nie byly dosc konsekwentnie spiete z kolorystyka rozwijanych list.
+- Modal Dodaj brak wizualnie odstawal od szybkiego dodawania leada i wygladal jak osobny komponent.
+- Damian wskazal jedno zrodlo prawdy wizualne: quick lead form / lead-form-vnext.
+
+Zakres:
+- LeadDetail top cards: blue/green/amber/red soft-tone palette zgodna z rozwijanymi listami.
+- MissingItemQuickActionModal: jawny R10 marker i data attr dla quick-lead visual source.
+- stage232a-missing-item-visual-source.css: dark quick-lead shell, white inputs, sticky footer, consistent buttons.
+- Guard/test R10.
+
+Testy:
+- node scripts/check-stage232a-r10-lead-detail-visual-source-truth.cjs
+- node --test tests/stage232a-r10-lead-detail-visual-source-truth.test.cjs
+- R9/R8/R6 guardy regresyjne
+- CF-RUNTIME guard
+- npm.cmd run build
+- npm.cmd run verify:closeflow:quiet
+- git diff --check
+
+Ryzyka:
+- To jest etap wizualny: konieczny manual smoke na LeadDetail z modalem Dodaj brak i top cardami.
+- Nie ruszano źródeł danych ani logiki zapisu.

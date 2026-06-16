@@ -3921,3 +3921,64 @@
     max-width: 100% !important;
   }
 }
+
+
+/* STAGE232A_R10_LEAD_DETAIL_VISUAL_SOURCE_TRUTH
+   Top decision cards use the same soft-tone palette as the expandable action groups:
+   blue = Najblizsze dzialania, green = Wszystkie aktywne / Potencjal, amber = Cisza/Ryzyko and Braki, red = Blokada.
+*/
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-top-card {
+  border-width: 1.5px !important;
+  box-shadow: 0 10px 24px rgba(16, 24, 40, 0.045) !important;
+}
+
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-callout-blue {
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
+}
+
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-callout-blue .lead-detail-card-title-row {
+  color: #1d4ed8 !important;
+}
+
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-callout-green {
+  background: #ecfdf3 !important;
+  border-color: #abefc6 !important;
+}
+
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-callout-green .lead-detail-card-title-row,
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-callout-green strong {
+  color: #047857 !important;
+}
+
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-callout-amber {
+  background: #fffaeb !important;
+  border-color: #fedf89 !important;
+}
+
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-callout-amber .lead-detail-card-title-row,
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-callout-amber strong {
+  color: #92400e !important;
+}
+
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-callout-red {
+  background: #fef2f2 !important;
+  border-color: #fecaca !important;
+}
+
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-callout-red .lead-detail-card-title-row,
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-callout-red strong {
+  color: #991b1b !important;
+}
+
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-top-card .lead-detail-inline-action {
+  background: rgba(255, 255, 255, 0.82) !important;
+  border-color: rgba(148, 163, 184, 0.34) !important;
+  color: #334155 !important;
+}
+
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-top-card .lead-detail-inline-action:hover {
+  background: #ffffff !important;
+  border-color: #93c5fd !important;
+  color: #1d4ed8 !important;
+}

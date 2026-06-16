@@ -85,3 +85,95 @@
     padding: 8px;
   }
 }
+
+
+/* STAGE232A_R10_MISSING_ITEM_MODAL_QUICK_LEAD_VISUAL_SOURCE_TRUTH
+   Brak modal follows the quick lead form visual truth: dark modal shell, readable white inputs,
+   clear section card, sticky footer and one visual source for form fields.
+*/
+.missing-item-modal-backdrop[data-stage232a-r10-missing-modal-visual-source="quick-lead-form"] {
+  background: rgba(15, 23, 42, 0.68) !important;
+  backdrop-filter: blur(10px);
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"].lead-form-vnext-content {
+  border: 1px solid rgba(148, 163, 184, 0.28) !important;
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  box-shadow: 0 28px 80px rgba(2, 6, 23, 0.42) !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-header {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.24) !important;
+  background: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-kicker {
+  color: #bfdbfe !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-header h2 {
+  color: #f8fafc !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-header p {
+  color: #cbd5e1 !important;
+}
+
+.missing-item-modal-form.lead-form-vnext {
+  background: #0f172a !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-section {
+  border-color: rgba(148, 163, 184, 0.28) !important;
+  background: #111827 !important;
+  color: #f8fafc !important;
+  box-shadow: none !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .missing-item-modal-field > span,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-field label,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-checkbox strong {
+  color: #f8fafc !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-checkbox {
+  border-color: rgba(148, 163, 184, 0.28) !important;
+  background: #0f172a !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-checkbox small {
+  color: #cbd5e1 !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] input:not([type="checkbox"]),
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-select,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-textarea {
+  border-color: rgba(148, 163, 184, 0.44) !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  box-shadow: none !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] input::placeholder,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] textarea::placeholder {
+  color: #64748b !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-footer {
+  border-top: 1px solid rgba(148, 163, 184, 0.24) !important;
+  background: #0f172a !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .missing-item-modal-secondary-action {
+  border-color: rgba(148, 163, 184, 0.38) !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .missing-item-modal-primary-action {
+  border-color: #2563eb !important;
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
