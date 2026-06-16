@@ -3192,3 +3192,15 @@ Ryzyko:
 Następny krok:
 - CF-RUNTIME-01 LeadDetail missing/blocker/handoff wiring albo CF-RUNTIME-03 CaseDetail wiring.
 <!-- CF_RUNTIME_00_SHARED_SOURCE_TRUTH_2026_06_15_END -->
+
+<!-- START:CF-CODEX-CONTEXT-INDEX-004 -->
+
+## 2026-06-16 - CF-CODEX-CONTEXT-INDEX-004 - Codex context routing baseline
+
+- Status: APPLIED_LOCALLY / DO_COMMIT_PUSH_AFTER_PASS
+- Typ: project-memory / docs / guard / operator routing.
+- Cel: add `_project/CODEX_CONTEXT_INDEX.md` so future Codex/ChatGPT operators read a bounded context router before broad scans.
+- Boundary: no runtime UI, routing, Supabase, SQL, billing, Google Calendar, product logic or visual layout changes.
+- Active product next stage remains `STAGE232A_LEAD_MISSING_BLOCKER_SOURCE_OF_TRUTH` in `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`.
+
+<!-- END:CF-CODEX-CONTEXT-INDEX-004 -->

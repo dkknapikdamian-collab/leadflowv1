@@ -4429,3 +4429,15 @@ Korekta dokumentacyjna:
 - poprzedni status WDROZONE_ZIP_DO_SPRAWDZENIA byl nieaktualny po pushu;
 - Product PASS wymaga nadal recznego potwierdzenia wygladu modala Dodaj brak w przegladarce;
 - historyczny verify:closeflow:quiet byl blokowany przez osobny CaseDetail guard, nie przez zakres STAGE232A_R5.
+
+<!-- START:CF-CODEX-CONTEXT-INDEX-004 -->
+
+## 2026-06-16 - CF-CODEX-CONTEXT-INDEX-004
+
+- Added bounded Codex context router: `_project/CODEX_CONTEXT_INDEX.md`.
+- Added exact-list helper: `scripts/codex-context-pack.ps1`.
+- Added guard: `scripts/check-cf-codex-context-index.cjs`.
+- Added run report and Obsidian payload.
+- No runtime, UI, Supabase, SQL, billing or Calendar changes.
+
+<!-- END:CF-CODEX-CONTEXT-INDEX-004 -->

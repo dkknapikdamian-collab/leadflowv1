@@ -163,3 +163,15 @@ Przy każdym etapie developer ma:
 
 Przykład: jeśli przy sprawdzaniu przycisków wyjdzie, że ta sama akcja ma inne źródło prawdy, inne kolory, inny komponent albo lokalny styl zamiast wspólnego wzorca, developer ma dodać wpis do `Znalezione problemy`, a nie gubić tego w czacie.
 <!-- CLOSEFLOW_FOUND_PROBLEMS_LEDGER_2026_06_12_END -->
+
+<!-- START:CF-CODEX-CONTEXT-INDEX-004 -->
+
+## Codex context routing
+
+Before planning, coding, auditing, verifying or preparing a ZIP for this repo, read `_project/CODEX_CONTEXT_INDEX.md` first.
+
+The context index is the bounded routing file for Codex/ChatGPT operators. Do not scan the whole repository or Obsidian vault by default. Use the exact repo and Obsidian file lists from the index, then inspect only files required by the current stage.
+
+Stage marker: CF-CODEX-CONTEXT-INDEX-004
+
+<!-- END:CF-CODEX-CONTEXT-INDEX-004 -->

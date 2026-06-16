@@ -3785,3 +3785,20 @@ Ryzyko:
 Następny krok:
 - CF-RUNTIME-01 LeadDetail missing/blocker/handoff wiring albo CF-RUNTIME-03 CaseDetail wiring.
 <!-- CF_RUNTIME_00_SHARED_SOURCE_TRUTH_2026_06_15_END -->
+
+<!-- START:CF-CODEX-CONTEXT-INDEX-004 -->
+
+## 2026-06-16 - CF-CODEX-CONTEXT-INDEX-004 test history
+
+Expected local checks:
+
+```txt
+node scripts/check-cf-codex-context-index.cjs
+PowerShell syntax check for scripts/codex-context-pack.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/codex-context-pack.ps1
+git diff --check
+```
+
+Manual test: not applicable for UI; verify only that future operators receive bounded context instructions.
+
+<!-- END:CF-CODEX-CONTEXT-INDEX-004 -->
