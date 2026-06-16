@@ -3,6 +3,7 @@
 // CF_RUNTIME_00_STAGE232A_R6_SCOPE_COMPAT
 // CF_RUNTIME_00_STAGE232A_R7_CASE_ITEMS_SCHEMA_COMPAT
 // CF_RUNTIME_00_STAGE232A_R8_LEAD_MISSING_UI_SOURCE_COMPAT\n// CF_RUNTIME_00_STAGE232A_R8_R6_R6_GUARD_COMPAT
+// CF_RUNTIME_00_STAGE232A_R9_BLOCKER_TOP_CARD_SUMMARY\n// CF_RUNTIME_00_STAGE232A_R9_R2_R8_GUARD_COMPAT
 // CF_RUNTIME_00_R19_MASS_SCOPE_CLOSURE_ALLOWED
 // CF_RUNTIME_00_R18_SHEBANG_SCOPE_ALLOWED
 // CF_RUNTIME_00_R17_TRIAL14_SCOPE_ALLOWED
@@ -184,6 +185,10 @@ const allowedChangePrefixes = [
   'src/server/task-route-stage124f.ts',
   'scripts/check-stage232a-r8-lead-missing-blocker-ui-source-truth.cjs',
   'tests/stage232a-r8-lead-missing-blocker-ui-source-truth.test.cjs',
+  '_project/obsidian_updates/2026-06-16_STAGE232A_R9_BLOCKER_TOP_CARD_SUMMARY_AND_ALL_MISSING.md',
+  '_project/runs/STAGE232A_R9_BLOCKER_TOP_CARD_SUMMARY_AND_ALL_MISSING.md',
+  'scripts/check-stage232a-r9-blocker-top-card-summary.cjs',
+  'tests/stage232a-r9-blocker-top-card-summary.test.cjs',
   'tests/stage107-templates-delete-and-visual-contract.test.cjs',
 ];
 

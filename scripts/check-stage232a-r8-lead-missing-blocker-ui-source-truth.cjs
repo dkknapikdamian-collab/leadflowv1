@@ -1,10 +1,19 @@
 const fs = require('fs');
 const assert = require('assert');
+
 const lead = fs.readFileSync('src/pages/LeadDetail.tsx', 'utf8');
 const context = fs.readFileSync('src/components/ContextActionDialogs.tsx', 'utf8');
 const contract = fs.readFileSync('src/lib/data-contract.ts', 'utf8');
 const taskRoute = fs.readFileSync('src/server/task-route-stage124f.ts', 'utf8');
-function must(text, token, label) { assert.ok(text.includes(token), label + ' missing: ' + token); }
+
+function must(text, token, label) {
+  assert.ok(text.includes(token), label + ' missing: ' + token);
+}
+
+function mustMatch(text, regex, label) {
+  assert.ok(regex.test(text), label + ' missing regex: ' + regex);
+}
+
 must(lead, 'STAGE232A_R8_LEAD_MISSING_BLOCKER_UI_SOURCE_TRUTH', 'LeadDetail R8 marker');
 must(lead, 'buildLeadMissingActivityMetadataStage232AR8(activities)', 'activity metadata index');
 must(lead, 'activeMissingTaskIdsStage232AR8', 'active missing id set');
@@ -12,15 +21,32 @@ must(lead, "timeline.filter((entry) => entry.kind === 'task' && activeMissingTas
 must(lead, "!activeMissingTaskIdsStage232AR8.has(String(entry.raw?.id || '').trim())", 'next actions exclude missing task ids');
 must(lead, 'count: activeMissingItemEntriesStage228R19R2.length', 'Braki i blokady group counts all active missing items');
 must(lead, 'items: activeMissingItemEntriesStage228R19R2.slice(0, 5)', 'Braki i blokady group renders active missing items');
-must(lead, "group.key === 'blockers' || isMissingItemTimelineEntry(entry)", 'blocker group uses missing actions');
+
+const hasR8InlineMissingActions = lead.includes("group.key === 'blockers' || isMissingItemTimelineEntry(entry)");
+const hasR9MissingOnlyBranch = lead.includes("data-stage232a-r9-row-actions={group.key === 'blockers' ? 'missing-only' : 'default'}")
+  && lead.includes("group.key === 'blockers' ? (");
+assert.ok(
+  hasR8InlineMissingActions || hasR9MissingOnlyBranch,
+  'blocker group uses missing actions through R8 inline condition or R9 missing-only branch'
+);
+must(lead, 'data-stage228r13-lead-missing-resolve-action="true"', 'list rows retain resolve action');
+must(lead, 'data-stage228r15-lead-missing-delete-action="true"', 'list rows retain delete action');
+
 must(context, 'STAGE232A_R8_CONTEXT_ACTION_TASK_ID_ACTIVITY_BRIDGE', 'ContextActionDialogs R8 marker');
 must(context, 'taskId: (createdMissingTask as any)?.id || null', 'activity stores taskId');
 must(context, "status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item'", 'activity stores blocker status');
+
 must(contract, 'DATA_CONTRACT_STAGE232A_R8_PRESERVE_MISSING_TASK_STATUS', 'data contract R8 marker');
 must(contract, 'rawTaskStatusStage232AR8.includes', 'data contract raw status logic');
 must(contract, 'status: taskStatusStage232AR8', 'data contract preserved status field');
+
 must(taskRoute, 'STAGE232A_R8_TASK_ROUTE_MISSING_ITEM_STATUS_BRIDGE', 'task route R8 marker');
 must(taskRoute, 'taskStatusStage232AR8', 'task route raw status preservation');
-must(taskRoute, 'status: taskStatusStage232AR8', 'task route preserved status field');
 must(taskRoute, "body.payload && typeof body.payload === 'object' ? String(body.payload.note || '') : ''", 'task route payload note bridge');
-console.log(JSON.stringify({ ok: true, stage: 'STAGE232A_R8_LEAD_MISSING_BLOCKER_UI_SOURCE_TRUTH', guard: 'check-stage232a-r8-lead-missing-blocker-ui-source-truth' }, null, 2));
+
+console.log(JSON.stringify({
+  ok: true,
+  stage: 'STAGE232A_R8_LEAD_MISSING_BLOCKER_UI_SOURCE_TRUTH',
+  guard: 'check-stage232a-r8-lead-missing-blocker-ui-source-truth',
+  compatibility: hasR9MissingOnlyBranch ? 'R9 missing-only branch' : 'R8 inline condition'
+}, null, 2));

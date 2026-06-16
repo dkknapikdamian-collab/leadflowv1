@@ -32,6 +32,8 @@ void STAGE227F1_VISUAL_HIERARCHY_POLISH;
 const STAGE232A_R6_LEAD_MISSING_BLOCKER_ACTIVE_LIST_AND_TOP_CARD_SOURCE_TRUTH = 'LeadDetail active Braki come from linkedTasks/workItems, lead blockers are explicit blocksProgress subset, history is not active source truth';
 const STAGE232A_R8_LEAD_MISSING_BLOCKER_UI_SOURCE_TRUTH = 'LeadDetail renders active Braki/Blokady from timeline entries keyed by linkedTasks, with activity metadata compatibility for stripped task rows';
 void STAGE232A_R8_LEAD_MISSING_BLOCKER_UI_SOURCE_TRUTH;
+const STAGE232A_R9_BLOCKER_TOP_CARD_SUMMARY_AND_ALL_MISSING = 'LeadDetail blocker top card is summary only: always add Brak, link to all Braki list, no resolve/delete per-item actions in top card';
+void STAGE232A_R9_BLOCKER_TOP_CARD_SUMMARY_AND_ALL_MISSING;
 void STAGE232A_R6_LEAD_MISSING_BLOCKER_ACTIVE_LIST_AND_TOP_CARD_SOURCE_TRUTH;
 import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -2408,30 +2410,38 @@ useEffect(() => {
                     ) : null}
                   </div>
                 </article>
-                <article className="lead-detail-top-card lead-detail-callout-red" data-stage227e3-blocker-card="true">
+                <article className="lead-detail-top-card lead-detail-callout-red" data-stage227e3-blocker-card="true" data-stage232a-r9-blocker-top-card-summary="true">
                   <div className="lead-detail-card-title-row"><AlertTriangle className="h-4 w-4" /><h2>Blokada</h2></div>
                   {leadBlockerEntries.length > 0 ? (
                     <>
-                      <strong>{leadBlockerEntries[0]?.title || 'Blokada do sprawdzenia'}</strong>
-                      <p>{leadBlockerEntries.length === 1 ? '1 aktywna blokada' : `${leadBlockerEntries.length} aktywne blokady`}</p>
+                      <strong>{leadBlockerEntries.length === 1 ? '1 aktywna blokada' : leadBlockerEntries.length + ' aktywne blokady'}</strong>
+                      <p>{activeMissingItemEntriesStage228R19R2.length === leadBlockerEntries.length ? 'Wszystkie aktywne braki blokują dalszy ruch.' : activeMissingItemEntriesStage228R19R2.length + ' aktywne braki i blokady łącznie.'}</p>
                       <span className="lead-detail-pill lead-detail-work-risk-danger">Wymaga ruchu</span>
-                      <div className="lead-detail-card-inline-actions" data-stage231g-blocker-action="true">
-                        <span hidden data-stage231g-r4-context-blocker-only="true" />
-                        <button type="button" className="lead-detail-inline-action" onClick={() => handleResolveLeadMissingItemStage228R13(leadBlockerEntries[0])} disabled={!hasAccess || linkedEntryActionId !== null}>Rozwiąż brak</button>
-                        <button type="button" className="lead-detail-inline-action" onClick={() => handleDeleteLeadMissingItemStage228R15(leadBlockerEntries[0])} disabled={!hasAccess || linkedEntryActionId !== null}>Usuń brak</button>
-                      </div>
                     </>
                   ) : (
                     <>
                       <strong>Brak blokad</strong>
-                      <p>Nie ma jawnych braków blokujących kolejny ruch.</p>
+                      <p>{activeMissingItemEntriesStage228R19R2.length > 0 ? activeMissingItemEntriesStage228R19R2.length + ' aktywne braki bez blokady.' : 'Nie ma jawnych braków blokujących kolejny ruch.'}</p>
                       <span className="lead-detail-pill lead-detail-work-risk-good">Czysto</span>
-                      <div className="lead-detail-card-inline-actions" data-stage231g-blocker-action="true">
-                        <span hidden data-stage231g-r4-context-blocker-only="true" />
-                        <button type="button" className="lead-detail-inline-action" onClick={() => openLeadContextAction('blocker')} disabled={!hasAccess}>Dodaj brak</button>
-                      </div>
                     </>
                   )}
+                  <div className="lead-detail-card-inline-actions" data-stage231g-blocker-action="true" data-stage232a-r9-blocker-summary-actions="true">
+                    <span hidden data-stage231g-r4-context-blocker-only="true" />
+                    <button type="button" className="lead-detail-inline-action" onClick={() => openLeadContextAction('blocker')} disabled={!hasAccess}>Dodaj brak</button>
+                    {activeMissingItemEntriesStage228R19R2.length > 0 ? (
+                      <button
+                        type="button"
+                        className="lead-detail-inline-action"
+                        data-stage232a-r9-view-all-missing-action="true"
+                        onClick={() => {
+                          setLeadActionOpenGroup('blockers');
+                          window.setTimeout(() => document.getElementById('lead-actions')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
+                        }}
+                      >
+                        Zobacz wszystkie braki
+                      </button>
+                    ) : null}
+                  </div>
                 </article>
               </section>
             ) : null}
@@ -2563,18 +2573,27 @@ useEffect(() => {
                                       <p>{entry.dateLabel}</p>
                                     </div>
                                     <span className={`lead-detail-pill lead-detail-work-row__status lead-detail-work-status ${statusClass(entry.status, entry.dateValue)}`}>{entry.statusLabel}</span>
-                                    <div className="lead-detail-row-actions lead-detail-work-row__actions lead-detail-work-actions-block">
-                                      <LeadActionButton onClick={() => (entry.kind === 'task' ? openLinkedTaskEditor(entry.raw) : openLinkedEventEditor(entry.raw))}>Edytuj</LeadActionButton>
-                                      <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 24 * 60 * 60 * 1000, 'Jutro') : handleRescheduleLinkedEvent(entry.raw, 24 * 60 * 60 * 1000, 'Jutro'))} disabled={linkedEntryActionId !== null}>Jutro</LeadActionButton>
-                                      {(group.key === 'blockers' || isMissingItemTimelineEntry(entry)) ? (
-                                        <LeadActionButton data-stage228r13-lead-missing-resolve-action="true" onClick={() => handleResolveLeadMissingItemStage228R13(entry)} disabled={linkedEntryActionId !== null}>Rozwiąż brak</LeadActionButton>
+                                    <div className="lead-detail-row-actions lead-detail-work-row__actions lead-detail-work-actions-block" data-stage232a-r9-row-actions={group.key === 'blockers' ? 'missing-only' : 'default'}>
+                                      {group.key === 'blockers' ? (
+                                        <>
+                                          <LeadActionButton data-stage228r13-lead-missing-resolve-action="true" onClick={() => handleResolveLeadMissingItemStage228R13(entry)} disabled={linkedEntryActionId !== null}>Rozwiąż brak</LeadActionButton>
+                                          <LeadActionButton data-stage228r15-lead-missing-delete-action="true" onClick={() => handleDeleteLeadMissingItemStage228R15(entry)} disabled={linkedEntryActionId !== null}>Usuń brak</LeadActionButton>
+                                        </>
                                       ) : (
-                                        <LeadActionButton onClick={() => (entry.kind === 'task' ? handleToggleLinkedTask(entry.raw) : handleToggleLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Zrobione</LeadActionButton>
-                                      )}
-                                      {(group.key === 'blockers' || isMissingItemTimelineEntry(entry)) ? (
-                                        <LeadActionButton data-stage228r15-lead-missing-delete-action="true" onClick={() => handleDeleteLeadMissingItemStage228R15(entry)} disabled={linkedEntryActionId !== null}>Usuń brak</LeadActionButton>
-                                      ) : (
-                                        <LeadActionButton onClick={() => (entry.kind === 'task' ? handleDeleteLinkedTask(entry.raw) : handleDeleteLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Usuń</LeadActionButton>
+                                        <>
+                                          <LeadActionButton onClick={() => (entry.kind === 'task' ? openLinkedTaskEditor(entry.raw) : openLinkedEventEditor(entry.raw))}>Edytuj</LeadActionButton>
+                                          <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 24 * 60 * 60 * 1000, 'Jutro') : handleRescheduleLinkedEvent(entry.raw, 24 * 60 * 60 * 1000, 'Jutro'))} disabled={linkedEntryActionId !== null}>Jutro</LeadActionButton>
+                                          {isMissingItemTimelineEntry(entry) ? (
+                                            <LeadActionButton data-stage228r13-lead-missing-resolve-action="true" onClick={() => handleResolveLeadMissingItemStage228R13(entry)} disabled={linkedEntryActionId !== null}>Rozwiąż brak</LeadActionButton>
+                                          ) : (
+                                            <LeadActionButton onClick={() => (entry.kind === 'task' ? handleToggleLinkedTask(entry.raw) : handleToggleLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Zrobione</LeadActionButton>
+                                          )}
+                                          {isMissingItemTimelineEntry(entry) ? (
+                                            <LeadActionButton data-stage228r15-lead-missing-delete-action="true" onClick={() => handleDeleteLeadMissingItemStage228R15(entry)} disabled={linkedEntryActionId !== null}>Usuń brak</LeadActionButton>
+                                          ) : (
+                                            <LeadActionButton onClick={() => (entry.kind === 'task' ? handleDeleteLinkedTask(entry.raw) : handleDeleteLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Usuń</LeadActionButton>
+                                          )}
+                                        </>
                                       )}
                                     </div>
                                   </article>

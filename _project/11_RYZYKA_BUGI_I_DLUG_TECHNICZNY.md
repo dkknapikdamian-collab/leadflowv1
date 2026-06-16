@@ -1718,3 +1718,56 @@ Testy:
 - build
 - verify:closeflow:quiet
 - git diff --check
+
+
+## 2026-06-16 21:35 Europe/Warsaw - STAGE232A_R9_BLOCKER_TOP_CARD_SUMMARY_AND_ALL_MISSING
+
+Status: PASS_LOCAL_DO_SPRAWDZENIA
+
+Problem:
+- R8 poprawil klasyfikacje Brak/Blokada, ale top card Blokada nadal pokazywal akcje per-item: Rozwiaz brak / Usun brak.
+- Gdy istnieje aktywna blokada, top card nie mial przycisku Dodaj brak, wiec uzytkownik mial wrazenie limitu jednego braku.
+- Wlasciwy model: top card = summary + Dodaj brak + Zobacz wszystkie braki; akcje Rozwiaz/Usun tylko przy konkretnych brakach w zoltym akordeonie.
+
+Zakres:
+- LeadDetail top card Blokada jest summary-only.
+- Dodaj brak jest dostepne zawsze, niezaleznie od liczby aktywnych blokad.
+- Zobacz wszystkie braki otwiera akordeon Braki i blokady i scrolluje do Dzialania leada.
+- Akcje Rozwiaz brak / Usun brak zostaja tylko w liscie per-item.
+- Dla grupy blockers w akordeonie widoczne sa tylko akcje brakowe, bez Edytuj/Jutro.
+
+Testy:
+- node scripts/check-stage232a-r9-blocker-top-card-summary.cjs
+- node --test tests/stage232a-r9-blocker-top-card-summary.test.cjs
+- R8/R6/R7 guardy regresyjne
+- CF-RUNTIME guard
+- build
+- verify:closeflow:quiet
+- git diff --check
+
+Ryzyka:
+- Zmiana dotyka tylko LeadDetail UI. Wymagany manual smoke: dodaj drugi brak, zobacz liste, rozwiaz/usun z listy.
+
+
+## 2026-06-16 21:50 Europe/Warsaw - STAGE232A_R9_R2_R8_GUARD_COMPAT_CLOSURE
+
+Status: PASS_LOCAL_DO_SPRAWDZENIA
+
+Problem:
+- R9-R1 zapisal top card summary i nowy guard/test R9, ale stary guard R8 byl zbyt literalny.
+- R8 guard wymagal tokenu group.key === 'blockers' || isMissingItemTimelineEntry(entry), a R9 celowo zastapil to osobnym branch modelem missing-only.
+
+Zakres:
+- Aktualizacja R8 guard/test, aby akceptowaly R9 missing-only branch.
+- Brak nowych zmian UI ponad R9-R1.
+- Utrzymane R8 warunki: aktywne Braki z linkedTasks, render timeline, wykluczenie z Najblizsze dzialania, count/items wszystkich aktywnych brakow.
+
+Testy:
+- R9 guard/test
+- R8 guard/test po kompatybilnosci
+- R6 guard/test
+- R7 guard/test
+- CF-RUNTIME guard
+- build
+- verify:closeflow:quiet
+- git diff --check
