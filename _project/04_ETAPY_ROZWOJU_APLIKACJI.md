@@ -74,7 +74,8 @@ Warunek zamknięcia: ten plik zawiera aktualną kolejność; przyszłe etapy nie
 
 ### 1. STAGE232A_LEAD_MISSING_BLOCKER_SOURCE_OF_TRUTH
 
-Status: NAJBLIŻSZY ETAP DO WDROŻENIA / PRIORYTET PRODUKTOWY
+Status: TECH_PUSHED / DO_SPRAWDZENIA_RECZNEGO / NIE_WDRAZAC_DRUGI_RAZ
+> CF-STAGE-QUEUE-RECONCILE-005: STAGE232A was already implemented through R4/R5 and pushed. Do not treat STAGE232A as a fresh next implementation stage. Manual QA remains open until Damian confirms PASS.
 
 Powód priorytetu:
 
@@ -361,7 +362,7 @@ Run decision do utworzenia: `_project/runs/STAGE232B_TODAY_OWNER_CONTROL_TILE_SO
 
 ### 3. STAGE232C_CLIENTS_RELATION_TILE_SOURCE_OF_TRUTH
 
-Status: DO_WDROZENIA / DO_POTWIERDZENIA_PO_ST232A
+Status: DO_WDROZENIA_DOPIERO_PO_MANUAL_QA_STAGE232A_R5_I_STAGE232B / DO_POTWIERDZENIA_PRIORYTETU
 
 Powód priorytetu:
 

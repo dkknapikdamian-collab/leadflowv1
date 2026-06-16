@@ -4452,3 +4452,14 @@ Korekta dokumentacyjna:
 - Boundary: docs/operator-routing only; no runtime UI/Supabase/SQL/billing/Google Calendar changes.
 
 <!-- END:CF-CODEX-CONTEXT-INDEX-004 -->
+
+## 2026-06-16 - CF-STAGE-QUEUE-RECONCILE-005
+
+Status: PREPARED
+Guard:
+
+```powershell
+node scripts/check-cf-stage-queue-reconcile-005.cjs
+```
+
+Purpose: block stale canonical queue state where STAGE232A still appears as the next implementation stage after R4/R5 were technically pushed.

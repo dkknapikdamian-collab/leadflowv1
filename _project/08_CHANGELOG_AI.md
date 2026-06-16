@@ -4441,3 +4441,11 @@ Korekta dokumentacyjna:
 - No runtime, UI, Supabase, SQL, billing or Calendar changes.
 
 <!-- END:CF-CODEX-CONTEXT-INDEX-004 -->
+
+## 2026-06-16 - CF-STAGE-QUEUE-RECONCILE-005
+
+- Docs-only reconcile of `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`.
+- STAGE232A marked as TECH_PUSHED / DO_SPRAWDZENIA_RECZNEGO / NIE_WDRAZAC_DRUGI_RAZ.
+- STAGE232B kept as manual QA / technical pushed.
+- STAGE232C gated until manual QA confirms STAGE232A_R5 and STAGE232B.
+- Added guard `scripts/check-cf-stage-queue-reconcile-005.cjs`.

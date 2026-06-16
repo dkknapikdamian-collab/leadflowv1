@@ -3802,3 +3802,13 @@ git diff --check
 Manual test: not applicable for UI; verify only that future operators receive bounded context instructions.
 
 <!-- END:CF-CODEX-CONTEXT-INDEX-004 -->
+
+## 2026-06-16 - CF-STAGE-QUEUE-RECONCILE-005
+
+Planned test/guard:
+
+```powershell
+node scripts/check-cf-stage-queue-reconcile-005.cjs
+```
+
+Expected: PASS. This is a docs-only queue consistency guard. No runtime UI test is required for this stage.

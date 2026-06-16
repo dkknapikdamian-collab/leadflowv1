@@ -3204,3 +3204,11 @@ Następny krok:
 - Active product next stage remains `STAGE232A_LEAD_MISSING_BLOCKER_SOURCE_OF_TRUTH` in `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`.
 
 <!-- END:CF-CODEX-CONTEXT-INDEX-004 -->
+
+## 2026-06-16 - CF-STAGE-QUEUE-RECONCILE-005
+
+Status: PREPARED / DOCS_ONLY / QUEUE_RECONCILE
+Zakres: centralna kolejka etapow po STAGE232A R4/R5 i CF-CODEX-CONTEXT-INDEX-004.
+Decyzja: STAGE232A nie jest juz swiezym etapem do wdrozenia; pozostaje TECH_PUSHED / DO_SPRAWDZENIA_RECZNEGO. STAGE232B zostaje TECH_PUSHED / TEST_RECZNY_DAMIANA. STAGE232C jest gated do manual QA STAGE232A_R5 i STAGE232B albo jawnej decyzji Damiana.
+Guard: node scripts/check-cf-stage-queue-reconcile-005.cjs
+Runtime: bez zmian UI, SQL, Supabase, Stripe, Google Calendar i routingu.
