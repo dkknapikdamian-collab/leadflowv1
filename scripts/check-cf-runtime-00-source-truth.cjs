@@ -10,6 +10,7 @@
 // CF_RUNTIME_00_STAGE232A_R10_R1_MISSING_GROUP_INNER_TONE
 // CF_RUNTIME_00_STAGE232A_R10_R2_LEAD_ACTION_GROUPS_VISUAL_POLISH
 // CF_RUNTIME_00_STAGE232A_R10_R2_R1_LITERAL_NEWLINE_FIX
+// CF_RUNTIME_00_STAGE232J_R1_LEADS_SCROLL_TOP_CUT
 // CF_RUNTIME_00_R19_MASS_SCOPE_CLOSURE_ALLOWED
 // CF_RUNTIME_00_R18_SHEBANG_SCOPE_ALLOWED
 // CF_RUNTIME_00_R17_TRIAL14_SCOPE_ALLOWED
@@ -213,6 +214,11 @@ const allowedChangePrefixes = [
   'tests/stage232a-r10-r2-lead-action-groups-visual-polish.test.cjs',
   '_project/obsidian_updates/2026-06-17_STAGE232A_R10_R2_LEAD_ACTION_GROUPS_VISUAL_POLISH.md',
   '_project/runs/STAGE232A_R10_R2_LEAD_ACTION_GROUPS_VISUAL_POLISH.md',
+  '_project/runs/STAGE232J_R1_LEADS_SCROLL_TOP_CUT_RUNTIME_FIX.md',
+  '_project/obsidian_updates/2026-06-17_STAGE232J_R1_LEADS_SCROLL_TOP_CUT_RUNTIME_FIX.md',
+  'src/components/Layout.tsx',
+  'scripts/check-stage232j-leads-scroll-top-cut.cjs',
+  'tests/stage232j-leads-scroll-top-cut.test.cjs',
   'tests/stage107-templates-delete-and-visual-contract.test.cjs',
 ];
 

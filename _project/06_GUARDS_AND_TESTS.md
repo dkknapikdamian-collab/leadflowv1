@@ -4725,3 +4725,31 @@ Testy:
 
 Ryzyka:
 - To nadal etap wizualny. Guard potwierdza kontrakt CSS, ale ostateczna ocena jest ze screenshota.
+
+
+## 2026-06-17 01:05 Europe/Warsaw - STAGE232J_R1_LEADS_SCROLL_TOP_CUT_RUNTIME_FIX
+
+Status: PASS_LOCAL_DO_SPRAWDZENIA
+
+Problem:
+- Pierwsza paczka STAGE232J_R1 zatrzymala sie przed zapisem, bo szukala blednej kotwicy Layout marker.
+- Aktualny Layout ma importy na gorze i blok komentarzy przed useWorkspace; nie ma fragmentu */ + pusta linia + import useWorkspace.
+- R1-R1 naprawia tylko kotwice patchera i wdraza ten sam runtime scroll fix.
+
+Zakres runtime:
+- Layout: route-scoped useEffect dla /leads.
+- CSS: route-scoped selector dla main[data-current-section=leads] i content scroll owner.
+- Guard/test STAGE232J_R1.
+- Mirror do centralnej kolejki 04.
+
+Testy:
+- node scripts/check-stage232j-leads-scroll-top-cut.cjs
+- node --test tests/stage232j-leads-scroll-top-cut.test.cjs
+- node scripts/check-cf-runtime-00-source-truth.cjs
+- npm.cmd run build
+- npm.cmd run verify:closeflow:quiet
+- git diff --check
+
+Ryzyka:
+- Layout jest globalny, ale fix jest zawężony do location.pathname === '/leads'.
+- Manualny smoke /leads jest obowiazkowy.

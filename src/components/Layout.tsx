@@ -36,6 +36,11 @@ import { AlertTriangle,
 // VISUAL_STAGE17_TODAY_HTML_HARD_1TO1_LAYOUT
 /* VISUAL_HTML_THEME_V15_STAGE01_GUARD_COMPAT keeps legacy guard text: className="app closeflow-visual-stage01" */
 /* VISUAL_HTML_THEME_V14_LAYOUT */
+/* STAGE232J_R1_LEADS_SCROLL_TOP_CUT_RUNTIME_FIX
+ * Route-scoped runtime guard for /leads: one inner content scroll owner, snap near-top scroll to 0,
+ * and prevent native document scroll fallback from fighting the scaled desktop shell.
+ * STAGE232J_R1_R1_LAYOUT_ANCHOR_FIX: robust marker insertion after actual Layout import/comment order.
+ */
 /*
 VISUAL_STAGE_01_SHELL_SIDEBAR
 VISUAL_STAGE_02_TODAY_ROUTE_SCOPE
@@ -357,6 +362,76 @@ export default function Layout({ children }: LayoutProps) {
     };
   }, [location.pathname, mobileMenuOpen]);
   /* STAGE209_CENTER_SCROLL_RUNTIME_ENFORCER_END */
+
+  /* STAGE232J_R1_LEADS_SCROLL_TOP_CUT_RUNTIME_FIX_START */
+  useEffect(() => {
+    if (location.pathname !== '/leads') return;
+    if (typeof document === 'undefined') return;
+
+    const content = document.querySelector<HTMLElement>('main[data-current-section="leads"][data-shell-main="true"] > div.view.active[data-shell-content="true"]');
+    if (!content) return;
+
+    const markScrollOwner = () => {
+      content.setAttribute('data-stage232j-r1-leads-scroll-owner', 'true');
+      content.setAttribute('data-stage232j-r1-scroll-contract', 'inner-content-single-owner');
+      document.documentElement.setAttribute('data-stage232j-r1-document-scroll-locked', 'true');
+      document.body.setAttribute('data-stage232j-r1-document-scroll-locked', 'true');
+      content.style.setProperty('scroll-padding-top', '0px', 'important');
+      content.style.setProperty('padding-top', '0px', 'important');
+      content.style.setProperty('overflow-y', 'auto', 'important');
+      content.style.setProperty('overflow-x', 'hidden', 'important');
+      content.style.setProperty('overflow-anchor', 'none', 'important');
+      content.style.setProperty('overscroll-behavior-y', 'contain', 'important');
+    };
+
+    const snapNearTopToZero = () => {
+      if (!content.isConnected) return;
+      if (content.scrollTop > 0 && content.scrollTop < 10) {
+        content.scrollTop = 0;
+      }
+      if (window.scrollY !== 0) {
+        window.scrollTo(0, 0);
+      }
+      if (document.documentElement.scrollTop !== 0) {
+        document.documentElement.scrollTop = 0;
+      }
+      if (document.body.scrollTop !== 0) {
+        document.body.scrollTop = 0;
+      }
+    };
+
+    markScrollOwner();
+    if (content.scrollTop < 10) content.scrollTop = 0;
+    window.scrollTo(0, 0);
+
+    let raf = 0;
+    const handleScroll = () => {
+      window.cancelAnimationFrame(raf);
+      raf = window.requestAnimationFrame(snapNearTopToZero);
+    };
+
+    content.addEventListener('scroll', handleScroll, { passive: true });
+    const t1 = window.setTimeout(() => {
+      markScrollOwner();
+      snapNearTopToZero();
+    }, 0);
+    const t2 = window.setTimeout(() => {
+      markScrollOwner();
+      snapNearTopToZero();
+    }, 120);
+
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      content.removeEventListener('scroll', handleScroll);
+      content.removeAttribute('data-stage232j-r1-leads-scroll-owner');
+      content.removeAttribute('data-stage232j-r1-scroll-contract');
+      document.documentElement.removeAttribute('data-stage232j-r1-document-scroll-locked');
+      document.body.removeAttribute('data-stage232j-r1-document-scroll-locked');
+    };
+  }, [location.pathname]);
+  /* STAGE232J_R1_LEADS_SCROLL_TOP_CUT_RUNTIME_FIX_END */
 
   const navGroups = useMemo<NavGroup[]>(() => ([
     {

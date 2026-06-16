@@ -456,3 +456,32 @@ main.main,
   padding-top: var(--cf-page-canvas-padding-y) !important;
   padding-bottom: var(--cf-page-canvas-bottom) !important;
 }
+
+
+/* STAGE232J_R1_LEADS_SCROLL_TOP_CUT_RUNTIME_FIX
+   Route-scoped /leads shell scroll contract.
+   It does not create a second scrollbar: html/body/root remain locked by Layout on desktop,
+   while div.view.active[data-shell-content] stays the single content scroll owner.
+*/
+#root main[data-current-section="leads"][data-shell-main="true"] {
+  overflow: hidden !important;
+}
+
+#root main[data-current-section="leads"][data-shell-main="true"] > div.view.active[data-shell-content="true"][data-stage232j-r1-leads-scroll-owner="true"] {
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior-y: contain !important;
+  scroll-padding-top: 0 !important;
+  padding-top: 0 !important;
+  overflow-anchor: none !important;
+  scrollbar-gutter: stable both-edges !important;
+}
+
+html[data-stage232j-r1-document-scroll-locked="true"],
+body[data-stage232j-r1-document-scroll-locked="true"] {
+  overflow: hidden !important;
+  scroll-behavior: auto !important;
+}
