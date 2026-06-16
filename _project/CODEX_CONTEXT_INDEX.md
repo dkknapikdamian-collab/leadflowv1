@@ -1,8 +1,9 @@
 # CODEX_CONTEXT_INDEX - CloseFlow / LeadFlow
 
 Status: ACTIVE
-Stage: CF-CODEX-CONTEXT-INDEX-004
+Stage: CF-CODEX-CONTEXT-INDEX-005
 Created: 2026-06-16 Europe/Warsaw
+Updated: 2026-06-16 Europe/Warsaw
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
 Local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
@@ -37,21 +38,26 @@ Read these files first, in this order, if they exist:
 
 1. `AGENTS.md`
 2. `_project/CODEX_CONTEXT_INDEX.md`
-3. `_project/00_PROJECT_MEMORY_PROTOCOL.md`
-4. `_project/04_STAGE_AUDIT_PROTOCOL_CLOSEFLOW.md`
-5. `_project/04_STAGE_AUDIT_PROTOCOL_CLOSEFLOW__FOUND_PROBLEMS_ADDENDUM.md`
-6. `_project/04_ZNALEZIONE_PROBLEMY_DO_ANALIZY.md`
-7. `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`
-8. `_project/04_KIERUNEK_ROZWOJU_APLIKACJI.md`
-9. `_project/06_GUARDS_AND_TESTS.md`
-10. `_project/07_NEXT_STEPS.md`
-11. `_project/08_CHANGELOG_AI.md`
-12. `_project/13_TEST_HISTORY.md`
-13. `package.json`
-14. latest relevant `_project/runs/<stage>.md` for the current or immediately previous stage
-15. exact source/test/guard files named by the current stage
+3. `10_PROJEKTY/CloseFlow_Lead_App/00_START - CloseFlow Lead App.md`
+4. `10_PROJEKTY/CloseFlow_Lead_App/07_SCIAGA_PLIKOW - CloseFlow Lead App.md`
+5. `_project/04_STAGE_QUEUE_PLACEMENT_SYNC_2026_06_16.md`
+6. `_project/00_PROJECT_MEMORY_PROTOCOL.md`
+7. `_project/04_STAGE_AUDIT_PROTOCOL_CLOSEFLOW.md`
+8. `_project/04_STAGE_AUDIT_PROTOCOL_CLOSEFLOW__FOUND_PROBLEMS_ADDENDUM.md`
+9. `_project/04_ZNALEZIONE_PROBLEMY_DO_ANALIZY.md`
+10. `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`
+11. `_project/04_KIERUNEK_ROZWOJU_APLIKACJI.md`
+12. `_project/06_GUARDS_AND_TESTS.md`
+13. `_project/07_NEXT_STEPS.md`
+14. `_project/08_CHANGELOG_AI.md`
+15. `_project/09_TESTY_DO_WYKONANIA_I_WYNIKI.md`
+16. `_project/11_RYZYKA_BUGI_I_DLUG_TECHNICZNY.md`
+17. `_project/13_TEST_HISTORY.md`
+18. `package.json`
+19. latest relevant `_project/runs/<stage>.md` for the current or immediately previous stage
+20. exact source/test/guard files named by the current stage
 
-Do not infer the active next stage from older long files when `_project/04_ETAPY_ROZWOJU_APLIKACJI.md` has a newer canonical queue. If documents conflict, report the conflict instead of silently choosing.
+Do not infer the active next stage from older long files when `_project/04_ETAPY_ROZWOJU_APLIKACJI.md` or `_project/04_STAGE_QUEUE_PLACEMENT_SYNC_2026_06_16.md` has a newer queue-sync. If documents conflict, report the conflict instead of silently choosing.
 
 ## Obsidian routing - exact list only
 
@@ -60,8 +66,11 @@ Do not scan the whole vault.
 If Obsidian access is needed, read only the project dashboard/status/index and exact referenced files, especially:
 
 - `10_PROJEKTY/CloseFlow_Lead_App/00_START - CloseFlow Lead App.md`
-- `10_PROJEKTY/CloseFlow_Lead_App/06_PLAN_WDROZEN_NAPRAW_PO_AUDYTACH.md`
-- `10_PROJEKTY/CloseFlow_Lead_App/04_ZNALEZIONE_PROBLEMY_DO_ANALIZY.md`, if present
+- `10_PROJEKTY/CloseFlow_Lead_App/07_SCIAGA_PLIKOW - CloseFlow Lead App.md`
+- `10_PROJEKTY/CloseFlow_Lead_App/12_ARCHIWUM_MAPA - CloseFlow Lead App.md`
+- `10_PROJEKTY/CloseFlow_Lead_App/04_STAGE232D_I_OWNER_CONTROL_AND_BRAKI_CASE_CLIENT_SOURCE_OF_TRUTH.md`, only when stage D/I is relevant
+- `10_PROJEKTY/CloseFlow_Lead_App/04_STAGE232J_LEADS_SCROLL_TOP_CUT_SOURCE_OF_TRUTH.md`, only when stage J/scroll is relevant
+- `10_PROJEKTY/CloseFlow_Lead_App/04_STAGE232H_SZABLONY_CHECKLIST_SOURCE_OF_TRUTH.md`, only when stage H/templates/checklists is relevant
 - `10_PROJEKTY/CloseFlow_Lead_App/99_SYNC/`, only exact file named by the current stage
 - `10_PROJEKTY/CloseFlow_Lead_App/90_RAPORTY/`, only exact report named by the current stage
 
@@ -70,20 +79,25 @@ Archives are not active truth unless this index or the active stage points to th
 ## Current source-of-truth rule
 
 - Repo is source of truth for app code, Supabase/Vercel/runtime code, tests, guards, `_project/`, technical run reports and implementation history.
-- Obsidian is source of truth for high-level dashboard, decisions, risks, next steps and operational memory.
+- Obsidian/GitHub project memory is source of truth for high-level dashboard, decisions, risks, next steps and operational memory.
 - Chat is not a source of truth.
 
 ## Active stage pointer rule
 
 Use `_project/04_ETAPY_ROZWOJU_APLIKACJI.md` as the active canonical queue for planned product/code stages.
 
-At the time this context index was created, the canonical queue pointed to:
+If a newly reported stage is not yet safely mirrored into the long central queue, use `_project/04_STAGE_QUEUE_PLACEMENT_SYNC_2026_06_16.md` as the temporary queue-sync and mark the stage `MIRROR_TO_CENTRAL_04_REQUIRED`.
+
+Current ordered queue from placement sync:
 
 ```text
-STAGE232A_LEAD_MISSING_BLOCKER_SOURCE_OF_TRUTH
+1. STAGE232J_R1_LEADS_SCROLL_TOP_CUT_RUNTIME_FIX
+2. STAGE232D_R1_OWNER_CONTROL_CONTACT_DONE_RUNTIME_FIX
+3. STAGE232I0_CASE_CLIENT_MISSING_BLOCKER_CROSS_ENTITY_AUDIT_AND_CONTRACT
+4. STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH
+5. STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH
+6. STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
 ```
-
-This context-index stage does not implement STAGE232A. It only adds bounded context routing for future operators.
 
 ## CloseFlow hard boundaries by default
 
@@ -167,4 +181,4 @@ Use this helper to generate a bounded context pack:
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/codex-context-pack.ps1
 ```
 
-The helper must stay exact-list based. It must not recurse through the repo or Obsidian vault.
+The helper must stay exact-list based. It must not recurse through the repo or Obsidian vault unless Damian explicitly asks for a full local audit.
