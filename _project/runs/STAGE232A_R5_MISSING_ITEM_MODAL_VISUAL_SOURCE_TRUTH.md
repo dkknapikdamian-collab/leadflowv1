@@ -35,4 +35,14 @@ Data: 2026-06-15 23:55 Europe/Warsaw
 - logika zapisująca missingKind/blocksProgress/blockScope z R4
 
 ## Status
-WDROZONE_ZIP_DO_SPRAWDZENIA / TEST_RECZNY_DAMIANA.
+TECH_PUSHED / DO_SPRAWDZENIA_RECZNEGO.
+
+## 2026-06-16 03:10 Europe/Warsaw - STAGE232A_R5 status sync
+
+Status: TECH_PUSHED / DO_SPRAWDZENIA_RECZNEGO
+
+Korekta dokumentacyjna:
+- commit techniczny R5 jest wypchniety do GitHuba: 6a16c71c4f700af756c9d1a616b523e233c32219;
+- poprzedni status WDROZONE_ZIP_DO_SPRAWDZENIA byl nieaktualny po pushu;
+- Product PASS wymaga nadal recznego potwierdzenia wygladu modala Dodaj brak w przegladarce;
+- historyczny verify:closeflow:quiet byl blokowany przez osobny CaseDetail guard, nie przez zakres STAGE232A_R5.

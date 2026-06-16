@@ -82,7 +82,7 @@ Do testu ręcznego: dodaj Brak na leadzie jako blokujący, sprawdź historię i 
 ## STAGE232A_R5_MISSING_ITEM_MODAL_VISUAL_SOURCE_TRUTH
 
 Data: 2026-06-15 23:55 Europe/Warsaw
-Status: WDROZONE_ZIP_DO_SPRAWDZENIA / TEST_RECZNY_DAMIANA
+Status: TECH_PUSHED / DO_SPRAWDZENIA_RECZNEGO
 
 Zakres:
 - modal Dodaj brak zostaje podpięty pod wizualne źródło prawdy szybkiego dodawania leada: lead-form-vnext;
@@ -100,3 +100,13 @@ Audyt ryzyk:
 - ryzyko: zmiana CSS może wpływać na modal Brak w lead/client/case, bo komponent jest wspólny;
 - guard ogranicza regresję do wizualnego kontraktu, ale manualnie trzeba sprawdzić modal na LeadDetail;
 - nie ruszano SQL, API, aktywnych list Brak/Blokada ani CaseDetail.
+
+## 2026-06-16 03:10 Europe/Warsaw - STAGE232A_R5 status sync
+
+Status: TECH_PUSHED / DO_SPRAWDZENIA_RECZNEGO
+
+Korekta dokumentacyjna:
+- commit techniczny R5 jest wypchniety do GitHuba: 6a16c71c4f700af756c9d1a616b523e233c32219;
+- poprzedni status WDROZONE_ZIP_DO_SPRAWDZENIA byl nieaktualny po pushu;
+- Product PASS wymaga nadal recznego potwierdzenia wygladu modala Dodaj brak w przegladarce;
+- historyczny verify:closeflow:quiet byl blokowany przez osobny CaseDetail guard, nie przez zakres STAGE232A_R5.
