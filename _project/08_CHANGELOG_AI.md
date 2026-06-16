@@ -4682,3 +4682,32 @@ Testy:
 
 Ryzyka:
 - Zmiana wizualna CSS, bez zmian danych. Wymaga manualnego smoke na ekranie.
+
+
+## 2026-06-17 00:15 Europe/Warsaw - STAGE232A_R10_R2_LEAD_ACTION_GROUPS_VISUAL_POLISH
+
+Status: PASS_LOCAL_DO_SPRAWDZENIA
+
+Problem:
+- R10/R10-R1 przeszly technicznie, ale efekt wizualny na screenshocie nadal byl slaby.
+- Same pastelowe tla nie zbudowaly czytelnej hierarchii w sekcji Dzialania leada.
+- Damian polecil: zajmij sie ty.
+
+Zakres:
+- Dodany globalny CSS override importowany z index.css, aby wygrac z kolejnością starych stage CSS.
+- Sekcja Dzialania leada dostaje twardsza hierarchie: biala rama sekcji, mocniejszy border, pasek akcentu po lewej, wyrazniejsze badge i empty states.
+- Braki i blokady dostaja mocniejszy amber/missing tone wewnatrz, nie tylko na headerze.
+- Notatki pozostaja neutralne.
+- Dodany guard/test R10-R2.
+
+Testy:
+- node scripts/check-stage232a-r10-r2-lead-action-groups-visual-polish.cjs
+- node --test tests/stage232a-r10-r2-lead-action-groups-visual-polish.test.cjs
+- R10-R1/R10/R9/R8 guardy regresyjne
+- CF-RUNTIME guard
+- build
+- verify:closeflow:quiet
+- git diff --check
+
+Ryzyka:
+- To nadal etap wizualny. Guard potwierdza kontrakt CSS, ale ostateczna ocena jest ze screenshota.

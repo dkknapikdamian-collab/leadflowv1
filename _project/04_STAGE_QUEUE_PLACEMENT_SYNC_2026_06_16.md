@@ -61,3 +61,13 @@ Placement:
 - Ten etap jest dopisany do centralnych _project/04... i nie zostaje tylko w czacie ani payloadzie.
 - Zakres: korekta koloru wewnetrznego kafelka/empty state i wierszy w grupie Braki i blokady po screenshocie Damiana.
 - Nie zmienia kolejki glownych duzych etapow; jest mikroetap naprawczy po R10.
+
+
+## 2026-06-17 00:15 Europe/Warsaw - STAGE232A_R10_R2_LEAD_ACTION_GROUPS_VISUAL_POLISH
+
+Status: RUNTIME_VISUAL_FIX / MIRRORED_TO_PROJECT_04
+
+Placement:
+- Mikroetap naprawczy po negatywnym smoke R10-R1.
+- Zakres: realny visual polish sekcji Dzialania leada i grup accordion.
+- Nie zmienia kolejki duzych etapow.

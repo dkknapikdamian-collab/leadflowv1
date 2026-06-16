@@ -1,0 +1,183 @@
+/* STAGE232A_R10_R2_LEAD_ACTION_GROUPS_VISUAL_POLISH
+   Visual-only fix after Damian screenshot.
+   Goal: make LeadDetail action groups look intentionally designed, not just lightly tinted.
+   This file is imported from index.css and uses high-specificity #root selectors to win over older stage CSS.
+*/
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-stage228d-action-center {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 28px !important;
+  background: #ffffff !important;
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.07) !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-stage228d-action-center .lead-detail-section-head {
+  margin-bottom: 14px !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-stack {
+  gap: 10px !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-group {
+  position: relative !important;
+  overflow: hidden !important;
+  border-width: 1.5px !important;
+  border-radius: 18px !important;
+  box-shadow: none !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-group::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 auto 0 0 !important;
+  width: 5px !important;
+  background: var(--cf-action-group-accent, #94a3b8) !important;
+  opacity: 0.9 !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-toggle {
+  min-height: 56px !important;
+  padding: 16px 18px 16px 20px !important;
+  border-radius: 18px !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-title {
+  gap: 10px !important;
+  color: var(--cf-action-group-text, #0f172a) !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-title svg {
+  color: var(--cf-action-group-accent, #64748b) !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-title span,
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-title strong {
+  color: var(--cf-action-group-text, #0f172a) !important;
+  font-weight: 950 !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-meta {
+  gap: 8px !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-count,
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-button {
+  border: 1px solid var(--cf-action-group-border, #cbd5e1) !important;
+  background: var(--cf-action-group-chip, #f8fafc) !important;
+  color: var(--cf-action-group-text, #0f172a) !important;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04) !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-content {
+  padding: 0 18px 18px 20px !important;
+  background: transparent !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-empty {
+  margin-top: 0 !important;
+  border-width: 1px !important;
+  border-style: dashed !important;
+  border-color: var(--cf-action-group-border, #cbd5e1) !important;
+  border-radius: 16px !important;
+  background: var(--cf-action-group-empty, rgba(255, 255, 255, 0.54)) !important;
+  color: var(--cf-action-group-muted, #475569) !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-empty strong {
+  color: var(--cf-action-group-text, #0f172a) !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-empty span,
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-empty p {
+  color: var(--cf-action-group-muted, #475569) !important;
+}
+
+/* Blue: Najblizsze dzialania */
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-group--next {
+  --cf-action-group-accent: #2563eb;
+  --cf-action-group-border: #93c5fd;
+  --cf-action-group-bg: #eff6ff;
+  --cf-action-group-chip: #dbeafe;
+  --cf-action-group-empty: #f8fbff;
+  --cf-action-group-text: #1e3a8a;
+  --cf-action-group-muted: #1d4ed8;
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
+}
+
+/* Amber: Braki i blokady. This is not a neutral row. */
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-group--blockers {
+  --cf-action-group-accent: #d97706;
+  --cf-action-group-border: #f59e0b;
+  --cf-action-group-bg: #fffbeb;
+  --cf-action-group-chip: #fde68a;
+  --cf-action-group-empty: #fff3c4;
+  --cf-action-group-text: #78350f;
+  --cf-action-group-muted: #92400e;
+  background: #fffbeb !important;
+  border-color: #f59e0b !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-group--blockers .lead-detail-action-empty,
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] [data-stage232a-r10-r1-empty-tone="missing"] {
+  border-style: solid !important;
+  border-color: #f59e0b !important;
+  background: #fff3c4 !important;
+  color: #78350f !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-group--blockers .lead-detail-work-row,
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] [data-stage232a-r10-r1-missing-tone-row="true"] {
+  border-color: #f59e0b !important;
+  background: #fff7d6 !important;
+  color: #78350f !important;
+}
+
+/* Green: Wszystkie aktywne */
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-group--active {
+  --cf-action-group-accent: #16a34a;
+  --cf-action-group-border: #86efac;
+  --cf-action-group-bg: #ecfdf3;
+  --cf-action-group-chip: #bbf7d0;
+  --cf-action-group-empty: #f0fdf4;
+  --cf-action-group-text: #14532d;
+  --cf-action-group-muted: #15803d;
+  background: #ecfdf3 !important;
+  border-color: #86efac !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-group--next .lead-detail-action-accordion-toggle,
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-group--blockers .lead-detail-action-accordion-toggle,
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-action-accordion-group--active .lead-detail-action-accordion-toggle {
+  background: transparent !important;
+}
+
+/* Tighten the four top cards so they feel related to the same palette, but avoid the washed-out look. */
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-top-card {
+  border-width: 1.5px !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.055) !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-top-card .lead-detail-inline-action {
+  min-height: 32px !important;
+  border-radius: 999px !important;
+  font-weight: 900 !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-callout-amber {
+  background: #fffbeb !important;
+  border-color: #f59e0b !important;
+}
+
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-callout-red {
+  background: #fff1f2 !important;
+  border-color: #fca5a5 !important;
+}
+
+/* Empty note panel stays neutral; do not tint unrelated sections. */
+#root .lead-detail-vnext-page[data-stage14-lead-detail-vnext="true"] .lead-detail-notes-section .lead-detail-light-empty {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #64748b !important;
+}
