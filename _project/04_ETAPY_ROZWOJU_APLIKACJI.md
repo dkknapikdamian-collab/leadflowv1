@@ -1815,3 +1815,46 @@ Korekta dokumentacyjna:
 - poprzedni status WDROZONE_ZIP_DO_SPRAWDZENIA byl nieaktualny po pushu;
 - Product PASS wymaga nadal recznego potwierdzenia wygladu modala Dodaj brak w przegladarce;
 - historyczny verify:closeflow:quiet byl blokowany przez osobny CaseDetail guard, nie przez zakres STAGE232A_R5.
+
+
+## 2026-06-16 04:08 Europe/Warsaw - STAGE232A_R6_LEAD_MISSING_BLOCKER_ACTIVE_LIST_AND_TOP_CARD_SOURCE_TRUTH
+
+Status: PASS_LOCAL_DO_SPRAWDZENIA
+
+Zakres:
+- LeadDetail aktywne Braki sa filtrowane z linkedTasks/workItems, nie z historii/activity.
+- Blokady sa subsetem aktywnych brakow przez explicit blocksProgress albo status zawierajacy block.
+- Top card Blokada nie dostaje kazdego braku jako blokady.
+- ContextActionDialogs utrwala missingKind, blocksProgress, blockScope i payload na tasku/no-flicker saved record.
+- R6-R2 naprawia bledy kruchych kotwic z R6/R6-R1.
+
+Testy:
+- node scripts/check-stage232a-r6-lead-missing-active-source.cjs
+- node --test tests/stage232a-r6-lead-missing-active-source.test.cjs
+- npm.cmd run build
+- npm.cmd run verify:closeflow:quiet
+- git diff --check
+
+Ryzyka:
+- metadata persistence wymaga recznego hard refresh smoke;
+- no-flicker moze wygladac dobrze przed reloadem, dlatego test manualny jest obowiazkowy;
+- nie ruszano SQL/CaseDetail/Google Calendar/finansow.
+
+
+## 2026-06-16 04:20 Europe/Warsaw - STAGE232A_R6_R3_CF_RUNTIME_SCOPE_GUARD_COMPAT
+
+Status: PASS_LOCAL_DO_SPRAWDZENIA
+
+Korekta:
+- R6-R2 przeszedl patch, guard R6, test R6 i build.
+- verify:closeflow:quiet zatrzymal sie na CF-RUNTIME-00 source truth guard, bo stary guard blokowal pliki R6 jako out-of-scope.
+- R6-R3 rozszerza allowlist CF-RUNTIME scope guarda o jawne pliki R6.
+- To nie zmienia logiki LeadDetail/ContextActionDialogs; to kompatybilnosc guardow po zamknietym CF-RUNTIME-00.
+
+Testy:
+- node scripts/check-stage232a-r6-lead-missing-active-source.cjs
+- node --test tests/stage232a-r6-lead-missing-active-source.test.cjs
+- node scripts/check-cf-runtime-00-source-truth.cjs
+- npm.cmd run build
+- npm.cmd run verify:closeflow:quiet
+- git diff --check

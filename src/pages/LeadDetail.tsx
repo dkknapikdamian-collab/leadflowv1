@@ -29,6 +29,8 @@ const STAGE227F6_LEAD_TOP_STRIP_REMOVED_CADENCE_FUNNEL_WIDTH = 'LeadDetail remov
 void STAGE227F6_LEAD_TOP_STRIP_REMOVED_CADENCE_FUNNEL_WIDTH;
 const STAGE227F1_VISUAL_HIERARCHY_POLISH = 'LeadDetail visual hierarchy uses a four-card decision dashboard, no work-center super-heading and neutral lower sections';
 void STAGE227F1_VISUAL_HIERARCHY_POLISH;
+const STAGE232A_R6_LEAD_MISSING_BLOCKER_ACTIVE_LIST_AND_TOP_CARD_SOURCE_TRUTH = 'LeadDetail active Braki come from linkedTasks/workItems, lead blockers are explicit blocksProgress subset, history is not active source truth';
+void STAGE232A_R6_LEAD_MISSING_BLOCKER_ACTIVE_LIST_AND_TOP_CARD_SOURCE_TRUTH;
 import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, Clock, DollarSign, Edit2, Loader2, Mail, Mic, MicOff, MoreVertical, Phone, Plus, Trash2 } from 'lucide-react';
@@ -429,9 +431,33 @@ function isMissingItemTimelineEntry(entry: any) {
   const payload = raw?.payload && typeof raw.payload === 'object' ? raw.payload : {};
   const status = String(entry?.status || raw?.status || payload?.status || '').toLowerCase();
   const type = String(raw?.type || raw?.kind || payload?.type || payload?.kind || '').toLowerCase();
-  const title = String(entry?.title || raw?.title || '').toLowerCase();
-  return entry?.kind === 'task' && (type === 'missing_item' || status === 'missing_item' || title.includes('brak') || title.includes('missing'));
+  const missingKind = String(raw?.missingKind || payload?.missingKind || '').toLowerCase();
+  return entry?.kind === 'task' && (type === 'missing_item' || status.includes('missing') || status.includes('block') || Boolean(missingKind));
 }
+function readMissingItemMetadataStage232AR6(item: any) {
+  const raw = item?.raw || item || {};
+  const payload = raw?.payload && typeof raw.payload === 'object' ? raw.payload : {};
+  const status = String(raw?.status || payload?.status || '').toLowerCase();
+  const type = String(raw?.type || raw?.kind || payload?.type || payload?.kind || '').toLowerCase();
+  const missingKind = String(raw?.missingKind || payload?.missingKind || '').toLowerCase();
+  const blocksProgressValue = raw?.blocksProgress ?? payload?.blocksProgress;
+  const blocksProgress = blocksProgressValue === true || String(blocksProgressValue || '').toLowerCase() === 'true';
+  const blockScope = String(raw?.blockScope || payload?.blockScope || '').trim();
+  return { raw, payload, status, type, missingKind, blocksProgress, blockScope };
+}
+
+function isActiveMissingItemTaskStage232AR6(item: any) {
+  const { status, type, missingKind } = readMissingItemMetadataStage232AR6(item);
+  if (isDoneStatus(status) || status === 'resolved') return false;
+  return type === 'missing_item' || status.includes('missing') || status.includes('block') || Boolean(missingKind);
+}
+
+function isLeadBlockerTaskStage232AR6(item: any) {
+  const metadata = readMissingItemMetadataStage232AR6(item);
+  if (!isActiveMissingItemTaskStage232AR6(item)) return false;
+  return metadata.blocksProgress === true || metadata.status.includes('block');
+}
+
 function isWorkItemOverdue(dateValue: unknown, status: unknown) {
   const parsed = asDate(dateValue);
   if (!parsed || isDoneStatus(status)) return false;
@@ -1163,19 +1189,15 @@ useEffect(() => {
 
   const timeline = useMemo(() => buildTimeline(sortedLinkedTasks, sortedLinkedEvents), [sortedLinkedEvents, sortedLinkedTasks]);
   const activeLeadWorkEntries = useMemo(() => timeline.filter((entry) => !isDoneStatus(entry.status)), [timeline]);
-  const activeMissingItemEntriesStage228R19R2 = useMemo(() => {
-  const closedStatuses = new Set(['done', 'completed', 'resolved', 'cancelled', 'canceled', 'archived', 'deleted']);
-  return linkedTasks.filter((entry: any) => {
-    const status = String(entry?.status || '').toLowerCase();
-    const type = String(entry?.type || entry?.payload?.type || entry?.payload?.kind || '').toLowerCase();
-    const title = String(entry?.title || '').toLowerCase();
-    if (closedStatuses.has(status)) return false;
-    const isMissingOrBlockerStatus = status.includes('block') || status.includes('missing');
-    return type === 'missing_item' || isMissingOrBlockerStatus || title.includes('brak') || title.includes('missing');
-  });
-}, [linkedTasks]);
-
-const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
+  const activeMissingItemEntriesStage232AR6 = useMemo(
+    () => linkedTasks.filter((entry: any) => isActiveMissingItemTaskStage232AR6(entry)),
+    [linkedTasks],
+  );
+  const activeMissingItemEntriesStage228R19R2 = activeMissingItemEntriesStage232AR6;
+  const leadBlockerEntries = useMemo(
+    () => activeMissingItemEntriesStage232AR6.filter((entry: any) => isLeadBlockerTaskStage232AR6(entry)),
+    [activeMissingItemEntriesStage232AR6],
+  );
   const leadNextActionEntries = useMemo(
     () => activeLeadWorkEntries.filter((entry) => !isMissingItemTimelineEntry(entry) && (entry.kind === 'task' || entry.kind === 'event')),
     [activeLeadWorkEntries],

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 // CF_RUNTIME_00_R21_BRITTLE_PARSER_MASS_GUARD_SYNTAX_FIX
+// CF_RUNTIME_00_STAGE232A_R6_SCOPE_COMPAT
 // CF_RUNTIME_00_R19_MASS_SCOPE_CLOSURE_ALLOWED
 // CF_RUNTIME_00_R18_SHEBANG_SCOPE_ALLOWED
 // CF_RUNTIME_00_R17_TRIAL14_SCOPE_ALLOWED
@@ -161,6 +162,15 @@ const allowedChangePrefixes = [
   'tests/stage231h-r1g-cost-other-name-and-reimbursable-flag.test.cjs',
   'tests/stage231h-r1g4-newline-syntax-repair.test.cjs',
   'tests/stage98-polish-mojibake-calendar-guard.test.cjs',
+  '_project/04_ETAPY_ROZWOJU_APLIKACJI.md',
+  '_project/04_KIERUNEK_ROZWOJU_APLIKACJI.md',
+  '_project/09_TESTY_DO_WYKONANIA_I_WYNIKI.md',
+  '_project/11_RYZYKA_BUGI_I_DLUG_TECHNICZNY.md',
+  '_project/obsidian_updates/2026-06-16_STAGE232A_R6_LEAD_MISSING_BLOCKER_ACTIVE_LIST_AND_TOP_CARD_SOURCE_TRUTH.md',
+  '_project/runs/STAGE232A_R6_LEAD_MISSING_BLOCKER_ACTIVE_LIST_AND_TOP_CARD_SOURCE_TRUTH.md',
+  'src/components/ContextActionDialogs.tsx',
+  'scripts/check-stage232a-r6-lead-missing-active-source.cjs',
+  'tests/stage232a-r6-lead-missing-active-source.test.cjs',
   'tests/stage107-templates-delete-and-visual-contract.test.cjs',
 ];
 

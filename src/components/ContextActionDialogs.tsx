@@ -32,6 +32,8 @@ const STAGE228R12_CONTEXT_ACTION_BLOCKER_HOST = 'ContextActionDialogs owns Brak/
 void STAGE228R12_CONTEXT_ACTION_BLOCKER_HOST;
 const STAGE232A_R4_CONTEXT_ACTION_MISSING_BLOCKER_METADATA = 'ContextActionDialogs persists explicit Brak/Blokada metadata from the missing item modal';
 void STAGE232A_R4_CONTEXT_ACTION_MISSING_BLOCKER_METADATA;
+const STAGE232A_R6_CONTEXT_ACTION_MISSING_BLOCKER_TASK_PERSISTENCE = 'ContextActionDialogs persists missingKind blocksProgress blockScope on task and no-flicker saved record for hard refresh truth';
+void STAGE232A_R6_CONTEXT_ACTION_MISSING_BLOCKER_TASK_PERSISTENCE;
 const STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY = STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY_V1;
 const STAGE15_CONTEXT_ACTION_EXPLICIT_TRIGGER_CONTRACT = 'Explicit data-context-action-kind routes task, event, note and blocker through the same shared dialog host';
 export const CONTEXT_ACTION_KIND_ATTR = 'data-context-action-kind';
@@ -245,6 +247,7 @@ export default function ContextActionDialogsHost() {
     try {
       setMissingSaving(true);
       setMissingError('');
+      let createdMissingTask: Record<string, unknown> | null = null;
 
       if (request.recordType === 'case') {
         if (!caseId) {
@@ -286,17 +289,30 @@ export default function ContextActionDialogsHost() {
           workspaceId,
         } as any);
       } else {
-        const createdMissingTask = await insertTaskToSupabase({
+        createdMissingTask = await insertTaskToSupabase({
           title: draft.title,
           type: 'missing_item',
-          status: 'missing_item',
-          priority: 'high',
+          status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item',
+          priority: draft.blocksProgress ? 'high' : 'medium',
           leadId: leadId || null,
           clientId: clientId || null,
           caseId: caseId || null,
           scheduledAt: now,
           dueAt: now,
           workspaceId,
+          missingKind: draft.missingKind,
+          blocksProgress: draft.blocksProgress,
+          blockScope: draft.blockScope || null,
+          payload: {
+            source: 'stage232a_r6_lead_missing_blocker_active_source_truth',
+            kind: 'missing_item',
+            type: 'missing_item',
+            status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item',
+            title: draft.title,
+            note: draft.note || null,
+            createdAt: now,
+            ...stage232aMissingItemMetadata,
+          },
         } as any);
 
         await insertActivityToSupabase({
@@ -329,8 +345,8 @@ export default function ContextActionDialogsHost() {
         emitCloseflowWorkItemNoFlickerMutation({
           action: 'create',
           kind: 'task',
-          item: typeof createdMissingTask !== 'undefined' ? { ...(createdMissingTask as Record<string, unknown>), ...stage232aMissingItemMetadata } : stage232aMissingItemMetadata,
-          id: (typeof createdMissingTask !== 'undefined' && (createdMissingTask as any)?.id) || null,
+          item: createdMissingTask ? { ...createdMissingTask, ...stage232aMissingItemMetadata } : stage232aMissingItemMetadata,
+          id: (createdMissingTask as any)?.id || null,
           recordType: request.recordType,
           recordId: request.recordId,
           leadId: leadId || null,
@@ -341,7 +357,7 @@ export default function ContextActionDialogsHost() {
       }
 
       toast.success('Brak dodany');
-      await handleSaved(typeof createdMissingTask !== 'undefined' ? createdMissingTask : undefined);
+      await handleSaved(createdMissingTask || undefined);
     } catch (error: any) {
       const message = error?.message || 'REQUEST_FAILED';
       setMissingError('Nie udało się zapisać braku: ' + message);
