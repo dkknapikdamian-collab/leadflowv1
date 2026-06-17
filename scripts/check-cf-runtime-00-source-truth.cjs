@@ -15,6 +15,7 @@
 // CF_RUNTIME_00_STAGE232A_R12_MISSING_MODAL_DARK_SOURCE
 // CF_RUNTIME_00_STAGE232A_R13_R2_HEADER_CSS_SOURCE_OVERRIDE
 // CF_RUNTIME_00_STAGE232D_R1_OWNER_CONTACT_DONE
+// CF_RUNTIME_00_STAGE232I0_MISSING_BLOCKER_CONTRACT
 // CF_RUNTIME_00_R19_MASS_SCOPE_CLOSURE_ALLOWED
 // CF_RUNTIME_00_R18_SHEBANG_SCOPE_ALLOWED
 // CF_RUNTIME_00_R17_TRIAL14_SCOPE_ALLOWED
@@ -239,6 +240,13 @@ const allowedChangePrefixes = [
   '_project/runs/STAGE232D_R1_OWNER_CONTROL_CONTACT_DONE_RUNTIME_FIX_SCAN.md',
   '_project/obsidian_updates/2026-06-17_STAGE232D_R1_OWNER_CONTROL_CONTACT_DONE_RUNTIME_FIX.md',
   'scripts/check-stage232d-owner-contact-done-runtime-fix.cjs',
+  '_project/contracts/STAGE232I0_MISSING_BLOCKER_CROSS_ENTITY_CONTRACT.md',
+  '_project/obsidian_updates/2026-06-17_STAGE232I0_CASE_CLIENT_MISSING_BLOCKER_CROSS_ENTITY_AUDIT_AND_CONTRACT.md',
+  '_project/runs/STAGE232I0_CASE_CLIENT_MISSING_BLOCKER_CROSS_ENTITY_AUDIT_AND_CONTRACT.md',
+  'scripts/check-stage232i0-missing-blocker-cross-entity-contract.cjs',
+  'tests/stage232i0-missing-blocker-cross-entity-contract.test.cjs',
+  '_project/CODEX_CONTEXT_INDEX.md',
+  '10_PROJEKTY/CloseFlow_Lead_App/00_START - CloseFlow Lead App.md',
   'tests/stage232d-owner-contact-done-runtime-fix.test.cjs',
   'src/lib/owner-control/activity-truth.ts',
   'src/lib/supabase-fallback.ts',

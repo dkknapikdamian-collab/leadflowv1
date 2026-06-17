@@ -2031,3 +2031,8 @@ Manual smoke:
 - Klik Kontakt wykonany / ustaw Skontaktowany.
 - Kafelek Cisza ma zniknac bez F5.
 - Po F5 cisza nie wraca.
+
+
+## 2026-06-17 17:05 Europe/Warsaw - STAGE232I0_CASE_CLIENT_MISSING_BLOCKER_CROSS_ENTITY_AUDIT_AND_CONTRACT
+
+Ryzyko: case_items jako drugie źródło prawdy; płaska agregacja ClientDetail bez źródła; Owner Control przed stabilizacją I1/I2.

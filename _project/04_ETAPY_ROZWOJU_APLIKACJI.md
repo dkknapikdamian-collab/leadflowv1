@@ -2252,3 +2252,14 @@ Manual smoke:
 - Klik Kontakt wykonany / ustaw Skontaktowany.
 - Kafelek Cisza ma zniknac bez F5.
 - Po F5 cisza nie wraca.
+
+
+## 2026-06-17 17:05 Europe/Warsaw - STAGE232I0_CASE_CLIENT_MISSING_BLOCKER_CROSS_ENTITY_AUDIT_AND_CONTRACT
+
+Status: DO_APPLY_ZIP / AUDIT_CONTRACT_ONLY
+
+Zakres: kontrakt cross-entity Braki/Blokady lead/case/client; bez runtime; bez SQL; bez UI.
+
+Deliverables: _project/contracts/STAGE232I0_MISSING_BLOCKER_CROSS_ENTITY_CONTRACT.md, _project/runs/STAGE232I0_CASE_CLIENT_MISSING_BLOCKER_CROSS_ENTITY_AUDIT_AND_CONTRACT.md, _project/obsidian_updates/2026-06-17_STAGE232I0_CASE_CLIENT_MISSING_BLOCKER_CROSS_ENTITY_AUDIT_AND_CONTRACT.md, guard/test STAGE232I0.
+
+Następne: STAGE232I1, STAGE232I2, STAGE232I3.

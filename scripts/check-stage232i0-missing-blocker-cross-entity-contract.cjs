@@ -1,0 +1,22 @@
+const fs = require('fs');
+const assert = require('assert');
+const contract = fs.readFileSync('_project/contracts/STAGE232I0_MISSING_BLOCKER_CROSS_ENTITY_CONTRACT.md', 'utf8');
+const run = fs.readFileSync('_project/runs/STAGE232I0_CASE_CLIENT_MISSING_BLOCKER_CROSS_ENTITY_AUDIT_AND_CONTRACT.md', 'utf8');
+function must(source, token, label) { assert.ok(source.includes(token), label + ' missing: ' + token); }
+must(contract, 'Lead', 'lead source map');
+must(contract, 'Case', 'case source map');
+must(contract, 'Client', 'client source map');
+must(contract, 'active missing item source', 'active missing item source');
+must(contract, 'blocker rule', 'blocker rule');
+must(contract, 'history is not source of active missing', 'history is not source of active missing');
+must(contract, 'case_items decision', 'case_items decision');
+must(contract, 'client aggregation rule', 'client aggregation rule');
+must(contract, 'owner control impact rule', 'owner control impact rule');
+must(contract, 'STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME', 'next runtime stage I1');
+must(contract, 'STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_AGGREGATION_RUNTIME', 'next runtime stage I2');
+must(contract, 'STAGE232I3_OWNER_CONTROL_MISSING_BLOCKER_CROSS_ENTITY_INTEGRATION', 'next runtime stage I3');
+must(contract, 'runtime: NIE W TYM ETAPIE', 'no runtime rule');
+must(contract, 'SQL: NIE W TYM ETAPIE', 'no SQL rule');
+must(run, 'AUDYT PRZED ETAPEM', 'pre-stage audit');
+must(run, 'AUDYT PO ETAPIE', 'post-stage audit');
+console.log(JSON.stringify({ ok: true, stage: 'STAGE232I0_CASE_CLIENT_MISSING_BLOCKER_CROSS_ENTITY_AUDIT_AND_CONTRACT', guard: 'check-stage232i0-missing-blocker-cross-entity-contract' }, null, 2));
