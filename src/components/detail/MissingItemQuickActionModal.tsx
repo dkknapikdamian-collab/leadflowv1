@@ -20,7 +20,14 @@ export const STAGE232A_R5_MISSING_ITEM_MODAL_VISUAL_SOURCE_TRUTH =
   'MissingItemQuickActionModal reuses lead-form-vnext visual source of truth from quick lead creation';
 
 export const STAGE232A_R10_MISSING_ITEM_MODAL_QUICK_LEAD_VISUAL_SOURCE_TRUTH =
-  'MissingItemQuickActionModal uses the same quick-lead visual shell tokens: dark modal surface, lead-form sections, white inputs, sticky footer and consistent buttons';
+  'MissingItemQuickActionModal uses the same quick-lead lead-form-vnext visual source: light card, readable labels, white fields, sticky footer and consistent buttons';
+
+export const STAGE232A_R11_MISSING_ITEM_MODAL_QUICK_LEAD_VISUAL_SOURCE_REPAIR =
+  'MissingItemQuickActionModal must not force a dark shell; it must inherit the light +Lead lead-form-vnext source of truth';
+
+export const STAGE232A_R11_R1_MISSING_MODAL_CONST_ANCHOR_FIX =
+  'R11 patcher uses robust const replacement because the first R11 ZIP failed on an over-specific anchor';
+
 
 export interface MissingItemQuickActionModalProps {
   open: boolean;

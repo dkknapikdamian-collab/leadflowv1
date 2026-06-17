@@ -71,3 +71,12 @@ Placement:
 - Mikroetap naprawczy po negatywnym smoke R10-R1.
 - Zakres: realny visual polish sekcji Dzialania leada i grup accordion.
 - Nie zmienia kolejki duzych etapow.
+
+
+## 2026-06-17 02:05 Europe/Warsaw - STAGE232A_R11_MISSING_ITEM_MODAL_QUICK_LEAD_VISUAL_SOURCE_REPAIR / STAGE232A_R11_R1_MISSING_MODAL_CONST_ANCHOR_FIX
+
+Status: HOTFIX_BEFORE_STAGE232D / VISUAL_SOURCE_TRUTH_REPAIR
+
+Placement:
+- STAGE232D_R1 pozostaje nastepnym runtime etapem Owner Control.
+- Przed nim wykonujemy waski R11-R1, bo pierwsza paczka R11 zatrzymala sie na kotwicy i nie zapisala zmian.

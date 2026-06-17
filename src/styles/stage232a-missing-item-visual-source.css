@@ -86,94 +86,202 @@
   }
 }
 
-
 /* STAGE232A_R10_MISSING_ITEM_MODAL_QUICK_LEAD_VISUAL_SOURCE_TRUTH
-   Brak modal follows the quick lead form visual truth: dark modal shell, readable white inputs,
-   clear section card, sticky footer and one visual source for form fields.
+   Compatibility marker retained.
+   STAGE232A_R11_MISSING_ITEM_MODAL_QUICK_LEAD_VISUAL_SOURCE_REPAIR:
+   Brak modal now follows the actual +Lead / lead-form-vnext light visual source.
+   It must not force dark #0f172a/#111827 modal surfaces.
+   STAGE232A_R11_R1_MISSING_MODAL_CONST_ANCHOR_FIX\n   STAGE232A_R11_R2_R10_GUARD_COMPAT\n   STAGE232A_R11_R3_R10_GUARD_CONTRACT_RELAX: R10 compatibility guard no longer requires implementation-detail LeadDetail accordion class strings.: R10 guard/test now treats the old dark shell requirement as deprecated.: robust patch after first R11 failed on const anchor.
 */
+
 .missing-item-modal-backdrop[data-stage232a-r10-missing-modal-visual-source="quick-lead-form"] {
-  background: rgba(15, 23, 42, 0.68) !important;
-  backdrop-filter: blur(10px);
+  background: rgba(15, 23, 42, 0.42) !important;
+  backdrop-filter: blur(8px);
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"].lead-form-vnext-content {
-  border: 1px solid rgba(148, 163, 184, 0.28) !important;
-  background: #0f172a !important;
-  color: #f8fafc !important;
-  box-shadow: 0 28px 80px rgba(2, 6, 23, 0.42) !important;
+  width: min(760px, calc(100vw - 24px)) !important;
+  max-width: 760px !important;
+  max-height: min(92vh, 900px) !important;
+  overflow: hidden !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 28px !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: #111827 !important;
+  box-shadow: 0 24px 70px rgba(16, 24, 40, 0.16) !important;
+  padding: 0 !important;
+  font-family: inherit !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-header {
-  border-bottom: 1px solid rgba(148, 163, 184, 0.24) !important;
-  background: #0f172a !important;
-  color: #f8fafc !important;
+  border-bottom: 1px solid #e4e7ec !important;
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 34%),
+    #ffffff !important;
+  color: #111827 !important;
+  padding: 22px 24px 18px !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-kicker {
-  color: #bfdbfe !important;
+  color: #2563eb !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.14em !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-header h2 {
-  color: #f8fafc !important;
+  color: #111827 !important;
+  font-size: 24px !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.03em !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-header p {
-  color: #cbd5e1 !important;
+  color: #667085 !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
 }
 
 .missing-item-modal-form.lead-form-vnext {
-  background: #0f172a !important;
+  max-height: calc(92vh - 110px) !important;
+  overflow-y: auto !important;
+  padding: 18px 24px 22px !important;
+  display: grid !important;
+  gap: 14px !important;
+  background: #f9fafb !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-section {
-  border-color: rgba(148, 163, 184, 0.28) !important;
-  background: #111827 !important;
-  color: #f8fafc !important;
-  box-shadow: none !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 24px !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05) !important;
+  padding: 16px !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .missing-item-modal-field > span,
-.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-field label,
-.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-checkbox strong {
-  color: #f8fafc !important;
-}
-
-.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-checkbox {
-  border-color: rgba(148, 163, 184, 0.28) !important;
-  background: #0f172a !important;
-}
-
-.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-checkbox small {
-  color: #cbd5e1 !important;
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-field > span {
+  color: #475467 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  line-height: 1.35 !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] input:not([type="checkbox"]),
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-select,
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-textarea {
-  border-color: rgba(148, 163, 184, 0.44) !important;
+  width: 100% !important;
+  min-height: 42px !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 18px !important;
   background: #ffffff !important;
-  color: #0f172a !important;
-  box-shadow: none !important;
+  color: #111827 !important;
+  padding: 10px 13px !important;
+  font-size: 14px !important;
+  font-weight: 650 !important;
+  outline: none !important;
+  box-shadow: 0 4px 12px rgba(16, 24, 40, 0.03) !important;
+  font-family: inherit !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] input:not([type="checkbox"]):focus,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-select:focus,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-textarea:focus {
+  border-color: #93c5fd !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12) !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] input::placeholder,
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] textarea::placeholder {
-  color: #64748b !important;
+  color: #667085 !important;
+  opacity: 1 !important;
 }
 
-.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-footer {
-  border-top: 1px solid rgba(148, 163, 184, 0.24) !important;
-  background: #0f172a !important;
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-checkbox {
+  grid-column: 1 / -1 !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 18px !important;
+  background: #f9fafb !important;
+  color: #111827 !important;
+  padding: 12px !important;
+  display: grid !important;
+  grid-template-columns: 22px minmax(0, 1fr) !important;
+  gap: 10px !important;
+  align-items: start !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-checkbox strong {
+  display: block !important;
+  color: #111827 !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-checkbox small {
+  display: block !important;
+  margin-top: 3px !important;
+  color: #667085 !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-footer,
+.missing-item-modal-actions.lead-form-footer {
+  position: sticky !important;
+  bottom: -22px !important;
+  border-top: 1px solid #e4e7ec !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  padding: 14px 0 0 !important;
+  gap: 10px !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-footer button,
+.missing-item-modal-actions.lead-form-footer button {
+  width: auto !important;
+  min-height: 42px !important;
+  border-radius: 16px !important;
+  font-weight: 800 !important;
+  font-family: inherit !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .missing-item-modal-secondary-action {
-  border-color: rgba(148, 163, 184, 0.38) !important;
+  border: 1px solid #e4e7ec !important;
   background: #ffffff !important;
-  color: #0f172a !important;
+  color: #111827 !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .missing-item-modal-primary-action {
-  border-color: #2563eb !important;
+  border: 1px solid #2563eb !important;
   background: #2563eb !important;
   color: #ffffff !important;
+}
+
+@media (max-width: 640px) {
+  .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"].lead-form-vnext-content {
+    width: calc(100vw - 16px) !important;
+    max-height: 94vh !important;
+    border-radius: 24px !important;
+  }
+
+  .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-header {
+    padding: 18px 16px 14px !important;
+  }
+
+  .missing-item-modal-form.lead-form-vnext {
+    max-height: calc(94vh - 98px) !important;
+    padding: 14px !important;
+  }
+
+  .missing-item-modal-actions.lead-form-footer {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  .missing-item-modal-actions.lead-form-footer button {
+    width: 100% !important;
+  }
 }
