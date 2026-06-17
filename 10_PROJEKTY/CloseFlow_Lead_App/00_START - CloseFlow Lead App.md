@@ -9,7 +9,7 @@ canonical_name: CloseFlow / LeadFlow
 repo: dkknapikdamian-collab/leadflowv1
 branch: dev-rollout-freeze
 local_path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
-last_update: 2026-06-17 Europe/Warsaw
+last_update: 2026-06-17 22:55 Europe/Warsaw
 ---
 
 # 00_START - CloseFlow Lead App
@@ -29,6 +29,7 @@ Nie szukac etapow w czacie. Nie traktowac pojedynczych run reportow ani payloado
 - `_project/04_ETAPY_ROZWOJU_APLIKACJI.md` - kanoniczna kolejka etapow aplikacji.
 - `_project/04_STAGE_QUEUE_PLACEMENT_SYNC_2026_06_16.md` - regula placementu i sync rozproszonych etapow.
 - `_project/04_STAGE232D_R1_CLOSURE_AND_STAGE232I0_NEXT_SYNC_2026_06_17.md` - historyczny queue-sync: STAGE232D_R1 zamkniety, STAGE232I0 nastepny.
+- `_project/04_STAGE232I1_R8_SKIPPED_STAGE232I2_NEXT_SYNC_2026_06_17.md` - decyzja: R8 pomijamy, bo modal jest OK; nastepny aktywny etap to STAGE232I2.
 - `_project/04_KIERUNEK_ROZWOJU_APLIKACJI.md` - kierunek produktu.
 - `10_PROJEKTY/CloseFlow_Lead_App/04_STAGE232D_I_OWNER_CONTROL_AND_BRAKI_CASE_CLIENT_SOURCE_OF_TRUTH.md` - dashboard note: kontakt/cisza oraz Braki/Blokady dla sprawy i klienta.
 - `10_PROJEKTY/CloseFlow_Lead_App/04_STAGE232J_LEADS_SCROLL_TOP_CUT_SOURCE_OF_TRUTH.md` - dashboard note: bug scrolla na /leads.
@@ -74,16 +75,16 @@ Nie szukac etapow w czacie. Nie traktowac pojedynczych run reportow ani payloado
 - `STAGE232D_R1_OWNER_CONTROL_CONTACT_DONE_RUNTIME_FIX` - `PASS_PUSHED / CLOSED`, HEAD `d7b21240`, Damian manual smoke OK.
 - `STAGE232I0_CASE_CLIENT_MISSING_BLOCKER_CROSS_ENTITY_AUDIT_AND_CONTRACT` - `PASS_PUSHED / CLOSED`, HEAD `532c5f04`, kontrakt/audyt bez runtime.
 - `STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME` - `PASS_PUSHED / CLOSED / MANUAL_SMOKE_OK`, CaseDetail Braki/Blokady jako `missing_item` z `caseId`.
+- `STAGE232I1_R8_MISSING_MODAL_READABLE_VISUAL_SOURCE` - `SKIPPED_BY_DAMIAN / NIE WDRAZAC`, Damian potwierdzil, ze modal jest OK.
 
 ### Nastepny aktywny etap
 
-1. `STAGE232I1_R8_MISSING_MODAL_READABLE_VISUAL_SOURCE` - tylko jesli modal Dodaj brak dalej wymaga czytelnosci na ciemnym shellu.
-2. `STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_RUNTIME` - runtime klienta po I1, jesli R8 zostanie pominiety albo zamkniety.
-3. `STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH`
-4. `STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH`
-5. `STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME`
+1. `STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_RUNTIME` - runtime klienta po I1; R8 zostal pominiety, bo modal jest wizualnie OK.
+2. `STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH`
+3. `STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH`
+4. `STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME`
 
-Zrodlo aktualizacji: `_project/runs/STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME.md` i `_project/obsidian_updates/2026-06-17_STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME.md`.
+Zrodlo aktualizacji: `_project/runs/STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME.md`, `_project/obsidian_updates/2026-06-17_STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME.md`, `_project/04_STAGE232I1_R8_SKIPPED_STAGE232I2_NEXT_SYNC_2026_06_17.md`.
 
 ## Regula dopisywania nowych etapow
 
@@ -99,4 +100,4 @@ Jesli etap jest tylko w czacie, run reportcie, payloadzie albo luznej notatce, o
 
 ## Nastepny krok operacyjny
 
-Najblizszy etap: `STAGE232I1_R8_MISSING_MODAL_READABLE_VISUAL_SOURCE`, jesli modal wymaga poprawy czytelnosci. Jesli Damian potwierdzi, ze modal jest wizualnie OK, przejsc do `STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_RUNTIME`.
+Najblizszy etap: `STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_RUNTIME`.
