@@ -1,177 +1,62 @@
-# AGENTS.md - CloseFlow Lead App
+# AGENTS.md - CloseFlow / LeadFlow
 
-## SCAN-FIRST
-Before changing this project read: AGENTS.md, _project/, README files, package.json, scripts/, tests/, docs/, recent run reports and the Obsidian section 10_PROJEKTY/CloseFlow_Lead_App.
+Status: ACTIVE
+Read policy: MUST_READ_REPO_START
+Repo: dkknapikdamian-collab/leadflowv1
+Branch: dev-rollout-freeze
+Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
+canonical_name: CloseFlow / LeadFlow
+project_id: closeflow_lead_app
 
-## Information baskets
-- FAKT - confirmed by code, files, tests, docs, repo or command output.
-- DECYZJA - confirmed written decision by Damian or accepted project rule.
-- HIPOTEZA / PROPOZYCJA - unconfirmed idea.
-- DO POTWIERDZENIA - missing or uncertain information.
+## Cel
 
-## Boundaries
-For project-memory stages do not change UI, routing, product logic or app architecture.
+Ten plik jest minimalnym startem repo dla AI.
 
-## After each meaningful stage
-Update _project/runs, 08_CHANGELOG_AI, 07_NEXT_STEPS and relevant memory files.<!-- CLOSEFLOW_PROJECT_MEMORY_RULES_V8_START -->
-# CloseFlow / LeadFlow - stale zasady pamieci projektu
+Repo aplikacji jest dla kodu, konfiguracji, testow technicznych, guardow technicznych, migracji wykonywalnych i minimalnych instrukcji startowych.
 
-Ten blok zostal dopisany automatycznie przez paczke V8. Nie zastapil istniejacych zasad.
+Pelna dokumentacja projektu, etapy, decyzje, roadmapa, ryzyka, bugi, testy operacyjne, SQL ledger, ZIP/push ledger i historia pracy sa w Obsidianie.
 
-## Obowiazek scan-first
-Przed kazda zmiana AI developer / Codex ma przeczytac repo, AGENTS.md, _project, README, package.json, scripts, tests, docs oraz sekcje Obsidiana projektu.
+## Minimalny start
 
-## Cztery koszyki informacji
-Kazdy raport ma rozdzielac:
-- FAKT z kodu, plikow, testow, dokumentow albo repo,
-- DECYZJA z pisemnych ustalen Damiana,
-- HIPOTEZA / PROPOZYCJA jako niepotwierdzony pomysl,
-- DO POTWIERDZENIA gdy brakuje dowodu.
+Nie czytaj calego repo, calego _project, wszystkich run reportow ani obsidian_updates na starcie.
 
-Nie wolno zapisywac hipotez jako faktow.
+Czytaj tylko:
 
-## Aktualizacja pamieci po kazdym etapie
-Po kazdej sensownej zmianie aktualizuj:
-- _project/00_PROJECT_STATUS.md,
-- _project/03_CURRENT_STAGE.md,
-- _project/04_DECISIONS.md, jesli zmieniono kierunek,
-- _project/05_MANUAL_TESTS.md,
-- _project/06_GUARDS_AND_TESTS.md,
-- _project/07_NEXT_STEPS.md,
-- _project/08_CHANGELOG_AI.md,
-- _project/10_PROJECT_TIMELINE.md,
-- _project/12_IMPLEMENTATION_LEDGER.md,
-- _project/13_TEST_HISTORY.md,
-- _project/runs/ z raportem wykonania.
+1. ten plik,
+2. _project/00_AI_START_SPIS_TRESCI.md,
+3. projektowy spis tresci w Obsidianie: 10_PROJEKTY/CloseFlow_Lead_App/00_AI_START_SPIS_TRESCI - DO_POTWIERDZENIA - CloseFlow LeadFlow.md, jesli masz dostep,
+4. konkretne pliki wskazane przez spis tresci dla typu zadania.
 
-## Nazwy Obsidiana
-Nie tworz aktywnych plikow typu INDEX.md, STATUS.md, ledger.md, README.md bez kontekstu CloseFlow_LeadFlow.
-Aktywne pliki w sekcji Obsidiana musza miec czytelna nazwe, np. CloseFlow_LeadFlow__STATUS_PROJEKTU.md.
+Stary _project/CODEX_CONTEXT_INDEX.md, jesli istnieje, jest tylko legacy bridge. Nie traktuj go jako glownego startu.
 
-## Git / ZIP
-Pracuj na branchu dev-rollout-freeze. Nie tworz nowych branchy.
-Jesli Damian chce ZIP, pliki Obsidiana i pamiec projektu musza wejsc do ZIP-a.
-Jesli chce push, pushuj dopiero po przejsciu guardow albo po jawnym raporcie SKIP z powodem.
-<!-- CLOSEFLOW_PROJECT_MEMORY_RULES_V8_END -->
+## Routing pracy
 
-<!-- CLOSEFLOW_PROJECT_MEMORY_RULES_V9_START -->
-# CloseFlow / LeadFlow - stale zasady pamieci projektu
+- STATUS / PLAN -> Obsidian 00, 01 i 04.
+- BUGFIX -> konkretny plik bledu, bezposrednie zaleznosci i powiazany guard/test.
+- UI / TODAY / LEADS / CLIENTS / CASES / CASEDETAIL -> aktywne decyzje UI z Obsidian 04, mapa plikow 07, guard UI 09 i ryzyka 11.
+- SUPABASE / SQL / MIGRACJE / RLS -> Obsidian 13, repo _project/13_SQL_LEDGER_I_MIGRACJE.md i konkretne migracje/funkcje.
+- DELIVERY / ZIP / PUSH -> Obsidian 10, testy 09, ryzyka 11 i globalny WORKFLOW_GUARDS.
+- DOCS / OBSIDIAN -> aktualizuj Obsidian zgodnie ze spisem 00-13; nie tworz luznych dokumentow w repo aplikacji.
+- CLEANUP / ARCHIWUM -> tylko gdy zadanie tego wymaga; wtedy czytaj Obsidian 12 i wskazane pliki.
 
-Ten blok zostal dopisany automatycznie przez paczke V9. Nie zastapil istniejacych zasad.
+## Granice CloseFlow
 
-## Obowiazek scan-first
-Przed kazda zmiana AI developer / Codex ma przeczytac repo, AGENTS.md, _project, README, package.json, scripts, tests, docs oraz sekcje Obsidiana projektu.
+CloseFlow / LeadFlow nie jest kopia CRM. To owner control system dla leadow, klientow, spraw, zadan, kalendarza, follow-upow i finansow.
 
-## Cztery koszyki informacji
-Kazdy raport ma rozdzielac:
-- FAKT z kodu, plikow, testow, dokumentow albo repo,
-- DECYZJA z pisemnych ustalen Damiana,
-- HIPOTEZA / PROPOZYCJA jako niepotwierdzony pomysl,
-- DO POTWIERDZENIA gdy brakuje dowodu.
+AI nie moze przepisywac zaakceptowanych wizualnie baseline'ow bez jawnego etapu.
 
-Nie wolno zapisywac hipotez jako faktow.
+Dla CaseDetail baseline R4 jest zamrozony jako kierunek, dopoki Damian go nie zmieni.
 
-## Aktualizacja pamieci po kazdym etapie
-Po kazdej sensownej zmianie aktualizuj:
-- _project/00_PROJECT_STATUS.md,
-- _project/03_CURRENT_STAGE.md,
-- _project/04_DECISIONS.md, jesli zmieniono kierunek,
-- _project/05_MANUAL_TESTS.md,
-- _project/06_GUARDS_AND_TESTS.md,
-- _project/07_NEXT_STEPS.md,
-- _project/08_CHANGELOG_AI.md,
-- _project/10_PROJECT_TIMELINE.md,
-- _project/12_IMPLEMENTATION_LEDGER.md,
-- _project/13_TEST_HISTORY.md,
-- _project/runs/ z raportem wykonania.
+Nie zmieniaj SQL, kosztow, Google Calendar, LeadListCard, ClientDetail ani finansow bez zakresu etapu.
 
-## Nazwy Obsidiana
-Nie tworz aktywnych plikow typu INDEX.md, STATUS.md, ledger.md, README.md bez kontekstu CloseFlow_LeadFlow.
-Aktywne pliki w sekcji Obsidiana musza miec czytelna nazwe, np. CloseFlow_LeadFlow__STATUS_PROJEKTU.md.
+## Git / testy
 
-## Git / ZIP
-Pracuj na branchu dev-rollout-freeze. Nie tworz nowych branchy.
-Jesli Damian chce ZIP, pliki Obsidiana i pamiec projektu musza wejsc do ZIP-a.
-Jesli chce push, pushuj dopiero po przejsciu guardow albo po jawnym raporcie SKIP z powodem.
-<!-- CLOSEFLOW_PROJECT_MEMORY_RULES_V9_END -->
+Jeden commit = jeden projekt albo jeden globalny etap systemowy.
 
-<!-- DAMIAN_MINIMAL_PROJECT_MEMORY_PROTOCOL_START -->
-# Damian minimal project memory protocol - CloseFlow / LeadFlow
+Nie uzywaj zbiorczego dodawania wszystkich zmian ani force push.
 
-Ten blok wskazuje na krotki protokol pamieci projektu. Nie usuwa ani nie zastepuje starszych blokow V8/V9.
+Przed commitem wykonaj scope guard, guardy/testy zgodne z zakresem i diff check. Jesli sa zmiany spoza zakresu albo czerwony guard, zrob STOP.
 
-## Aktywne pliki protokolu
-- `_project/00_PROJECT_MEMORY_PROTOCOL.md`
-- `_project/STAGE_TEMPLATE_MINIMAL.md`
-- `_project/runs/`
-- Obsidian: `10_PROJEKTY/CloseFlow_Lead_App/`
+## Scan report
 
-## Zasada zamkniecia etapu
-Etap jest niewazny, jesli nie ma dowodu skanu repo, `_project/`, Obsidiana, wpisu testow/guardow, statusu testu recznego oraz aktualizacji Obsidiana albo jawnego SKIP z powodem.
-
-## Granica tego etapu
-Zmiany organizacyjne moga dotykac tylko `AGENTS.md`, `_project/` i dashboardu Obsidiana. Nie zmieniac runtime UI, routingu, logiki produktu, styli ani architektury aplikacji bez osobnego etapu.
-<!-- DAMIAN_MINIMAL_PROJECT_MEMORY_PROTOCOL_END -->
-
-<!-- CLOSEFLOW_STAGE_AUDIT_PROTOCOL_2026_06_12_START -->
-# CloseFlow / LeadFlow - obowiązkowy audyt przed i po etapie
-
-Aktywny plik szczegółowy: `_project/04_STAGE_AUDIT_PROTOCOL_CLOSEFLOW.md`.
-
-## Decyzja Damiana
-Od 2026-06-12 każdy etap musi mieć audyt przed wdrożeniem i audyt po wdrożeniu.
-
-Audyt ma szukać realnych problemów: złych podpięć, niedopiętych funkcji, niedokończonych przepięć, sprzeczności z kierunkiem aplikacji, ryzyk regresji, drugich źródeł prawdy, brakujących guardów/testów i rzeczy, które mogą wrócić po refetchu albo odświeżeniu.
-
-Nie wolno doszukiwać się problemów na siłę, robić chaotycznego refactoru ani ruszać obcych modułów bez związku z etapem.
-
-## Wymagane przed etapem
-- przeczytać `AGENTS.md`, `_project/00_PROJECT_MEMORY_PROTOCOL.md`, `_project/04_STAGE_AUDIT_PROTOCOL_CLOSEFLOW.md`, `_project/STAGE_TEMPLATE_MINIMAL.md` i właściwy plik etapu,
-- sprawdzić, czy etap nie jest już wdrożony częściowo,
-- wypisać ekran/trasę, gdzie Damian zobaczy efekt,
-- wypisać podobne miejsca do sprawdzenia,
-- zaplanować guard/test albo jawnie zapisać brak guardu z powodem.
-
-## Wymagane po etapie
-- sprawdzić, czy poprawiono przyczynę, nie tylko objaw,
-- sprawdzić powiązane miejsca i ryzyka regresji,
-- uruchomić właściwe guardy/testy,
-- podać manualny test dla Damiana,
-- zaktualizować `_project` i payload Obsidiana,
-- zapisać `AUDYT PO ETAPIE` w run report.
-
-Etap bez sekcji `AUDYT PRZED ETAPEM` i `AUDYT PO ETAPIE` jest niezamknięty.
-<!-- CLOSEFLOW_STAGE_AUDIT_PROTOCOL_2026_06_12_END -->
-
-<!-- CLOSEFLOW_FOUND_PROBLEMS_LEDGER_2026_06_12_START -->
-# CloseFlow / LeadFlow - znalezione problemy do analizy Damiana
-
-Aktywny plik centralny: `_project/04_ZNALEZIONE_PROBLEMY_DO_ANALIZY.md`.
-
-## Decyzja Damiana
-Od 2026-06-12 problemy znalezione przy audycie etapów, pracy developera, testach, guardach albo ręcznym sprawdzaniu aplikacji mają trafiać do centralnego pliku `Znalezione problemy`, jeżeli nie są już częścią aktualnego etapu, etapów naprawy albo kierunku rozwoju.
-
-To nie jest lista rzeczy do automatycznego wdrożenia. To jest rejestr przyszłych potencjalnych etapów do decyzji Damiana.
-
-## Obowiązek developera / Codexa
-Przy każdym etapie developer ma:
-- przeczytać `_project/04_ZNALEZIONE_PROBLEMY_DO_ANALIZY.md`,
-- sprawdzić, czy ruszany obszar ma już wpisy `NOWE`, `DO_ANALIZY_DAMIANA` albo `PRZYJETE_DO_ETAPU`,
-- wpisać do tego pliku realne problemy znalezione obok zakresu etapu,
-- nie naprawiać ich po cichu bez decyzji, chyba że blokują etap albo są częścią zatwierdzonego zakresu,
-- w run report zapisać: `Znalezione problemy: brak nowych` albo podać ID nowych wpisów.
-
-Przykład: jeśli przy sprawdzaniu przycisków wyjdzie, że ta sama akcja ma inne źródło prawdy, inne kolory, inny komponent albo lokalny styl zamiast wspólnego wzorca, developer ma dodać wpis do `Znalezione problemy`, a nie gubić tego w czacie.
-<!-- CLOSEFLOW_FOUND_PROBLEMS_LEDGER_2026_06_12_END -->
-
-<!-- START:CF-CODEX-CONTEXT-INDEX-004 -->
-
-## Codex context routing
-
-Before planning, coding, auditing, verifying or preparing a ZIP for this repo, read `_project/CODEX_CONTEXT_INDEX.md` first.
-
-The context index is the bounded routing file for Codex/ChatGPT operators. Do not scan the whole repository or Obsidian vault by default. Use the exact repo and Obsidian file lists from the index, then inspect only files required by the current stage.
-
-Stage marker: CF-CODEX-CONTEXT-INDEX-004
-
-<!-- END:CF-CODEX-CONTEXT-INDEX-004 -->
+Przed planem, kodem albo audytem wypisz: Project, Read mode, Files read, Files intentionally not read, Current stage, Active decisions, Open risks, Tests/guards relevant, Next step.
