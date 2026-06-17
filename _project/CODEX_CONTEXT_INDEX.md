@@ -1,9 +1,9 @@
 # CODEX_CONTEXT_INDEX - CloseFlow / LeadFlow
 
 Status: ACTIVE
-Stage: CF-CODEX-CONTEXT-INDEX-005
+Stage: CF-CODEX-CONTEXT-INDEX-006
 Created: 2026-06-16 Europe/Warsaw
-Updated: 2026-06-16 Europe/Warsaw
+Updated: 2026-06-17 Europe/Warsaw
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
 Local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
@@ -40,24 +40,25 @@ Read these files first, in this order, if they exist:
 2. `_project/CODEX_CONTEXT_INDEX.md`
 3. `10_PROJEKTY/CloseFlow_Lead_App/00_START - CloseFlow Lead App.md`
 4. `10_PROJEKTY/CloseFlow_Lead_App/07_SCIAGA_PLIKOW - CloseFlow Lead App.md`
-5. `_project/04_STAGE_QUEUE_PLACEMENT_SYNC_2026_06_16.md`
-6. `_project/00_PROJECT_MEMORY_PROTOCOL.md`
-7. `_project/04_STAGE_AUDIT_PROTOCOL_CLOSEFLOW.md`
-8. `_project/04_STAGE_AUDIT_PROTOCOL_CLOSEFLOW__FOUND_PROBLEMS_ADDENDUM.md`
-9. `_project/04_ZNALEZIONE_PROBLEMY_DO_ANALIZY.md`
-10. `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`
-11. `_project/04_KIERUNEK_ROZWOJU_APLIKACJI.md`
-12. `_project/06_GUARDS_AND_TESTS.md`
-13. `_project/07_NEXT_STEPS.md`
-14. `_project/08_CHANGELOG_AI.md`
-15. `_project/09_TESTY_DO_WYKONANIA_I_WYNIKI.md`
-16. `_project/11_RYZYKA_BUGI_I_DLUG_TECHNICZNY.md`
-17. `_project/13_TEST_HISTORY.md`
-18. `package.json`
-19. latest relevant `_project/runs/<stage>.md` for the current or immediately previous stage
-20. exact source/test/guard files named by the current stage
+5. `_project/04_STAGE232D_R1_CLOSURE_AND_STAGE232I0_NEXT_SYNC_2026_06_17.md`
+6. `_project/04_STAGE_QUEUE_PLACEMENT_SYNC_2026_06_16.md`
+7. `_project/00_PROJECT_MEMORY_PROTOCOL.md`
+8. `_project/04_STAGE_AUDIT_PROTOCOL_CLOSEFLOW.md`
+9. `_project/04_STAGE_AUDIT_PROTOCOL_CLOSEFLOW__FOUND_PROBLEMS_ADDENDUM.md`
+10. `_project/04_ZNALEZIONE_PROBLEMY_DO_ANALIZY.md`
+11. `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`
+12. `_project/04_KIERUNEK_ROZWOJU_APLIKACJI.md`
+13. `_project/06_GUARDS_AND_TESTS.md`
+14. `_project/07_NEXT_STEPS.md`
+15. `_project/08_CHANGELOG_AI.md`
+16. `_project/09_TESTY_DO_WYKONANIA_I_WYNIKI.md`
+17. `_project/11_RYZYKA_BUGI_I_DLUG_TECHNICZNY.md`
+18. `_project/13_TEST_HISTORY.md`
+19. `package.json`
+20. latest relevant `_project/runs/<stage>.md` for the current or immediately previous stage
+21. exact source/test/guard files named by the current stage
 
-Do not infer the active next stage from older long files when `_project/04_ETAPY_ROZWOJU_APLIKACJI.md` or `_project/04_STAGE_QUEUE_PLACEMENT_SYNC_2026_06_16.md` has a newer queue-sync. If documents conflict, report the conflict instead of silently choosing.
+Do not infer the active next stage from older long files when `_project/04_ETAPY_ROZWOJU_APLIKACJI.md` or `_project/04_STAGE232D_R1_CLOSURE_AND_STAGE232I0_NEXT_SYNC_2026_06_17.md` has a newer queue-sync. If documents conflict, report the conflict instead of silently choosing.
 
 ## Obsidian routing - exact list only
 
@@ -86,17 +87,16 @@ Archives are not active truth unless this index or the active stage points to th
 
 Use `_project/04_ETAPY_ROZWOJU_APLIKACJI.md` as the active canonical queue for planned product/code stages.
 
-If a newly reported stage is not yet safely mirrored into the long central queue, use `_project/04_STAGE_QUEUE_PLACEMENT_SYNC_2026_06_16.md` as the temporary queue-sync and mark the stage `MIRROR_TO_CENTRAL_04_REQUIRED`.
+If a newly reported stage is not yet safely mirrored into the long central queue, use the newest `_project/04...QUEUE_SYNC...` file and mark conflicts explicitly.
 
-Current ordered queue from placement sync:
+Current queue-sync override:
 
 ```text
-1. STAGE232J_R1_LEADS_SCROLL_TOP_CUT_RUNTIME_FIX
-2. STAGE232D_R1_OWNER_CONTROL_CONTACT_DONE_RUNTIME_FIX
-3. STAGE232I0_CASE_CLIENT_MISSING_BLOCKER_CROSS_ENTITY_AUDIT_AND_CONTRACT
-4. STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH
-5. STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH
-6. STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
+CLOSED: STAGE232D_R1_OWNER_CONTROL_CONTACT_DONE_RUNTIME_FIX -> PASS_PUSHED / CLOSED / d7b21240 / Damian manual smoke OK
+NEXT:   STAGE232I0_CASE_CLIENT_MISSING_BLOCKER_CROSS_ENTITY_AUDIT_AND_CONTRACT
+LATER:  STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH
+LATER:  STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH
+LATER:  STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
 ```
 
 ## CloseFlow hard boundaries by default
