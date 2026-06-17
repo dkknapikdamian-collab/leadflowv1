@@ -80,3 +80,22 @@ Status: HOTFIX_BEFORE_STAGE232D / VISUAL_SOURCE_TRUTH_REPAIR
 Placement:
 - STAGE232D_R1 pozostaje nastepnym runtime etapem Owner Control.
 - Przed nim wykonujemy waski R11-R1, bo pierwsza paczka R11 zatrzymala sie na kotwicy i nie zapisala zmian.
+
+
+## 2026-06-17 03:30 Europe/Warsaw - STAGE232A_R12_MISSING_MODAL_MATCH_PLUS_LEAD_DARK_SOURCE
+
+Status: DO_APPLY_ZIP / SCREENSHOT_DRIVEN_REPAIR
+
+Problem:
+- Damian pokazal screenshot: Brak po R11 jest jasny, a Nowy lead jest ciemny.
+- R11 wybral zle zrodlo prawdy: statyczny jasny lead-form-vnext zamiast realnego ciemnego runtime +Lead modal.
+- R12 deprecjonuje R11 light interpretation i ustawia aktywne zrodlo: dark Nowy lead modal match.
+
+Zakres:
+- MissingItemQuickActionModal const markers.
+- stage232a-missing-item-visual-source.css dark shell/section/white fields/blue CTA.
+- R10/R11 compatibility guard/test rewrite.
+- R12 guard/test.
+
+Ryzyka:
+- To celowo odwraca R11. Manualny smoke musi porownac Brak z Nowy lead.

@@ -88,83 +88,85 @@
 
 /* STAGE232A_R10_MISSING_ITEM_MODAL_QUICK_LEAD_VISUAL_SOURCE_TRUTH
    Compatibility marker retained.
-   STAGE232A_R11_MISSING_ITEM_MODAL_QUICK_LEAD_VISUAL_SOURCE_REPAIR:
-   Brak modal now follows the actual +Lead / lead-form-vnext light visual source.
-   It must not force dark #0f172a/#111827 modal surfaces.
-   STAGE232A_R11_R1_MISSING_MODAL_CONST_ANCHOR_FIX\n   STAGE232A_R11_R2_R10_GUARD_COMPAT\n   STAGE232A_R11_R3_R10_GUARD_CONTRACT_RELAX: R10 compatibility guard no longer requires implementation-detail LeadDetail accordion class strings.: R10 guard/test now treats the old dark shell requirement as deprecated.: robust patch after first R11 failed on const anchor.
+   STAGE232A_R11_MISSING_ITEM_MODAL_QUICK_LEAD_VISUAL_SOURCE_REPAIR is deprecated as light interpretation.
+   STAGE232A_R12_MISSING_MODAL_MATCH_PLUS_LEAD_DARK_SOURCE: screenshot decision from Damian.
+   Brak modal must match dark "Nowy lead" modal: dark outer shell, dark inner section, white fields, white labels, blue primary CTA.
 */
 
 .missing-item-modal-backdrop[data-stage232a-r10-missing-modal-visual-source="quick-lead-form"] {
-  background: rgba(15, 23, 42, 0.42) !important;
-  backdrop-filter: blur(8px);
+  background: rgba(2, 6, 23, 0.52) !important;
+  backdrop-filter: blur(6px);
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"].lead-form-vnext-content {
-  width: min(760px, calc(100vw - 24px)) !important;
-  max-width: 760px !important;
+  width: min(604px, calc(100vw - 28px)) !important;
+  max-width: 604px !important;
   max-height: min(92vh, 900px) !important;
   overflow: hidden !important;
-  border: 1px solid #e4e7ec !important;
-  border-radius: 28px !important;
-  background: rgba(255, 255, 255, 0.96) !important;
-  color: #111827 !important;
-  box-shadow: 0 24px 70px rgba(16, 24, 40, 0.16) !important;
+  border: 1px solid rgba(148, 163, 184, 0.34) !important;
+  border-radius: 22px !important;
+  background: #0b1220 !important;
+  color: #f8fafc !important;
+  box-shadow: 0 24px 70px rgba(2, 6, 23, 0.42) !important;
   padding: 0 !important;
   font-family: inherit !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-header {
-  border-bottom: 1px solid #e4e7ec !important;
-  background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 34%),
-    #ffffff !important;
-  color: #111827 !important;
-  padding: 22px 24px 18px !important;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.26) !important;
+  background: #0b1220 !important;
+  color: #f8fafc !important;
+  padding: 18px 22px 14px !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-kicker,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-header h2 {
+  color: #f8fafc !important;
+  font-weight: 900 !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-kicker {
-  color: #2563eb !important;
-  font-size: 11px !important;
-  font-weight: 850 !important;
-  letter-spacing: 0.14em !important;
+  font-size: 12px !important;
+  letter-spacing: 0.01em !important;
+  text-transform: none !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-header h2 {
-  color: #111827 !important;
-  font-size: 24px !important;
-  line-height: 1.1 !important;
+  font-size: 18px !important;
+  line-height: 1.16 !important;
   letter-spacing: -0.03em !important;
+  margin-top: 8px !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-header p {
-  color: #667085 !important;
+  color: #cbd5e1 !important;
   font-size: 13px !important;
   line-height: 1.5 !important;
 }
 
 .missing-item-modal-form.lead-form-vnext {
-  max-height: calc(92vh - 110px) !important;
+  max-height: calc(92vh - 92px) !important;
   overflow-y: auto !important;
-  padding: 18px 24px 22px !important;
+  padding: 18px 22px 18px !important;
   display: grid !important;
-  gap: 14px !important;
-  background: #f9fafb !important;
+  gap: 12px !important;
+  background: #0b1220 !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-section {
-  border: 1px solid #e4e7ec !important;
-  border-radius: 24px !important;
-  background: #ffffff !important;
-  color: #111827 !important;
-  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05) !important;
+  border: 1px solid rgba(148, 163, 184, 0.34) !important;
+  border-radius: 18px !important;
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  box-shadow: none !important;
   padding: 16px !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .missing-item-modal-field > span,
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-field > span {
-  color: #475467 !important;
+  color: #f8fafc !important;
   font-size: 12px !important;
-  font-weight: 800 !important;
+  font-weight: 850 !important;
   line-height: 1.35 !important;
 }
 
@@ -173,37 +175,37 @@
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-textarea {
   width: 100% !important;
   min-height: 42px !important;
-  border: 1px solid #e4e7ec !important;
-  border-radius: 18px !important;
+  border: 1px solid rgba(226, 232, 240, 0.92) !important;
+  border-radius: 13px !important;
   background: #ffffff !important;
-  color: #111827 !important;
+  color: #0f172a !important;
   padding: 10px 13px !important;
   font-size: 14px !important;
   font-weight: 650 !important;
   outline: none !important;
-  box-shadow: 0 4px 12px rgba(16, 24, 40, 0.03) !important;
+  box-shadow: none !important;
   font-family: inherit !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] input:not([type="checkbox"]):focus,
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-select:focus,
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-textarea:focus {
-  border-color: #93c5fd !important;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12) !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.28) !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] input::placeholder,
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] textarea::placeholder {
-  color: #667085 !important;
+  color: #64748b !important;
   opacity: 1 !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-checkbox {
   grid-column: 1 / -1 !important;
-  border: 1px solid #e4e7ec !important;
-  border-radius: 18px !important;
-  background: #f9fafb !important;
-  color: #111827 !important;
+  border: 1px solid rgba(148, 163, 184, 0.28) !important;
+  border-radius: 16px !important;
+  background: rgba(15, 23, 42, 0.72) !important;
+  color: #f8fafc !important;
   padding: 12px !important;
   display: grid !important;
   grid-template-columns: 22px minmax(0, 1fr) !important;
@@ -213,15 +215,15 @@
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-checkbox strong {
   display: block !important;
-  color: #111827 !important;
+  color: #f8fafc !important;
   font-size: 13px !important;
-  font-weight: 850 !important;
+  font-weight: 900 !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-checkbox small {
   display: block !important;
   margin-top: 3px !important;
-  color: #667085 !important;
+  color: #cbd5e1 !important;
   font-size: 12px !important;
   line-height: 1.4 !important;
 }
@@ -229,9 +231,9 @@
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-footer,
 .missing-item-modal-actions.lead-form-footer {
   position: sticky !important;
-  bottom: -22px !important;
-  border-top: 1px solid #e4e7ec !important;
-  background: rgba(255, 255, 255, 0.94) !important;
+  bottom: -18px !important;
+  border-top: 1px solid rgba(148, 163, 184, 0.22) !important;
+  background: #0b1220 !important;
   padding: 14px 0 0 !important;
   gap: 10px !important;
   display: flex !important;
@@ -243,15 +245,15 @@
 .missing-item-modal-actions.lead-form-footer button {
   width: auto !important;
   min-height: 42px !important;
-  border-radius: 16px !important;
-  font-weight: 800 !important;
+  border-radius: 13px !important;
+  font-weight: 850 !important;
   font-family: inherit !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .missing-item-modal-secondary-action {
-  border: 1px solid #e4e7ec !important;
+  border: 1px solid rgba(226, 232, 240, 0.86) !important;
   background: #ffffff !important;
-  color: #111827 !important;
+  color: #0f172a !important;
 }
 
 .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .missing-item-modal-primary-action {
@@ -264,15 +266,15 @@
   .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"].lead-form-vnext-content {
     width: calc(100vw - 16px) !important;
     max-height: 94vh !important;
-    border-radius: 24px !important;
+    border-radius: 20px !important;
   }
 
   .missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-header {
-    padding: 18px 16px 14px !important;
+    padding: 16px 14px 12px !important;
   }
 
   .missing-item-modal-form.lead-form-vnext {
-    max-height: calc(94vh - 98px) !important;
+    max-height: calc(94vh - 88px) !important;
     padding: 14px !important;
   }
 

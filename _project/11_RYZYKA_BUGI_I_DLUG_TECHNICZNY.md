@@ -1953,3 +1953,22 @@ Zakres:
 - Zaktualizowano R10 guard/test bez cofania R11.
 - Guard nadal blokuje powrot dark #0f172a/#111827 shell.
 - R11 pozostaje aktualnym source truth modala Brak.
+
+
+## 2026-06-17 03:30 Europe/Warsaw - STAGE232A_R12_MISSING_MODAL_MATCH_PLUS_LEAD_DARK_SOURCE
+
+Status: DO_APPLY_ZIP / SCREENSHOT_DRIVEN_REPAIR
+
+Problem:
+- Damian pokazal screenshot: Brak po R11 jest jasny, a Nowy lead jest ciemny.
+- R11 wybral zle zrodlo prawdy: statyczny jasny lead-form-vnext zamiast realnego ciemnego runtime +Lead modal.
+- R12 deprecjonuje R11 light interpretation i ustawia aktywne zrodlo: dark Nowy lead modal match.
+
+Zakres:
+- MissingItemQuickActionModal const markers.
+- stage232a-missing-item-visual-source.css dark shell/section/white fields/blue CTA.
+- R10/R11 compatibility guard/test rewrite.
+- R12 guard/test.
+
+Ryzyka:
+- To celowo odwraca R11. Manualny smoke musi porownac Brak z Nowy lead.

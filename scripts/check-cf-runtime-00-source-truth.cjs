@@ -12,6 +12,7 @@
 // CF_RUNTIME_00_STAGE232A_R10_R2_R1_LITERAL_NEWLINE_FIX
 // CF_RUNTIME_00_STAGE232J_R1_LEADS_SCROLL_TOP_CUT
 // CF_RUNTIME_00_STAGE232A_R11_MISSING_MODAL_VISUAL_SOURCE\n// CF_RUNTIME_00_STAGE232A_R11_R2_R10_GUARD_COMPAT\n// CF_RUNTIME_00_STAGE232A_R11_R3_R10_GUARD_CONTRACT_RELAX
+// CF_RUNTIME_00_STAGE232A_R12_MISSING_MODAL_DARK_SOURCE
 // CF_RUNTIME_00_R19_MASS_SCOPE_CLOSURE_ALLOWED
 // CF_RUNTIME_00_R18_SHEBANG_SCOPE_ALLOWED
 // CF_RUNTIME_00_R17_TRIAL14_SCOPE_ALLOWED
@@ -224,6 +225,10 @@ const allowedChangePrefixes = [
   '_project/obsidian_updates/2026-06-17_STAGE232A_R11_MISSING_ITEM_MODAL_QUICK_LEAD_VISUAL_SOURCE_REPAIR.md',
   'scripts/check-stage232a-r11-missing-modal-quick-lead-visual-source.cjs',
   'tests/stage232a-r11-missing-modal-quick-lead-visual-source.test.cjs',
+  '_project/runs/STAGE232A_R12_MISSING_MODAL_MATCH_PLUS_LEAD_DARK_SOURCE.md',
+  '_project/obsidian_updates/2026-06-17_STAGE232A_R12_MISSING_MODAL_MATCH_PLUS_LEAD_DARK_SOURCE.md',
+  'scripts/check-stage232a-r12-missing-modal-match-plus-lead-dark-source.cjs',
+  'tests/stage232a-r12-missing-modal-match-plus-lead-dark-source.test.cjs',
   'tests/stage107-templates-delete-and-visual-contract.test.cjs',
 ];
 

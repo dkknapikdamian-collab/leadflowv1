@@ -20,13 +20,22 @@ export const STAGE232A_R5_MISSING_ITEM_MODAL_VISUAL_SOURCE_TRUTH =
   'MissingItemQuickActionModal reuses lead-form-vnext visual source of truth from quick lead creation';
 
 export const STAGE232A_R10_MISSING_ITEM_MODAL_QUICK_LEAD_VISUAL_SOURCE_TRUTH =
-  'MissingItemQuickActionModal uses the same quick-lead lead-form-vnext visual source: light card, readable labels, white fields, sticky footer and consistent buttons';
+  'Compatibility marker retained. Active visual source after screenshot smoke is R12 dark Nowy lead modal match';
+
+
 
 export const STAGE232A_R11_MISSING_ITEM_MODAL_QUICK_LEAD_VISUAL_SOURCE_REPAIR =
-  'MissingItemQuickActionModal must not force a dark shell; it must inherit the light +Lead lead-form-vnext source of truth';
+  'Deprecated: R11 light interpretation was visually rejected. R12 dark +Lead modal source is active';
+
+
+export const STAGE232A_R12_MISSING_MODAL_MATCH_PLUS_LEAD_DARK_SOURCE =
+  'Screenshot decision: Brak modal must match dark Nowy lead modal: dark shell, dark section, white fields, blue primary CTA';
+
 
 export const STAGE232A_R11_R1_MISSING_MODAL_CONST_ANCHOR_FIX =
-  'R11 patcher uses robust const replacement because the first R11 ZIP failed on an over-specific anchor';
+  'Compatibility marker retained. R12 supersedes R11 light interpretation';
+
+
 
 
 export interface MissingItemQuickActionModalProps {
