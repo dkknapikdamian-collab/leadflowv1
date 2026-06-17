@@ -24,8 +24,10 @@ export const STAGE232A_R10_MISSING_ITEM_MODAL_QUICK_LEAD_VISUAL_SOURCE_TRUTH =
 
 
 
+
 export const STAGE232A_R11_MISSING_ITEM_MODAL_QUICK_LEAD_VISUAL_SOURCE_REPAIR =
   'Deprecated: R11 light interpretation was visually rejected. R12 dark +Lead modal source is active';
+
 
 
 export const STAGE232A_R12_MISSING_MODAL_MATCH_PLUS_LEAD_DARK_SOURCE =
@@ -34,6 +36,7 @@ export const STAGE232A_R12_MISSING_MODAL_MATCH_PLUS_LEAD_DARK_SOURCE =
 
 export const STAGE232A_R11_R1_MISSING_MODAL_CONST_ANCHOR_FIX =
   'Compatibility marker retained. R12 supersedes R11 light interpretation';
+
 
 
 
