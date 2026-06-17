@@ -518,3 +518,32 @@ Testy:
 Ryzyka:
 - CSS hide moze ukryc subtitle tylko w modal headerze Brak. To jest zamierzone.
 - Dane i context nie sa usuwane z modelu, tylko z top-left headera.
+
+
+## 2026-06-17 16:05 Europe/Warsaw - STAGE232D_R1_OWNER_CONTROL_CONTACT_DONE_RUNTIME_FIX
+
+Status: DO_APPLY_ZIP / RUNTIME_FIX_R1_R1
+
+Problem:
+- Poprzedni R1 padl przez zbyt sztywna kotwice w activity-truth.ts.
+- Realny bug pozostaje: lead ma status Skontaktowany, ale kafelek Cisza / ryzyko nadal pokazuje stara cisze.
+
+Decyzja:
+- Naprawa idzie w zrodle prawdy: updateLeadInSupabase + buildActivityTruth.
+- Patch Skontaktowany/Kontakt wykonany stampuje lastContactAt.
+- Tworzony jest best-effort activity eventType=manual_contact_done dla tego samego leadId.
+- Activity truth traktuje status Skontaktowany jako explicit contact truth.
+- Future follow-up/event nie resetuje kontaktu tylko z powodu slowa kontakt/telefon.
+
+Testy:
+- node scripts/check-stage232d-owner-contact-done-runtime-fix.cjs
+- node --test tests/stage232d-owner-contact-done-runtime-fix.test.cjs
+- node scripts/check-cf-runtime-00-source-truth.cjs
+- npm.cmd run build
+- npm.cmd run verify:closeflow:quiet
+- git diff --check
+
+Manual smoke:
+- Klik Kontakt wykonany / ustaw Skontaktowany.
+- Kafelek Cisza ma zniknac bez F5.
+- Po F5 cisza nie wraca.

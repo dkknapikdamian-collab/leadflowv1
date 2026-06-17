@@ -14,6 +14,7 @@
 // CF_RUNTIME_00_STAGE232A_R11_MISSING_MODAL_VISUAL_SOURCE\n// CF_RUNTIME_00_STAGE232A_R11_R2_R10_GUARD_COMPAT\n// CF_RUNTIME_00_STAGE232A_R11_R3_R10_GUARD_CONTRACT_RELAX
 // CF_RUNTIME_00_STAGE232A_R12_MISSING_MODAL_DARK_SOURCE
 // CF_RUNTIME_00_STAGE232A_R13_R2_HEADER_CSS_SOURCE_OVERRIDE
+// CF_RUNTIME_00_STAGE232D_R1_OWNER_CONTACT_DONE
 // CF_RUNTIME_00_R19_MASS_SCOPE_CLOSURE_ALLOWED
 // CF_RUNTIME_00_R18_SHEBANG_SCOPE_ALLOWED
 // CF_RUNTIME_00_R17_TRIAL14_SCOPE_ALLOWED
@@ -234,6 +235,13 @@ const allowedChangePrefixes = [
   '_project/obsidian_updates/2026-06-17_STAGE232A_R13_R2_HEADER_CSS_SOURCE_OVERRIDE.md',
   'scripts/check-stage232a-r13-r2-header-css-source-override.cjs',
   'tests/stage232a-r13-r2-header-css-source-override.test.cjs',
+  '_project/runs/STAGE232D_R1_OWNER_CONTROL_CONTACT_DONE_RUNTIME_FIX.md',
+  '_project/runs/STAGE232D_R1_OWNER_CONTROL_CONTACT_DONE_RUNTIME_FIX_SCAN.md',
+  '_project/obsidian_updates/2026-06-17_STAGE232D_R1_OWNER_CONTROL_CONTACT_DONE_RUNTIME_FIX.md',
+  'scripts/check-stage232d-owner-contact-done-runtime-fix.cjs',
+  'tests/stage232d-owner-contact-done-runtime-fix.test.cjs',
+  'src/lib/owner-control/activity-truth.ts',
+  'src/lib/supabase-fallback.ts',
   'tests/stage107-templates-delete-and-visual-contract.test.cjs',
 ];
 

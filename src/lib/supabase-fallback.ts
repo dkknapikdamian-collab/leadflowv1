@@ -726,7 +726,81 @@ export async function submitPortalCaseItemInSupabase(input: { caseId: string; po
 export async function insertPortalActivityToSupabase(input: { caseId: string; portalSession: string; eventType: string; payload?: Record<string, unknown> }) {
   return callApi<Record<string, unknown>>('/api/activities', { method: 'POST', body: JSON.stringify({ caseId: input.caseId, portalSession: input.portalSession, actorType: 'client', eventType: input.eventType, payload: input.payload || {} }) });
 }
-export async function updateLeadInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<SupabaseInsertResult>('/api/leads', { method: 'PATCH', body: JSON.stringify(input) }); }
+function stage232dNormalizeLeadContactText(value: unknown) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
+}
+
+function stage232dIsContactDoneLeadPatch(input: Record<string, unknown>) {
+  const payload = (input?.payload && typeof input.payload === 'object') ? input.payload as Record<string, unknown> : {};
+  const text = stage232dNormalizeLeadContactText([
+    input.status,
+    input.leadStatus,
+    input.lead_status,
+    input.contactStatus,
+    input.contact_status,
+    input.source,
+    input.action,
+    payload.status,
+    payload.source,
+    payload.action,
+  ].filter(Boolean).join(' '));
+
+  return text.includes('skontaktowan')
+    || text.includes('kontakt wykonany')
+    || text.includes('manual_contact_done')
+    || text.includes('contacted')
+    || text.includes('contact done');
+}
+
+function stage232dPrepareLeadContactDonePatch(input: Record<string, unknown> & { id: string }) {
+  const payload: Record<string, unknown> & { id: string } = input;
+  const shouldStampContact = stage232dIsContactDoneLeadPatch(payload)
+    && !payload.lastContactAt
+    && !payload.last_contact_at
+    && !payload.contactedAt
+    && !payload.contacted_at;
+
+  if (shouldStampContact) {
+    const contactAt = new Date().toISOString();
+    payload.lastContactAt = contactAt;
+  }
+
+  return { payload, shouldStampContact };
+}
+
+async function stage232dInsertManualContactDoneActivity(payload: Record<string, unknown> & { id: string }) {
+  try {
+    await callApi<SupabaseInsertResult>('/api/activities', {
+      method: 'POST',
+      body: JSON.stringify({
+        leadId: String(payload.id || ''),
+        actorType: 'operator',
+        eventType: 'manual_contact_done',
+        payload: {
+          source: 'manual_contact_done',
+          leadId: String(payload.id || ''),
+          contactAt: String(payload.lastContactAt || ''),
+          status: payload.status || payload.leadStatus || payload.lead_status || null,
+        },
+      }),
+    });
+  } catch (error) {
+    console.warn('STAGE232D_R1 manual_contact_done activity side-effect failed', error);
+  }
+}
+
+export async function updateLeadInSupabase(input: Record<string, unknown> & { id: string }) {
+  const { payload, shouldStampContact } = stage232dPrepareLeadContactDonePatch(input);
+  const result = await callApi<SupabaseInsertResult>('/api/leads', { method: 'PATCH', body: JSON.stringify(payload) });
+  if (shouldStampContact) {
+    await stage232dInsertManualContactDoneActivity(payload);
+  }
+  return result;
+}
 export async function deleteLeadFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/leads?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
 export async function updateTaskInSupabase(input: Record<string, unknown> & { id: string }): Promise<SupabaseInsertResult> {
   const taskId = String(input?.id || '').trim();

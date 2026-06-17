@@ -30,6 +30,64 @@ const STAGE223_ACTIVITY_TRUTH_FALLBACK_ORDER = 'updatedAt fallback is used only 
 void STAGE223_ACTIVITY_TRUTH;
 void STAGE223_ACTIVITY_TRUTH_FALLBACK_ORDER;
 
+const STAGE232D_R1_OWNER_CONTROL_CONTACT_DONE_RUNTIME_FIX = 'Kontakt wykonany / Skontaktowany is explicit contact truth for entity-scoped lead silence';
+void STAGE232D_R1_OWNER_CONTROL_CONTACT_DONE_RUNTIME_FIX;
+
+function stage232dNormalizeContactText(value: unknown) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
+}
+
+function isStage232dContactDoneStatus(record: Record<string, unknown>) {
+  const payload = asRecord(record.payload);
+  const text = stage232dNormalizeContactText([
+    readString(record, ['status', 'leadStatus', 'lead_status', 'contactStatus', 'contact_status', 'state']),
+    readString(record, ['action', 'eventType', 'event_type', 'source', 'type', 'kind']),
+    readString(payload, ['status', 'source', 'action', 'eventType', 'event_type', 'type', 'kind']),
+  ].filter(Boolean).join(' '));
+
+  return text.includes('skontaktowan')
+    || text.includes('kontakt wykonany')
+    || text.includes('manual_contact_done')
+    || text.includes('contacted')
+    || text.includes('contact done');
+}
+
+function stage232dPastOrNowDate(value: string | null, now: Date) {
+  if (!value) return null;
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return null;
+  if (parsed.getTime() > now.getTime()) return null;
+  return value;
+}
+
+function stage232dContactStatusAt(record: Record<string, unknown>, now: Date) {
+  if (!isStage232dContactDoneStatus(record)) return null;
+  return stage232dPastOrNowDate(candidateDate(record, [
+    'lastContactAt',
+    'last_contact_at',
+    'contactedAt',
+    'contacted_at',
+    'lastActivityAt',
+    'last_activity_at',
+    'updatedAt',
+    'updated_at',
+    'modifiedAt',
+    'modified_at',
+    'createdAt',
+    'created_at',
+  ]), now);
+}
+
+function stage232dContactHappenedAt(record: Record<string, unknown>, now: Date, keys: string[]) {
+  if (!isContactRecord(record)) return null;
+  return stage232dPastOrNowDate(candidateDate(record, keys), now);
+}
+
+
 function asRecord(value: unknown): Record<string, unknown> {
   return value && typeof value === 'object' ? value as Record<string, unknown> : {};
 }
@@ -114,7 +172,12 @@ export function buildActivityTruth(input: BuildActivityTruthInput): ActivityTrut
   const fallbackActivityCandidates: { at: string; source: ActivityTruthSource; isFallback: boolean }[] = [];
 
   const explicitContactAt = candidateDate(record, ['lastContactAt', 'last_contact_at', 'contactedAt', 'contacted_at']);
-  pushCandidate(contactCandidates, explicitContactAt, 'field', false);
+
+
+  const stage232dStatusContactAt = stage232dContactStatusAt(record, now);
+  pushCandidate(contactCandidates, stage232dStatusContactAt, 'field', false);
+  pushCandidate(realActivityCandidates, stage232dStatusContactAt, 'field', false);
+pushCandidate(contactCandidates, explicitContactAt, 'field', false);
   pushCandidate(realActivityCandidates, explicitContactAt, 'field', false);
 
   const explicitActivityAt = candidateDate(record, ['lastActivityAt', 'last_activity_at']);
@@ -131,14 +194,16 @@ export function buildActivityTruth(input: BuildActivityTruthInput): ActivityTrut
     const row = asRecord(task);
     const at = candidateDate(row, ['completedAt', 'completed_at', 'scheduledAt', 'scheduled_at', 'dueAt', 'due_at', 'dateAt', 'date_at', 'createdAt', 'created_at']);
     pushCandidate(realActivityCandidates, at, 'task', false);
-    if (isContactRecord(row)) pushCandidate(contactCandidates, at, 'task', false);
+    const stage232dTaskContactAt = stage232dContactHappenedAt(row, now, ['completedAt', 'completed_at', 'happenedAt', 'happened_at', 'contactedAt', 'contacted_at', 'doneAt', 'done_at']);
+    pushCandidate(contactCandidates, stage232dTaskContactAt, 'task', false);
   }
 
   for (const event of array(input.events)) {
     const row = asRecord(event);
     const at = candidateDate(row, ['startAt', 'start_at', 'scheduledAt', 'scheduled_at', 'dateAt', 'date_at', 'date', 'createdAt', 'created_at']);
     pushCandidate(realActivityCandidates, at, 'event', false);
-    if (isContactRecord(row)) pushCandidate(contactCandidates, at, 'event', false);
+    const stage232dEventContactAt = stage232dContactHappenedAt(row, now, ['completedAt', 'completed_at', 'happenedAt', 'happened_at', 'contactedAt', 'contacted_at', 'endedAt', 'ended_at', 'endAt', 'end_at', 'startAt', 'start_at', 'dateAt', 'date_at', 'date']);
+    pushCandidate(contactCandidates, stage232dEventContactAt, 'event', false);
   }
 
   for (const payment of array(input.payments)) {
