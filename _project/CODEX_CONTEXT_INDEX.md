@@ -50,6 +50,14 @@ Testy:
 - verify:closeflow:quiet: PASS,
 - manual smoke CaseDetail: PASS.
 
+## 2026-06-17 22:55 Europe/Warsaw - STAGE232I1_R8_MISSING_MODAL_READABLE_VISUAL_SOURCE
+
+Status: SKIPPED_BY_DAMIAN / NIE WDRAZAC
+
+Powod:
+- Damian potwierdzil, ze modal Dodaj brak jest OK,
+- nie robimy osobnego visual-fix R8,
+- nastepny aktywny etap to STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_RUNTIME.
+
 Nastepny etap:
-- STAGE232I1_R8_MISSING_MODAL_READABLE_VISUAL_SOURCE, jesli modal Dodaj brak wymaga poprawy czytelnosci.
-- STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_RUNTIME, jesli R8 zostanie pominiety albo zamkniety.
+- STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_RUNTIME.
