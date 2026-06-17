@@ -324,3 +324,71 @@
   font-weight: 900 !important;
   letter-spacing: -0.01em !important;
 }
+
+/* STAGE232I1_R8_MISSING_MODAL_READABLE_VISUAL_SOURCE
+   Screenshot repair: labels and the "Dodaj brak" title were rendered too dark on the dark modal shell.
+   This stage keeps the R12 dark source and hard-overrides readable text tokens without changing persistence/runtime.
+*/
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"],
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] * {
+  text-rendering: geometricPrecision;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] #missing-item-modal-title,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-header h2,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-header [id="missing-item-modal-title"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  overflow: visible !important;
+  color: #f8fafc !important;
+  background: transparent !important;
+  text-shadow: none !important;
+  -webkit-text-fill-color: #f8fafc !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-section,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-primary-section {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-field > span,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .missing-item-modal-field > span,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] label > span:first-child,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-checkbox strong,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .missing-item-modal-checkbox strong {
+  color: #e5edf8 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #e5edf8 !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-checkbox small,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .missing-item-modal-checkbox small {
+  color: #cbd5e1 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #cbd5e1 !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] input:not([type="checkbox"]),
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] select,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] textarea,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-select,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-textarea {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] input::placeholder,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] textarea::placeholder {
+  color: #475569 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #475569 !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] option {
+  color: #0f172a !important;
+  background: #ffffff !important;
+}

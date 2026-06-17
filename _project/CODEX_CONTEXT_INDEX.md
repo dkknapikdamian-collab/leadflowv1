@@ -34,3 +34,12 @@ Deliverables:
 
 Następny etap po push:
 - STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME
+
+## 2026-06-17 22:35 Europe/Warsaw - STAGE232I1_R8_MISSING_MODAL_READABLE_VISUAL_SOURCE
+
+Status: DO_APPLY_ZIP / VISUAL_FIX
+
+Zakres:
+- poprawa czytelności modala "Dodaj brak" na ciemnym shellu,
+- tytuł, labelki, checkbox helper i tekst pól wymuszone na czytelne kolory,
+- bez zmian SQL i bez zmian runtime zapisu/odczytu Braków/Blokad.

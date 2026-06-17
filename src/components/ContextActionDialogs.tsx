@@ -35,6 +35,8 @@ void STAGE232A_R4_CONTEXT_ACTION_MISSING_BLOCKER_METADATA;
 const STAGE232A_R6_CONTEXT_ACTION_MISSING_BLOCKER_TASK_PERSISTENCE = 'ContextActionDialogs persists missingKind blocksProgress blockScope on task and no-flicker saved record for hard refresh truth';
 const STAGE232A_R8_CONTEXT_ACTION_TASK_ID_ACTIVITY_BRIDGE = 'ContextActionDialogs stores taskId and explicit blocker status in missing_item activity payload for LeadDetail UI compatibility';
 void STAGE232A_R8_CONTEXT_ACTION_TASK_ID_ACTIVITY_BRIDGE;
+const STAGE232I1_CONTEXT_ACTION_CASE_MISSING_ITEM_TASK_SOURCE = 'CaseDetail Braki/Blokady use task/work item missing_item with caseId; case_items remain legacy/checklist compatibility';
+void STAGE232I1_CONTEXT_ACTION_CASE_MISSING_ITEM_TASK_SOURCE;
 void STAGE232A_R6_CONTEXT_ACTION_MISSING_BLOCKER_TASK_PERSISTENCE;
 const STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY = STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY_V1;
 const STAGE15_CONTEXT_ACTION_EXPLICIT_TRIGGER_CONTRACT = 'Explicit data-context-action-kind routes task, event, note and blocker through the same shared dialog host';
@@ -256,37 +258,61 @@ export default function ContextActionDialogsHost() {
           throw new Error('Brak ID sprawy. Nie można dodać braku.');
         }
 
-        await insertCaseItemToSupabase({
-          caseId,
+        createdMissingTask = await insertTaskToSupabase({
           title: draft.title,
-          description: draft.note || '',
-          type: 'text',
-          status: 'missing',
-          isRequired: true,
-          dueDate: null,
-        });
+          type: 'missing_item',
+          status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item',
+          priority: draft.blocksProgress ? 'high' : 'medium',
+          leadId: leadId || null,
+          clientId: clientId || null,
+          caseId: caseId || null,
+          scheduledAt: now,
+          dueAt: now,
+          workspaceId,
+          missingKind: draft.missingKind,
+          blocksProgress: draft.blocksProgress,
+          blockScope: draft.blockScope || null,
+          payload: {
+            source: 'STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME',
+            sourceEntityType: request.recordType,
+            sourceEntityId: request.recordId,
+            recordType: request.recordType,
+            recordId: request.recordId,
+            kind: 'missing_item',
+            type: 'missing_item',
+            status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item',
+            title: draft.title,
+            note: draft.note || null,
+            content: draft.note || null,
+            createdAt: now,
+            ...stage232aMissingItemMetadata,
+          },
+        } as any);
 
         await insertActivityToSupabase({
-          caseId,
-          clientId: clientId || null,
           leadId: leadId || null,
+          clientId: clientId || null,
+          caseId: caseId || null,
           actorType: 'operator',
-          eventType: 'item_added',
+          eventType: 'missing_item_created',
           payload: {
-            source: 'context_action_dialogs_blocker',
-            marker: 'stage228r12_context_action_blocker_case',
-            type: 'missing_item',
+            source: 'STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME',
+            marker: 'stage232i1_context_action_blocker_case_task',
+            recordType: request.recordType,
+            taskId: (createdMissingTask as any)?.id || null,
             kind: 'missing_item',
+            type: 'missing_item',
+            status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item',
             title: draft.title,
-            itemTitle: draft.title,
-            description: draft.note || null,
-            note: draft.note || null,
-            dueDate: null,
-            caseTitle: request.recordLabel || null,
+            note: draft.note,
+            content: draft.note,
+            createdAt: now,
             entityType: draft.entityType,
             entityId: draft.entityId,
-            persistenceTarget: draft.persistenceTarget,
-          ...stage232aMissingItemMetadata,
+            sourceEntityType: request.recordType,
+            sourceEntityId: request.recordId,
+            persistenceTarget: 'task_activity_missing_item',
+            ...stage232aMissingItemMetadata,
           },
           workspaceId,
         } as any);
@@ -344,7 +370,7 @@ export default function ContextActionDialogsHost() {
         } as any);
       }
 
-      if (request.recordType !== 'case') {
+      if (createdMissingTask) {
         emitCloseflowWorkItemNoFlickerMutation({
           action: 'create',
           kind: 'task',

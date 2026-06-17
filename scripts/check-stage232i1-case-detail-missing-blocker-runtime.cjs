@@ -1,0 +1,28 @@
+const fs = require('fs');
+const assert = require('assert');
+const caseDetail = fs.readFileSync('src/pages/CaseDetail.tsx', 'utf8');
+const dialogs = fs.readFileSync('src/components/ContextActionDialogs.tsx', 'utf8');
+const run = fs.readFileSync('_project/runs/STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME.md', 'utf8');
+const obsidian = fs.readFileSync('_project/obsidian_updates/2026-06-17_STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME.md', 'utf8');
+function must(source, token, label) { assert.ok(source.includes(token), label + ' missing: ' + token); }
+must(caseDetail, 'STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME', 'CaseDetail marker');
+must(caseDetail, 'isStage232I1CaseMissingTaskSource', 'CaseDetail detector');
+must(caseDetail, 'isStage232I1ResolvedCaseMissingTask', 'CaseDetail resolved filter');
+must(caseDetail, 'data-stage232i1-case-missing-action="true"', 'CaseDetail add missing action');
+must(caseDetail, 'data-context-action-kind="blocker"', 'CaseDetail explicit blocker button');
+must(caseDetail, 'data-stage232i1-resolve-case-missing="true"', 'CaseDetail resolve action');
+must(caseDetail, 'missing_item_resolved', 'CaseDetail resolved history');
+must(caseDetail, 'missing_item_deleted', 'CaseDetail deleted history');
+must(caseDetail, 'legacy checklist/case_items compatibility only', 'case_items legacy marker');
+must(caseDetail, 'Źródło: Sprawa', 'source badge');
+must(dialogs, 'STAGE232I1_CONTEXT_ACTION_CASE_MISSING_ITEM_TASK_SOURCE', 'dialog marker');
+must(dialogs, 'sourceEntityType: request.recordType', 'sourceEntityType');
+must(dialogs, 'sourceEntityId: request.recordId', 'sourceEntityId');
+must(dialogs, 'caseId: caseId || null', 'caseId');
+must(dialogs, "eventType: 'missing_item_created'", 'activity created');
+must(dialogs, "persistenceTarget: 'task_activity_missing_item'", 'case persistence target');
+assert.ok(!/if \(request\.recordType === 'case'\) \{[\s\S]*?insertCaseItemToSupabase/.test(dialogs), 'case branch must not write new Braki via case_items');
+must(run, 'AUDYT PRZED ETAPEM', 'run pre audit');
+must(run, 'AUDYT PO ETAPIE', 'run risk audit');
+must(obsidian, 'STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME', 'obsidian stage');
+console.log(JSON.stringify({ ok: true, stage: 'STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME', guard: 'check-stage232i1-case-detail-missing-blocker-runtime' }, null, 2));

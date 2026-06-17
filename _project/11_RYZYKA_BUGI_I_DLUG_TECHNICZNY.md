@@ -2036,3 +2036,25 @@ Manual smoke:
 ## 2026-06-17 17:05 Europe/Warsaw - STAGE232I0_CASE_CLIENT_MISSING_BLOCKER_CROSS_ENTITY_AUDIT_AND_CONTRACT
 
 Ryzyko: case_items jako drugie źródło prawdy; płaska agregacja ClientDetail bez źródła; Owner Control przed stabilizacją I1/I2.
+
+
+## 2026-06-17 21:15 Europe/Warsaw - STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME
+
+Status: DO_APPLY_ZIP_R7 / RUNTIME
+
+Zakres:
+- CaseDetail Braki/Blokady jako task/work item missing_item z caseId,
+- explicit button data-context-action-kind="blocker",
+- case_items tylko legacy/checklist compatibility,
+- resolve/delete dla missing_item,
+- historia: missing_item_created/resolved/deleted,
+- bez SQL, bez ClientDetail, bez Owner Control cross-entity.
+
+## 2026-06-17 22:35 Europe/Warsaw - STAGE232I1_R8_MISSING_MODAL_READABLE_VISUAL_SOURCE
+
+Status: DO_APPLY_ZIP / VISUAL_FIX
+
+Zakres:
+- poprawa czytelności modala "Dodaj brak" na ciemnym shellu,
+- tytuł, labelki, checkbox helper i tekst pól wymuszone na czytelne kolory,
+- bez zmian SQL i bez zmian runtime zapisu/odczytu Braków/Blokad.

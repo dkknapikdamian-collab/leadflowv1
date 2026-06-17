@@ -167,6 +167,8 @@ const STAGE219_R4_CONTEXT_NOTE_REFRESH = 'case detail refreshes after shared not
 void STAGE219_R4_CONTEXT_NOTE_REFRESH;
 const STAGE220A11_CASE_DETAIL_TABS_PRODUCTION = 'case detail production tabs: service checklists history only';
 void STAGE220A11_CASE_DETAIL_TABS_PRODUCTION;
+const STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME = 'CaseDetail active Braki/Blokady use task/work item missing_item with caseId; case_items stay legacy/checklist compatibility';
+void STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME;
 
 const STAGE220A12_CASE_DETAIL_TABS_MICRO_POLISH = 'case detail tab icons spacing and history heading-only polish';
 void STAGE220A12_CASE_DETAIL_TABS_MICRO_POLISH;
@@ -932,7 +934,10 @@ function getStatusClass(status?: string) {
 function getActivityText(activity: CaseActivity) {
   const title = activity.payload?.title || activity.payload?.itemTitle || 'element';
 
-  if (activity.eventType === 'item_added') return `Dodano brak: ${title}`;
+  if (activity.eventType === 'missing_item_created') return `${activity.payload?.blocksProgress ? 'Blokada' : 'Brak'}: ${title}`;
+  if (activity.eventType === 'missing_item_resolved') return `Uzupełniono brak: ${title}`;
+  if (activity.eventType === 'missing_item_deleted') return `Usunięto brak: ${title}`;
+  if (activity.eventType === 'item_added') return `Dodano element sprawy: ${title}`;
   if (activity.eventType === 'status_changed') return `Zmieniono status „${title}” na: ${getItemStatusLabel(activity.payload?.status)}`;
   if (activity.eventType === 'file_uploaded') return `Dodano plik: ${title}`;
   if (activity.eventType === 'decision_made') return `Dodano decyzję: ${title}`;
@@ -1173,6 +1178,7 @@ function getCaseRecentMoveMeta(activity: CaseActivity) {
   const eventType = String(activity.eventType || '');
   if (eventType.includes('task')) return { label: 'Zadanie', className: 'case-detail-recent-move-dot-task' };
   if (eventType.includes('event')) return { label: 'Wydarzenie', className: 'case-detail-recent-move-dot-event' };
+  if (eventType.includes('missing_item')) return { label: 'Brak / Blokada', className: 'case-detail-recent-move-dot-item' };
   if (eventType.includes('item') || eventType.includes('file') || eventType.includes('decision')) return { label: 'Kompletność', className: 'case-detail-recent-move-dot-item' };
   if (eventType.includes('status') || eventType.includes('lifecycle')) return { label: 'Status', className: 'case-detail-recent-move-dot-status' };
   if (eventType.includes('note')) return { label: 'Notatka', className: 'case-detail-recent-move-dot-note' };
@@ -1349,21 +1355,59 @@ void CLOSEFLOW_CASE_HISTORY_NO_ACTIVITY_NOTES_FINAL_2026_05_13;
 const CLOSEFLOW_CASE_DETAIL_REWRITE_BUILD_WORKITEMS_FINAL_2026_05_13 = 'buildWorkItems contains only operational task/event/missing items; activities stay in history rows';
 void CLOSEFLOW_CASE_DETAIL_REWRITE_BUILD_WORKITEMS_FINAL_2026_05_13;
 
+function getStage232I1TaskPayload(task: TaskRecord) {
+  return ((task as any)?.payload && typeof (task as any).payload === 'object') ? ((task as any).payload as Record<string, any>) : {};
+}
+function isStage232I1CaseMissingTaskSource(source: unknown) {
+  const task = (source || {}) as TaskRecord;
+  const payload = getStage232I1TaskPayload(task);
+  const normalized = normalizeWorkItem(task as any) as any;
+  const type = String((task as any).type || normalized.type || payload.type || payload.kind || '').trim().toLowerCase();
+  const status = String((task as any).status || normalized.status || payload.status || '').trim().toLowerCase();
+  const sourceEntityType = String(payload.sourceEntityType || payload.recordType || '').trim().toLowerCase();
+  const hasCaseId = Boolean(String((task as any).caseId || normalized.caseId || payload.caseId || '').trim());
+  return hasCaseId && (type === 'missing_item' || status === 'missing_item' || status === 'blocking_missing_item' || (sourceEntityType === 'case' && type.includes('missing')));
+}
+function isStage232I1ResolvedCaseMissingTask(task: TaskRecord) {
+  const payload = getStage232I1TaskPayload(task);
+  const status = String((task as any).status || payload.status || '').trim().toLowerCase();
+  return status === 'done' || status === 'completed' || status === 'accepted';
+}
+function isStage232I1BlockingCaseMissingTask(task: TaskRecord) {
+  const payload = getStage232I1TaskPayload(task);
+  const status = String((task as any).status || payload.status || '').trim().toLowerCase();
+  return Boolean((task as any).blocksProgress || payload.blocksProgress || status === 'blocking_missing_item');
+}
+function getStage232I1CaseMissingSubtitle(task: TaskRecord) {
+  const payload = getStage232I1TaskPayload(task);
+  const note = String((task as any).description || payload.note || payload.content || '').trim();
+  const scope = String((task as any).blockScope || payload.blockScope || '').trim();
+  const kind = String((task as any).missingKind || payload.missingKind || '').trim();
+  const meta = [kind ? 'typ: ' + kind : '', scope ? 'zakres: ' + scope : ''].filter(Boolean).join(' · ');
+  return ['Źródło: Sprawa', meta, note].filter(Boolean).join(' · ');
+}
+function getStage232I1CaseMissingStatus(task: TaskRecord) {
+  if (isStage232I1ResolvedCaseMissingTask(task)) return 'Uzupełnione';
+  return isStage232I1BlockingCaseMissingTask(task) ? 'Blokada' : 'Brak';
+}
+
 function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseItem[]) {
-  const taskItems: WorkItem[] = tasks.map((task) => {
+  const taskItems: WorkItem[] = tasks.flatMap((task) => {
+    const isMissingStage232I1 = isStage232I1CaseMissingTaskSource(task);
+    if (isMissingStage232I1 && isStage232I1ResolvedCaseMissingTask(task)) return [];
     const isNoteFollowUpStage231H_R1D2_R10C = isTaskNoteFollowUpStage231H_R1D2_R11(task);
     const noteFollowUpPreviewStage231H_R1D2_R11 = getTaskNoteFollowUpPreviewStage231H_R1D2_R11(task);
-    return {
+    return [{
       id: `task-${task.id}`,
-      kind: 'task',
-      title: isNoteFollowUpStage231H_R1D2_R10C ? (noteFollowUpPreviewStage231H_R1D2_R11 || 'Notatka do follow-upu') : (task.title || 'Zadanie bez tytułu'),
-      subtitle: isNoteFollowUpStage231H_R1D2_R10C ? 'Follow-up po notatce' : (task.type ? `Zadanie · ${task.type}` : 'Zadanie powiązane ze sprawą'),
-      status: getTaskStatusLabel(task.status),
-      statusClass: getStatusClass(task.status),
+      kind: isMissingStage232I1 ? 'missing' : 'task',
+      title: isMissingStage232I1 ? (task.title || 'Brak w sprawie') : isNoteFollowUpStage231H_R1D2_R10C ? (noteFollowUpPreviewStage231H_R1D2_R11 || 'Notatka do follow-upu') : (task.title || 'Zadanie bez tytułu'),
+      subtitle: isMissingStage232I1 ? getStage232I1CaseMissingSubtitle(task) : isNoteFollowUpStage231H_R1D2_R10C ? 'Follow-up po notatce' : (task.type ? `Zadanie · ${task.type}` : 'Zadanie powiązane ze sprawą'),
+      status: isMissingStage232I1 ? getStage232I1CaseMissingStatus(task) : getTaskStatusLabel(task.status),
+      statusClass: isMissingStage232I1 ? (isStage232I1BlockingCaseMissingTask(task) ? 'case-detail-pill-red' : 'case-detail-pill-amber') : getStatusClass(task.status),
       dateLabel: formatDateTime(getTaskMainDate(task) || task.reminderAt, 'Bez terminu'),
       sortTime: sortTime(getTaskMainDate(task) || task.reminderAt),
       source: task,
-    };
+    }];
   });
 
   const eventItems: WorkItem[] = events.map((event) => ({
@@ -1383,8 +1427,8 @@ function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseI
     .map((item) => ({
       id: `item-${item.id}`,
       kind: 'missing',
-      title: item.title || 'Brak w sprawie',
-      subtitle: item.description || getItemTypeLabel(item.type),
+      title: item.title || 'Element sprawy',
+      subtitle: (item.description || getItemTypeLabel(item.type)) + ' · Źródło: Sprawa · legacy case_items/checklist',
       status: getItemStatusLabel(item.status),
       statusClass: getStatusClass(item.status),
       dateLabel: formatDate(item.dueDate, 'Bez terminu'),
@@ -3125,6 +3169,7 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
       return;
     }
     try {
+      // STAGE232I1: legacy checklist/case_items compatibility only. Active Braki/Blokady use task/work item missing_item with caseId.
       const created = await insertCaseItemToSupabase({
         caseId,
         title: newItem.title.trim(),
@@ -3194,24 +3239,9 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
 
       if (target.kind === 'task') {
         const task = target.source as TaskRecord;
+        const linkedNoteStage231H_R1D2_R15C = getLinkedNoteForTaskStage231H_R1D2_R15C(task);
+        const linkedNotePreviewStage231H_R1D2_R15C = linkedNoteStage231H_R1D2_R15C ? getCaseNoteTextStage231H_R1D2_R6(linkedNoteStage231H_R1D2_R15C) : '';
         const isNoteFollowUpTaskStage231H_R1D2_R15C = isTaskNoteFollowUpStage231H_R1D2_R11(task);
-        const linkedNoteStage231H_R1D2_R15C = isNoteFollowUpTaskStage231H_R1D2_R15C ? findCaseNoteForFollowUpTaskStage231H_R1D2_R15C(task) : null;
-        const linkedNotePreviewStage231H_R1D2_R15C = linkedNoteStage231H_R1D2_R15C
-          ? normalizeCaseNotePreviewStage231H_R1D2_R11(getCaseNoteTextStage231H_R1D2_R6(linkedNoteStage231H_R1D2_R15C))
-          : getTaskNoteFollowUpPreviewStage231H_R1D2_R11(task);
-
-        if (isNoteFollowUpTaskStage231H_R1D2_R15C) {
-          const confirmed = window.confirm(
-            'To jest follow-up przypięty do notatki.' +
-            (linkedNotePreviewStage231H_R1D2_R15C ? '\n\nNotatka: „' + linkedNotePreviewStage231H_R1D2_R15C + '”' : '') +
-            '\n\nUsunąć tylko follow-up? Notatka zostanie w panelu notatek.'
-          );
-          if (!confirmed) {
-            setDeleteWorkItemTarget(null);
-            return;
-          }
-        }
-
         await ensureCaseLeadNextActionTitleSafe(task.leadId || caseData?.leadId || null, task.title, getTaskMainDate(task) || task.reminderAt || task.date);
         await deleteTaskFromSupabase(task.id);
         await recordActivity('task_deleted', {
@@ -3230,10 +3260,17 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
         await recordActivity('event_deleted', { title: event.title, eventId: event.id });
         toast.success('Wydarzenie usunięte');
       } else if (target.kind === 'missing') {
-        const item = target.source as CaseItem;
-        await deleteCaseItemFromSupabase(item.id);
-        await recordActivity('item_deleted', { itemId: item.id, title: item.title });
-        toast.success('Brak usunięty');
+        if (isStage232I1CaseMissingTaskSource(target.source)) {
+          const task = target.source as TaskRecord;
+          await deleteTaskFromSupabase(task.id);
+          await recordActivity('missing_item_deleted', { title: task.title, taskId: task.id, source: 'STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME' });
+          toast.success('Brak usunięty');
+        } else {
+          const item = target.source as CaseItem;
+          await deleteCaseItemFromSupabase(item.id);
+          await recordActivity('item_deleted', { itemId: item.id, title: item.title, legacyCaseItems: true });
+          toast.success('Element sprawy usunięty');
+        }
       }
 
       setDeleteWorkItemTarget(null);
@@ -3244,7 +3281,6 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
       setDeleteWorkItemPending(false);
     }
   };
-
 
   const STAGE220A8_7_LEAD_NEXT_ACTION_NOT_NULL_HEAL = 'Before task/event mutations from CaseDetail, heal source lead next_action_title to satisfy legacy NOT NULL constraint';
   void STAGE220A8_7_LEAD_NEXT_ACTION_NOT_NULL_HEAL;
@@ -3273,9 +3309,10 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
     try {
       await ensureCaseLeadNextActionTitleSafe(task.leadId || caseData?.leadId || null, task.title, getTaskMainDate(task) || task.reminderAt || task.date);
       await updateTaskInSupabase({ id: task.id, status: 'done' });
-      await recordActivity('task_status_changed', { title: task.title, taskId: task.id, status: 'done' });
+      const isMissingStage232I1 = isStage232I1CaseMissingTaskSource(task);
+      await recordActivity(isMissingStage232I1 ? 'missing_item_resolved' : 'task_status_changed', { title: task.title, taskId: task.id, status: 'done', source: isMissingStage232I1 ? 'STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME' : undefined });
       await refreshCaseData();
-      toast.success('Zrobione');
+      toast.success(isMissingStage232I1 ? 'Brak uzupełniony' : 'Zrobione');
     } catch (error: any) {
       toast.error(`Nie udało się zamknąć zadania: ${error?.message || 'REQUEST_FAILED'}`);
     }
@@ -3725,6 +3762,21 @@ async function handleConfirmDeleteCaseRecord() {
                   <Button type="button" variant="outline" onClick={openCaseEventDialog}>
                     <CalendarClock className="h-4 w-4" />
                     Dodaj wydarzenie
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    data-context-action-kind="blocker"
+                    data-context-record-type="case"
+                    data-context-record-id={caseData.id}
+                    data-context-case-id={caseData.id}
+                    data-context-client-id={caseData.clientId || ''}
+                    data-context-lead-id={caseData.leadId || ''}
+                    data-context-record-label={getCaseTitle(caseData)}
+                    data-stage232i1-case-missing-action="true"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Dodaj brak
                   </Button>
                 </div>
               </div>
@@ -4939,6 +4991,8 @@ function WorkItemRow({
     return null;
   }
 
+  const isStage232I1CaseMissing = entry.kind === 'missing' && isStage232I1CaseMissingTaskSource(entry.source);
+
   return (
     <article className={`case-detail-work-row stage220a8-work-row-contrast stage220a8-work-row-${entry.kind}`} data-stage220a8-work-row="true" data-work-kind={entry.kind}>
       <span className="case-detail-work-icon"><WorkKindIcon kind={entry.kind} /></span>
@@ -4967,8 +5021,14 @@ function WorkItemRow({
         ) : null}
         {entry.kind === 'missing' ? (
           <>
-            <button type="button" onClick={() => onItemAccept(entry.source as CaseItem)}>Akceptuj</button>
-            <button type="button" onClick={() => onItemReject(entry.source as CaseItem)}>Odrzuć</button>
+            {isStage232I1CaseMissing ? (
+              <button type="button" onClick={() => onTaskDone(entry.source as TaskRecord)} data-stage232i1-resolve-case-missing="true">Uzupełnione</button>
+            ) : (
+              <>
+                <button type="button" onClick={() => onItemAccept(entry.source as CaseItem)}>Akceptuj</button>
+                <button type="button" onClick={() => onItemReject(entry.source as CaseItem)}>Odrzuć</button>
+              </>
+            )}
           </>
         ) : null}
         <EntityActionButton
