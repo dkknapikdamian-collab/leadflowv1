@@ -909,3 +909,33 @@ Zakres:
 
 Ryzyka:
 - To celowo odwraca R11. Manualny smoke musi porownac Brak z Nowy lead.
+
+
+## 2026-06-17 05:05 Europe/Warsaw - STAGE232A_R13_R2_HEADER_CSS_SOURCE_OVERRIDE
+
+Status: DO_APPLY_ZIP / SCREENSHOT_DRIVEN_HEADER_REPAIR
+
+Problem:
+- R13 i R13-R1 zatrzymaly sie przez zbyt szczegolowe kotwice TSX.
+- Screenshot pokazuje realny problem w headerze: widac dodatkowe top-left teksty "Brak" i context.
+- R13-R2 naprawia to CSS-only przez ukrycie dodatkowych elementow w headerze modala Brak.
+
+Zakres:
+- CSS-only override w stage232a-missing-item-visual-source.css.
+- Nowy guard/test R13-R2.
+- Aktualizacja CF runtime allowlist i dokumentacji.
+- Nie dotyka TSX ani logiki danych.
+
+Testy:
+- node scripts/check-stage232a-r13-r2-header-css-source-override.cjs
+- node --test tests/stage232a-r13-r2-header-css-source-override.test.cjs
+- node scripts/check-stage232a-r12-missing-modal-match-plus-lead-dark-source.cjs
+- node --test tests/stage232a-r12-missing-modal-match-plus-lead-dark-source.test.cjs
+- node scripts/check-cf-runtime-00-source-truth.cjs
+- npm.cmd run build
+- npm.cmd run verify:closeflow:quiet
+- git diff --check
+
+Ryzyka:
+- CSS hide moze ukryc subtitle tylko w modal headerze Brak. To jest zamierzone.
+- Dane i context nie sa usuwane z modelu, tylko z top-left headera.

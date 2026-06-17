@@ -287,3 +287,40 @@
     width: 100% !important;
   }
 }
+
+
+/* STAGE232A_R13_R2_HEADER_CSS_SOURCE_OVERRIDE
+   Screenshot-driven source truth:
+   Brak modal top-left must match Nowy lead / Nowy klient header.
+   The visible top-left header must be one line only.
+   Hide the old kicker "Brak" and context subtitle, without touching data logic.
+*/
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-header {
+  min-height: 46px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding: 14px 18px 13px !important;
+  background: #0b1220 !important;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.26) !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-header .lead-form-vnext-kicker,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-header > span,
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-header > p {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+.missing-item-modal-card[data-stage232a-r10-missing-modal-card="true"] .lead-form-vnext-header h2 {
+  display: block !important;
+  margin: 0 !important;
+  color: #f8fafc !important;
+  font-size: 14px !important;
+  line-height: 1.2 !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.01em !important;
+}
