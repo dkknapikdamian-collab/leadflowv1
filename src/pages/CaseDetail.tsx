@@ -119,6 +119,11 @@ import { CASE_COST_FINANCE_LABELS, getCaseCostsSummary, type CaseCostLike } from
 
 
 
+
+const STAGE232M_CASE_DETAIL_MISSING_ITEM_ACTIVE_FILTER_DELETE_CLOSURE = 'CaseDetail missing_item deleted/rejected/resolved statuses are inactive and delete branch updates task status/payload before refresh';
+void STAGE232M_CASE_DETAIL_MISSING_ITEM_ACTIVE_FILTER_DELETE_CLOSURE;
+
+
 const STAGE232L_DELETE_LINKED_NOTE_REFERENCE_SWEEP = 'CaseDetail task delete uses defined note follow-up helper; no undefined getLinkedNoteForTaskStage231H_R1D2_R15C reference';
 void STAGE232L_DELETE_LINKED_NOTE_REFERENCE_SWEEP;
 
@@ -1381,7 +1386,8 @@ function isStage232I1CaseMissingTaskSource(source: unknown) {
 function isStage232I1ResolvedCaseMissingTask(task: TaskRecord) {
   const payload = getStage232I1TaskPayload(task);
   const status = String((task as any).status || payload.status || '').trim().toLowerCase();
-  return status === 'done' || status === 'completed' || status === 'accepted';
+  const inactiveStatusesStage232M = ['done', 'completed', 'accepted', 'deleted', 'rejected', 'resolved', 'archived', 'cancelled', 'canceled'];
+  return inactiveStatusesStage232M.includes(status);
 }
 function isStage232I1BlockingCaseMissingTask(task: TaskRecord) {
   const payload = getStage232I1TaskPayload(task);
@@ -3282,8 +3288,38 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
       } else if (target.kind === 'missing') {
         if (isStage232I1CaseMissingTaskSource(target.source)) {
           const task = target.source as TaskRecord;
-          await deleteTaskFromSupabase(task.id);
-          await recordActivity('missing_item_deleted', { title: task.title, taskId: task.id, source: 'STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME' });
+          const deletedAtStage232M = new Date().toISOString();
+          const payloadStage232M = getStage232I1TaskPayload(task);
+          await updateTaskInSupabase({
+            id: task.id,
+            status: 'deleted',
+            completedAt: deletedAtStage232M,
+            payload: {
+              ...payloadStage232M,
+              kind: 'missing_item',
+              type: 'missing_item',
+              status: 'deleted',
+              deletedAt: deletedAtStage232M,
+              source: 'STAGE232M_CASE_DETAIL_MISSING_ITEM_ACTIVE_FILTER_DELETE_CLOSURE',
+            },
+          } as any);
+          setTasks((previous) => previous.map((entry) => String(entry.id) === String(task.id)
+            ? {
+                ...entry,
+                status: 'deleted',
+                completedAt: deletedAtStage232M,
+                payload: {
+                  ...(entry.payload && typeof entry.payload === 'object' ? entry.payload : {}),
+                  kind: 'missing_item',
+                  type: 'missing_item',
+                  status: 'deleted',
+                  deletedAt: deletedAtStage232M,
+                  source: 'STAGE232M_CASE_DETAIL_MISSING_ITEM_ACTIVE_FILTER_DELETE_CLOSURE',
+                },
+              }
+            : entry,
+          ));
+          await recordActivity('missing_item_deleted', { title: task.title, taskId: task.id, status: 'deleted', deletedAt: deletedAtStage232M, source: 'STAGE232M_CASE_DETAIL_MISSING_ITEM_ACTIVE_FILTER_DELETE_CLOSURE' });
           toast.success('Brak usunięty');
         } else {
           const item = target.source as CaseItem;

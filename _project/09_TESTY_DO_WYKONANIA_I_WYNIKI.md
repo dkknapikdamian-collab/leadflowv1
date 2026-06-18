@@ -630,3 +630,20 @@ Audyt:
 Zmiana:
 - task delete używa zdefiniowanego helpera,
 - dodano guard/test blokujący niezdefiniowany helper.
+
+## 2026-06-18 03:45 Europe/Warsaw - STAGE232M_CASE_DETAIL_MISSING_ITEM_ACTIVE_FILTER_DELETE_CLOSURE
+
+Status: DO_APPLY_ZIP / WAITING_LOCAL_GUARD
+
+Problem:
+- CaseDetail missing_item po usunięciu migał, ale nadal był widoczny.
+
+Audyt:
+- filtr CaseDetail dla missing_item uznawał za zamknięte tylko done/completed/accepted,
+- brakowało deleted/rejected/resolved/archived/cancelled/canceled,
+- ClientDetail ma szerszą listę statusów i dlatego zachowuje się poprawniej.
+
+Zmiana:
+- CaseDetail missing_item inactive filter rozszerzony,
+- delete branch zapisuje status deleted przez updateTaskInSupabase,
+- local state setTasks zamyka row natychmiast.
