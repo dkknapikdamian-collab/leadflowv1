@@ -140,10 +140,6 @@ import { buildMissingItemModalDraft } from '../lib/missing-items/stage227c2-miss
 import { isClosedCaseStatus } from '../lib/cases';
 
 
-
-const STAGE232I2_R4_CLIENT_MISSING_DELETE_NO_DELETE_ROUTE = 'ClientDetail delete button for missing item never calls physical delete/METHOD_NOT_ALLOWED path; it closes active item through resolve/update flow';
-void STAGE232I2_R4_CLIENT_MISSING_DELETE_NO_DELETE_ROUTE;
-
 const STAGE232I2_R3_CLIENT_MISSING_DELETE_SOFT_DELETE = 'ClientDetail missing item delete uses task soft-delete update instead of unsupported DELETE/METHOD_NOT_ALLOWED';
 void STAGE232I2_R3_CLIENT_MISSING_DELETE_SOFT_DELETE;
 
@@ -2939,7 +2935,7 @@ return (
                             type="button"
                             size="sm"
                             variant="outline"
-                            onClick={() => handleResolveClientMissingItemStage228R13(item)}
+                            onClick={() => handleDeleteClientMissingItemStage228R15(item)}
                             disabled={!hasAccess || isDoneStatus(item?.status)}
                             data-stage232i2-delete-source-item="true"
                           >
