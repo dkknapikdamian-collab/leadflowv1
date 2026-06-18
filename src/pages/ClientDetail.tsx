@@ -146,6 +146,9 @@ void STAGE232I2_R3_CLIENT_MISSING_DELETE_SOFT_DELETE;
 const STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_RUNTIME = 'ClientDetail aggregates direct client, lead and case missing_item tasks with source badges and source-entity resolve/delete';
 void STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_RUNTIME;
 
+const STAGE232I4_CLIENT_DETAIL_MISSING_BLOCKER_TOP_TILE_VST = 'ClientDetail renders Braki/Blokady as the fourth top tile using LeadDetail blocker-card visual source truth and existing STAGE232I2 missing_item data';
+void STAGE232I4_CLIENT_DETAIL_MISSING_BLOCKER_TOP_TILE_VST;
+
 const STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH = 'STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH';
 void STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH;
 const STAGE231B0_R9_CLIENT_HISTORY_AND_CASE_VIEW_MODEL = 'STAGE231B0_R9_CLIENT_HISTORY_AND_CASE_VIEW_MODEL';
@@ -1182,10 +1185,28 @@ type ClientTopTilesProps = {
   tasks: any[];
   events: any[];
   financeSummary: ClientFinanceSummaryForTopTiles;
+  missingItems: any[];
+  canAddMissing: boolean;
   onOpenCases: () => void;
   onAddCase: () => void;
+  onAddMissing: () => void;
+  onOpenMissing: () => void;
 };
-function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, financeSummary, onOpenCases, onAddCase }: ClientTopTilesProps) {
+function ClientTopTiles({
+  clientId,
+  leads,
+  cases,
+  payments,
+  tasks,
+  events,
+  financeSummary,
+  missingItems,
+  canAddMissing,
+  onOpenCases,
+  onAddCase,
+  onAddMissing,
+  onOpenMissing,
+}: ClientTopTilesProps) {
   const nextAction = buildClientNextAction(leads, cases, tasks, events, clientId);
   const transactionTotal = financeSummary.contractValueTotal;
   const commissionDueTotal = financeSummary.commissionDueTotal;
@@ -1196,6 +1217,32 @@ function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, finan
   const blockedCases = cases.filter((caseRecord) =>
     ['blocked', 'waiting_on_client', 'to_approve', 'on_hold'].includes(String(caseRecord?.status || '').toLowerCase()),
   );
+  const activeMissingItems = Array.isArray(missingItems) ? missingItems : [];
+  const blockerMissingItems = activeMissingItems.filter((item: any) => Boolean(item?.stage232i2IsBlocker || isStage232I2BlockingMissingItem(item)));
+  const missingTotal = activeMissingItems.length;
+  const blockerTotal = blockerMissingItems.length;
+  const regularMissingTotal = Math.max(0, missingTotal - blockerTotal);
+  const clientMissingTotal = activeMissingItems.filter((item: any) => item?.stage232i2SourceType === 'client').length;
+  const leadMissingTotal = activeMissingItems.filter((item: any) => item?.stage232i2SourceType === 'lead').length;
+  const caseMissingTotal = activeMissingItems.filter((item: any) => item?.stage232i2SourceType === 'case').length;
+  const firstMissingItem = activeMissingItems[0] || null;
+  const firstMissingSource = firstMissingItem ? String(firstMissingItem.stage232i2SourceLabel || getStage232I2MissingSourceLabel(firstMissingItem.stage232i2SourceType || 'client')) : '';
+  const missingTileTone = blockerTotal > 0
+    ? 'client-detail-callout-danger'
+    : missingTotal > 0
+      ? 'client-detail-callout-amber'
+      : 'client-detail-callout-green';
+  const missingHeadline = blockerTotal > 0
+    ? (blockerTotal === 1 ? '1 aktywna blokada' : blockerTotal + ' aktywne blokady')
+    : missingTotal > 0
+      ? (missingTotal === 1 ? '1 aktywny brak' : missingTotal + ' aktywne braki')
+      : 'Brak braków i blokad';
+  const missingSummary = blockerTotal > 0
+    ? (regularMissingTotal > 0 ? regularMissingTotal + ' aktywne braki poza blokadami.' : 'Wszystkie aktywne braki blokują dalszy ruch.')
+    : missingTotal > 0
+      ? 'Aktywne braki bez jawnej blokady.'
+      : 'Nie ma jawnych braków blokujących obsługę.';
+  const missingSourceSummary = 'Klient ' + clientMissingTotal + ' · Lead ' + leadMissingTotal + ' · Sprawy ' + caseMissingTotal;
 
   return (
     <section className="client-detail-top-tiles entity-overview-tiles" data-client-overview-compact="true" data-client-overview-tile-variant="client-overview-compact" data-client-top-tiles="true" aria-label="Szybkie podsumowanie klienta">
@@ -1264,6 +1311,40 @@ function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, finan
             <Plus className="h-4 w-4" />
             Dodaj sprawę
           </Button>
+        </div>
+      </article>
+
+      <article
+        className={`client-detail-top-tile entity-overview-tile entity-overview-tile-missing client-detail-top-tile-missing ${missingTileTone}`}
+        data-client-top-tile="missing-blockers"
+        data-stage232i4-client-missing-top-tile="true"
+        data-stage232i2-client-detail-missing-blocker-runtime="true"
+        data-stage232a-r9-blocker-top-card-summary="true"
+        aria-label="Braki i blokady klienta"
+      >
+        <div className="entity-overview-tile-head">
+          <span className="entity-overview-tile-icon entity-overview-tile-icon-missing"><AlertTriangle className="h-4 w-4" /></span>
+          <small>Braki / Blokady</small>
+        </div>
+        <strong>{missingHeadline}</strong>
+        <p>{missingSummary}</p>
+        <p className="client-detail-top-tile-source-line" data-stage232i4-client-missing-source-counts="true">{missingSourceSummary}</p>
+        {firstMissingItem ? (
+          <span className="entity-overview-tile-chip entity-overview-tile-chip-muted" data-stage232i4-client-missing-first-source="true">
+            [{firstMissingSource}] {String(firstMissingItem.title || 'Brak bez nazwy')}
+          </span>
+        ) : (
+          <span className="entity-overview-tile-chip entity-overview-tile-chip-muted">Czysto</span>
+        )}
+        <div className="entity-overview-tile-actions" data-stage232i4-client-missing-top-tile-actions="true">
+          <button type="button" className="entity-overview-tile-link !mt-0" onClick={onAddMissing} disabled={!canAddMissing}>
+            Dodaj brak
+          </button>
+          {missingTotal > 0 ? (
+            <button type="button" className="entity-overview-tile-link !mt-0" onClick={onOpenMissing}>
+              Zobacz braki
+            </button>
+          ) : null}
         </div>
       </article>
     </section>
@@ -2828,131 +2909,147 @@ return (
                 tasks={clientTasks}
                 events={clientEvents}
                 financeSummary={clientFinanceSummary}
+                missingItems={stage232i2AllActiveMissingItems}
+                canAddMissing={hasAccess && !clientMissingSaving}
                 onOpenCases={() => setActiveTab('cases')}
                 onAddCase={openNewCase}
+                onAddMissing={() => openClientContextAction('blocker')}
+                onOpenMissing={() => {
+                  setClientMissingSourceFilterStage232I2('all');
+                  const details = document.getElementById('client-missing-items-stage232i2') as HTMLDetailsElement | null;
+                  if (details) {
+                    details.open = true;
+                    window.setTimeout(() => details.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
+                  }
+                }}
               />
             </div>
 
 
-            <section className="client-detail-section-card client-detail-missing-items-section" data-stage227c3b-client-missing-items-list="true" data-stage232i2-client-detail-missing-blocker-runtime="true">
-              <div className="client-detail-section-head">
-                <div>
-                  <h2>Braki / Blokady klienta</h2>
-                  <p>Aktywne braki klienta z podziałem na źródło: Klient, Lead albo Sprawa.</p>
-                </div>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onPointerDown={(event) => {
-                    event.stopPropagation();
-                    if (hasAccess && !clientMissingSaving) openClientContextAction('blocker');
-                  }}
-                  onClick={() => openClientContextAction('blocker')}
-                  disabled={!hasAccess || clientMissingSaving}
-                  data-stage232i2-client-direct-missing-action="true"
-                  data-stage227c3b-client-missing-action="true"
-                  data-stage228r12-client-context-blocker="true"
-                  data-context-action-kind="blocker"
-                  data-context-record-type="client"
-                  data-context-record-id={clientId || ""}
-                  data-context-record-label={getClientName(client)}
-                >
-                  <AlertTriangle className="h-4 w-4" />
-                  Dodaj brak
-                </Button>
-              </div>
-
-              <div className="client-detail-missing-filter-row" data-stage232i2-client-missing-filters="true">
-                {[
-                  { key: 'all', label: 'Wszystkie', count: stage232i2AllActiveMissingItems.length },
-                  { key: 'client', label: 'Klient', count: directClientMissingItems.length },
-                  { key: 'lead', label: 'Leady', count: leadMissingItems.length },
-                  { key: 'case', label: 'Sprawy', count: caseMissingItems.length },
-                  { key: 'blockers', label: 'Blokady', count: directClientBlockers.length + leadBlockers.length + caseBlockers.length },
-                  { key: 'missing', label: 'Braki', count: stage232i2AllActiveMissingItems.filter((item: any) => !item.stage232i2IsBlocker).length },
-                ].map((filter) => (
-                  <button
-                    key={filter.key}
-                    type="button"
-                    className={clientMissingSourceFilterStage232I2 === filter.key ? 'client-detail-pill client-detail-pill-blue' : 'client-detail-pill client-detail-pill-muted'}
-                    onClick={() => setClientMissingSourceFilterStage232I2(filter.key as typeof clientMissingSourceFilterStage232I2)}
-                    data-stage232i2-client-missing-filter={filter.key}
-                  >
-                    {filter.label} <span>{filter.count}</span>
-                  </button>
-                ))}
-              </div>
-
-              <div className="client-detail-missing-source-summary" data-stage232i2-client-missing-source-summary="true">
-                <span>Klient: {directClientMissingItems.length}</span>
-                <span>Leady: {leadMissingItems.length}</span>
-                <span>Sprawy: {caseMissingItems.length}</span>
-                <span>Blokady: {directClientBlockers.length + leadBlockers.length + caseBlockers.length}</span>
-              </div>
-
-              <div className="client-detail-missing-items-list" data-stage232i2-client-missing-list="true">
-                {clientMissingItemsStage227C3B.length ? (
-                  clientMissingItemsStage227C3B.map((item: any) => {
-                    const sourceType = item.stage232i2SourceType as Stage232I2ClientMissingSourceType;
-                    const sourceLabel = String(item.stage232i2SourceLabel || getStage232I2MissingSourceLabel(sourceType));
-                    const sourceTitle = String(item.stage232i2SourceTitle || '');
-                    const note = String(item.stage232i2Note || '').trim();
-                    const sourceTo = sourceType === 'case'
-                      ? '/cases/' + String(item.stage232i2SourceId || item.caseId || '')
-                      : sourceType === 'lead'
-                        ? '/leads/' + String(item.stage232i2SourceId || item.leadId || '')
-                        : '';
-                    return (
-                      <article key={String(item?.id || item?.title)} className="client-detail-missing-item-row" data-stage227c3b-client-missing-item-row="true" data-stage232i2-client-missing-source={sourceType}>
-                        <span>
-                          <span className="client-detail-pill client-detail-pill-muted" data-stage232i2-client-missing-source-badge={sourceType}>[{sourceLabel}]</span>
-                          <strong>{String(item?.title || 'Brak bez nazwy')}</strong>
-                          <small>
-                            {getStage232I2MissingStatusLabel(item)}
-                            {sourceTitle ? ' · ' + sourceTitle : ''}
-                            {note ? ' · ' + note : ''}
-                          </small>
-                        </span>
-                        <div className="client-detail-missing-item-actions" data-stage232i2-client-missing-source-actions="true">
-                          <em>{item.stage232i2IsBlocker ? 'Blokada' : 'Brak'}</em>
-                          {sourceTo ? (
-                            <Button type="button" size="sm" variant="outline" onClick={() => navigate(sourceTo)} data-stage232i2-open-source-action="true">
-                              Otwórz źródło
-                            </Button>
-                          ) : null}
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleResolveClientMissingItemStage228R13(item)}
-                            disabled={!hasAccess || isDoneStatus(item?.status)}
-                            data-stage232i2-resolve-source-item="true"
-                          >
-                            Uzupełnione
-                          </Button>
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleDeleteClientMissingItemStage228R15(item)}
-                            disabled={!hasAccess || isDoneStatus(item?.status)}
-                            data-stage232i2-delete-source-item="true"
-                          >
-                            Usuń
-                          </Button>
-                        </div>
-                      </article>
-                    );
-                  })
-                ) : (
-                  <div className="client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact">
-                    <strong>Brak otwartych braków.</strong>
-                    <p>Braki z klienta, leadów i spraw pojawią się tutaj z badge źródła.</p>
+            <details id="client-missing-items-stage232i2" className="client-detail-missing-details-stage232i4" data-stage232i4-client-missing-detail-panel="collapsed">
+              <summary className="client-detail-missing-details-summary" data-stage232i4-client-missing-details-summary="true">
+                Lista braków i blokad klienta
+              </summary>
+              <section className="client-detail-section-card client-detail-missing-items-section" data-stage227c3b-client-missing-items-list="true" data-stage232i2-client-detail-missing-blocker-runtime="true">
+                <div className="client-detail-section-head">
+                  <div>
+                    <h2>Braki / Blokady klienta</h2>
+                    <p>Aktywne braki klienta z podziałem na źródło: Klient, Lead albo Sprawa.</p>
                   </div>
-                )}
-              </div>
-            </section>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onPointerDown={(event) => {
+                      event.stopPropagation();
+                      if (hasAccess && !clientMissingSaving) openClientContextAction('blocker');
+                    }}
+                    onClick={() => openClientContextAction('blocker')}
+                    disabled={!hasAccess || clientMissingSaving}
+                    data-stage232i2-client-direct-missing-action="true"
+                    data-stage227c3b-client-missing-action="true"
+                    data-stage228r12-client-context-blocker="true"
+                    data-context-action-kind="blocker"
+                    data-context-record-type="client"
+                    data-context-record-id={clientId || ""}
+                    data-context-record-label={getClientName(client)}
+                  >
+                    <AlertTriangle className="h-4 w-4" />
+                    Dodaj brak
+                  </Button>
+                </div>
+
+                <div className="client-detail-missing-filter-row" data-stage232i2-client-missing-filters="true">
+                  {[
+                    { key: 'all', label: 'Wszystkie', count: stage232i2AllActiveMissingItems.length },
+                    { key: 'client', label: 'Klient', count: directClientMissingItems.length },
+                    { key: 'lead', label: 'Leady', count: leadMissingItems.length },
+                    { key: 'case', label: 'Sprawy', count: caseMissingItems.length },
+                    { key: 'blockers', label: 'Blokady', count: directClientBlockers.length + leadBlockers.length + caseBlockers.length },
+                    { key: 'missing', label: 'Braki', count: stage232i2AllActiveMissingItems.filter((item: any) => !item.stage232i2IsBlocker).length },
+                  ].map((filter) => (
+                    <button
+                      key={filter.key}
+                      type="button"
+                      className={clientMissingSourceFilterStage232I2 === filter.key ? 'client-detail-pill client-detail-pill-blue' : 'client-detail-pill client-detail-pill-muted'}
+                      onClick={() => setClientMissingSourceFilterStage232I2(filter.key as typeof clientMissingSourceFilterStage232I2)}
+                      data-stage232i2-client-missing-filter={filter.key}
+                    >
+                      {filter.label} <span>{filter.count}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="client-detail-missing-source-summary" data-stage232i2-client-missing-source-summary="true">
+                  <span>Klient: {directClientMissingItems.length}</span>
+                  <span>Leady: {leadMissingItems.length}</span>
+                  <span>Sprawy: {caseMissingItems.length}</span>
+                  <span>Blokady: {directClientBlockers.length + leadBlockers.length + caseBlockers.length}</span>
+                </div>
+
+                <div className="client-detail-missing-items-list" data-stage232i2-client-missing-list="true">
+                  {clientMissingItemsStage227C3B.length ? (
+                    clientMissingItemsStage227C3B.map((item: any) => {
+                      const sourceType = item.stage232i2SourceType as Stage232I2ClientMissingSourceType;
+                      const sourceLabel = String(item.stage232i2SourceLabel || getStage232I2MissingSourceLabel(sourceType));
+                      const sourceTitle = String(item.stage232i2SourceTitle || '');
+                      const note = String(item.stage232i2Note || '').trim();
+                      const sourceTo = sourceType === 'case'
+                        ? '/cases/' + String(item.stage232i2SourceId || item.caseId || '')
+                        : sourceType === 'lead'
+                          ? '/leads/' + String(item.stage232i2SourceId || item.leadId || '')
+                          : '';
+                      return (
+                        <article key={String(item?.id || item?.title)} className="client-detail-missing-item-row" data-stage227c3b-client-missing-item-row="true" data-stage232i2-client-missing-source={sourceType}>
+                          <span>
+                            <span className="client-detail-pill client-detail-pill-muted" data-stage232i2-client-missing-source-badge={sourceType}>[{sourceLabel}]</span>
+                            <strong>{String(item?.title || 'Brak bez nazwy')}</strong>
+                            <small>
+                              {getStage232I2MissingStatusLabel(item)}
+                              {sourceTitle ? ' · ' + sourceTitle : ''}
+                              {note ? ' · ' + note : ''}
+                            </small>
+                          </span>
+                          <div className="client-detail-missing-item-actions" data-stage232i2-client-missing-source-actions="true">
+                            <em>{item.stage232i2IsBlocker ? 'Blokada' : 'Brak'}</em>
+                            {sourceTo ? (
+                              <Button type="button" size="sm" variant="outline" onClick={() => navigate(sourceTo)} data-stage232i2-open-source-action="true">
+                                Otwórz źródło
+                              </Button>
+                            ) : null}
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleResolveClientMissingItemStage228R13(item)}
+                              disabled={!hasAccess || isDoneStatus(item?.status)}
+                              data-stage232i2-resolve-source-item="true"
+                            >
+                              Uzupełnione
+                            </Button>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleDeleteClientMissingItemStage228R15(item)}
+                              disabled={!hasAccess || isDoneStatus(item?.status)}
+                              data-stage232i2-delete-source-item="true"
+                            >
+                              Usuń
+                            </Button>
+                          </div>
+                        </article>
+                      );
+                    })
+                  ) : (
+                    <div className="client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact">
+                      <strong>Brak otwartych braków.</strong>
+                      <p>Braki z klienta, leadów i spraw pojawią się tutaj z badge źródła.</p>
+                    </div>
+                  )}
+                </div>
+              </section>
+            </details>
 
                         <section className="client-detail-section-card client-detail-notes-center-section" data-client-notes-compact="true" data-stage216m-r15-r5-client-notes-source="true" data-stage216m-r16-r2-client-note-modal-source="true" data-client-notes-center-list="true">
               <div className="client-detail-section-head">

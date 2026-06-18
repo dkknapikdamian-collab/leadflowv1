@@ -1846,7 +1846,7 @@
    Styl jest lekki, czytelny i zgodny z kartami aplikacji. */
 .client-detail-top-tiles {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
   align-items: stretch;
 }
@@ -2000,7 +2000,7 @@ button.client-detail-top-tile-link {
   max-width: 1480px;
   margin: 0 auto 14px;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
   align-items: stretch;
 }
@@ -3905,4 +3905,91 @@ main[data-current-section="client-detail"] > .view.active[data-shell-content="tr
 .client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-header-action-primary svg {
   color: #ffffff !important;
   stroke: currentColor !important;
+}
+
+
+/* STAGE232I4_CLIENT_DETAIL_MISSING_BLOCKER_TOP_TILE_VST
+   ClientDetail Braki/Blokady uses the same summary-card visual contract as LeadDetail blocker card,
+   but stays wired to STAGE232I2 missing_item source truth. */
+.client-detail-vnext-page .client-detail-top-tiles.entity-overview-tiles .entity-overview-tile.client-detail-top-tile-missing.client-detail-callout-danger {
+  background: #fff1f3 !important;
+  border-color: #fecdd3 !important;
+}
+
+.client-detail-vnext-page .client-detail-top-tiles.entity-overview-tiles .entity-overview-tile.client-detail-top-tile-missing.client-detail-callout-amber {
+  background: #fffaeb !important;
+  border-color: #fedf89 !important;
+}
+
+.client-detail-vnext-page .client-detail-top-tiles.entity-overview-tiles .entity-overview-tile.client-detail-top-tile-missing.client-detail-callout-green {
+  background: #ecfdf3 !important;
+  border-color: #abefc6 !important;
+}
+
+.client-detail-vnext-page .entity-overview-tile-icon-missing {
+  background: #fff1f3 !important;
+  color: #e11d48 !important;
+}
+
+.client-detail-vnext-page .client-detail-top-tile-source-line {
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  color: #475467 !important;
+}
+
+.client-detail-vnext-page .entity-overview-tile-actions {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.client-detail-vnext-page .entity-overview-tile-actions .entity-overview-tile-link:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.client-detail-vnext-page .client-detail-missing-details-stage232i4 {
+  margin: 0 0 16px;
+}
+
+.client-detail-vnext-page .client-detail-missing-details-summary {
+  width: fit-content;
+  min-height: 30px;
+  border: 1px solid #dbeafe;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #1d4ed8;
+  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 850;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(16, 24, 40, 0.04);
+  list-style: none;
+}
+
+.client-detail-vnext-page .client-detail-missing-details-summary::-webkit-details-marker {
+  display: none;
+}
+
+.client-detail-vnext-page .client-detail-missing-details-stage232i4[open] .client-detail-missing-items-section {
+  margin-top: 10px;
+}
+
+@media (max-width: 1560px) {
+  .client-detail-vnext-page > .client-detail-top-tiles.entity-overview-tiles,
+  .client-detail-top-tiles.entity-overview-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 920px) {
+  .client-detail-vnext-page > .client-detail-top-tiles.entity-overview-tiles,
+  .client-detail-top-tiles.entity-overview-tiles {
+    grid-template-columns: 1fr;
+  }
 }

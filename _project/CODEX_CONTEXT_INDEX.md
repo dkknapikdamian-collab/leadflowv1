@@ -84,3 +84,13 @@ Testy lokalne:
 
 Nastepny krok:
 - manual smoke Owner Control, potem status sync I3 close.
+
+
+## 2026-06-18 Europe/Warsaw — STAGE232I4_CLIENT_DETAIL_MISSING_BLOCKER_TOP_TILE_VST
+- Status: TECH_IN_REPO / LOCAL_GUARDS_REQUIRED / NEEDS_MANUAL_SMOKE after implementation.
+- Scope: ClientDetail visual/runtime cleanup for Braki/Blokady.
+- Decision: move Braki/Blokady client summary into the fourth top tile next to existing ClientTopTiles, following LeadDetail blocker-card visual source truth.
+- Source truth stays STAGE232I2 missing_item aggregation: Klient / Lead / Sprawa, no SQL, no case_items active source.
+- Guard: scripts/check-stage232i4-client-missing-top-tile-vst.cjs.
+- Test: tests/stage232i4-client-missing-top-tile-vst.test.cjs.
+- Next after smoke: status sync, then STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH if no regressions.
