@@ -57,7 +57,7 @@ Status: SKIPPED_BY_DAMIAN / NIE WDRAZAC
 Powod:
 - Damian potwierdzil, ze modal Dodaj brak jest OK,
 - nie robimy osobnego visual-fix R8,
-- nastepny aktywny etap to STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_RUNTIME.
+- nastepny aktywny etap byl STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_RUNTIME; etap domkniety po guardach, buildzie, verify i manual smoke.
 
 Nastepny etap:
-- STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_RUNTIME.
+- STAGE232I3_OWNER_CONTROL_MISSING_BLOCKER_CROSS_ENTITY_INTEGRATION.
