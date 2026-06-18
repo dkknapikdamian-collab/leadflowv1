@@ -88,3 +88,17 @@ Zakres:
 - ClientDetail: usunięto firstMissingItem / firstMissingSource z top tile Braki / Blokady.
 - Kafelek nadal korzysta z aktualnego klienta przez STAGE232I2 / stage232i2AllActiveMissingItems.
 - Bez SQL, bez finansów, bez Calendar, bez billing/trial.
+
+## 2026-06-18 21:25 Europe/Warsaw — STAGE232I4_R5_REAL_CODE_REPAIR_AFTER_DOCS_ONLY_PUSH
+
+Status: REPAIR_AFTER_DOCS_ONLY_PUSH / TESTS_TO_RUN
+
+Powód:
+- STAGE232I4_R4 wypchnął tylko dokumentację, bo patch czytał ClientDetail relatywnie z C:\WINDOWS\System32.
+- Kod nadal miał firstMissingItem / firstMissingSource.
+- R5 używa ścieżek absolutnych i usuwa martwą logikę pierwszego chipa z ClientDetail.
+
+Zakres:
+- ClientDetail: usunięto firstMissingItem / firstMissingSource.
+- Kafelek Braki / Blokady dalej używa STAGE232I2 / stage232i2AllActiveMissingItems.
+- Bez SQL, finansów, Calendar, billing/trial.

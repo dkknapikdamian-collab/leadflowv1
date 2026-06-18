@@ -1228,8 +1228,6 @@ function ClientTopTiles({
   const clientMissingTotal = activeMissingItems.filter((item: any) => item?.stage232i2SourceType === 'client').length;
   const leadMissingTotal = activeMissingItems.filter((item: any) => item?.stage232i2SourceType === 'lead').length;
   const caseMissingTotal = activeMissingItems.filter((item: any) => item?.stage232i2SourceType === 'case').length;
-  const firstMissingItem = activeMissingItems[0] || null;
-  const firstMissingSource = firstMissingItem ? String(firstMissingItem.stage232i2SourceLabel || getStage232I2MissingSourceLabel(firstMissingItem.stage232i2SourceType || 'client')) : '';
   const missingTileTone = missingTotal > 0
     ? 'client-detail-callout-danger'
     : 'client-detail-callout-muted';
