@@ -2311,3 +2311,16 @@ Zmiana:
 - Task dostaje status 'deleted' i payload stage232i2DeleteMode='soft_delete_no_method_delete'.
 - Aktywna lista filtruje deleted, wiec wpis znika po usunieciu.
 - Bez SQL i bez Owner Control.
+
+## 2026-06-18 02:25 Europe/Warsaw - STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED
+
+Status: DO_APPLY_ZIP / WAITING_LOCAL_GUARD
+
+Powód:
+- METHOD_NOT_ALLOWED dotyczy kosza w CaseDetail legacy case_items/checklist.
+- Nie dotyczy ClientDetail missing_item.
+
+Zmiana:
+- aktywne deleteCaseItemFromSupabase(item.id) zastąpione przez updateCaseItemInSupabase({ status: 'rejected' }),
+- brak znika jak po Odrzuć,
+- bez SQL, bez Owner Control, bez ClientDetail.

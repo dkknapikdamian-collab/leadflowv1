@@ -117,6 +117,11 @@ import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlo
 import { buildCaseFinancePatch, getCaseFinanceSummary as getCaseFinanceSourceSummary } from '../lib/finance/case-finance-source';
 import { CASE_COST_FINANCE_LABELS, getCaseCostsSummary, type CaseCostLike } from '../lib/finance/case-costs-source';
 
+
+const STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED = 'CaseDetail legacy case_items/checklist delete uses updateCaseItemInSupabase status rejected; no physical DELETE for METHOD_NOT_ALLOWED row trash';
+void STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED;
+
+
 // STAGE231H_R1D2_R12G_CASE_DETAIL_QUICK_NOTE_LOCAL_APPEND
 
 const STAGE231H_R1D2_R14F_NOTE_DELETE_LINKED_FOLLOWUP_EXPANDED_PANEL_ARROW_SAFE = 'CaseDetail deletes linked note follow-up and expands notes panel to ten rows';
@@ -3208,10 +3213,20 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
     if (!guardCaseDetailWriteAccess('usunąć braku')) return;
     if (!window.confirm('Usunąć ten brak ze sprawy?')) return;
     try {
-      await deleteCaseItemFromSupabase(item.id);
-      await recordActivity('item_deleted', { itemId: item.id, title: item.title });
+      await updateCaseItemInSupabase({
+        id: item.id,
+        caseId,
+        status: 'rejected',
+        approvedAt: null,
+        payload: {
+          stage232kDeleteMode: 'legacy_case_item_reject_no_delete_method',
+          deletedAt: new Date().toISOString(),
+          source: 'STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED',
+        },
+      });
+      await recordActivity('item_deleted', { itemId: item.id, title: item.title, legacyCaseItems: true, source: 'STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED' });
       await refreshCaseData();
-      toast.success('Brak usunięty');
+      toast.success('Brak usunięty z aktywnych działań');
     } catch (error: any) {
       toast.error(`Nie udało się usunąć braku: ${error?.message || 'REQUEST_FAILED'}`);
     }
@@ -3267,9 +3282,19 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
           toast.success('Brak usunięty');
         } else {
           const item = target.source as CaseItem;
-          await deleteCaseItemFromSupabase(item.id);
-          await recordActivity('item_deleted', { itemId: item.id, title: item.title, legacyCaseItems: true });
-          toast.success('Element sprawy usunięty');
+          await updateCaseItemInSupabase({
+        id: item.id,
+        caseId,
+        status: 'rejected',
+        approvedAt: null,
+        payload: {
+          stage232kDeleteMode: 'legacy_case_item_reject_no_delete_method',
+          deletedAt: new Date().toISOString(),
+          source: 'STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED',
+        },
+      });
+          await recordActivity('item_deleted', { itemId: item.id, title: item.title, legacyCaseItems: true, source: 'STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED' });
+          toast.success('Element sprawy usunięty z aktywnych działań');
         }
       }
 

@@ -18,7 +18,9 @@ must(caseText.includes('deleteWorkItemPending'), 'delete pending state missing')
 must(caseText.includes('STAGE220A8_5_WORK_ITEM_DELETE_HANDLER'), 'delete handler marker missing');
 must(caseText.includes('await deleteTaskFromSupabase'), 'task delete call missing');
 must(caseText.includes('await deleteEventFromSupabase'), 'event delete call missing');
-must(caseText.includes('await deleteCaseItemFromSupabase'), 'missing-item delete call missing');
+must(caseText.includes('STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED'), 'legacy case_items no DELETE stage missing');
+must(caseText.includes('updateCaseItemInSupabase({'), 'legacy case_items delete must use updateCaseItemInSupabase soft close');
+must(!/await\s+deleteCaseItemFromSupabase\(item\.id\);/.test(caseText), 'legacy active row must not call physical DELETE/METHOD_NOT_ALLOWED path');
 must(caseText.includes('data-stage220a8-delete-work-item="true"'), 'row delete button marker missing');
 must(caseText.includes('data-stage220a8-delete-work-item-confirm="true"'), 'delete confirm marker missing');
 must(caseText.includes('onDelete={openDeleteWorkItemConfirm}'), 'WorkItemRow delete prop not wired');
