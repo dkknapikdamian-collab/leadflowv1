@@ -61,3 +61,26 @@ Powod:
 
 Nastepny etap:
 - STAGE232I3_OWNER_CONTROL_MISSING_BLOCKER_CROSS_ENTITY_INTEGRATION.
+
+## 2026-06-18 19:56 Europe/Warsaw - STAGE232I3_OWNER_CONTROL_MISSING_BLOCKER_CROSS_ENTITY_INTEGRATION
+
+Status: TECH_IN_REPO / LOCAL_GUARDS_PASS / NEEDS_MANUAL_SMOKE
+
+Zakres:
+- Owner Control / Today pokazuje aktywne Braki/Blokady z istniejacych task/work item missing_item.
+- Zrodla: Lead / Sprawa / Klient.
+- Badge zrodla: [Lead], [Sprawa], [Klient].
+- Dedup: sourceEntityType + sourceEntityId + item.id.
+- Resolve dziala na zrodlowym task.id przez istniejaca akcje Today.
+- Bez SQL, bez aktywnego case_items, bez runtime zmian ClientDetail/CaseDetail.
+
+Testy lokalne:
+- guard STAGE232I3: PASS.
+- node test STAGE232I3: PASS.
+- CF-RUNTIME-00: PASS po I3 scope compat.
+- build: PASS.
+- verify:closeflow:quiet: PASS.
+- git diff --check: PASS.
+
+Nastepny krok:
+- manual smoke Owner Control, potem status sync I3 close.

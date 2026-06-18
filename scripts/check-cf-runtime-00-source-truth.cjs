@@ -19,6 +19,7 @@
 // CF_RUNTIME_00_STAGE232D_R1_OWNER_CONTACT_DONE
 // CF_RUNTIME_00_STAGE232I0_MISSING_BLOCKER_CONTRACT
 // CF_RUNTIME_00_STAGE232I1_CASE_MISSING_BLOCKER_RUNTIME
+// CF_RUNTIME_00_STAGE232I3_OWNER_CONTROL_MISSING_BLOCKER_SCOPE_COMPAT
 // CF_RUNTIME_00_STAGE232I1_R8_MISSING_MODAL_READABLE_STYLE
 // CF_RUNTIME_00_R19_MASS_SCOPE_CLOSURE_ALLOWED
 // CF_RUNTIME_00_R18_SHEBANG_SCOPE_ALLOWED
@@ -299,7 +300,12 @@ const allowedChangePrefixes = [
   'tests/stage232d-owner-contact-done-runtime-fix.test.cjs',
   'src/lib/owner-control/activity-truth.ts',
   'src/lib/supabase-fallback.ts',
-  'tests/stage107-templates-delete-and-visual-contract.test.cjs',
+  'src/lib/owner-control/owner-control-baseline.ts',
+  'src/lib/owner-control/owner-control-missing-blockers.ts',
+  'scripts/check-stage232i3-owner-control-missing-blocker-cross-entity-integration.cjs',
+  'tests/stage232i3-owner-control-missing-blocker-cross-entity-integration.test.cjs',
+  '_project/runs/STAGE232I3_OWNER_CONTROL_MISSING_BLOCKER_CROSS_ENTITY_INTEGRATION.md',
+  '_project/obsidian_updates/2026-06-18_STAGE232I3_OWNER_CONTROL_MISSING_BLOCKER_CROSS_ENTITY_INTEGRATION.md',  'tests/stage107-templates-delete-and-visual-contract.test.cjs',
 ];
 
 function gitList(args) {

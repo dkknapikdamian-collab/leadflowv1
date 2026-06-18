@@ -1,5 +1,6 @@
 import { getNearestPlannedAction, isClosedWorkItemStatus } from '../work-items/planned-actions';
 import { normalizeWorkItem } from '../work-items/normalize';
+import { buildMissingOwnerControlItems, isOwnerMissingControlItem } from './owner-control-missing-blockers';
 import { buildActivityTruth } from './activity-truth';
 import { buildNextMoveContract } from './next-move-contract';
 import { normalizeOwnerRiskSettings, type OwnerRiskSettings } from './owner-risk-rules';
@@ -23,6 +24,12 @@ export type OwnerControlItem = {
   valuePln: number;
   nextMoveAt: string | null;
   signals: string[];
+  sourceEntityType?: 'lead' | 'case' | 'client';
+  sourceEntityId?: string;
+  sourceItemId?: string;
+  sourceBadge?: 'Lead' | 'Sprawa' | 'Klient';
+  isMissingItem?: boolean;
+  isBlockingMissingItem?: boolean;
 };
 
 export type OwnerControlBaseline = {
@@ -199,6 +206,7 @@ function buildRecordItem(input: {
 
 function buildWorkItem(input: { item: unknown; kind: 'task' | 'event'; now: Date }): OwnerControlItem | null {
   const record = asRecord(input.item);
+  if (isOwnerMissingControlItem(record)) return null;
   const normalized = normalizeWorkItem(record);
   if (!normalized.id || !normalized.dateAt || isClosedWorkItemStatus(normalized.status)) return null;
   const when = new Date(normalized.dateAt);
@@ -247,6 +255,7 @@ export function buildOwnerControlBaseline(input: BuildOwnerControlBaselineInput)
   }
 
   const candidates: Array<OwnerControlItem | null> = [
+    ...buildMissingOwnerControlItems({ tasks, now }),
     ...leads.map((record) => buildRecordItem({
       entityType: 'lead', record, relatedCaseIds: caseIdsByLeadId.get(readString(record, ['id'])) || [], workItems, settings, now,
     })),
