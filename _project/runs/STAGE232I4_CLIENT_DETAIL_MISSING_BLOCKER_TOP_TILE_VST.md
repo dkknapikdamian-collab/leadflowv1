@@ -60,3 +60,17 @@ git diff --check
 - Nie zamykać jako CLOSED bez manual smoke.
 - Nie wolno wracać do `case_items` jako aktywnego źródła Braków.
 - Nie wolno tworzyć lokalnej kopii Braków tylko dla kafelka.
+
+## 2026-06-18 20:55 Europe/Warsaw — STAGE232I4_R3_CLIENT_MISSING_TILE_LEAD_VST_ROW_FIT_SCRIPT_REPAIR
+
+Status: TECH_PATCH_LOCAL / TESTS_TO_RUN
+
+Zakres R3:
+- naprawa wizualna po smoke UI: kafelek Braki / Blokady w ClientDetail ma trzymać układ kafelka z LeadDetail.
+- cztery kafelki mają mieścić się w jednym desktopowym rzędzie.
+- Braki / Blokady ma mieć dwa przyciski: Dodaj brak oraz Zobacz wszystkie braki.
+- Dane pozostają z aktualnego klienta przez źródło STAGE232I2 / stage232i2AllActiveMissingItems.
+- Nie ruszać SQL, finansów, Google Calendar, billing/trial, CaseDetail ani LeadDetail runtime.
+
+Powód kontynuacji:
+- ZIP R3 wykonał patch plików, ale skrypt zatrzymał się na błędzie ścieżki relatywnej do _project/runs czytanej z Downloads.

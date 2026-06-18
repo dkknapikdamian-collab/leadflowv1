@@ -3993,3 +3993,118 @@ main[data-current-section="client-detail"] > .view.active[data-shell-content="tr
     grid-template-columns: 1fr;
   }
 }
+
+/* STAGE232I4_R2_CLIENT_MISSING_TILE_LEAD_VST_ROW_FIT
+   Damian smoke fix: ClientDetail Braki/Blokady tile must match LeadDetail blocker top-card rhythm,
+   stay in one desktop row with the other three top tiles, and keep both source actions visible. */
+.client-detail-vnext-page > .client-detail-top-tiles.entity-overview-tiles,
+.client-detail-vnext-page .client-detail-top-tiles.entity-overview-tiles,
+.client-detail-top-tiles.entity-overview-tiles {
+  width: min(100%, 1480px) !important;
+  max-width: 1480px !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  grid-auto-flow: row !important;
+  gap: 10px !important;
+  align-items: stretch !important;
+}
+
+.client-detail-vnext-page .client-detail-top-tiles.entity-overview-tiles .entity-overview-tile,
+.client-detail-vnext-page .client-detail-top-tile.entity-overview-tile {
+  min-width: 0 !important;
+  width: 100% !important;
+  min-height: 132px !important;
+  height: 100% !important;
+  padding: 13px 14px !important;
+  border-radius: 18px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 7px !important;
+}
+
+.client-detail-vnext-page .client-detail-top-tile-missing.client-detail-callout-danger,
+.client-detail-vnext-page .client-detail-top-tile-missing-lead-vst.client-detail-callout-danger {
+  background: #fff1f3 !important;
+  border-color: #fecdd3 !important;
+  box-shadow: 0 10px 24px rgba(190, 18, 60, 0.08) !important;
+}
+
+.client-detail-vnext-page .client-detail-top-tile-missing.client-detail-callout-muted,
+.client-detail-vnext-page .client-detail-top-tile-missing-lead-vst.client-detail-callout-muted {
+  background: #fff7f8 !important;
+  border-color: #ffe4e8 !important;
+  box-shadow: 0 10px 24px rgba(190, 18, 60, 0.045) !important;
+}
+
+.client-detail-vnext-page .client-detail-top-tile-missing.client-detail-callout-green,
+.client-detail-vnext-page .client-detail-top-tile-missing-lead-vst.client-detail-callout-green {
+  background: #fff7f8 !important;
+  border-color: #ffe4e8 !important;
+}
+
+.client-detail-vnext-page .client-detail-top-tile-missing .entity-overview-tile-icon,
+.client-detail-vnext-page .client-detail-top-tile-missing-lead-vst .entity-overview-tile-icon {
+  background: #fff1f3 !important;
+  color: #be123c !important;
+}
+
+.client-detail-vnext-page .client-detail-top-tile-missing .entity-overview-tile-icon svg,
+.client-detail-vnext-page .client-detail-top-tile-missing-lead-vst .entity-overview-tile-icon svg {
+  color: #be123c !important;
+  stroke: #be123c !important;
+}
+
+.client-detail-vnext-page .client-detail-top-tile-missing strong,
+.client-detail-vnext-page .client-detail-top-tile-missing-lead-vst strong {
+  color: #111827 !important;
+}
+
+.client-detail-vnext-page .client-detail-top-tile-missing p,
+.client-detail-vnext-page .client-detail-top-tile-missing-lead-vst p {
+  color: #475467 !important;
+  font-weight: 750 !important;
+}
+
+.client-detail-vnext-page .client-detail-missing-top-tile-actions,
+.client-detail-vnext-page .entity-overview-tile-actions[data-stage232i4-r2-lead-action-layout="true"] {
+  width: 100% !important;
+  margin-top: auto !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+}
+
+.client-detail-vnext-page .client-detail-missing-top-tile-actions .entity-overview-tile-link,
+.client-detail-vnext-page .entity-overview-tile-actions[data-stage232i4-r2-lead-action-layout="true"] .entity-overview-tile-link {
+  margin-top: 0 !important;
+  width: auto !important;
+  min-height: 30px !important;
+  padding: 6px 10px !important;
+  border-radius: 999px !important;
+}
+
+@media (max-width: 1260px) {
+  .client-detail-vnext-page > .client-detail-top-tiles.entity-overview-tiles,
+  .client-detail-vnext-page .client-detail-top-tiles.entity-overview-tiles,
+  .client-detail-top-tiles.entity-overview-tiles {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .client-detail-vnext-page > .client-detail-top-tiles.entity-overview-tiles,
+  .client-detail-vnext-page .client-detail-top-tiles.entity-overview-tiles,
+  .client-detail-top-tiles.entity-overview-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .client-detail-vnext-page > .client-detail-top-tiles.entity-overview-tiles,
+  .client-detail-vnext-page .client-detail-top-tiles.entity-overview-tiles,
+  .client-detail-top-tiles.entity-overview-tiles {
+    grid-template-columns: 1fr !important;
+  }
+}

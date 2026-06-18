@@ -149,6 +149,9 @@ void STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_RUNTIME;
 const STAGE232I4_CLIENT_DETAIL_MISSING_BLOCKER_TOP_TILE_VST = 'ClientDetail renders Braki/Blokady as the fourth top tile using LeadDetail blocker-card visual source truth and existing STAGE232I2 missing_item data';
 void STAGE232I4_CLIENT_DETAIL_MISSING_BLOCKER_TOP_TILE_VST;
 
+const STAGE232I4_R2_CLIENT_MISSING_TILE_LEAD_VST_ROW_FIT = 'ClientDetail Braki/Blokady top tile matches LeadDetail blocker visual source, stays in the same desktop row and always shows both source actions';
+void STAGE232I4_R2_CLIENT_MISSING_TILE_LEAD_VST_ROW_FIT;
+
 const STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH = 'STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH';
 void STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH;
 const STAGE231B0_R9_CLIENT_HISTORY_AND_CASE_VIEW_MODEL = 'STAGE231B0_R9_CLIENT_HISTORY_AND_CASE_VIEW_MODEL';
@@ -1227,20 +1230,18 @@ function ClientTopTiles({
   const caseMissingTotal = activeMissingItems.filter((item: any) => item?.stage232i2SourceType === 'case').length;
   const firstMissingItem = activeMissingItems[0] || null;
   const firstMissingSource = firstMissingItem ? String(firstMissingItem.stage232i2SourceLabel || getStage232I2MissingSourceLabel(firstMissingItem.stage232i2SourceType || 'client')) : '';
-  const missingTileTone = blockerTotal > 0
+  const missingTileTone = missingTotal > 0
     ? 'client-detail-callout-danger'
-    : missingTotal > 0
-      ? 'client-detail-callout-amber'
-      : 'client-detail-callout-green';
+    : 'client-detail-callout-muted';
   const missingHeadline = blockerTotal > 0
     ? (blockerTotal === 1 ? '1 aktywna blokada' : blockerTotal + ' aktywne blokady')
     : missingTotal > 0
       ? (missingTotal === 1 ? '1 aktywny brak' : missingTotal + ' aktywne braki')
-      : 'Brak braków i blokad';
+      : 'Brak aktywnych braków';
   const missingSummary = blockerTotal > 0
     ? (regularMissingTotal > 0 ? regularMissingTotal + ' aktywne braki poza blokadami.' : 'Wszystkie aktywne braki blokują dalszy ruch.')
     : missingTotal > 0
-      ? 'Aktywne braki bez jawnej blokady.'
+      ? 'Aktywne braki wymagają uzupełnienia.'
       : 'Nie ma jawnych braków blokujących obsługę.';
   const missingSourceSummary = 'Klient ' + clientMissingTotal + ' · Lead ' + leadMissingTotal + ' · Sprawy ' + caseMissingTotal;
 
@@ -1315,11 +1316,13 @@ function ClientTopTiles({
       </article>
 
       <article
-        className={`client-detail-top-tile entity-overview-tile entity-overview-tile-missing client-detail-top-tile-missing ${missingTileTone}`}
+        className={`client-detail-top-tile entity-overview-tile entity-overview-tile-missing client-detail-top-tile-missing client-detail-top-tile-missing-lead-vst ${missingTileTone}`}
         data-client-top-tile="missing-blockers"
         data-stage232i4-client-missing-top-tile="true"
+        data-stage232i4-r2-client-missing-tile-lead-vst-row-fit="true"
         data-stage232i2-client-detail-missing-blocker-runtime="true"
         data-stage232a-r9-blocker-top-card-summary="true"
+        data-stage232i4-client-scope-counts={missingSourceSummary}
         aria-label="Braki i blokady klienta"
       >
         <div className="entity-overview-tile-head">
@@ -1328,23 +1331,13 @@ function ClientTopTiles({
         </div>
         <strong>{missingHeadline}</strong>
         <p>{missingSummary}</p>
-        <p className="client-detail-top-tile-source-line" data-stage232i4-client-missing-source-counts="true">{missingSourceSummary}</p>
-        {firstMissingItem ? (
-          <span className="entity-overview-tile-chip entity-overview-tile-chip-muted" data-stage232i4-client-missing-first-source="true">
-            [{firstMissingSource}] {String(firstMissingItem.title || 'Brak bez nazwy')}
-          </span>
-        ) : (
-          <span className="entity-overview-tile-chip entity-overview-tile-chip-muted">Czysto</span>
-        )}
-        <div className="entity-overview-tile-actions" data-stage232i4-client-missing-top-tile-actions="true">
+        <div className="entity-overview-tile-actions client-detail-missing-top-tile-actions" data-stage232i4-client-missing-top-tile-actions="true" data-stage232i4-r2-lead-action-layout="true">
           <button type="button" className="entity-overview-tile-link !mt-0" onClick={onAddMissing} disabled={!canAddMissing}>
             Dodaj brak
           </button>
-          {missingTotal > 0 ? (
-            <button type="button" className="entity-overview-tile-link !mt-0" onClick={onOpenMissing}>
-              Zobacz braki
-            </button>
-          ) : null}
+          <button type="button" className="entity-overview-tile-link !mt-0" onClick={onOpenMissing}>
+            Zobacz wszystkie braki
+          </button>
         </div>
       </article>
     </section>
