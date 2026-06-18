@@ -5001,3 +5001,20 @@ Zmiana:
 - CaseDetail missing_item inactive filter rozszerzony,
 - delete branch zapisuje status deleted przez updateTaskInSupabase,
 - local state setTasks zamyka row natychmiast.
+
+## 2026-06-18 04:45 Europe/Warsaw - STAGE232N_MISSING_ITEM_VISUAL_KIND_CLASSIFICATION
+
+Status: DO_APPLY_ZIP / WAITING_LOCAL_GUARD
+
+Problem:
+- Brak zapisany jako task missing_item był wizualnie pokazywany jako Zadanie, szczególnie w LeadDetail.
+
+Audyt:
+- ContextActionDialogs zapisuje type/kind/status missing_item,
+- LeadDetail buildTimeline każdy task mapuje jako task,
+- render wiersza korzystał z entry.kind i wypisywał "Zadanie" mimo że isMissingItemTimelineEntry rozpoznawał Brak.
+
+Zmiana:
+- LeadDetail renderuje missing_item jako Brak albo Blokada,
+- status wiersza dla missing_item pokazuje Brak/Blokada zamiast Zaległe,
+- no-flicker mutation niesie displayKind/businessKind.

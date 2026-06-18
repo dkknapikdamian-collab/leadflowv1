@@ -13,6 +13,11 @@ import { MissingItemQuickActionModal } from './detail/MissingItemQuickActionModa
 import { emitCloseflowWorkItemNoFlickerMutation } from '../lib/work-items/no-flicker-mutation';
 
 
+
+const STAGE232N_CONTEXT_ACTION_MISSING_NO_FLICKER_DISPLAY_KIND = 'ContextActionDialogs preserves missing_item business/display kind in no-flicker mutation while keeping task persistence model';
+void STAGE232N_CONTEXT_ACTION_MISSING_NO_FLICKER_DISPLAY_KIND;
+
+
 const STAGE232I2_CONTEXT_ACTION_CLIENT_MISSING_ITEM_SOURCE = 'ClientDetail Braki/Blokady direct client items use task/work item missing_item with explicit client source metadata';
 void STAGE232I2_CONTEXT_ACTION_CLIENT_MISSING_ITEM_SOURCE;
 
@@ -378,17 +383,43 @@ export default function ContextActionDialogsHost() {
       }
 
       if (createdMissingTask) {
+        const createdMissingTaskRecordStage232N = {
+          ...createdMissingTask,
+          ...stage232aMissingItemMetadata,
+          type: 'missing_item',
+          status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item',
+          missingKind: draft.missingKind,
+          blocksProgress: draft.blocksProgress,
+          blockScope: draft.blockScope || null,
+          displayKind: 'missing',
+          businessKind: 'missing_item',
+          payload: {
+            ...(((createdMissingTask as any)?.payload && typeof (createdMissingTask as any).payload === 'object') ? (createdMissingTask as any).payload : {}),
+            kind: 'missing_item',
+            type: 'missing_item',
+            status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item',
+            missingKind: draft.missingKind,
+            blocksProgress: draft.blocksProgress,
+            blockScope: draft.blockScope || null,
+            displayKind: 'missing',
+            businessKind: 'missing_item',
+            source: 'STAGE232N_MISSING_ITEM_VISUAL_KIND_CLASSIFICATION',
+          },
+        };
         emitCloseflowWorkItemNoFlickerMutation({
           action: 'create',
           kind: 'task',
-          item: createdMissingTask ? { ...createdMissingTask, ...stage232aMissingItemMetadata } : stage232aMissingItemMetadata,
+          item: createdMissingTaskRecordStage232N,
+          record: createdMissingTaskRecordStage232N,
           id: (createdMissingTask as any)?.id || null,
           recordType: request.recordType,
           recordId: request.recordId,
           leadId: leadId || null,
           clientId: clientId || null,
           caseId: caseId || null,
-          source: 'stage228r48_context_blocker_create_no_flicker',
+          displayKind: 'missing',
+          businessKind: 'missing_item',
+          source: 'STAGE232N_MISSING_ITEM_VISUAL_KIND_CLASSIFICATION',
         });
       }
 

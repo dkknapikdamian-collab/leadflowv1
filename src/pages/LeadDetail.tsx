@@ -162,6 +162,11 @@ import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import '../styles/closeflow-shared-quick-actions-bar-stage227e3.css';
 import '../styles/closeflow-lead-detail-sales-signal-stage227e4.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
+
+const STAGE232N_MISSING_ITEM_VISUAL_KIND_CLASSIFICATION = 'LeadDetail renders missing_item as Brak or Blokada, not as regular Zadanie; active rows use missing labels and icons';
+void STAGE232N_MISSING_ITEM_VISUAL_KIND_CLASSIFICATION;
+
+
 const STAGE227E3_SHARED_QUICK_ACTIONS_BAR_LEAD = 'LeadDetail uses shared QuickActionsBar visual source with CaseDetail';
 void STAGE227E3_SHARED_QUICK_ACTIONS_BAR_LEAD;
 const STAGE227E3_LEAD_DETAIL_SHARED_QUICK_ACTIONS_BAR = 'LeadDetail uses shared QuickActionsBar visual source with CaseDetail';
@@ -441,6 +446,23 @@ function isMissingItemTimelineEntry(entry: any) {
   const type = String(raw?.type || raw?.kind || payload?.type || payload?.kind || '').toLowerCase();
   const missingKind = String(raw?.missingKind || payload?.missingKind || '').toLowerCase();
   return entry?.kind === 'task' && (type === 'missing_item' || status.includes('missing') || status.includes('block') || Boolean(missingKind));
+}
+function isBlockingMissingItemTimelineEntryStage232N(entry: any) {
+  if (!isMissingItemTimelineEntry(entry)) return false;
+  const metadata = readMissingItemMetadataStage232AR6(entry?.raw || entry);
+  return metadata.blocksProgress === true || metadata.status.includes('block');
+}
+function getLeadTimelineKindLabelStage232N(entry: any) {
+  if (isMissingItemTimelineEntry(entry)) return isBlockingMissingItemTimelineEntryStage232N(entry) ? 'Blokada' : 'Brak';
+  return entry?.kind === 'event' ? 'Wydarzenie' : 'Zadanie';
+}
+function getLeadTimelineStatusLabelStage232N(entry: any) {
+  if (isMissingItemTimelineEntry(entry)) return isBlockingMissingItemTimelineEntryStage232N(entry) ? 'Blokada' : 'Brak';
+  return String(entry?.statusLabel || '');
+}
+function getLeadTimelineRowDataKindStage232N(entry: any) {
+  if (isMissingItemTimelineEntry(entry)) return 'missing';
+  return entry?.kind === 'event' ? 'event' : 'task';
 }
 function readMissingItemMetadataStage232AR6(item: any) {
   const raw = item?.raw || item || {};
@@ -2473,15 +2495,15 @@ useEffect(() => {
                         key={entry.id}
                         className={`lead-detail-work-row ${entry.isOverdue ? 'lead-detail-work-row-overdue' : ''}`}
                         data-lead-work-item-overdue={entry.isOverdue ? 'true' : 'false'}
-                         data-stage231g-work-row-layout="true"
+                         data-stage231g-work-row-layout="true" data-stage232n-row-kind={getLeadTimelineRowDataKindStage232N(entry)}
                       >
-                        <span className="lead-detail-work-row__icon lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
+                        <span className="lead-detail-work-row__icon lead-detail-work-icon">{isMissingItemTimelineEntry(entry) ? <AlertTriangle className="h-4 w-4" /> : entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
                         <div className="lead-detail-work-row__content lead-detail-work-content">
-                          <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'}</small>
+                          <small>{getLeadTimelineKindLabelStage232N(entry)}</small>
                           <h3>{entry.title}</h3>
                           <p>{entry.dateLabel}</p>
                         </div>
-                        <span className={`lead-detail-pill lead-detail-work-row__status lead-detail-work-status ${statusClass(entry.status, entry.dateValue)}`}>{entry.statusLabel}</span>
+                        <span className={`lead-detail-pill lead-detail-work-row__status lead-detail-work-status ${statusClass(entry.status, entry.dateValue)}`}>{getLeadTimelineStatusLabelStage232N(entry)}</span>
                         <div className="lead-detail-row-actions lead-detail-work-row__actions lead-detail-work-actions-block">
                           <LeadActionButton onClick={() => (entry.kind === 'task' ? openLinkedTaskEditor(entry.raw) : openLinkedEventEditor(entry.raw))}>Edytuj</LeadActionButton>
                           <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 60 * 60 * 1000, '+1H') : handleRescheduleLinkedEvent(entry.raw, 60 * 60 * 1000, '+1H'))} disabled={linkedEntryActionId !== null}>+1H</LeadActionButton>
@@ -2569,14 +2591,14 @@ useEffect(() => {
                             ) : (
                               <div className="lead-detail-work-list lead-detail-stage228d-work-list" data-stage228d-lead-action-visible-limit="5">
                                 {group.items.map((entry) => (
-                                  <article key={`stage228d-${String(group.key)}-${entry.id}`} className={`lead-detail-work-row ${entry.isOverdue || group.key === 'blockers' ? 'lead-detail-work-row-overdue' : ''}`} data-stage228d-lead-work-row="true" data-stage231g-work-row-layout="true" data-stage232a-r10-r1-group-key={String(group.key)} data-stage232a-r10-r1-missing-tone-row={group.key === 'blockers' ? 'true' : 'false'}>
-                                    <span className="lead-detail-work-row__icon lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
+                                  <article key={`stage228d-${String(group.key)}-${entry.id}`} className={`lead-detail-work-row ${entry.isOverdue || group.key === 'blockers' ? 'lead-detail-work-row-overdue' : ''}`} data-stage228d-lead-work-row="true" data-stage231g-work-row-layout="true" data-stage232n-row-kind={getLeadTimelineRowDataKindStage232N(entry)} data-stage232a-r10-r1-group-key={String(group.key)} data-stage232a-r10-r1-missing-tone-row={group.key === 'blockers' ? 'true' : 'false'}>
+                                    <span className="lead-detail-work-row__icon lead-detail-work-icon">{isMissingItemTimelineEntry(entry) ? <AlertTriangle className="h-4 w-4" /> : entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
                                     <div className="lead-detail-work-row__content lead-detail-work-content">
-                                      <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {entry.statusLabel}</small>
+                                      <small>{getLeadTimelineKindLabelStage232N(entry)} • {getLeadTimelineStatusLabelStage232N(entry)}</small>
                                       <h3>{entry.title}</h3>
                                       <p>{entry.dateLabel}</p>
                                     </div>
-                                    <span className={`lead-detail-pill lead-detail-work-row__status lead-detail-work-status ${statusClass(entry.status, entry.dateValue)}`}>{entry.statusLabel}</span>
+                                    <span className={`lead-detail-pill lead-detail-work-row__status lead-detail-work-status ${statusClass(entry.status, entry.dateValue)}`}>{getLeadTimelineStatusLabelStage232N(entry)}</span>
                                     <div className="lead-detail-row-actions lead-detail-work-row__actions lead-detail-work-actions-block" data-stage232a-r9-row-actions={group.key === 'blockers' ? 'missing-only' : 'default'}>
                                       {group.key === 'blockers' ? (
                                         <>
