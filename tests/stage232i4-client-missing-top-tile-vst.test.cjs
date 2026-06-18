@@ -79,3 +79,15 @@ test('I4 R11 opens missing panel without auto-scroll and keeps stronger red visu
   assert.match(css, /#fca5a5/);
   assert.match(css, /#be123c/);
 });
+
+
+test('I4 R12 opens all missing items in a modal window with add/delete controls', () => {
+  assert.match(client, /data-stage232i4-r12-missing-window="true"/);
+  assert.match(client, /id="client-missing-window-title"/);
+  assert.match(client, /Nazwa braku/);
+  assert.match(client, /data-stage232i4-r12-missing-window-add-action="true"/);
+  assert.match(client, /handleDeleteClientMissingItemStage228R15\(item\)/);
+  assert.match(client, /handleResolveClientMissingItemStage228R13\(item\)/);
+  assert.match(client, /\{false && clientMissingListOpenStage232I6 \? \(/);
+  assert.match(css, /STAGE232I4_R12_MISSING_WINDOW_MODAL/);
+});

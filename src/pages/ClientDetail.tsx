@@ -2941,7 +2941,7 @@ return (
             </div>
 
 
-            {clientMissingListOpenStage232I6 ? (
+            {false && clientMissingListOpenStage232I6 ? (
               <section id="client-missing-items-stage232i2" className="client-detail-section-card client-detail-missing-items-section client-detail-missing-items-section-lead-vst" data-stage227c3b-client-missing-items-list="true" data-stage232i2-client-detail-missing-blocker-runtime="true" data-stage232i4-r6-client-missing-detail-panel="lead-vst">
                 <div className="client-detail-stage232i6-missing-head">
                   <div className="lead-detail-card-title-row client-detail-stage232i6-title-row">
@@ -3127,6 +3127,138 @@ return (
                 onSubmit={handleSaveClientMissingItemStage227C3B}
               />
             </div>
+
+
+            <Dialog
+              open={clientMissingListOpenStage232I6}
+              onOpenChange={(open) => setClientMissingListOpenStage232I6(open)}
+            >
+              <DialogContent className="client-detail-missing-window-dialog" data-stage232i4-r12-missing-window="true">
+                <DialogHeader>
+                  <DialogTitle>Braki i blokady klienta</DialogTitle>
+                  <DialogDescription>
+                    Wszystkie aktywne braki z klienta, leadów i spraw. Możesz dodać nowy brak po nazwie albo usunąć albo oznaczyć istniejący jako uzupełniony.
+                  </DialogDescription>
+                </DialogHeader>
+
+                <form
+                  className="client-detail-missing-window-add-form"
+                  data-stage232i4-r12-missing-window-add-form="true"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    void handleSaveClientMissingItemStage227C3B();
+                  }}
+                >
+                  <div className="client-detail-missing-window-field">
+                    <Label htmlFor="client-missing-window-title">Nazwa braku</Label>
+                    <Input
+                      id="client-missing-window-title"
+                      value={clientMissingTitle}
+                      onChange={(event) => {
+                        setClientMissingTitle(event.target.value);
+                        if (clientMissingError) setClientMissingError('');
+                      }}
+                      placeholder="np. Brak dokumentu, brak decyzji, brak danych do umowy"
+                      disabled={!hasAccess || clientMissingSaving}
+                      data-stage232i4-r12-missing-window-title-input="true"
+                    />
+                  </div>
+                  <div className="client-detail-missing-window-field">
+                    <Label htmlFor="client-missing-window-note">Notatka / doprecyzowanie</Label>
+                    <Textarea
+                      id="client-missing-window-note"
+                      value={clientMissingNote}
+                      onChange={(event) => setClientMissingNote(event.target.value)}
+                      placeholder="Opcjonalnie: czego dokładnie brakuje i od kogo"
+                      disabled={!hasAccess || clientMissingSaving}
+                      data-stage232i4-r12-missing-window-note-input="true"
+                    />
+                  </div>
+                  {clientMissingError ? <p className="client-detail-missing-window-error">{clientMissingError}</p> : null}
+                  <div className="client-detail-missing-window-add-actions">
+                    <Button type="submit" disabled={!hasAccess || clientMissingSaving || !clientMissingTitle.trim()} data-stage232i4-r12-missing-window-add-action="true">
+                      <Plus className="h-4 w-4" />
+                      {clientMissingSaving ? 'Dodawanie...' : 'Dodaj brak'}
+                    </Button>
+                  </div>
+                </form>
+
+                <div className="client-detail-missing-window-filter-row" data-stage232i4-r12-missing-window-filters="true">
+                  {[
+                    { key: 'all', label: 'Wszystkie', count: stage232i2AllActiveMissingItems.length },
+                    { key: 'client', label: 'Klient', count: directClientMissingItems.length },
+                    { key: 'lead', label: 'Leady', count: leadMissingItems.length },
+                    { key: 'case', label: 'Sprawy', count: caseMissingItems.length },
+                    { key: 'blockers', label: 'Blokady', count: directClientBlockers.length + leadBlockers.length + caseBlockers.length },
+                    { key: 'missing', label: 'Braki', count: stage232i2AllActiveMissingItems.filter((item: any) => !item.stage232i2IsBlocker).length },
+                  ].map((filter) => (
+                    <button
+                      key={filter.key}
+                      type="button"
+                      className={clientMissingSourceFilterStage232I2 === filter.key ? 'client-detail-pill client-detail-pill-blue' : 'client-detail-pill client-detail-pill-muted'}
+                      onClick={() => setClientMissingSourceFilterStage232I2(filter.key as typeof clientMissingSourceFilterStage232I2)}
+                      data-stage232i4-r12-missing-window-filter={filter.key}
+                    >
+                      {filter.label} <span>{filter.count}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="client-detail-missing-window-list" data-stage232i4-r12-missing-window-list="true">
+                  {clientMissingItemsStage227C3B.length ? (
+                    clientMissingItemsStage227C3B.map((item: any) => {
+                      const sourceType = item.stage232i2SourceType as Stage232I2ClientMissingSourceType;
+                      const sourceLabel = String(item.stage232i2SourceLabel || getStage232I2MissingSourceLabel(sourceType));
+                      const sourceTitle = String(item.stage232i2SourceTitle || '');
+                      const note = String(item.stage232i2Note || '').trim();
+                      const sourceTo = sourceType === 'case'
+                        ? '/cases/' + String(item.stage232i2SourceId || item.caseId || '')
+                        : sourceType === 'lead'
+                          ? '/leads/' + String(item.stage232i2SourceId || item.leadId || '')
+                          : '';
+                      return (
+                        <article key={String(item?.id || item?.title)} className="client-detail-missing-window-row" data-stage232i4-r12-missing-window-row="true" data-stage232i2-client-missing-source={sourceType}>
+                          <div className="client-detail-missing-window-row-main">
+                            <span className="client-detail-pill client-detail-pill-muted" data-stage232i2-client-missing-source-badge={sourceType}>[{sourceLabel}]</span>
+                            <strong>{String(item?.title || 'Brak bez nazwy')}</strong>
+                            <small>
+                              {getStage232I2MissingStatusLabel(item)}
+                              {sourceTitle ? ' · ' + sourceTitle : ''}
+                              {note ? ' · ' + note : ''}
+                            </small>
+                          </div>
+                          <div className="client-detail-missing-window-row-actions" data-stage232i4-r12-missing-window-row-actions="true">
+                            <em>{item.stage232i2IsBlocker ? 'Blokada' : 'Brak'}</em>
+                            {sourceTo ? (
+                              <Button type="button" size="sm" variant="outline" onClick={() => navigate(sourceTo)} data-stage232i2-open-source-action="true">
+                                Otwórz źródło
+                              </Button>
+                            ) : null}
+                            <Button type="button" size="sm" variant="outline" onClick={() => handleResolveClientMissingItemStage228R13(item)} disabled={!hasAccess || isDoneStatus(item?.status)} data-stage232i2-resolve-source-item="true">
+                              Uzupełnione
+                            </Button>
+                            <Button type="button" size="sm" variant="outline" onClick={() => handleDeleteClientMissingItemStage228R15(item)} disabled={!hasAccess || isDoneStatus(item?.status)} data-stage232i2-delete-source-item="true">
+                              Usuń
+                            </Button>
+                          </div>
+                        </article>
+                      );
+                    })
+                  ) : (
+                    <div className="client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact" data-stage232i4-r12-empty-missing-window="true">
+                      <strong>Brak otwartych braków.</strong>
+                      <p>Dodaj brak po nazwie w formularzu powyżej.</p>
+                    </div>
+                  )}
+                </div>
+
+                <DialogFooter className={modalFooterClass()}>
+                  <Button type="button" variant="outline" onClick={() => setClientMissingListOpenStage232I6(false)}>
+                    Zamknij
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
             <Dialog
               open={Boolean(clientNoteModalOpen || clientNoteListening)}

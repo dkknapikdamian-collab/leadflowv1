@@ -4267,3 +4267,54 @@ main[data-current-section="client-detail"] > .view.active[data-shell-content="tr
   color: #7f1d1d !important;
   background: #ffffff !important;
 }
+
+/* STAGE232I4_R12_MISSING_WINDOW_MODAL
+   Zobacz wszystkie braki opens a modal window, not an inline page panel.
+*/
+#root .client-detail-missing-window-dialog {
+  max-width: min(940px, calc(100vw - 32px)) !important;
+  width: min(940px, calc(100vw - 32px)) !important;
+  max-height: min(82vh, 760px) !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+#root .client-detail-missing-window-add-form {
+  display: grid !important;
+  grid-template-columns: minmax(220px, 1fr) minmax(260px, 1.4fr) auto !important;
+  gap: 10px !important;
+  align-items: end !important;
+  padding: 12px !important;
+  border: 1px solid #fca5a5 !important;
+  border-radius: 18px !important;
+  background: #fff7f8 !important;
+}
+
+#root .client-detail-missing-window-field { display: grid !important; gap: 6px !important; }
+#root .client-detail-missing-window-add-actions { display: flex !important; align-items: end !important; justify-content: flex-end !important; }
+#root .client-detail-missing-window-error { grid-column: 1 / -1 !important; margin: 0 !important; color: #b91c1c !important; font-size: 12px !important; font-weight: 700 !important; }
+#root .client-detail-missing-window-filter-row { display: flex !important; flex-wrap: wrap !important; gap: 6px !important; margin-top: 12px !important; }
+#root .client-detail-missing-window-list { display: grid !important; gap: 10px !important; margin-top: 12px !important; overflow: auto !important; padding-right: 4px !important; }
+
+#root .client-detail-missing-window-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  padding: 12px !important;
+  border: 1px solid rgba(248, 113, 113, 0.42) !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+}
+
+#root .client-detail-missing-window-row-main { display: grid !important; gap: 4px !important; min-width: 0 !important; }
+#root .client-detail-missing-window-row-main strong,
+#root .client-detail-missing-window-row-main small { overflow: hidden !important; text-overflow: ellipsis !important; }
+#root .client-detail-missing-window-row-actions { display: flex !important; align-items: center !important; justify-content: flex-end !important; gap: 8px !important; flex-wrap: wrap !important; }
+
+@media (max-width: 900px) {
+  #root .client-detail-missing-window-add-form { grid-template-columns: 1fr !important; }
+  #root .client-detail-missing-window-row { align-items: flex-start !important; flex-direction: column !important; }
+  #root .client-detail-missing-window-row-actions { justify-content: flex-start !important; }
+}

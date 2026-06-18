@@ -188,3 +188,19 @@ Zakres:
 - CSS: kafelek Braki / Blokady ma mocniejszy lead-like czerwony styl.
 - Guard/test: dodano regresję no-scroll + R11 CSS marker.
 - Bez SQL, finansów, Google Calendar, billing/trial, CaseDetail.
+
+## 2026-06-18 23:50 Europe/Warsaw — STAGE232I4_R12B_MISSING_WINDOW_MODAL
+
+Status: TEST_ONLY / NO_COMMIT_YET
+
+Powód:
+- R12 zatrzymał się bez zmian, bo needle do wstawienia modala nie pasował do aktualnego ClientDetail.
+- Decyzja Damiana: Zobacz wszystkie braki ma otwierać okienko/modal, nie panel w stronie.
+- W oknie mają być wszystkie braki z możliwością usunięcia, oznaczenia jako uzupełnione oraz dodania braku po nazwie.
+
+Zakres:
+- ClientDetail: Zobacz wszystkie braki otwiera Dialog/modal.
+- Stary inline panel został wyłączony w renderze przez false && clientMissingListOpenStage232I6.
+- Modal zawiera pole Nazwa braku, notatkę, Dodaj brak, listę braków, Uzupełnione, Usuń, Otwórz źródło.
+- Guard/test: dodano regresję modal window + add/delete controls.
+- Bez SQL, finansów, Google Calendar, billing/trial, CaseDetail.
