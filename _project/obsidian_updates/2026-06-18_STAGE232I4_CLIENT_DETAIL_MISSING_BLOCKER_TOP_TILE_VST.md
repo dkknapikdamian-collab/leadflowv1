@@ -111,3 +111,43 @@ Zakres:
 - R6 nadal usuwa stary panel Lista braków i blokad klienta.
 - R6 nadal otwiera nowy panel przez Zobacz wszystkie braki.
 - Dane nadal idą z STAGE232I2 / stage232i2AllActiveMissingItems.
+
+## 2026-06-18 22:20 Europe/Warsaw — STAGE232I4_R8_SAFE_REPAIR_AFTER_R7_RED_PUSH
+
+Status: TEST_ONLY / NO_COMMIT_YET
+
+Powód:
+- R7 został wypchnięty mimo czerwonego build/verify/diff.
+- Zdalny kod zamykał kafelek Braki / Blokady przez </section> zamiast </article>.
+- R8 naprawia JSX i uruchamia testy bez commita.
+
+Zakres:
+- ClientDetail: błędne </section> w kafelku Braki / Blokady zamienione na </article>.
+- Bez SQL, finansów, Calendar, billing/trial.
+
+## 2026-06-18 22:35 Europe/Warsaw — STAGE232I4_R9_FIX_MISSING_SECTION_CLOSE
+
+Status: TEST_ONLY / NO_COMMIT_YET
+
+Powód:
+- R8 zamienił błędne </section> na </article>, ale zostawił otwarte zewnętrzne <section>.
+- Build nadal padał, bo return kończył się na </article> i od razu );.
+- R9 dopina brakujące </section> po kafelku Braki / Blokady.
+
+Zakres:
+- ClientDetail: dopięto brakujące </section> po R6/R8 kafelku Braki / Blokady.
+- Bez SQL, finansów, Google Calendar, billing/trial.
+
+## 2026-06-18 22:45 Europe/Warsaw — STAGE232I4_R10_FIX_DETAIL_PANEL_SECTION_CLOSE
+
+Status: TEST_ONLY / NO_COMMIT_YET
+
+Powód:
+- R9 domknął górny kafelek, ale lokalnie dolny panel client-missing-items-stage232i2 kończył się </article> mimo że otwiera <section>.
+- Build wykrył: Unexpected closing article tag does not match opening section tag.
+- R10 przywraca </section> dla panelu listy braków.
+
+Zakres:
+- ClientDetail: dolny panel Braki / Blokady zamyka się przez </section>.
+- Górny kafelek nadal zamyka article + zewnętrzne section.
+- Bez SQL, finansów, Google Calendar, billing/trial.

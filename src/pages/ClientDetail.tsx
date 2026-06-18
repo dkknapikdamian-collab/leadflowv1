@@ -1348,6 +1348,7 @@ function ClientTopTiles({
             Zobacz wszystkie braki
           </button>
         </div>
+      </article>
     </section>
   );
 }
