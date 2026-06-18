@@ -2084,3 +2084,17 @@ Zmiana:
 - Task dostaje status 'deleted' i payload stage232i2DeleteMode='soft_delete_no_method_delete'.
 - Aktywna lista filtruje deleted, wiec wpis znika po usunieciu.
 - Bez SQL i bez Owner Control.
+
+## 2026-06-18 01:25 Europe/Warsaw - STAGE232I2_R4_CLIENT_MISSING_DELETE_NO_DELETE_ROUTE
+
+Status: DO_APPLY_LOCAL / WAITING_GUARD
+
+Powod:
+- Usuwanie Braku u klienta nadal zwracalo METHOD_NOT_ALLOWED po R3.
+- Aktywny przycisk Usuń nie moze korzystac z zadnej fizycznej sciezki DELETE.
+
+Zmiana:
+- data-stage232i2-delete-source-item przechodzi przez handleResolveClientMissingItemStage228R13(item).
+- Wpis znika z aktywnej listy bez wywolania delete endpointu.
+- R3 soft-delete zostaje jako fallback, ale aktywny klik juz go nie uzywa.
+- Bez SQL, bez Owner Control.
