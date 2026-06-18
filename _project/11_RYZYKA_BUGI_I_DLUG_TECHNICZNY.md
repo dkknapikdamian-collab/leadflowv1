@@ -2202,3 +2202,17 @@ Zmiana:
 - payload-only nie oznacza activity,
 - activity detection wymaga eventType/actorType i wyklucza work-row shape,
 - guard/test blokują regresję.
+
+## 2026-06-18 15:35 Europe/Warsaw - STAGE232R_MISSING_ITEM_RENDER_FREEZE_GUARD
+
+Status: DO_APPLY_ZIP / WAITING_LOCAL_GUARD
+
+Decyzja:
+- Damian potwierdził: po STAGE232Q jest OK.
+- Zamrażamy zachowanie Brak/Blokada.
+
+Guard blokuje:
+- LeadDetail missing_item jako "Zadanie",
+- CaseDetail puste rows przy liczniku Braki i blokady > 0 z powodu payload-only activity,
+- powrót payload-only detection w isCaseActivitySourceForWorkRow,
+- utratę enriched missing record w ContextActionDialogs.
