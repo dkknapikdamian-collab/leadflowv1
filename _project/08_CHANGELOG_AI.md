@@ -5038,3 +5038,22 @@ Audyt:
 Zmiana:
 - buildWorkItems używa task w getTaskNoteFollowUpPreviewStage231H_R1D2_R11,
 - dodano guard/test scope.
+
+## 2026-06-18 15:05 Europe/Warsaw - STAGE232Q_CASE_DETAIL_MISSING_PAYLOAD_ROW_RENDER
+
+Status: DO_APPLY_ZIP / WAITING_LOCAL_GUARD
+
+Problem:
+- CaseDetail Braki i blokady miały licznik, ale nie renderowały wiersza po rozwinięciu.
+
+Audyt:
+- count i items bazują na workItems.filter(entry.kind === 'missing'),
+- group.items.map renderuje WorkItemRow,
+- WorkItemRow zwraca null, jeśli isCaseActivitySourceForWorkRow(entry.source),
+- helper uznawał samo payload za activity,
+- missing_item task ma payload, więc był liczony, ale ukryty.
+
+Zmiana:
+- payload-only nie oznacza activity,
+- activity detection wymaga eventType/actorType i wyklucza work-row shape,
+- guard/test blokują regresję.

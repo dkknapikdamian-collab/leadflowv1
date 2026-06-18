@@ -122,6 +122,11 @@ import { CASE_COST_FINANCE_LABELS, getCaseCostsSummary, type CaseCostLike } from
 
 
 
+
+const STAGE232Q_CASE_DETAIL_MISSING_PAYLOAD_ROW_RENDER = 'CaseDetail WorkItemRow does not hide task-based missing_item rows only because source has payload';
+void STAGE232Q_CASE_DETAIL_MISSING_PAYLOAD_ROW_RENDER;
+
+
 const STAGE232P_CASE_DETAIL_BUILDWORKITEMS_SCOPE_HOTFIX = 'CaseDetail buildWorkItems does not reference taskWithMissingBridgeStage232O outside its useMemo scope';
 void STAGE232P_CASE_DETAIL_BUILDWORKITEMS_SCOPE_HOTFIX;
 
@@ -941,12 +946,19 @@ void CLOSEFLOW_CASE_HISTORY_WORKROW_LEAK_FIX_2026_05_13;
 
 function isCaseActivitySourceForWorkRow(source: WorkItem['source']) {
   if (!source || typeof source !== 'object') return false;
-  const value = source as CaseActivity;
-  return Boolean(
-    'eventType' in value ||
-    'actorType' in value ||
-    'payload' in value
-  );
+  const value = source as Record<string, unknown>;
+  const hasExplicitActivityShapeStage232Q = 'eventType' in value || 'actorType' in value;
+  if (!hasExplicitActivityShapeStage232Q) return false;
+  const hasWorkRowShapeStage232Q =
+    'title' in value ||
+    'status' in value ||
+    'dueDate' in value ||
+    'dueAt' in value ||
+    'reminderAt' in value ||
+    'startAt' in value ||
+    'startsAt' in value ||
+    'completedAt' in value;
+  return !hasWorkRowShapeStage232Q;
 }
 
 function getStatusClass(status?: string) {
