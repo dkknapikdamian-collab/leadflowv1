@@ -121,6 +121,11 @@ import { CASE_COST_FINANCE_LABELS, getCaseCostsSummary, type CaseCostLike } from
 
 
 
+
+const STAGE232P_CASE_DETAIL_BUILDWORKITEMS_SCOPE_HOTFIX = 'CaseDetail buildWorkItems does not reference taskWithMissingBridgeStage232O outside its useMemo scope';
+void STAGE232P_CASE_DETAIL_BUILDWORKITEMS_SCOPE_HOTFIX;
+
+
 const STAGE232O_CASE_DETAIL_MISSING_ACTIVITY_BRIDGE = 'CaseDetail classifies task rows as Brak/Blokada from missing_item_created activity metadata when task response is normalized as plain task';
 void STAGE232O_CASE_DETAIL_MISSING_ACTIVITY_BRIDGE;
 
@@ -1485,7 +1490,7 @@ function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseI
     const isMissingStage232I1 = isStage232I1CaseMissingTaskSource(task);
     if (isMissingStage232I1 && isStage232I1ResolvedCaseMissingTask(task)) return [];
     const isNoteFollowUpStage231H_R1D2_R10C = isTaskNoteFollowUpStage231H_R1D2_R11(task);
-    const noteFollowUpPreviewStage231H_R1D2_R11 = getTaskNoteFollowUpPreviewStage231H_R1D2_R11(taskWithMissingBridgeStage232O);
+    const noteFollowUpPreviewStage231H_R1D2_R11 = getTaskNoteFollowUpPreviewStage231H_R1D2_R11(task);
     return [{
       id: `task-${task.id}`,
       kind: isMissingStage232I1 ? 'missing' : 'task',

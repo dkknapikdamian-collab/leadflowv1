@@ -5021,3 +5021,20 @@ Zmiana:
 - LeadDetail markeruje active missing entries jako stage232oMissingItem,
 - ContextActionDialogs wysyła enriched savedRecord,
 - CaseDetail wzbogaca taski z activity metadata przed buildWorkItems.
+
+## 2026-06-18 14:05 Europe/Warsaw - STAGE232P_CASE_DETAIL_BUILDWORKITEMS_SCOPE_HOTFIX
+
+Status: DO_APPLY_ZIP / WAITING_LOCAL_GUARD
+
+Problem:
+- CaseDetail nie ładował widoku po STAGE232O.
+- Runtime: taskWithMissingBridgeStage232O is not defined.
+
+Audyt:
+- taskWithMissingBridgeStage232O istnieje w useMemo openTasksWithNoteFollowUpPreviewStage231H_R1D2_R11,
+- buildWorkItems jest funkcją zewnętrzną i nie ma dostępu do tej zmiennej,
+- buildWorkItems powinien operować na swoim lokalnym task, bo dostaje już wzbogacone taski.
+
+Zmiana:
+- buildWorkItems używa task w getTaskNoteFollowUpPreviewStage231H_R1D2_R11,
+- dodano guard/test scope.
