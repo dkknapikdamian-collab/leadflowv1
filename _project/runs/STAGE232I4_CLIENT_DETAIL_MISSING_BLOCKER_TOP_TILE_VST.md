@@ -74,3 +74,17 @@ Zakres R3:
 
 Powód kontynuacji:
 - ZIP R3 wykonał patch plików, ale skrypt zatrzymał się na błędzie ścieżki relatywnej do _project/runs czytanej z Downloads.
+
+## 2026-06-18 21:10 Europe/Warsaw — STAGE232I4_R4_RED_PUSH_REPAIR
+
+Status: REPAIR_AFTER_RED_PUSH / TESTS_TO_RUN
+
+Powód:
+- STAGE232I4_R3 został wypchnięty mimo czerwonego guarda/testu/verify.
+- Guard i test wykryły pozostałość firstMissingItem / firstMissingSource po usunięciu chipa pierwszego braku z kafelka.
+- R4 usuwa martwą/zakazaną logikę pierwszego chipa z ClientDetail.
+
+Zakres:
+- ClientDetail: usunięto firstMissingItem / firstMissingSource z top tile Braki / Blokady.
+- Kafelek nadal korzysta z aktualnego klienta przez STAGE232I2 / stage232i2AllActiveMissingItems.
+- Bez SQL, bez finansów, bez Calendar, bez billing/trial.
