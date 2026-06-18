@@ -2936,7 +2936,6 @@ return (
                 onOpenMissing={() => {
                   setClientMissingSourceFilterStage232I2('all');
                   setClientMissingListOpenStage232I6(true);
-                  window.setTimeout(() => document.getElementById('client-missing-items-stage232i2')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
                 }}
               />
             </div>

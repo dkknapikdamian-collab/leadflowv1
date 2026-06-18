@@ -70,3 +70,12 @@ test('I4 files stay UTF-8 clean', () => {
   assert.doesNotMatch(client, forbiddenMojibake);
   assert.doesNotMatch(css, forbiddenMojibake);
 });
+
+test('I4 R11 opens missing panel without auto-scroll and keeps stronger red visual source', () => {
+  assert.doesNotMatch(client, /document\.getElementById\('client-missing-items-stage232i2'\)\?\.scrollIntoView/);
+  assert.match(client, /setClientMissingListOpenStage232I6\(true\)/);
+  assert.match(css, /STAGE232I4_R11_NO_SCROLL_VISUAL_SOURCE_TRUTH/);
+  assert.match(css, /#fff1f2/);
+  assert.match(css, /#fca5a5/);
+  assert.match(css, /#be123c/);
+});

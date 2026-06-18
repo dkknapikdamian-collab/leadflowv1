@@ -4217,3 +4217,53 @@ main[data-current-section="client-detail"] > .view.active[data-shell-content="tr
   background: #ffffff !important;
 }
 
+/* STAGE232I4_R11_NO_SCROLL_VISUAL_SOURCE_TRUTH
+   Smoke repair after Damian screenshots:
+   - no automatic scroll on Zobacz wszystkie braki,
+   - top row stays stable,
+   - missing panel opens below top tiles,
+   - Braki/Blokady tile gets stronger LeadDetail blocker visual source truth.
+*/
+#root .client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-main-top-tiles {
+  order: 10 !important;
+}
+
+#root .client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-missing-items-section-lead-vst[data-stage232i4-r6-client-missing-detail-panel="lead-vst"] {
+  order: 20 !important;
+  margin: 12px 0 16px !important;
+  padding: 14px !important;
+  border: 1.5px solid #fca5a5 !important;
+  border-radius: 20px !important;
+  background: #fff7f8 !important;
+  box-shadow: 0 12px 28px rgba(190, 18, 60, 0.055) !important;
+}
+
+#root .client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-top-tile-missing-lead-vst.lead-detail-top-card.lead-detail-callout-red,
+#root .client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-top-tile-missing-lead-vst.client-detail-callout-red,
+#root .client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] [data-stage232i4-r6-client-missing-lead-source-truth="true"] {
+  position: relative !important;
+  overflow: hidden !important;
+  background: #fff1f2 !important;
+  border: 1.5px solid #fca5a5 !important;
+  box-shadow: 0 12px 28px rgba(190, 18, 60, 0.09) !important;
+}
+
+#root .client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] [data-stage232i4-r6-client-missing-lead-source-truth="true"]::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 auto 0 0 !important;
+  width: 5px !important;
+  background: #be123c !important;
+  opacity: 0.92 !important;
+}
+
+#root .client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] [data-stage232i4-r6-client-missing-lead-source-truth="true"] .client-detail-missing-top-title-row,
+#root .client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] [data-stage232i4-r6-client-missing-lead-source-truth="true"] strong {
+  color: #7f1d1d !important;
+}
+
+#root .client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] [data-stage232i4-r6-client-missing-lead-source-truth="true"] .lead-detail-inline-action {
+  border-color: #fca5a5 !important;
+  color: #7f1d1d !important;
+  background: #ffffff !important;
+}

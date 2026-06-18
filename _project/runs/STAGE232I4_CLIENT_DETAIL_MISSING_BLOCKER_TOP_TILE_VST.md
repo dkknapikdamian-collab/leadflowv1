@@ -173,3 +173,18 @@ Zakres:
 - ClientDetail: dolny panel Braki / Blokady zamyka się przez </section>.
 - Górny kafelek nadal zamyka article + zewnętrzne section.
 - Bez SQL, finansów, Google Calendar, billing/trial.
+
+## 2026-06-18 23:15 Europe/Warsaw — STAGE232I4_R11A_NO_SCROLL_VISUAL_SOURCE_TRUTH
+
+Status: TEST_ONLY / NO_COMMIT_YET
+
+Powód:
+- Poprzedni R11 nie wykonał się w repo, bo PowerShell przerwał zagnieżdżony here-string i odpalił fragmenty z C:\WINDOWS\System32.
+- Manual smoke po R10 wykazał auto-scroll, ucinanie góry/lewego logo i za słaby kolor kafelka Braki / Blokady.
+
+Zakres:
+- ClientDetail: usunięto scrollIntoView z akcji Zobacz wszystkie braki.
+- CSS: panel Braki / Blokady ma stabilną kolejność pod top tiles.
+- CSS: kafelek Braki / Blokady ma mocniejszy lead-like czerwony styl.
+- Guard/test: dodano regresję no-scroll + R11 CSS marker.
+- Bez SQL, finansów, Google Calendar, billing/trial, CaseDetail.

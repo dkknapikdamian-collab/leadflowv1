@@ -35,6 +35,9 @@ expect(!client.includes('client-detail-missing-details-summary'), 'Old missing d
 expect(!client.includes('details.open = true'), 'Zobacz braki must not use old details.open path');
 expect(client.includes('data-stage232i4-r6-client-missing-detail-panel="lead-vst"'), 'ClientDetail missing new lead-like missing detail panel');
 expect(client.includes('setClientMissingListOpenStage232I6(true)'), 'Zobacz braki must open the new lead-like missing panel');
+expect(!client.includes("document.getElementById('client-missing-items-stage232i2')?.scrollIntoView"), 'Zobacz wszystkie braki must not auto-scroll viewport');
+expect(css.includes('STAGE232I4_R11_NO_SCROLL_VISUAL_SOURCE_TRUTH'), 'ClientDetail CSS missing R11 no-scroll visual source marker');
+expect(css.includes('#fff1f2') && css.includes('#fca5a5') && css.includes('#be123c'), 'ClientDetail missing tile must keep stronger LeadDetail blocker red palette');
 expect(client.includes('savedRecord') && client.includes('normalizedSavedRecord'), 'ClientDetail must no-flicker append saved missing record after ContextActionDialogs save');
 expect(client.includes("openClientContextAction('blocker')"), 'Dodaj brak must use shared ContextActionDialogs blocker source');
 expect(!client.includes('case_items'), 'ClientDetail I4 must not add case_items active source');
