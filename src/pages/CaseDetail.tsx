@@ -118,6 +118,11 @@ import { buildCaseFinancePatch, getCaseFinanceSummary as getCaseFinanceSourceSum
 import { CASE_COST_FINANCE_LABELS, getCaseCostsSummary, type CaseCostLike } from '../lib/finance/case-costs-source';
 
 
+
+const STAGE232L_DELETE_LINKED_NOTE_REFERENCE_SWEEP = 'CaseDetail task delete uses defined note follow-up helper; no undefined getLinkedNoteForTaskStage231H_R1D2_R15C reference';
+void STAGE232L_DELETE_LINKED_NOTE_REFERENCE_SWEEP;
+
+
 const STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED = 'CaseDetail legacy case_items/checklist delete uses updateCaseItemInSupabase status rejected; no physical DELETE for METHOD_NOT_ALLOWED row trash';
 void STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED;
 
@@ -3254,7 +3259,7 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
 
       if (target.kind === 'task') {
         const task = target.source as TaskRecord;
-        const linkedNoteStage231H_R1D2_R15C = getLinkedNoteForTaskStage231H_R1D2_R15C(task);
+        const linkedNoteStage231H_R1D2_R15C = findCaseNoteForFollowUpTaskStage231H_R1D2_R15C(task);
         const linkedNotePreviewStage231H_R1D2_R15C = linkedNoteStage231H_R1D2_R15C ? getCaseNoteTextStage231H_R1D2_R6(linkedNoteStage231H_R1D2_R15C) : '';
         const isNoteFollowUpTaskStage231H_R1D2_R15C = isTaskNoteFollowUpStage231H_R1D2_R11(task);
         await ensureCaseLeadNextActionTitleSafe(task.leadId || caseData?.leadId || null, task.title, getTaskMainDate(task) || task.reminderAt || task.date);

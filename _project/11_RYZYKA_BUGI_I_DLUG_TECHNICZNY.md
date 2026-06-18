@@ -2097,3 +2097,20 @@ Zmiana:
 - aktywne deleteCaseItemFromSupabase(item.id) zastąpione przez updateCaseItemInSupabase({ status: 'rejected' }),
 - brak znika jak po Odrzuć,
 - bez SQL, bez Owner Control, bez ClientDetail.
+
+## 2026-06-18 03:05 Europe/Warsaw - STAGE232L_DELETE_LINKED_NOTE_REFERENCE_SWEEP
+
+Status: DO_APPLY_ZIP / WAITING_LOCAL_GUARD
+
+Problem:
+- CaseDetail task delete rzucał ReferenceError: getLinkedNoteForTaskStage231H_R1D2_R15C is not defined.
+
+Audyt:
+- błąd jest w CaseDetail task branch,
+- poprawny helper istnieje jako findCaseNoteForFollowUpTaskStage231H_R1D2_R15C,
+- ClientDetail nie zawiera tej referencji,
+- LeadDetail/TodayStable mają osobne delete flow, nie są źródłem tego ReferenceError.
+
+Zmiana:
+- task delete używa zdefiniowanego helpera,
+- dodano guard/test blokujący niezdefiniowany helper.
