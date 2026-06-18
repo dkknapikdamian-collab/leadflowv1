@@ -139,6 +139,10 @@ import { MissingItemQuickActionModal } from '../components/detail/MissingItemQui
 import { buildMissingItemModalDraft } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
 import { isClosedCaseStatus } from '../lib/cases';
 
+
+const STAGE232I2_R3_CLIENT_MISSING_DELETE_SOFT_DELETE = 'ClientDetail missing item delete uses task soft-delete update instead of unsupported DELETE/METHOD_NOT_ALLOWED';
+void STAGE232I2_R3_CLIENT_MISSING_DELETE_SOFT_DELETE;
+
 const STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_RUNTIME = 'ClientDetail aggregates direct client, lead and case missing_item tasks with source badges and source-entity resolve/delete';
 void STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_RUNTIME;
 
@@ -2149,6 +2153,16 @@ function ClientDetail() {
     const scheduledAt = String(item?.scheduledAt || item?.dueAt || item?.date || deletedAt);
 
     try {
+      await updateTaskInSupabase({
+        id: taskId,
+        status: 'deleted',
+        completedAt: deletedAt,
+        payload: {
+          ...(item?.payload && typeof item.payload === 'object' ? item.payload : {}),
+          stage232i2DeleteMode: 'soft_delete_no_method_delete',
+          deletedAt,
+        },
+      });
       await updateTaskInSupabase({
         id: taskId,
         title: taskTitle,

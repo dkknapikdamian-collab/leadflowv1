@@ -586,3 +586,17 @@ Zakres:
 - Resolve/delete dziala na zrodlowym missing_item task/work item przez istniejace handlery po item.id.
 - Historia nie jest aktywnym zrodlem listy.
 - Bez SQL i bez Owner Control runtime.
+
+## 2026-06-18 01:00 Europe/Warsaw - STAGE232I2_R3_CLIENT_MISSING_DELETE_SOFT_DELETE
+
+Status: DO_APPLY_ZIP / WAITING_LOCAL_GUARD
+
+Problem:
+- Usuwanie Braku u klienta zwracalo METHOD_NOT_ALLOWED.
+
+Zmiana:
+- ClientDetail delete Braku klienta przechodzi na soft-delete przez updateTaskInSupabase.
+- Fizyczny deleteTaskFromSupabase nie jest uzywany w handlerze Braku klienta.
+- Task dostaje status 'deleted' i payload stage232i2DeleteMode='soft_delete_no_method_delete'.
+- Aktywna lista filtruje deleted, wiec wpis znika po usunieciu.
+- Bez SQL i bez Owner Control.
