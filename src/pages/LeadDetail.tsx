@@ -163,6 +163,11 @@ import '../styles/closeflow-shared-quick-actions-bar-stage227e3.css';
 import '../styles/closeflow-lead-detail-sales-signal-stage227e4.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 
+
+const STAGE232O_MISSING_ITEM_ACTIVITY_BRIDGE_AND_CASE_APPEND = 'LeadDetail treats activity-bridged missing_item ids as missing in all row render paths, including Wszystkie aktywne';
+void STAGE232O_MISSING_ITEM_ACTIVITY_BRIDGE_AND_CASE_APPEND;
+
+
 const STAGE232N_MISSING_ITEM_VISUAL_KIND_CLASSIFICATION = 'LeadDetail renders missing_item as Brak or Blokada, not as regular Zadanie; active rows use missing labels and icons';
 void STAGE232N_MISSING_ITEM_VISUAL_KIND_CLASSIFICATION;
 
@@ -445,7 +450,10 @@ function isMissingItemTimelineEntry(entry: any) {
   const status = String(entry?.status || raw?.status || payload?.status || '').toLowerCase();
   const type = String(raw?.type || raw?.kind || payload?.type || payload?.kind || '').toLowerCase();
   const missingKind = String(raw?.missingKind || payload?.missingKind || '').toLowerCase();
-  return entry?.kind === 'task' && (type === 'missing_item' || status.includes('missing') || status.includes('block') || Boolean(missingKind));
+  const displayKind = String(entry?.displayKind || raw?.displayKind || payload?.displayKind || '').toLowerCase();
+  const businessKind = String(entry?.businessKind || raw?.businessKind || payload?.businessKind || '').toLowerCase();
+  const activityBridgeMissingStage232O = entry?.stage232oMissingItem === true || raw?.stage232oMissingItem === true || payload?.stage232oMissingItem === true;
+  return entry?.kind === 'task' && (activityBridgeMissingStage232O || displayKind === 'missing' || businessKind === 'missing_item' || type === 'missing_item' || status.includes('missing') || status.includes('block') || Boolean(missingKind));
 }
 function isBlockingMissingItemTimelineEntryStage232N(entry: any) {
   if (!isMissingItemTimelineEntry(entry)) return false;
@@ -1304,7 +1312,18 @@ useEffect(() => {
     return ids;
   }, [leadMissingActivityMetadataStage232AR8, linkedTasks]);
   const activeMissingItemEntriesStage232AR8 = useMemo(
-    () => timeline.filter((entry) => entry.kind === 'task' && activeMissingTaskIdsStage232AR8.has(String(entry.raw?.id || '').trim())),
+    () => timeline
+      .filter((entry) => entry.kind === 'task' && activeMissingTaskIdsStage232AR8.has(String(entry.raw?.id || '').trim()))
+      .map((entry) => ({
+        ...entry,
+        stage232oMissingItem: true,
+        raw: {
+          ...(entry.raw || {}),
+          stage232oMissingItem: true,
+          displayKind: 'missing',
+          businessKind: 'missing_item',
+        },
+      })),
     [activeMissingTaskIdsStage232AR8, timeline],
   );
   const activeMissingItemEntriesStage232AR6 = activeMissingItemEntriesStage232AR8;
@@ -1318,7 +1337,21 @@ useEffect(() => {
     [activeLeadWorkEntries, activeMissingTaskIdsStage232AR8],
   );
   const displayedLeadWorkEntries = leadNextActionEntries.slice(0, 5);
-  const leadActiveWorkPreviewEntries = activeLeadWorkEntries.slice(0, 5);
+  const leadActiveWorkPreviewEntries = activeLeadWorkEntries
+    .map((entry) => activeMissingTaskIdsStage232AR8.has(String(entry.raw?.id || '').trim())
+      ? {
+          ...entry,
+          stage232oMissingItem: true,
+          raw: {
+            ...(entry.raw || {}),
+            stage232oMissingItem: true,
+            displayKind: 'missing',
+            businessKind: 'missing_item',
+          },
+        }
+      : entry,
+    )
+    .slice(0, 5);
   const nearestPlannedAction = useMemo(() => getNearestPlannedAction({
     leadId: String(leadId || ''),
     caseId: associatedCase?.id ? String(associatedCase.id) : undefined,

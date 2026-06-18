@@ -14,6 +14,11 @@ import { emitCloseflowWorkItemNoFlickerMutation } from '../lib/work-items/no-fli
 
 
 
+
+const STAGE232O_CONTEXT_ACTION_SAVED_RECORD_USES_MISSING_RECORD = 'ContextActionDialogs passes enriched missing_item record into closeflow:context-action-saved, not raw task response';
+void STAGE232O_CONTEXT_ACTION_SAVED_RECORD_USES_MISSING_RECORD;
+
+
 const STAGE232N_CONTEXT_ACTION_MISSING_NO_FLICKER_DISPLAY_KIND = 'ContextActionDialogs preserves missing_item business/display kind in no-flicker mutation while keeping task persistence model';
 void STAGE232N_CONTEXT_ACTION_MISSING_NO_FLICKER_DISPLAY_KIND;
 
@@ -261,6 +266,7 @@ export default function ContextActionDialogsHost() {
       setMissingSaving(true);
       setMissingError('');
       let createdMissingTask: Record<string, unknown> | null = null;
+      let createdMissingTaskRecordStage232O: Record<string, unknown> | null = null;
 
       if (request.recordType === 'case') {
         if (!caseId) {
@@ -406,6 +412,7 @@ export default function ContextActionDialogsHost() {
             source: 'STAGE232N_MISSING_ITEM_VISUAL_KIND_CLASSIFICATION',
           },
         };
+        createdMissingTaskRecordStage232O = createdMissingTaskRecordStage232N;
         emitCloseflowWorkItemNoFlickerMutation({
           action: 'create',
           kind: 'task',
@@ -424,7 +431,7 @@ export default function ContextActionDialogsHost() {
       }
 
       toast.success('Brak dodany');
-      await handleSaved(createdMissingTask || undefined);
+      await handleSaved(createdMissingTaskRecordStage232O || createdMissingTask || undefined);
     } catch (error: any) {
       const message = error?.message || 'REQUEST_FAILED';
       setMissingError('Nie udało się zapisać braku: ' + message);

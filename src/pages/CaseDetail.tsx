@@ -120,6 +120,11 @@ import { CASE_COST_FINANCE_LABELS, getCaseCostsSummary, type CaseCostLike } from
 
 
 
+
+const STAGE232O_CASE_DETAIL_MISSING_ACTIVITY_BRIDGE = 'CaseDetail classifies task rows as Brak/Blokada from missing_item_created activity metadata when task response is normalized as plain task';
+void STAGE232O_CASE_DETAIL_MISSING_ACTIVITY_BRIDGE;
+
+
 const STAGE232M_CASE_DETAIL_MISSING_ITEM_ACTIVE_FILTER_DELETE_CLOSURE = 'CaseDetail missing_item deleted/rejected/resolved statuses are inactive and delete branch updates task status/payload before refresh';
 void STAGE232M_CASE_DETAIL_MISSING_ITEM_ACTIVE_FILTER_DELETE_CLOSURE;
 
@@ -1407,12 +1412,80 @@ function getStage232I1CaseMissingStatus(task: TaskRecord) {
   return isStage232I1BlockingCaseMissingTask(task) ? 'Blokada' : 'Brak';
 }
 
+function normalizeCaseMissingTitleStage232O(value: unknown) {
+  return String(value || '').toLowerCase().replace(/\s+/g, ' ').trim();
+}
+function boolCaseStage232O(value: unknown) {
+  if (value === true) return true;
+  if (typeof value === 'number') return value !== 0;
+  if (typeof value === 'string') return ['true', '1', 'yes', 'tak', 'on'].includes(value.trim().toLowerCase());
+  return false;
+}
+function buildCaseMissingActivityMetadataStage232O(activities: CaseActivity[]) {
+  const byTaskId = new Map<string, Record<string, any>>();
+  const byTitle = new Map<string, Record<string, any>>();
+  for (const activity of activities || []) {
+    const payload = (activity.payload && typeof activity.payload === 'object') ? (activity.payload as Record<string, any>) : {};
+    const eventType = String(activity.eventType || payload.eventType || payload.type || '').toLowerCase();
+    const payloadKind = String(payload.kind || payload.type || payload.status || '').toLowerCase();
+    const isMissingActivity = eventType.includes('missing_item') || payloadKind.includes('missing_item') || payloadKind.includes('block');
+    if (!isMissingActivity) continue;
+    if (eventType.includes('deleted') || String(payload.status || '').toLowerCase() === 'deleted') continue;
+    const title = String(payload.title || payload.itemTitle || '').trim();
+    const titleKey = normalizeCaseMissingTitleStage232O(title);
+    const taskId = String(payload.taskId || payload.task_id || '').trim();
+    const status = String(payload.status || '').toLowerCase();
+    const metadata = {
+      title,
+      missingKind: String(payload.missingKind || '').toLowerCase(),
+      blocksProgress: boolCaseStage232O(payload.blocksProgress) || status.includes('block') || eventType.includes('block'),
+      blockScope: String(payload.blockScope || '').trim(),
+      note: String(payload.note || payload.content || '').trim(),
+      source: 'STAGE232O_MISSING_ITEM_ACTIVITY_BRIDGE_AND_CASE_APPEND',
+    };
+    if (taskId) byTaskId.set(taskId, metadata);
+    if (titleKey) byTitle.set(titleKey, metadata);
+  }
+  return { byTaskId, byTitle };
+}
+function readCaseMissingActivityMetadataStage232O(task: TaskRecord, index: ReturnType<typeof buildCaseMissingActivityMetadataStage232O>) {
+  const taskId = String((task as any)?.id || '').trim();
+  const titleKey = normalizeCaseMissingTitleStage232O((task as any)?.title || '');
+  return (taskId && index.byTaskId.get(taskId)) || (titleKey && index.byTitle.get(titleKey)) || null;
+}
+function enrichCaseTaskFromMissingActivityStage232O(task: TaskRecord, index: ReturnType<typeof buildCaseMissingActivityMetadataStage232O>) {
+  if (isStage232I1CaseMissingTaskSource(task)) return task;
+  const metadata = readCaseMissingActivityMetadataStage232O(task, index);
+  if (!metadata) return task;
+  const payload = getStage232I1TaskPayload(task);
+  return {
+    ...task,
+    type: 'missing_item',
+    status: metadata.blocksProgress ? 'blocking_missing_item' : 'missing_item',
+    missingKind: metadata.missingKind || (task as any).missingKind,
+    blocksProgress: metadata.blocksProgress,
+    blockScope: metadata.blockScope || (task as any).blockScope || null,
+    description: metadata.note || (task as any).description,
+    payload: {
+      ...payload,
+      kind: 'missing_item',
+      type: 'missing_item',
+      status: metadata.blocksProgress ? 'blocking_missing_item' : 'missing_item',
+      missingKind: metadata.missingKind || payload.missingKind,
+      blocksProgress: metadata.blocksProgress,
+      blockScope: metadata.blockScope || payload.blockScope || null,
+      note: metadata.note || payload.note || null,
+      source: 'STAGE232O_MISSING_ITEM_ACTIVITY_BRIDGE_AND_CASE_APPEND',
+    },
+  } as TaskRecord;
+}
+
 function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseItem[]) {
   const taskItems: WorkItem[] = tasks.flatMap((task) => {
     const isMissingStage232I1 = isStage232I1CaseMissingTaskSource(task);
     if (isMissingStage232I1 && isStage232I1ResolvedCaseMissingTask(task)) return [];
     const isNoteFollowUpStage231H_R1D2_R10C = isTaskNoteFollowUpStage231H_R1D2_R11(task);
-    const noteFollowUpPreviewStage231H_R1D2_R11 = getTaskNoteFollowUpPreviewStage231H_R1D2_R11(task);
+    const noteFollowUpPreviewStage231H_R1D2_R11 = getTaskNoteFollowUpPreviewStage231H_R1D2_R11(taskWithMissingBridgeStage232O);
     return [{
       id: `task-${task.id}`,
       kind: isMissingStage232I1 ? 'missing' : 'task',
@@ -2500,6 +2573,11 @@ export default function CaseDetail() {
       }),
     [effectiveStatus, events, items, tasks],
   );
+  const caseMissingActivityMetadataStage232O = useMemo(
+    () => buildCaseMissingActivityMetadataStage232O(activities),
+    [activities],
+  );
+
   const noteFollowUpPreviewByTaskStage231H_R1D2_R11 = useMemo(() => {
     const byKey = new Map<string, string>();
     for (const activity of activities) {
@@ -2518,15 +2596,16 @@ export default function CaseDetail() {
 
   const openTasksWithNoteFollowUpPreviewStage231H_R1D2_R11 = useMemo(() => {
     return openTasks.map((task) => {
-      if (!isTaskNoteFollowUpStage231H_R1D2_R11(task)) return task;
+      const taskWithMissingBridgeStage232O = enrichCaseTaskFromMissingActivityStage232O(task, caseMissingActivityMetadataStage232O);
+      if (!isTaskNoteFollowUpStage231H_R1D2_R11(taskWithMissingBridgeStage232O)) return taskWithMissingBridgeStage232O;
       const taskId = String(task.id || '').trim();
-      const taskWhen = String(getTaskMainDate(task) || task.reminderAt || task.dueAt || task.date || '').trim();
-      const preview = getTaskNoteFollowUpPreviewStage231H_R1D2_R11(task) ||
+      const taskWhen = String(getTaskMainDate(taskWithMissingBridgeStage232O) || taskWithMissingBridgeStage232O.reminderAt || taskWithMissingBridgeStage232O.dueAt || taskWithMissingBridgeStage232O.date || '').trim();
+      const preview = getTaskNoteFollowUpPreviewStage231H_R1D2_R11(taskWithMissingBridgeStage232O) ||
         (taskId ? noteFollowUpPreviewByTaskStage231H_R1D2_R11.get('task:' + taskId) : '') ||
         (taskWhen ? noteFollowUpPreviewByTaskStage231H_R1D2_R11.get('time:' + taskWhen.slice(0, 16)) : '') || '';
-      return preview ? ({ ...task, notePreview: preview, description: preview } as TaskRecord) : task;
+      return preview ? ({ ...taskWithMissingBridgeStage232O, notePreview: preview, description: preview } as TaskRecord) : taskWithMissingBridgeStage232O;
     });
-  }, [noteFollowUpPreviewByTaskStage231H_R1D2_R11, openTasks]);
+  }, [caseMissingActivityMetadataStage232O, noteFollowUpPreviewByTaskStage231H_R1D2_R11, openTasks]);
 
   const workItems = useMemo(() => dedupeCaseWorkItems(buildWorkItems(openTasksWithNoteFollowUpPreviewStage231H_R1D2_R11, plannedEvents, items)), [items, openTasksWithNoteFollowUpPreviewStage231H_R1D2_R11, plannedEvents]);
   const caseFinance = useMemo(() => {
@@ -2934,7 +3013,7 @@ export default function CaseDetail() {
 
     let noteIdStage231H_R1D2_R15C = String(payloadStage231H_R1D2_R15C.sourceNoteId || payloadStage231H_R1D2_R15C.noteId || (task as any).sourceNoteId || (task as any).noteId || '').trim();
     let notePreviewStage231H_R1D2_R15C = normalizeCaseNotePreviewStage231H_R1D2_R11(
-      getTaskNoteFollowUpPreviewStage231H_R1D2_R11(task) ||
+      getTaskNoteFollowUpPreviewStage231H_R1D2_R11(taskWithMissingBridgeStage232O) ||
       payloadStage231H_R1D2_R15C.notePreview ||
       payloadStage231H_R1D2_R15C.note ||
       payloadStage231H_R1D2_R15C.content ||

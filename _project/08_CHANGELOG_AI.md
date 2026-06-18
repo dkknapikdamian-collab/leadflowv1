@@ -5003,3 +5003,21 @@ Zmiana:
 - LeadDetail renderuje missing_item jako Brak albo Blokada,
 - status wiersza dla missing_item pokazuje Brak/Blokada zamiast Zaległe,
 - no-flicker mutation niesie displayKind/businessKind.
+
+## 2026-06-18 05:35 Europe/Warsaw - STAGE232O_MISSING_ITEM_ACTIVITY_BRIDGE_AND_CASE_APPEND
+
+Status: DO_APPLY_ZIP / WAITING_LOCAL_GUARD
+
+Problem:
+- Braki były w dobrej grupie, ale renderowały się jako Zadanie/Zaległe.
+- W CaseDetail Brak wpadał do Wszystkie aktywne jako zwykły task.
+
+Audyt:
+- STAGE232N działa dla entries z missing metadata,
+- zrzut ekranu pokazuje przypadek activity-bridged missing bez metadanych na timeline entry,
+- CaseDetail buildWorkItems nie używał activity missing_item_created do wzbogacenia tasków.
+
+Zmiana:
+- LeadDetail markeruje active missing entries jako stage232oMissingItem,
+- ContextActionDialogs wysyła enriched savedRecord,
+- CaseDetail wzbogaca taski z activity metadata przed buildWorkItems.
