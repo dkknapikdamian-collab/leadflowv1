@@ -138,6 +138,10 @@ import { EntityContactInfoList } from '../components/entity-contact-card';
 import { MissingItemQuickActionModal } from '../components/detail/MissingItemQuickActionModal';
 import { buildMissingItemModalDraft } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
 import { isClosedCaseStatus } from '../lib/cases';
+
+const STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_RUNTIME = 'ClientDetail aggregates direct client, lead and case missing_item tasks with source badges and source-entity resolve/delete';
+void STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_RUNTIME;
+
 const STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH = 'STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH';
 void STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH;
 const STAGE231B0_R9_CLIENT_HISTORY_AND_CASE_VIEW_MODEL = 'STAGE231B0_R9_CLIENT_HISTORY_AND_CASE_VIEW_MODEL';
@@ -358,6 +362,117 @@ function getEventDate(event: any) {
 function isDoneStatus(status: unknown) {
   return ['done', 'completed', 'archived', 'cancelled', 'canceled', 'deleted'].includes(String(status || '').toLowerCase());
 }
+
+type Stage232I2ClientMissingSourceType = 'client' | 'lead' | 'case';
+
+type Stage232I2ClientMissingSourceContext = {
+  clientId: string;
+  leadIds: Set<string>;
+  caseIds: Set<string>;
+  leadLabels: Map<string, string>;
+  caseLabels: Map<string, string>;
+};
+
+function stage232i2AsText(value: unknown) {
+  return typeof value === 'string' && value.trim() ? value.trim() : '';
+}
+
+function getStage232I2TaskPayload(task: any) {
+  return task?.payload && typeof task.payload === 'object' ? task.payload : {};
+}
+
+function getStage232I2RelationId(task: any, keys: string[]) {
+  const payload = getStage232I2TaskPayload(task);
+  for (const key of keys) {
+    const direct = stage232i2AsText(task?.[key]);
+    if (direct) return direct;
+    const nested = stage232i2AsText((payload as any)?.[key]);
+    if (nested) return nested;
+  }
+  return '';
+}
+
+function stage232i2TaskTime(task: any) {
+  const value = task?.dueDate || task?.due_date || task?.reminderAt || task?.reminder_at || task?.createdAt || task?.created_at || '';
+  const time = Date.parse(String(value || ''));
+  return Number.isFinite(time) ? time : 0;
+}
+
+function isStage232I2MissingItemTask(task: any) {
+  const payload = getStage232I2TaskPayload(task);
+  const type = String(task?.type || task?.taskType || task?.kind || (payload as any)?.type || (payload as any)?.kind || '').trim().toLowerCase();
+  const status = String(task?.status || (payload as any)?.status || '').trim().toLowerCase();
+  return type === 'missing_item'
+    || type === 'blocker'
+    || status === 'missing_item'
+    || status === 'blocking_missing_item'
+    || status === 'missing'
+    || status === 'blocked'
+    || Boolean((payload as any)?.missingItem === true);
+}
+
+function isStage232I2ResolvedMissingItemTask(task: any) {
+  const payload = getStage232I2TaskPayload(task);
+  const status = String(task?.status || (payload as any)?.status || '').trim().toLowerCase();
+  return ['done', 'completed', 'archived', 'cancelled', 'canceled', 'deleted', 'resolved'].includes(status);
+}
+
+function isStage232I2ActiveMissingItemTask(task: any) {
+  return isStage232I2MissingItemTask(task) && !isStage232I2ResolvedMissingItemTask(task);
+}
+
+function isStage232I2BlockingMissingItem(task: any) {
+  const payload = getStage232I2TaskPayload(task);
+  const status = String(task?.status || (payload as any)?.status || '').trim().toLowerCase();
+  const direct = task?.blocksProgress ?? task?.blocks_progress ?? (payload as any)?.blocksProgress ?? (payload as any)?.blocks_progress;
+  return status === 'blocking_missing_item' || direct === true || String(direct || '').toLowerCase() === 'true';
+}
+
+function getStage232I2MissingSourceType(task: any, context?: Stage232I2ClientMissingSourceContext): Stage232I2ClientMissingSourceType {
+  const payload = getStage232I2TaskPayload(task);
+  const explicit = String((payload as any)?.sourceEntityType || (payload as any)?.recordType || '').trim().toLowerCase();
+  const caseId = getStage232I2RelationId(task, ['caseId', 'case_id']);
+  const leadId = getStage232I2RelationId(task, ['leadId', 'lead_id']);
+  const clientId = getStage232I2RelationId(task, ['clientId', 'client_id']);
+
+  if (explicit === 'case' || (caseId && (!context || context.caseIds.has(caseId)))) return 'case';
+  if (explicit === 'lead' || (leadId && (!context || context.leadIds.has(leadId)))) return 'lead';
+  if (explicit === 'client' || (clientId && (!context || clientId === context.clientId))) return 'client';
+  if (caseId) return 'case';
+  if (leadId) return 'lead';
+  return 'client';
+}
+
+function getStage232I2MissingSourceId(task: any, sourceType: Stage232I2ClientMissingSourceType, context?: Stage232I2ClientMissingSourceContext) {
+  const payload = getStage232I2TaskPayload(task);
+  const explicit = stage232i2AsText((payload as any)?.sourceEntityId || (payload as any)?.recordId);
+  if (explicit) return explicit;
+  if (sourceType === 'case') return getStage232I2RelationId(task, ['caseId', 'case_id']);
+  if (sourceType === 'lead') return getStage232I2RelationId(task, ['leadId', 'lead_id']);
+  return getStage232I2RelationId(task, ['clientId', 'client_id']) || context?.clientId || '';
+}
+
+function getStage232I2MissingSourceLabel(sourceType: Stage232I2ClientMissingSourceType) {
+  if (sourceType === 'case') return 'Sprawa';
+  if (sourceType === 'lead') return 'Lead';
+  return 'Klient';
+}
+
+function getStage232I2MissingSourceTitle(sourceType: Stage232I2ClientMissingSourceType, sourceId: string, context: Stage232I2ClientMissingSourceContext) {
+  if (sourceType === 'case') return context.caseLabels.get(sourceId) || 'Sprawa klienta';
+  if (sourceType === 'lead') return context.leadLabels.get(sourceId) || 'Lead klienta';
+  return 'Kartoteka klienta';
+}
+
+function getStage232I2MissingNote(task: any) {
+  const payload = getStage232I2TaskPayload(task);
+  return String((payload as any)?.note || (payload as any)?.content || task?.description || '').trim();
+}
+
+function getStage232I2MissingStatusLabel(task: any) {
+  return isStage232I2BlockingMissingItem(task) ? 'Blokada' : 'Brak';
+}
+
 function getActivityTime(activity: any) {
   return String(activity?.createdAt || activity?.updatedAt || activity?.happenedAt || '');
 }
@@ -1358,6 +1473,7 @@ function ClientDetail() {
   const [clientMissingNote, setClientMissingNote] = useState('');
   const [clientMissingError, setClientMissingError] = useState('');
   const [clientMissingSaving, setClientMissingSaving] = useState(false);
+  const [clientMissingSourceFilterStage232I2, setClientMissingSourceFilterStage232I2] = useState<'all' | 'client' | 'lead' | 'case' | 'blockers' | 'missing'>('all');
   const [clientNoteModalOpen, setClientNoteModalOpen] = useState(false);
   const [clientNoteAutosaving, setClientNoteAutosaving] = useState(false);
   const [clientCaseCreateOpen, setClientCaseCreateOpen] = useState(false);
@@ -1593,16 +1709,80 @@ function ClientDetail() {
   const mainCaseCompleteness = mainCase ? getCaseCompleteness(mainCase) : 0;
   const activeTaskCount = useMemo(() => clientTasks.filter((task) => !isDoneStatus(task.status)).length, [clientTasks]);
 
-  const clientMissingItemsStage227C3B = useMemo(() => {
+  const stage232i2MissingSourceContext = useMemo<Stage232I2ClientMissingSourceContext>(() => {
+    return {
+      clientId: String(client?.id || clientId || '').trim(),
+      leadIds: relationIds.leadIds,
+      caseIds: relationIds.caseIds,
+      leadLabels: new Map(leads.map((lead: any) => [String(lead?.id || ''), getStage14BLeadTitle(lead)])),
+      caseLabels: new Map(cases.map((caseRecord: any) => [String(caseRecord?.id || ''), getCaseTitle(caseRecord)])),
+    };
+  }, [cases, client?.id, clientId, leads, relationIds.caseIds, relationIds.leadIds]);
+
+  const stage232i2AllActiveMissingItems = useMemo(() => {
     return clientTasks
-      .filter((task: any) => {
-        const payload = task?.payload && typeof task.payload === 'object' ? task.payload : {};
-        const type = String(task?.type || task?.taskType || task?.kind || (payload as any)?.type || (payload as any)?.kind || '').trim().toLowerCase();
-        const status = String(task?.status || (payload as any)?.status || '').trim().toLowerCase();
-        return !isDoneStatus(status) && (type === 'missing_item' || type === 'blocker' || status === 'missing_item' || status === 'missing' || status === 'blocked' || Boolean((payload as any)?.missingItem === true));
+      .filter((task: any) => isStage232I2ActiveMissingItemTask(task))
+      .map((task: any) => {
+        const sourceType = getStage232I2MissingSourceType(task, stage232i2MissingSourceContext);
+        const sourceId = getStage232I2MissingSourceId(task, sourceType, stage232i2MissingSourceContext);
+        return {
+          ...task,
+          stage232i2SourceType: sourceType,
+          stage232i2SourceId: sourceId,
+          stage232i2SourceLabel: getStage232I2MissingSourceLabel(sourceType),
+          stage232i2SourceTitle: getStage232I2MissingSourceTitle(sourceType, sourceId, stage232i2MissingSourceContext),
+          stage232i2IsBlocker: isStage232I2BlockingMissingItem(task),
+          stage232i2Note: getStage232I2MissingNote(task),
+        };
       })
-      .sort((left: any, right: any) => (asDate(getTaskDate(right))?.getTime() ?? 0) - (asDate(getTaskDate(left))?.getTime() ?? 0));
-  }, [clientTasks]);
+      .sort((left: any, right: any) => {
+        const leftBlocker = left.stage232i2IsBlocker ? 1 : 0;
+        const rightBlocker = right.stage232i2IsBlocker ? 1 : 0;
+        if (leftBlocker !== rightBlocker) return rightBlocker - leftBlocker;
+        return stage232i2TaskTime(right) - stage232i2TaskTime(left);
+      });
+  }, [clientTasks, stage232i2MissingSourceContext]);
+
+  const directClientMissingItems = useMemo(
+    () => stage232i2AllActiveMissingItems.filter((item: any) => item.stage232i2SourceType === 'client'),
+    [stage232i2AllActiveMissingItems],
+  );
+  const leadMissingItems = useMemo(
+    () => stage232i2AllActiveMissingItems.filter((item: any) => item.stage232i2SourceType === 'lead'),
+    [stage232i2AllActiveMissingItems],
+  );
+  const caseMissingItems = useMemo(
+    () => stage232i2AllActiveMissingItems.filter((item: any) => item.stage232i2SourceType === 'case'),
+    [stage232i2AllActiveMissingItems],
+  );
+
+  const directClientBlockers = useMemo(
+    () => directClientMissingItems.filter((item: any) => item.stage232i2IsBlocker),
+    [directClientMissingItems],
+  );
+  const leadBlockers = useMemo(
+    () => leadMissingItems.filter((item: any) => item.stage232i2IsBlocker),
+    [leadMissingItems],
+  );
+  const caseBlockers = useMemo(
+    () => caseMissingItems.filter((item: any) => item.stage232i2IsBlocker),
+    [caseMissingItems],
+  );
+
+  const clientMissingItemsStage227C3B = useMemo(() => {
+    if (clientMissingSourceFilterStage232I2 === 'client') return directClientMissingItems;
+    if (clientMissingSourceFilterStage232I2 === 'lead') return leadMissingItems;
+    if (clientMissingSourceFilterStage232I2 === 'case') return caseMissingItems;
+    if (clientMissingSourceFilterStage232I2 === 'blockers') return stage232i2AllActiveMissingItems.filter((item: any) => item.stage232i2IsBlocker);
+    if (clientMissingSourceFilterStage232I2 === 'missing') return stage232i2AllActiveMissingItems.filter((item: any) => !item.stage232i2IsBlocker);
+    return stage232i2AllActiveMissingItems;
+  }, [
+    caseMissingItems,
+    clientMissingSourceFilterStage232I2,
+    directClientMissingItems,
+    leadMissingItems,
+    stage232i2AllActiveMissingItems,
+  ]);
 
   const activeEventCount = useMemo(() => clientEvents.filter((event) => !isDoneStatus(event.status)).length, [clientEvents]);
   const nextAction = useMemo(() => buildClientNextAction(leads, activeCases, clientTasks, clientEvents, String(clientId || '')), [cases, clientEvents, clientId, clientTasks, leads]);
@@ -1814,7 +1994,10 @@ function ClientDetail() {
           note: draft.note,
           content: draft.note,
           createdAt,
-          source: 'stage227c3b_client_missing_item_quick_action',
+          source: 'STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_RUNTIME',
+          sourceEntityType: 'client',
+          sourceEntityId: safeClientId,
+          recordId: safeClientId,
         },
         workspaceId: workspace?.id,
       } as any);
@@ -2637,10 +2820,11 @@ return (
             </div>
 
 
-            <section className="client-detail-section-card client-detail-missing-items-section" data-stage227c3b-client-missing-items-list="true">
+            <section className="client-detail-section-card client-detail-missing-items-section" data-stage227c3b-client-missing-items-list="true" data-stage232i2-client-detail-missing-blocker-runtime="true">
               <div className="client-detail-section-head">
                 <div>
-                  <h2>Braki i blokady</h2>
+                  <h2>Braki / Blokady klienta</h2>
+                  <p>Aktywne braki klienta z podziałem na źródło: Klient, Lead albo Sprawa.</p>
                 </div>
                 <Button
                   type="button"
@@ -2652,7 +2836,7 @@ return (
                   }}
                   onClick={() => openClientContextAction('blocker')}
                   disabled={!hasAccess || clientMissingSaving}
-                  data-stage228r16-client-direct-brak-pointerdown="true"
+                  data-stage232i2-client-direct-missing-action="true"
                   data-stage227c3b-client-missing-action="true"
                   data-stage228r12-client-context-blocker="true"
                   data-context-action-kind="blocker"
@@ -2661,32 +2845,77 @@ return (
                   data-context-record-label={getClientName(client)}
                 >
                   <AlertTriangle className="h-4 w-4" />
-                  Brak
+                  Dodaj brak
                 </Button>
               </div>
 
-              <div className="client-detail-missing-items-list">
+              <div className="client-detail-missing-filter-row" data-stage232i2-client-missing-filters="true">
+                {[
+                  { key: 'all', label: 'Wszystkie', count: stage232i2AllActiveMissingItems.length },
+                  { key: 'client', label: 'Klient', count: directClientMissingItems.length },
+                  { key: 'lead', label: 'Leady', count: leadMissingItems.length },
+                  { key: 'case', label: 'Sprawy', count: caseMissingItems.length },
+                  { key: 'blockers', label: 'Blokady', count: directClientBlockers.length + leadBlockers.length + caseBlockers.length },
+                  { key: 'missing', label: 'Braki', count: stage232i2AllActiveMissingItems.filter((item: any) => !item.stage232i2IsBlocker).length },
+                ].map((filter) => (
+                  <button
+                    key={filter.key}
+                    type="button"
+                    className={clientMissingSourceFilterStage232I2 === filter.key ? 'client-detail-pill client-detail-pill-blue' : 'client-detail-pill client-detail-pill-muted'}
+                    onClick={() => setClientMissingSourceFilterStage232I2(filter.key as typeof clientMissingSourceFilterStage232I2)}
+                    data-stage232i2-client-missing-filter={filter.key}
+                  >
+                    {filter.label} <span>{filter.count}</span>
+                  </button>
+                ))}
+              </div>
+
+              <div className="client-detail-missing-source-summary" data-stage232i2-client-missing-source-summary="true">
+                <span>Klient: {directClientMissingItems.length}</span>
+                <span>Leady: {leadMissingItems.length}</span>
+                <span>Sprawy: {caseMissingItems.length}</span>
+                <span>Blokady: {directClientBlockers.length + leadBlockers.length + caseBlockers.length}</span>
+              </div>
+
+              <div className="client-detail-missing-items-list" data-stage232i2-client-missing-list="true">
                 {clientMissingItemsStage227C3B.length ? (
                   clientMissingItemsStage227C3B.map((item: any) => {
-                    const payload = item?.payload && typeof item.payload === 'object' ? item.payload : {};
-                    const note = String((payload as any)?.note || (payload as any)?.content || item?.description || '').trim();
+                    const sourceType = item.stage232i2SourceType as Stage232I2ClientMissingSourceType;
+                    const sourceLabel = String(item.stage232i2SourceLabel || getStage232I2MissingSourceLabel(sourceType));
+                    const sourceTitle = String(item.stage232i2SourceTitle || '');
+                    const note = String(item.stage232i2Note || '').trim();
+                    const sourceTo = sourceType === 'case'
+                      ? '/cases/' + String(item.stage232i2SourceId || item.caseId || '')
+                      : sourceType === 'lead'
+                        ? '/leads/' + String(item.stage232i2SourceId || item.leadId || '')
+                        : '';
                     return (
-                      <article key={String(item?.id || item?.title)} className="client-detail-missing-item-row" data-stage227c3b-client-missing-item-row="true">
+                      <article key={String(item?.id || item?.title)} className="client-detail-missing-item-row" data-stage227c3b-client-missing-item-row="true" data-stage232i2-client-missing-source={sourceType}>
                         <span>
+                          <span className="client-detail-pill client-detail-pill-muted" data-stage232i2-client-missing-source-badge={sourceType}>[{sourceLabel}]</span>
                           <strong>{String(item?.title || 'Brak bez nazwy')}</strong>
-                          {note ? <small>{note}</small> : null}
+                          <small>
+                            {getStage232I2MissingStatusLabel(item)}
+                            {sourceTitle ? ' · ' + sourceTitle : ''}
+                            {note ? ' · ' + note : ''}
+                          </small>
                         </span>
-                        <div className="client-detail-missing-item-actions" data-stage228r13-client-missing-status-actions="true">
-                          <em>{isDoneStatus(item?.status) ? 'Rozwiązany' : 'Otwarty'}</em>
+                        <div className="client-detail-missing-item-actions" data-stage232i2-client-missing-source-actions="true">
+                          <em>{item.stage232i2IsBlocker ? 'Blokada' : 'Brak'}</em>
+                          {sourceTo ? (
+                            <Button type="button" size="sm" variant="outline" onClick={() => navigate(sourceTo)} data-stage232i2-open-source-action="true">
+                              Otwórz źródło
+                            </Button>
+                          ) : null}
                           <Button
                             type="button"
                             size="sm"
                             variant="outline"
                             onClick={() => handleResolveClientMissingItemStage228R13(item)}
                             disabled={!hasAccess || isDoneStatus(item?.status)}
-                            data-stage228r13-client-missing-resolve-action="true"
+                            data-stage232i2-resolve-source-item="true"
                           >
-                            {isDoneStatus(item?.status) ? 'Rozwiązany' : 'Rozwiąż'}
+                            Uzupełnione
                           </Button>
                           <Button
                             type="button"
@@ -2694,7 +2923,7 @@ return (
                             variant="outline"
                             onClick={() => handleDeleteClientMissingItemStage228R15(item)}
                             disabled={!hasAccess || isDoneStatus(item?.status)}
-                            data-stage228r15-client-missing-delete-action="true"
+                            data-stage232i2-delete-source-item="true"
                           >
                             Usuń
                           </Button>
@@ -2705,6 +2934,7 @@ return (
                 ) : (
                   <div className="client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact">
                     <strong>Brak otwartych braków.</strong>
+                    <p>Braki z klienta, leadów i spraw pojawią się tutaj z badge źródła.</p>
                   </div>
                 )}
               </div>

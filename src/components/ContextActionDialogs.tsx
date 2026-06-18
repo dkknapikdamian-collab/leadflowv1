@@ -12,6 +12,10 @@ import ContextNoteDialog from './ContextNoteDialog';
 import { MissingItemQuickActionModal } from './detail/MissingItemQuickActionModal';
 import { emitCloseflowWorkItemNoFlickerMutation } from '../lib/work-items/no-flicker-mutation';
 
+
+const STAGE232I2_CONTEXT_ACTION_CLIENT_MISSING_ITEM_SOURCE = 'ClientDetail Braki/Blokady direct client items use task/work item missing_item with explicit client source metadata';
+void STAGE232I2_CONTEXT_ACTION_CLIENT_MISSING_ITEM_SOURCE;
+
 export type ContextActionKind = 'task' | 'event' | 'note' | 'blocker';
 export type ContextRecordType = 'lead' | 'client' | 'case';
 
@@ -273,7 +277,10 @@ export default function ContextActionDialogsHost() {
           blocksProgress: draft.blocksProgress,
           blockScope: draft.blockScope || null,
           payload: {
-            source: 'STAGE232I1_CASE_DETAIL_MISSING_BLOCKER_RUNTIME',
+            missingKind: draft.missingKind,
+            blocksProgress: draft.blocksProgress,
+            blockScope: draft.blockScope || null,
+            source: request.recordType === 'client' ? 'STAGE232I2_CONTEXT_ACTION_CLIENT_MISSING_ITEM_SOURCE' : 'context_action_dialogs_blocker',
             sourceEntityType: request.recordType,
             sourceEntityId: request.recordId,
             recordType: request.recordType,
