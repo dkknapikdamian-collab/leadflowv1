@@ -80,3 +80,34 @@ Zakres:
 - ClientDetail: usunięto firstMissingItem / firstMissingSource.
 - Kafelek Braki / Blokady dalej używa STAGE232I2 / stage232i2AllActiveMissingItems.
 - Bez SQL, finansów, Calendar, billing/trial.
+
+## 2026-06-18 21:55 Europe/Warsaw — STAGE232I4_R6_CLIENT_MISSING_LEAD_SOURCE_TRUTH
+
+Status: PATCHED_LOCAL / TESTS_TO_RUN
+
+Zakres:
+- Usuwa stary details/summary panel Lista braków i blokad klienta z głównego widoku.
+- Zastępuje go nowym panelem lead-like otwieranym przez kafelek Braki / Blokady.
+- Kafelek Braki / Blokady dostaje rytm LeadDetail blocker card: lead-detail-top-card, lead-detail-callout-red, lead-detail-inline-action.
+- Przycisk Zobacz wszystkie braki otwiera nowy panel, nie stary details.open.
+- Po zapisie braku z ContextActionDialogs ClientDetail dopina savedRecord do lokalnych tasks bez czekania na reload, więc licznik kafelka odświeża się natychmiast.
+- Dane nadal idą z STAGE232I2 / stage232i2AllActiveMissingItems i aktualnego klienta.
+- Bez SQL, finansów, Google Calendar, billing/trial, CaseDetail runtime.
+
+Ryzyka:
+- Wymagany smoke UI: dodać brak, zobaczyć licznik w top kafelku, otworzyć listę, usunąć/uzupełnić brak, refresh bez duplikatów.
+
+## 2026-06-18 22:05 Europe/Warsaw — STAGE232I4_R7_FIX_R6_JSX_ARTICLE_CLOSE
+
+Status: REPAIR_AFTER_R6_BUILD_FAIL / TESTS_TO_RUN
+
+Powód:
+- R6 poprawnie przeszedł guard/test przed buildem, ale build wykrył niedomknięty JSX.
+- Błąd: top tile Braki / Blokady otwierał article, ale przed zamknięciem sekcji brakowało </article>.
+- R7 domyka article i nie zmienia zakresu biznesowego R6.
+
+Zakres:
+- ClientDetail: domknięto article kafelka Braki / Blokady.
+- R6 nadal usuwa stary panel Lista braków i blokad klienta.
+- R6 nadal otwiera nowy panel przez Zobacz wszystkie braki.
+- Dane nadal idą z STAGE232I2 / stage232i2AllActiveMissingItems.
