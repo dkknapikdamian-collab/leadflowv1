@@ -46,7 +46,16 @@ expect(client.includes('handleResolveClientMissingItemStage228R13(item)') && cli
 expect(client.includes('{false && clientMissingListOpenStage232I6 ? ('), 'Old inline missing panel must be disabled after modal migration');
 expect(css.includes('STAGE232I4_R12_MISSING_WINDOW_MODAL'), 'Missing modal CSS marker missing');
 expect(client.includes('savedRecord') && client.includes('normalizedSavedRecord'), 'ClientDetail must no-flicker append saved missing record after ContextActionDialogs save');
-expect(client.includes("openClientContextAction('blocker')"), 'Dodaj brak must use shared ContextActionDialogs blocker source');
+expect(!client.includes("onAddMissing={() => openClientContextAction('blocker')}"), 'Dodaj brak top tile must not use old ContextActionDialogs blocker source after R13F');
+expect(client.includes('data-stage232i4-r13f-simple-missing-window="true"'), 'R13F simple missing modal marker missing');
+expect(client.includes('data-stage232i4-r13f-add-blocker-checkbox="true"'), 'R13F add blocker checkbox missing');
+expect(client.includes('data-stage232i4-r13f-row-blocker-checkbox="true"'), 'R13F row blocker checkbox missing');
+expect(client.includes('stage232i2AllActiveMissingItems.map'), 'R13F modal list must use same source truth as top tile');
+expect(client.includes('handleToggleClientMissingBlockerStage232I4R13F'), 'R13F blocker toggle handler missing');
+expect(client.includes('missingItem: true') && client.includes('blocksProgress: clientMissingBlocksProgress'), 'R13F new missing item must persist missingItem + blocksProgress');
+expect(!client.includes('id="client-missing-window-note"'), 'R13F modal must not include note field');
+expect(!client.includes('data-stage232i4-r12-missing-window-filters="true"'), 'R13F modal must not include filters');
+expect(css.includes('STAGE232I4_R13F_SIMPLE_MISSING_MODAL_ROWS'), 'R13F simple modal CSS marker missing');
 expect(!client.includes('case_items'), 'ClientDetail I4 must not add case_items active source');
 expect(!client.includes('from(') || !client.includes('case_items'), 'ClientDetail I4 must not query case_items');
 

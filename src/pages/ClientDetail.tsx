@@ -1558,6 +1558,7 @@ function ClientDetail() {
   const [clientMissingModalOpen, setClientMissingModalOpen] = useState(false);
   const [clientMissingTitle, setClientMissingTitle] = useState('');
   const [clientMissingNote, setClientMissingNote] = useState('');
+  const [clientMissingBlocksProgress, setClientMissingBlocksProgress] = useState(false);
   const [clientMissingError, setClientMissingError] = useState('');
   const [clientMissingSaving, setClientMissingSaving] = useState(false);
   const [clientMissingSourceFilterStage232I2, setClientMissingSourceFilterStage232I2] = useState<'all' | 'client' | 'lead' | 'case' | 'blockers' | 'missing'>('all');
@@ -2075,13 +2076,27 @@ function ClientDetail() {
       const savedTask = await insertTaskToSupabase({
         title: draft.title,
         type: 'missing_item',
-        status: 'missing_item',
+        status: clientMissingBlocksProgress ? 'blocking_missing_item' : 'missing_item',
         priority: 'high',
         date: createdAt.slice(0, 10),
         scheduledAt: createdAt,
         dueAt: createdAt,
         clientId: safeClientId,
         workspaceId: workspace?.id,
+        blocksProgress: clientMissingBlocksProgress,
+        payload: {
+          kind: 'missing_item',
+          type: 'missing_item',
+          missingItem: true,
+          blocksProgress: clientMissingBlocksProgress,
+          status: clientMissingBlocksProgress ? 'blocking_missing_item' : 'missing_item',
+          note: draft.note,
+          source: 'stage232i4_r13f_simple_missing_modal_rows',
+          sourceEntityType: 'client',
+          sourceEntityId: safeClientId,
+          recordId: safeClientId,
+          clientId: safeClientId,
+        },
       } as any);
 
       await insertActivityToSupabase({
@@ -2093,7 +2108,9 @@ function ClientDetail() {
           entityId: safeClientId,
           kind: 'missing_item',
           type: 'missing_item',
-          status: 'missing_item',
+          status: clientMissingBlocksProgress ? 'blocking_missing_item' : 'missing_item',
+          missingItem: true,
+          blocksProgress: clientMissingBlocksProgress,
           title: draft.title,
           note: draft.note,
           content: draft.note,
@@ -2110,8 +2127,9 @@ function ClientDetail() {
         id: String((savedTask as any)?.id || 'client-missing-local-' + Date.now()),
         title: draft.title,
         type: 'missing_item',
-        status: 'missing_item',
+        status: clientMissingBlocksProgress ? 'blocking_missing_item' : 'missing_item',
         priority: 'high',
+        blocksProgress: clientMissingBlocksProgress,
         date: createdAt.slice(0, 10),
         scheduledAt: createdAt,
         dueAt: createdAt,
@@ -2158,8 +2176,59 @@ function ClientDetail() {
     } finally {
       setClientMissingSaving(false);
     }
-  }, [client, clientId, clientMissingNote, clientMissingTitle, hasAccess, reload, workspace?.id]);
+  }, [client, clientId, clientMissingBlocksProgress, clientMissingNote, clientMissingTitle, hasAccess, reload, workspace?.id]);
 
+
+
+  const handleToggleClientMissingBlockerStage232I4R13F = useCallback(async (item: any, blocksProgress: boolean) => {
+    if (!hasAccess) {
+      toast.error('Twój trial wygasł.');
+      return;
+    }
+    const taskId = String(item?.id || '').trim();
+    if (!taskId) {
+      toast.error('Brak ID braku. Nie można zmienić blokady.');
+      return;
+    }
+    const nextStatus = blocksProgress ? 'blocking_missing_item' : 'missing_item';
+    const previousPayload = item?.payload && typeof item.payload === 'object' ? item.payload : {};
+    try {
+      await updateTaskInSupabase({
+        id: taskId,
+        status: nextStatus,
+        blocksProgress,
+        payload: {
+          ...previousPayload,
+          kind: 'missing_item',
+          type: 'missing_item',
+          missingItem: true,
+          blocksProgress,
+          status: nextStatus,
+          source: 'stage232i4_r13f_simple_missing_modal_rows',
+        },
+      } as any);
+      setTasks((previous) => previous.map((task: any) => String(task?.id || '') === taskId
+        ? {
+            ...task,
+            status: nextStatus,
+            blocksProgress,
+            payload: {
+              ...(task?.payload && typeof task.payload === 'object' ? task.payload : {}),
+              kind: 'missing_item',
+              type: 'missing_item',
+              missingItem: true,
+              blocksProgress,
+              status: nextStatus,
+              source: 'stage232i4_r13f_simple_missing_modal_rows',
+            },
+          }
+        : task));
+      toast.success(blocksProgress ? 'Brak ustawiony jako blokujący' : 'Brak nie blokuje sprawy');
+      void reload();
+    } catch (error: any) {
+      toast.error('Nie udało się zmienić blokady: ' + (error?.message || 'błąd zapisu'));
+    }
+  }, [hasAccess, reload]);
 
   const handleResolveClientMissingItemStage228R13 = useCallback(async (item: any) => {
     if (!hasAccess) {
@@ -2932,7 +3001,13 @@ return (
                 canAddMissing={hasAccess && !clientMissingSaving}
                 onOpenCases={() => setActiveTab('cases')}
                 onAddCase={openNewCase}
-                onAddMissing={() => openClientContextAction('blocker')}
+                onAddMissing={() => {
+                  setClientMissingTitle('');
+                  setClientMissingNote('');
+                  setClientMissingBlocksProgress(false);
+                  setClientMissingError('');
+                  setClientMissingListOpenStage232I6(true);
+                }}
                 onOpenMissing={() => {
                   setClientMissingSourceFilterStage232I2('all');
                   setClientMissingListOpenStage232I6(true);
@@ -3128,28 +3203,25 @@ return (
               />
             </div>
 
-
             <Dialog
               open={clientMissingListOpenStage232I6}
               onOpenChange={(open) => setClientMissingListOpenStage232I6(open)}
             >
-              <DialogContent className="client-detail-missing-window-dialog" data-stage232i4-r12-missing-window="true">
+              <DialogContent className="client-detail-missing-window-dialog client-detail-missing-window-dialog-simple" data-stage232i4-r12-missing-window="true" data-stage232i4-r13f-simple-missing-window="true">
                 <DialogHeader>
-                  <DialogTitle>Braki i blokady klienta</DialogTitle>
-                  <DialogDescription>
-                    Wszystkie aktywne braki z klienta, leadów i spraw. Możesz dodać nowy brak po nazwie albo usunąć albo oznaczyć istniejący jako uzupełniony.
-                  </DialogDescription>
+                  <DialogTitle>Braki / Blokady</DialogTitle>
+                  <DialogDescription>Prosta lista braków klienta. Dodaj brak, ustaw czy blokuje sprawę, oznacz jako uzupełniony albo usuń.</DialogDescription>
                 </DialogHeader>
 
                 <form
-                  className="client-detail-missing-window-add-form"
-                  data-stage232i4-r12-missing-window-add-form="true"
+                  className="client-detail-missing-window-add-form client-detail-missing-window-add-form-simple"
+                  data-stage232i4-r13f-simple-missing-add-form="true"
                   onSubmit={(event) => {
                     event.preventDefault();
                     void handleSaveClientMissingItemStage227C3B();
                   }}
                 >
-                  <div className="client-detail-missing-window-field">
+                  <div className="client-detail-missing-window-field client-detail-missing-window-title-only">
                     <Label htmlFor="client-missing-window-title">Nazwa braku</Label>
                     <Input
                       id="client-missing-window-title"
@@ -3158,96 +3230,54 @@ return (
                         setClientMissingTitle(event.target.value);
                         if (clientMissingError) setClientMissingError('');
                       }}
-                      placeholder="np. Brak dokumentu, brak decyzji, brak danych do umowy"
+                      placeholder="np. Brak dokumentu"
                       disabled={!hasAccess || clientMissingSaving}
                       data-stage232i4-r12-missing-window-title-input="true"
+                      data-stage232i4-r13f-simple-missing-title-input="true"
                     />
                   </div>
-                  <div className="client-detail-missing-window-field">
-                    <Label htmlFor="client-missing-window-note">Notatka / doprecyzowanie</Label>
-                    <Textarea
-                      id="client-missing-window-note"
-                      value={clientMissingNote}
-                      onChange={(event) => setClientMissingNote(event.target.value)}
-                      placeholder="Opcjonalnie: czego dokładnie brakuje i od kogo"
+                  <label className="client-detail-missing-window-checkbox" data-stage232i4-r13f-add-blocker-checkbox="true">
+                    <input
+                      type="checkbox"
+                      checked={clientMissingBlocksProgress}
+                      onChange={(event) => setClientMissingBlocksProgress(event.target.checked)}
                       disabled={!hasAccess || clientMissingSaving}
-                      data-stage232i4-r12-missing-window-note-input="true"
                     />
-                  </div>
+                    <span>Blokuje sprawę</span>
+                  </label>
+                  <Button type="submit" disabled={!hasAccess || clientMissingSaving || !clientMissingTitle.trim()} data-stage232i4-r12-missing-window-add-action="true" data-stage232i4-r13f-simple-missing-add-action="true">
+                    <Plus className="h-4 w-4" />
+                    {clientMissingSaving ? 'Dodawanie...' : 'Dodaj brak'}
+                  </Button>
                   {clientMissingError ? <p className="client-detail-missing-window-error">{clientMissingError}</p> : null}
-                  <div className="client-detail-missing-window-add-actions">
-                    <Button type="submit" disabled={!hasAccess || clientMissingSaving || !clientMissingTitle.trim()} data-stage232i4-r12-missing-window-add-action="true">
-                      <Plus className="h-4 w-4" />
-                      {clientMissingSaving ? 'Dodawanie...' : 'Dodaj brak'}
-                    </Button>
-                  </div>
                 </form>
 
-                <div className="client-detail-missing-window-filter-row" data-stage232i4-r12-missing-window-filters="true">
-                  {[
-                    { key: 'all', label: 'Wszystkie', count: stage232i2AllActiveMissingItems.length },
-                    { key: 'client', label: 'Klient', count: directClientMissingItems.length },
-                    { key: 'lead', label: 'Leady', count: leadMissingItems.length },
-                    { key: 'case', label: 'Sprawy', count: caseMissingItems.length },
-                    { key: 'blockers', label: 'Blokady', count: directClientBlockers.length + leadBlockers.length + caseBlockers.length },
-                    { key: 'missing', label: 'Braki', count: stage232i2AllActiveMissingItems.filter((item: any) => !item.stage232i2IsBlocker).length },
-                  ].map((filter) => (
-                    <button
-                      key={filter.key}
-                      type="button"
-                      className={clientMissingSourceFilterStage232I2 === filter.key ? 'client-detail-pill client-detail-pill-blue' : 'client-detail-pill client-detail-pill-muted'}
-                      onClick={() => setClientMissingSourceFilterStage232I2(filter.key as typeof clientMissingSourceFilterStage232I2)}
-                      data-stage232i4-r12-missing-window-filter={filter.key}
-                    >
-                      {filter.label} <span>{filter.count}</span>
-                    </button>
-                  ))}
-                </div>
-
-                <div className="client-detail-missing-window-list" data-stage232i4-r12-missing-window-list="true">
-                  {clientMissingItemsStage227C3B.length ? (
-                    clientMissingItemsStage227C3B.map((item: any) => {
-                      const sourceType = item.stage232i2SourceType as Stage232I2ClientMissingSourceType;
-                      const sourceLabel = String(item.stage232i2SourceLabel || getStage232I2MissingSourceLabel(sourceType));
-                      const sourceTitle = String(item.stage232i2SourceTitle || '');
-                      const note = String(item.stage232i2Note || '').trim();
-                      const sourceTo = sourceType === 'case'
-                        ? '/cases/' + String(item.stage232i2SourceId || item.caseId || '')
-                        : sourceType === 'lead'
-                          ? '/leads/' + String(item.stage232i2SourceId || item.leadId || '')
-                          : '';
-                      return (
-                        <article key={String(item?.id || item?.title)} className="client-detail-missing-window-row" data-stage232i4-r12-missing-window-row="true" data-stage232i2-client-missing-source={sourceType}>
-                          <div className="client-detail-missing-window-row-main">
-                            <span className="client-detail-pill client-detail-pill-muted" data-stage232i2-client-missing-source-badge={sourceType}>[{sourceLabel}]</span>
-                            <strong>{String(item?.title || 'Brak bez nazwy')}</strong>
-                            <small>
-                              {getStage232I2MissingStatusLabel(item)}
-                              {sourceTitle ? ' · ' + sourceTitle : ''}
-                              {note ? ' · ' + note : ''}
-                            </small>
-                          </div>
-                          <div className="client-detail-missing-window-row-actions" data-stage232i4-r12-missing-window-row-actions="true">
-                            <em>{item.stage232i2IsBlocker ? 'Blokada' : 'Brak'}</em>
-                            {sourceTo ? (
-                              <Button type="button" size="sm" variant="outline" onClick={() => navigate(sourceTo)} data-stage232i2-open-source-action="true">
-                                Otwórz źródło
-                              </Button>
-                            ) : null}
-                            <Button type="button" size="sm" variant="outline" onClick={() => handleResolveClientMissingItemStage228R13(item)} disabled={!hasAccess || isDoneStatus(item?.status)} data-stage232i2-resolve-source-item="true">
-                              Uzupełnione
-                            </Button>
-                            <Button type="button" size="sm" variant="outline" onClick={() => handleDeleteClientMissingItemStage228R15(item)} disabled={!hasAccess || isDoneStatus(item?.status)} data-stage232i2-delete-source-item="true">
-                              Usuń
-                            </Button>
-                          </div>
-                        </article>
-                      );
-                    })
+                <div className="client-detail-missing-window-list client-detail-missing-window-list-simple" data-stage232i4-r12-missing-window-list="true" data-stage232i4-r13f-simple-missing-list="true">
+                  {stage232i2AllActiveMissingItems.length ? (
+                    stage232i2AllActiveMissingItems.map((item: any) => (
+                      <article key={String(item?.id || item?.title)} className="client-detail-missing-window-row client-detail-missing-window-row-simple" data-stage232i4-r12-missing-window-row="true" data-stage232i4-r13f-simple-missing-row="true">
+                        <strong className="client-detail-missing-window-row-title">{String(item?.title || 'Brak bez nazwy')}</strong>
+                        <label className="client-detail-missing-window-checkbox client-detail-missing-window-row-checkbox" data-stage232i4-r13f-row-blocker-checkbox="true">
+                          <input
+                            type="checkbox"
+                            checked={Boolean(item.stage232i2IsBlocker)}
+                            onChange={(event) => void handleToggleClientMissingBlockerStage232I4R13F(item, event.target.checked)}
+                            disabled={!hasAccess || isDoneStatus(item?.status)}
+                          />
+                          <span>Blokuje sprawę</span>
+                        </label>
+                        <Button type="button" size="sm" variant="outline" onClick={() => handleResolveClientMissingItemStage228R13(item)} disabled={!hasAccess || isDoneStatus(item?.status)} data-stage232i2-resolve-source-item="true">
+                          Uzupełnione
+                        </Button>
+                        <Button type="button" size="sm" variant="outline" onClick={() => handleDeleteClientMissingItemStage228R15(item)} disabled={!hasAccess || isDoneStatus(item?.status)} data-stage232i2-delete-source-item="true">
+                          Usuń
+                        </Button>
+                      </article>
+                    ))
                   ) : (
-                    <div className="client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact" data-stage232i4-r12-empty-missing-window="true">
+                    <div className="client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact" data-stage232i4-r12-empty-missing-window="true" data-stage232i4-r13f-simple-empty-missing-window="true">
                       <strong>Brak otwartych braków.</strong>
-                      <p>Dodaj brak po nazwie w formularzu powyżej.</p>
+                      <p>Dodaj brak po nazwie powyżej.</p>
                     </div>
                   )}
                 </div>

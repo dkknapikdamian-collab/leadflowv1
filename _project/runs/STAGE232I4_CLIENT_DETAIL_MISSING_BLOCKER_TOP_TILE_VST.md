@@ -204,3 +204,19 @@ Zakres:
 - Modal zawiera pole Nazwa braku, notatkę, Dodaj brak, listę braków, Uzupełnione, Usuń, Otwórz źródło.
 - Guard/test: dodano regresję modal window + add/delete controls.
 - Bez SQL, finansów, Google Calendar, billing/trial, CaseDetail.
+
+## 2026-06-18 23:55 Europe/Warsaw — STAGE232I4_R13F_SIMPLE_MISSING_MODAL_ROWS
+
+Status: TEST_ONLY / NO_COMMIT_YET
+
+Powód:
+- Smoke po R12B: modal był za rozbudowany, miał filtry/notatkę, a dodany brak nie aktualizował kafelka.
+- Decyzja Damiana: modal ma być prostą listą wierszy: nazwa braku, checkbox Blokuje sprawę, Uzupełnione, Usuń.
+
+Zakres:
+- Dodaj brak z kafelka otwiera ten sam prosty modal.
+- Modal nie ma filtrów, notatki ani Otwórz źródło.
+- Lista modala używa stage232i2AllActiveMissingItems, czyli tego samego źródła co kafelek.
+- Nowy brak zapisuje missingItem + blocksProgress i jest optymistycznie dodawany do tasks.
+- Checkbox Blokuje sprawę zapisuje status przez updateTaskInSupabase.
+- Guard/test rozszerzone o R13F.

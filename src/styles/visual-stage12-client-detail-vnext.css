@@ -4318,3 +4318,57 @@ main[data-current-section="client-detail"] > .view.active[data-shell-content="tr
   #root .client-detail-missing-window-row { align-items: flex-start !important; flex-direction: column !important; }
   #root .client-detail-missing-window-row-actions { justify-content: flex-start !important; }
 }
+
+/* STAGE232I4_R13F_SIMPLE_MISSING_MODAL_ROWS
+   Simple modal: name + blocker checkbox + done/delete only. No filters, no note field, no source-open action.
+*/
+#root .client-detail-missing-window-dialog-simple {
+  max-width: min(820px, calc(100vw - 32px)) !important;
+}
+
+#root .client-detail-missing-window-add-form-simple {
+  grid-template-columns: minmax(240px, 1fr) auto auto !important;
+  align-items: end !important;
+}
+
+#root .client-detail-missing-window-checkbox {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-height: 38px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #7f1d1d !important;
+  white-space: nowrap !important;
+}
+
+#root .client-detail-missing-window-checkbox input {
+  width: 16px !important;
+  height: 16px !important;
+  accent-color: #be123c !important;
+}
+
+#root .client-detail-missing-window-list-simple {
+  max-height: min(52vh, 460px) !important;
+}
+
+#root .client-detail-missing-window-row-simple {
+  display: grid !important;
+  grid-template-columns: minmax(180px, 1fr) auto auto auto !important;
+  align-items: center !important;
+}
+
+#root .client-detail-missing-window-row-title {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 780px) {
+  #root .client-detail-missing-window-add-form-simple,
+  #root .client-detail-missing-window-row-simple {
+    grid-template-columns: 1fr !important;
+    align-items: stretch !important;
+  }
+}

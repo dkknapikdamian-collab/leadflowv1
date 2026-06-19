@@ -44,7 +44,7 @@ test('I4 tile shows correct client-scoped summary data and not a duplicated full
 
 test('I4 tile actions use shared source actions and LeadDetail-like button layout', () => {
   assert.match(client, /onAddMissing/);
-  assert.match(client, /openClientContextAction\('blocker'\)/);
+  assert.doesNotMatch(client, /onAddMissing=\{\(\) => openClientContextAction\('blocker'\)\}/);
   assert.match(client, /setClientMissingListOpenStage232I6\(true\)/);
   assert.match(client, /savedRecord/);
   assert.match(client, /normalizedSavedRecord/);
@@ -90,4 +90,18 @@ test('I4 R12 opens all missing items in a modal window with add/delete controls'
   assert.match(client, /handleResolveClientMissingItemStage228R13\(item\)/);
   assert.match(client, /\{false && clientMissingListOpenStage232I6 \? \(/);
   assert.match(css, /STAGE232I4_R12_MISSING_WINDOW_MODAL/);
+});
+
+
+test('I4 R13F keeps the missing modal simple and updates blocker state', () => {
+  assert.match(client, /data-stage232i4-r13f-simple-missing-window="true"/);
+  assert.match(client, /data-stage232i4-r13f-add-blocker-checkbox="true"/);
+  assert.match(client, /data-stage232i4-r13f-row-blocker-checkbox="true"/);
+  assert.match(client, /stage232i2AllActiveMissingItems.map/);
+  assert.match(client, /handleToggleClientMissingBlockerStage232I4R13F/);
+  assert.match(client, /missingItem: true/);
+  assert.match(client, /blocksProgress: clientMissingBlocksProgress/);
+  assert.doesNotMatch(client, /id="client-missing-window-note"/);
+  assert.doesNotMatch(client, /data-stage232i4-r12-missing-window-filters="true"/);
+  assert.match(css, /STAGE232I4_R13F_SIMPLE_MISSING_MODAL_ROWS/);
 });
