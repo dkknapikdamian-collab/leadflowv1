@@ -3279,15 +3279,15 @@ return (
               open={clientMissingListOpenStage232I6}
               onOpenChange={(open) => setClientMissingListOpenStage232I6(open)}
             >
-              <DialogContent className="client-detail-missing-window-dialog client-detail-missing-window-dialog-r13g" data-stage232i4-r13g-client-inline-missing-window="true" data-closeflow-dialog-shell="true" data-closeflow-dialog-card="true">
+              <DialogContent className="client-detail-missing-window-dialog client-detail-missing-window-dialog-simple" data-stage232i4-r12-missing-window="true" data-stage232i4-r13f-simple-missing-window="true">
                 <DialogHeader>
                   <DialogTitle>Braki / Blokady</DialogTitle>
-                  <DialogDescription data-closeflow-dialog-description="true">Prosta lista braków klienta. Dodaj brak, ustaw czy blokuje sprawę, oznacz jako uzupełniony albo usuń.</DialogDescription>
+                  <DialogDescription>Prosta lista braków klienta. Dodaj brak, ustaw czy blokuje sprawę, oznacz jako uzupełniony albo usuń.</DialogDescription>
                 </DialogHeader>
 
                 <form
-                  className="client-detail-missing-window-add-form client-detail-missing-window-add-form-r13g"
-                  data-stage232i4-r13g-missing-add-form="true"
+                  className="client-detail-missing-window-add-form client-detail-missing-window-add-form-simple"
+                  data-stage232i4-r13f-simple-missing-add-form="true"
                   onSubmit={(event) => {
                     event.preventDefault();
                     void handleSaveClientMissingItemStage227C3B();
@@ -3305,10 +3305,10 @@ return (
                       placeholder="np. Brak dokumentu"
                       disabled={!hasAccess || clientMissingSaving}
                       data-stage232i4-r12-missing-window-title-input="true"
-                      data-stage232i4-r13g-missing-title-input="true"
+                      data-stage232i4-r13f-simple-missing-title-input="true"
                     />
                   </div>
-                  <label className="client-detail-missing-window-checkbox client-detail-missing-window-add-checkbox-r13g" data-stage232i4-r13g-add-blocker-checkbox="true">
+                  <label className="client-detail-missing-window-checkbox" data-stage232i4-r13f-add-blocker-checkbox="true">
                     <input
                       type="checkbox"
                       checked={clientMissingBlocksProgress}
@@ -3317,31 +3317,19 @@ return (
                     />
                     <span>Blokuje sprawę</span>
                   </label>
-                  <Button type="submit" disabled={!hasAccess || clientMissingSaving || !clientMissingTitle.trim()} data-stage232i4-r12-missing-window-add-action="true" data-stage232i4-r13g-missing-add-action="true">
+                  <Button type="submit" disabled={!hasAccess || clientMissingSaving || !clientMissingTitle.trim()} data-stage232i4-r12-missing-window-add-action="true" data-stage232i4-r13f-simple-missing-add-action="true">
                     <Plus className="h-4 w-4" />
                     {clientMissingSaving ? 'Dodawanie...' : 'Dodaj brak'}
                   </Button>
                   {clientMissingError ? <p className="client-detail-missing-window-error">{clientMissingError}</p> : null}
                 </form>
 
-                <div className="client-detail-missing-window-list client-detail-missing-window-list-r13g" data-stage232i4-r13g-missing-window-list="true" data-closeflow-dialog-body="true">
+                <div className="client-detail-missing-window-list client-detail-missing-window-list-simple" data-stage232i4-r12-missing-window-list="true" data-stage232i4-r13f-simple-missing-list="true">
                   {stage232i2AllActiveMissingItems.length ? (
                     stage232i2AllActiveMissingItems.map((item: any) => (
-                      <article
-                        key={String(item?.id || item?.title)}
-                        className="client-detail-missing-window-row client-detail-missing-window-row-r13g"
-                        data-missing-item-card="true"
-                        data-stage232i4-r13g-missing-item-card="true"
-                      >
-                        <div className="client-detail-missing-window-row-title-block" data-missing-item-title-block="true">
-                          <span className="client-detail-missing-window-row-eyebrow">Nazwa braku</span>
-                          <strong className="client-detail-missing-window-row-title">{String(item?.title || 'Brak bez nazwy')}</strong>
-                        </div>
-                        <label
-                          className="client-detail-missing-window-checkbox client-detail-missing-window-row-checkbox"
-                          data-missing-item-blocker-row="true"
-                          data-stage232i4-r13g-row-blocker-checkbox="true"
-                        >
+                      <article key={String(item?.id || item?.title)} className="client-detail-missing-window-row client-detail-missing-window-row-simple" data-stage232i4-r12-missing-window-row="true" data-stage232i4-r13f-simple-missing-row="true">
+                        <strong className="client-detail-missing-window-row-title">{String(item?.title || 'Brak bez nazwy')}</strong>
+                        <label className="client-detail-missing-window-checkbox client-detail-missing-window-row-checkbox" data-stage232i4-r13f-row-blocker-checkbox="true">
                           <input
                             type="checkbox"
                             checked={Boolean(item.stage232i2IsBlocker)}
@@ -3350,25 +3338,23 @@ return (
                           />
                           <span>Blokuje sprawę</span>
                         </label>
-                        <div className="client-detail-missing-window-row-actions" data-missing-item-actions-row="true" data-stage232i4-r13g-missing-actions-row="true">
-                          <Button type="button" size="sm" variant="outline" onClick={() => handleResolveClientMissingItemStage228R13(item)} disabled={!hasAccess || isDoneStatus(item?.status)} data-stage232i2-resolve-source-item="true">
-                            Uzupełnione
-                          </Button>
-                          <Button type="button" size="sm" variant="outline" onClick={() => handleDeleteClientMissingItemStage228R15(item)} disabled={!hasAccess || isDoneStatus(item?.status)} data-stage232i2-delete-source-item="true">
-                            Usuń
-                          </Button>
-                        </div>
+                        <Button type="button" size="sm" variant="outline" onClick={() => handleResolveClientMissingItemStage228R13(item)} disabled={!hasAccess || isDoneStatus(item?.status)} data-stage232i2-resolve-source-item="true">
+                          Uzupełnione
+                        </Button>
+                        <Button type="button" size="sm" variant="outline" onClick={() => handleDeleteClientMissingItemStage228R15(item)} disabled={!hasAccess || isDoneStatus(item?.status)} data-stage232i2-delete-source-item="true">
+                          Usuń
+                        </Button>
                       </article>
                     ))
                   ) : (
-                    <div className="client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact" data-stage232i4-r13g-empty-missing-window="true">
+                    <div className="client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact" data-stage232i4-r12-empty-missing-window="true" data-stage232i4-r13f-simple-empty-missing-window="true">
                       <strong>Brak otwartych braków.</strong>
                       <p>Dodaj brak po nazwie powyżej.</p>
                     </div>
                   )}
                 </div>
 
-                <DialogFooter className={modalFooterClass()} data-closeflow-dialog-footer="true" data-stage232i4-r13g-missing-footer="true">
+                <DialogFooter className={modalFooterClass()}>
                   <Button type="button" variant="outline" onClick={() => setClientMissingListOpenStage232I6(false)}>
                     Zamknij
                   </Button>

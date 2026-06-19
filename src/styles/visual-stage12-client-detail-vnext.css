@@ -4319,109 +4319,57 @@ main[data-current-section="client-detail"] > .view.active[data-shell-content="tr
   #root .client-detail-missing-window-row-actions { justify-content: flex-start !important; }
 }
 
-/* STAGE232I4_R13G_CLIENT_DETAIL_MISSING_INLINE_TO_SHARED_VISUAL_SOURCE
-   ClientDetail inline Braki / Blokady uses the same title-first card contract as shared missing managers.
-   Do not reintroduce client-detail-missing-window-*-simple classes here.
+/* STAGE232I4_R13F_SIMPLE_MISSING_MODAL_ROWS
+   Simple modal: name + blocker checkbox + done/delete only. No filters, no note field, no source-open action.
 */
-#root .client-detail-missing-window-dialog-r13g {
-  max-width: min(860px, calc(100vw - 32px)) !important;
+#root .client-detail-missing-window-dialog-simple {
+  max-width: min(820px, calc(100vw - 32px)) !important;
 }
 
-#root .client-detail-missing-window-add-form-r13g {
-  display: grid !important;
+#root .client-detail-missing-window-add-form-simple {
   grid-template-columns: minmax(240px, 1fr) auto auto !important;
-  gap: 12px !important;
   align-items: end !important;
 }
 
-#root .client-detail-missing-window-add-checkbox-r13g,
-#root .client-detail-missing-window-row-checkbox {
+#root .client-detail-missing-window-checkbox {
   display: inline-flex !important;
   align-items: center !important;
   gap: 8px !important;
   min-height: 38px !important;
   font-size: 13px !important;
   font-weight: 700 !important;
-  white-space: normal !important;
-}
-
-#root .client-detail-missing-window-add-checkbox-r13g {
-  color: rgba(226, 232, 240, 0.88) !important;
+  color: #7f1d1d !important;
+  white-space: nowrap !important;
 }
 
 #root .client-detail-missing-window-checkbox input {
   width: 16px !important;
   height: 16px !important;
-  accent-color: #f59e0b !important;
+  accent-color: #be123c !important;
 }
 
-#root .client-detail-missing-window-list-r13g {
-  display: grid !important;
-  gap: 12px !important;
+#root .client-detail-missing-window-list-simple {
   max-height: min(52vh, 460px) !important;
-  overflow: auto !important;
-  padding-right: 2px !important;
 }
 
-#root .client-detail-missing-window-row-r13g {
+#root .client-detail-missing-window-row-simple {
   display: grid !important;
-  grid-template-columns: 1fr !important;
-  gap: 12px !important;
-  align-items: stretch !important;
-  border: 1px solid rgba(148, 163, 184, 0.28) !important;
-  border-radius: 14px !important;
-  padding: 14px !important;
-  background: rgba(15, 23, 42, 0.72) !important;
+  grid-template-columns: minmax(180px, 1fr) auto auto auto !important;
+  align-items: center !important;
 }
 
-#root .client-detail-missing-window-row-title-block {
-  display: grid !important;
-  gap: 4px !important;
+#root .client-detail-missing-window-row-title {
   min-width: 0 !important;
-}
-
-#root .client-detail-missing-window-row-eyebrow {
-  display: block !important;
-  font-size: 11px !important;
-  line-height: 1.2 !important;
-  font-weight: 800 !important;
-  letter-spacing: 0.08em !important;
-  text-transform: uppercase !important;
-  color: rgba(148, 163, 184, 0.92) !important;
-}
-
-#root .client-detail-missing-window-row-r13g .client-detail-missing-window-row-title {
-  display: block !important;
-  min-width: 0 !important;
-  overflow: visible !important;
-  text-overflow: unset !important;
-  white-space: normal !important;
-  overflow-wrap: anywhere !important;
-  color: #f8fafc !important;
-  font-size: 15px !important;
-  line-height: 1.35 !important;
-}
-
-#root .client-detail-missing-window-row-r13g .client-detail-missing-window-row-checkbox {
-  justify-content: flex-start !important;
-  color: rgba(253, 230, 138, 0.96) !important;
-}
-
-#root .client-detail-missing-window-row-actions {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  justify-content: flex-end !important;
-  gap: 10px !important;
-  padding-top: 2px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
 }
 
 @media (max-width: 780px) {
-  #root .client-detail-missing-window-add-form-r13g {
+  #root .client-detail-missing-window-add-form-simple,
+  #root .client-detail-missing-window-row-simple {
     grid-template-columns: 1fr !important;
     align-items: stretch !important;
-  }
-  #root .client-detail-missing-window-row-actions {
-    justify-content: flex-start !important;
   }
 }
 
