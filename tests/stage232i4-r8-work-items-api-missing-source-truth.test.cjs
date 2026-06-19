@@ -15,7 +15,9 @@ test('/api/tasks is a rewrite to api/work-items, not api/tasks.ts', () => {
 test('POST tasks preserves client missing_item source truth in work_items', () => {
   assert.match(src, /client_id:\s*asNullableUuid\(body\.clientId\)/);
   assert.match(src, /type:\s*body\.type\s*\|\|\s*\(isMissingItemStage232I4R8 \? 'missing_item' : 'task'\)/);
-  assert.match(src, /normalizeTaskStatusPreserveMissingStage232I4R8\(body\.status \|\| 'missing_item'\)/);
+  assert.match(src, /const normalizeMissingItemDbStatusStage232I4R9/);
+  assert.match(src, /return normalizeTaskStatus\('todo'\)/);
+  assert.doesNotMatch(src, /status:\s*isMissingItemStage232I4R8\s*\?\s*\(body\.blocksProgress/);
   assert.match(src, /show_in_tasks:\s*true/);
   assert.match(src, /show_in_calendar:\s*isMissingItemStage232I4R8 \? false : true/);
 });

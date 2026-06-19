@@ -10,6 +10,25 @@ import { createGoogleCalendarEvent, deleteGoogleCalendarEvent, getGoogleCalendar
 const STAGE232I4_R8_WORK_ITEMS_API_MISSING_ITEM_CLIENT_SOURCE_TRUTH = 'api/work-items preserves client missing_item type/status/client_id and keeps it out of Google Calendar sync';
 void STAGE232I4_R8_WORK_ITEMS_API_MISSING_ITEM_CLIENT_SOURCE_TRUTH;
 
+const STAGE232I4_R9_WORK_ITEMS_STATUS_DOMAIN_SAFE = 'Missing items use DB-safe work_items.status values; missing/blocking truth is carried by type/client/priority/source fields.';
+void STAGE232I4_R9_WORK_ITEMS_STATUS_DOMAIN_SAFE;
+
+const normalizeMissingItemDbStatusStage232I4R9 = (body: any = {}, row: any = {}) => {
+  const rawStatus = String(body.status ?? row.status ?? '').toLowerCase();
+  if (rawStatus === 'done' || rawStatus === 'completed' || rawStatus === 'complete' || rawStatus === 'resolved') {
+    return normalizeTaskStatus(rawStatus);
+  }
+  // work_items_status_domain_check rejects missing_item/blocking_missing_item as status.
+  // The row is still a missing item through type='missing_item' and client/source fields.
+  return normalizeTaskStatus('todo');
+};
+
+const isBlockingMissingItemStage232I4R9 = (row: any = {}, body: any = {}) => {
+  const rawStatus = String(body.status ?? row.status ?? '').toLowerCase();
+  const rawPriority = String(body.priority ?? row.priority ?? '').toLowerCase();
+  return body.blocksProgress === true || body.blocks_progress === true || row.blocksProgress === true || row.blocks_progress === true || rawStatus === 'blocking_missing_item' || rawPriority === 'high';
+};
+
 function asIsoDate(value: unknown) {
   if (typeof value !== 'string' || !value.trim()) return null;
   const parsed = new Date(value);
@@ -666,7 +685,7 @@ export default async function handler(req: any, res: any) {
 
       if (body.title !== undefined) payload.title = body.title;
       if (body.type !== undefined) payload.type = body.type;
-      if (body.status !== undefined) payload.status = kind === 'events' ? normalizeEventStatus(body.status) : normalizeTaskStatusPreserveMissingStage232I4R8(body.status);
+      if (body.status !== undefined) payload.status = kind === 'events' ? normalizeEventStatus(body.status) : normalizeMissingItemDbStatusStage232I4R9(body, existing as any);
 
       if (kind === 'tasks') {
         const reminderRule = parseCalendarReminderRule(body.reminderRule);
@@ -805,9 +824,11 @@ export default async function handler(req: any, res: any) {
         title: body.title,
         description: typeof body.description === 'string' ? body.description : '',
         status: isMissingItemStage232I4R8
-          ? (body.blocksProgress === true || body.blocks_progress === true ? 'blocking_missing_item' : normalizeTaskStatusPreserveMissingStage232I4R8(body.status || 'missing_item'))
+          ? normalizeMissingItemDbStatusStage232I4R9(body)
           : normalizeTaskStatus(body.status),
-        priority: body.priority || 'medium',
+        priority: isMissingItemStage232I4R8
+          ? (isBlockingMissingItemStage232I4R9({}, body) ? 'high' : (body.priority || 'medium'))
+          : (body.priority || 'medium'),
         scheduled_at: scheduledAt,
         start_at: null,
         end_at: null,
