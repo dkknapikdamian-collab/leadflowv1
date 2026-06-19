@@ -11,13 +11,13 @@ test('dialog uses application dark modal style and remains readable', () => {
   assert.match(src, /text-slate-100/);
   assert.match(src, /text-slate-300/);
   assert.match(src, /border-slate-700/);
-  assert.match(src, /max-w-3xl/);
-  assert.match(src, /sm:max-w-3xl/);
+  assert.match(src, /max-w-4xl/);
+  assert.match(src, /sm:max-w-4xl/);
 });
 
 test('rows are separated cards with scrollable list for many missing items', () => {
   assert.match(src, /data-stage232i4-r10-manager-list="separated-scrollable-cards"/);
-  assert.match(src, /max-h-\[46vh\]/);
+  assert.match(src, /max-h-\[48vh\]/);
   assert.match(src, /overflow-y-auto/);
   assert.match(src, /space-y-3/);
   assert.match(src, /data-stage232i4-r10-manager-row="separated-card"/);

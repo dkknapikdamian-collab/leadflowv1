@@ -22,13 +22,13 @@ assert(src.includes('data-stage232i4-r14-manager-resolve-action="true"'), 'R10 m
 assert(src.includes('data-stage232i4-r14-manager-delete-action="true"'), 'R10 must preserve delete action marker.');
 
 for (const token of [
-  'max-w-3xl',
-  'sm:max-w-3xl',
+  'max-w-4xl',
+  'sm:max-w-4xl',
   'bg-slate-950',
   'text-slate-100',
   'border-slate-700',
   'text-slate-300',
-  'max-h-[46vh]',
+  'max-h-[48vh]',
   'overflow-y-auto',
   'space-y-3',
   'rounded-2xl',
