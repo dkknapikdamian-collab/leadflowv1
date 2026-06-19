@@ -1,0 +1,30 @@
+const fs = require('fs');
+const path = require('path');
+const root = process.cwd();
+const workItems = path.join(root, 'api', 'work-items.ts');
+const vercel = path.join(root, 'vercel.json');
+const errors = [];
+function has(text, needle, msg) { if (!text.includes(needle)) errors.push(msg); }
+if (!fs.existsSync(workItems)) errors.push('api/work-items.ts missing');
+if (!fs.existsSync(vercel)) errors.push('vercel.json missing');
+const src = fs.existsSync(workItems) ? fs.readFileSync(workItems, 'utf8') : '';
+const vc = fs.existsSync(vercel) ? fs.readFileSync(vercel, 'utf8') : '';
+has(vc, '"source": "/api/tasks"', 'vercel rewrite /api/tasks missing');
+has(vc, '"destination": "/api/work-items?kind=tasks"', 'vercel rewrite /api/tasks -> /api/work-items?kind=tasks missing');
+has(src, 'STAGE232I4_R8_WORK_ITEMS_API_MISSING_ITEM_CLIENT_SOURCE_TRUTH', 'R8 marker missing');
+has(src, 'normalizeTaskStatusPreserveMissingStage232I4R8', 'missing/blocking status preserve helper missing');
+has(src, 'isMissingItemTaskStage232I4R8', 'missing item detector missing');
+has(src, 'syntheticMissingPayloadStage232I4R8', 'synthetic payload helper missing');
+has(src, 'client_id: asNullableUuid(body.clientId)', 'POST task payload does not write client_id');
+has(src, "type: body.type || (isMissingItemStage232I4R8 ? 'missing_item' : 'task')", 'POST task payload does not preserve missing_item type');
+has(src, "show_in_calendar: isMissingItemStage232I4R8 ? false : true", 'missing_item is not excluded from calendar visibility');
+has(src, 'if (!isMissingItemStage232I4R8)', 'missing_item still appears to sync Google Calendar unconditionally');
+has(src, 'status: normalizeTaskStatusPreserveMissingStage232I4R8(row.status ?? task.status)', 'normalizeTask does not return missing/blocking status');
+has(src, 'type: getTaskRawTypeStage232I4R8(row) || String(task.type || \'task\')', 'normalizeTask does not return raw missing_item type');
+has(src, 'sourceEntityType:', 'normalizeTask sourceEntityType output missing');
+has(src, 'sourceEntityId:', 'normalizeTask sourceEntityId output missing');
+has(src, 'payload: syntheticMissingPayloadStage232I4R8(row)', 'normalizeTask payload output missing');
+has(src, 'blocksProgress:', 'normalizeTask blocksProgress output missing');
+has(src, 'payload.client_id', 'synthetic payload missing client_id compatibility');
+if (errors.length) { console.error('STAGE232I4_R8 guard FAIL'); for (const e of errors) console.error('- ' + e); process.exit(1); }
+console.log('STAGE232I4_R8 work-items API source truth guard PASS');

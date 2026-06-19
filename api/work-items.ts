@@ -7,6 +7,9 @@ import { normalizeWorkItem } from '../src/lib/work-items/normalize.js';
 import { assertWorkspaceEntityLimit, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 import { createGoogleCalendarEvent, deleteGoogleCalendarEvent, getGoogleCalendarConnection, updateGoogleCalendarEvent } from '../src/server/google-calendar-sync.js';
 
+const STAGE232I4_R8_WORK_ITEMS_API_MISSING_ITEM_CLIENT_SOURCE_TRUTH = 'api/work-items preserves client missing_item type/status/client_id and keeps it out of Google Calendar sync';
+void STAGE232I4_R8_WORK_ITEMS_API_MISSING_ITEM_CLIENT_SOURCE_TRUTH;
+
 function asIsoDate(value: unknown) {
   if (typeof value !== 'string' || !value.trim()) return null;
   const parsed = new Date(value);
@@ -25,6 +28,70 @@ function asNullableString(value: unknown) {
 function asNullableUuid(value: unknown) {
   const normalized = asNullableString(value);
   return normalized && isUuid(normalized) ? normalized : null;
+}
+
+
+function parseWorkItemPayloadStage232I4R8(value: unknown): Record<string, unknown> {
+  if (value && typeof value === 'object' && !Array.isArray(value)) return value as Record<string, unknown>;
+  if (typeof value === 'string' && value.trim()) {
+    try {
+      const parsed = JSON.parse(value);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed as Record<string, unknown>;
+    } catch {
+      return { raw: value };
+    }
+  }
+  return {};
+}
+
+function lowerTextStage232I4R8(value: unknown) {
+  return typeof value === 'string' ? value.trim().toLowerCase() : '';
+}
+
+function normalizeTaskStatusPreserveMissingStage232I4R8(value: unknown) {
+  const raw = lowerTextStage232I4R8(value);
+  if (raw.includes('missing') || raw.includes('block')) return raw || 'missing_item';
+  return normalizeTaskStatus(value);
+}
+
+function getTaskRawTypeStage232I4R8(row: any) {
+  const raw = lowerTextStage232I4R8(row?.type || row?.taskType || row?.task_type);
+  if (raw.includes('missing')) return raw;
+  return raw || '';
+}
+
+function isMissingItemTaskStage232I4R8(row: any, body?: any) {
+  const payload = parseWorkItemPayloadStage232I4R8(row?.payload || body?.payload);
+  const values = [
+    row?.type, row?.status, row?.record_type, row?.recordType,
+    body?.type, body?.status, body?.recordType, body?.kind,
+    payload.type, payload.kind, payload.status,
+  ].map(lowerTextStage232I4R8);
+  return values.some((value) => value.includes('missing') || value.includes('block'))
+    || body?.blocksProgress === true
+    || body?.blocks_progress === true
+    || row?.blocks_progress === true
+    || row?.blocksProgress === true;
+}
+
+function syntheticMissingPayloadStage232I4R8(row: any) {
+  const payload = parseWorkItemPayloadStage232I4R8(row?.payload || row?.data || row?.metadata);
+  const clientId = asNullableString(row?.client_id || row?.clientId || payload.clientId || payload.client_id);
+  const caseId = asNullableString(row?.case_id || row?.caseId || payload.caseId || payload.case_id);
+  const leadId = asNullableString(row?.lead_id || row?.leadId || payload.leadId || payload.lead_id);
+  const inferredSourceType = asNullableString(row?.source_entity_type || row?.sourceEntityType || payload.sourceEntityType || payload.source_entity_type)
+    || (clientId ? 'client' : caseId ? 'case' : leadId ? 'lead' : null);
+  const inferredSourceId = asNullableString(row?.source_entity_id || row?.sourceEntityId || payload.sourceEntityId || payload.source_entity_id)
+    || clientId || caseId || leadId || null;
+  return {
+    ...payload,
+    ...(clientId ? { clientId, client_id: clientId } : {}),
+    ...(caseId ? { caseId, case_id: caseId } : {}),
+    ...(leadId ? { leadId, lead_id: leadId } : {}),
+    ...(inferredSourceType ? { sourceEntityType: inferredSourceType, source_entity_type: inferredSourceType } : {}),
+    ...(inferredSourceId ? { sourceEntityId: inferredSourceId, source_entity_id: inferredSourceId, recordId: inferredSourceId, record_id: inferredSourceId } : {}),
+    type: payload.type || row?.type || 'missing_item',
+  };
 }
 
 
@@ -368,16 +435,22 @@ function normalizeTask(row: any) {
   return {
     ...task,
     title: String(task.title || ''),
-    type: String(task.type || 'task'),
+    type: getTaskRawTypeStage232I4R8(row) || String(task.type || 'task'),
     date: task.date || (scheduledAt ? scheduledAt.slice(0, 10) : ''),
     dueAt: scheduledAt ? scheduledAt.slice(0, 16) : '',
     time: scheduledAt ? scheduledAt.slice(11, 16) : '',
-    status: normalizeTaskStatus(task.status),
+    status: normalizeTaskStatusPreserveMissingStage232I4R8(row.status ?? task.status),
     priority: String(task.priority || 'medium'),
     leadId: task.leadId,
     leadName: task.leadName,
     caseId: task.caseId,
     clientId: task.clientId,
+    sourceEntityType: asNullableString((row as any).source_entity_type || (row as any).sourceEntityType || syntheticMissingPayloadStage232I4R8(row).sourceEntityType) || null,
+    sourceEntityId: asNullableString((row as any).source_entity_id || (row as any).sourceEntityId || syntheticMissingPayloadStage232I4R8(row).sourceEntityId) || null,
+    recordType: asNullableString((row as any).record_type || (row as any).recordType) || 'task',
+    recordId: asNullableString((row as any).record_id || (row as any).recordId || syntheticMissingPayloadStage232I4R8(row).recordId) || task.clientId || task.caseId || task.leadId || null,
+    payload: syntheticMissingPayloadStage232I4R8(row),
+    blocksProgress: Boolean((row as any).blocks_progress ?? (row as any).blocksProgress ?? syntheticMissingPayloadStage232I4R8(row).blocksProgress ?? String(row.status || '').toLowerCase().includes('block')),
     reminderAt,
     reminder: reminderAt
       ? { mode: 'once', minutesBefore: reminderMinutes, recurrenceMode: 'daily', recurrenceInterval: 1, until: null }
@@ -593,7 +666,7 @@ export default async function handler(req: any, res: any) {
 
       if (body.title !== undefined) payload.title = body.title;
       if (body.type !== undefined) payload.type = body.type;
-      if (body.status !== undefined) payload.status = kind === 'events' ? normalizeEventStatus(body.status) : normalizeTaskStatus(body.status);
+      if (body.status !== undefined) payload.status = kind === 'events' ? normalizeEventStatus(body.status) : normalizeTaskStatusPreserveMissingStage232I4R8(body.status);
 
       if (kind === 'tasks') {
         const reminderRule = parseCalendarReminderRule(body.reminderRule);
@@ -602,6 +675,7 @@ export default async function handler(req: any, res: any) {
         if (body.scheduledAt !== undefined) payload.scheduled_at = body.scheduledAt ? new Date(body.scheduledAt).toISOString() : null;
         if (body.leadId !== undefined) payload.lead_id = asNullableUuid(body.leadId);
         if (body.caseId !== undefined) payload.case_id = asNullableUuid(body.caseId);
+        if (body.clientId !== undefined) payload.client_id = asNullableUuid(body.clientId);
         if (body.reminderRule !== undefined) {
           const startForReminder = String(body.scheduledAt || payload.scheduled_at || currentRow?.scheduled_at || '');
           const computed = reminderRuleToIso(startForReminder, reminderRule);
@@ -719,16 +793,20 @@ export default async function handler(req: any, res: any) {
       if (body.caseId !== undefined && asNullableUuid(body.caseId)) {
         await requireScopedRow('cases', asNullableUuid(body.caseId)!, finalWorkspaceId, 'CASE_NOT_FOUND');
       }
+      const isMissingItemStage232I4R8 = isMissingItemTaskStage232I4R8({}, body);
       const payload = {
         workspace_id: finalWorkspaceId,
         created_by_user_id: asNullableUuid(body.ownerId),
         lead_id: asNullableUuid(body.leadId),
         case_id: asNullableUuid(body.caseId),
+        client_id: asNullableUuid(body.clientId),
         record_type: 'task',
-        type: body.type || 'task',
+        type: body.type || (isMissingItemStage232I4R8 ? 'missing_item' : 'task'),
         title: body.title,
-        description: '',
-        status: normalizeTaskStatus(body.status),
+        description: typeof body.description === 'string' ? body.description : '',
+        status: isMissingItemStage232I4R8
+          ? (body.blocksProgress === true || body.blocks_progress === true ? 'blocking_missing_item' : normalizeTaskStatusPreserveMissingStage232I4R8(body.status || 'missing_item'))
+          : normalizeTaskStatus(body.status),
         priority: body.priority || 'medium',
         scheduled_at: scheduledAt,
         start_at: null,
@@ -736,15 +814,17 @@ export default async function handler(req: any, res: any) {
         recurrence: body.recurrenceRule || 'none',
         reminder: reminderAtFromRule || body.reminderAt || 'none',
         show_in_tasks: true,
-        show_in_calendar: true,
+        show_in_calendar: isMissingItemStage232I4R8 ? false : true,
         created_at: nowIso,
         updated_at: nowIso,
       };
       const result = await insertWithVariants(['work_items'], [payload]);
       const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
-      if (body.leadId) await syncLeadNextAction(body.leadId, { id: (inserted as any).id, title: body.title, scheduledAt }, finalWorkspaceId);
-      // GOOGLE_CALENDAR_STAGE08D_TASK_CREATE_SYNC
-      await syncGoogleCalendarEventAfterMutation({ action: 'create', req, workspaceId: finalWorkspaceId, row: inserted as any, body });
+      if (body.leadId && !isMissingItemStage232I4R8) await syncLeadNextAction(body.leadId, { id: (inserted as any).id, title: body.title, scheduledAt }, finalWorkspaceId);
+      if (!isMissingItemStage232I4R8) {
+        // GOOGLE_CALENDAR_STAGE08D_TASK_CREATE_SYNC
+        await syncGoogleCalendarEventAfterMutation({ action: 'create', req, workspaceId: finalWorkspaceId, row: inserted as any, body });
+      }
       res.status(200).json(normalizeTask(inserted));
       return;
     }
