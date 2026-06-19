@@ -38,6 +38,8 @@ const STAGE232A_R10_LEAD_DETAIL_VISUAL_SOURCE_TRUTH = 'LeadDetail top decision c
 void STAGE232A_R10_LEAD_DETAIL_VISUAL_SOURCE_TRUTH;
 const STAGE232A_R10_R1_MISSING_GROUP_INNER_TONE = 'LeadDetail Braki i blokady accordion empty state and item rows use the same amber missing-item tone as the group itself';
 void STAGE232A_R10_R1_MISSING_GROUP_INNER_TONE;
+const STAGE232I4_R14_LEAD_MISSING_MANAGER_DIALOG = 'LeadDetail Zobacz wszystkie braki opens shared missing manager dialog instead of scrolling to #lead-actions';
+void STAGE232I4_R14_LEAD_MISSING_MANAGER_DIALOG;
 void STAGE232A_R6_LEAD_MISSING_BLOCKER_ACTIVE_LIST_AND_TOP_CARD_SOURCE_TRUTH;
 import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -115,6 +117,7 @@ import { actionButtonClass, modalFooterClass} from '../components/entity-actions
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';
+import { MissingItemsManagerDialog, type MissingItemsManagerItem } from '../components/detail/MissingItemsManagerDialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -895,6 +898,11 @@ export default function LeadDetail() {
   const [potentialDraftStage231GR7, setPotentialDraftStage231GR7] = useState('');
   const [potentialSavingStage231GR7, setPotentialSavingStage231GR7] = useState(false);
   const [leadActionOpenGroup, setLeadActionOpenGroup] = useState<LeadActionAccordionGroup>('next');
+  const [leadMissingManagerOpen, setLeadMissingManagerOpen] = useState(false);
+  const [leadMissingManagerTitle, setLeadMissingManagerTitle] = useState('');
+  const [leadMissingManagerBlocksProgress, setLeadMissingManagerBlocksProgress] = useState(false);
+  const [leadMissingManagerError, setLeadMissingManagerError] = useState('');
+  const [leadMissingManagerSaving, setLeadMissingManagerSaving] = useState(false);
   const [editLinkedTask, setEditLinkedTask] = useState<any | null>(null);
   const [editLinkedEvent, setEditLinkedEvent] = useState<any | null>(null);
   const [editLinkedTaskSubmitting, setEditLinkedTaskSubmitting] = useState(false);
@@ -1135,6 +1143,134 @@ export default function LeadDetail() {
     if (leadOperationalArchive) return toast.error('Dodawaj dalsze wydarzenia w sprawie.');
     openLeadContextAction('event');
   };
+
+  const handleAddLeadMissingFromManagerStage232I4R14 = async () => {
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    const safeLeadId = String(leadId || '').trim();
+    const title = leadMissingManagerTitle.trim();
+    if (!safeLeadId) return setLeadMissingManagerError('Brak ID leada. Nie można dodać braku.');
+    if (!title) return setLeadMissingManagerError('Wpisz nazwę braku.');
+    const createdAt = new Date().toISOString();
+    const status = leadMissingManagerBlocksProgress ? 'blocking_missing_item' : 'missing_item';
+    try {
+      setLeadMissingManagerSaving(true);
+      const savedTask = await insertTaskToSupabase({
+        title,
+        type: 'missing_item',
+        status,
+        priority: 'high',
+        date: createdAt.slice(0, 10),
+        scheduledAt: createdAt,
+        dueAt: createdAt,
+        leadId: safeLeadId,
+        clientId: lead?.clientId ? String(lead.clientId) : null,
+        caseId: serviceCaseId || null,
+        workspaceId: workspace?.id,
+        blocksProgress: leadMissingManagerBlocksProgress,
+        sourceEntityType: 'lead',
+        sourceEntityId: safeLeadId,
+        recordType: 'lead',
+        recordId: safeLeadId,
+        payload: {
+          kind: 'missing_item',
+          type: 'missing_item',
+          missingItem: true,
+          blocksProgress: leadMissingManagerBlocksProgress,
+          status,
+          source: 'stage232i4_r14_lead_missing_manager_dialog',
+          sourceEntityType: 'lead',
+          sourceEntityId: safeLeadId,
+          recordType: 'lead',
+          recordId: safeLeadId,
+          leadId: safeLeadId,
+          clientId: lead?.clientId ? String(lead.clientId) : null,
+          caseId: serviceCaseId || null,
+        },
+      } as any);
+      const optimisticTask = {
+        id: String((savedTask as any)?.id || 'lead-missing-local-' + Date.now()),
+        title,
+        type: 'missing_item',
+        status,
+        priority: 'high',
+        date: createdAt.slice(0, 10),
+        scheduledAt: createdAt,
+        dueAt: createdAt,
+        leadId: safeLeadId,
+        clientId: lead?.clientId ? String(lead.clientId) : null,
+        caseId: serviceCaseId || null,
+        blocksProgress: leadMissingManagerBlocksProgress,
+        sourceEntityType: 'lead',
+        sourceEntityId: safeLeadId,
+        recordType: 'lead',
+        recordId: safeLeadId,
+        payload: {
+          kind: 'missing_item',
+          type: 'missing_item',
+          missingItem: true,
+          blocksProgress: leadMissingManagerBlocksProgress,
+          status,
+          source: 'stage232i4_r14_lead_missing_manager_dialog',
+          sourceEntityType: 'lead',
+          sourceEntityId: safeLeadId,
+          recordType: 'lead',
+          recordId: safeLeadId,
+          leadId: safeLeadId,
+        },
+      };
+      setLinkedTasks((currentTasks: any[]) => dedupeById([optimisticTask, ...currentTasks]));
+      await addActivity('missing_item_created', {
+        title,
+        status,
+        blocksProgress: leadMissingManagerBlocksProgress,
+        source: 'stage232i4_r14_lead_missing_manager_dialog',
+        taskId: String((savedTask as any)?.id || ''),
+      });
+      setLeadMissingManagerTitle('');
+      setLeadMissingManagerBlocksProgress(false);
+      setLeadMissingManagerError('');
+      toast.success('Dodano brak do leada.');
+      await loadLead({ silent: true });
+    } catch (error: any) {
+      setLeadMissingManagerError(error?.message || 'Nie udało się dodać braku.');
+      toast.error('Nie udało się dodać braku: ' + (error?.message || 'błąd zapisu'));
+    } finally {
+      setLeadMissingManagerSaving(false);
+    }
+  };
+
+  const handleToggleLeadMissingBlockerStage232I4R14 = async (entry: MissingItemsManagerItem, blocksProgress: boolean) => {
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    const task = (entry?.raw || entry) as any;
+    const taskId = String(task?.id || entry?.id || '').trim();
+    if (!taskId) return toast.error('Brak ID braku. Nie można zmienić blokady.');
+    const nextStatus = blocksProgress ? 'blocking_missing_item' : 'missing_item';
+    const previousPayload = task?.payload && typeof task.payload === 'object' ? task.payload : {};
+    try {
+      setLinkedEntryActionId('missing:' + taskId + ':blocker');
+      await updateTaskInSupabase({
+        id: taskId,
+        status: nextStatus,
+        blocksProgress,
+        payload: {
+          ...previousPayload,
+          kind: 'missing_item',
+          type: 'missing_item',
+          missingItem: true,
+          blocksProgress,
+          status: nextStatus,
+          source: 'stage232i4_r14_lead_missing_manager_dialog',
+        },
+      } as any);
+      setLinkedTasks((currentTasks: any[]) => currentTasks.map((item: any) => String(item?.id || '') === taskId ? { ...item, status: nextStatus, blocksProgress, payload: { ...(item?.payload || {}), blocksProgress, status: nextStatus } } : item));
+      toast.success(blocksProgress ? 'Brak ustawiony jako blokujący' : 'Brak nie blokuje sprawy');
+      await loadLead({ silent: true });
+    } catch (error: any) {
+      toast.error('Nie udało się zmienić blokady: ' + (error?.message || 'błąd zapisu'));
+    } finally {
+      setLinkedEntryActionId(null);
+    }
+  };
   const handleResolveLeadMissingItemStage228R13 = async (entry: any) => {
     if (!hasAccess) return toast.error('Trial wygasł.');
     const task = entry?.raw || entry || {};
@@ -1331,6 +1467,25 @@ useEffect(() => {
   const leadBlockerEntries = useMemo(
     () => activeMissingItemEntriesStage232AR8.filter((entry: any) => isLeadBlockerTaskStage232AR8(entry.raw || entry, leadMissingActivityMetadataStage232AR8)),
     [activeMissingItemEntriesStage232AR8, leadMissingActivityMetadataStage232AR8],
+  );
+  const leadMissingManagerItemsStage232I4R14 = useMemo<MissingItemsManagerItem[]>(
+    () => activeMissingItemEntriesStage232AR8.map((entry: any) => {
+      const raw = entry.raw || {};
+      const payload = raw?.payload && typeof raw.payload === 'object' ? raw.payload : {};
+      return {
+        id: String(raw?.id || entry.id || ''),
+        title: String(entry.title || raw?.title || 'Brak bez nazwy'),
+        status: raw?.status || entry.status,
+        blocksProgress: raw?.blocksProgress ?? raw?.blocks_progress ?? (payload as any)?.blocksProgress ?? (payload as any)?.blocks_progress,
+        isBlocker: isLeadBlockerTaskStage232AR8(raw || entry, leadMissingActivityMetadataStage232AR8),
+        sourceLabel: 'Lead',
+        sourceTitle: getLeadName(lead),
+        note: String((payload as any)?.note || (payload as any)?.content || ''),
+        payload: payload as Record<string, unknown>,
+        raw,
+      };
+    }),
+    [activeMissingItemEntriesStage232AR8, lead, leadMissingActivityMetadataStage232AR8],
   );
   const leadNextActionEntries = useMemo(
     () => activeLeadWorkEntries.filter((entry) => !isMissingItemTimelineEntry(entry) && !activeMissingTaskIdsStage232AR8.has(String(entry.raw?.id || '').trim()) && (entry.kind === 'task' || entry.kind === 'event')),
@@ -2492,10 +2647,8 @@ useEffect(() => {
                         type="button"
                         className="lead-detail-inline-action"
                         data-stage232a-r9-view-all-missing-action="true"
-                        onClick={() => {
-                          setLeadActionOpenGroup('blockers');
-                          window.setTimeout(() => document.getElementById('lead-actions')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
-                        }}
+                        data-stage232i4-r14-lead-open-missing-manager="true"
+                        onClick={() => setLeadMissingManagerOpen(true)}
                       >
                         Zobacz wszystkie braki
                       </button>
@@ -2808,6 +2961,28 @@ useEffect(() => {
           </aside>
           ) : null}
         </div>
+        <MissingItemsManagerDialog
+          open={leadMissingManagerOpen}
+          onOpenChange={setLeadMissingManagerOpen}
+          scopeLabel="Lead"
+          title="Braki / Blokady"
+          description="Lista aktywnych braków leada. Dodaj brak, ustaw czy blokuje, oznacz jako uzupełniony albo usuń."
+          titleValue={leadMissingManagerTitle}
+          blockerValue={leadMissingManagerBlocksProgress}
+          error={leadMissingManagerError}
+          isSaving={leadMissingManagerSaving || linkedEntryActionId !== null}
+          canMutate={hasAccess}
+          items={leadMissingManagerItemsStage232I4R14}
+          onTitleChange={(value) => {
+            setLeadMissingManagerTitle(value);
+            if (leadMissingManagerError) setLeadMissingManagerError('');
+          }}
+          onBlockerChange={setLeadMissingManagerBlocksProgress}
+          onAdd={handleAddLeadMissingFromManagerStage232I4R14}
+          onToggleBlocker={handleToggleLeadMissingBlockerStage232I4R14}
+          onResolve={handleResolveLeadMissingItemStage228R13}
+          onDelete={handleDeleteLeadMissingItemStage228R15}
+        />
 <Dialog open={isCreateCaseOpen} onOpenChange={setIsCreateCaseOpen}>
           <DialogContent aria-describedby={undefined}>
             <DialogHeader><DialogTitle>Rozpocznij obsługę</DialogTitle>

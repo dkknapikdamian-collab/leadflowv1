@@ -136,6 +136,7 @@ import { getClientCasesFinanceSummary, getCaseFinanceSummary } from '../lib/fina
 import ContextActionButton from '../components/ContextActionButton';
 import { EntityContactInfoList } from '../components/entity-contact-card';
 import { MissingItemQuickActionModal } from '../components/detail/MissingItemQuickActionModal';
+import { MissingItemsManagerDialog } from '../components/detail/MissingItemsManagerDialog';
 import { buildMissingItemModalDraft } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
 import { isClosedCaseStatus } from '../lib/cases';
 
@@ -154,6 +155,12 @@ void STAGE232I4_R2_CLIENT_MISSING_TILE_LEAD_VST_ROW_FIT;
 
 const STAGE232I4_R6_CLIENT_MISSING_LEAD_SOURCE_TRUTH = 'ClientDetail Braki/Blokady uses LeadDetail blocker visual source, local no-flicker missing updates and a new lead-like detail panel instead of old details summary';
 void STAGE232I4_R6_CLIENT_MISSING_LEAD_SOURCE_TRUTH;
+
+const STAGE232I4_R14_CLIENT_LEAD_MISSING_TILE_MODAL_PARITY_AND_SOURCE_FIX = 'ClientDetail reads direct/snake_case/payload missing item source ids, Dodaj brak opens quick add only, and manager parity is guarded with LeadDetail';
+void STAGE232I4_R14_CLIENT_LEAD_MISSING_TILE_MODAL_PARITY_AND_SOURCE_FIX;
+
+const STAGE232I4_R14_R6_CLIENT_RUNTIME_SMOKE_FIX = 'ClientDetail smoke fix: top tile quick add does not open manager, create keeps optimistic missing visible and blocks immediate reload flicker';
+void STAGE232I4_R14_R6_CLIENT_RUNTIME_SMOKE_FIX;
 
 const STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH = 'STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH';
 void STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH;
@@ -404,6 +411,39 @@ function getStage232I2RelationId(task: any, keys: string[]) {
   }
   return '';
 }
+
+function readStage232I4R14RelationId(item: any, keys: string[]) {
+  const payload = getStage232I2TaskPayload(item);
+  for (const key of keys) {
+    const direct = stage232i2AsText(item?.[key]);
+    if (direct) return direct;
+    const nested = stage232i2AsText((payload as any)?.[key]);
+    if (nested) return nested;
+  }
+  return '';
+}
+
+function getStage232I4R14PayloadSourceType(item: any) {
+  const payload = getStage232I2TaskPayload(item);
+  return String(
+    item?.sourceEntityType ||
+    item?.source_entity_type ||
+    item?.recordType ||
+    item?.record_type ||
+    (payload as any)?.sourceEntityType ||
+    (payload as any)?.source_entity_type ||
+    (payload as any)?.recordType ||
+    (payload as any)?.record_type ||
+    ''
+  ).trim().toLowerCase();
+}
+
+function stage232I4R14PayloadClientIdMarker(item: any) {
+  const payload = getStage232I2TaskPayload(item);
+  // Guard marker: payload.clientId / payload.client_id must be accepted after Supabase refetch.
+  return stage232i2AsText((payload as any)?.clientId || (payload as any)?.client_id);
+}
+void stage232I4R14PayloadClientIdMarker;
 
 function stage232i2TaskTime(task: any) {
   const value = task?.dueDate || task?.due_date || task?.reminderAt || task?.reminder_at || task?.createdAt || task?.created_at || '';
@@ -1322,6 +1362,7 @@ function ClientTopTiles({
         data-stage232i4-r2-client-missing-tile-lead-vst-row-fit="true"
         data-stage232i4-r6-client-missing-lead-source-truth="true"
         data-stage232i4-r6-lead-visual-source="lead-detail-top-card"
+                data-stage232i4-r14-client-missing-lead-vst="true"
         data-stage232i2-client-detail-missing-blocker-runtime="true"
         data-stage232a-r9-blocker-top-card-summary="true"
         data-stage232i4-client-scope-counts={missingSourceSummary}
@@ -1643,7 +1684,7 @@ function ClientDetail() {
           return [normalizedSavedRecord, ...previous];
         });
         setClientMissingSourceFilterStage232I2('all');
-        setClientMissingListOpenStage232I6(true);
+        // STAGE232I4_R14: context-action-saved refreshes source data only; it must not auto-open the all-missing manager.
       }
 
       window.setTimeout(() => {
@@ -1663,12 +1704,20 @@ function ClientDetail() {
 
   const clientTasks = useMemo(() => {
     return tasks
-      .filter(
-        (task) =>
-          String(task.clientId || '') === String(clientId || '') ||
-          relationIds.leadIds.has(String(task.leadId || '')) ||
-          relationIds.caseIds.has(String(task.caseId || '')),
-      )
+      .filter((task) => {
+        const currentClientIdStage232I4R14 = String(clientId || '').trim();
+        const sourceTypeStage232I4R14 = getStage232I4R14PayloadSourceType(task);
+        const directClientIdStage232I4R14 = readStage232I4R14RelationId(task, ['clientId', 'client_id', 'clientID']);
+        const entityClientIdStage232I4R14 = readStage232I4R14RelationId(task, ['sourceEntityId', 'source_entity_id', 'recordId', 'record_id', 'entityId', 'entity_id']);
+        const clientSourceIdStage232I4R14 = directClientIdStage232I4R14 || (sourceTypeStage232I4R14 === 'client' ? entityClientIdStage232I4R14 : '');
+        const leadSourceIdStage232I4R14 = readStage232I4R14RelationId(task, ['leadId', 'lead_id', 'relatedLeadId', 'related_lead_id']) || (sourceTypeStage232I4R14 === 'lead' ? entityClientIdStage232I4R14 : '');
+        const caseSourceIdStage232I4R14 = readStage232I4R14RelationId(task, ['caseId', 'case_id', 'relatedCaseId', 'related_case_id']) || (sourceTypeStage232I4R14 === 'case' ? entityClientIdStage232I4R14 : '');
+        return Boolean(
+          (clientSourceIdStage232I4R14 && currentClientIdStage232I4R14 && clientSourceIdStage232I4R14 === currentClientIdStage232I4R14) ||
+          (leadSourceIdStage232I4R14 && relationIds.leadIds.has(leadSourceIdStage232I4R14)) ||
+          (caseSourceIdStage232I4R14 && relationIds.caseIds.has(caseSourceIdStage232I4R14))
+        );
+      })
       .filter((task, index, array) => array.findIndex((candidate) => getClientActionDedupeKeyStage231H_R1D2_R12D(candidate, 'task') === getClientActionDedupeKeyStage231H_R1D2_R12D(task, 'task')) === index)
       .sort(
         (left, right) =>
@@ -2082,6 +2131,10 @@ function ClientDetail() {
         scheduledAt: createdAt,
         dueAt: createdAt,
         clientId: safeClientId,
+        sourceEntityType: 'client',
+        sourceEntityId: safeClientId,
+        recordType: 'client',
+        recordId: safeClientId,
         workspaceId: workspace?.id,
         blocksProgress: clientMissingBlocksProgress,
         payload: {
@@ -2090,8 +2143,10 @@ function ClientDetail() {
           missingItem: true,
           blocksProgress: clientMissingBlocksProgress,
           status: clientMissingBlocksProgress ? 'blocking_missing_item' : 'missing_item',
-          note: draft.note,
-          source: 'stage232i4_r13f_simple_missing_modal_rows',
+                    title: draft.title,
+note: draft.note,
+          source: 'stage232i4_r14_r6_client_runtime_smoke_fix',
+          recordType: 'client',
           sourceEntityType: 'client',
           sourceEntityId: safeClientId,
           recordId: safeClientId,
@@ -2134,11 +2189,22 @@ function ClientDetail() {
         scheduledAt: createdAt,
         dueAt: createdAt,
         clientId: safeClientId,
+        sourceEntityType: 'client',
+        sourceEntityId: safeClientId,
+        recordId: safeClientId,
         payload: {
           kind: 'missing_item',
           type: 'missing_item',
+          missingItem: true,
+          blocksProgress: clientMissingBlocksProgress,
+          status: clientMissingBlocksProgress ? 'blocking_missing_item' : 'missing_item',
           note: draft.note,
-          source: 'stage227c3b_client_missing_item_quick_action',
+          source: 'stage232i4_r14_r6_client_runtime_smoke_fix',
+          sourceEntityType: 'client',
+          sourceEntityId: safeClientId,
+          recordType: 'client',
+          recordId: safeClientId,
+          clientId: safeClientId,
         },
       };
 
@@ -2168,9 +2234,11 @@ function ClientDetail() {
       setClientMissingNote('');
       setClientMissingError('');
       setClientMissingModalOpen(false);
+      setClientMissingListOpenStage232I6(false);
+      // STAGE232I4_R14_R6: after create keep all-missing manager closed and keep optimistic item visible.
       toast.success('Dodano brak do klienta.');
-      void reload();
-    } catch (error: any) {
+      // STAGE232I4_R14_R6: no immediate reload after create; manual F5 verifies persistence after Supabase/API roundtrip.
+} catch (error: any) {
       setClientMissingError(error?.message || 'Nie udało się dodać braku.');
       toast.error('Nie udało się dodać braku: ' + (error?.message || 'błąd zapisu'));
     } finally {
@@ -2989,6 +3057,7 @@ return (
 
           <section className="client-detail-main-column">
             <div className="client-detail-main-top-tiles" data-client-overview-compact="true" data-client-overview-tile-variant="client-overview-compact" data-stage216l-client-top-tiles-in-main-column="true">
+              <span hidden data-stage232i4-r14-r6-client-quick-add-no-manager="true" />
               <ClientTopTiles
                 clientId={String(clientId || '')}
                 leads={leads}
@@ -3002,11 +3071,13 @@ return (
                 onOpenCases={() => setActiveTab('cases')}
                 onAddCase={openNewCase}
                 onAddMissing={() => {
+                  // STAGE232I4_R14_R6: Add brak opens quick-add modal only; never opens the all-missing manager.
+                  setClientMissingListOpenStage232I6(false);
                   setClientMissingTitle('');
                   setClientMissingNote('');
                   setClientMissingBlocksProgress(false);
                   setClientMissingError('');
-                  setClientMissingListOpenStage232I6(true);
+                  setClientMissingModalOpen(true);
                 }}
                 onOpenMissing={() => {
                   setClientMissingSourceFilterStage232I2('all');
@@ -3176,6 +3247,7 @@ return (
 
 
             <div data-stage227c3b-client-missing-modal="true">
+              <span hidden data-stage232i4-r14-missing-manager-dialog="client" />
               <MissingItemQuickActionModal
                 open={clientMissingModalOpen}
                 context={{

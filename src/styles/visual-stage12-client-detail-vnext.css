@@ -4372,3 +4372,17 @@ main[data-current-section="client-detail"] > .view.active[data-shell-content="tr
     align-items: stretch !important;
   }
 }
+
+/* STAGE232I4_R14_CLIENT_LEAD_MISSING_TILE_MODAL_PARITY_AND_SOURCE_FIX */
+[data-stage232i4-r14-client-missing-lead-vst="true"] { min-height: 100%; }
+.cf-missing-manager-dialog-stage232i4-r14 { max-width: 860px; }
+.cf-missing-manager-add-form-stage232i4-r14 { display: grid; grid-template-columns: minmax(220px, 1fr) auto auto; gap: 12px; align-items: end; }
+.cf-missing-manager-title-field-stage232i4-r14 { display: grid; gap: 6px; }
+.cf-missing-manager-checkbox-stage232i4-r14, .cf-missing-manager-row-checkbox-stage232i4-r14 { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.cf-missing-manager-list-stage232i4-r14 { display: grid; gap: 10px; max-height: 52vh; overflow: auto; padding-right: 2px; }
+.cf-missing-manager-row-stage232i4-r14 { display: grid; grid-template-columns: auto minmax(180px, 1fr) auto auto auto; gap: 10px; align-items: center; border: 1px solid rgba(245, 158, 11, 0.26); border-radius: 14px; padding: 10px 12px; background: rgba(120, 53, 15, 0.14); }
+.cf-missing-manager-row-title-stage232i4-r14 { min-width: 0; }
+.cf-missing-manager-row-title-stage232i4-r14 strong, .cf-missing-manager-row-title-stage232i4-r14 p, .cf-missing-manager-row-title-stage232i4-r14 small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cf-missing-manager-error-stage232i4-r14 { grid-column: 1 / -1; color: rgb(248, 113, 113); font-size: 0.9rem; }
+.cf-missing-manager-empty-stage232i4-r14 { border: 1px dashed rgba(148, 163, 184, 0.35); border-radius: 14px; padding: 14px; }
+@media (max-width: 760px) { .cf-missing-manager-add-form-stage232i4-r14, .cf-missing-manager-row-stage232i4-r14 { grid-template-columns: 1fr; } }
