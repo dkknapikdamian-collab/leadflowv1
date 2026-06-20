@@ -2263,21 +2263,42 @@ note: draft.note,
       return;
     }
     const nextStatus = blocksProgress ? 'blocking_missing_item' : 'missing_item';
-    const previousPayload = item?.payload && typeof item.payload === 'object' ? item.payload : {};
+    const existingTask = Array.isArray(tasks) ? tasks.find((task: any) => String(task?.id || '').trim() === taskId) : null;
+    const sourceTask: any = existingTask || item || {};
+    const previousPayload = sourceTask?.payload && typeof sourceTask.payload === 'object' ? sourceTask.payload : {};
+    const fallbackDate = new Date().toISOString();
+    const scheduledAt = String(sourceTask?.scheduledAt || sourceTask?.dueAt || sourceTask?.date || fallbackDate);
+    const date = /^\d{4}-\d{2}-\d{2}/.test(scheduledAt) ? scheduledAt.slice(0, 10) : fallbackDate.slice(0, 10);
+    const safeClientId = String(sourceTask?.clientId || sourceTask?.client_id || clientId || client?.id || '').trim();
+    const safeLeadId = String(sourceTask?.leadId || sourceTask?.lead_id || '').trim();
+    const safeCaseId = String(sourceTask?.caseId || sourceTask?.case_id || '').trim();
+    const nextPayload = {
+      ...previousPayload,
+      kind: 'missing_item',
+      type: 'missing_item',
+      missingItem: true,
+      blocksProgress,
+      status: nextStatus,
+      source: 'stage232i4_r16t_client_missing_blocker_toggle_existing_fix',
+    };
     try {
       await updateTaskInSupabase({
         id: taskId,
+        title: String(sourceTask?.title || item?.title || 'Brak'),
+        type: String(sourceTask?.type || item?.type || 'missing_item'),
+        date,
+        scheduledAt,
+        dueAt: String(sourceTask?.dueAt || sourceTask?.scheduledAt || scheduledAt),
+        priority: String(sourceTask?.priority || item?.priority || 'high'),
         status: nextStatus,
-        blocksProgress,
-        payload: {
-          ...previousPayload,
-          kind: 'missing_item',
-          type: 'missing_item',
-          missingItem: true,
-          blocksProgress,
-          status: nextStatus,
-          source: 'stage232i4_r13f_simple_missing_modal_rows',
-        },
+        clientId: safeClientId || null,
+        leadId: safeLeadId || null,
+        caseId: safeCaseId || null,
+        sourceEntityType: String(sourceTask?.sourceEntityType || sourceTask?.source_entity_type || 'client'),
+        sourceEntityId: String(sourceTask?.sourceEntityId || sourceTask?.source_entity_id || safeClientId || ''),
+        recordType: 'client',
+        recordId: safeClientId || null,
+        payload: nextPayload,
       } as any);
       setTasks((previous) => previous.map((task: any) => String(task?.id || '') === taskId
         ? {
@@ -2286,12 +2307,7 @@ note: draft.note,
             blocksProgress,
             payload: {
               ...(task?.payload && typeof task.payload === 'object' ? task.payload : {}),
-              kind: 'missing_item',
-              type: 'missing_item',
-              missingItem: true,
-              blocksProgress,
-              status: nextStatus,
-              source: 'stage232i4_r13f_simple_missing_modal_rows',
+              ...nextPayload,
             },
           }
         : task));
@@ -2300,7 +2316,7 @@ note: draft.note,
     } catch (error: any) {
       toast.error('Nie udało się zmienić blokady: ' + (error?.message || 'błąd zapisu'));
     }
-  }, [hasAccess, reload]);
+  }, [client?.id, clientId, hasAccess, reload, tasks]);
 
   const handleResolveClientMissingItemStage228R13 = useCallback(async (item: any) => {
     if (!hasAccess) {
