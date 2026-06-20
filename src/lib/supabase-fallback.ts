@@ -802,14 +802,18 @@ export async function updateLeadInSupabase(input: Record<string, unknown> & { id
   return result;
 }
 export async function deleteLeadFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/leads?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
+// STAGE232I4_R16V_TASK_UPDATE_SYSTEM_ROUTE_AND_BLOCKER_LABEL_FINAL: task PATCH uses consolidated api/system task route to avoid legacy /api/tasks existing runtime error.
 export async function updateTaskInSupabase(input: Record<string, unknown> & { id: string }): Promise<SupabaseInsertResult> {
   const taskId = String(input?.id || '').trim();
   if (!taskId) throw new Error('TASK_ID_REQUIRED');
-  const result = await callApi<SupabaseInsertResult>('/api/tasks', {
+  const result = await callApi<SupabaseInsertResult>('/api/system?apiRoute=tasks', {
     method: 'PATCH',
     body: JSON.stringify({ ...input, id: taskId }),
-  });
-  emitCloseflowWorkItemNoFlickerMutation({ action: 'update', kind: 'task', id: taskId, record: result, source: 'stage228r59_updateTaskInSupabase_no_flicker_update' });
+    sourceId: taskId,
+    mutationCacheCategory: 'task',
+    refreshSource: 'fetchCalendarBundleFromSupabase',
+  } as any);
+  emitCloseflowWorkItemNoFlickerMutation({ action: 'update', kind: 'task', id: taskId, record: result, source: 'stage232i4_r16v_updateTaskInSupabase_system_route_no_existing_runtime_error' });
   return result;
 }
 
