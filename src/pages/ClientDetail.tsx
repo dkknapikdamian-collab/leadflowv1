@@ -142,6 +142,8 @@ void STAGE232I4_R16O_CLIENT_SHARED_MISSING_MANAGER_NO_MARKER_ANCHOR_FINAL;
 const STAGE232I4_R16X_MISSING_BLOCKER_TOGGLE_STATE_AND_ACTION_LABEL = 'Client missing blocker toggle persists through legal priority mapping and keeps approved manager action layout';
 void STAGE232I4_R16X_MISSING_BLOCKER_TOGGLE_STATE_AND_ACTION_LABEL;
 
+const STAGE232I4_R16Y_R2_MISSING_BLOCKER_SOURCE_TRUTH_ROBUST_FINAL = 'Client missing blocker source truth reads legal priority high/medium and delete action remains visible';
+void STAGE232I4_R16Y_R2_MISSING_BLOCKER_SOURCE_TRUTH_ROBUST_FINAL;
 import { buildMissingItemModalDraft } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
 import { isClosedCaseStatus } from '../lib/cases';
 
@@ -482,8 +484,9 @@ function isStage232I2ActiveMissingItemTask(task: any) {
 function isStage232I2BlockingMissingItem(task: any) {
   const payload = getStage232I2TaskPayload(task);
   const status = String(task?.status || (payload as any)?.status || '').trim().toLowerCase();
+  const priority = String(task?.priority || task?.priorityLevel || (payload as any)?.priority || (payload as any)?.priorityLevel || '').trim().toLowerCase();
   const direct = task?.blocksProgress ?? task?.blocks_progress ?? (payload as any)?.blocksProgress ?? (payload as any)?.blocks_progress;
-  return status === 'blocking_missing_item' || direct === true || String(direct || '').toLowerCase() === 'true';
+  return status === 'blocking_missing_item' || priority === 'high' || direct === true || String(direct || '').toLowerCase() === 'true';
 }
 
 function getStage232I2MissingSourceType(task: any, context?: Stage232I2ClientMissingSourceContext): Stage232I2ClientMissingSourceType {
@@ -2132,7 +2135,7 @@ function ClientDetail() {
         title: draft.title,
         type: 'missing_item',
         status: clientMissingBlocksProgress ? 'blocking_missing_item' : 'missing_item',
-        priority: 'high',
+        priority: clientMissingBlocksProgress ? 'high' : 'medium',
         date: createdAt.slice(0, 10),
         scheduledAt: createdAt,
         dueAt: createdAt,
@@ -2189,7 +2192,7 @@ note: draft.note,
         title: draft.title,
         type: 'missing_item',
         status: clientMissingBlocksProgress ? 'blocking_missing_item' : 'missing_item',
-        priority: 'high',
+        priority: clientMissingBlocksProgress ? 'high' : 'medium',
         blocksProgress: clientMissingBlocksProgress,
         date: createdAt.slice(0, 10),
         scheduledAt: createdAt,
