@@ -1,4 +1,4 @@
-﻿// STAGE232I4_R14_CLIENT_LEAD_MISSING_TILE_MODAL_PARITY_AND_SOURCE_FIX
+// STAGE232I4_R14_CLIENT_LEAD_MISSING_TILE_MODAL_PARITY_AND_SOURCE_FIX
 // STAGE232I4_R10_MISSING_MANAGER_READABLE_LAYOUT
 // STAGE232I4_R11_MISSING_MANAGER_ROW_LAYOUT
 // STAGE232I4_R12_SHARED_MODAL_VISUAL_SOURCE_TRUTH
@@ -156,7 +156,10 @@ export function MissingItemsManagerDialog({
               {items.length ? (
                 items.map((item) => {
                   const itemId = String(item?.id || item?.raw?.id || item?.title || 'missing');
-                  const itemTitle = managerItemTitle(item);
+                  const itemTitle = managerItemTitle(item);
+
+
+
                   const isBlocker = isManagerItemBlocker(item);
                   return (
                     <article key={itemId} className="cf-missing-manager-row-stage232i4-r14 cf-missing-manager-row-stage232i4-r10 cf-missing-manager-row-stage232i4-r11 cf-missing-manager-row-stage232i4-r12 cf-missing-manager-row-stage232i4-r16q cf-missing-manager-row-stage232i4-r16r cf-missing-manager-row-stage232i4-r16s-r2 overflow-hidden rounded-lg border border-slate-700 bg-slate-900/80 px-2 py-1.5 shadow-sm" data-stage232i4-r14-manager-row="true" data-stage232i4-r10-manager-row="separated-card" data-stage232i4-r11-manager-row="compact-horizontal-card" data-stage232i4-r12-manager-row="shared-shell-compact-card" data-stage232i4-r16q-manager-row="compact-horizontal-card" data-stage232i4-r16r-manager-row="production-fit-compact-card" data-stage232i4-r16s-r2-manager-row="aligned-compact-fixed-columns" data-missing-item-card="true">
