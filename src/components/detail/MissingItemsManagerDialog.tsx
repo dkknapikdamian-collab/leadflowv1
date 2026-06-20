@@ -3,6 +3,7 @@
 // STAGE232I4_R11_MISSING_MANAGER_ROW_LAYOUT
 // STAGE232I4_R12_SHARED_MODAL_VISUAL_SOURCE_TRUTH
 // Shared Braki / Blokady manager dialog for LeadDetail and ClientDetail parity.
+// STAGE232I4_R16Q_MISSING_MANAGER_COMPACT_ROW_VISUAL_FIX: compact one-row cards and readable add form.
 import { AlertTriangle, CheckCircle2, Plus, Trash2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Dialog } from '../ui/dialog';
@@ -130,7 +131,7 @@ export function MissingItemsManagerDialog({
         title={title}
         description={description}
         icon={<AlertTriangle className="h-4 w-4" />}
-        className="cf-missing-manager-dialog-stage232i4-r14 cf-missing-manager-dialog-stage232i4-r10 cf-missing-manager-dialog-stage232i4-r11 cf-missing-manager-dialog-stage232i4-r12 !max-w-none sm:!max-w-none xl:w-[1100px]"
+        className="cf-missing-manager-dialog-stage232i4-r14 cf-missing-manager-dialog-stage232i4-r10 cf-missing-manager-dialog-stage232i4-r11 cf-missing-manager-dialog-stage232i4-r12 !max-w-none sm:!max-w-none cf-missing-manager-dialog-stage232i4-r16q w-[calc(100vw-48px)] xl:w-[1180px]"
         footer={(
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSaving} className="rounded-xl border-slate-600 bg-slate-100 px-5 font-semibold text-slate-950 hover:bg-white">
             Zamknij
@@ -144,8 +145,9 @@ export function MissingItemsManagerDialog({
           data-stage232i4-r11-row-layout="title-first-control-row"
           data-stage232i4-r12-uses-shared-dialog-shell="true"
           data-stage232i4-r16-manager-wide-readable="true"
+          data-stage232i4-r16q-compact-row-readability="true"
         >
-          <CloseFlowDialogSection className="cf-missing-manager-add-form-stage232i4-r14 cf-missing-manager-add-form-stage232i4-r10 space-y-4" data-stage232i4-r12-add-section="true">
+          <CloseFlowDialogSection className="cf-missing-manager-add-form-stage232i4-r14 cf-missing-manager-add-form-stage232i4-r10 cf-missing-manager-add-form-stage232i4-r16q !rounded-2xl !border !border-slate-700 !bg-slate-950/80 p-3" data-stage232i4-r12-add-section="true">
             <form
               data-stage232i4-r14-manager-add-form="true"
               data-stage232i4-r10-manager-add-form="true"
@@ -156,14 +158,14 @@ export function MissingItemsManagerDialog({
               }}
             >
               <div className="space-y-4">
-                <Label className="cf-missing-manager-title-field-stage232i4-r14 block text-sm font-medium text-slate-200">
+                <Label className="cf-missing-manager-title-field-stage232i4-r14 block text-sm font-semibold text-slate-100">
                   Nazwa braku
                   <Input
                     value={titleValue}
                     onChange={(event) => onTitleChange(event.target.value)}
                     placeholder="np. Brak dokumentu"
                     disabled={!canMutate || isSaving}
-                    className="mt-2 h-10 rounded-xl border-slate-700 bg-slate-100 text-slate-950 placeholder:text-slate-500 focus-visible:ring-blue-500"
+                    className="mt-2 h-10 rounded-xl border-slate-600 bg-slate-900 text-slate-50 placeholder:text-slate-500 focus-visible:ring-blue-500"
                     data-stage232i4-r14-manager-title-input="true"
                   />
                 </Label>
@@ -207,43 +209,43 @@ export function MissingItemsManagerDialog({
                   const itemNote = managerItemNote(item);
                   const isBlocker = isManagerItemBlocker(item);
                   return (
-                    <article key={itemId} className="cf-missing-manager-row-stage232i4-r14 cf-missing-manager-row-stage232i4-r10 cf-missing-manager-row-stage232i4-r11 cf-missing-manager-row-stage232i4-r12 rounded-2xl border border-slate-700 bg-slate-900/75 p-4 shadow-sm" data-stage232i4-r14-manager-row="true" data-stage232i4-r10-manager-row="separated-card" data-stage232i4-r11-manager-row="title-first-card-controls-below" data-stage232i4-r12-manager-row="shared-shell-title-first-card" data-missing-item-card="true">
-                      <div className="space-y-3" data-stage232i4-r12-manager-card-layout="title-first-controls-below">
-                        <div className="min-w-0 space-y-2" data-stage232i4-r11-manager-title-column="true" data-missing-item-title-block="true">
-                          <div className="flex flex-wrap items-center gap-2 text-xs">
-                            <span className="rounded-full border border-slate-600 bg-slate-950/80 px-2 py-0.5 font-medium text-slate-300" data-stage232i4-r14-manager-source-badge="true">{itemSource}</span>
-                            {isBlocker ? <span className="rounded-full border border-red-400/30 bg-red-500/15 px-2 py-0.5 font-semibold text-red-200">Priorytet blokujący</span> : <span className="rounded-full border border-blue-400/30 bg-blue-500/15 px-2 py-0.5 font-semibold text-blue-200">Brak informacyjny</span>}
-                          </div>
-                          <div className="rounded-xl border border-slate-800 bg-slate-950/55 px-3 py-3">
-                            <span className="block text-[11px] font-semibold uppercase tracking-wide text-slate-400">Nazwa braku</span>
-                            <strong className="mt-1 block break-words text-base font-semibold leading-6 text-slate-50" data-stage232i4-r11-manager-item-title="true" data-stage232i4-r12-manager-item-title="primary-visible-name">{itemTitle}</strong>
-                          </div>
-                          {itemSourceTitle || itemNote ? <p className="break-words text-sm leading-5 text-slate-300">{[itemSourceTitle, itemNote].filter(Boolean).join(' · ')}</p> : null}
+                    <article key={itemId} className="cf-missing-manager-row-stage232i4-r14 cf-missing-manager-row-stage232i4-r10 cf-missing-manager-row-stage232i4-r11 cf-missing-manager-row-stage232i4-r12 cf-missing-manager-row-stage232i4-r16q rounded-2xl border border-slate-700 bg-slate-900/75 p-3 shadow-sm" data-stage232i4-r14-manager-row="true" data-stage232i4-r10-manager-row="separated-card" data-stage232i4-r11-manager-row="compact-horizontal-card" data-stage232i4-r12-manager-row="shared-shell-compact-card" data-stage232i4-r16q-manager-row="compact-horizontal-card" data-missing-item-card="true">
+                      <div className="grid gap-3 xl:grid-cols-[auto_minmax(180px,1fr)_minmax(200px,1.2fr)_auto_auto] xl:items-center" data-stage232i4-r16q-manager-card-layout="single-horizontal-row">
+                        <div className="flex min-w-[150px] flex-wrap items-center gap-2 text-xs" data-stage232i4-r16q-manager-badges-cell="true">
+                          <span className="rounded-full border border-slate-600 bg-slate-950/80 px-2 py-0.5 font-medium text-slate-300" data-stage232i4-r14-manager-source-badge="true">{itemSource}</span>
+                          {isBlocker ? <span className="rounded-full border border-red-400/30 bg-red-500/15 px-2 py-0.5 font-semibold text-red-200">Priorytet blokujący</span> : <span className="rounded-full border border-blue-400/30 bg-blue-500/15 px-2 py-0.5 font-semibold text-blue-200">Brak informacyjny</span>}
                         </div>
 
-                        <div className="flex flex-col gap-3 border-t border-slate-800 pt-3 sm:flex-row sm:items-center sm:justify-between" data-stage232i4-r12-manager-control-row="blocker-left-actions-right">
-                          <label className="cf-missing-manager-row-checkbox-stage232i4-r14 inline-flex min-h-9 items-center gap-2 rounded-xl border border-slate-700 bg-slate-950/80 px-3 py-2 text-sm text-slate-200" data-stage232i4-r14-manager-row-checkbox="true" data-stage232i4-r11-manager-blocker-column="blocker-row-below-title" data-missing-item-blocker-row="true">
-                            <input
-                              type="checkbox"
-                              aria-label="Blokuje sprawę"
-                              checked={isBlocker}
-                              disabled={!canMutate || isSaving}
-                              onChange={(event) => void onToggleBlocker(item, event.target.checked)}
-                              className="h-4 w-4 rounded border-slate-500 accent-blue-500"
-                            />
-                            <span className={isBlocker ? 'text-sm font-semibold leading-5 text-red-200' : 'text-sm font-medium leading-5 text-slate-300'}>{isBlocker ? 'Blokuje sprawę' : 'Nie blokuje'}</span>
-                          </label>
+                        <div className="min-w-0 rounded-xl border border-slate-800 bg-slate-950/55 px-3 py-2" data-missing-item-title-block="true">
+                          <span className="block text-[10px] font-semibold uppercase tracking-wide text-slate-400">Nazwa braku</span>
+                          <strong className="mt-1 block truncate text-sm font-semibold leading-5 text-slate-50" title={itemTitle} data-stage232i4-r11-manager-item-title="true" data-stage232i4-r12-manager-item-title="primary-visible-name">{itemTitle}</strong>
+                        </div>
 
-                          <div className="cf-missing-manager-row-actions-stage232i4-r11 flex flex-row flex-wrap items-center gap-2 sm:justify-end" data-stage232i4-r10-manager-row-actions="separated-flex-wrap-gap" data-stage232i4-r11-manager-actions-column="actions-row-right" data-missing-item-actions-row="true">
-                            <Button type="button" variant="outline" size="sm" disabled={!canMutate || isSaving} onClick={() => void onResolve(item)} className="min-h-9 gap-2 rounded-lg border-slate-600 bg-slate-100 px-3 text-slate-950 hover:bg-white" data-stage232i4-r14-manager-resolve-action="true">
-                              <CheckCircle2 className="h-4 w-4" />
-                              Uzupełnione
-                            </Button>
-                            <Button type="button" variant="outline" size="sm" disabled={!canMutate || isSaving} onClick={() => void onDelete(item)} className="min-h-9 gap-2 rounded-lg border-slate-600 bg-slate-100 px-3 text-slate-950 hover:bg-white" data-stage232i4-r14-manager-delete-action="true">
-                              <Trash2 className="h-4 w-4" />
-                              Usuń
-                            </Button>
-                          </div>
+                        <p className="min-w-0 truncate text-sm leading-5 text-slate-300" title={[itemSourceTitle, itemNote].filter(Boolean).join(' · ') || 'Kartoteka klienta'} data-stage232i4-r16q-manager-source-note-cell="true">
+                          {[itemSourceTitle, itemNote].filter(Boolean).join(' · ') || 'Kartoteka klienta'}
+                        </p>
+
+                        <label className="cf-missing-manager-row-checkbox-stage232i4-r14 inline-flex min-h-9 shrink-0 items-center gap-2 rounded-xl border border-slate-700 bg-slate-950/80 px-3 py-2 text-sm text-slate-200" data-stage232i4-r14-manager-row-checkbox="true" data-stage232i4-r11-manager-blocker-column="blocker-inline" data-missing-item-blocker-row="true">
+                          <input
+                            type="checkbox"
+                            aria-label="Blokuje sprawę"
+                            checked={isBlocker}
+                            disabled={!canMutate || isSaving}
+                            onChange={(event) => void onToggleBlocker(item, event.target.checked)}
+                            className="h-4 w-4 rounded border-slate-500 accent-blue-500"
+                          />
+                          <span className={isBlocker ? 'whitespace-nowrap text-sm font-semibold leading-5 text-red-200' : 'whitespace-nowrap text-sm font-medium leading-5 text-slate-300'}>{isBlocker ? 'Blokuje sprawę' : 'Nie blokuje'}</span>
+                        </label>
+
+                        <div className="cf-missing-manager-row-actions-stage232i4-r11 flex shrink-0 flex-row items-center justify-end gap-2" data-stage232i4-r10-manager-row-actions="compact-inline-actions" data-stage232i4-r11-manager-actions-column="actions-inline-right" data-missing-item-actions-row="true">
+                          <Button type="button" variant="outline" size="sm" disabled={!canMutate || isSaving} onClick={() => void onResolve(item)} className="min-h-9 gap-2 rounded-lg border-slate-600 bg-slate-100 px-3 text-slate-950 hover:bg-white" data-stage232i4-r14-manager-resolve-action="true">
+                            <CheckCircle2 className="h-4 w-4" />
+                            Uzupełnione
+                          </Button>
+                          <Button type="button" variant="outline" size="sm" disabled={!canMutate || isSaving} onClick={() => void onDelete(item)} className="min-h-9 gap-2 rounded-lg border-slate-600 bg-slate-100 px-3 text-slate-950 hover:bg-white" data-stage232i4-r14-manager-delete-action="true">
+                            <Trash2 className="h-4 w-4" />
+                            Usuń
+                          </Button>
                         </div>
                       </div>
                     </article>
