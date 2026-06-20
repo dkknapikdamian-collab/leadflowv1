@@ -139,6 +139,8 @@ import { MissingItemQuickActionModal } from '../components/detail/MissingItemQui
 import { MissingItemsManagerDialog } from '../components/detail/MissingItemsManagerDialog';
 const STAGE232I4_R16O_CLIENT_SHARED_MISSING_MANAGER_NO_MARKER_ANCHOR_FINAL = 'ClientDetail uses shared MissingItemsManagerDialog for client missing items without fragile R14/R6 marker anchoring';
 void STAGE232I4_R16O_CLIENT_SHARED_MISSING_MANAGER_NO_MARKER_ANCHOR_FINAL;
+const STAGE232I4_R16X_MISSING_BLOCKER_TOGGLE_STATE_AND_ACTION_LABEL = 'Client missing blocker toggle persists through legal priority mapping and keeps approved manager action layout';
+void STAGE232I4_R16X_MISSING_BLOCKER_TOGGLE_STATE_AND_ACTION_LABEL;
 
 import { buildMissingItemModalDraft } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
 import { isClosedCaseStatus } from '../lib/cases';
@@ -2262,7 +2264,8 @@ note: draft.note,
       toast.error('Brak ID braku. Nie można zmienić blokady.');
       return;
     }
-    const nextStatus = blocksProgress ? 'blocking_missing_item' : 'missing_item';
+    const nextMissingStateStage232I4R16X = blocksProgress ? 'blocking_missing_item' : 'missing_item';
+    const nextPriorityStage232I4R16X = blocksProgress ? 'high' : 'medium';
     const existingTask = Array.isArray(tasks) ? tasks.find((task: any) => String(task?.id || '').trim() === taskId) : null;
     const sourceTask: any = existingTask || item || {};
     const previousPayload = sourceTask?.payload && typeof sourceTask.payload === 'object' ? sourceTask.payload : {};
@@ -2278,8 +2281,8 @@ note: draft.note,
       type: 'missing_item',
       missingItem: true,
       blocksProgress,
-      status: nextStatus,
-      source: 'stage232i4_r16t_client_missing_blocker_toggle_existing_fix',
+      status: nextMissingStateStage232I4R16X,
+      source: 'stage232i4_r16x_client_missing_blocker_toggle_priority_state_fix',
     };
     try {
       await updateTaskInSupabase({
@@ -2289,8 +2292,7 @@ note: draft.note,
         date,
         scheduledAt,
         dueAt: String(sourceTask?.dueAt || sourceTask?.scheduledAt || scheduledAt),
-        priority: String(sourceTask?.priority || item?.priority || 'high'),
-        status: nextStatus,
+        priority: nextPriorityStage232I4R16X,
         clientId: safeClientId || null,
         leadId: safeLeadId || null,
         caseId: safeCaseId || null,
@@ -2303,7 +2305,8 @@ note: draft.note,
       setTasks((previous) => previous.map((task: any) => String(task?.id || '') === taskId
         ? {
             ...task,
-            status: nextStatus,
+            status: nextMissingStateStage232I4R16X,
+            priority: nextPriorityStage232I4R16X,
             blocksProgress,
             payload: {
               ...(task?.payload && typeof task.payload === 'object' ? task.payload : {}),
