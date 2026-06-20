@@ -130,7 +130,7 @@ export function MissingItemsManagerDialog({
         title={title}
         description={description}
         icon={<AlertTriangle className="h-4 w-4" />}
-        className="cf-missing-manager-dialog-stage232i4-r14 cf-missing-manager-dialog-stage232i4-r10 cf-missing-manager-dialog-stage232i4-r11 cf-missing-manager-dialog-stage232i4-r12 max-w-3xl sm:max-w-3xl"
+        className="cf-missing-manager-dialog-stage232i4-r14 cf-missing-manager-dialog-stage232i4-r10 cf-missing-manager-dialog-stage232i4-r11 cf-missing-manager-dialog-stage232i4-r12 !max-w-none sm:!max-w-none xl:w-[1100px]"
         footer={(
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSaving} className="rounded-xl border-slate-600 bg-slate-100 px-5 font-semibold text-slate-950 hover:bg-white">
             Zamknij
@@ -143,6 +143,7 @@ export function MissingItemsManagerDialog({
           data-stage232i4-r10-readable-layout="true"
           data-stage232i4-r11-row-layout="title-first-control-row"
           data-stage232i4-r12-uses-shared-dialog-shell="true"
+          data-stage232i4-r16-manager-wide-readable="true"
         >
           <CloseFlowDialogSection className="cf-missing-manager-add-form-stage232i4-r14 cf-missing-manager-add-form-stage232i4-r10 space-y-4" data-stage232i4-r12-add-section="true">
             <form

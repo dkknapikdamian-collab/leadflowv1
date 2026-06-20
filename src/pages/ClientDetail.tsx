@@ -137,6 +137,9 @@ import ContextActionButton from '../components/ContextActionButton';
 import { EntityContactInfoList } from '../components/entity-contact-card';
 import { MissingItemQuickActionModal } from '../components/detail/MissingItemQuickActionModal';
 import { MissingItemsManagerDialog } from '../components/detail/MissingItemsManagerDialog';
+const STAGE232I4_R16O_CLIENT_SHARED_MISSING_MANAGER_NO_MARKER_ANCHOR_FINAL = 'ClientDetail uses shared MissingItemsManagerDialog for client missing items without fragile R14/R6 marker anchoring';
+void STAGE232I4_R16O_CLIENT_SHARED_MISSING_MANAGER_NO_MARKER_ANCHOR_FINAL;
+
 import { buildMissingItemModalDraft } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
 import { isClosedCaseStatus } from '../lib/cases';
 
@@ -1363,6 +1366,7 @@ function ClientTopTiles({
         data-stage232i4-r6-client-missing-lead-source-truth="true"
         data-stage232i4-r6-lead-visual-source="lead-detail-top-card"
                 data-stage232i4-r14-client-missing-lead-vst="true"
+        data-stage232i4-r16-client-missing-lead-vst="true"
         data-stage232i2-client-detail-missing-blocker-runtime="true"
         data-stage232a-r9-blocker-top-card-summary="true"
         data-stage232i4-client-scope-counts={missingSourceSummary}
@@ -3087,7 +3091,7 @@ return (
             </div>
 
 
-            {false && clientMissingListOpenStage232I6 ? (
+            {false && clientMissingListOpenStage232I6 ? ( // archived by STAGE232I4_R16O: active path uses MissingItemsManagerDialog
               <section id="client-missing-items-stage232i2" className="client-detail-section-card client-detail-missing-items-section client-detail-missing-items-section-lead-vst" data-stage227c3b-client-missing-items-list="true" data-stage232i2-client-detail-missing-blocker-runtime="true" data-stage232i4-r6-client-missing-detail-panel="lead-vst">
                 <div className="client-detail-stage232i6-missing-head">
                   <div className="lead-detail-card-title-row client-detail-stage232i6-title-row">
@@ -3275,92 +3279,77 @@ return (
               />
             </div>
 
-            <Dialog
+            <MissingItemsManagerDialog
               open={clientMissingListOpenStage232I6}
-              onOpenChange={(open) => setClientMissingListOpenStage232I6(open)}
-            >
-              <DialogContent className="client-detail-missing-window-dialog client-detail-missing-window-dialog-simple" data-stage232i4-r12-missing-window="true" data-stage232i4-r13f-simple-missing-window="true">
-                <DialogHeader>
-                  <DialogTitle>Braki / Blokady</DialogTitle>
-                  <DialogDescription>Prosta lista braków klienta. Dodaj brak, ustaw czy blokuje sprawę, oznacz jako uzupełniony albo usuń.</DialogDescription>
-                </DialogHeader>
-
-                <form
-                  className="client-detail-missing-window-add-form client-detail-missing-window-add-form-simple"
-                  data-stage232i4-r13f-simple-missing-add-form="true"
-                  onSubmit={(event) => {
-                    event.preventDefault();
-                    void handleSaveClientMissingItemStage227C3B();
-                  }}
-                >
-                  <div className="client-detail-missing-window-field client-detail-missing-window-title-only">
-                    <Label htmlFor="client-missing-window-title">Nazwa braku</Label>
-                    <Input
-                      id="client-missing-window-title"
-                      value={clientMissingTitle}
-                      onChange={(event) => {
-                        setClientMissingTitle(event.target.value);
-                        if (clientMissingError) setClientMissingError('');
-                      }}
-                      placeholder="np. Brak dokumentu"
-                      disabled={!hasAccess || clientMissingSaving}
-                      data-stage232i4-r12-missing-window-title-input="true"
-                      data-stage232i4-r13f-simple-missing-title-input="true"
-                    />
-                  </div>
-                  <label className="client-detail-missing-window-checkbox" data-stage232i4-r13f-add-blocker-checkbox="true">
-                    <input
-                      type="checkbox"
-                      checked={clientMissingBlocksProgress}
-                      onChange={(event) => setClientMissingBlocksProgress(event.target.checked)}
-                      disabled={!hasAccess || clientMissingSaving}
-                    />
-                    <span>Blokuje sprawę</span>
-                  </label>
-                  <Button type="submit" disabled={!hasAccess || clientMissingSaving || !clientMissingTitle.trim()} data-stage232i4-r12-missing-window-add-action="true" data-stage232i4-r13f-simple-missing-add-action="true">
-                    <Plus className="h-4 w-4" />
-                    {clientMissingSaving ? 'Dodawanie...' : 'Dodaj brak'}
-                  </Button>
-                  {clientMissingError ? <p className="client-detail-missing-window-error">{clientMissingError}</p> : null}
-                </form>
-
-                <div className="client-detail-missing-window-list client-detail-missing-window-list-simple" data-stage232i4-r12-missing-window-list="true" data-stage232i4-r13f-simple-missing-list="true">
-                  {stage232i2AllActiveMissingItems.length ? (
-                    stage232i2AllActiveMissingItems.map((item: any) => (
-                      <article key={String(item?.id || item?.title)} className="client-detail-missing-window-row client-detail-missing-window-row-simple" data-stage232i4-r12-missing-window-row="true" data-stage232i4-r13f-simple-missing-row="true">
-                        <strong className="client-detail-missing-window-row-title">{String(item?.title || 'Brak bez nazwy')}</strong>
-                        <label className="client-detail-missing-window-checkbox client-detail-missing-window-row-checkbox" data-stage232i4-r13f-row-blocker-checkbox="true">
-                          <input
-                            type="checkbox"
-                            checked={Boolean(item.stage232i2IsBlocker)}
-                            onChange={(event) => void handleToggleClientMissingBlockerStage232I4R13F(item, event.target.checked)}
-                            disabled={!hasAccess || isDoneStatus(item?.status)}
-                          />
-                          <span>Blokuje sprawę</span>
-                        </label>
-                        <Button type="button" size="sm" variant="outline" onClick={() => handleResolveClientMissingItemStage228R13(item)} disabled={!hasAccess || isDoneStatus(item?.status)} data-stage232i2-resolve-source-item="true">
-                          Uzupełnione
-                        </Button>
-                        <Button type="button" size="sm" variant="outline" onClick={() => handleDeleteClientMissingItemStage228R15(item)} disabled={!hasAccess || isDoneStatus(item?.status)} data-stage232i2-delete-source-item="true">
-                          Usuń
-                        </Button>
-                      </article>
-                    ))
-                  ) : (
-                    <div className="client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact" data-stage232i4-r12-empty-missing-window="true" data-stage232i4-r13f-simple-empty-missing-window="true">
-                      <strong>Brak otwartych braków.</strong>
-                      <p>Dodaj brak po nazwie powyżej.</p>
-                    </div>
-                  )}
-                </div>
-
-                <DialogFooter className={modalFooterClass()}>
-                  <Button type="button" variant="outline" onClick={() => setClientMissingListOpenStage232I6(false)}>
-                    Zamknij
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+              onOpenChange={setClientMissingListOpenStage232I6}
+              scopeLabel="Klient"
+              title="Braki / Blokady"
+              description="Lista aktywnych braków klienta. Dodaj brak, ustaw czy blokuje, oznacz jako uzupełniony albo usuń."
+              titleValue={clientMissingTitle}
+              blockerValue={clientMissingBlocksProgress}
+              error={clientMissingError}
+              isSaving={clientMissingSaving}
+              canMutate={hasAccess}
+              items={stage232i2AllActiveMissingItems.map((item: any) => {
+                const payload = item?.payload && typeof item.payload === 'object' ? item.payload : {};
+                const raw = item?.raw && typeof item.raw === 'object' ? item.raw : item;
+                const title = String(
+                  item?.title ||
+                  item?.name ||
+                  item?.label ||
+                  item?.content ||
+                  item?.note ||
+                  item?.stage232i2Title ||
+                  item?.stage232i2Note ||
+                  raw?.title ||
+                  raw?.name ||
+                  raw?.label ||
+                  payload?.title ||
+                  payload?.name ||
+                  payload?.content ||
+                  payload?.note ||
+                  'Brak bez nazwy'
+                ).trim() || 'Brak bez nazwy';
+                const sourceLabel = String(
+                  item?.stage232i2SourceLabel ||
+                  item?.sourceLabel ||
+                  payload?.sourceLabel ||
+                  payload?.sourceEntityType ||
+                  payload?.recordType ||
+                  'Klient'
+                ).trim() || 'Klient';
+                const sourceTitle = String(
+                  item?.stage232i2SourceTitle ||
+                  item?.sourceTitle ||
+                  payload?.sourceTitle ||
+                  payload?.recordLabel ||
+                  payload?.clientName ||
+                  ''
+                ).trim();
+                const note = String(item?.note || payload?.note || payload?.description || payload?.content || '').trim();
+                const isBlocker = Boolean(item?.stage232i2IsBlocker ?? item?.isBlocker ?? item?.blocksProgress ?? item?.blocks_progress ?? payload?.blocksProgress ?? payload?.blocks_progress);
+                return {
+                  ...item,
+                  title,
+                  sourceLabel,
+                  sourceTitle,
+                  note,
+                  isBlocker,
+                  blocksProgress: isBlocker,
+                  payload,
+                  raw,
+                };
+              })}
+              onTitleChange={(value) => {
+                setClientMissingTitle(value);
+                if (clientMissingError) setClientMissingError('');
+              }}
+              onBlockerChange={setClientMissingBlocksProgress}
+              onAdd={handleSaveClientMissingItemStage227C3B}
+              onToggleBlocker={handleToggleClientMissingBlockerStage232I4R13F}
+              onResolve={handleResolveClientMissingItemStage228R13}
+              onDelete={handleDeleteClientMissingItemStage228R15}
+            />
 
             <Dialog
               open={Boolean(clientNoteModalOpen || clientNoteListening)}
