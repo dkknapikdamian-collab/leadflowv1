@@ -803,17 +803,40 @@ export async function updateLeadInSupabase(input: Record<string, unknown> & { id
 }
 export async function deleteLeadFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/leads?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
 // STAGE232I4_R16V_TASK_UPDATE_SYSTEM_ROUTE_AND_BLOCKER_LABEL_FINAL: task PATCH uses consolidated api/system task route to avoid legacy /api/tasks existing runtime error.
+// STAGE232I4_R16W_TASK_STATUS_DOMAIN_SAFE_PATCH: missing_item is a type/source and must never be sent as work_items.status.
+const STAGE232I4_R16W_TASK_STATUS_DOMAIN_SAFE_PATCH = 'sanitize updateTaskInSupabase status before PATCH so missing_item cannot violate work_items_status_domain_check';
+void STAGE232I4_R16W_TASK_STATUS_DOMAIN_SAFE_PATCH;
+
+function normalizeWorkItemTaskStatusForDomainStage232I4R16W(value: unknown): string | undefined {
+  const status = String(value ?? '').trim();
+  if (!status) return undefined;
+  const allowed = new Set(['todo', 'in_progress', 'done', 'completed', 'cancelled', 'canceled', 'deleted']);
+  return allowed.has(status) ? status : undefined;
+}
+
+function buildWorkItemTaskPatchStage232I4R16W(input: Record<string, unknown> & { id: string }, taskId: string) {
+  const taskPatch: Record<string, unknown> = { ...input, id: taskId };
+  const safeStatus = normalizeWorkItemTaskStatusForDomainStage232I4R16W(taskPatch.status);
+  if (safeStatus) {
+    taskPatch.status = safeStatus;
+  } else {
+    delete taskPatch.status;
+  }
+  return taskPatch;
+}
+
 export async function updateTaskInSupabase(input: Record<string, unknown> & { id: string }): Promise<SupabaseInsertResult> {
   const taskId = String(input?.id || '').trim();
   if (!taskId) throw new Error('TASK_ID_REQUIRED');
+  const taskPatch = buildWorkItemTaskPatchStage232I4R16W(input, taskId);
   const result = await callApi<SupabaseInsertResult>('/api/system?apiRoute=tasks', {
     method: 'PATCH',
-    body: JSON.stringify({ ...input, id: taskId }),
+    body: JSON.stringify(taskPatch),
     sourceId: taskId,
     mutationCacheCategory: 'task',
     refreshSource: 'fetchCalendarBundleFromSupabase',
   } as any);
-  emitCloseflowWorkItemNoFlickerMutation({ action: 'update', kind: 'task', id: taskId, record: result, source: 'stage232i4_r16v_updateTaskInSupabase_system_route_no_existing_runtime_error' });
+  emitCloseflowWorkItemNoFlickerMutation({ action: 'update', kind: 'task', id: taskId, record: result, source: 'stage232i4_r16w_updateTaskInSupabase_status_domain_safe_patch' });
   return result;
 }
 
