@@ -57,11 +57,12 @@ function appendJsonl(filePath, value) {
 
 function sendJson(res, statusCode, body) {
   if (res.headersSent) return;
+  const payload = JSON.stringify(body, null, 2);
   res.writeHead(statusCode, {
     "content-type": "application/json; charset=utf-8",
     "cache-control": "no-store"
   });
-  res.end(JSON.stringify(body, null, 2));
+  res.end(payload);
 }
 
 function readBody(req) {
@@ -86,7 +87,11 @@ function getHeaderValue(req, name) {
 }
 
 function getProvidedKey(req) {
-  return getHeaderValue(req, "x-kabelki-bridge-key") || getHeaderValue(req, "ngrok-skip-browser-warning") || "";
+  return (
+    getHeaderValue(req, "x-kabelki-bridge-key") ||
+    getHeaderValue(req, "ngrok-skip-browser-warning") ||
+    ""
+  );
 }
 
 function isAuthorized(req) {
@@ -126,25 +131,74 @@ function findNextJob(jobs) {
 }
 
 function forbiddenResultAction(action) {
-  const blocked = new Set(["code", "run_command", "publish", "send_email", "push", "deploy", "spend_money", "approve_own_result"]);
+  const blocked = new Set([
+    "code",
+    "run_command",
+    "publish",
+    "send_email",
+    "push",
+    "deploy",
+    "spend_money",
+    "approve_own_result"
+  ]);
   return blocked.has(String(action || "").trim());
 }
 
-function validateResult(jobId, body) {
-  const allowedStatuses = new Set(["completed", "needs_owner_review", "needs_more_data", "failed"]);
-  const blockedStatuses = new Set(["approved", "final", "sent", "published"]);
+function validateResult(jobIdFromPathOrBody, body) {
+  const allowedStatuses = new Set([
+    "completed",
+    "needs_owner_review",
+    "needs_more_data",
+    "failed"
+  ]);
+  const blockedStatuses = new Set([
+    "approved",
+    "final",
+    "sent",
+    "published"
+  ]);
 
-  if (!body || typeof body !== "object" || Array.isArray(body)) return ["invalid_json_object", "Result body must be a JSON object."];
-  if (!body.job_id || typeof body.job_id !== "string") return ["job_id_required", "Result job_id is required."];
-  if (body.job_id !== jobId) return ["job_id_mismatch", "Result job_id must match the job id."];
-  if (!body.schema_version || typeof body.schema_version !== "string") return ["schema_version_required", "schema_version is required."];
-  if (!body.tile_id || typeof body.tile_id !== "string") return ["tile_id_required", "tile_id is required."];
-  if (!body.status || typeof body.status !== "string") return ["status_required", "status is required."];
-  if (blockedStatuses.has(body.status) || !allowedStatuses.has(body.status)) return ["status_not_allowed", "status must be completed, needs_owner_review, needs_more_data, or failed."];
-  if (body.requires_owner_review !== true) return ["owner_review_required", "requires_owner_review must be true."];
-  if (!Array.isArray(body.forbidden_actions_requested)) return ["forbidden_actions_requested_required", "forbidden_actions_requested must be an array."];
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return ["invalid_json_object", "Result body must be a JSON object."];
+  }
+
+  if (!body.job_id || typeof body.job_id !== "string") {
+    return ["job_id_required", "Result job_id is required."];
+  }
+
+  if (body.job_id !== jobIdFromPathOrBody) {
+    return ["job_id_mismatch", "Result job_id must match path/body job_id."];
+  }
+
+  if (!body.schema_version || typeof body.schema_version !== "string") {
+    return ["schema_version_required", "schema_version is required."];
+  }
+
+  if (!body.tile_id || typeof body.tile_id !== "string") {
+    return ["tile_id_required", "tile_id is required."];
+  }
+
+  if (!body.status || typeof body.status !== "string") {
+    return ["status_required", "status is required."];
+  }
+
+  if (blockedStatuses.has(body.status) || !allowedStatuses.has(body.status)) {
+    return ["status_not_allowed", "status must be completed, needs_owner_review, needs_more_data, or failed."];
+  }
+
+  if (body.requires_owner_review !== true) {
+    return ["owner_review_required", "requires_owner_review must be true."];
+  }
+
+  if (!Array.isArray(body.forbidden_actions_requested)) {
+    return ["forbidden_actions_requested_required", "forbidden_actions_requested must be an array."];
+  }
+
   const forbidden = body.forbidden_actions_requested.find(forbiddenResultAction);
-  if (forbidden) return ["forbidden_action_requested", `Forbidden action requested: ${forbidden}`];
+  if (forbidden) {
+    return ["forbidden_action_requested", `Forbidden action requested: ${forbidden}`];
+  }
+
   return null;
 }
 
@@ -180,13 +234,20 @@ async function handle(req, res) {
 
     if (!authOk) {
       statusCode = 401;
-      sendJson(res, statusCode, { error: "unauthorized", detail: "Missing or invalid bridge auth header." });
+      sendJson(res, statusCode, {
+        error: "unauthorized",
+        detail: "Missing or invalid X-KABELKI-BRIDGE-KEY or ngrok-skip-browser-warning header."
+      });
       return;
     }
 
     if (req.method === "GET" && pathname === "/health") {
       statusCode = 200;
-      sendJson(res, statusCode, { status: "ok", service: "kabelki-chatgpt-bridge-poc", time: new Date().toISOString() });
+      sendJson(res, statusCode, {
+        status: "ok",
+        service: "kabelki-chatgpt-bridge-poc",
+        time: new Date().toISOString()
+      });
       return;
     }
 
@@ -195,17 +256,24 @@ async function handle(req, res) {
       const job = findNextJob(jobs);
       if (!job) {
         statusCode = 200;
-        sendJson(res, statusCode, { job: null, status: "empty" });
+        sendJson(res, statusCode, {
+          job: null,
+          status: "empty"
+        });
         return;
       }
+
       if (job.status === "queued") {
         job.status = "waiting_for_chatgpt";
         job.updated_at = new Date().toISOString();
         saveJobs(jobs);
       }
+
       jobIdForLog = job.job_id || null;
       statusCode = 200;
-      sendJson(res, statusCode, { job: safeJobPublic(job) });
+      sendJson(res, statusCode, {
+        job: safeJobPublic(job)
+      });
       return;
     }
 
@@ -217,9 +285,13 @@ async function handle(req, res) {
       const job = jobs.find(item => item.job_id === jobId);
       if (!job) {
         statusCode = 404;
-        sendJson(res, statusCode, { error: "job_not_found", job_id: jobId });
+        sendJson(res, statusCode, {
+          error: "job_not_found",
+          job_id: jobId
+        });
         return;
       }
+
       statusCode = 200;
       sendJson(res, statusCode, {
         job: safeJobPublic(job),
@@ -233,22 +305,34 @@ async function handle(req, res) {
       return;
     }
 
-    if (req.method === "POST" && pathname === "/chatgpt/jobs/result") {
+    const resultMatch = pathname.match(/^\/chatgpt\/jobs(?:\/([^/]+))?\/result$/);
+    if (req.method === "POST" && resultMatch) {
+      const pathJobId = resultMatch[1] ? decodeURIComponent(resultMatch[1]) : null;
+
       let body;
       try {
         const raw = await readBody(req);
         body = raw ? JSON.parse(raw) : {};
       } catch (error) {
         statusCode = 400;
-        sendJson(res, statusCode, { accepted: false, error: "invalid_json", detail: String(error.message || error) });
+        sendJson(res, statusCode, {
+          accepted: false,
+          error: "invalid_json",
+          detail: String(error.message || error)
+        });
         return;
       }
 
-      const effectiveJobId = body.job_id;
+      const effectiveJobId = pathJobId || body.job_id;
       jobIdForLog = effectiveJobId || null;
+
       if (!effectiveJobId) {
         statusCode = 400;
-        sendJson(res, statusCode, { accepted: false, error: "job_id_required", detail: "job_id is required in body." });
+        sendJson(res, statusCode, {
+          accepted: false,
+          error: "job_id_required",
+          detail: "job_id is required in path or body."
+        });
         return;
       }
 
@@ -256,7 +340,11 @@ async function handle(req, res) {
       if (validationError) {
         const [error, detail] = validationError;
         statusCode = 400;
-        sendJson(res, statusCode, { accepted: false, error, detail });
+        sendJson(res, statusCode, {
+          accepted: false,
+          error,
+          detail
+        });
         return;
       }
 
@@ -267,14 +355,27 @@ async function handle(req, res) {
         job.result_submitted_at = new Date().toISOString();
         saveJobs(jobs);
       }
-      appendJsonl(RESULTS_PATH, { timestamp: new Date().toISOString(), job_id: effectiveJobId, result: body });
+
+      appendJsonl(RESULTS_PATH, {
+        timestamp: new Date().toISOString(),
+        job_id: effectiveJobId,
+        result: body
+      });
+
       statusCode = 200;
-      sendJson(res, statusCode, { accepted: true, job_id: effectiveJobId, status: "result_submitted" });
+      sendJson(res, statusCode, {
+        accepted: true,
+        job_id: effectiveJobId,
+        status: "result_submitted"
+      });
       return;
     }
 
     statusCode = 404;
-    sendJson(res, statusCode, { error: "not_found", path: pathname });
+    sendJson(res, statusCode, {
+      error: "not_found",
+      path: pathname
+    });
   } finally {
     logRequest(req, statusCode, jobIdForLog, authOk);
   }
@@ -282,11 +383,19 @@ async function handle(req, res) {
 
 const server = http.createServer((req, res) => {
   handle(req, res).catch(error => {
-    if (!res.headersSent) sendJson(res, 500, { error: "internal_error", detail: String(error.message || error) });
+    if (!res.headersSent) {
+      sendJson(res, 500, {
+        error: "internal_error",
+        detail: String(error.message || error)
+      });
+    }
   });
 });
 
 server.listen(PORT, () => {
+  const weakKeyWarning = !BRIDGE_KEY || BRIDGE_KEY === "replace_me";
   console.log(`Kabelki ChatGPT Bridge POC listening on http://localhost:${PORT}`);
-  if (!BRIDGE_KEY || BRIDGE_KEY === "replace_me") console.warn("WARNING: KABELKI_BRIDGE_KEY is missing or still set to replace_me.");
+  if (weakKeyWarning) {
+    console.warn("WARNING: KABELKI_BRIDGE_KEY is missing or still set to replace_me.");
+  }
 });
