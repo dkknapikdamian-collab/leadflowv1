@@ -1,4 +1,4 @@
-// STAGE232I4_R14_CLIENT_LEAD_MISSING_TILE_MODAL_PARITY_AND_SOURCE_FIX
+﻿// STAGE232I4_R14_CLIENT_LEAD_MISSING_TILE_MODAL_PARITY_AND_SOURCE_FIX
 // STAGE232I4_R10_MISSING_MANAGER_READABLE_LAYOUT
 // STAGE232I4_R11_MISSING_MANAGER_ROW_LAYOUT
 // STAGE232I4_R12_SHARED_MODAL_VISUAL_SOURCE_TRUTH
@@ -10,6 +10,7 @@
 // STAGE232I4_R16V_TASK_UPDATE_SYSTEM_ROUTE_AND_BLOCKER_LABEL_FINAL: keeps compact visual layout and adds explicit blocker label while task updates use api/system route.
 // STAGE232I4_R16X_MISSING_BLOCKER_TOGGLE_STATE_AND_ACTION_LABEL: preserves compact layout, visible blocker label, delete action and clearer completion action copy.
 // STAGE232I4_R16Y_R2_MISSING_BLOCKER_SOURCE_TRUTH_ROBUST_FINAL: preserves accepted compact layout, widens delete visibility and keeps blocker label.
+// STAGE232I4_R16Z_R4_MISSING_MANAGER_FINAL_VISUAL_FIT_NO_ZIP: modal rows use flex fit, readable blocker chip and visible delete action.
 import { AlertTriangle } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Dialog } from '../ui/dialog';
@@ -135,7 +136,7 @@ export function MissingItemsManagerDialog({
         title={title}
         description={undefined}
         icon={<AlertTriangle className="h-4 w-4" />}
-        className="cf-missing-manager-dialog-stage232i4-r14 cf-missing-manager-dialog-stage232i4-r10 cf-missing-manager-dialog-stage232i4-r11 cf-missing-manager-dialog-stage232i4-r12 cf-missing-manager-dialog-stage232i4-r16q cf-missing-manager-dialog-stage232i4-r16r cf-missing-manager-dialog-stage232i4-r16s-r2 cf-missing-manager-dialog-stage232i4-r16t cf-missing-manager-dialog-stage232i4-r16v cf-missing-manager-dialog-stage232i4-r16x cf-missing-manager-dialog-stage232i4-r16y-r2 !w-[620px] !max-w-[calc(100vw_-_32px)] sm:!max-w-[620px]"
+        className="cf-missing-manager-dialog-stage232i4-r14 cf-missing-manager-dialog-stage232i4-r10 cf-missing-manager-dialog-stage232i4-r11 cf-missing-manager-dialog-stage232i4-r12 cf-missing-manager-dialog-stage232i4-r16q cf-missing-manager-dialog-stage232i4-r16r cf-missing-manager-dialog-stage232i4-r16s-r2 cf-missing-manager-dialog-stage232i4-r16t cf-missing-manager-dialog-stage232i4-r16v cf-missing-manager-dialog-stage232i4-r16x cf-missing-manager-dialog-stage232i4-r16y-r2 cf-missing-manager-dialog-stage232i4-r16z-r4 !w-[760px] !max-w-[calc(100vw_-_24px)] sm:!max-w-[760px]"
         footer={(
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSaving} className="rounded-xl border-slate-600 bg-slate-100 px-5 font-semibold text-slate-950 hover:bg-white">
             Zamknij
@@ -156,9 +157,10 @@ export function MissingItemsManagerDialog({
           data-stage232i4-r16v-blocker-label="visible-inline-label"
           data-stage232i4-r16x-toggle-state-visual-guard="checkbox-label-delete-action"
           data-stage232i4-r16y-r2-delete-visible="true"
+          data-stage232i4-r16z-r4-modal-fit="flex-no-clipping"
         >
-          <CloseFlowDialogBody className="cf-missing-manager-list-stage232i4-r14 cf-missing-manager-list-stage232i4-r10 cf-missing-manager-list-stage232i4-r11 cf-missing-manager-list-stage232i4-r12 cf-missing-manager-list-stage232i4-r16r cf-missing-manager-list-stage232i4-r16s-r2 max-h-[54vh] space-y-1.5 overflow-y-auto overflow-x-hidden px-3 py-2" data-stage232i4-r12-list-section="true" data-stage232i4-r16r-list-section="no-horizontal-scroll">
-            <div data-stage232i4-r14-manager-list="true" data-stage232i4-r10-manager-list="separated-scrollable-cards" data-stage232i4-r11-manager-list="wide-row-cards" data-stage232i4-r12-manager-list="title-first-cards" data-stage232i4-r16s-r2-manager-list="aligned-compact-columns" className="space-y-1.5 overflow-x-hidden">
+          <CloseFlowDialogBody className="cf-missing-manager-list-stage232i4-r14 cf-missing-manager-list-stage232i4-r10 cf-missing-manager-list-stage232i4-r11 cf-missing-manager-list-stage232i4-r12 cf-missing-manager-list-stage232i4-r16r cf-missing-manager-list-stage232i4-r16s-r2 cf-missing-manager-list-stage232i4-r16z-r4 max-h-[54vh] space-y-1.5 overflow-y-auto overflow-x-visible px-2 py-2" data-stage232i4-r12-list-section="true" data-stage232i4-r16r-list-section="no-horizontal-scroll">
+            <div data-stage232i4-r14-manager-list="true" data-stage232i4-r10-manager-list="separated-scrollable-cards" data-stage232i4-r11-manager-list="wide-row-cards" data-stage232i4-r12-manager-list="title-first-cards" data-stage232i4-r16s-r2-manager-list="aligned-compact-columns" className="space-y-1.5 overflow-x-visible">
               {items.length ? (
                 items.map((item) => {
                   const itemId = String(item?.id || item?.raw?.id || item?.title || 'missing');
@@ -168,9 +170,9 @@ export function MissingItemsManagerDialog({
 
                   const isBlocker = isManagerItemBlocker(item);
                   return (
-                    <article key={itemId} className="cf-missing-manager-row-stage232i4-r14 cf-missing-manager-row-stage232i4-r10 cf-missing-manager-row-stage232i4-r11 cf-missing-manager-row-stage232i4-r12 cf-missing-manager-row-stage232i4-r16q cf-missing-manager-row-stage232i4-r16r cf-missing-manager-row-stage232i4-r16s-r2 overflow-hidden rounded-lg border border-slate-700 bg-slate-900/80 px-2 py-1.5 shadow-sm" data-stage232i4-r14-manager-row="true" data-stage232i4-r10-manager-row="separated-card" data-stage232i4-r11-manager-row="compact-horizontal-card" data-stage232i4-r12-manager-row="shared-shell-compact-card" data-stage232i4-r16q-manager-row="compact-horizontal-card" data-stage232i4-r16r-manager-row="production-fit-compact-card" data-stage232i4-r16s-r2-manager-row="aligned-compact-fixed-columns" data-missing-item-card="true">
-                                            <div className="grid w-full min-w-0 grid-cols-[92px_minmax(120px,1fr)_88px_66px] items-center gap-2 overflow-hidden" data-stage232i4-r16r-manager-card-layout="single-visible-row-no-horizontal-scroll" data-stage232i4-r16s-r2-manager-card-layout="badge-checkbox-title-done-delete-fixed-columns" data-stage232i4-r16t-manager-card-layout="checkbox-title-done-delete-fixed-columns-no-badges" data-stage232i4-r16v-manager-card-layout="blocker-label-title-actions" data-stage232i4-r16x-manager-card-layout="blocker-title-complete-delete" data-stage232i4-r16y-r2-manager-card-layout="blocker-title-complete-delete-visible">
-                        <label className="cf-missing-manager-row-checkbox-stage232i4-r14 inline-flex h-7 w-[92px] shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md border border-white/30 bg-slate-100 px-2 text-slate-950 shadow-sm" data-stage232i4-r14-manager-row-checkbox="true" data-stage232i4-r11-manager-blocker-column="blocker-inline" data-stage232i4-r16r-manager-blocker-compact="true" data-stage232i4-r16s-r2-manager-blocker-column="visible-fixed-checkbox" data-stage232i4-r16t-manager-blocker-column="checkbox-only-visible" data-stage232i4-r16v-manager-blocker-label="visible" data-missing-item-blocker-row="true" title={isBlocker ? 'Blokuje sprawę' : 'Nie blokuje sprawy'}>
+                    <article key={itemId} className="cf-missing-manager-row-stage232i4-r14 cf-missing-manager-row-stage232i4-r10 cf-missing-manager-row-stage232i4-r11 cf-missing-manager-row-stage232i4-r12 cf-missing-manager-row-stage232i4-r16q cf-missing-manager-row-stage232i4-r16r cf-missing-manager-row-stage232i4-r16s-r2 cf-missing-manager-row-stage232i4-r16z-r4 overflow-visible rounded-lg border border-slate-700 bg-slate-900/80 px-2 py-1.5 shadow-sm" data-stage232i4-r14-manager-row="true" data-stage232i4-r10-manager-row="separated-card" data-stage232i4-r11-manager-row="compact-horizontal-card" data-stage232i4-r12-manager-row="shared-shell-compact-card" data-stage232i4-r16q-manager-row="compact-horizontal-card" data-stage232i4-r16r-manager-row="production-fit-compact-card" data-stage232i4-r16s-r2-manager-row="aligned-compact-fixed-columns" data-missing-item-card="true">
+                                            <div className="flex w-full min-w-0 items-center gap-2 overflow-visible" data-stage232i4-r16r-manager-card-layout="single-visible-row-no-horizontal-scroll" data-stage232i4-r16s-r2-manager-card-layout="badge-checkbox-title-done-delete-fixed-columns" data-stage232i4-r16t-manager-card-layout="checkbox-title-done-delete-fixed-columns-no-badges" data-stage232i4-r16v-manager-card-layout="blocker-label-title-actions" data-stage232i4-r16x-manager-card-layout="blocker-title-complete-delete" data-stage232i4-r16y-r2-manager-card-layout="blocker-title-complete-delete-visible" data-stage232i4-r16z-r4-manager-card-layout="flex-no-action-clipping">
+                        <label className="cf-missing-manager-row-checkbox-stage232i4-r14 inline-flex h-7 w-[118px] min-w-[118px] shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md border border-slate-500 bg-slate-50 px-2 text-slate-950 shadow-sm" data-stage232i4-r14-manager-row-checkbox="true" data-stage232i4-r11-manager-blocker-column="blocker-inline" data-stage232i4-r16r-manager-blocker-compact="true" data-stage232i4-r16s-r2-manager-blocker-column="visible-fixed-checkbox" data-stage232i4-r16t-manager-blocker-column="checkbox-only-visible" data-stage232i4-r16v-manager-blocker-label="visible" data-stage232i4-r16z-r4-manager-blocker-chip="readable-118px" data-missing-item-blocker-row="true" title={isBlocker ? 'Blokuje sprawę' : 'Nie blokuje sprawy'}>
                           <input
                             type="checkbox"
                             aria-label={isBlocker ? 'Brak blokuje sprawę' : 'Brak nie blokuje sprawy'}
@@ -179,15 +181,15 @@ export function MissingItemsManagerDialog({
                             onChange={(event) => void onToggleBlocker(item, event.target.checked)}
                             className="h-4 w-4 shrink-0 cursor-pointer rounded border border-slate-500 bg-white accent-blue-600 disabled:cursor-not-allowed disabled:opacity-60"
                           />
-                          <span className="select-none text-[11px] font-semibold leading-none text-slate-800" data-stage232i4-r16v-manager-blocker-text="true">Blokuje</span>
+                          <span className="select-none text-[11px] font-black leading-none text-slate-950" data-stage232i4-r16v-manager-blocker-text="true" data-stage232i4-r16z-r4-manager-blocker-text="readable">Blokuje</span>
                         </label>
 
-                        <strong className="min-w-0 truncate text-[12px] font-semibold leading-5 text-slate-50" title={itemTitle} data-stage232i4-r11-manager-item-title="true" data-stage232i4-r12-manager-item-title="primary-visible-name" data-stage232i4-r16r-manager-item-title="inline-only" data-stage232i4-r16s-r2-manager-item-title="fixed-title-column" data-stage232i4-r16t-manager-item-title="compact-primary-name">{itemTitle}</strong>
+                        <strong className="min-w-0 flex-1 truncate text-[12px] font-semibold leading-5 text-slate-50" title={itemTitle} data-stage232i4-r11-manager-item-title="true" data-stage232i4-r12-manager-item-title="primary-visible-name" data-stage232i4-r16r-manager-item-title="inline-only" data-stage232i4-r16s-r2-manager-item-title="fixed-title-column" data-stage232i4-r16t-manager-item-title="compact-primary-name">{itemTitle}</strong>
 
-                        <Button type="button" variant="outline" size="sm" disabled={!canMutate || isSaving} onClick={() => void onResolve(item)} className="h-7 min-h-0 w-[88px] min-w-[88px] rounded-md border-slate-600 bg-slate-100 px-0 text-[11px] font-semibold text-slate-950 hover:bg-white" aria-label="Oznacz brak jako uzupełniony" title="Oznacz jako uzupełnione" data-stage232i4-r14-manager-resolve-action="true" data-stage232i4-r16s-r2-manager-resolve-column="fixed" data-stage232i4-r16t-manager-resolve-column="fixed-small">
+                        <Button type="button" variant="outline" size="sm" disabled={!canMutate || isSaving} onClick={() => void onResolve(item)} className="h-7 min-h-0 w-[92px] min-w-[92px] rounded-md border-slate-600 bg-slate-100 px-0 text-[11px] font-semibold text-slate-950 hover:bg-white" aria-label="Oznacz brak jako uzupełniony" title="Oznacz jako uzupełnione" data-stage232i4-r14-manager-resolve-action="true" data-stage232i4-r16s-r2-manager-resolve-column="fixed" data-stage232i4-r16t-manager-resolve-column="fixed-small">
                           Uzupełnij
                         </Button>
-                        <Button type="button" variant="outline" size="sm" disabled={!canMutate || isSaving} onClick={() => void onDelete(item)} className="h-7 min-h-0 w-[66px] min-w-[66px] rounded-md border-slate-600 bg-slate-100 px-0 text-[11px] font-semibold text-slate-950 hover:bg-white" data-stage232i4-r14-manager-delete-action="true" data-stage232i4-r16s-r2-manager-delete-column="fixed" data-stage232i4-r16t-manager-delete-column="fixed-small" data-stage232i4-r16y-r2-manager-delete-visible="true">
+                        <Button type="button" variant="outline" size="sm" disabled={!canMutate || isSaving} onClick={() => void onDelete(item)} className="h-7 min-h-0 w-[78px] min-w-[78px] rounded-md border-slate-600 bg-slate-100 px-0 text-[11px] font-semibold text-slate-950 hover:bg-white" data-stage232i4-r14-manager-delete-action="true" data-stage232i4-r16s-r2-manager-delete-column="fixed" data-stage232i4-r16t-manager-delete-column="fixed-small" data-stage232i4-r16y-r2-manager-delete-visible="true" data-stage232i4-r16z-r4-manager-delete-visible="true">
                           Usuń
                         </Button>
                       </div>
