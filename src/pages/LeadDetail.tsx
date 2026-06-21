@@ -40,6 +40,9 @@ const STAGE232A_R10_R1_MISSING_GROUP_INNER_TONE = 'LeadDetail Braki i blokady ac
 void STAGE232A_R10_R1_MISSING_GROUP_INNER_TONE;
 const STAGE232I4_R14_LEAD_MISSING_MANAGER_DIALOG = 'LeadDetail Zobacz wszystkie braki opens shared missing manager dialog instead of scrolling to #lead-actions';
 void STAGE232I4_R14_LEAD_MISSING_MANAGER_DIALOG;
+const STAGE232I4_R16Z_R8_LEAD_MISSING_BLOCKER_TOGGLE_PRIORITY_FIX = 'LeadDetail missing manager toggle writes priority high/medium with status and payload so unchecking Blokuje survives reload';
+void STAGE232I4_R16Z_R8_LEAD_MISSING_BLOCKER_TOGGLE_PRIORITY_FIX;
+
 void STAGE232A_R6_LEAD_MISSING_BLOCKER_ACTIVE_LIST_AND_TOP_CARD_SOURCE_TRUTH;
 import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -1158,7 +1161,7 @@ export default function LeadDetail() {
         title,
         type: 'missing_item',
         status,
-        priority: 'high',
+        priority: leadMissingManagerBlocksProgress ? 'high' : 'medium',
         date: createdAt.slice(0, 10),
         scheduledAt: createdAt,
         dueAt: createdAt,
@@ -1176,6 +1179,7 @@ export default function LeadDetail() {
           type: 'missing_item',
           missingItem: true,
           blocksProgress: leadMissingManagerBlocksProgress,
+          priority: leadMissingManagerBlocksProgress ? 'high' : 'medium',
           status,
           source: 'stage232i4_r14_lead_missing_manager_dialog',
           sourceEntityType: 'lead',
@@ -1192,7 +1196,7 @@ export default function LeadDetail() {
         title,
         type: 'missing_item',
         status,
-        priority: 'high',
+        priority: leadMissingManagerBlocksProgress ? 'high' : 'medium',
         date: createdAt.slice(0, 10),
         scheduledAt: createdAt,
         dueAt: createdAt,
@@ -1209,6 +1213,7 @@ export default function LeadDetail() {
           type: 'missing_item',
           missingItem: true,
           blocksProgress: leadMissingManagerBlocksProgress,
+          priority: leadMissingManagerBlocksProgress ? 'high' : 'medium',
           status,
           source: 'stage232i4_r14_lead_missing_manager_dialog',
           sourceEntityType: 'lead',
@@ -1245,12 +1250,14 @@ export default function LeadDetail() {
     const taskId = String(task?.id || entry?.id || '').trim();
     if (!taskId) return toast.error('Brak ID braku. Nie można zmienić blokady.');
     const nextStatus = blocksProgress ? 'blocking_missing_item' : 'missing_item';
+    const nextPriorityStage232I4R16ZR8 = blocksProgress ? 'high' : 'medium';
     const previousPayload = task?.payload && typeof task.payload === 'object' ? task.payload : {};
     try {
       setLinkedEntryActionId('missing:' + taskId + ':blocker');
       await updateTaskInSupabase({
         id: taskId,
         status: nextStatus,
+        priority: nextPriorityStage232I4R16ZR8,
         blocksProgress,
         payload: {
           ...previousPayload,
@@ -1258,11 +1265,12 @@ export default function LeadDetail() {
           type: 'missing_item',
           missingItem: true,
           blocksProgress,
+          priority: nextPriorityStage232I4R16ZR8,
           status: nextStatus,
-          source: 'stage232i4_r14_lead_missing_manager_dialog',
+          source: 'stage232i4_r16z_r8_lead_missing_blocker_toggle_priority_fix',
         },
       } as any);
-      setLinkedTasks((currentTasks: any[]) => currentTasks.map((item: any) => String(item?.id || '') === taskId ? { ...item, status: nextStatus, blocksProgress, payload: { ...(item?.payload || {}), blocksProgress, status: nextStatus } } : item));
+      setLinkedTasks((currentTasks: any[]) => currentTasks.map((item: any) => String(item?.id || '') === taskId ? { ...item, status: nextStatus, priority: nextPriorityStage232I4R16ZR8, blocksProgress, payload: { ...(item?.payload || {}), blocksProgress, priority: nextPriorityStage232I4R16ZR8, status: nextStatus } } : item));
       toast.success(blocksProgress ? 'Brak ustawiony jako blokujący' : 'Brak nie blokuje sprawy');
       await loadLead({ silent: true });
     } catch (error: any) {

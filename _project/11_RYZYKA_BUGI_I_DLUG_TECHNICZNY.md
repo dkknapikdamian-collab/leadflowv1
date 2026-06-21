@@ -2236,3 +2236,7 @@ Scope: CF-RUNTIME-00 and R16Z_R5 close guard allow the R5_R5 ClientDetail operat
 Date/time: 2026-06-21 Europe/Warsaw
 Status: APPLIED_LOCAL_PENDING_VERIFY_AND_SMOKE
 Scope: guard/test compatibility continuation for polish-mojibake-audit. The audit now skips local stage backup artifacts and huge text-like files before reading them, preventing ERR_STRING_TOO_LONG during verify:closeflow:quiet. No product logic, SQL, finance, Calendar, Owner Control runtime or CaseDetail runtime touched.
+
+## STAGE232I4_R16Z_R8 risk audit
+
+Manual smoke exposed stale priority high in LeadDetail missing item blocker toggle. Risk: manager UI may show success while persisted source truth still classifies item as blocker. Fix requires status, priority, blocksProgress and payload to be persisted together. Do not close R16Z/R5 or start STAGE232K before Lead F5 smoke passes.

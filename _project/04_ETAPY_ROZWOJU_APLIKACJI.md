@@ -2485,3 +2485,10 @@ Nastepny etap dopiero po PASS:
 Date/time: 2026-06-21 Europe/Warsaw
 Status: APPLIED_LOCAL_PENDING_VERIFY_AND_SMOKE
 Scope: guard/test compatibility continuation for polish-mojibake-audit. The audit now skips local stage backup artifacts and huge text-like files before reading them, preventing ERR_STRING_TOO_LONG during verify:closeflow:quiet. No product logic, SQL, finance, Calendar, Owner Control runtime or CaseDetail runtime touched.
+
+## STAGE232I4_R16Z_R8_LEAD_MISSING_BLOCKER_TOGGLE_PRIORITY_FIX
+
+Date/time: 2026-06-21 Europe/Warsaw
+Status: LOCAL_APPLY_PENDING_TESTS_AND_OWNER_SMOKE
+Scope: LeadDetail Braki/Blokady manager toggle now persists blocker state by writing status + priority + blocksProgress + payload together. Root cause: unchecking Blokuje changed status/blocksProgress but stale priority high made shared manager re-check it after reload.
+No SQL, finance, Calendar, billing, Owner Control runtime or CaseDetail runtime touched.

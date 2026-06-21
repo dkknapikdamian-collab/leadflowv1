@@ -774,3 +774,14 @@ Scope: CF-RUNTIME-00 and R16Z_R5 close guard allow the R5_R5 ClientDetail operat
 Date/time: 2026-06-21 Europe/Warsaw
 Status: APPLIED_LOCAL_PENDING_VERIFY_AND_SMOKE
 Scope: guard/test compatibility continuation for polish-mojibake-audit. The audit now skips local stage backup artifacts and huge text-like files before reading them, preventing ERR_STRING_TOO_LONG during verify:closeflow:quiet. No product logic, SQL, finance, Calendar, Owner Control runtime or CaseDetail runtime touched.
+
+## Manual smoke R16Z_R8 - Lead missing blocker toggle
+
+1. Lead with active missing item marked Blokuje.
+2. Open Braki / Blokady manager.
+3. Uncheck Blokuje.
+4. Confirm toast and checkbox remains unchecked after silent reload.
+5. F5: checkbox remains unchecked.
+6. Re-check Blokuje.
+7. F5: checkbox remains checked.
+8. Uzupełnij/Usuń regression PASS.

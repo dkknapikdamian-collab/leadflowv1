@@ -5116,3 +5116,9 @@ Scope: CF-RUNTIME-00 and R16Z_R5 close guard allow the R5_R5 ClientDetail operat
 Date/time: 2026-06-21 Europe/Warsaw
 Status: APPLIED_LOCAL_PENDING_VERIFY_AND_SMOKE
 Scope: guard/test compatibility continuation for polish-mojibake-audit. The audit now skips local stage backup artifacts and huge text-like files before reading them, preventing ERR_STRING_TOO_LONG during verify:closeflow:quiet. No product logic, SQL, finance, Calendar, Owner Control runtime or CaseDetail runtime touched.
+
+## STAGE232I4_R16Z_R8_LEAD_MISSING_BLOCKER_TOGGLE_PRIORITY_FIX
+
+- Guard: scripts/check-stage232i4-r16z-r8-lead-missing-blocker-toggle-priority-fix.cjs
+- Test: tests/stage232i4-r16z-r8-lead-missing-blocker-toggle-priority-fix.test.cjs
+- Purpose: protect LeadDetail missing manager blocker toggle persistence by requiring priority high/medium to follow blocksProgress.

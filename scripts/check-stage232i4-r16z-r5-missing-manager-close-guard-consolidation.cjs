@@ -62,6 +62,13 @@ must('risk registry updated with R16Z_R5', risks.includes('STAGE232I4_R16Z_R5 ri
 
 const diffNames = execSync('git diff --name-only', { encoding: 'utf8' }).split(/\r?\n/).filter(Boolean);
 const allowedTracked = new Set([
+  // STAGE232I4_R16Z_R8_LEAD_MISSING_BLOCKER_TOGGLE_PRIORITY_FIX_ALLOWLIST
+  'src/pages/LeadDetail.tsx',
+  'scripts/check-stage232i4-r16z-r5-missing-manager-close-guard-consolidation.cjs',
+  'scripts/check-stage232i4-r16z-r8-lead-missing-blocker-toggle-priority-fix.cjs',
+  'tests/stage232i4-r16z-r8-lead-missing-blocker-toggle-priority-fix.test.cjs',
+  '_project/runs/STAGE232I4_R16Z_R8_LEAD_MISSING_BLOCKER_TOGGLE_PRIORITY_FIX.md',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R8_LEAD_MISSING_BLOCKER_TOGGLE_PRIORITY_FIX.md',
   // STAGE232I4_R16Z_R5_R5_CLIENT_OPERATIONAL_CENTER_TEST_COMPAT_ALLOWLIST
   'tests/client-detail-v1-operational-center.test.cjs',
   'scripts/check-stage232i4-r16z-r5-r5-client-operational-center-test-compat.cjs',

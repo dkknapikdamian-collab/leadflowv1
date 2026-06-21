@@ -195,6 +195,11 @@ const allowedChangePrefixes = [
   'tests/stage232i4-r16z-r5-r5-client-operational-center-test-compat.test.cjs',
   '_project/runs/STAGE232I4_R16Z_R5_R5_CLIENT_OPERATIONAL_CENTER_TEST_COMPAT.md',
   '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R5_R5_CLIENT_OPERATIONAL_CENTER_TEST_COMPAT.md',
+  // STAGE232I4_R16Z_R8_LEAD_MISSING_BLOCKER_TOGGLE_PRIORITY_FIX_ALLOWLIST
+  'scripts/check-stage232i4-r16z-r8-lead-missing-blocker-toggle-priority-fix.cjs',
+  'tests/stage232i4-r16z-r8-lead-missing-blocker-toggle-priority-fix.test.cjs',
+  '_project/runs/STAGE232I4_R16Z_R8_LEAD_MISSING_BLOCKER_TOGGLE_PRIORITY_FIX.md',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R8_LEAD_MISSING_BLOCKER_TOGGLE_PRIORITY_FIX.md',
   // STAGE232I4_R16Z_R5_R7_POLISH_MOJIBAKE_AUDIT_SCOPE_FINAL_ALLOWLIST
   'tests/polish-mojibake-audit.test.cjs',
   'scripts/check-stage232i4-r16z-r5-r7-polish-mojibake-audit-scope-final.cjs',
