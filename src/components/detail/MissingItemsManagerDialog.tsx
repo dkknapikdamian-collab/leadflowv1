@@ -1,4 +1,4 @@
-﻿// STAGE232I4_R14_CLIENT_LEAD_MISSING_TILE_MODAL_PARITY_AND_SOURCE_FIX
+// STAGE232I4_R14_CLIENT_LEAD_MISSING_TILE_MODAL_PARITY_AND_SOURCE_FIX
 // STAGE232I4_R10_MISSING_MANAGER_READABLE_LAYOUT
 // STAGE232I4_R11_MISSING_MANAGER_ROW_LAYOUT
 // STAGE232I4_R12_SHARED_MODAL_VISUAL_SOURCE_TRUTH
@@ -11,6 +11,7 @@
 // STAGE232I4_R16X_MISSING_BLOCKER_TOGGLE_STATE_AND_ACTION_LABEL: preserves compact layout, visible blocker label, delete action and clearer completion action copy.
 // STAGE232I4_R16Y_R2_MISSING_BLOCKER_SOURCE_TRUTH_ROBUST_FINAL: preserves accepted compact layout, widens delete visibility and keeps blocker label.
 // STAGE232I4_R16Z_R4_MISSING_MANAGER_FINAL_VISUAL_FIT_NO_ZIP: modal rows use flex fit, readable blocker chip and visible delete action.
+// STAGE232I4_R16Z_R5_MISSING_MANAGER_CLOSE_GUARD_CONSOLIDATION_AND_SMOKE: closes R16/R16Z guard conflict; final layout remains R16Z_R4 760px flex manager with readable blocker and visible delete.
 import { AlertTriangle } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Dialog } from '../ui/dialog';

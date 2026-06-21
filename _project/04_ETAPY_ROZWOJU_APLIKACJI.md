@@ -2443,3 +2443,45 @@ Guard blokuje:
 - CaseDetail puste rows przy liczniku Braki i blokady > 0 z powodu payload-only activity,
 - powrót payload-only detection w isCaseActivitySourceForWorkRow,
 - utratę enriched missing record w ContextActionDialogs.
+
+---
+
+## STAGE232I4_R16Z_R5_MISSING_MANAGER_CLOSE_GUARD_CONSOLIDATION_AND_SMOKE
+
+Status: W_TRAKCIE / TECH_APPLIED_PENDING_OWNER_SMOKE
+
+Cel:
+- zamknac watek R16/R16Z Braki/Blokady zanim ruszy STAGE232K,
+- skonsolidowac sprzeczny R16O guard z finalnym R16Z_R4 visual source truth,
+- dodac finalny guard/test R16Z_R5,
+- potwierdzic reczny smoke klient + lead.
+
+Decyzja:
+- R16Z_R4 jest finalnym visual source truth dla managera: 760px, flex row, bez clippingu, czytelne Blokuje, widoczne Uzupełnij i Usuń.
+- R16O zostaje jako guard wiring/parity, ale nie moze wymagac xl:w-[1100px].
+
+Nie ruszac:
+- SQL/RLS,
+- finanse,
+- Google Calendar,
+- billing/trial,
+- Owner Control runtime,
+- CaseDetail runtime,
+- duzy redesign ClientDetail.
+
+Warunek zamkniecia:
+- guardy/testy R16O, R16Z_R4, R16Z_R5 PASS,
+- npm run build PASS,
+- npm run verify:closeflow:quiet PASS,
+- git diff --check PASS,
+- manual smoke klient + lead OK,
+- selektywny commit/push.
+
+Nastepny etap dopiero po PASS:
+- STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH albo domkniecie I3 smoke/status-sync, jesli nadal otwarte.
+
+## STAGE232I4_R16Z_R5_R7_POLISH_MOJIBAKE_AUDIT_SCOPE_FINAL
+
+Date/time: 2026-06-21 Europe/Warsaw
+Status: APPLIED_LOCAL_PENDING_VERIFY_AND_SMOKE
+Scope: guard/test compatibility continuation for polish-mojibake-audit. The audit now skips local stage backup artifacts and huge text-like files before reading them, preventing ERR_STRING_TOO_LONG during verify:closeflow:quiet. No product logic, SQL, finance, Calendar, Owner Control runtime or CaseDetail runtime touched.

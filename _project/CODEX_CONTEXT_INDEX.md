@@ -94,3 +94,40 @@ Nastepny krok:
 - Guard: scripts/check-stage232i4-client-missing-top-tile-vst.cjs.
 - Test: tests/stage232i4-client-missing-top-tile-vst.test.cjs.
 - Next after smoke: status sync, then STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH if no regressions.
+
+## 2026-06-21 Europe/Warsaw - STAGE232I4_R16Z_R5_MISSING_MANAGER_CLOSE_GUARD_CONSOLIDATION_AND_SMOKE
+
+Status: TECH_APPLIED_PENDING_OWNER_SMOKE / DO_NOT_START_STAGE232K_BEFORE_SMOKE_AND_PUSH
+
+Zakres:
+- R16O guard/test consolidated with final R16Z_R4 visual source truth.
+- Final manager layout remains 760px, flex row, readable Blokuje, visible Uzupełnij/Usuń.
+- ClientDetail and LeadDetail shared MissingItemsManagerDialog wiring is protected.
+- No SQL, no finance, no Calendar, no Owner Control runtime, no CaseDetail runtime.
+
+Tests required before push:
+- node scripts/check-stage232i4-r16o-client-shared-missing-manager-no-marker-anchor-final.cjs
+- node --test tests/stage232i4-r16o-client-shared-missing-manager-no-marker-anchor-final.test.cjs
+- node scripts/check-stage232i4-r16z-r4-missing-manager-final-visual-fit-no-zip.cjs
+- node --test tests/stage232i4-r16z-r4-missing-manager-final-visual-fit-no-zip.test.cjs
+- node scripts/check-stage232i4-r16z-r5-missing-manager-close-guard-consolidation.cjs
+- node --test tests/stage232i4-r16z-r5-missing-manager-close-guard-consolidation.test.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+Next:
+- Manual smoke ClientDetail + LeadDetail.
+- Only after smoke OK and push PASS consider STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH.
+
+## STAGE232I4_R16Z_R5_R6_CF_RUNTIME_R5_ALLOWLIST_FINAL
+
+Date/time: 2026-06-21 Europe/Warsaw
+Status: LOCAL APPLY CONTINUATION / guards consolidated before final smoke and push.
+Scope: CF-RUNTIME-00 and R16Z_R5 close guard allow the R5_R5 ClientDetail operational center test compatibility repair and R6 final allowlist files. No SQL, finance, Calendar, billing, Owner Control runtime or CaseDetail runtime touched.
+
+## STAGE232I4_R16Z_R5_R7_POLISH_MOJIBAKE_AUDIT_SCOPE_FINAL
+
+Date/time: 2026-06-21 Europe/Warsaw
+Status: APPLIED_LOCAL_PENDING_VERIFY_AND_SMOKE
+Scope: guard/test compatibility continuation for polish-mojibake-audit. The audit now skips local stage backup artifacts and huge text-like files before reading them, preventing ERR_STRING_TOO_LONG during verify:closeflow:quiet. No product logic, SQL, finance, Calendar, Owner Control runtime or CaseDetail runtime touched.

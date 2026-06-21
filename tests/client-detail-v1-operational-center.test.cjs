@@ -30,12 +30,15 @@ test('ClientDetail exposes V1 operational center sections', () => {
 test('ClientDetail filters tasks events and activity through lead and case relations', () => {
   const source = read('src/pages/ClientDetail.tsx');
 
-  assert.ok(source.includes('relationIds.leadIds.has(String(task.leadId'));
-  assert.ok(source.includes('relationIds.caseIds.has(String(task.caseId'));
-  assert.ok(source.includes('relationIds.leadIds.has(String(event.leadId'));
-  assert.ok(source.includes('relationIds.caseIds.has(String(event.caseId'));
-  assert.ok(source.includes('relationIds.leadIds.has(String(activity.leadId'));
-  assert.ok(source.includes('relationIds.caseIds.has(String(activity.caseId'));
+  assert.ok(source.includes('const relationIds = useMemo'));
+  assert.ok(source.includes('const leadSourceIdStage232I4R14'));
+  assert.ok(source.includes('const caseSourceIdStage232I4R14'));
+  assert.ok(source.includes('relationIds.leadIds.has(leadSourceIdStage232I4R14)'));
+  assert.ok(source.includes('relationIds.caseIds.has(caseSourceIdStage232I4R14)'));
+  assert.ok(source.includes("relationIds.leadIds.has(String(event.leadId || ''))"));
+  assert.ok(source.includes("relationIds.caseIds.has(String(event.caseId || ''))"));
+  assert.ok(source.includes("relationIds.leadIds.has(String(activity.leadId || ''))"));
+  assert.ok(source.includes("relationIds.caseIds.has(String(activity.caseId || ''))"));
 });
 
 test('ClientDetail uses current cases route from client context without lead cockpit links', () => {

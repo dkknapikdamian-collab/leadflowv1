@@ -2216,3 +2216,23 @@ Guard blokuje:
 - CaseDetail puste rows przy liczniku Braki i blokady > 0 z powodu payload-only activity,
 - powrót payload-only detection w isCaseActivitySourceForWorkRow,
 - utratę enriched missing record w ContextActionDialogs.
+
+## 2026-06-21 Europe/Warsaw - STAGE232I4_R16Z_R5 risk audit
+
+- Ryzyko usuniete: R16O guard/test wymagal obsolete xl:w-[1100px] i mogl zmusic kolejnego developera do cofania finalnego R16Z_R4 layoutu.
+- R16Z_R5 aktualizuje R16O tak, aby chronil wiring/parity, ale uznawal finalny layout 760px/flex.
+- Ryzyko pozostale: manual smoke klient + lead jest wymagany przed STAGE232K.
+- Ryzyko pozostale: lokalne untracked backupy .stage232i4_* i stare artefakty moga robic szum; nie uzywac git add .
+- Czego nie ruszano: SQL, finanse, Google Calendar, billing/trial, Owner Control runtime, CaseDetail runtime.
+
+## STAGE232I4_R16Z_R5_R6_CF_RUNTIME_R5_ALLOWLIST_FINAL
+
+Date/time: 2026-06-21 Europe/Warsaw
+Status: LOCAL APPLY CONTINUATION / guards consolidated before final smoke and push.
+Scope: CF-RUNTIME-00 and R16Z_R5 close guard allow the R5_R5 ClientDetail operational center test compatibility repair and R6 final allowlist files. No SQL, finance, Calendar, billing, Owner Control runtime or CaseDetail runtime touched.
+
+## STAGE232I4_R16Z_R5_R7_POLISH_MOJIBAKE_AUDIT_SCOPE_FINAL
+
+Date/time: 2026-06-21 Europe/Warsaw
+Status: APPLIED_LOCAL_PENDING_VERIFY_AND_SMOKE
+Scope: guard/test compatibility continuation for polish-mojibake-audit. The audit now skips local stage backup artifacts and huge text-like files before reading them, preventing ERR_STRING_TOO_LONG during verify:closeflow:quiet. No product logic, SQL, finance, Calendar, Owner Control runtime or CaseDetail runtime touched.

@@ -21,6 +21,7 @@
 // CF_RUNTIME_00_STAGE232I1_CASE_MISSING_BLOCKER_RUNTIME
 // CF_RUNTIME_00_STAGE232I3_OWNER_CONTROL_MISSING_BLOCKER_SCOPE_COMPAT
 // CF_RUNTIME_00_STAGE232I4_CLIENT_MISSING_TOP_TILE_SCOPE_COMPAT
+// CF_RUNTIME_00_STAGE232I4_R16Z_R5_SCOPE_COMPAT
 // CF_RUNTIME_00_STAGE232I1_R8_MISSING_MODAL_READABLE_STYLE
 // CF_RUNTIME_00_R19_MASS_SCOPE_CLOSURE_ALLOWED
 // CF_RUNTIME_00_R18_SHEBANG_SCOPE_ALLOWED
@@ -188,6 +189,46 @@ const allowedChangePrefixes = [
   'tests/stage231h-r1g-cost-other-name-and-reimbursable-flag.test.cjs',
   'tests/stage231h-r1g4-newline-syntax-repair.test.cjs',
   'tests/stage98-polish-mojibake-calendar-guard.test.cjs',
+  // STAGE232I4_R16Z_R5_R5_CLIENT_OPERATIONAL_CENTER_TEST_COMPAT_ALLOWLIST
+  'tests/client-detail-v1-operational-center.test.cjs',
+  'scripts/check-stage232i4-r16z-r5-r5-client-operational-center-test-compat.cjs',
+  'tests/stage232i4-r16z-r5-r5-client-operational-center-test-compat.test.cjs',
+  '_project/runs/STAGE232I4_R16Z_R5_R5_CLIENT_OPERATIONAL_CENTER_TEST_COMPAT.md',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R5_R5_CLIENT_OPERATIONAL_CENTER_TEST_COMPAT.md',
+  // STAGE232I4_R16Z_R5_R7_POLISH_MOJIBAKE_AUDIT_SCOPE_FINAL_ALLOWLIST
+  'tests/polish-mojibake-audit.test.cjs',
+  'scripts/check-stage232i4-r16z-r5-r7-polish-mojibake-audit-scope-final.cjs',
+  'tests/stage232i4-r16z-r5-r7-polish-mojibake-audit-scope-final.test.cjs',
+  '_project/runs/STAGE232I4_R16Z_R5_R7_POLISH_MOJIBAKE_AUDIT_SCOPE_FINAL.md',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R5_R7_POLISH_MOJIBAKE_AUDIT_SCOPE_FINAL.md',
+  // STAGE232I4_R16Z_R5_R6_CF_RUNTIME_R5_ALLOWLIST_FINAL_ALLOWLIST
+  'scripts/check-stage232i4-r16z-r5-r6-cf-runtime-r5-allowlist-final.cjs',
+  'tests/stage232i4-r16z-r5-r6-cf-runtime-r5-allowlist-final.test.cjs',
+  '_project/runs/STAGE232I4_R16Z_R5_R6_CF_RUNTIME_R5_ALLOWLIST_FINAL.md',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R5_R6_CF_RUNTIME_R5_ALLOWLIST_FINAL.md',
+  // STAGE232I4_R16Z_R5_R4_CLOSE_GUARD_ALLOWLIST_REPAIR_ALLOWLIST
+  'scripts/check-stage232i4-r16z-r5-r4-close-guard-allowlist-repair.cjs',
+  'tests/stage232i4-r16z-r5-r4-close-guard-allowlist-repair.test.cjs',
+  '_project/runs/STAGE232I4_R16Z_R5_R4_CLOSE_GUARD_ALLOWLIST_REPAIR.md',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R5_R4_CLOSE_GUARD_ALLOWLIST_REPAIR.md',
+  // STAGE232I4_R16Z_R5_R3_CF_RUNTIME_SCOPE_AND_LOCAL_ARTIFACTS_ALLOWLIST
+  'src/components/detail/MissingItemsManagerDialog.tsx',
+  'scripts/check-stage232i4-r16o-client-shared-missing-manager-no-marker-anchor-final.cjs',
+  'tests/stage232i4-r16o-client-shared-missing-manager-no-marker-anchor-final.test.cjs',
+  'scripts/check-stage232i4-r16z-r4-missing-manager-final-visual-fit-no-zip.cjs',
+  'tests/stage232i4-r16z-r4-missing-manager-final-visual-fit-no-zip.test.cjs',
+  'scripts/check-stage232i4-r16z-r5-missing-manager-close-guard-consolidation.cjs',
+  'tests/stage232i4-r16z-r5-missing-manager-close-guard-consolidation.test.cjs',
+  'scripts/check-stage232i4-r16z-r5-r2-bom-repair-continue.cjs',
+  'tests/stage232i4-r16z-r5-r2-bom-repair-continue.test.cjs',
+  'scripts/check-stage232i4-r16z-r5-r3-cf-runtime-scope-and-local-artifacts.cjs',
+  'tests/stage232i4-r16z-r5-r3-cf-runtime-scope-and-local-artifacts.test.cjs',
+  '_project/runs/STAGE232I4_R16Z_R5_MISSING_MANAGER_CLOSE_GUARD_CONSOLIDATION_AND_SMOKE.md',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R5_MISSING_MANAGER_CLOSE_GUARD_CONSOLIDATION_AND_SMOKE.md',
+  '_project/runs/STAGE232I4_R16Z_R5_R2_BOM_REPAIR_CONTINUE.md',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R5_R2_BOM_REPAIR_CONTINUE.md',
+  '_project/runs/STAGE232I4_R16Z_R5_R3_CF_RUNTIME_SCOPE_AND_LOCAL_ARTIFACTS.md',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R5_R3_CF_RUNTIME_SCOPE_AND_LOCAL_ARTIFACTS.md',
   '_project/04_ETAPY_ROZWOJU_APLIKACJI.md',
   '_project/04_KIERUNEK_ROZWOJU_APLIKACJI.md',
   '_project/09_TESTY_DO_WYKONANIA_I_WYNIKI.md',

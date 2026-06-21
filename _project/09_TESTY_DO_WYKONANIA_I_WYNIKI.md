@@ -732,3 +732,45 @@ Guard blokuje:
 - CaseDetail puste rows przy liczniku Braki i blokady > 0 z powodu payload-only activity,
 - powrót payload-only detection w isCaseActivitySourceForWorkRow,
 - utratę enriched missing record w ContextActionDialogs.
+
+## 2026-06-21 Europe/Warsaw - STAGE232I4_R16Z_R5_MISSING_MANAGER_CLOSE_GUARD_CONSOLIDATION_AND_SMOKE
+
+Status: TECH_APPLIED_PENDING_OWNER_SMOKE
+
+Automatyczne:
+- R16O consolidated guard/test: do uruchomienia w apply i push.
+- R16Z_R4 visual guard/test: do uruchomienia w apply i push.
+- R16Z_R5 close guard/test: do uruchomienia w apply i push.
+- npm run build.
+- npm run verify:closeflow:quiet.
+- git diff --check.
+
+Manual smoke R16Z_R5 - klient:
+1. Dodaj brak nie otwiera automatycznie managera.
+2. Zobacz wszystkie braki otwiera manager.
+3. Nazwa braku jest widoczna.
+4. Blokuje jest czytelne.
+5. Checkbox zmienia kafelek główny.
+6. Uzupełnij działa i F5 nie przywraca.
+7. Usuń działa i F5 nie przywraca.
+8. Brak poziomego scrolla i clipped actions.
+
+Manual smoke R16Z_R5 - lead:
+1. Zobacz wszystkie braki otwiera ten sam manager.
+2. Nazwa braku jest widoczna.
+3. Blokuje jest czytelne.
+4. Uzupełnij działa.
+5. Usuń działa.
+6. F5 nie przywraca usuniętego/uzupełnionego braku.
+
+## STAGE232I4_R16Z_R5_R6_CF_RUNTIME_R5_ALLOWLIST_FINAL
+
+Date/time: 2026-06-21 Europe/Warsaw
+Status: LOCAL APPLY CONTINUATION / guards consolidated before final smoke and push.
+Scope: CF-RUNTIME-00 and R16Z_R5 close guard allow the R5_R5 ClientDetail operational center test compatibility repair and R6 final allowlist files. No SQL, finance, Calendar, billing, Owner Control runtime or CaseDetail runtime touched.
+
+## STAGE232I4_R16Z_R5_R7_POLISH_MOJIBAKE_AUDIT_SCOPE_FINAL
+
+Date/time: 2026-06-21 Europe/Warsaw
+Status: APPLIED_LOCAL_PENDING_VERIFY_AND_SMOKE
+Scope: guard/test compatibility continuation for polish-mojibake-audit. The audit now skips local stage backup artifacts and huge text-like files before reading them, preventing ERR_STRING_TOO_LONG during verify:closeflow:quiet. No product logic, SQL, finance, Calendar, Owner Control runtime or CaseDetail runtime touched.
