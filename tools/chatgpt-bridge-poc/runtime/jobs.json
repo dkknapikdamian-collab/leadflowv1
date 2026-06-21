@@ -1,0 +1,19 @@
+[
+  {
+    "schema_version": "kbl_chatgpt_tile_job_v1",
+    "job_id": "poc_job_001",
+    "tile_id": "chatgpt_analyzer_tile_poc",
+    "skill_id": "simple_analysis_v1",
+    "project_id": "node-red-kabelki",
+    "environment": "local",
+    "prompt_contract_id": "simple_analysis_prompt",
+    "prompt_version": "v1",
+    "input_schema": "simple_analysis_input_v1",
+    "output_schema": "simple_analysis_result_v1",
+    "status": "queued",
+    "context": {
+      "task": "Analyze the Kabelki reusable tile direction and return three risks plus three next steps.",
+      "data": "Kabelki should use reusable tiles for analyzers, workers, reviewers, generators and bridge steps. Every tile needs input, output, status, ledger and owner review."
+    }
+  }
+]
