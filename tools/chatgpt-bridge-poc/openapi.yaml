@@ -1,0 +1,157 @@
+openapi: 3.1.0
+info:
+  title: Kabelki ChatGPT Bridge POC
+  version: 0.1.0
+  description: Minimal bridge for Custom GPT Actions to fetch jobs and submit structured results.
+servers:
+  - url: https://bladder-prevalent-stamp.ngrok-free.dev
+
+security:
+  - BridgeKey: []
+
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      summary: Check bridge health
+      responses:
+        "200":
+          description: Bridge health response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  service:
+                    type: string
+                  time:
+                    type: string
+
+  /chatgpt/jobs/next:
+    get:
+      operationId: getNextJob
+      summary: Get the next queued ChatGPT job
+      responses:
+        "200":
+          description: Next job response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job:
+                    type: object
+                  status:
+                    type: string
+
+  /chatgpt/jobs/{job_id}/context:
+    get:
+      operationId: getJobContext
+      summary: Get full context for a ChatGPT job
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Job context response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job:
+                    type: object
+                  job_id:
+                    type: string
+                  tile_id:
+                    type: string
+                  skill_id:
+                    type: string
+                  context:
+                    type: object
+                  safety_contract:
+                    type: object
+                  output_schema:
+                    type: string
+
+  /chatgpt/jobs/result:
+    post:
+      operationId: submitJobResult
+      summary: Submit structured result for a ChatGPT job
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - schema_version
+                - job_id
+                - tile_id
+                - status
+                - forbidden_actions_requested
+                - requires_owner_review
+              properties:
+                schema_version:
+                  type: string
+                  example: simple_analysis_result_v1
+                job_id:
+                  type: string
+                  example: poc_job_001
+                tile_id:
+                  type: string
+                  example: chatgpt_analyzer_tile_poc
+                status:
+                  type: string
+                  enum:
+                    - completed
+                    - needs_owner_review
+                    - needs_more_data
+                    - failed
+                  example: needs_owner_review
+                summary:
+                  type: string
+                risks:
+                  type: array
+                  items:
+                    type: string
+                next_steps:
+                  type: array
+                  items:
+                    type: string
+                missing_data:
+                  type: array
+                  items:
+                    type: string
+                forbidden_actions_requested:
+                  type: array
+                  items:
+                    type: string
+                requires_owner_review:
+                  type: boolean
+      responses:
+        "200":
+          description: Result accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accepted:
+                    type: boolean
+                  job_id:
+                    type: string
+                  status:
+                    type: string
+
+components:
+  securitySchemes:
+    BridgeKey:
+      type: apiKey
+      in: header
+      name: ngrok-skip-browser-warning
