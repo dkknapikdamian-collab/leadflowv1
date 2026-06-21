@@ -62,6 +62,12 @@ must('risk registry updated with R16Z_R5', risks.includes('STAGE232I4_R16Z_R5 ri
 
 const diffNames = execSync('git diff --name-only', { encoding: 'utf8' }).split(/\r?\n/).filter(Boolean);
 const allowedTracked = new Set([
+  // STAGE232I4_R16Z_R9_MISSING_MANAGER_DIRECT_BLOCKER_OVERRIDE_ALLOWLIST
+  'src/components/detail/MissingItemsManagerDialog.tsx',
+  'scripts/check-stage232i4-r16z-r9-missing-manager-direct-blocker-override.cjs',
+  'tests/stage232i4-r16z-r9-missing-manager-direct-blocker-override.test.cjs',
+  '_project/runs/STAGE232I4_R16Z_R9_MISSING_MANAGER_DIRECT_BLOCKER_OVERRIDE.md',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R9_MISSING_MANAGER_DIRECT_BLOCKER_OVERRIDE.md',
   // STAGE232I4_R16Z_R8_LEAD_MISSING_BLOCKER_TOGGLE_PRIORITY_FIX_ALLOWLIST
   'src/pages/LeadDetail.tsx',
   'scripts/check-stage232i4-r16z-r5-missing-manager-close-guard-consolidation.cjs',
@@ -111,3 +117,12 @@ console.log(JSON.stringify({
   stage: 'STAGE232I4_R16Z_R5_MISSING_MANAGER_CLOSE_GUARD_CONSOLIDATION_AND_SMOKE',
   contract: 'R16O is consolidated with R16Z_R4 final manager layout, final close guard exists, Client/Lead shared manager wiring is protected, docs/status payloads are updated, no SQL/finance/calendar scope touched.'
 }, null, 2));
+// STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX_ALLOWLIST: R10 lead checkbox source fix may touch these files.
+const STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX_ALLOWLIST = [
+  'src/pages/LeadDetail.tsx',
+  'scripts/check-stage232i4-r16z-r10-lead-missing-checkbox-activity-source-fix.cjs',
+  'tests/stage232i4-r16z-r10-lead-missing-checkbox-activity-source-fix.test.cjs',
+  '_project/runs/STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX.md',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX.md',
+];
+void STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX_ALLOWLIST;

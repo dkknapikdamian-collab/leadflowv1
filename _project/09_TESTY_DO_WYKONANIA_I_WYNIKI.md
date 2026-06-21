@@ -785,3 +785,28 @@ Scope: guard/test compatibility continuation for polish-mojibake-audit. The audi
 6. Re-check Blokuje.
 7. F5: checkbox remains checked.
 8. Uzupełnij/Usuń regression PASS.
+
+## 2026-06-21 Europe/Warsaw - STAGE232I4_R16Z_R9_MISSING_MANAGER_DIRECT_BLOCKER_OVERRIDE
+
+Status: TECH_APPLIED_LOCAL / OWNER_SMOKE_REQUIRED.
+
+Zakres:
+- Naprawa realnego bug smoke: LeadDetail -> Zobacz wszystkie braki -> checkbox Blokuje wracal jako zaznaczony po silent refresh/F5.
+- Przyczyna: MissingItemsManagerDialog.isManagerItemBlocker liczyl blokade przez OR z
+aw.status/raw.priority, wiec stare dane activity bridge mogly nadpisac swieze locksProgress=false.
+- Naprawa: jawne item.isBlocker / item.blocksProgress ma pierwszenstwo przed raw/payload/status/priority fallback.
+
+Testy:
+- R9 guard/test.
+- R8 regression.
+- R16Z_R5 close regression.
+- build / verify / diff-check.
+
+Manual smoke R16Z_R9:
+- LeadDetail: odznacz Blokuje, F5, checkbox ma zostac odznaczony; zaznacz ponownie, F5, checkbox ma zostac zaznaczony.
+
+Nie ruszac:
+- SQL, RLS, finanse, Calendar, billing/trial, Owner Control runtime, CaseDetail runtime.
+
+## 2026-06-21 Europe/Warsaw - STAGE232I4_R16Z_R10 tests
+Plan: guard/test/build/verify/diff plus owner smoke Lead -> all missing -> toggle Blokuje -> F5.

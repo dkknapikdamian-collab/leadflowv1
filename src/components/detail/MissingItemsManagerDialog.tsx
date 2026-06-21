@@ -12,6 +12,7 @@
 // STAGE232I4_R16Y_R2_MISSING_BLOCKER_SOURCE_TRUTH_ROBUST_FINAL: preserves accepted compact layout, widens delete visibility and keeps blocker label.
 // STAGE232I4_R16Z_R4_MISSING_MANAGER_FINAL_VISUAL_FIT_NO_ZIP: modal rows use flex fit, readable blocker chip and visible delete action.
 // STAGE232I4_R16Z_R5_MISSING_MANAGER_CLOSE_GUARD_CONSOLIDATION_AND_SMOKE: closes R16/R16Z guard conflict; final layout remains R16Z_R4 760px flex manager with readable blocker and visible delete.
+// STAGE232I4_R16Z_R9_MISSING_MANAGER_DIRECT_BLOCKER_OVERRIDE: explicit item.isBlocker/blocksProgress false overrides stale raw/payload blocker status after refresh.
 import { AlertTriangle } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Dialog } from '../ui/dialog';
@@ -75,14 +76,15 @@ function isTruthyBooleanLike(value: unknown) {
 function isManagerItemBlocker(item: MissingItemsManagerItem) {
   const payload = asObject(item?.payload);
   const raw = asObject(item?.raw);
-  const status = asText(item?.status || raw?.status || payload?.status).toLowerCase();
-  const priority = asText(item?.priority || raw?.priority || payload?.priority).toLowerCase();
-  const direct = item?.isBlocker ?? item?.blocksProgress ?? item?.blocks_progress ?? raw?.blocksProgress ?? raw?.blocks_progress ?? payload?.blocksProgress ?? payload?.blocks_progress;
-  return Boolean(
-    status === 'blocking_missing_item'
-    || priority === 'high'
-    || isTruthyBooleanLike(direct)
-  );
+  const direct = item?.isBlocker ?? item?.blocksProgress ?? item?.blocks_progress;
+  if (direct !== undefined && direct !== null) return isTruthyBooleanLike(direct);
+
+  const rawOrPayloadDirect = raw?.blocksProgress ?? raw?.blocks_progress ?? payload?.blocksProgress ?? payload?.blocks_progress;
+  if (rawOrPayloadDirect !== undefined && rawOrPayloadDirect !== null) return isTruthyBooleanLike(rawOrPayloadDirect);
+
+  const status = asText(item?.status ?? payload?.status ?? raw?.status).toLowerCase();
+  const priority = asText(item?.priority ?? payload?.priority ?? raw?.priority).toLowerCase();
+  return Boolean(status === 'blocking_missing_item' || priority === 'high');
 }
 
 function managerItemTitle(item: MissingItemsManagerItem) {

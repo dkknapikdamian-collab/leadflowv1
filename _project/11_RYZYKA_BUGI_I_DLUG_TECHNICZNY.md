@@ -2240,3 +2240,28 @@ Scope: guard/test compatibility continuation for polish-mojibake-audit. The audi
 ## STAGE232I4_R16Z_R8 risk audit
 
 Manual smoke exposed stale priority high in LeadDetail missing item blocker toggle. Risk: manager UI may show success while persisted source truth still classifies item as blocker. Fix requires status, priority, blocksProgress and payload to be persisted together. Do not close R16Z/R5 or start STAGE232K before Lead F5 smoke passes.
+
+## 2026-06-21 Europe/Warsaw - STAGE232I4_R16Z_R9 risk audit
+
+Status: TECH_APPLIED_LOCAL / OWNER_SMOKE_REQUIRED.
+
+Zakres:
+- Naprawa realnego bug smoke: LeadDetail -> Zobacz wszystkie braki -> checkbox Blokuje wracal jako zaznaczony po silent refresh/F5.
+- Przyczyna: MissingItemsManagerDialog.isManagerItemBlocker liczyl blokade przez OR z
+aw.status/raw.priority, wiec stare dane activity bridge mogly nadpisac swieze locksProgress=false.
+- Naprawa: jawne item.isBlocker / item.blocksProgress ma pierwszenstwo przed raw/payload/status/priority fallback.
+
+Testy:
+- R9 guard/test.
+- R8 regression.
+- R16Z_R5 close regression.
+- build / verify / diff-check.
+
+Manual smoke:
+- LeadDetail: odznacz Blokuje, F5, checkbox ma zostac odznaczony; zaznacz ponownie, F5, checkbox ma zostac zaznaczony.
+
+Nie ruszac:
+- SQL, RLS, finanse, Calendar, billing/trial, Owner Control runtime, CaseDetail runtime.
+
+## 2026-06-21 Europe/Warsaw - STAGE232I4_R16Z_R10 risk audit
+Risk: old missing_item_created/activity bridge metadata can override newer task state if not timestamped and if direct task state is not used first. Fixed for LeadDetail missing checkbox classifier.

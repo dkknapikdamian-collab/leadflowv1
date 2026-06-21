@@ -508,7 +508,10 @@ type LeadMissingActivityMetadataStage232AR8 = {
   missingKind: string;
   blocksProgress: boolean;
   blockScope: string;
+  happenedAtMs: number;
 };
+
+// STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX: task/payload direct false and newest activity state override stale creation/blocker bridge metadata.
 
 function normalizeMissingActivityTitleStage232AR8(value: unknown) {
   return String(value || '').toLowerCase().replace(/\s+/g, ' ').trim();
@@ -524,6 +527,11 @@ function boolStage232AR8(value: unknown) {
 function buildLeadMissingActivityMetadataStage232AR8(activities: any[]) {
   const byTaskId = new Map<string, LeadMissingActivityMetadataStage232AR8>();
   const byTitle = new Map<string, LeadMissingActivityMetadataStage232AR8>();
+  const assignMetadataStage232I4R10 = (target: Map<string, LeadMissingActivityMetadataStage232AR8>, key: string, metadata: LeadMissingActivityMetadataStage232AR8) => {
+    if (!key) return;
+    const current = target.get(key);
+    if (!current || metadata.happenedAtMs >= current.happenedAtMs) target.set(key, metadata);
+  };
 
   for (const activity of activities || []) {
     const payload = activity?.payload && typeof activity.payload === 'object' ? activity.payload : {};
@@ -537,16 +545,19 @@ function buildLeadMissingActivityMetadataStage232AR8(activities: any[]) {
     const titleKey = normalizeMissingActivityTitleStage232AR8(title);
     const taskId = String(payload?.taskId || payload?.task_id || '').trim();
     const status = String(payload?.status || '').toLowerCase();
+    const explicitBlocksProgress = payload?.blocksProgress ?? payload?.blocks_progress ?? payload?.isBlocker;
+    const happenedAt = asDate(activity?.happenedAt || activity?.happened_at || activity?.createdAt || activity?.created_at || payload?.happenedAt || payload?.createdAt);
     const metadata: LeadMissingActivityMetadataStage232AR8 = {
       taskId,
       titleKey,
       missingKind: String(payload?.missingKind || '').toLowerCase(),
-      blocksProgress: boolStage232AR8(payload?.blocksProgress) || status.includes('block') || eventType.includes('block'),
+      blocksProgress: explicitBlocksProgress !== undefined && explicitBlocksProgress !== null ? boolStage232AR8(explicitBlocksProgress) : status.includes('block') || eventType.includes('block'),
       blockScope: String(payload?.blockScope || '').trim(),
+      happenedAtMs: happenedAt?.getTime() || 0,
     };
 
-    if (taskId) byTaskId.set(taskId, metadata);
-    if (titleKey) byTitle.set(titleKey, metadata);
+    assignMetadataStage232I4R10(byTaskId, taskId, metadata);
+    assignMetadataStage232I4R10(byTitle, titleKey, metadata);
   }
 
   return { byTaskId, byTitle };
@@ -566,7 +577,31 @@ function isActiveMissingItemTaskStage232AR8(item: any, index: ReturnType<typeof 
   return Boolean(metadata) && !isDoneStatus(rawStatus);
 }
 
+function readLeadMissingDirectBlockerOverrideStage232I4R10(item: any): boolean | null {
+  const metadata = readMissingItemMetadataStage232AR6(item);
+  const directValues = [
+    metadata.raw?.isBlocker,
+    metadata.raw?.blocksProgress,
+    metadata.raw?.blocks_progress,
+    metadata.payload?.isBlocker,
+    metadata.payload?.blocksProgress,
+    metadata.payload?.blocks_progress,
+  ];
+  for (const value of directValues) {
+    if (value !== undefined && value !== null && String(value).trim() !== '') return boolStage232AR8(value);
+  }
+  const status = String(metadata.payload?.status ?? metadata.raw?.status ?? '').trim().toLowerCase();
+  if (status === 'blocking_missing_item') return true;
+  if (status === 'missing_item') return false;
+  const priority = String(metadata.payload?.priority ?? metadata.raw?.priority ?? '').trim().toLowerCase();
+  if (priority === 'high') return true;
+  if (['medium', 'normal', 'low'].includes(priority)) return false;
+  return null;
+}
+
 function isLeadBlockerTaskStage232AR8(item: any, index: ReturnType<typeof buildLeadMissingActivityMetadataStage232AR8>) {
+  const directOverride = readLeadMissingDirectBlockerOverrideStage232I4R10(item);
+  if (directOverride !== null) return directOverride;
   if (isLeadBlockerTaskStage232AR6(item)) return true;
   const metadata = readActivityMissingMetadataStage232AR8(item, index);
   return Boolean(metadata?.blocksProgress);
@@ -1249,6 +1284,7 @@ export default function LeadDetail() {
     const task = (entry?.raw || entry) as any;
     const taskId = String(task?.id || entry?.id || '').trim();
     if (!taskId) return toast.error('Brak ID braku. Nie można zmienić blokady.');
+    const taskTitle = String(task?.title || entry?.title || 'Brak');
     const nextStatus = blocksProgress ? 'blocking_missing_item' : 'missing_item';
     const nextPriorityStage232I4R16ZR8 = blocksProgress ? 'high' : 'medium';
     const previousPayload = task?.payload && typeof task.payload === 'object' ? task.payload : {};
@@ -1270,7 +1306,15 @@ export default function LeadDetail() {
           source: 'stage232i4_r16z_r8_lead_missing_blocker_toggle_priority_fix',
         },
       } as any);
-      setLinkedTasks((currentTasks: any[]) => currentTasks.map((item: any) => String(item?.id || '') === taskId ? { ...item, status: nextStatus, priority: nextPriorityStage232I4R16ZR8, blocksProgress, payload: { ...(item?.payload || {}), blocksProgress, priority: nextPriorityStage232I4R16ZR8, status: nextStatus } } : item));
+      setLinkedTasks((currentTasks: any[]) => currentTasks.map((item: any) => String(item?.id || '') === taskId ? { ...item, status: nextStatus, priority: nextPriorityStage232I4R16ZR8, blocksProgress, payload: { ...(item?.payload || {}), blocksProgress, priority: nextPriorityStage232I4R16ZR8, status: nextStatus, source: 'stage232i4_r16z_r10_lead_missing_checkbox_activity_source_fix' } } : item));
+      await addActivity('missing_item_state_updated', {
+        taskId,
+        title: taskTitle,
+        status: nextStatus,
+        blocksProgress,
+        priority: nextPriorityStage232I4R16ZR8,
+        source: 'stage232i4_r16z_r10_lead_missing_checkbox_activity_source_fix',
+      });
       toast.success(blocksProgress ? 'Brak ustawiony jako blokujący' : 'Brak nie blokuje sprawy');
       await loadLead({ silent: true });
     } catch (error: any) {

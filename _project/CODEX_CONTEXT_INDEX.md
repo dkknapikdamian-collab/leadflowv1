@@ -138,3 +138,28 @@ Date/time: 2026-06-21 Europe/Warsaw
 Status: LOCAL_APPLY_PENDING_TESTS_AND_OWNER_SMOKE
 Scope: LeadDetail Braki/Blokady manager toggle now persists blocker state by writing status + priority + blocksProgress + payload together. Root cause: unchecking Blokuje changed status/blocksProgress but stale priority high made shared manager re-check it after reload.
 No SQL, finance, Calendar, billing, Owner Control runtime or CaseDetail runtime touched.
+
+## 2026-06-21 Europe/Warsaw - STAGE232I4_R16Z_R9_MISSING_MANAGER_DIRECT_BLOCKER_OVERRIDE
+
+Status: TECH_APPLIED_LOCAL / OWNER_SMOKE_REQUIRED.
+
+Zakres:
+- Naprawa realnego bug smoke: LeadDetail -> Zobacz wszystkie braki -> checkbox Blokuje wracal jako zaznaczony po silent refresh/F5.
+- Przyczyna: MissingItemsManagerDialog.isManagerItemBlocker liczyl blokade przez OR z
+aw.status/raw.priority, wiec stare dane activity bridge mogly nadpisac swieze locksProgress=false.
+- Naprawa: jawne item.isBlocker / item.blocksProgress ma pierwszenstwo przed raw/payload/status/priority fallback.
+
+Testy:
+- R9 guard/test.
+- R8 regression.
+- R16Z_R5 close regression.
+- build / verify / diff-check.
+
+Manual smoke:
+- LeadDetail: odznacz Blokuje, F5, checkbox ma zostac odznaczony; zaznacz ponownie, F5, checkbox ma zostac zaznaczony.
+
+Nie ruszac:
+- SQL, RLS, finanse, Calendar, billing/trial, Owner Control runtime, CaseDetail runtime.
+
+## 2026-06-21 Europe/Warsaw - STAGE232I4_R16Z_R10
+LeadDetail missing checkbox real runtime fix: direct task/payload state overrides stale activity metadata; newest activity metadata wins.

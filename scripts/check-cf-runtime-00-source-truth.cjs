@@ -195,6 +195,12 @@ const allowedChangePrefixes = [
   'tests/stage232i4-r16z-r5-r5-client-operational-center-test-compat.test.cjs',
   '_project/runs/STAGE232I4_R16Z_R5_R5_CLIENT_OPERATIONAL_CENTER_TEST_COMPAT.md',
   '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R5_R5_CLIENT_OPERATIONAL_CENTER_TEST_COMPAT.md',
+  // STAGE232I4_R16Z_R9_MISSING_MANAGER_DIRECT_BLOCKER_OVERRIDE_ALLOWLIST
+  'src/components/detail/MissingItemsManagerDialog.tsx',
+  'scripts/check-stage232i4-r16z-r9-missing-manager-direct-blocker-override.cjs',
+  'tests/stage232i4-r16z-r9-missing-manager-direct-blocker-override.test.cjs',
+  '_project/runs/STAGE232I4_R16Z_R9_MISSING_MANAGER_DIRECT_BLOCKER_OVERRIDE.md',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R9_MISSING_MANAGER_DIRECT_BLOCKER_OVERRIDE.md',
   // STAGE232I4_R16Z_R8_LEAD_MISSING_BLOCKER_TOGGLE_PRIORITY_FIX_ALLOWLIST
   'scripts/check-stage232i4-r16z-r8-lead-missing-blocker-toggle-priority-fix.cjs',
   'tests/stage232i4-r16z-r8-lead-missing-blocker-toggle-priority-fix.test.cjs',
@@ -358,6 +364,11 @@ const allowedChangePrefixes = [
   'tests/stage232i3-owner-control-missing-blocker-cross-entity-integration.test.cjs',
   '_project/runs/STAGE232I3_OWNER_CONTROL_MISSING_BLOCKER_CROSS_ENTITY_INTEGRATION.md',
   '_project/obsidian_updates/2026-06-18_STAGE232I3_OWNER_CONTROL_MISSING_BLOCKER_CROSS_ENTITY_INTEGRATION.md',  'tests/stage107-templates-delete-and-visual-contract.test.cjs',
+  // STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX_ALLOWLIST
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX.md',
+  '_project/runs/STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX.md',
+  'scripts/check-stage232i4-r16z-r10-lead-missing-checkbox-activity-source-fix.cjs',
+  'tests/stage232i4-r16z-r10-lead-missing-checkbox-activity-source-fix.test.cjs',
 ];
 
 function gitList(args) {
@@ -399,3 +410,12 @@ if (errors.length) {
 console.log('CF-RUNTIME-00 source truth guard PASS');
 
 // CF_RUNTIME_00_QUICK_ACTIONS_MARKER_BATCH_SCOPE_COMPAT_R15
+// STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX_ALLOWLIST: R10 lead checkbox source fix may touch these files.
+const STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX_ALLOWLIST = [
+  'src/pages/LeadDetail.tsx',
+  'scripts/check-stage232i4-r16z-r10-lead-missing-checkbox-activity-source-fix.cjs',
+  'tests/stage232i4-r16z-r10-lead-missing-checkbox-activity-source-fix.test.cjs',
+  '_project/runs/STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX.md',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX.md',
+];
+void STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX_ALLOWLIST;
