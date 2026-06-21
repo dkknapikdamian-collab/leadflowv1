@@ -1,0 +1,5 @@
+Local-only files for this POC:
+- .env
+- runtime/results.jsonl
+- runtime/request-log.jsonl
+- backup files ending with .bak-* should not be committed.
