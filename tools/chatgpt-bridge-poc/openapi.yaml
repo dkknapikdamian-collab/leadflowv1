@@ -5,10 +5,6 @@ info:
   description: Minimal bridge for Custom GPT Actions to fetch jobs and submit structured results.
 servers:
   - url: https://bladder-prevalent-stamp.ngrok-free.dev
-
-security:
-  - BridgeKey: []
-
 paths:
   /health:
     get:
@@ -28,7 +24,6 @@ paths:
                     type: string
                   time:
                     type: string
-
   /chatgpt/jobs/next:
     get:
       operationId: getNextJob
@@ -45,7 +40,6 @@ paths:
                     type: object
                   status:
                     type: string
-
   /chatgpt/jobs/{job_id}/context:
     get:
       operationId: getJobContext
@@ -78,7 +72,6 @@ paths:
                     type: object
                   output_schema:
                     type: string
-
   /chatgpt/jobs/result:
     post:
       operationId: submitJobResult
@@ -99,13 +92,10 @@ paths:
               properties:
                 schema_version:
                   type: string
-                  example: simple_analysis_result_v1
                 job_id:
                   type: string
-                  example: poc_job_001
                 tile_id:
                   type: string
-                  example: chatgpt_analyzer_tile_poc
                 status:
                   type: string
                   enum:
@@ -113,7 +103,6 @@ paths:
                     - needs_owner_review
                     - needs_more_data
                     - failed
-                  example: needs_owner_review
                 summary:
                   type: string
                 risks:
@@ -148,10 +137,3 @@ paths:
                     type: string
                   status:
                     type: string
-
-components:
-  securitySchemes:
-    BridgeKey:
-      type: apiKey
-      in: header
-      name: ngrok-skip-browser-warning
