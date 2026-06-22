@@ -9,7 +9,7 @@ canonical_name: CloseFlow / LeadFlow
 repo: dkknapikdamian-collab/leadflowv1
 branch: dev-rollout-freeze
 local_path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
-last_update: 2026-06-17 22:55 Europe/Warsaw
+last_update: 2026-06-22 Europe/Warsaw
 ---
 
 # 00_START - CloseFlow Lead App
@@ -22,11 +22,23 @@ GitHub / repo jest miejscem, w ktorym trzymamy projektowa pamiec Obsidiana dla t
 
 Nie szukac etapow w czacie. Nie traktowac pojedynczych run reportow ani payloadow jako aktywnej kolejki.
 
+## Zasada zakresu czytania: ChatGPT/czat vs Codex/agent
+
+Decyzja Damiana z 2026-06-22:
+
+- ChatGPT / czat audytowy Damiana moze czytac szeroko repo, `_project` i Obsidian, gdy Damian prosi o audyt, weryfikacje etapu, sprawdzenie kolejki, drift, cleanup, mapowanie zaleznosci albo broad scan.
+- Cloud Codex / AI developer / agent wykonawczy nie ma czytac wszystkiego automatycznie; zaczyna od routera, `AGENTS.md`, `_project/00_AI_START_SPIS_TRESCI.md`, centralnych plikow wymaganych dla etapu i konkretnych plikow runtime/guard/test.
+- Szeroki audyt czatu nie daje wykonawcy zgody na zmiany poza zakresem etapu.
+- Oszczedny scan Codexa nie oznacza, ze czat ma zgadywac przy audycie.
+
+Szczegoly: `_project/04_CHATGPT_VS_CODEX_READ_SCOPE_POLICY_SYNC_2026_06_22.md`.
+
 ## Glowne zrodla prawdy
 
 ### 04 - Etapy i kierunek
 
 - `_project/04_ETAPY_ROZWOJU_APLIKACJI.md` - kanoniczna kolejka etapow aplikacji.
+- `_project/04_CHATGPT_VS_CODEX_READ_SCOPE_POLICY_SYNC_2026_06_22.md` - aktywna regula rozdzielenia zakresu czytania: ChatGPT/czat audytowy vs Codex/agent wykonawczy.
 - `_project/04_STAGE_QUEUE_PLACEMENT_SYNC_2026_06_16.md` - regula placementu i sync rozproszonych etapow.
 - `_project/04_STAGE232D_R1_CLOSURE_AND_STAGE232I0_NEXT_SYNC_2026_06_17.md` - historyczny queue-sync: STAGE232D_R1 zamkniety, STAGE232I0 nastepny.
 - `_project/04_STAGE232I1_R8_SKIPPED_STAGE232I2_NEXT_SYNC_2026_06_17.md` - decyzja: R8 pomijamy, bo modal jest OK; nastepny aktywny etap to STAGE232I2.
