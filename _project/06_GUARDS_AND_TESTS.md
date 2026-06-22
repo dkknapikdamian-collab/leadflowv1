@@ -1,4 +1,4 @@
-<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
+﻿<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
 # 06_GUARDS_AND_TESTS - CloseFlow / LeadFlow
 
 ## Guard dodany przez V9
@@ -5230,3 +5230,28 @@ Dodano guard i test dla zapisu wpłaty prowizji z CaseDetail:
 - Guard: scripts/check-stage232k-r3c-payment-api-status-db-safe-paid.cjs
 - Test: tests/stage232k-r3c-payment-api-status-db-safe-paid.test.cjs
 - Cel: zablokować regresję request commission+fully_paid -> response planned. Paid-like input ma zapisać DB-safe paid.
+
+<!-- STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK -->
+## 2026-06-22 22:00 Europe/Warsaw - STAGE232I3 close guards/tests
+
+Status: PASS_PUSHED / CLOSED / OWNER_SMOKE_OK
+
+Testy potwierdzone dla I3:
+- 
+ode scripts/check-stage232i3-owner-control-missing-blocker-cross-entity-integration.cjs: PASS.
+- 
+ode --test tests/stage232i3-owner-control-missing-blocker-cross-entity-integration.test.cjs: PASS 6/6.
+- 
+pm run build: PASS.
+- 
+pm run verify:closeflow:quiet: PASS.
+- git diff --check: PASS.
+- Manual smoke Damian: PASS.
+
+Zakres guarda:
+- Owner Control czyta cross-entity missing_item z Lead / Sprawa / Klient.
+- Rozpoznaje Blokade po locksProgress=true albo status=blocking_missing_item.
+- Wymaga source badge.
+- Blokuje duplikaty po sourceEntityType + sourceEntityId + item.id.
+- Nie dodaje SQL i nie wraca do case_items jako aktywnego zrodla.
+<!-- /STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK -->

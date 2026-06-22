@@ -1,4 +1,4 @@
-# CODEX_CONTEXT_INDEX - legacy bridge
+﻿# CODEX_CONTEXT_INDEX - legacy bridge
 
 Status: LEGACY_BRIDGE
 Read policy: REDIRECT_TO_AI_START
@@ -199,3 +199,32 @@ Zakres:
 Nie dotykano: SQL/RLS, Braki/Blokady, MissingItemsManagerDialog, Owner Control, Google Calendar, billing/trial, Node_RED_Kabelki.
 
 Kontekst: etap po zamkniętym STAGE232I4_R16Z_R10. Nie dotykać Braków/Blokad ani Owner Control.
+
+<!-- STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK -->
+## 2026-06-22 22:00 Europe/Warsaw - STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK
+
+Status: PASS_PUSHED / CLOSED / OWNER_SMOKE_OK
+
+Zamknieto:
+- STAGE232I3_OWNER_CONTROL_MISSING_BLOCKER_CROSS_ENTITY_INTEGRATION.
+
+Dowody:
+- Owner Control agreguje Braki/Blokady z Lead / Sprawa / Klient,
+- badge zrodla: [Lead], [Sprawa], [Klient],
+- dedup: sourceEntityType + sourceEntityId + item.id,
+- resolve dziala na zrodlowym item.id przez istniejaca akcje Today,
+- guard/test/build/verify/diff-check PASS,
+- manual smoke Damian: PASS.
+
+Nie ruszano:
+- runtime,
+- SQL/RLS,
+- finanse,
+- kalendarz,
+- billing,
+- MissingItemsManagerDialog,
+- LeadDetail/ClientDetail/CaseDetail runtime.
+
+Next po I3 i K/R3:
+- STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH.
+<!-- /STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK -->

@@ -1,4 +1,4 @@
-
+﻿
 
 ## STAGE232B_R4_IDEMPOTENT_REPAIR_2026_06_15
 
@@ -881,3 +881,32 @@ Plan testów:
 ## 2026-06-22 — STAGE232K_R3C_PAYMENT_API_STATUS_DB_SAFE_PAID_FIX
 - Plan: guard R3C, test R3C, R1/R2 regression, build, verify:closeflow:quiet, git diff --check.
 - Manual smoke po push: nowa wpłata prowizji 1000 PLN musi zmniejszyć pozostałą prowizję z 3000 do 2000. Response/GET może pokazać status paid, nie planned.
+
+<!-- STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK -->
+## 2026-06-22 22:00 Europe/Warsaw - STAGE232I3 Owner Control smoke/router sync
+
+Status: PASS_PUSHED / CLOSED / OWNER_SMOKE_OK
+
+Wyniki:
+- I3 guard: PASS.
+- I3 node test: PASS 6/6.
+- build: PASS.
+- verify:closeflow:quiet: PASS.
+- git diff --check: PASS.
+- manual smoke Damian: PASS.
+
+Manual smoke potwierdzony:
+- Today / Owner Control pokazuje [Lead], [Sprawa], [Klient].
+- Blokada pokazuje sie jako Blokada, nie zwykly Brak.
+- Otworz przy [Sprawa] prowadzi do CaseDetail.
+- Otworz przy [Klient] prowadzi do ClientDetail.
+- Uzupelnione na [Lead] usuwa wpis z Owner Control i LeadDetail.
+- Po F5 rozwiazany brak nie wraca.
+- Ten sam Brak nie pojawia sie dwa razy.
+
+Nie wykonywano:
+- zmian runtime,
+- SQL/RLS,
+- zmian finansow,
+- zmian kalendarza.
+<!-- /STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK -->

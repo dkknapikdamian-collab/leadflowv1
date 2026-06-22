@@ -1,4 +1,4 @@
-# 04_ETAPY_ROZWOJU_APLIKACJI - CloseFlow / LeadFlow
+﻿# 04_ETAPY_ROZWOJU_APLIKACJI - CloseFlow / LeadFlow
 
 Data utworzenia: 2026-06-12 23:59 Europe/Warsaw
 Ostatnia regulacja kolejki: 2026-06-15 Europe/Warsaw
@@ -2557,3 +2557,22 @@ Zakres:
 Nie dotykano: SQL/RLS, Braki/Blokady, MissingItemsManagerDialog, Owner Control, Google Calendar, billing/trial, Node_RED_Kabelki.
 
 Następny krok po PASS: owner smoke finansów prowizji i push.
+
+<!-- STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK -->
+## 2026-06-22 22:00 Europe/Warsaw - STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK
+
+Status: ZAMKNIETE / PASS_PUSHED / OWNER_SMOKE_OK
+
+Korekta kolejki:
+- STAGE232I2: PASS_PUSHED / CLOSED / MANUAL_SMOKE_OK.
+- STAGE232I3: PASS_PUSHED / CLOSED / OWNER_SMOKE_OK.
+- STAGE232I4_R16Z_R10_R3: PASS_PUSHED / CLOSED / OWNER_SMOKE_OK.
+- STAGE232K_R3C: PASS_PUSHED / CLOSED / OWNER_SMOKE_OK po commitach c395c393 i e26833fb, jesli lokalny smoke finansow zostal potwierdzony w run reportach.
+
+Aktualny next po I3 i K/R3:
+- STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH.
+
+Zasada:
+- Nie wdrazac STAGE232G tylko z czatu/run reportu. Ten wpis synchronizuje centralna kolejke.
+- Ten etap jest tylko dokumentacyjno-routerowy. Runtime nie byl ruszany.
+<!-- /STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK -->

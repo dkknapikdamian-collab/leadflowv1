@@ -1,4 +1,4 @@
-<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
+﻿<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
 # 11_RYZYKA_BUGI_I_DLUG_TECHNICZNY.md
 
 <!-- STAGE228F_R2_RUNTIME_COPY_CLEANUP -->
@@ -2328,3 +2328,20 @@ Ryzyko pozostałe: stare testowe rekordy utworzone przed R2 mają niepoprawny ty
 ## 2026-06-22 — STAGE232K_R3C_PAYMENT_API_STATUS_DB_SAFE_PAID_FIX
 - Ryzyko: istniejące błędne rekordy status=planned nie zostaną automatycznie przeliczone. Po wdrożeniu trzeba je usunąć albo skorygować osobnym, kontrolowanym krokiem.
 - Ryzyko UX: dropdown statusu wpłaty jest zbędny i ma zostać usunięty w kolejnym cleanupie, po stabilizacji backendu.
+
+<!-- STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK -->
+## 2026-06-22 22:00 Europe/Warsaw - STAGE232I3 close risk audit
+
+Status: PASS_PUSHED / CLOSED / OWNER_SMOKE_OK
+
+Ryzyka zamkniecia:
+- Nie traktowac I3 jako etapu runtime do ponownego wdrozenia. Helper Owner Control juz jest technicznie w repo.
+- Nie nadpisywac dzialajacych Brakow/Blokad w LeadDetail/ClientDetail/CaseDetail.
+- Nie wracac do case_items jako aktywnego zrodla Brakow.
+- Nie rozpisywac STAGE232G z luznej rozmowy; najpierw centralna kolejka musi wskazywac go po I3/K.
+- Kalendarz ma byc kolejnym etapem produktowym dopiero po potwierdzonym status-sync.
+
+Mitigacja:
+- Ten etap jest docs/router-only.
+- Runtime, SQL, finanse, billing i kalendarz nie byly ruszane.
+<!-- /STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK -->

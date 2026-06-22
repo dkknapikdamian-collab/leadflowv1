@@ -1,4 +1,4 @@
-# STAGE232I3_OWNER_CONTROL_MISSING_BLOCKER_CROSS_ENTITY_INTEGRATION
+﻿# STAGE232I3_OWNER_CONTROL_MISSING_BLOCKER_CROSS_ENTITY_INTEGRATION
 
 - data i godzina: 2026-06-18 19:56 Europe/Warsaw
 - canonical_name: CloseFlow / LeadFlow
@@ -74,3 +74,44 @@ Files read:
 - Blokada nie jest zgadywana po tytule; tylko status=blocking_missing_item albo blocksProgress=true.
 - Nie wolno wracac do case_items jako aktywnego zrodla.
 - Nie mieszac z finansami, kalendarzem, billingiem ani A35 redesignem.
+
+<!-- STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK -->
+## 2026-06-22 22:00 Europe/Warsaw - STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK
+
+Status: PASS_PUSHED / CLOSED / OWNER_SMOKE_OK
+
+Owner smoke Damian: PASS.
+
+Potwierdzone automatycznie przed zamknieciem:
+- commit e26833fb obecny na dev-rollout-freeze / origin/dev-rollout-freeze,
+- commit c395c393 obecny w historii,
+- 
+ode scripts/check-stage232i3-owner-control-missing-blocker-cross-entity-integration.cjs: PASS,
+- 
+ode --test tests/stage232i3-owner-control-missing-blocker-cross-entity-integration.test.cjs: PASS 6/6,
+- 
+pm run build: PASS,
+- 
+pm run verify:closeflow:quiet: PASS,
+- git diff --check: PASS.
+
+Zakres status-sync:
+- zamknieto I3 jako etap techniczny,
+- dopisano manual smoke Damiana jako PASS,
+- next po I3/K ustawiony na STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH,
+- nie ruszano runtime.
+
+Czego nie ruszano:
+- finanse / prowizje,
+- kalendarz runtime,
+- billing,
+- SQL / RLS,
+- MissingItemsManagerDialog,
+- ClientDetail runtime,
+- CaseDetail runtime,
+- LeadDetail runtime.
+
+Risk audit:
+- Najwieksze ryzyko bylo potraktowanie I3 jako swiezego runtime i nadpisanie dzialajacych Brakow/Blokad. Ten etap jest docs/router-only.
+- Nie rozpisywac STAGE232G do budowy, dopoki centralne pliki nie wskazuja tej kolejki po zamknietym I3/K.
+<!-- /STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK -->
