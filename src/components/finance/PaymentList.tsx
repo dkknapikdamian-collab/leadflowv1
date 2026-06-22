@@ -1,3 +1,4 @@
+export const STAGE232K_R1_PAYMENT_LIST_RECEIVES_FILTERED_COMMISSION_PAYMENTS = 'STAGE232K_R1_PAYMENT_LIST_RECEIVES_FILTERED_COMMISSION_PAYMENTS' as const;
 import type { FinancePayment, PaymentStatus, PaymentType } from '../../lib/finance/finance-types';
 import { normalizeFinancePayments } from '../../lib/finance/finance-normalize';
 import { getPaymentStatusLabel, getPaymentTypeLabel } from '../../lib/finance/finance-payment-labels';

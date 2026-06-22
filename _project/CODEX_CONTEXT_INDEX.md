@@ -182,3 +182,20 @@ LeadDetail missing checkbox real runtime fix: direct task/payload state override
 - closes: STAGE232I4_R16Z_R10 and R16Z close/status sync
 - next: STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH
 - no SQL, no ClientDetail runtime, no CaseDetail runtime, no Calendar, no billing, no Owner Control runtime
+
+<!-- STAGE232K_R1_CASE_COMMISSION_STATUS_DERIVED_FROM_PAYMENTS -->
+
+## 2026-06-22 Europe/Warsaw — STAGE232K_R1_CASE_COMMISSION_STATUS_DERIVED_FROM_PAYMENTS
+
+Status: APPLIED_PENDING_TEST_OR_PUSH.
+
+Zakres:
+- commissionStatus jest wyliczany z opłaconych wpłat prowizji, nie z ręcznego pola legacy,
+- edytor finansów nie pokazuje aktywnego selecta statusu prowizji,
+- buildCaseFinancePatch nie utrwala ręcznego paid/partially_paid,
+- lista Lista wpłat prowizji dostaje tylko płatności type=commission,
+- label brzmi Pozostało prowizji do zapłaty.
+
+Nie dotykano: SQL/RLS, Braki/Blokady, MissingItemsManagerDialog, Owner Control, Google Calendar, billing/trial, Node_RED_Kabelki.
+
+Kontekst: etap po zamkniętym STAGE232I4_R16Z_R10. Nie dotykać Braków/Blokad ani Owner Control.

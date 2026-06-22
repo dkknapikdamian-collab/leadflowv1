@@ -8,8 +8,8 @@ import {
   getCaseFinanceSummary,
   type CaseFinancePatchInput,
 } from '../../lib/finance/case-finance-source';
-import { normalizeCommissionMode, normalizeCommissionStatus, normalizeCurrency } from '../../lib/finance/finance-normalize';
-import type { CommissionMode, CommissionStatus } from '../../lib/finance/finance-types';
+import { normalizeCommissionMode, normalizeCurrency } from '../../lib/finance/finance-normalize';
+import type { CommissionMode } from '../../lib/finance/finance-types';
 import '../../styles/finance/closeflow-finance.css';
 
 export const CLOSEFLOW_FIN12_SHARED_CASE_FINANCE_EDITOR_DIALOG = 'CLOSEFLOW_FIN12_SHARED_CASE_FINANCE_EDITOR_DIALOG_V1' as const;
@@ -257,7 +257,7 @@ export function CaseFinanceEditorDialog({
             <div data-stage231h-r1b-shared-contract-value-preview="true"><span>Wartość transakcji/zlecenia:</span><strong>{preview.contractValue > 0 ? formatCaseFinanceMoney(preview.contractValue, preview.currency) : 'Nie ustawiono'}</strong></div>
             <div><span>Prowizja należna:</span><strong>{formatCaseFinanceMoney(preview.commissionAmount, preview.currency)}</strong></div>
             <div><span>Po wpłatach klienta pozostaje:</span><strong>{formatCaseFinanceMoney(preview.remainingAmount, preview.currency)}</strong></div>
-            <div data-cf-finance-tone="remaining"><span>Pozostało do zapłaty:</span><strong>{formatCaseFinanceMoney(preview.commissionRemainingAmount, preview.currency)}</strong></div>
+            <div data-cf-finance-tone="remaining"><span>Pozostało prowizji do zapłaty:</span><strong>{formatCaseFinanceMoney(preview.commissionRemainingAmount, preview.currency)}</strong></div>
           </div>
           <DialogFooter className="cf-finance-dialog__footer">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSaving || localSaving}>Anuluj</Button>

@@ -15,6 +15,7 @@ import type {
 
 export const CLOSEFLOW_FIN10_CASE_FINANCE_SOURCE_TRUTH = 'CLOSEFLOW_FIN10_CASE_FINANCE_SOURCE_TRUTH_V1' as const;
 export const CLOSEFLOW_FIN10_PAYMENTS_ARE_SOURCE_FOR_PAID_AMOUNTS = 'payments are the source of truth for paid and remaining amounts' as const;
+export const STAGE232K_R1_CASE_COMMISSION_STATUS_DERIVED_FROM_PAYMENTS = 'STAGE232K_R1_CASE_COMMISSION_STATUS_DERIVED_FROM_PAYMENTS' as const;
 
 export type CaseFinanceSource = 'payments' | 'case_legacy' | 'mixed';
 
@@ -265,9 +266,8 @@ function getLegacyCommissionPaidAmount(caseRecord: unknown): number {
   return readMoney(asRecord(caseRecord), ['commissionPaidAmount', 'commission_paid_amount']);
 }
 
-function deriveCommissionStatus(caseRecord: unknown, commissionAmount: number, commissionPaidAmount: number): CommissionStatus {
-  const explicit = normalizeCommissionStatus(asRecord(caseRecord).commissionStatus ?? asRecord(caseRecord).commission_status);
-  if (explicit !== 'not_set') return explicit;
+function deriveCommissionStatus(_caseRecord: unknown, commissionAmount: number, commissionPaidAmount: number): CommissionStatus {
+  void _caseRecord;
   if (commissionAmount <= 0) return 'not_set';
   if (commissionPaidAmount >= commissionAmount) return 'paid';
   if (commissionPaidAmount > 0) return 'partially_paid';

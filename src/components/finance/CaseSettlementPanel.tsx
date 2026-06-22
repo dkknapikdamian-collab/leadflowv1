@@ -42,6 +42,7 @@ export const FIN13_CASE_SETTLEMENT_PANEL_USES_SHARED_CASE_FINANCE_EDITOR = 'FIN-
 export const FIN14_CASE_SETTLEMENT_PAYMENT_TYPES = 'FIN-14_CASE_SETTLEMENT_PAYMENT_TYPES_DEPOSIT_PARTIAL_COMMISSION' as const;
 export const STAGE228R7_CASE_SETTLEMENT_COMMISSION_BALANCE_TRUTH = 'case settlement panel hides client-total remaining from main commission view' as const;
 export const STAGE228R7_R4_GUARD_SCOPE_PAID_AMOUNT_HOTFIX = 'paid_amount commission base label is allowed outside main commission balance view' as const;
+export const STAGE232K_R1_CASE_COMMISSION_STATUS_DERIVED_FROM_PAYMENTS_PANEL = 'STAGE232K_R1_CASE_COMMISSION_STATUS_DERIVED_FROM_PAYMENTS_PANEL' as const;
 const CLOSEFLOW_CASE_SETTLEMENT_EDIT_VALUES_V1 = 'case settlement exposes explicit value and commission edit action';
 void CLOSEFLOW_CASE_SETTLEMENT_EDIT_VALUES_V1;
 const CLOSEFLOW_CASE_SETTLEMENT_PAYMENT_TYPE_GUARD = 'type="partial" type="commission"';
@@ -237,6 +238,7 @@ export function CaseSettlementPanel({
   const [commissionOpen, setCommissionOpen] = useState(false);
 
   const normalizedPayments = useMemo(() => normalizeFinancePayments(payments as Record<string, unknown>[]), [payments]);
+  const commissionPayments = useMemo(() => normalizedPayments.filter((payment) => normalizePaymentType(payment.type) === 'commission'), [normalizedPayments]);
   const summary = useMemo(() => getCaseFinanceSummary(record, normalizedPayments), [record, normalizedPayments]);
   const currency = summary.currency;
   const contractValue = summary.contractValue;
@@ -289,7 +291,7 @@ export function CaseSettlementPanel({
         <Metric label="Prowizja" value={getCommissionLine(summary.commissionMode, summary.commissionRate, commissionAmount, currency)} tone="commission" />
         <Metric label="Prowizja należna" value={formatMoney(commissionAmount, currency)} tone="commission" />
         <Metric label="Wpłacono prowizji" value={formatMoney(commissionPaid, currency)} tone="paid" />
-        <Metric label="Pozostało do zapłaty" value={formatMoney(commissionRemaining, currency)} tone="remaining" />
+        <Metric label="Pozostało prowizji do zapłaty" value={formatMoney(commissionRemaining, currency)} tone="remaining" />
         <Metric label="Status prowizji" value={COMMISSION_STATUS_LABELS[commissionStatus] || commissionStatus} />
       </dl>
 
@@ -326,7 +328,7 @@ export function CaseSettlementPanel({
             commissionBase: normalizeCommissionBase(patch.commissionBase),
             commissionRate: patch.commissionRate == null ? null : Number(patch.commissionRate || 0),
             commissionAmount: patch.commissionAmount == null ? null : Number(patch.commissionAmount || 0),
-            commissionStatus: normalizeCommissionStatus(patch.commissionStatus),
+            commissionStatus: 'not_set',
             currency: normalizeCurrency(patch.currency),
           });
         }}
