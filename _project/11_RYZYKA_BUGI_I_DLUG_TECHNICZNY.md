@@ -2324,3 +2324,7 @@ R1B i R1C zostały wypchnięte mimo czerwonych guardów. R1D naprawia brak allow
 Manual smoke wykrył błąd: wpłata prowizji była zapisywana jako zwykła payment. Skutek: prowizja opłacona nie rosła w panelu sprawy ani w kliencie.
 
 Ryzyko pozostałe: stare testowe rekordy utworzone przed R2 mają niepoprawny typ i mogą wymagać ręcznego usunięcia/korekty albo osobnego etapu migracyjnego.
+
+## 2026-06-22 — STAGE232K_R3C_PAYMENT_API_STATUS_DB_SAFE_PAID_FIX
+- Ryzyko: istniejące błędne rekordy status=planned nie zostaną automatycznie przeliczone. Po wdrożeniu trzeba je usunąć albo skorygować osobnym, kontrolowanym krokiem.
+- Ryzyko UX: dropdown statusu wpłaty jest zbędny i ma zostać usunięty w kolejnym cleanupie, po stabilizacji backendu.

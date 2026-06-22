@@ -5225,3 +5225,8 @@ Dodano guard i test dla zapisu wpłaty prowizji z CaseDetail:
 - guard: scripts/check-stage232k-r2-commission-payment-write-and-client-refresh.cjs
 - test: tests/stage232k-r2-commission-payment-write-and-client-refresh.test.cjs
 - wymagane: R1 guard/test, R1D guard/test, R2 guard/test, build, verify:closeflow:quiet, git diff --check.
+
+## 2026-06-22 — STAGE232K_R3C_PAYMENT_API_STATUS_DB_SAFE_PAID_FIX
+- Guard: scripts/check-stage232k-r3c-payment-api-status-db-safe-paid.cjs
+- Test: tests/stage232k-r3c-payment-api-status-db-safe-paid.test.cjs
+- Cel: zablokować regresję request commission+fully_paid -> response planned. Paid-like input ma zapisać DB-safe paid.

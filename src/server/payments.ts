@@ -9,7 +9,7 @@ import { writeAuthErrorResponse } from './_supabase-auth.js';
 import { normalizePaymentContract } from '../lib/data-contract.js';
 
 const PAYMENT_TYPES = new Set(['deposit', 'partial', 'final', 'commission', 'refund', 'other']);
-const PAYMENT_STATUSES = new Set(['planned', 'due', 'paid', 'cancelled']);
+const PAYMENT_STATUSES = new Set(['planned', 'due', 'paid', 'cancelled']); // STAGE232K_R3C_PAYMENT_API_STATUS_DB_SAFE_PAID_FIX DB-safe statuses; paid-like inputs map to paid
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -37,6 +37,15 @@ function toIso(value: unknown) {
   const date = new Date(normalized);
   return Number.isNaN(date.getTime()) ? null : date.toISOString();
 }
+
+function normalizePaymentStatusForWriteStage232KR3C(statusValue: unknown, paidAtValue: unknown) {
+  const normalized = asText(statusValue);
+  const paidLikeStatuses = new Set(['paid', 'fully_paid', 'partially_paid', 'deposit_paid', 'confirmed', 'settled', 'completed', 'done']);
+  if (paidLikeStatuses.has(normalized)) return 'paid';
+  if (PAYMENT_STATUSES.has(normalized)) return normalized;
+  return toIso(paidAtValue) ? 'paid' : 'planned';
+}
+
 
 function isMissingPaymentsTableError(error: unknown) {
   const message = error instanceof Error ? error.message : String(error || '');
@@ -142,7 +151,7 @@ export default async function handler(req: any, res: any) {
         lead_id: leadId,
         case_id: caseId,
         type: normalizeEnum(body.type, PAYMENT_TYPES, 'partial'),
-        status: normalizeEnum(body.status, PAYMENT_STATUSES, 'planned'),
+        status: normalizePaymentStatusForWriteStage232KR3C(body.status, body.paidAt),
         amount: asNumber(body.amount),
         currency: normalizeCurrency(body.currency),
         paid_at: toIso(body.paidAt),
@@ -177,7 +186,7 @@ export default async function handler(req: any, res: any) {
       if (body.leadId !== undefined) payload.lead_id = leadId;
       if (body.caseId !== undefined) payload.case_id = caseId;
       if (body.type !== undefined) payload.type = normalizeEnum(body.type, PAYMENT_TYPES, 'partial');
-      if (body.status !== undefined) payload.status = normalizeEnum(body.status, PAYMENT_STATUSES, 'planned');
+      if (body.status !== undefined || body.paidAt !== undefined) payload.status = normalizePaymentStatusForWriteStage232KR3C(body.status, body.paidAt);
       if (body.amount !== undefined) payload.amount = asNumber(body.amount);
       if (body.currency !== undefined) payload.currency = normalizeCurrency(body.currency);
       if (body.paidAt !== undefined) payload.paid_at = toIso(body.paidAt);

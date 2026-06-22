@@ -877,3 +877,7 @@ Plan testów:
 3. npm run build
 4. npm run verify:closeflow:quiet
 5. Manual smoke: dodać nową wpłatę prowizji 1000 PLN i potwierdzić sprawę oraz klienta.
+
+## 2026-06-22 — STAGE232K_R3C_PAYMENT_API_STATUS_DB_SAFE_PAID_FIX
+- Plan: guard R3C, test R3C, R1/R2 regression, build, verify:closeflow:quiet, git diff --check.
+- Manual smoke po push: nowa wpłata prowizji 1000 PLN musi zmniejszyć pozostałą prowizję z 3000 do 2000. Response/GET może pokazać status paid, nie planned.
