@@ -2306,3 +2306,9 @@ Zakres:
 Nie dotykano: SQL/RLS, Braki/Blokady, MissingItemsManagerDialog, Owner Control, Google Calendar, billing/trial, Node_RED_Kabelki.
 
 Ryzyko: stare commissionStatus=paid/partially_paid nie może maskować braku wpłat prowizji.
+
+<!-- STAGE232K_R1C_CASE_COMMISSION_STATUS_RED_GUARD_REPAIR -->
+
+## 2026-06-22 12:20 Europe/Warsaw — STAGE232K_R1C ryzyko
+
+R1B został wypchnięty mimo czerwonych testów/guardów. Ten wpis koryguje procesowo etap: nie traktować R1B jako zamkniętego PASS. Domknięcie dopiero po R1C PASS i nowym commicie.

@@ -5195,3 +5195,11 @@ Nie dotykano: SQL/RLS, Braki/Blokady, MissingItemsManagerDialog, Owner Control, 
 
 Guard: scripts/check-stage232k-r1-case-commission-status-derived-from-payments.cjs.
 Test: tests/stage232k-r1-case-commission-status-derived-from-payments.test.cjs.
+
+<!-- STAGE232K_R1C_CASE_COMMISSION_STATUS_RED_GUARD_REPAIR -->
+
+## 2026-06-22 12:20 Europe/Warsaw — STAGE232K_R1C guard/test repair
+
+- Naprawiono składnię guarda STAGE232K_R1.
+- Doprecyzowano testy: edytor nie może mieć manualnych opcji paid/partially_paid, a lista "Lista wpłat prowizji" musi dostawać commissionPayments.
+- Dodano scope STAGE232K do CF-RUNTIME-00 allowlist.

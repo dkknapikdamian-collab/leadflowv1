@@ -396,7 +396,7 @@ export function buildCaseFinancePatch(input: CaseFinancePatchInput): Record<stri
     commissionRate,
     // FIN-10: derived commission cache only, not paid/remaining source of truth.
     commissionAmount,
-    commissionStatus: normalizeCommissionStatus(input.commissionStatus),
+    commissionStatus: 'not_set',
   };
 }
 

@@ -851,3 +851,14 @@ Zakres:
 Nie dotykano: SQL/RLS, Braki/Blokady, MissingItemsManagerDialog, Owner Control, Google Calendar, billing/trial, Node_RED_Kabelki.
 
 Manual smoke: sprawdzić prowizję 100000 PLN x 3%, wpłatę prowizji 1000, dopłatę 2000, zwykłą wpłatę klienta i planowaną wpłatę prowizji.
+
+<!-- STAGE232K_R1C_CASE_COMMISSION_STATUS_RED_GUARD_REPAIR -->
+
+## 2026-06-22 12:20 Europe/Warsaw — STAGE232K_R1C test plan
+
+Do uruchomienia:
+- node scripts/check-stage232k-r1-case-commission-status-derived-from-payments.cjs
+- node --test tests/stage232k-r1-case-commission-status-derived-from-payments.test.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check

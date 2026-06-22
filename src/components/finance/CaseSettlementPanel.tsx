@@ -303,7 +303,7 @@ export function CaseSettlementPanel({
       <PaymentList
         title="Lista wpłat prowizji"
         emptyText="Brak zapisanych wpłat prowizji dla tej sprawy."
-        payments={normalizedPayments}
+        payments={commissionPayments}
       />
 
       <CaseFinancePaymentDialog

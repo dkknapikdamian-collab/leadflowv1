@@ -9,7 +9,7 @@ import {
   type CaseFinancePatchInput,
 } from '../../lib/finance/case-finance-source';
 import { normalizeCommissionMode, normalizeCurrency } from '../../lib/finance/finance-normalize';
-import type { CommissionMode } from '../../lib/finance/finance-types';
+import type { CommissionMode, CommissionStatus } from '../../lib/finance/finance-types';
 import '../../styles/finance/closeflow-finance.css';
 
 export const CLOSEFLOW_FIN12_SHARED_CASE_FINANCE_EDITOR_DIALOG = 'CLOSEFLOW_FIN12_SHARED_CASE_FINANCE_EDITOR_DIALOG_V1' as const;
@@ -17,6 +17,7 @@ export const CLOSEFLOW_FIN12_SHARED_CASE_FINANCE_EDITOR_DIALOG = 'CLOSEFLOW_FIN1
 export const CLOSEFLOW_FIN13_CLIENT_USES_CASE_FINANCE_EDITOR_DIALOG = 'CLOSEFLOW_FIN13_CLIENT_USES_CASE_FINANCE_EDITOR_DIALOG_V1' as const;
 export const STAGE220A35_TRANSACTION_VALUE_COMMISSION_COPY = 'transaction value is the commission basis only for percent model; fixed commission is entered directly' as const;
 export const STAGE220A36_COMMISSION_INPUT_MODEL_SPLIT = 'commission input separates fixed commission value from percent transaction basis' as const;
+export const STAGE232K_R1_CASE_COMMISSION_STATUS_DERIVED_FROM_PAYMENTS_EDITOR = 'STAGE232K_R1_CASE_COMMISSION_STATUS_DERIVED_FROM_PAYMENTS_EDITOR' as const;
 
 export type CaseFinancePatch = CaseFinancePatchInput & Record<string, unknown>;
 
@@ -132,7 +133,7 @@ export function CaseFinanceEditorDialog({
       commissionBase: 'contract_value',
       commissionRate,
       commissionAmount,
-      commissionStatus: form.commissionStatus,
+      commissionStatus: 'not_set',
     }, payments);
     return summary;
   }, [caseRecord, form, payments]);
@@ -162,7 +163,7 @@ export function CaseFinanceEditorDialog({
       commissionBase: 'contract_value',
       commissionRate,
       commissionAmount,
-      commissionStatus: normalizeCommissionStatus(form.commissionStatus),
+      commissionStatus: 'not_set',
     }) as CaseFinancePatch;
     setLocalSaving(true);
     try {
@@ -237,21 +238,11 @@ export function CaseFinanceEditorDialog({
                 onChange={(event) => setForm((current) => ({ ...current, currency: event.target.value.toUpperCase() }))}
               />
             </label>
-            <label className="cf-finance-field cf-finance-field--status">
+            <div className="cf-finance-field cf-finance-field--status" data-stage232k-r1-commission-status-readonly="true">
               <span>Status prowizji</span>
-              <select
-                className="cf-finance-input"
-                value={form.commissionStatus}
-                onChange={(event) => setForm((current) => ({ ...current, commissionStatus: normalizeCommissionStatus(event.target.value) }))}
-              >
-                <option value="not_set">Nieustawiona</option>
-                <option value="expected">Oczekiwana</option>
-                <option value="due">Należna</option>
-                <option value="partially_paid">Częściowo zapłacona</option>
-                <option value="paid">Zapłacona</option>
-                <option value="overdue">Zaległa</option>
-              </select>
-            </label>
+              <div className="cf-finance-input cf-finance-input--readonly" aria-readonly="true">{preview.commissionStatus}</div>
+              <small>Status prowizji jest wyliczany automatycznie z wpłat prowizji.</small>
+            </div>
           </div>
           <div className="cf-finance-editor-preview" aria-label="Podgląd finansów sprawy">
             <div data-stage231h-r1b-shared-contract-value-preview="true"><span>Wartość transakcji/zlecenia:</span><strong>{preview.contractValue > 0 ? formatCaseFinanceMoney(preview.contractValue, preview.currency) : 'Nie ustawiono'}</strong></div>
