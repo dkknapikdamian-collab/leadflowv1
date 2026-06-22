@@ -254,6 +254,8 @@ const STAGE220A27B_R2_PAYMENT_HISTORY_MODAL_LIGHT = 'case payment history modal 
 void STAGE220A27B_R2_PAYMENT_HISTORY_MODAL_LIGHT;
 const STAGE220A27B_R3_PAYMENT_HISTORY_ONE_LINE = 'case payment history modal rows show payment date and value in one line without redundant paid status';
 void STAGE220A27B_R3_PAYMENT_HISTORY_ONE_LINE;
+const STAGE232K_R2_COMMISSION_PAYMENT_WRITE_AND_CLIENT_REFRESH = 'STAGE232K_R2_COMMISSION_PAYMENT_WRITE_AND_CLIENT_REFRESH';
+void STAGE232K_R2_COMMISSION_PAYMENT_WRITE_AND_CLIENT_REFRESH;
 const STAGE220A28_PAYMENT_HISTORY_MODAL_VST = 'payment history and correction modals use CloseFlow modal visual source truth without helper copy or redundant status';
 void STAGE220A28_PAYMENT_HISTORY_MODAL_VST;
 const STAGE220A30C_HISTORY_MODAL_LEGACY_GUARD_TOKENS_HOTFIX = 'readable finance history modal keeps A27B R3 and A28 guard source classes while using A30 source truth styling';
@@ -579,6 +581,36 @@ function getCasePaymentSignedAmountStage220A27(payment: CasePaymentRecord) {
 function canCorrectCasePaymentStage220A27(payment: CasePaymentRecord) {
   const type = getCasePaymentTypeStage220A27(payment);
   return type !== 'refund' && getPaymentAmount(payment) > 0;
+}
+
+function normalizeCaseFinancePaymentTypeStage232K_R2(value: unknown): 'payment' | 'partial' | 'commission' | 'deposit' | 'final' | 'refund' {
+  const normalized = String(value || '').trim().toLowerCase();
+  if (normalized === 'commission') return 'commission';
+  if (normalized === 'deposit') return 'deposit';
+  if (normalized === 'final') return 'final';
+  if (normalized === 'refund') return 'refund';
+  if (normalized === 'partial') return 'partial';
+  return 'payment';
+}
+
+function normalizeCaseFinancePaymentStatusStage232K_R2(value: unknown): string {
+  const normalized = String(value || '').trim().toLowerCase();
+  if (normalized === 'paid') return 'fully_paid';
+  if (['fully_paid', 'partially_paid', 'deposit_paid', 'confirmed', 'settled', 'completed', 'done'].includes(normalized)) return normalized;
+  if (['pending', 'planned', 'awaiting_payment', 'not_started', 'due', 'open'].includes(normalized)) return normalized;
+  return 'fully_paid';
+}
+
+function getCaseClientIdStage232K_R2(caseData: CaseRecord | null | undefined): string | null {
+  const value = (caseData as any)?.clientId ?? (caseData as any)?.client_id ?? null;
+  const normalized = String(value || '').trim();
+  return normalized || null;
+}
+
+function getCaseLeadIdStage232K_R2(caseData: CaseRecord | null | undefined): string | null {
+  const value = (caseData as any)?.leadId ?? (caseData as any)?.lead_id ?? null;
+  const normalized = String(value || '').trim();
+  return normalized || null;
 }
 
 const STAGE231H_R1C_COST_CORRECTION_MODAL = 'CaseDetail correction modal includes payments and editable/deletable costs with red cost rows';
@@ -1776,23 +1808,56 @@ export default function CaseDetail() {
       toast.error('Podaj kwotę płatności');
       return;
     }
+
+    const paymentType = normalizeCaseFinancePaymentTypeStage232K_R2(financePaymentForm.type);
+    const paymentStatus = normalizeCaseFinancePaymentStatusStage232K_R2(financePaymentForm.status);
+    const paymentCurrency = fin11Currency(financePaymentForm.currency || caseFinanceSourceStage220A26.currency || caseData.currency || 'PLN');
+    const paidAt = fin11IsoFromLocal(financePaymentForm.paidAt);
+    const dueAt = fin11IsoFromLocal(financePaymentForm.dueAt);
+    const note = financePaymentForm.note.trim();
+
+    const paymentPayload = {
+      caseId: caseData.id,
+      clientId: getCaseClientIdStage232K_R2(caseData),
+      leadId: getCaseLeadIdStage232K_R2(caseData),
+      type: paymentType,
+      status: paymentStatus,
+      amount,
+      currency: paymentCurrency,
+      paidAt,
+      dueAt,
+      note,
+    };
+
     setIsFinanceSaving(true);
     try {
-      await createPaymentInSupabase({
+      const created = await createPaymentInSupabase(paymentPayload as any);
+      const localPayment = { ...paymentPayload, ...(created || {}) } as CasePaymentRecord;
+      setPayments((previous) => [localPayment, ...previous]);
+      setCasePayments((previous) => [localPayment, ...previous] as CasePaymentRecord[]);
+      await insertActivityToSupabase({
         caseId: caseData.id,
-        clientId: caseData.clientId || null,
-        leadId: caseData.leadId || null,
-        type: 'payment',
-        status: 'fully_paid',
-        amount,
-        currency: fin11Currency(financePaymentForm.currency),
-        paidAt: fin11IsoFromLocal(financePaymentForm.paidAt),
-        dueAt: fin11IsoFromLocal(financePaymentForm.dueAt),
-        note: financePaymentForm.note.trim(),
-      });
+        clientId: getCaseClientIdStage232K_R2(caseData),
+        leadId: getCaseLeadIdStage232K_R2(caseData),
+        actorType: 'operator',
+        eventType: 'payment_added',
+        payload: {
+          title: paymentType === 'commission' ? 'Dodano wpłatę prowizji' : 'Dodano wpłatę',
+          paymentType,
+          type: paymentType,
+          status: paymentStatus,
+          amount,
+          currency: paymentCurrency,
+          paidAt,
+          dueAt,
+          note,
+          source: STAGE232K_R2_COMMISSION_PAYMENT_WRITE_AND_CLIENT_REFRESH,
+        },
+      } as any).catch(() => null);
       await reloadCaseFinanceData(caseData);
       setIsFinancePaymentOpen(false);
-      toast.success(financePaymentForm.type === 'commission' ? 'Dodano płatność prowizji' : 'Dodano wpłatę');
+      setFinancePaymentForm(buildFin11PaymentState('partial', paymentCurrency));
+      toast.success(paymentType === 'commission' ? 'Dodano wpłatę prowizji' : 'Dodano wpłatę');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Nie udało się dodać płatności');
     } finally {
@@ -1895,8 +1960,8 @@ export default function CaseDetail() {
 
     const correctedPaidAt = fin11IsoFromLocal(paymentCorrectionFormStage220A27.paidAt) || new Date().toISOString();
     const currency = fin11Currency(paymentCorrectionTargetStage220A27.currency || caseFinanceSourceStage220A26.currency || 'PLN');
-    const paymentType = 'payment';
-    const paymentStatus = 'fully_paid';
+    const paymentType = normalizeCaseFinancePaymentTypeStage232K_R2(paymentCorrectionTargetStage220A27.type || (paymentCorrectionTargetStage220A27 as any).paymentType || (paymentCorrectionTargetStage220A27 as any).payment_type);
+    const paymentStatus = normalizeCaseFinancePaymentStatusStage232K_R2(paymentCorrectionTargetStage220A27.status || (paymentCorrectionTargetStage220A27 as any).paymentStatus || (paymentCorrectionTargetStage220A27 as any).payment_status || 'fully_paid');
 
     try {
       setPaymentCorrectionSubmittingStage220A27(true);
@@ -1926,7 +1991,7 @@ export default function CaseDetail() {
         actorType: 'operator',
         eventType: 'payment_updated',
         payload: {
-          title: 'Skorygowano wpłatę prowizji',
+          title: paymentType === 'commission' ? 'Skorygowano wpłatę prowizji' : 'Skorygowano wpłatę',
           paymentId,
           paymentType,
           amount,
@@ -1940,9 +2005,9 @@ export default function CaseDetail() {
       await reloadCaseFinanceData(caseData);
       setPaymentCorrectionTargetStage220A27(null);
       setPaymentCorrectionFormStage220A27({ amount: '', paidAt: '', reason: '' });
-      toast.success('Wpłata prowizji skorygowana');
+      toast.success(paymentType === 'commission' ? 'Wpłata prowizji skorygowana' : 'Wpłata skorygowana');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Nie udało się skorygować wpłaty prowizji.');
+      toast.error(error instanceof Error ? error.message : 'Nie udało się skorygować wpłaty.');
     } finally {
       setPaymentCorrectionSubmittingStage220A27(false);
     }
@@ -4201,7 +4266,7 @@ async function handleConfirmDeleteCaseRecord() {
                 <div data-cf-finance-tone="transaction" data-stage220a31-finance-transaction-value="true"><dt>Wartość transakcji</dt><dd>{formatMoney(caseFinanceSourceStage220A26.contractValue, caseFinanceSourceStage220A26.currency)}</dd></div>
                 <div data-cf-finance-tone="commission" data-stage220a31-finance-commission-due="true"><dt>Prowizja należna</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
                 <div data-cf-finance-tone="paid" data-stage220a31-finance-commission-paid="true"><dt>Wpłacono prowizji</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionPaidAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
-                <div data-cf-finance-tone="remaining" data-stage220a31-finance-commission-left="true"><dt>Pozostało do zapłaty</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionRemainingAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div data-cf-finance-tone="remaining" data-stage220a31-finance-commission-left="true"><dt>Pozostało prowizji do zapłaty</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionRemainingAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
                 <div data-cf-finance-tone="cost" data-stage231d0d-r4-settlement-costs-incurred="true"><dt>Koszty poniesione</dt><dd>{formatMoney(caseCostsSummaryStage231D2.costsIncurredAmount, caseCostsSummaryStage231D2.currency)}</dd></div>
                 <div data-cf-finance-tone="cost" data-stage231d0d-r4-settlement-costs-to-reimburse="true"><dt>Koszty do zwrotu</dt><dd>{formatMoney(caseCostsSummaryStage231D2.costsToReimburseAmount, caseCostsSummaryStage231D2.currency)}</dd></div>
                 <div data-cf-finance-tone="reimbursed" data-stage231d0d-r4-settlement-costs-reimbursed="true"><dt>Koszty zwrócone</dt><dd>{formatMoney(caseCostsSummaryStage231D2.costsReimbursedAmount, caseCostsSummaryStage231D2.currency)}</dd></div>

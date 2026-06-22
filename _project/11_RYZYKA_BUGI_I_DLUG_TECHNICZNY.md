@@ -2318,3 +2318,9 @@ R1B został wypchnięty mimo czerwonych testów/guardów. Ten wpis koryguje proc
 ## 2026-06-22 Europe/Warsaw — ryzyko po R1B/R1C
 
 R1B i R1C zostały wypchnięte mimo czerwonych guardów. R1D naprawia brak allowlisty CF-RUNTIME-00 i wymusza push tylko po PASS.
+
+## 2026-06-22 Europe/Warsaw — STAGE232K_R2_COMMISSION_PAYMENT_WRITE_AND_CLIENT_REFRESH
+
+Manual smoke wykrył błąd: wpłata prowizji była zapisywana jako zwykła payment. Skutek: prowizja opłacona nie rosła w panelu sprawy ani w kliencie.
+
+Ryzyko pozostałe: stare testowe rekordy utworzone przed R2 mają niepoprawny typ i mogą wymagać ręcznego usunięcia/korekty albo osobnego etapu migracyjnego.

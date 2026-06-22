@@ -5218,3 +5218,10 @@ Komendy:
 - npm run build
 - npm run verify:closeflow:quiet
 - git diff --check
+
+## 2026-06-22 Europe/Warsaw — STAGE232K_R2_COMMISSION_PAYMENT_WRITE_AND_CLIENT_REFRESH
+
+Dodano guard i test dla zapisu wpłaty prowizji z CaseDetail:
+- guard: scripts/check-stage232k-r2-commission-payment-write-and-client-refresh.cjs
+- test: tests/stage232k-r2-commission-payment-write-and-client-refresh.test.cjs
+- wymagane: R1 guard/test, R1D guard/test, R2 guard/test, build, verify:closeflow:quiet, git diff --check.

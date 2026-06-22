@@ -868,3 +868,12 @@ Do uruchomienia:
 ## 2026-06-22 Europe/Warsaw — STAGE232K_R1D test plan
 
 R1D musi przejść pełny zestaw: STAGE232K_R1 guard, STAGE232K_R1 test, STAGE232K_R1D guard, STAGE232K_R1D test, build, verify quiet, diff check.
+
+## 2026-06-22 Europe/Warsaw — STAGE232K_R2_COMMISSION_PAYMENT_WRITE_AND_CLIENT_REFRESH
+
+Plan testów:
+1. node scripts/check-stage232k-r2-commission-payment-write-and-client-refresh.cjs
+2. node --test tests/stage232k-r2-commission-payment-write-and-client-refresh.test.cjs
+3. npm run build
+4. npm run verify:closeflow:quiet
+5. Manual smoke: dodać nową wpłatę prowizji 1000 PLN i potwierdzić sprawę oraz klienta.

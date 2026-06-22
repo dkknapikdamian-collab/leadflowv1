@@ -388,6 +388,11 @@ const allowedChangePrefixes = [
   '_project/obsidian_updates/2026-06-22_STAGE232K_R1_CASE_COMMISSION_STATUS_DERIVED_FROM_PAYMENTS.md',
   '_project/runs/STAGE232K_R1D_CF_RUNTIME_ALLOWLIST_REPAIR.md',
   '_project/obsidian_updates/2026-06-22_STAGE232K_R1D_CF_RUNTIME_ALLOWLIST_REPAIR.md',
+  // STAGE232K_R2_COMMISSION_PAYMENT_WRITE_AND_CLIENT_REFRESH
+  'scripts/check-stage232k-r2-commission-payment-write-and-client-refresh.cjs',
+  'tests/stage232k-r2-commission-payment-write-and-client-refresh.test.cjs',
+  '_project/runs/STAGE232K_R2_COMMISSION_PAYMENT_WRITE_AND_CLIENT_REFRESH.md',
+  '_project/obsidian_updates/2026-06-22_STAGE232K_R2_COMMISSION_PAYMENT_WRITE_AND_CLIENT_REFRESH.md',
 ];
 
 function gitList(args) {
