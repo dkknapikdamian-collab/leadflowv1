@@ -5203,3 +5203,18 @@ Test: tests/stage232k-r1-case-commission-status-derived-from-payments.test.cjs.
 - Naprawiono składnię guarda STAGE232K_R1.
 - Doprecyzowano testy: edytor nie może mieć manualnych opcji paid/partially_paid, a lista "Lista wpłat prowizji" musi dostawać commissionPayments.
 - Dodano scope STAGE232K do CF-RUNTIME-00 allowlist.
+
+<!-- STAGE232K_R1D_CF_RUNTIME_ALLOWLIST_REPAIR -->
+
+## 2026-06-22 Europe/Warsaw — STAGE232K_R1D_CF_RUNTIME_ALLOWLIST_REPAIR
+
+Dodano guard i test naprawiający czerwony CF-RUNTIME-00 po STAGE232K_R1C.
+
+Komendy:
+- node scripts/check-stage232k-r1-case-commission-status-derived-from-payments.cjs
+- node --test tests/stage232k-r1-case-commission-status-derived-from-payments.test.cjs
+- node scripts/check-stage232k-r1d-cf-runtime-allowlist-repair.cjs
+- node --test tests/stage232k-r1d-cf-runtime-allowlist-repair.test.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check

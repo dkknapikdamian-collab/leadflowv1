@@ -862,3 +862,9 @@ Do uruchomienia:
 - npm run build
 - npm run verify:closeflow:quiet
 - git diff --check
+
+<!-- STAGE232K_R1D_CF_RUNTIME_ALLOWLIST_REPAIR -->
+
+## 2026-06-22 Europe/Warsaw — STAGE232K_R1D test plan
+
+R1D musi przejść pełny zestaw: STAGE232K_R1 guard, STAGE232K_R1 test, STAGE232K_R1D guard, STAGE232K_R1D test, build, verify quiet, diff check.

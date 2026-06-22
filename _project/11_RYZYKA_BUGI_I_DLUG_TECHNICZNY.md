@@ -2312,3 +2312,9 @@ Ryzyko: stare commissionStatus=paid/partially_paid nie może maskować braku wp�
 ## 2026-06-22 12:20 Europe/Warsaw — STAGE232K_R1C ryzyko
 
 R1B został wypchnięty mimo czerwonych testów/guardów. Ten wpis koryguje procesowo etap: nie traktować R1B jako zamkniętego PASS. Domknięcie dopiero po R1C PASS i nowym commicie.
+
+<!-- STAGE232K_R1D_CF_RUNTIME_ALLOWLIST_REPAIR -->
+
+## 2026-06-22 Europe/Warsaw — ryzyko po R1B/R1C
+
+R1B i R1C zostały wypchnięte mimo czerwonych guardów. R1D naprawia brak allowlisty CF-RUNTIME-00 i wymusza push tylko po PASS.

@@ -374,6 +374,20 @@ const allowedChangePrefixes = [
   'tests/stage232i4-r16z-r10-r3-guard-scope-status-sync.test.cjs',
   '_project/runs/STAGE232I4_R16Z_R10_R3_GUARD_SCOPE_STATUS_SYNC_AND_OWNER_SMOKE_CLOSE.md',
   '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R10_R3_GUARD_SCOPE_STATUS_SYNC_AND_OWNER_SMOKE_CLOSE.md',
+
+  // STAGE232K_R1D_CF_RUNTIME_ALLOWLIST_REPAIR
+  'src/lib/finance/case-finance-source.ts',
+  'src/components/finance/CaseFinanceEditorDialog.tsx',
+  'src/components/finance/CaseSettlementPanel.tsx',
+  'src/components/finance/PaymentList.tsx',
+  'scripts/check-stage232k-r1-case-commission-status-derived-from-payments.cjs',
+  'tests/stage232k-r1-case-commission-status-derived-from-payments.test.cjs',
+  'scripts/check-stage232k-r1d-cf-runtime-allowlist-repair.cjs',
+  'tests/stage232k-r1d-cf-runtime-allowlist-repair.test.cjs',
+  '_project/runs/STAGE232K_R1_CASE_COMMISSION_STATUS_DERIVED_FROM_PAYMENTS.md',
+  '_project/obsidian_updates/2026-06-22_STAGE232K_R1_CASE_COMMISSION_STATUS_DERIVED_FROM_PAYMENTS.md',
+  '_project/runs/STAGE232K_R1D_CF_RUNTIME_ALLOWLIST_REPAIR.md',
+  '_project/obsidian_updates/2026-06-22_STAGE232K_R1D_CF_RUNTIME_ALLOWLIST_REPAIR.md',
 ];
 
 function gitList(args) {
