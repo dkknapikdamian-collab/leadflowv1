@@ -5255,3 +5255,19 @@ Zakres guarda:
 - Blokuje duplikaty po sourceEntityType + sourceEntityId + item.id.
 - Nie dodaje SQL i nie wraca do case_items jako aktywnego zrodla.
 <!-- /STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK -->
+
+<!-- STAGE232G_R0_CALENDAR_BRIEF_CORRECTIONS_2026_06_22_GUARDS -->
+## 2026-06-22 - STAGE232G_R0 calendar audit guard
+
+Guard:
+- `node scripts/check-stage232g-calendar-operational-source-truth-r0-audit.cjs`
+
+Test:
+- `node --test tests/stage232g-calendar-operational-source-truth-r0-audit.test.cjs`
+
+Zakres guarda:
+- sprawdza kompletnosc raportu R0;
+- wymaga STATUS_PRECONDITION, LEAD_SHADOW_ENTRY_STATUS, TODAY_CALENDAR_PARITY_STATUS, ACTION_FIELD_MATRIX, LEGACY_AND_ACTIVE_DOM_NORMALIZERS_FOUND, GOOGLE_CALENDAR_BACKGROUND_SYNC_STATUS i R1_DECISION_GATE;
+- blokuje raport, ktory udaje runtime PASS bez audytu;
+- blokuje zmiany runtime w diffie R0.
+<!-- /STAGE232G_R0_CALENDAR_BRIEF_CORRECTIONS_2026_06_22_GUARDS -->

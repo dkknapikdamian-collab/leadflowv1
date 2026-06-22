@@ -402,6 +402,11 @@ const allowedChangePrefixes = [
   '_project/06_GUARDS_AND_TESTS.md',
   '_project/09_TESTY_DO_WYKONANIA_I_WYNIKI.md',
   '_project/11_RYZYKA_BUGI_I_DLUG_TECHNICZNY.md',
+  // STAGE232G_R0_CALENDAR_AUDIT_SCOPE_ALLOWLIST
+  '_project/runs/STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH_R0_AUDIT_AND_CONTRACT.md',
+  '_project/obsidian_updates/2026-06-22_STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH_R0_AUDIT_AND_CONTRACT.md',
+  'scripts/check-stage232g-calendar-operational-source-truth-r0-audit.cjs',
+  'tests/stage232g-calendar-operational-source-truth-r0-audit.test.cjs',
 ];
 
 function gitList(args) {

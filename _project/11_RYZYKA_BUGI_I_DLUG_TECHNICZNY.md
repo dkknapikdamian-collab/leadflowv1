@@ -2345,3 +2345,20 @@ Mitigacja:
 - Ten etap jest docs/router-only.
 - Runtime, SQL, finanse, billing i kalendarz nie byly ruszane.
 <!-- /STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK -->
+
+<!-- STAGE232G_R0_CALENDAR_BRIEF_CORRECTIONS_2026_06_22_RISKS -->
+## 2026-06-22 Europe/Warsaw - STAGE232G_R0 calendar source-truth risk audit
+
+Ryzyka:
+- BLOCKER: centralne routery moga nadal wskazywac stare etapy I2/I3/K; R0 nie moze startowac bez status precheck.
+- HIGH: Calendar ma lead shadow entries, wiec model events/tasks-only jest niepelny.
+- HIGH: TodayStable ma wlasna logike dat/reschedule i nie wolno zakladac zgodnosci z Calendar bez audytu.
+- HIGH: aktywne DOM normalizatory miesiaca/selected day moga ukrywac realny stan UI lub dawac falszywe PASS.
+- MEDIUM: akcje edit/complete/restore moga zapisywac inny zestaw pol niz +1H/+1D/+1W.
+- MEDIUM: Google Calendar background sync moze zmienic dane po pierwszym renderze, mimo ze R0 nie dotyczy integracji Google.
+
+Mitigacja:
+- R0 jest docs/audit only;
+- R1 runtime fix dopiero po decyzji Damiana;
+- guard R0 blokuje runtime diff.
+<!-- /STAGE232G_R0_CALENDAR_BRIEF_CORRECTIONS_2026_06_22_RISKS -->

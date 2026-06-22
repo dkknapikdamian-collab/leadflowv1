@@ -112,4 +112,20 @@ Jesli etap jest tylko w czacie, run reportcie, payloadzie albo luznej notatce, o
 
 ## Nastepny krok operacyjny
 
-Najblizszy etap: `STAGE232I2_CLIENT_DETAIL_MISSING_BLOCKER_RUNTIME`.
+Najblizszy etap roboczy: `STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH_R0_AUDIT_AND_CONTRACT` po status precheck I3/K/routerow. Stary wpis I2 jest oznaczony jako STALE przez korekte STAGE232G_R0.
+
+<!-- STAGE232G_R0_CALENDAR_BRIEF_CORRECTIONS_2026_06_22_00_START -->
+## 2026-06-22 Europe/Warsaw - STAGE232G_R0 router/status precheck correction
+
+Status: DOCS_ONLY / DO_SPRAWDZENIA_PRZEZ_DAMIANA
+
+Korekta:
+- stary wpis "Najblizszy etap: STAGE232I2" jest traktowany jako STALE, dopoki lokalny repo/Obsidian sync nie potwierdzi aktualnych statusow I3/K;
+- nastepny dopuszczalny ruch nie jest runtime fix, tylko:
+  `STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH_R0_AUDIT_AND_CONTRACT`;
+- R0 ma najpierw sprawdzic status precondition dla I3/K/00_START/_project/04/Obsidian 04;
+- R0 nie moze zmieniac runtime Calendar/Today/Lead/Case/Client.
+
+Nastepny krok roboczy:
+`STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH_R0_AUDIT_AND_CONTRACT` po status precheck i po akceptacji Damiana.
+<!-- /STAGE232G_R0_CALENDAR_BRIEF_CORRECTIONS_2026_06_22_00_START -->

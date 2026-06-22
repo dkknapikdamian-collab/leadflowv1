@@ -2576,3 +2576,52 @@ Zasada:
 - Nie wdrazac STAGE232G tylko z czatu/run reportu. Ten wpis synchronizuje centralna kolejke.
 - Ten etap jest tylko dokumentacyjno-routerowy. Runtime nie byl ruszany.
 <!-- /STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK -->
+
+<!-- STAGE232G_R0_CALENDAR_BRIEF_CORRECTIONS_2026_06_22_QUEUE -->
+## 2026-06-22 Europe/Warsaw - STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH_R0_AUDIT_AND_CONTRACT
+
+Status: DO_WDROZENIA_PO_STATUS_PRECHECK / DOCS_ONLY_CORRECTION
+
+Prosto:
+Robimy audyt kalendarza jako operacyjnego zrodla prawdy, nie runtime fix.
+
+Warunek startu:
+- sprawdzic I3/K w 00_START, _project/04, CODEX_CONTEXT_INDEX, run reports i Obsidian 04;
+- jesli statusy sa niespojne, raport ma wpisac STATUS_PRECONDITION_PARTIAL;
+- nie wolno twierdzic CLOSED bez dowodu z centralnych plikow.
+
+Zakres R0:
+- mapa aktywnej trasy /calendar;
+- mapa danych events/tasks/leads/cases/clients;
+- LEAD_SHADOW_ENTRY_STATUS;
+- TODAY_CALENDAR_PARITY_STATUS;
+- ACTION_FIELD_MATRIX;
+- LEGACY_AND_ACTIVE_DOM_NORMALIZERS_FOUND;
+- GOOGLE_CALENDAR_BACKGROUND_SYNC_STATUS;
+- CALENDAR_SOURCE_TRUTH_STATUS;
+- R1_DECISION_GATE.
+
+Czego nie ruszac:
+- runtime Calendar/Today/Lead/Case/Client;
+- SQL/RLS;
+- finanse/prowizje;
+- Braki/Blokady runtime;
+- Owner Control runtime;
+- Google Calendar OAuth/sync produkcyjny.
+
+Deliverables:
+- _project/runs/STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH_R0_AUDIT_AND_CONTRACT.md
+- _project/obsidian_updates/2026-06-22_STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH_R0_AUDIT_AND_CONTRACT.md
+- scripts/check-stage232g-calendar-operational-source-truth-r0-audit.cjs
+- tests/stage232g-calendar-operational-source-truth-r0-audit.test.cjs
+
+Guard/test:
+- node scripts/check-stage232g-calendar-operational-source-truth-r0-audit.cjs
+- node --test tests/stage232g-calendar-operational-source-truth-r0-audit.test.cjs
+- npm run verify:closeflow:quiet
+- git diff --check
+
+Nastepny etap po R0:
+- R1 runtime fix tylko jesli R0 pokaze PARTIAL/BROKEN;
+- R1 status-sync/guard close tylko jesli R0 pokaze PASS.
+<!-- /STAGE232G_R0_CALENDAR_BRIEF_CORRECTIONS_2026_06_22_QUEUE -->

@@ -228,3 +228,24 @@ Nie ruszano:
 Next po I3 i K/R3:
 - STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH.
 <!-- /STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK -->
+
+<!-- STAGE232G_R0_CALENDAR_BRIEF_CORRECTIONS_2026_06_22_CODEX -->
+## 2026-06-22 Europe/Warsaw - STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH_R0_AUDIT_AND_CONTRACT
+
+Status: DOCS_ONLY_CORRECTION / STATUS_PRECHECK_REQUIRED
+
+Zakres:
+- rejestracja poprawionego briefu audytu R0 kalendarza;
+- R0 ma sprawdzic zgodnosc routerow i nie zakladac zamkniecia I3/K bez dowodu;
+- R0 ma zweryfikowac lead shadow entries, Today/Calendar parity, aktywne DOM normalizatory, Google background sync i macierz pol akcji.
+
+Zakaz:
+- runtime Calendar/Today/Lead/Case/Client,
+- SQL,
+- finanse,
+- Braki/Blokady i Owner Control runtime.
+
+Nastepny krok:
+- Damian sprawdza diff tej korekty;
+- dopiero potem wykonawca robi realny audyt R0.
+<!-- /STAGE232G_R0_CALENDAR_BRIEF_CORRECTIONS_2026_06_22_CODEX -->

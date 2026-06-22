@@ -910,3 +910,26 @@ Nie wykonywano:
 - zmian finansow,
 - zmian kalendarza.
 <!-- /STAGE232I3_CLOSE_STATUS_SYNC_OWNER_SMOKE_OK -->
+
+<!-- STAGE232G_R0_CALENDAR_BRIEF_CORRECTIONS_2026_06_22_TESTS -->
+## 2026-06-22 Europe/Warsaw - STAGE232G_R0 calendar audit tests
+
+Status: DO_WYKONANIA_PO_APPLY
+
+Komendy:
+```powershell
+cd "C:\Users\malim\Desktop\biznesy_ai\2.closeflow"
+node scripts/check-stage232g-calendar-operational-source-truth-r0-audit.cjs
+node --test tests/stage232g-calendar-operational-source-truth-r0-audit.test.cjs
+npm run verify:closeflow:quiet
+git diff --check
+git status --short --branch
+```
+
+Manual smoke po R0:
+- wejsc na /calendar;
+- otworzyc dzien z wpisami;
+- sprawdzic tytul, typ, godzine, status, powiazanie i akcje;
+- otworzyc modal edycji;
+- nie testowac masowo +1H/+1D/+1W/Zrobione/Usun w R0, chyba ze raport R0 uzasadni, ze to bezpieczne.
+<!-- /STAGE232G_R0_CALENDAR_BRIEF_CORRECTIONS_2026_06_22_TESTS -->
