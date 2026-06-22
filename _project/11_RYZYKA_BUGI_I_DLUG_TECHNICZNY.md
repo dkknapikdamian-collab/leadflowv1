@@ -2265,3 +2265,27 @@ Nie ruszac:
 
 ## 2026-06-21 Europe/Warsaw - STAGE232I4_R16Z_R10 risk audit
 Risk: old missing_item_created/activity bridge metadata can override newer task state if not timestamped and if direct task state is not used first. Fixed for LeadDetail missing checkbox classifier.
+
+
+## STAGE232I4_R16Z_R10_R3_GUARD_SCOPE_STATUS_SYNC_AND_OWNER_SMOKE_CLOSE
+
+- data/czas: 2026-06-21 Europe/Warsaw
+- status: PASS_PUSHED / CLOSED / OWNER_SMOKE_OK after Damian manual smoke confirmation.
+- closes: STAGE232I4_R16Z_R9 and STAGE232I4_R16Z_R10.
+- owner smoke: LEAD SMOKE PASS, CLIENT REGRESSION PASS.
+- guard scope: CF-RUNTIME active allowlist owns diff scope; R16Z_R5 close guard must not keep dead R10 allowlist constants.
+- next: STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH.
+- forbidden scope: no SQL, no finance, no Calendar, no billing, no Owner Control runtime, no ClientDetail runtime, no CaseDetail runtime.
+
+Risk audit: do not create dead allowlist constants after guard execution; next closures must patch active guard data structures or explicitly mark guard as non-scope guard.
+
+
+# STAGE232I4_R16Z_R10_R3_R4_OVERWRITE_GUARDS_FINAL
+
+- data/czas: 2026-06-21 HH:mm Europe/Warsaw
+- canonical_name: CloseFlow / LeadFlow
+- status: PASS_PUSHED / CLOSED / OWNER_SMOKE_OK
+- owner smoke: LEAD PASS, CLIENT REGRESSION PASS, reported by Damian
+- closes: STAGE232I4_R16Z_R10 and R16Z close/status sync
+- next: STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH
+- no SQL, no ClientDetail runtime, no CaseDetail runtime, no Calendar, no billing, no Owner Control runtime

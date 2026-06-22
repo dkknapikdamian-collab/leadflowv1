@@ -117,12 +117,3 @@ console.log(JSON.stringify({
   stage: 'STAGE232I4_R16Z_R5_MISSING_MANAGER_CLOSE_GUARD_CONSOLIDATION_AND_SMOKE',
   contract: 'R16O is consolidated with R16Z_R4 final manager layout, final close guard exists, Client/Lead shared manager wiring is protected, docs/status payloads are updated, no SQL/finance/calendar scope touched.'
 }, null, 2));
-// STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX_ALLOWLIST: R10 lead checkbox source fix may touch these files.
-const STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX_ALLOWLIST = [
-  'src/pages/LeadDetail.tsx',
-  'scripts/check-stage232i4-r16z-r10-lead-missing-checkbox-activity-source-fix.cjs',
-  'tests/stage232i4-r16z-r10-lead-missing-checkbox-activity-source-fix.test.cjs',
-  '_project/runs/STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX.md',
-  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX.md',
-];
-void STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX_ALLOWLIST;

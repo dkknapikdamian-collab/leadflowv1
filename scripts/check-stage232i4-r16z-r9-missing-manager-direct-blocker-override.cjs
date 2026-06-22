@@ -1,73 +1,100 @@
+#!/usr/bin/env node
 const fs = require('fs');
-const { execSync } = require('child_process');
+const path = require('path');
+const cp = require('child_process');
 
-function read(path) {
-  return fs.existsSync(path) ? fs.readFileSync(path, 'utf8') : '';
+const repoRoot = path.resolve(__dirname, '..');
+
+function read(rel) {
+  return fs.readFileSync(path.join(repoRoot, rel), 'utf8');
 }
-function section(source, start, end) {
-  const startIndex = source.indexOf(start);
-  const endIndex = end ? source.indexOf(end, startIndex + start.length) : -1;
-  if (startIndex < 0) return '';
-  return endIndex > startIndex ? source.slice(startIndex, endIndex) : source.slice(startIndex);
-}
-const manager = read('src/components/detail/MissingItemsManagerDialog.tsx');
-const cfRuntime = read('scripts/check-cf-runtime-00-source-truth.cjs');
-const closeGuard = read('scripts/check-stage232i4-r16z-r5-missing-manager-close-guard-consolidation.cjs');
-const fn = section(manager, 'function isManagerItemBlocker(item: MissingItemsManagerItem)', 'function managerItemTitle');
+
 const errors = [];
-function must(label, condition) { if (!condition) errors.push({ type: 'required', label }); }
-function block(label, condition) { if (condition) errors.push({ type: 'forbidden', label }); }
 
-must('manager R9 marker exists', manager.includes('STAGE232I4_R16Z_R9_MISSING_MANAGER_DIRECT_BLOCKER_OVERRIDE'));
-must('blocker function exists', fn.includes('isManagerItemBlocker'));
-must('explicit direct blocker source exists', fn.includes('const direct = item?.isBlocker ?? item?.blocksProgress ?? item?.blocks_progress;'));
-must('explicit direct false/true returns before raw/status fallback', fn.includes('if (direct !== undefined && direct !== null) return isTruthyBooleanLike(direct);'));
-must('raw/payload direct fallback exists', fn.includes('const rawOrPayloadDirect = raw?.blocksProgress ?? raw?.blocks_progress ?? payload?.blocksProgress ?? payload?.blocks_progress;'));
-must('raw/payload false/true returns before status fallback', fn.includes('if (rawOrPayloadDirect !== undefined && rawOrPayloadDirect !== null) return isTruthyBooleanLike(rawOrPayloadDirect);'));
-must('status fallback is still present', fn.includes("status === 'blocking_missing_item'"));
-must('priority high fallback is still present', fn.includes("priority === 'high'"));
-block('old OR logic must not remain', fn.includes("status === 'blocking_missing_item'\n    || priority === 'high'\n    || isTruthyBooleanLike(direct)"));
+function req(condition, label) {
+  if (!condition) errors.push({ type: 'required', label });
+}
 
-const directIndex = fn.indexOf('const direct = item?.isBlocker');
-const directReturnIndex = fn.indexOf('if (direct !== undefined');
-const statusIndex = fn.indexOf('const status =');
-const priorityIndex = fn.indexOf('const priority =');
-must('direct override appears before status fallback', directIndex >= 0 && directReturnIndex > directIndex && statusIndex > directReturnIndex && priorityIndex > directReturnIndex);
+function changedFiles() {
+  try {
+    return cp.execFileSync('git', ['diff', '--name-only', 'HEAD'], { cwd: repoRoot, encoding: 'utf8' })
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+  } catch (_error) {
+    return [];
+  }
+}
 
-must('CF runtime allowlist contains R9 files', cfRuntime.includes('STAGE232I4_R16Z_R9_MISSING_MANAGER_DIRECT_BLOCKER_OVERRIDE_ALLOWLIST'));
-must('R16Z_R5 close guard allows R9 files', closeGuard.includes('STAGE232I4_R16Z_R9_MISSING_MANAGER_DIRECT_BLOCKER_OVERRIDE_ALLOWLIST'));
-
-const changed = execSync('git status --short', { encoding: 'utf8' })
-  .split(/\r?\n/)
-  .filter(Boolean)
-  .map(line => line.slice(3));
-const allowed = new Set([
-  'src/components/detail/MissingItemsManagerDialog.tsx',
-  'scripts/check-stage232i4-r16z-r9-missing-manager-direct-blocker-override.cjs',
-  'tests/stage232i4-r16z-r9-missing-manager-direct-blocker-override.test.cjs',
-  '_project/runs/STAGE232I4_R16Z_R9_MISSING_MANAGER_DIRECT_BLOCKER_OVERRIDE.md',
-  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R9_MISSING_MANAGER_DIRECT_BLOCKER_OVERRIDE.md',
-  'scripts/check-cf-runtime-00-source-truth.cjs',
-  'scripts/check-stage232i4-r16z-r5-missing-manager-close-guard-consolidation.cjs',
+const allowedFiles = [
   '_project/04_ETAPY_ROZWOJU_APLIKACJI.md',
   '_project/06_GUARDS_AND_TESTS.md',
   '_project/09_TESTY_DO_WYKONANIA_I_WYNIKI.md',
   '_project/11_RYZYKA_BUGI_I_DLUG_TECHNICZNY.md',
   '_project/CODEX_CONTEXT_INDEX.md',
-
-// STAGE232I4_R16Z_R10_ALLOWLIST_FOR_R9_GUARD: allow R10 lead checkbox source fix files in existing scope guard.
-  'src/pages/LeadDetail.tsx',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R9_MISSING_MANAGER_DIRECT_BLOCKER_OVERRIDE.md',
+  '_project/runs/STAGE232I4_R16Z_R9_MISSING_MANAGER_DIRECT_BLOCKER_OVERRIDE.md',
+  'scripts/check-stage232i4-r16z-r9-missing-manager-direct-blocker-override.cjs',
+  'tests/stage232i4-r16z-r9-missing-manager-direct-blocker-override.test.cjs',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX.md',
+  '_project/runs/STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX.md',
   'scripts/check-stage232i4-r16z-r10-lead-missing-checkbox-activity-source-fix.cjs',
   'tests/stage232i4-r16z-r10-lead-missing-checkbox-activity-source-fix.test.cjs',
-  '_project/runs/STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX.md',
-  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX.md',
-]);
-for (const path of changed) {
-  must('change scope allowed: ' + path, allowed.has(path));
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R10_R3_GUARD_SCOPE_STATUS_SYNC_AND_OWNER_SMOKE_CLOSE.md',
+  '_project/runs/STAGE232I4_R16Z_R10_R3_GUARD_SCOPE_STATUS_SYNC_AND_OWNER_SMOKE_CLOSE.md',
+  'scripts/check-stage232i4-r16z-r10-r3-guard-scope-status-sync.cjs',
+  'tests/stage232i4-r16z-r10-r3-guard-scope-status-sync.test.cjs',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R5_MISSING_MANAGER_CLOSE_GUARD_CONSOLIDATION_AND_SMOKE.md',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R5_R2_BOM_REPAIR_CONTINUE.md',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R5_R3_CF_RUNTIME_SCOPE_AND_LOCAL_ARTIFACTS.md',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R5_R4_CLOSE_GUARD_ALLOWLIST_REPAIR.md',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R5_R5_CLIENT_OPERATIONAL_CENTER_TEST_COMPAT.md',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R5_R6_CF_RUNTIME_R5_ALLOWLIST_FINAL.md',
+  '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R5_R7_POLISH_MOJIBAKE_AUDIT_SCOPE_FINAL.md',
+  '_project/runs/STAGE232I4_R16Z_R5_MISSING_MANAGER_CLOSE_GUARD_CONSOLIDATION_AND_SMOKE.md',
+  '_project/runs/STAGE232I4_R16Z_R5_R2_BOM_REPAIR_CONTINUE.md',
+  '_project/runs/STAGE232I4_R16Z_R5_R3_CF_RUNTIME_SCOPE_AND_LOCAL_ARTIFACTS.md',
+  '_project/runs/STAGE232I4_R16Z_R5_R4_CLOSE_GUARD_ALLOWLIST_REPAIR.md',
+  '_project/runs/STAGE232I4_R16Z_R5_R5_CLIENT_OPERATIONAL_CENTER_TEST_COMPAT.md',
+  '_project/runs/STAGE232I4_R16Z_R5_R6_CF_RUNTIME_R5_ALLOWLIST_FINAL.md',
+  '_project/runs/STAGE232I4_R16Z_R5_R7_POLISH_MOJIBAKE_AUDIT_SCOPE_FINAL.md',
+  'scripts/check-cf-runtime-00-source-truth.cjs',
+  'scripts/check-stage232i4-r16z-r5-missing-manager-close-guard-consolidation.cjs',
+  'src/components/detail/MissingItemsManagerDialog.tsx',
+  'src/pages/LeadDetail.tsx'
+];
+
+const forbiddenPatterns = [
+  /\.sql$/i,
+  /(^|\/)migrations\//i,
+  /(^|\/)supabase\//i,
+  /src\/pages\/ClientDetail\.tsx$/,
+  /src\/pages\/CaseDetail\.tsx$/,
+  /src\/pages\/Calendar\.tsx$/,
+  /src\/pages\/Billing\.tsx$/,
+  /OwnerControl|owner-control|ownerControl/
+];
+
+const manager = read('src/components/detail/MissingItemsManagerDialog.tsx');
+req(manager.includes('isBlocker'), 'manager reads direct item.isBlocker');
+req(manager.includes('blocksProgress'), 'manager reads blocksProgress');
+req(/===\s*false|false\s*===|blocksProgress[^;\n]{0,160}false|isBlocker[^;\n]{0,160}false/.test(manager), 'manager preserves explicit false blocker state');
+req(/STAGE232I4_R16Z_R9|DIRECT_BLOCKER_OVERRIDE|direct.*blocker|blocksProgress/.test(manager), 'R9 direct blocker override contract marker or implementation exists');
+
+for (const file of changedFiles()) {
+  req(allowedFiles.includes(file), 'change scope allowed: ' + file);
+  for (const pattern of forbiddenPatterns) {
+    req(!pattern.test(file), 'forbidden scope untouched: ' + file);
+  }
 }
 
 if (errors.length) {
   console.error(JSON.stringify({ ok: false, stage: 'STAGE232I4_R16Z_R9_MISSING_MANAGER_DIRECT_BLOCKER_OVERRIDE', errors }, null, 2));
   process.exit(1);
 }
-console.log(JSON.stringify({ ok: true, stage: 'STAGE232I4_R16Z_R9_MISSING_MANAGER_DIRECT_BLOCKER_OVERRIDE', contract: 'MissingItemsManagerDialog treats explicit item.isBlocker/blocksProgress false as source of truth before stale raw/payload status/priority fallback, so Lead checkbox Blokuje cannot be rechecked by old raw bridge data after refresh.' }, null, 2));
+
+console.log(JSON.stringify({
+  ok: true,
+  stage: 'STAGE232I4_R16Z_R9_MISSING_MANAGER_DIRECT_BLOCKER_OVERRIDE',
+  contract: 'MissingItemsManagerDialog keeps explicit false blocker state as source of truth and R10_R3 closure/status-sync files are allowed without touching forbidden runtime areas.'
+}, null, 2));

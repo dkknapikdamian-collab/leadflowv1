@@ -9,7 +9,7 @@ Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
 
 ## Status
 
-TECH_APPLIED_PENDING_OWNER_SMOKE / DO_NOT_START_STAGE232K_BEFORE_SMOKE_AND_PUSH
+CLOSED_AFTER_R10_REGRESSION_FIX / OWNER_SMOKE_OK / R10_R3_CLOSURE_PASS_NEXT_STAGE232K_ALLOWED
 
 Push script may be run only after Damian confirms manual smoke OK.
 
@@ -100,3 +100,20 @@ R16Z_R4 is the newer source of truth for final visual fit. R16O is not deleted, 
 
 - If R16Z_R5 smoke OK and push PASS: STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH may be considered next.
 - If Owner Control I3 smoke remains open: close I3 status-sync before business/product stage.
+
+
+## STAGE232I4_R16Z_R10_R3_CLOSURE
+
+- status: CLOSED_AFTER_R10_REGRESSION_FIX / OWNER_SMOKE_OK
+- next allowed after this closure: STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH
+
+
+# STAGE232I4_R16Z_R10_R3_R4_OVERWRITE_GUARDS_FINAL
+
+- data/czas: 2026-06-21 HH:mm Europe/Warsaw
+- canonical_name: CloseFlow / LeadFlow
+- status: PASS_PUSHED / CLOSED / OWNER_SMOKE_OK
+- owner smoke: LEAD PASS, CLIENT REGRESSION PASS, reported by Damian
+- closes: STAGE232I4_R16Z_R10 and R16Z close/status sync
+- next: STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH
+- no SQL, no ClientDetail runtime, no CaseDetail runtime, no Calendar, no billing, no Owner Control runtime

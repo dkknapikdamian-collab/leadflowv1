@@ -1,9 +1,19 @@
+# STAGE232I4_R16Z_R10_R3_R4_OVERWRITE_GUARDS_FINAL
+
+- data/czas: 2026-06-21 HH:mm Europe/Warsaw
+- canonical_name: CloseFlow / LeadFlow
+- status: PASS_PUSHED / CLOSED / OWNER_SMOKE_OK
+- owner smoke: LEAD PASS, CLIENT REGRESSION PASS, reported by Damian
+- closes: STAGE232I4_R16Z_R10 and R16Z close/status sync
+- next: STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH
+- no SQL, no ClientDetail runtime, no CaseDetail runtime, no Calendar, no billing, no Owner Control runtime
+
 # STAGE232I4_R16Z_R10_LEAD_MISSING_CHECKBOX_ACTIVITY_SOURCE_FIX
 
 Date: 2026-06-21 Europe/Warsaw
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
-Status: APPLY_LOCAL / SMOKE_PENDING / PUSH_PENDING
+Status: PASS_PUSHED / CLOSED / OWNER_SMOKE_OK
 
 ## Root cause
 R8 fixed LeadDetail task PATCH fields and R9 fixed MissingItemsManagerDialog direct false handling, but LeadDetail still computed item.isBlocker from stale activity metadata. buildLeadMissingActivityMetadataStage232AR8 could preserve an old blocking creation/activity signal, so after loadLead/F5 the manager received isBlocker=true again.
@@ -29,3 +39,10 @@ Lead -> Zobacz wszystkie braki -> odznacz Blokuje -> wait -> F5 -> checkbox rema
 
 ## Scope not touched
 SQL, RLS, finance, calendar, CaseDetail runtime, modal visual layout, billing/trial.
+
+
+## STAGE232I4_R16Z_R10_R3_CLOSURE
+
+- status: PASS_PUSHED / CLOSED / OWNER_SMOKE_OK
+- owner smoke: Damian confirmed LEAD SMOKE PASS and CLIENT REGRESSION PASS in chat before closure.
+- next: STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH

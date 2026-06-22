@@ -11,7 +11,7 @@ Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
 
 ## Status
 
-TECH_APPLIED_PENDING_OWNER_SMOKE / DO_NOT_START_STAGE232K_BEFORE_SMOKE_AND_PUSH
+CLOSED_AFTER_R10_REGRESSION_FIX / OWNER_SMOKE_OK / R10_R3_CLOSURE_PASS_NEXT_STAGE232K_ALLOWED
 
 ## Do centralnych plikow Obsidiana
 
@@ -21,7 +21,7 @@ Dodac wpis:
 
 - STAGE232I4_R16Z_R5_MISSING_MANAGER_CLOSE_GUARD_CONSOLIDATION_AND_SMOKE
 - Cel: domkniecie R16/R16Z po naprawie managera Braki/Blokady.
-- Status po apply: TECH_APPLIED_PENDING_OWNER_SMOKE.
+- Status po apply: CLOSED_AFTER_R10_REGRESSION_FIX / OWNER_SMOKE_OK.
 - R16Z_R4 jest finalnym visual source truth: 760px, flex row, readable Blokuje, visible Uzupełnij/Usuń.
 - R16O jest historycznie zachowany, ale guard/test zostaly skonsolidowane i nie wymagaja juz 1100px.
 - STAGE232K jest zablokowany do czasu manual smoke OK i push PASS.
@@ -54,3 +54,20 @@ LOCAL_SYNC_PENDING
 ## What was not touched
 
 SQL, RLS, finance, Google Calendar, billing/trial, Owner Control runtime, CaseDetail runtime.
+
+
+## STAGE232I4_R16Z_R10_R3_CLOSURE
+
+- status: CLOSED_AFTER_R10_REGRESSION_FIX / OWNER_SMOKE_OK
+- next allowed after this closure: STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH
+
+
+# STAGE232I4_R16Z_R10_R3_R4_OVERWRITE_GUARDS_FINAL
+
+- data/czas: 2026-06-21 HH:mm Europe/Warsaw
+- canonical_name: CloseFlow / LeadFlow
+- status: PASS_PUSHED / CLOSED / OWNER_SMOKE_OK
+- owner smoke: LEAD PASS, CLIENT REGRESSION PASS, reported by Damian
+- closes: STAGE232I4_R16Z_R10 and R16Z close/status sync
+- next: STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH
+- no SQL, no ClientDetail runtime, no CaseDetail runtime, no Calendar, no billing, no Owner Control runtime

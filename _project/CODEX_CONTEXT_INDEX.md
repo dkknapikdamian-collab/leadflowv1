@@ -163,3 +163,22 @@ Nie ruszac:
 
 ## 2026-06-21 Europe/Warsaw - STAGE232I4_R16Z_R10
 LeadDetail missing checkbox real runtime fix: direct task/payload state overrides stale activity metadata; newest activity metadata wins.
+
+
+## STAGE232I4_R16Z_R10_R3 closure
+
+- status: PASS_PUSHED / CLOSED / OWNER_SMOKE_OK
+- owner smoke: LEAD PASS, CLIENT REGRESSION PASS
+- current closed stage: STAGE232I4_R16Z_R10_R3_GUARD_SCOPE_STATUS_SYNC_AND_OWNER_SMOKE_CLOSE
+- next allowed stage: STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH
+
+
+# STAGE232I4_R16Z_R10_R3_R4_OVERWRITE_GUARDS_FINAL
+
+- data/czas: 2026-06-21 HH:mm Europe/Warsaw
+- canonical_name: CloseFlow / LeadFlow
+- status: PASS_PUSHED / CLOSED / OWNER_SMOKE_OK
+- owner smoke: LEAD PASS, CLIENT REGRESSION PASS, reported by Damian
+- closes: STAGE232I4_R16Z_R10 and R16Z close/status sync
+- next: STAGE232K_CASE_COMMISSION_PAID_SOURCE_OF_TRUTH
+- no SQL, no ClientDetail runtime, no CaseDetail runtime, no Calendar, no billing, no Owner Control runtime
