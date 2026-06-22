@@ -1,4 +1,4 @@
-﻿# STAGE232I3_OWNER_CONTROL_MISSING_BLOCKER_CROSS_ENTITY_INTEGRATION
+# STAGE232I3_OWNER_CONTROL_MISSING_BLOCKER_CROSS_ENTITY_INTEGRATION
 
 - data i godzina: 2026-06-18 19:56 Europe/Warsaw
 - canonical_name: CloseFlow / LeadFlow
@@ -85,13 +85,13 @@ Owner smoke Damian: PASS.
 Potwierdzone automatycznie przed zamknieciem:
 - commit e26833fb obecny na dev-rollout-freeze / origin/dev-rollout-freeze,
 - commit c395c393 obecny w historii,
-- 
+-
 ode scripts/check-stage232i3-owner-control-missing-blocker-cross-entity-integration.cjs: PASS,
-- 
+-
 ode --test tests/stage232i3-owner-control-missing-blocker-cross-entity-integration.test.cjs: PASS 6/6,
-- 
+-
 pm run build: PASS,
-- 
+-
 pm run verify:closeflow:quiet: PASS,
 - git diff --check: PASS.
 

@@ -1,4 +1,4 @@
-﻿<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
+<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
 # 06_GUARDS_AND_TESTS - CloseFlow / LeadFlow
 
 ## Guard dodany przez V9
@@ -5237,13 +5237,13 @@ Dodano guard i test dla zapisu wpłaty prowizji z CaseDetail:
 Status: PASS_PUSHED / CLOSED / OWNER_SMOKE_OK
 
 Testy potwierdzone dla I3:
-- 
+-
 ode scripts/check-stage232i3-owner-control-missing-blocker-cross-entity-integration.cjs: PASS.
-- 
+-
 ode --test tests/stage232i3-owner-control-missing-blocker-cross-entity-integration.test.cjs: PASS 6/6.
-- 
+-
 pm run build: PASS.
-- 
+-
 pm run verify:closeflow:quiet: PASS.
 - git diff --check: PASS.
 - Manual smoke Damian: PASS.
