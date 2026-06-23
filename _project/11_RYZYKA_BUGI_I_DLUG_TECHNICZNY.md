@@ -2420,3 +2420,18 @@ Date: 2026-06-23 11:15 Europe/Warsaw
 Risk: month DOM normalizers are high-risk legacy code and still active.
 Mitigation: central policy gate instead of blind deletion.
 Open: real retirement/removal only after manual smoke or R1F parity evidence.
+
+## STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R2_RESUME
+- Ryzyko: Vite build nie łapie pełnego Vercel/API TypeScript check.
+- Decyzja: hotfix wymusza npx tsc --noEmit jako guard przed kolejnym pushem.
+
+## STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R3_ALLOWLIST_RESUME
+- Ryzyko: guard zakresu może blokować hotfix, mimo że kod jest naprawiony.
+- Mitigacja: dopisanie kompletnego R1E1/R2 allowlist bez tworzenia kolejnych plików repo.
+
+## STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R6_COMPLEX_BLOCKSPROGRESS_RESUME
+- Ryzyko: zwykły Vite build nie wykrył API TS blockera, dlatego R1E1 wymaga scoped typecheck api/work-items.ts przed pushem.
+
+## STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R7_SYNTAX_REPAIR_RESUME
+- Ryzyko: automatyczne wstawienie markera po surowym tokenie stage może uszkodzić deklarację const.
+- Korekta: R7 wstawia marker R6 tylko po bezpiecznym anchorze void R2.

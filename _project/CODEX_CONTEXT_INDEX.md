@@ -309,3 +309,7 @@ Do not treat R1D as DOM normalizer cleanup.
 Date: 2026-06-23 11:15 Europe/Warsaw
 Files: Calendar.tsx, calendar-dom-normalizer-policy.ts, R1E guard/test, CF runtime allowlist, central docs.
 Do not remove month DOM normalizers without manual smoke evidence.
+
+## STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R2_RESUME
+- Dotyczy: api/work-items.ts Vercel tsc blocker.
+- Następny etap po zielonym/pushu: wrócić do STAGE232G_R1F.

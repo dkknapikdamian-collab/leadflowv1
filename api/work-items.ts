@@ -33,6 +33,13 @@ const isBlockingMissingItemStage232I4R9 = (row: any = {}, body: any = {}) => {
 const STAGE232G_R1A_WORK_ITEMS_TS_BUILD_HOTFIX_R2 = 'api/work-items TypeScript-safe blocksProgress compatibility and no unscoped existing';
 void STAGE232G_R1A_WORK_ITEMS_TS_BUILD_HOTFIX_R2;
 
+const STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R2_RESUME = 'R2: api/work-items Vercel tsc safety - blocksProgress helper reads and no stale existing identifier';
+void STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R2_RESUME;
+
+const STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R6_COMPLEX_BLOCKSPROGRESS_RESUME = 'R6: complex blocksProgress expression repair after scoped typecheck';
+void STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R6_COMPLEX_BLOCKSPROGRESS_RESUME;
+
+
 function readBlocksProgressStage232GR1A(value: unknown): boolean | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
   const record = value as Record<string, unknown>;
@@ -483,7 +490,7 @@ function normalizeTask(row: any) {
     recordType: asNullableString((row as any).record_type || (row as any).recordType) || 'task',
     recordId: asNullableString((row as any).record_id || (row as any).recordId || syntheticMissingPayloadStage232I4R8(row).recordId) || task.clientId || task.caseId || task.leadId || null,
     payload: syntheticMissingPayloadStage232I4R8(row),
-    blocksProgress: Boolean((row as any).blocks_progress ?? (row as any).blocksProgress ?? syntheticMissingPayloadStage232I4R8(row).blocksProgress ?? String(row.status || '').toLowerCase().includes('block')),
+    blocksProgress: Boolean((row as any).blocks_progress ?? readBlocksProgressStage232GR1A((row as any)) ?? readBlocksProgressStage232GR1A(syntheticMissingPayloadStage232I4R8(row)) ?? String(row.status || '').toLowerCase().includes('block')),
     reminderAt,
     reminder: reminderAt
       ? { mode: 'once', minutesBefore: reminderMinutes, recurrenceMode: 'daily', recurrenceInterval: 1, until: null }
@@ -699,7 +706,7 @@ export default async function handler(req: any, res: any) {
 
       if (body.title !== undefined) payload.title = body.title;
       if (body.type !== undefined) payload.type = body.type;
-      if (body.status !== undefined) payload.status = kind === 'events' ? normalizeEventStatus(body.status) : normalizeMissingItemDbStatusStage232I4R9(body, existing as any);
+      if (body.status !== undefined) payload.status = kind === 'events' ? normalizeEventStatus(body.status) : normalizeMissingItemDbStatusStage232I4R9(body, currentRow as any);
 
       if (kind === 'tasks') {
         const reminderRule = parseCalendarReminderRule(body.reminderRule);

@@ -121,6 +121,19 @@ if (exists('scripts/closeflow-release-check-quiet.cjs')) {
 }
 
 const allowedChangePrefixes = [
+  // STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R3_ALLOWLIST
+  'api/work-items.ts',
+  '_project/obsidian_updates/2026-06-23_STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX.md',
+  '_project/obsidian_updates/2026-06-23_STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R2_RESUME.md',
+  '_project/runs/STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX.md',
+  '_project/runs/STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R2_RESUME.md',
+  '_project/runs/STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_CONTEXT.txt',
+  '_project/runs/STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R2_CONTEXT.txt',
+  'scripts/check-stage232g-r1e1-work-items-vercel-tsc-hotfix.cjs',
+  'scripts/check-stage232g-r1e1-work-items-vercel-tsc-hotfix-r2-resume.cjs',
+  'tests/stage232g-r1e1-work-items-vercel-tsc-hotfix.test.cjs',
+  'tests/stage232g-r1e1-work-items-vercel-tsc-hotfix-r2-resume.test.cjs',
+
   // STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE_ALLOWLIST
   "src/pages/Calendar.tsx",
   "src/lib/calendar-dom-normalizer-policy.ts",
@@ -494,6 +507,19 @@ function gitList(args) {
 
 if (exists('.git')) {
   const changed = new Set([
+  // STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R2_RESUME_ALLOWLIST
+  'api/work-items.ts',
+  '_project/obsidian_updates/2026-06-23_STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX.md',
+  '_project/obsidian_updates/2026-06-23_STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R2_RESUME.md',
+  '_project/runs/STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX.md',
+  '_project/runs/STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R2_RESUME.md',
+  '_project/runs/STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_CONTEXT.txt',
+  '_project/runs/STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R2_CONTEXT.txt',
+  'scripts/check-stage232g-r1e1-work-items-vercel-tsc-hotfix.cjs',
+  'scripts/check-stage232g-r1e1-work-items-vercel-tsc-hotfix-r2-resume.cjs',
+  'tests/stage232g-r1e1-work-items-vercel-tsc-hotfix.test.cjs',
+  'tests/stage232g-r1e1-work-items-vercel-tsc-hotfix-r2-resume.test.cjs',
+
     ...gitList(['diff', '--name-only']),
     ...gitList(['diff', '--name-only', '--cached']),
     ...gitList(['ls-files', '--others', '--exclude-standard']),

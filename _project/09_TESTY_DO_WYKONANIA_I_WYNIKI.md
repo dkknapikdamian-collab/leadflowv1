@@ -994,3 +994,19 @@ Manual smoke: lead shadow entry should not expose/execute done/delete/restore; t
 Date: 2026-06-23 11:15 Europe/Warsaw
 Planned tests: R1E guard, R1E node test, CF_RUNTIME_00, build, verify quiet, diff check.
 Manual smoke: Calendar month/week/selected day still renders entries; R1D task/event/lead shadow actions still behave correctly.
+
+## STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R2_RESUME
+- Status: DO_WYKONANIA_LOKALNIE
+- Oczekiwane: R1E1 R2 guard PASS, node test PASS, CF_RUNTIME_00 PASS, tsc PASS, build PASS, verify PASS, diff-check PASS.
+
+## STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R3_ALLOWLIST_RESUME
+- Status: DO_WERYFIKACJI_LOKALNEJ.
+- Gate: CF_RUNTIME_00 allowlist + npx tsc --noEmit --pretty false.
+
+## STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R6_COMPLEX_BLOCKSPROGRESS_RESUME
+- Status: DO_WERYFIKACJI_LOKALNIE.
+- R6 sprawdza, że w api/work-items.ts nie ma już bezpośredniego .blocksProgress poza helperem.
+
+## STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R7_SYNTAX_REPAIR_RESUME
+- Status: DO_WERYFIKACJI_LOKALNIE.
+- R7 naprawia składnię po R6 i ponawia scoped typecheck api/work-items.ts.

@@ -195,3 +195,9 @@ Date: 2026-06-23 11:15 Europe/Warsaw
 Status: APPLIED_PENDING_TEST_OR_PUSH
 Scope: Calendar DOM normalizers are centrally gated before retirement.
 Next: STAGE232G_R1F_CALENDAR_TODAY_FINAL_PARITY_GUARD_AND_SMOKE
+
+## STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R2_RESUME
+- Data: 2026-06-23 13:35 Europe/Warsaw
+- Cel: naprawa Vercel TypeScript blocker w api/work-items.ts po R1E.
+- Zakres: tylko api/work-items.ts, guardy/testy i centralna dokumentacja.
+- Test wymagany: npx tsc --noEmit --pretty false + build + verify.

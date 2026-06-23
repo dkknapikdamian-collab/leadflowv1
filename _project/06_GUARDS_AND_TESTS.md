@@ -5339,3 +5339,8 @@ Date: 2026-06-23 11:15 Europe/Warsaw
 Guard: node scripts/check-stage232g-r1e-calendar-dom-normalizers-limit-or-retire.cjs
 Test: node --test tests/stage232g-r1e-calendar-dom-normalizers-limit-or-retire.test.cjs
 Required: CF_RUNTIME_00, npm run build, npm run verify:closeflow:quiet, git diff --check.
+
+## STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R2_RESUME
+- Guard: scripts/check-stage232g-r1e1-work-items-vercel-tsc-hotfix-r2-resume.cjs
+- Test: tests/stage232g-r1e1-work-items-vercel-tsc-hotfix-r2-resume.test.cjs
+- Hard gate: npx tsc --noEmit --pretty false.

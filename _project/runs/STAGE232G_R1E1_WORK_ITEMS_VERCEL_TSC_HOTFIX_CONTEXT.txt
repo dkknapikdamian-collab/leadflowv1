@@ -1,0 +1,25 @@
+Remaining `existing` context:
+ 709:       if (body.leadId !== undefined && asNullableUuid(body.leadId)) {
+ 710:         await requireScopedRow('leads', asNullableUuid(body.leadId)!, workspaceId, 'LEAD_NOT_FOUND');
+ 711:       }
+ 712:       if (body.caseId !== undefined && asNullableUuid(body.caseId)) {
+ 713:         await requireScopedRow('cases', asNullableUuid(body.caseId)!, workspaceId, 'CASE_NOT_FOUND');
+ 714:       }
+ 715:       const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
+ 716: 
+ 717:       if (body.title !== undefined) payload.title = body.title;
+ 718:       if (body.type !== undefined) payload.type = body.type;
+ 719:       if (body.status !== undefined) payload.status = kind === 'events' ? normalizeEventStatus(body.status) : normalizeMissingItemDbStatusStage232I4R9(body, existing as any);
+ 720: 
+ 721:       if (kind === 'tasks') {
+ 722:         const reminderRule = parseCalendarReminderRule(body.reminderRule);
+ 723:         if (body.priority !== undefined) payload.priority = body.priority;
+ 724:         if (body.date !== undefined) payload.scheduled_at = body.date ? new Date(`${body.date}T09:00:00`).toISOString() : null;
+ 725:         if (body.scheduledAt !== undefined) payload.scheduled_at = body.scheduledAt ? new Date(body.scheduledAt).toISOString() : null;
+ 726:         if (body.leadId !== undefined) payload.lead_id = asNullableUuid(body.leadId);
+ 727:         if (body.caseId !== undefined) payload.case_id = asNullableUuid(body.caseId);
+ 728:         if (body.clientId !== undefined) payload.client_id = asNullableUuid(body.clientId);
+ 729:         if (body.reminderRule !== undefined) {
+
+Remaining direct blocksProgress context:
+No matching context.
