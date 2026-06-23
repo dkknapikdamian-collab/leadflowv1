@@ -297,3 +297,9 @@ Do not treat R1B as Calendar UI parity closure.
 Date: 2026-06-23 09:10 Europe/Warsaw
 Files: scheduling, lead shadow policy module, R1C guard/test, CF runtime guard allowlist.
 Do not treat R1C as Calendar actions final closure.
+
+### STAGE232G_R1D_CALENDAR_ACTIONS_RESPECT_OPERATIONAL_ENTRY_CONTRACT_CODEX
+
+Date: 2026-06-23 10:05 Europe/Warsaw
+Files: Calendar, TodayStable, operational action policy module, R1D guard/test, CF runtime allowlist.
+Do not treat R1D as DOM normalizer cleanup.

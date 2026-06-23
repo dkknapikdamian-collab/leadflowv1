@@ -2406,3 +2406,10 @@ Date: 2026-06-23 09:10 Europe/Warsaw
 Risk: lead shadow is derived, not authoritative task.
 Mitigation: no complete/restore/delete actions for lead shadow; dedupe covered task/event entries.
 Open: R1D must wire Calendar actions to operational entry contract.
+
+### STAGE232G_R1D_CALENDAR_ACTIONS_RESPECT_OPERATIONAL_ENTRY_CONTRACT_RISKS
+
+Date: 2026-06-23 10:05 Europe/Warsaw
+Risk: action handlers can drift independently in Calendar/Today.
+Mitigation: central action policy + guard.
+Open: R1E must limit or retire DOM normalizers.

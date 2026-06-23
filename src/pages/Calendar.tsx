@@ -96,12 +96,25 @@ import '../styles/closeflow-calendar-selected-day-full-text-repair11.css';
 import '../styles/closeflow-calendar-selected-day-new-tile-v9.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import '../styles/closeflow-canvas-source-truth-stage211e.css';
-import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
+import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';import {
+  getOperationalEntryActionDecision,
+  isOperationalEntryActionAllowed,
+} from '../lib/calendar-operational-entry-action-policy';
+
 
 const STAGE228R25_UNSUPPORTED_DELETE_KIND_NO_FALSE_SUCCESS = 'Calendar must not show false delete success for unsupported entry kinds';
 void STAGE228R25_UNSUPPORTED_DELETE_KIND_NO_FALSE_SUCCESS;
 const STAGE228R37_UNSUPPORTED_DELETE_KIND_NO_FALSE_SUCCESS = 'Calendar unsupported delete kind shows an error and returns before success toast';
 void STAGE228R37_UNSUPPORTED_DELETE_KIND_NO_FALSE_SUCCESS;
+const STAGE232G_R1D_CALENDAR_ACTION_POLICY_IMPORT = 'STAGE232G_R1D_CALENDAR_ACTIONS_RESPECT_OPERATIONAL_ENTRY_CONTRACT: CALENDAR imports shared action policy';
+void STAGE232G_R1D_CALENDAR_ACTION_POLICY_IMPORT;
+const STAGE232G_R1D_COMPLETE_ACTION_CONTRACT_GUARD = 'complete action must respect getSupportedOperationalEntryActions; lead shadow cannot be completed as task/event';
+const STAGE232G_R1D_DELETE_ACTION_CONTRACT_GUARD = 'delete action must respect getSupportedOperationalEntryActions; lead shadow cannot be deleted as task/event';
+const STAGE232G_R1D_RESTORE_ACTION_CONTRACT_GUARD = 'restore action must respect getSupportedOperationalEntryActions; lead shadow cannot be restored as task/event';
+void STAGE232G_R1D_COMPLETE_ACTION_CONTRACT_GUARD;
+void STAGE232G_R1D_DELETE_ACTION_CONTRACT_GUARD;
+void STAGE232G_R1D_RESTORE_ACTION_CONTRACT_GUARD;
+
 
 
 const STAGE223_R2X_CALENDAR_MODAL_VNEXT_CONTENT_CONTRACT = 'className="event-form-vnext-content sm:max-w-2xl"';
@@ -709,6 +722,12 @@ export default function Calendar() {
 
   // CLOSEFLOW_CALENDAR_SELECTED_DAY_HANDLER_SCOPE_FIX_V12_2026_05_14
   const handleEditEntry = (entry: ScheduleEntry) => {
+  // STAGE232G_R1D_EDIT_ACTION_CONTRACT_GUARD
+  if (!isOperationalEntryActionAllowed(entry, 'edit')) {
+    console.warn('STAGE232G_R1D_CALENDAR_ACTIONS_RESPECT_OPERATIONAL_ENTRY_CONTRACT_BLOCKED_UNSUPPORTED_ACTION', getOperationalEntryActionDecision(entry, 'edit'));
+    return;
+  }
+
     if (!entry) return;
     const entryId = String(entry.id || entry.raw?.id || 'entry');
 
@@ -1802,6 +1821,12 @@ export default function Calendar() {
   };
 
   const handleShiftEntry = async (entry: ScheduleEntry, days: number) => {
+  // STAGE232G_R1D_SHIFT_ACTION_CONTRACT_GUARD
+  if (!isOperationalEntryActionAllowed(entry, 'shift')) {
+    console.warn('STAGE232G_R1D_CALENDAR_ACTIONS_RESPECT_OPERATIONAL_ENTRY_CONTRACT_BLOCKED_UNSUPPORTED_ACTION', getOperationalEntryActionDecision(entry, 'shift'));
+    return;
+  }
+
     if (!hasAccess) {
       toast.error('Trial wygasł.');
       return;
@@ -1973,6 +1998,12 @@ export default function Calendar() {
   };
 
   const handleCompleteEntry = async (entry: ScheduleEntry) => {
+  // STAGE232G_R1D_COMPLETE_ACTION_CONTRACT_GUARD
+  if (!isOperationalEntryActionAllowed(entry, 'complete')) {
+    console.warn('STAGE232G_R1D_CALENDAR_ACTIONS_RESPECT_OPERATIONAL_ENTRY_CONTRACT_BLOCKED_UNSUPPORTED_ACTION', getOperationalEntryActionDecision(entry, 'complete'));
+    return;
+  }
+
     if (!hasAccess) {
       toast.error('Trial wygasł.');
       return;
@@ -2088,6 +2119,12 @@ export default function Calendar() {
     );
   };
   const handleDeleteEntry = async (entry: ScheduleEntry) => {
+  // STAGE232G_R1D_DELETE_ACTION_CONTRACT_GUARD
+  if (!isOperationalEntryActionAllowed(entry, 'delete')) {
+    console.warn('STAGE232G_R1D_CALENDAR_ACTIONS_RESPECT_OPERATIONAL_ENTRY_CONTRACT_BLOCKED_UNSUPPORTED_ACTION', getOperationalEntryActionDecision(entry, 'delete'));
+    return;
+  }
+
     // STAGE228R37_UNSUPPORTED_DELETE_KIND_NO_FALSE_SUCCESS
     if (entry.kind !== 'event' && entry.kind !== 'task') {
       toast.error('Nie można usunąć tego typu wpisu z kalendarza.');

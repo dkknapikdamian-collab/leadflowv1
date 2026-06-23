@@ -982,3 +982,9 @@ Manual smoke: Today loads, Calendar loads, no red console errors, Today entries 
 Date: 2026-06-23 09:10 Europe/Warsaw
 Planned tests: R1C guard, R1C node test, CF runtime guard, build, verify quiet, diff check.
 Manual smoke: Calendar/Today still load; duplicated lead shadow entries should not multiply when task/event covers same planned action.
+
+### STAGE232G_R1D_CALENDAR_ACTIONS_RESPECT_OPERATIONAL_ENTRY_CONTRACT_TESTS
+
+Date: 2026-06-23 10:05 Europe/Warsaw
+Planned tests: R1D guard, R1D node test, CF runtime guard, build, verify quiet, diff check.
+Manual smoke: lead shadow entry should not expose/execute done/delete/restore; task/event actions should still work.

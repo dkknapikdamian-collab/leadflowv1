@@ -2678,3 +2678,10 @@ Date: 2026-06-23 09:10 Europe/Warsaw
 Status: APPLIED_PENDING_TEST_OR_PUSH
 Goal: central policy for lead shadow dedupe and safe lead actions.
 Next: R1D Calendar actions use operational entry contract.
+
+### STAGE232G_R1D_CALENDAR_ACTIONS_RESPECT_OPERATIONAL_ENTRY_CONTRACT_QUEUE
+
+Date: 2026-06-23 10:05 Europe/Warsaw
+Status: APPLIED_PENDING_TEST_OR_PUSH
+Goal: Calendar/Today action handlers block unsupported actions for lead shadow entries and use the shared operational entry action contract.
+Next: R1E DOM normalizer cleanup.

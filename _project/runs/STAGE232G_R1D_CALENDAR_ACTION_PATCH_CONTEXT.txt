@@ -1,0 +1,254 @@
+No R1D action handlers patched in src/pages/TodayStable.tsx.
+
+Searched handlers:
+- handleCompleteEntry:complete
+- handleCompleteItem:complete
+- handleMarkDone:complete
+- handleDoneEntry:complete
+- handleDeleteEntry:delete
+- handleDeleteItem:delete
+- handleRestoreEntry:restore
+- handleRestoreItem:restore
+- handleShiftEntry:shift
+- handleShiftItem:shift
+- handleEditEntry:edit
+- handleEditItem:edit
+
+Relevant snippets:
+
+--- handleComplete at -1 ---
+NOT FOUND
+
+--- handleDelete at 55327 ---
+lly {
+      setActionPendingId('');
+    }
+  }, [refreshData]);
+
+
+  const handleMarkTaskDone = useCallback(async (taskId: string) => {
+    if (!taskId) return;
+    setActionPendingId(`task-done:${taskId}`);
+    try {
+      await updateTaskInSupabase({ id: taskId, status: 'done' } as any);
+      setData((current) => ({
+        ...current,
+        tasks: Array.isArray(current.tasks)
+          ? current.tasks.map((task) => String(task?.id || '') === taskId ? { ...task, status: 'done' } : task)
+          : [],
+      }));
+    } finally {
+      setActionPendingId('');
+    }
+  }, [setData]);
+
+  const handleDeleteTask = useCallback(async (task: any) => {
+    const taskId = String(task?.id || '');
+    if (!taskId) return;
+    setActionPendingId(`task:${taskId}`);
+    try {
+      await deleteTaskFromSupabase(taskId);
+      await refreshData({ force: true, reason: 'operation' });
+    } finally {
+      setActionPendingId('');
+    }
+  }, [refreshData]);
+
+  const handleDeleteEvent = useCallback(async (event: any) => {
+    const eventId = String(event?.id || '');
+    if (!eventId) return;
+    setActionPendingId(`event:${eventId}`);
+    try {
+      await deleteEventFromSupabase(eventId);
+      await refreshData({ force: true, reason: 'operation' });
+    } finally {
+      setActionPendingId('');
+    }
+  }, [refreshData]);
+
+  const handleMarkEventDone = useCallback(async (eventId: string) => {
+    // STAGE76_TODAY_EVENT_DONE_ACTION: events use the same operational closeout status contract as tasks.
+    if (!eventId) return;
+    setActionPendingId(`event-done:${eventId}`);
+    try {
+      await updateEventInSupabase({ id: eventId, status: 'done' });
+      setData((current) => ({
+        ...current,
+        events: Array.isArray(current.events)
+          ? current.events.map((event) => String(event?.id || '') === eventId ? { ...event, status: 'done' } : event)
+          : [],
+      }));
+    } catch (error) {
+      console.error('Nie udało się oznaczyć wydarzenia jako zrobione', error);
+
+
+--- handleRestore at -1 ---
+NOT FOUND
+
+--- handleShift at 56805 ---
+ status contract as tasks.
+    if (!eventId) return;
+    setActionPendingId(`event-done:${eventId}`);
+    try {
+      await updateEventInSupabase({ id: eventId, status: 'done' });
+      setData((current) => ({
+        ...current,
+        events: Array.isArray(current.events)
+          ? current.events.map((event) => String(event?.id || '') === eventId ? { ...event, status: 'done' } : event)
+          : [],
+      }));
+    } catch (error) {
+      console.error('Nie udało się oznaczyć wydarzenia jako zrobione', error);
+    } finally {
+      setActionPendingId('');
+    }
+  }, [setData]);
+
+  const handleShiftTodayWorkItemStage227G1 = useCallback(async (kind: 'task' | 'event', record: any, days: number) => {
+    const sourceId = String(record?.id || '').trim();
+    if (!sourceId) return;
+    setActionPendingId(getTodayShiftPendingKeyStage227G1(kind, sourceId, days));
+
+    try {
+      if (kind === 'task') {
+        const nextStartAt = shiftTodayMomentStage227G1(getTaskMomentRaw(record), days);
+        const nextDate = nextStartAt.slice(0, 10);
+        const nextTime = nextStartAt.slice(11, 16);
+
+        await updateTaskInSupabase({
+          id: sourceId,
+          title: getTaskTitle(record),
+          type: readText(record, ['type', 'taskType', 'task_type'], 'follow_up'),
+          date: nextDate,
+          scheduledAt: nextStartAt,
+          dueAt: nextStartAt,
+          time: nextTime,
+          status: readText(record, ['status'], 'todo'),
+          priority: readText(record, ['priority'], 'medium'),
+          leadId: readText(record, ['leadId', 'lead_id'], '') || null,
+          caseId: readText(record, ['caseId', 'case_id'], '') || null,
+          clientId: readText(record, ['clientId', 'client_id'], '') || null,
+        } as any);
+
+        setData((current) => ({
+          ...current,
+          tasks: Array.isArray(current.tasks)
+            ? current.tasks.map((task) => String(task?.id || '') === sourceId ? {
+              ...task,
+              date: nextDate,
+  
+
+--- complete at 8667 ---
+SECTION_KEYS];
+  }
+}
+
+function writeTodayVisibleSections(keys: TodaySectionKey[]) {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(TODAY_VIEW_STORAGE_KEY, JSON.stringify(sanitizeTodayVisibleSections(keys)));
+  } catch {
+    // Local storage is a convenience only. The dashboard must still work without it.
+  }
+}
+
+const emptyData: DashboardData = {
+  tasks: [],
+  leads: [],
+  events: [],
+  cases: [],
+  drafts: [],
+};
+
+function isClosedStatus(value: unknown) {
+  const status = String(value || '').trim().toLowerCase();
+  return status === 'done' || status === 'completed' || status === 'closed' || status === 'cancelled' || status === 'canceled';
+}
+
+function isClosedLead(value: any) {
+  const status = String(value?.status || '').trim().toLowerCase();
+  const visibility = String(value?.leadVisibility || value?.lead_visibility || 'active').trim().toLowerCase();
+  const outcome = String(value?.salesOutcome || value?.sales_outcome || 'open').trim().toLowerCase();
+  const movedToService = value?.movedToService === true || Boolean(value?.movedToServiceAt || value?.moved_to_service_at);
+
+  return movedToService
+    || visibility === 'archived'
+    || visibility === 'hidden'
+    || outcome === 'won'
+    || outcome === 'lost'
+    || outcome === 'closed'
+    || outcome === 'moved_to_service'
+    || status === 'won'
+    || status === 'lost'
+    || status === 'archived'
+    || status === 'moved_to_service';
+}
+
+function localDateKey(date = new Date()) {
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0'),
+  ].join('-');
+}
+
+function addDaysKey(days: number) {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  return localDateKey(date);
+}
+
+function readText(record: any, keys: string[], fallback = '') {
+  for (const key of keys) {
+    const value = record?.[key];
+    if (typeof value === 'string' && value.trim()) return value.trim();
+    if (typeof value === 
+
+--- delete at 909 ---
+endingUp } from 'lucide-react';
+import {
+  EntityIcon } from '../components/ui-system';
+/*
+P0_TODAY_STABLE_REBUILD
+Stable Today screen reads the same Supabase API collections that Network diagnostics proved are working.
+This page intentionally bypasses the legacy Today.tsx scheduler stack for operator sections.
+*/
+
+
+
+import Layout from '../components/Layout';
+import { EntityActionButton } from '../components/entity-actions';
+import { Card,
+  CardContent } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
+
+import {
+  deleteEventFromSupabase,
+  deleteTaskFromSupabase,
+  fetchCasesFromSupabase,
+  fetchEventsFromSupabase,
+  fetchLeadsFromSupabase,
+  fetchTasksFromSupabase,
+  updateLeadInSupabase,
+  updateTaskInSupabase,
+  updateEventInSupabase
+} from '../lib/supabase-fallback';
+import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
+import { getAiLeadDraftsAsync, type AiLeadDraft } from '../lib/ai-drafts';
+import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
+import { normalizeWorkItem } from '../lib/work-items/normalize';
+import { buildOwnerControlBaseline } from '../lib/owner-control/owner-control-baseline';
+import { readOwnerRiskSettings } from '../lib/owner-control/owner-risk-settings';
+import { useWorkspace } from '../hooks/useWorkspace';
+import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+import WorkItemCard, { getWorkItemCardStatusTone } from '../components/work-item-card';
+import '../styles/closeflow-page-header-v2.css';
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
+import '../styles/closeflow-canvas-source-truth-stage211e.css';
+import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
+import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';import {
+  getOperationalEntryAc
+
+--- restore at -1 ---
+NOT FOUND

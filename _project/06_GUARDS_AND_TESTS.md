@@ -5325,3 +5325,10 @@ Date: 2026-06-23 09:10 Europe/Warsaw
 Guard: node scripts/check-stage232g-r1c-lead-shadow-entries-policy-and-dedup.cjs
 Test: node --test tests/stage232g-r1c-lead-shadow-entries-policy-and-dedup.test.cjs
 Required: npm run build, npm run verify:closeflow:quiet, git diff --check.
+
+### STAGE232G_R1D_CALENDAR_ACTIONS_RESPECT_OPERATIONAL_ENTRY_CONTRACT_GUARDS
+
+Date: 2026-06-23 10:05 Europe/Warsaw
+Guard: node scripts/check-stage232g-r1d-calendar-actions-respect-operational-entry-contract.cjs
+Test: node --test tests/stage232g-r1d-calendar-actions-respect-operational-entry-contract.test.cjs
+Required: npm run build, npm run verify:closeflow:quiet, git diff --check.

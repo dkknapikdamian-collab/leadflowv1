@@ -48,6 +48,11 @@ import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';import {
   getTodayOperationalDayKey,
   getTodayTaskMomentRaw,
 } from '../lib/calendar-operational-entry-today-adapter';
+import {
+  getOperationalEntryActionDecision,
+  isOperationalEntryActionAllowed,
+} from '../lib/calendar-operational-entry-action-policy';
+
 
 
 const STAGE223_R2AD_TODAY_TILE_NO_SCROLL_TRAP = 'Today metric tiles expand sections in place and must not scroll or reorder the page';
@@ -107,8 +112,27 @@ const STAGE232B_TODAY_OWNER_CONTROL_TILE_SOURCE_OF_TRUTH = 'STAGE232B_TODAY_OWNE
 void STAGE232B_TODAY_OWNER_CONTROL_TILE_SOURCE_OF_TRUTH;
 const STAGE232B_R6_TODAY_NO_DEV_HELPER_COPY = 'STAGE232B_R6: Today UI must not show developer explanatory helper copy under Wymaga ruchu';
 void STAGE232B_R6_TODAY_NO_DEV_HELPER_COPY;
+const STAGE232G_R1D_TODAY_ACTION_POLICY_IMPORT = 'STAGE232G_R1D_CALENDAR_ACTIONS_RESPECT_OPERATIONAL_ENTRY_CONTRACT: TODAY imports shared action policy';
+void STAGE232G_R1D_TODAY_ACTION_POLICY_IMPORT;
+const STAGE232G_R1D_COMPLETE_ACTION_CONTRACT_GUARD = 'complete action must respect getSupportedOperationalEntryActions; lead shadow cannot be completed as task/event';
+const STAGE232G_R1D_DELETE_ACTION_CONTRACT_GUARD = 'delete action must respect getSupportedOperationalEntryActions; lead shadow cannot be deleted as task/event';
+const STAGE232G_R1D_RESTORE_ACTION_CONTRACT_GUARD = 'restore action must respect getSupportedOperationalEntryActions; lead shadow cannot be restored as task/event';
+void STAGE232G_R1D_COMPLETE_ACTION_CONTRACT_GUARD;
+void STAGE232G_R1D_DELETE_ACTION_CONTRACT_GUARD;
+void STAGE232G_R1D_RESTORE_ACTION_CONTRACT_GUARD;
+
 
 type DashboardStatus = 'idle' | 'loading' | 'ready' | 'error';
+function getTodayOperationalEntryActionDecisionR1D(entry: unknown, action: unknown) {
+  return getOperationalEntryActionDecision(entry, action);
+}
+
+function isTodayOperationalEntryActionAllowedR1D(entry: unknown, action: unknown) {
+  return isOperationalEntryActionAllowed(entry, action);
+}
+void getTodayOperationalEntryActionDecisionR1D;
+void isTodayOperationalEntryActionAllowedR1D;
+
 
 type DashboardData = {
   tasks: any[];
