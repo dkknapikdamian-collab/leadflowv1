@@ -1010,3 +1010,9 @@ Manual smoke: Calendar month/week/selected day still renders entries; R1D task/e
 ## STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R7_SYNTAX_REPAIR_RESUME
 - Status: DO_WERYFIKACJI_LOKALNIE.
 - R7 naprawia składnię po R6 i ponawia scoped typecheck api/work-items.ts.
+
+## STAGE232G_R1F_CALENDAR_TODAY_FINAL_PARITY_GUARD_AND_SMOKE_TESTS
+- Data: 2026-06-23 17:35 Europe/Warsaw
+- Status: DO_WYKONANIA_LOKALNIE
+- Oczekiwane PASS: R1F guard, R1F node test, R1E1 guard, CF_RUNTIME_00, build, verify:closeflow:quiet, diff-check.
+- Po pushu: potwierdzić Vercel build oraz ręczny smoke na aplikacji.

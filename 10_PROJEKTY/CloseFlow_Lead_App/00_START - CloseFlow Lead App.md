@@ -201,3 +201,10 @@ Next: STAGE232G_R1F_CALENDAR_TODAY_FINAL_PARITY_GUARD_AND_SMOKE
 - Cel: naprawa Vercel TypeScript blocker w api/work-items.ts po R1E.
 - Zakres: tylko api/work-items.ts, guardy/testy i centralna dokumentacja.
 - Test wymagany: npx tsc --noEmit --pretty false + build + verify.
+
+## STAGE232G_R1F_CALENDAR_TODAY_FINAL_PARITY_GUARD_AND_SMOKE_00_START
+- Data: 2026-06-23 17:35 Europe/Warsaw
+- Status: READY_TO_APPLY_ZIP / FINAL_GUARD_AND_SMOKE / NO_NEW_RUNTIME_FEATURES
+- Cel: zamknąć serię STAGE232G przez finalny guard parytetu Calendar/Today i smoke checklist.
+- Zakres: bez zmian runtime UI; tylko guard, test, raport, payload Obsidiana i CF_RUNTIME_00 allowlist.
+- Po PASS: dozwolone tylko commit/push R1F i ręczny smoke. Brak proponowania kolejnych etapów, chyba że wyjdzie błąd z tej serii.

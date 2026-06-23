@@ -5344,3 +5344,10 @@ Required: CF_RUNTIME_00, npm run build, npm run verify:closeflow:quiet, git diff
 - Guard: scripts/check-stage232g-r1e1-work-items-vercel-tsc-hotfix-r2-resume.cjs
 - Test: tests/stage232g-r1e1-work-items-vercel-tsc-hotfix-r2-resume.test.cjs
 - Hard gate: npx tsc --noEmit --pretty false.
+
+## STAGE232G_R1F_CALENDAR_TODAY_FINAL_PARITY_GUARD_AND_SMOKE_GUARDS
+- Data: 2026-06-23 17:35 Europe/Warsaw
+- Guard: scripts/check-stage232g-r1f-calendar-today-final-parity-guard-and-smoke.cjs
+- Test: tests/stage232g-r1f-calendar-today-final-parity-guard-and-smoke.test.cjs
+- Dodatkowo: R1E1 work-items guard, CF_RUNTIME_00, npm run build, npm run verify:closeflow:quiet, git diff --check.
+- Manual smoke po deployu: Calendar month/week, tooltip/kolory, akcje task/event, Today task/event/lead shadow, brak fake done/delete dla lead shadow, brak czerwonych błędów w konsoli.

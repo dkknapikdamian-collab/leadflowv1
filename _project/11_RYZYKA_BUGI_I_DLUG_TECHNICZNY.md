@@ -2435,3 +2435,9 @@ Open: real retirement/removal only after manual smoke or R1F parity evidence.
 ## STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R7_SYNTAX_REPAIR_RESUME
 - Ryzyko: automatyczne wstawienie markera po surowym tokenie stage może uszkodzić deklarację const.
 - Korekta: R7 wstawia marker R6 tylko po bezpiecznym anchorze void R2.
+
+## STAGE232G_R1F_CALENDAR_TODAY_FINAL_PARITY_GUARD_AND_SMOKE_RISKS
+- Data: 2026-06-23 17:35 Europe/Warsaw
+- Ryzyko: guard potwierdza anchory i kontrakty, ale nie zastępuje ręcznego kliknięcia Calendar/Today po deployu.
+- Ryzyko uboczne: jeśli Vercel po R1E1 nadal był czerwony, R1F nie powinien być commitowany przed naprawą konkretnego błędu.
+- Decyzja: R1F nie dodaje nowych funkcji; zamyka tylko aktualnie przekazaną serię.

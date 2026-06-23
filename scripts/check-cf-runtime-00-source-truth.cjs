@@ -134,6 +134,19 @@ const allowedChangePrefixes = [
   'tests/stage232g-r1e1-work-items-vercel-tsc-hotfix.test.cjs',
   'tests/stage232g-r1e1-work-items-vercel-tsc-hotfix-r2-resume.test.cjs',
 
+  // STAGE232G_R1F_CALENDAR_TODAY_FINAL_PARITY_GUARD_AND_SMOKE_ALLOWLIST
+  '10_PROJEKTY/CloseFlow_Lead_App/00_START - CloseFlow Lead App.md',
+  '_project/04_ETAPY_ROZWOJU_APLIKACJI.md',
+  '_project/06_GUARDS_AND_TESTS.md',
+  '_project/09_TESTY_DO_WYKONANIA_I_WYNIKI.md',
+  '_project/11_RYZYKA_BUGI_I_DLUG_TECHNICZNY.md',
+  '_project/CODEX_CONTEXT_INDEX.md',
+  'scripts/check-cf-runtime-00-source-truth.cjs',
+  '_project/obsidian_updates/2026-06-23_STAGE232G_R1F_CALENDAR_TODAY_FINAL_PARITY_GUARD_AND_SMOKE.md',
+  '_project/runs/STAGE232G_R1F_CALENDAR_TODAY_FINAL_PARITY_GUARD_AND_SMOKE.md',
+  'scripts/check-stage232g-r1f-calendar-today-final-parity-guard-and-smoke.cjs',
+  'tests/stage232g-r1f-calendar-today-final-parity-guard-and-smoke.test.cjs',
+
   // STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE_ALLOWLIST
   "src/pages/Calendar.tsx",
   "src/lib/calendar-dom-normalizer-policy.ts",

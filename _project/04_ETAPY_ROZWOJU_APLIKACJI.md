@@ -2698,3 +2698,10 @@ Next: R1F final parity guard and manual smoke.
 - Cel: naprawa Vercel TypeScript blocker w api/work-items.ts po R1E.
 - Zakres: tylko api/work-items.ts, guardy/testy i centralna dokumentacja.
 - Test wymagany: npx tsc --noEmit --pretty false + build + verify.
+
+## STAGE232G_R1F_CALENDAR_TODAY_FINAL_PARITY_GUARD_AND_SMOKE_QUEUE
+- Data: 2026-06-23 17:35 Europe/Warsaw
+- Status: ACTIVE / FINAL_SERIES_CLOSE_GATE
+- Poprzednik: STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX pushed.
+- Wykonać: finalny guard parytetu Calendar/Today, potwierdzenie R1A-R1E1 markerów i smoke checklist.
+- Następny etap: BRAK PLANOWANEGO KOLEJNEGO ETAPU po zamknięciu R1F. Wyjątek: hotfix, jeśli test/Vercel/smoke pokaże błąd z tej serii.

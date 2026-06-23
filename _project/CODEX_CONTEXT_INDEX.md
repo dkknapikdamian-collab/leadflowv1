@@ -313,3 +313,9 @@ Do not remove month DOM normalizers without manual smoke evidence.
 ## STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R2_RESUME
 - Dotyczy: api/work-items.ts Vercel tsc blocker.
 - Następny etap po zielonym/pushu: wrócić do STAGE232G_R1F.
+
+## STAGE232G_R1F_CALENDAR_TODAY_FINAL_PARITY_GUARD_AND_SMOKE_CODEX
+- Data: 2026-06-23 17:35 Europe/Warsaw
+- Dotyczy: finalny parity/smoke gate dla STAGE232G Calendar/Today.
+- Źródła prawdy sprawdzane przez guard: R1A operational contract, R1B Today adapter, R1C lead shadow policy, R1D action policy, R1E DOM normalizer policy, R1E1 work-items TS hotfix.
+- Po zamknięciu: nie proponować nowych etapów bez błędu z aktualnej serii.
