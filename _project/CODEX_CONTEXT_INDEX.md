@@ -266,3 +266,16 @@ Do not touch in R1 without explicit scope:
 - MissingItems/Owner Control runtime,
 - Google OAuth/sync production flow.
 <!-- /STAGE232G_R0_ACTUAL_AUDIT_2026_06_22_CODEX -->
+
+<!-- STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_CODEX -->
+## 2026-06-23 06:35 Europe/Warsaw - STAGE232G R1A Calendar/Today operational entry contract
+
+Status: R1A_READY_TO_APPLY / CONTRACT_FOUNDATION
+
+Code context:
+- `src/lib/calendar-operational-entry-contract.ts` defines the shared operational entry contract.
+- `src/lib/scheduling.ts` exports the contract for Calendar/Today follow-up stages.
+- Lead shadow entries must not expose complete/restore/delete until R1C makes a source-truth decision.
+
+Do not treat R1A as full Calendar/Today parity closure.
+<!-- /STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_CODEX -->

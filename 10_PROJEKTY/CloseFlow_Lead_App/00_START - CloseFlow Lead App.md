@@ -146,3 +146,17 @@ NajbliĹĽszy rekomendowany etap po akceptacji Damiana:
 
 Nie ruszano runtime Calendar/Today/Lead/Case/Client, SQL, finansĂłw, Owner Control ani Google OAuth.
 <!-- /STAGE232G_R0_ACTUAL_AUDIT_2026_06_22_00_START -->
+
+<!-- STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_00_START -->
+## 2026-06-23 06:35 Europe/Warsaw - STAGE232G R1A Calendar/Today operational entry contract
+
+Status: R1A_READY_TO_APPLY / CONTRACT_FOUNDATION / RUNTIME_LIMITED
+
+Wynik:
+- Dodany wspĂłlny kontrakt operacyjnego wpisu Calendar/Today.
+- Kontrakt obsĹ‚uguje event/task/lead, dayKey, status, powiÄ…zania lead/case/client i akcje.
+- Lead shadow entry ma Ĺ›wiadomie ograniczone akcje: edit/shift/open-related.
+- PeĹ‚ne przepiÄ™cie Today zostaje na R1B.
+
+NastÄ™pny etap: `STAGE232G_R1B_TODAY_USES_OPERATIONAL_ENTRY_CONTRACT`.
+<!-- /STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_00_START -->

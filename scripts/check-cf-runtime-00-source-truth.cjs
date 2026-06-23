@@ -121,6 +121,19 @@ if (exists('scripts/closeflow-release-check-quiet.cjs')) {
 }
 
 const allowedChangePrefixes = [
+  // STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_ALLOWLIST
+  'src/lib/calendar-operational-entry-contract.ts',
+  'src/lib/scheduling.ts',
+  '_project/runs/STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT.md',
+  '_project/obsidian_updates/2026-06-23_STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT.md',
+  'scripts/check-stage232g-r1a-calendar-today-operational-entry-contract.cjs',
+  'tests/stage232g-r1a-calendar-today-operational-entry-contract.test.cjs',
+  '10_PROJEKTY/CloseFlow_Lead_App/00_START - CloseFlow Lead App.md',
+  '_project/04_ETAPY_ROZWOJU_APLIKACJI.md',
+  '_project/CODEX_CONTEXT_INDEX.md',
+  '_project/06_GUARDS_AND_TESTS.md',
+  '_project/09_TESTY_DO_WYKONANIA_I_WYNIKI.md',
+  '_project/11_RYZYKA_BUGI_I_DLUG_TECHNICZNY.md',
   'src/pages/SalesFunnel.tsx',
   'src/pages/LeadDetail.tsx',
 

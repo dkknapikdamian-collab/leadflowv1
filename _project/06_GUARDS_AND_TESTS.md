@@ -5285,3 +5285,20 @@ Wymaga:
 - payloadu Obsidiana,
 - braku runtime diff w Calendar/Today/Lead/Case/Client.
 <!-- /STAGE232G_R0_ACTUAL_AUDIT_2026_06_22_GUARDS -->
+
+<!-- STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_GUARDS -->
+## 2026-06-23 06:35 Europe/Warsaw - STAGE232G R1A guard/test
+
+Guard:
+`node scripts/check-stage232g-r1a-calendar-today-operational-entry-contract.cjs`
+
+Test:
+`node --test tests/stage232g-r1a-calendar-today-operational-entry-contract.test.cjs`
+
+Wymaga:
+- kontraktu event/task/lead,
+- dayKey i parity fingerprint,
+- ograniczonych akcji lead shadow,
+- exportu przez scheduling,
+- allowlisty CF_RUNTIME_00.
+<!-- /STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_GUARDS -->

@@ -1,3 +1,20 @@
+// STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_EXPORT
+export {
+  STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT,
+  buildCalendarTodayParityFingerprint,
+  buildOperationalEntryContract,
+  getOperationalRecordMomentRaw,
+  getSupportedOperationalEntryActions,
+  isCompletedOperationalStatus,
+  normalizeOperationalStatus,
+  toOperationalDayKey,
+} from './calendar-operational-entry-contract';
+export type {
+  CalendarTodayOperationalEntryContract,
+  OperationalEntryAction,
+  OperationalEntryKind,
+  OperationalEntryLinkTarget,
+} from './calendar-operational-entry-contract';
 import {
   getEventEndAt,
   getEventStartAt,

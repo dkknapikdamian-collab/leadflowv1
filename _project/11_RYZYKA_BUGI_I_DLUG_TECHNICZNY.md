@@ -2375,3 +2375,13 @@ Ryzyka:
 
 Rekomendacja: R1 jako runtime source-truth fix, nie status-only close.
 <!-- /STAGE232G_R0_ACTUAL_AUDIT_2026_06_22_RISKS -->
+
+<!-- STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_RISKS -->
+## 2026-06-23 06:35 Europe/Warsaw - STAGE232G R1A risks
+
+Ryzyka po R1A:
+1. Today jeszcze nie jest przepiÄ™ty na kontrakt, wiÄ™c Calendar/Today parity pozostaje PARTIAL.
+2. Lead shadow entry ma ograniczone akcje. To jest bezpieczne, ale wymaga R1C decyzji UX.
+3. Month DOM normalizatory nadal istniejÄ… i nie sÄ… ruszane w R1A.
+4. R1A nie wolno traktowaÄ‡ jako peĹ‚nego zamkniÄ™cia STAGE232G.
+<!-- /STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_RISKS -->

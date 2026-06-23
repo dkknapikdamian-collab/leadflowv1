@@ -948,3 +948,18 @@ git status --short --branch
 
 Warunek PASS: wszystkie powyĹĽsze zielone, runtime diff pusty.
 <!-- /STAGE232G_R0_ACTUAL_AUDIT_2026_06_22_TESTS -->
+
+<!-- STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_TESTS -->
+## 2026-06-23 06:35 Europe/Warsaw - STAGE232G R1A tests
+
+Do wykonania po paczce:
+```powershell
+node scripts/check-stage232g-r1a-calendar-today-operational-entry-contract.cjs
+node --test tests/stage232g-r1a-calendar-today-operational-entry-contract.test.cjs
+npm run verify:closeflow:quiet
+git diff --check
+git status --short --branch
+```
+
+Manual smoke po R1A: brak wymaganego smoke UI, bo R1A nie przepina widokĂłw. R1B bÄ™dzie wymagaĹ‚ smoke Today/Calendar.
+<!-- /STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_TESTS -->

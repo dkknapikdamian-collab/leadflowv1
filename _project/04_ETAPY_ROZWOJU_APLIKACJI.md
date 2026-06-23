@@ -2642,3 +2642,18 @@ Decyzja kolejki:
 - R0 nie jest runtime fix.
 - R1 rekomendowany: `STAGE232G_R1_CALENDAR_RUNTIME_SOURCE_TRUTH_FIX` po akceptacji Damiana.
 <!-- /STAGE232G_R0_ACTUAL_AUDIT_2026_06_22_QUEUE -->
+
+<!-- STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_QUEUE -->
+## 2026-06-23 06:35 Europe/Warsaw - STAGE232G R1A Calendar/Today operational entry contract
+
+Status: R1A_READY_TO_APPLY / CONTRACT_FOUNDATION
+
+Zakres:
+- `src/lib/calendar-operational-entry-contract.ts` jako wspĂłlny kontrakt wpisu.
+- Export kontraktu przez `src/lib/scheduling.ts`.
+- Guard/test R1A.
+- Bez przepinania Today UI i bez DOM normalizer cleanup.
+
+NastÄ™pny etap:
+`STAGE232G_R1B_TODAY_USES_OPERATIONAL_ENTRY_CONTRACT`.
+<!-- /STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_QUEUE -->
