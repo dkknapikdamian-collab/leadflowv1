@@ -42,7 +42,13 @@ import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import '../styles/closeflow-canvas-source-truth-stage211e.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
-import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
+import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';import {
+  getTodayEventMomentRaw,
+  getTodayLeadMomentRaw,
+  getTodayOperationalDayKey,
+  getTodayTaskMomentRaw,
+} from '../lib/calendar-operational-entry-today-adapter';
+
 
 const STAGE223_R2AD_TODAY_TILE_NO_SCROLL_TRAP = 'Today metric tiles expand sections in place and must not scroll or reorder the page';
 void STAGE223_R2AD_TODAY_TILE_NO_SCROLL_TRAP;
@@ -233,32 +239,23 @@ function readMomentRaw(record: any, keys: string[]) {
 }
 
 function getTaskMomentRaw(task: any) {
-  const normalized = normalizeWorkItem(task);
-  if (normalized.dateAt) return normalized.dateAt;
-
-  const date = readText(task, ['date'], '');
-  if (!date) return '';
-  const time = readText(task, ['time'], '09:00');
-  return date.includes('T') ? date : date + 'T' + time;
+// STAGE232G_R1B_TODAY_USES_OPERATIONAL_ENTRY_CONTRACT
+  return getTodayTaskMomentRaw(task);
 }
 
 function getLeadMomentRaw(lead: any) {
-  const direct = readMomentRaw(lead, ['nextActionAt', 'next_action_at', 'followUpAt', 'follow_up_at', 'scheduledAt', 'scheduled_at', 'reminderAt', 'reminder_at']);
-  if (direct) return direct;
-
-  const date = readText(lead, ['nextActionDate', 'next_action_date', 'followUpDate', 'follow_up_date'], '');
-  if (!date) return '';
-  const time = readText(lead, ['nextActionTime', 'next_action_time', 'FollowUpTime', 'follow_up_time'], '09:00');
-  return date.includes('T') ? date : date + 'T' + time;
+// STAGE232G_R1B_TODAY_USES_OPERATIONAL_ENTRY_CONTRACT
+  return getTodayLeadMomentRaw(lead);
 }
 
 function getEventMomentRaw(event: any) {
-  return normalizeWorkItem(event).dateAt || readMomentRaw(event, ['startAt', 'start_at', 'startsAt', 'starts_at', 'scheduledAt', 'scheduled_at', 'dateTime', 'date_time']);
+// STAGE232G_R1B_TODAY_USES_OPERATIONAL_ENTRY_CONTRACT
+  return getTodayEventMomentRaw(event);
 }
 
 function getDateKey(raw: string) {
-  if (!raw) return '';
-  return String(raw).slice(0, 10);
+// STAGE232G_R1B_TODAY_USES_OPERATIONAL_ENTRY_CONTRACT
+  return getTodayOperationalDayKey(raw) ?? '';
 }
 
 function parseTime(raw: string) {

@@ -285,3 +285,9 @@ Do not treat R1A as full Calendar/Today parity closure.
 
 Data: 2026-06-23 07:25 Europe/Warsaw
 Files: pi/work-items.ts, scripts/check-stage232g-r1a-work-items-ts-build-hotfix.cjs, _project/runs/STAGE232G_R1A_WORK_ITEMS_TS_BUILD_HOTFIX.md.
+
+### STAGE232G_R1B_TODAY_USES_OPERATIONAL_ENTRY_CONTRACT_CODEX
+
+Date: 2026-06-23 08:20 Europe/Warsaw
+Files: TodayStable, Today adapter, R1B guard/test, CF runtime guard allowlist.
+Do not treat R1B as Calendar UI parity closure.

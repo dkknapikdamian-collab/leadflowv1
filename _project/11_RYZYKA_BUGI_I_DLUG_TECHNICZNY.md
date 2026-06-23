@@ -2392,3 +2392,10 @@ Ryzyka po R1A:
 Data: 2026-06-23 07:25 Europe/Warsaw
 Ryzyko: pi/work-items.ts ma luĹşne typy work-item/source payload; trzeba pilnowaÄ‡ camelCase/snake_case i scope zmiennych.
 Backlog: warning url.parse() DEP0169 do osobnego etapu security cleanup, nie w tym hotfixie.
+
+### STAGE232G_R1B_TODAY_USES_OPERATIONAL_ENTRY_CONTRACT_RISKS
+
+Date: 2026-06-23 08:20 Europe/Warsaw
+Risk: Today filtering may depend on old local helper edge cases.
+Mitigation: R1B keeps helper names as wrappers and does not change row rendering.
+Open: R1C must handle lead shadow entry policy/deduplication.

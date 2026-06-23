@@ -2664,3 +2664,10 @@ NastÄ™pny etap:
 Data: 2026-06-23 07:25 Europe/Warsaw
 Status: HOTFIX_BEFORE_R1B
 NastÄ™pny etap R1B wolno rozpoczÄ…Ä‡ dopiero po zielonym build/typecheck dla pi/work-items.ts.
+
+### STAGE232G_R1B_TODAY_USES_OPERATIONAL_ENTRY_CONTRACT_QUEUE
+
+Date: 2026-06-23 08:20 Europe/Warsaw
+Status: APPLIED_PENDING_TEST_OR_PUSH
+Goal: wire TodayStable moment/dayKey helpers to shared operational entry contract.
+Next: R1C lead shadow entry policy and deduplication.

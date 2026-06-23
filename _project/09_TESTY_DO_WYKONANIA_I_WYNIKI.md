@@ -970,3 +970,9 @@ Manual smoke po R1A: brak wymaganego smoke UI, bo R1A nie przepina widokĂłw. R
 Data: 2026-06-23 07:25 Europe/Warsaw
 Status: do wykonania przez APPLY script.
 Zakres testu: TypeScript build blockers in pi/work-items.ts.
+
+### STAGE232G_R1B_TODAY_USES_OPERATIONAL_ENTRY_CONTRACT_TESTS
+
+Date: 2026-06-23 08:20 Europe/Warsaw
+Planned tests: R1B guard, R1B node test, build, verify quiet, diff check.
+Manual smoke: Today loads, Calendar loads, no red console errors, Today entries still visible.
