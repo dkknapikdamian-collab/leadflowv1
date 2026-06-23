@@ -5271,3 +5271,17 @@ Zakres guarda:
 - blokuje raport, ktory udaje runtime PASS bez audytu;
 - blokuje zmiany runtime w diffie R0.
 <!-- /STAGE232G_R0_CALENDAR_BRIEF_CORRECTIONS_2026_06_22_GUARDS -->
+
+<!-- STAGE232G_R0_ACTUAL_AUDIT_2026_06_22_GUARDS -->
+## 2026-06-22 23:35 Europe/Warsaw - STAGE232G R0 actual audit guard
+
+Guard:
+`node scripts/check-stage232g-calendar-operational-source-truth-r0-audit.cjs`
+
+Wymaga:
+- wypeĹ‚nionego raportu R0, nie template,
+- `CALENDAR_SOURCE_TRUTH_STATUS: PARTIAL`,
+- rekomendacji `STAGE232G_R1_CALENDAR_RUNTIME_SOURCE_TRUTH_FIX`,
+- payloadu Obsidiana,
+- braku runtime diff w Calendar/Today/Lead/Case/Client.
+<!-- /STAGE232G_R0_ACTUAL_AUDIT_2026_06_22_GUARDS -->

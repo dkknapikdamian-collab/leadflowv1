@@ -1,4 +1,4 @@
-﻿<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
+<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
 # 11_RYZYKA_BUGI_I_DLUG_TECHNICZNY.md
 
 <!-- STAGE228F_R2_RUNTIME_COPY_CLEANUP -->
@@ -2362,3 +2362,16 @@ Mitigacja:
 - R1 runtime fix dopiero po decyzji Damiana;
 - guard R0 blokuje runtime diff.
 <!-- /STAGE232G_R0_CALENDAR_BRIEF_CORRECTIONS_2026_06_22_RISKS -->
+
+<!-- STAGE232G_R0_ACTUAL_AUDIT_2026_06_22_RISKS -->
+## 2026-06-22 23:35 Europe/Warsaw - STAGE232G R0 calendar source-truth risks
+
+Ryzyka:
+1. Today i Calendar majÄ… rĂłĹĽne selektory/logikÄ™ dat.
+2. Lead shadow entry jest operacyjny, ale `Zrobione/PrzywrĂłÄ‡` dla lead entry nie ma peĹ‚nej gaĹ‚Ä™zi update ĹşrĂłdĹ‚a.
+3. Month view ma aktywne DOM normalizatory i `replaceChildren()`.
+4. Task shift ma peĹ‚ny payload dat, ale task edit/complete jest mniej kompletny.
+5. Obsidian vault main jest stale wobec app repo/payloadu i wymaga sync.
+
+Rekomendacja: R1 jako runtime source-truth fix, nie status-only close.
+<!-- /STAGE232G_R0_ACTUAL_AUDIT_2026_06_22_RISKS -->

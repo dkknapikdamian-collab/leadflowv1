@@ -1,74 +1,84 @@
-# 2026-06-22_STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH_R0_AUDIT_AND_CONTRACT
+# Obsidian update payload - STAGE232G R0 Calendar Operational Source of Truth Audit
 
-Data i godzina: 2026-06-22 Europe/Warsaw  
-Etap: STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH_R0_AUDIT_AND_CONTRACT  
-Canonical name: CloseFlow / LeadFlow  
-Repo: dkknapikdamian-collab/leadflowv1  
-Branch: dev-rollout-freeze  
-Local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow  
-Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App  
-Status: DOCS_ONLY_CORRECTION / AUDIT_TEMPLATE / DO_SPRAWDZENIA_PRZEZ_DAMIANA  
+Data: 2026-06-22 23:35 Europe/Warsaw
+Status: R0_AUDIT_COMPLETED / REVIEW_REQUIRED / LOCAL_SYNC_PENDING
+Canonical name: CloseFlow / LeadFlow
+Repo: dkknapikdamian-collab/leadflowv1
+Branch: dev-rollout-freeze
+Local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
+Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
 
-## Co robimy
+## Wpis do 02_AKTUALNY_STAN
 
-Robimy poprawkę briefu przed właściwym audytem kalendarza.
+STAGE232G_R0_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH_R0_AUDIT_AND_CONTRACT został wykonany jako audyt docs-only. Runtime Calendar/Today/Lead/Case/Client nie był modyfikowany.
 
-Kalendarz ma być sprawdzony jako operacyjne źródło prawdy dla:
-- zadań,
-- wydarzeń,
-- przesuwania terminów,
-- statusu Zrobione/Przywróć,
-- powiązań z leadem/sprawą/klientem,
-- zgodności z Today.
+Wynik:
 
-## Korekta względem wcześniejszej instrukcji
+```txt
+CALENDAR_SOURCE_TRUTH_STATUS: PARTIAL
+TODAY_CALENDAR_PARITY_STATUS: PARTIAL
+LEAD_SHADOW_ENTRY_STATUS: PARTIAL
+GOOGLE_CALENDAR_BACKGROUND_SYNC_STATUS: PASS_WITH_RUNTIME_RISK
+RUNTIME_TOUCHED: NIE
+```
 
-Nie zakładamy, że I3/K są zamknięte, dopóki nie potwierdzą tego centralne pliki.
+Główny wniosek: Calendar ma centralny model `ScheduleEntry`, ale Today nadal ma osobną logikę dat/list i nie używa tego samego adaptera. Kalendarz nie powinien być jeszcze zamykany jako pełne źródło prawdy.
 
-R0 dostaje obowiązkowe sekcje:
-- STATUS_PRECONDITION,
-- LEAD_SHADOW_ENTRY_STATUS,
-- TODAY_CALENDAR_PARITY_STATUS,
-- ACTION_FIELD_MATRIX,
-- LEGACY_AND_ACTIVE_DOM_NORMALIZERS_FOUND,
-- GOOGLE_CALENDAR_BACKGROUND_SYNC_STATUS,
-- R1_DECISION_GATE.
+## Wpis do 04_KIERUNEK_DO_WDROZENIA
 
-## Czego nie ruszać
+Następny rekomendowany etap:
 
-- Calendar runtime,
-- Today runtime,
-- Lead/Case/Client runtime,
-- SQL,
-- finanse,
-- Braki/Blokady,
-- Owner Control runtime,
-- Google Calendar OAuth/sync produkcyjny.
+```txt
+STAGE232G_R1_CALENDAR_RUNTIME_SOURCE_TRUTH_FIX
+```
 
-## Testy
+Powód: R0 pokazał `PARTIAL`, nie `PASS`.
+
+Zakres R1 ma być wąski:
+
+- wspólny adapter/kontrakt Calendar + Today dla task/event/lead moments,
+- blokada albo naprawa `Zrobione/Przywróć` dla lead entries,
+- pełny payload task edit/complete,
+- parity guard Calendar/Today po F5,
+- bez SQL, bez finansów, bez Braków/Blokad, bez Google OAuth.
+
+## Wpis do 09_TESTY_DO_WYKONANIA_I_WYNIKI
+
+Testy R0 do uruchomienia po paczce:
 
 ```powershell
 node scripts/check-stage232g-calendar-operational-source-truth-r0-audit.cjs
 node --test tests/stage232g-calendar-operational-source-truth-r0-audit.test.cjs
 npm run verify:closeflow:quiet
 git diff --check
+git status --short --branch
 ```
 
-## Ryzyka
+Wymagany PASS przed commit/push.
 
-- routery mogą być stale i wskazywać stare etapy;
-- Calendar ma lead shadow entries, więc model events/tasks-only jest niepełny;
-- Today ma własną logikę dat, więc parity jest hipotezą;
-- aktywne DOM normalizatory mogą ukrywać realny stan UI;
-- Google background sync może zmieniać dane po pierwszym renderze.
+## Wpis do 11_RYZYKA_BUGI_I_DLUG_TECHNICZNY
 
-## Zapis do Obsidiana
+Ryzyka po R0:
 
-save status: payload przygotowany w repo, nie zsynchronizowany z lokalnym Obsidianem  
-Obsidian GitHub sync: do wykonania po akceptacji  
-Obsidian local sync: LOCAL_SYNC_PENDING  
+1. Today i Calendar mają różne selektory/logikę dat.
+2. Lead shadow entry jest operacyjny, ale `Zrobione/Przywróć` dla lead entry nie ma jasnej gałęzi update źródła.
+3. Month view ma aktywne DOM normalizatory i `replaceChildren()` po renderze.
+4. Task shift ma pełny payload dat, ale task edit/complete jest mniej kompletny.
+5. Obsidian vault main jest stale wobec app repo/payloadu i wymaga synchronizacji.
 
-PowerShell po przyszłym pushu Obsidiana:
+## Wpis do 10_ZIPY_WDROZENIA_PUSH
+
+ZIP/paczka: `STAGE232G_R0_ACTUAL_CALENDAR_AUDIT_2026_06_22.zip`
+Tryb: local apply, docs/guard/test only.
+Runtime: nie ruszać.
+Commit/push: dopiero po PASS i akceptacji Damiana.
+
+## Obsidian sync
+
+Obsidian GitHub sync: DO_WYKONANIA po zatwierdzeniu.
+Obsidian local sync: LOCAL_SYNC_PENDING.
+
+PowerShell po przyszłym sync/push Obsidiana:
 
 ```powershell
 cd "C:\Users\malim\Desktop\biznesy_ai\00_OBSIDIAN_VAULT"
@@ -76,31 +86,3 @@ git status --short --branch
 git pull --ff-only origin main
 git status --short --branch
 ```
-
-
-## STAGE232G_R0_R1_PHRASE_HOTFIX
-
-R1 runtime fix dopiero po peĹ‚nym R0, status-precheck i decyzji Damiana; R0 pozostaje docs-only bez runtime.
-
-<!-- STAGE232G_R0_CF_RUNTIME_ALLOWLIST_HOTFIX_2026_06_22 -->
-## 2026-06-22 Europe/Warsaw - CF_RUNTIME_00 allowlist hotfix for STAGE232G_R0
-
-Status: DOCS_GUARD_SCOPE_FIX / RUNTIME_NOT_TOUCHED
-
-Powod:
-- 
-pm run verify:closeflow:quiet odpala scripts/check-cf-runtime-00-source-truth.cjs;
-- CF_RUNTIME_00 ma wlasna allowliste zmienionych plikow;
-- nowe pliki R0 byly poprawne, ale nie byly jeszcze dopuszczone przez CF_RUNTIME_00 scope guard.
-
-Dopuszczone pliki R0:
-- _project/runs/STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH_R0_AUDIT_AND_CONTRACT.md
-- _project/obsidian_updates/2026-06-22_STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH_R0_AUDIT_AND_CONTRACT.md
-- scripts/check-stage232g-calendar-operational-source-truth-r0-audit.cjs
-- 	ests/stage232g-calendar-operational-source-truth-r0-audit.test.cjs
-
-Zakaz:
-- runtime Calendar/Today/Lead/Case/Client nadal nie moze byc zmieniany w R0.
-- R1 runtime fix dopiero po pelnym R0, status-precheck i decyzji Damiana.
-
-<!-- /STAGE232G_R0_CF_RUNTIME_ALLOWLIST_HOTFIX_2026_06_22 -->

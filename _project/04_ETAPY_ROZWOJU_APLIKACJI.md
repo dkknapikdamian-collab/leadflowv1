@@ -1,4 +1,4 @@
-﻿# 04_ETAPY_ROZWOJU_APLIKACJI - CloseFlow / LeadFlow
+# 04_ETAPY_ROZWOJU_APLIKACJI - CloseFlow / LeadFlow
 
 Data utworzenia: 2026-06-12 23:59 Europe/Warsaw
 Ostatnia regulacja kolejki: 2026-06-15 Europe/Warsaw
@@ -2625,3 +2625,20 @@ Nastepny etap po R0:
 - R1 runtime fix tylko jesli R0 pokaze PARTIAL/BROKEN;
 - R1 status-sync/guard close tylko jesli R0 pokaze PASS.
 <!-- /STAGE232G_R0_CALENDAR_BRIEF_CORRECTIONS_2026_06_22_QUEUE -->
+
+<!-- STAGE232G_R0_ACTUAL_AUDIT_2026_06_22_QUEUE -->
+## 2026-06-22 23:35 Europe/Warsaw - STAGE232G R0 actual audit completed
+
+Status: R0_AUDIT_COMPLETED / REVIEW_REQUIRED / RUNTIME_NOT_TOUCHED
+
+Wynik audytu:
+- Calendar ma centralny `ScheduleEntry`, ale Today nie uĹĽywa `combineScheduleEntries`.
+- Lead shadow entries sÄ… aktywne i czÄ™Ĺ›ciowo operacyjne.
+- `Zrobione/PrzywrĂłÄ‡` dla lead entry wymaga decyzji/naprawy w R1.
+- Month view ma aktywne DOM normalizatory.
+- Google sync dziaĹ‚a local-first jako background refresh, ale moĹĽe zmieniÄ‡ dane po renderze.
+
+Decyzja kolejki:
+- R0 nie jest runtime fix.
+- R1 rekomendowany: `STAGE232G_R1_CALENDAR_RUNTIME_SOURCE_TRUTH_FIX` po akceptacji Damiana.
+<!-- /STAGE232G_R0_ACTUAL_AUDIT_2026_06_22_QUEUE -->

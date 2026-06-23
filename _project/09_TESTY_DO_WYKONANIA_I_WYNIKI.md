@@ -1,4 +1,4 @@
-﻿
+
 
 ## STAGE232B_R4_IDEMPOTENT_REPAIR_2026_06_15
 
@@ -933,3 +933,18 @@ Manual smoke po R0:
 - otworzyc modal edycji;
 - nie testowac masowo +1H/+1D/+1W/Zrobione/Usun w R0, chyba ze raport R0 uzasadni, ze to bezpieczne.
 <!-- /STAGE232G_R0_CALENDAR_BRIEF_CORRECTIONS_2026_06_22_TESTS -->
+
+<!-- STAGE232G_R0_ACTUAL_AUDIT_2026_06_22_TESTS -->
+## 2026-06-22 23:35 Europe/Warsaw - STAGE232G R0 actual audit tests
+
+Do wykonania po paczce:
+```powershell
+node scripts/check-stage232g-calendar-operational-source-truth-r0-audit.cjs
+node --test tests/stage232g-calendar-operational-source-truth-r0-audit.test.cjs
+npm run verify:closeflow:quiet
+git diff --check
+git status --short --branch
+```
+
+Warunek PASS: wszystkie powyĹĽsze zielone, runtime diff pusty.
+<!-- /STAGE232G_R0_ACTUAL_AUDIT_2026_06_22_TESTS -->

@@ -1,4 +1,4 @@
-﻿# CODEX_CONTEXT_INDEX - legacy bridge
+# CODEX_CONTEXT_INDEX - legacy bridge
 
 Status: LEGACY_BRIDGE
 Read policy: REDIRECT_TO_AI_START
@@ -249,3 +249,20 @@ Nastepny krok:
 - Damian sprawdza diff tej korekty;
 - dopiero potem wykonawca robi realny audyt R0.
 <!-- /STAGE232G_R0_CALENDAR_BRIEF_CORRECTIONS_2026_06_22_CODEX -->
+
+<!-- STAGE232G_R0_ACTUAL_AUDIT_2026_06_22_CODEX -->
+## 2026-06-22 23:35 Europe/Warsaw - STAGE232G R0 actual calendar source-truth audit
+
+Status: R0_AUDIT_COMPLETED / REVIEW_REQUIRED / RUNTIME_NOT_TOUCHED
+
+Key result:
+- `CALENDAR_SOURCE_TRUTH_STATUS: PARTIAL`.
+- Calendar route and model are real, but Today has separate date/list selectors.
+- Next recommended stage: `STAGE232G_R1_CALENDAR_RUNTIME_SOURCE_TRUTH_FIX`.
+
+Do not touch in R1 without explicit scope:
+- SQL/RLS,
+- finance/commission,
+- MissingItems/Owner Control runtime,
+- Google OAuth/sync production flow.
+<!-- /STAGE232G_R0_ACTUAL_AUDIT_2026_06_22_CODEX -->
