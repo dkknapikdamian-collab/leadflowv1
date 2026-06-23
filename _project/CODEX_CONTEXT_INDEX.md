@@ -303,3 +303,9 @@ Do not treat R1C as Calendar actions final closure.
 Date: 2026-06-23 10:05 Europe/Warsaw
 Files: Calendar, TodayStable, operational action policy module, R1D guard/test, CF runtime allowlist.
 Do not treat R1D as DOM normalizer cleanup.
+
+### STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE_CODEX
+
+Date: 2026-06-23 11:15 Europe/Warsaw
+Files: Calendar.tsx, calendar-dom-normalizer-policy.ts, R1E guard/test, CF runtime allowlist, central docs.
+Do not remove month DOM normalizers without manual smoke evidence.

@@ -121,6 +121,21 @@ if (exists('scripts/closeflow-release-check-quiet.cjs')) {
 }
 
 const allowedChangePrefixes = [
+  // STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE_ALLOWLIST
+  "src/pages/Calendar.tsx",
+  "src/lib/calendar-dom-normalizer-policy.ts",
+  "_project/runs/STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE.md",
+  "_project/runs/STAGE232G_R1E_DOM_NORMALIZER_PATCH_CONTEXT.txt",
+  "_project/obsidian_updates/2026-06-23_STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE.md",
+  "scripts/check-stage232g-r1e-calendar-dom-normalizers-limit-or-retire.cjs",
+  "tests/stage232g-r1e-calendar-dom-normalizers-limit-or-retire.test.cjs",
+  "10_PROJEKTY/CloseFlow_Lead_App/00_START - CloseFlow Lead App.md",
+  "_project/04_ETAPY_ROZWOJU_APLIKACJI.md",
+  "_project/CODEX_CONTEXT_INDEX.md",
+  "_project/06_GUARDS_AND_TESTS.md",
+  "_project/09_TESTY_DO_WYKONANIA_I_WYNIKI.md",
+  "_project/11_RYZYKA_BUGI_I_DLUG_TECHNICZNY.md",
+
   // STAGE232G_R1D_CALENDAR_ACTIONS_RESPECT_OPERATIONAL_ENTRY_CONTRACT_ALLOWLIST
   "src/pages/Calendar.tsx",
   "src/pages/TodayStable.tsx",

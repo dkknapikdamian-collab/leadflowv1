@@ -2413,3 +2413,10 @@ Date: 2026-06-23 10:05 Europe/Warsaw
 Risk: action handlers can drift independently in Calendar/Today.
 Mitigation: central action policy + guard.
 Open: R1E must limit or retire DOM normalizers.
+
+### STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE_RISKS
+
+Date: 2026-06-23 11:15 Europe/Warsaw
+Risk: month DOM normalizers are high-risk legacy code and still active.
+Mitigation: central policy gate instead of blind deletion.
+Open: real retirement/removal only after manual smoke or R1F parity evidence.

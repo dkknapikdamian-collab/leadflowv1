@@ -988,3 +988,9 @@ Manual smoke: Calendar/Today still load; duplicated lead shadow entries should n
 Date: 2026-06-23 10:05 Europe/Warsaw
 Planned tests: R1D guard, R1D node test, CF runtime guard, build, verify quiet, diff check.
 Manual smoke: lead shadow entry should not expose/execute done/delete/restore; task/event actions should still work.
+
+### STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE_TESTS
+
+Date: 2026-06-23 11:15 Europe/Warsaw
+Planned tests: R1E guard, R1E node test, CF_RUNTIME_00, build, verify quiet, diff check.
+Manual smoke: Calendar month/week/selected day still renders entries; R1D task/event/lead shadow actions still behave correctly.

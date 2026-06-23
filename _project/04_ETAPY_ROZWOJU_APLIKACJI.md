@@ -2685,3 +2685,10 @@ Date: 2026-06-23 10:05 Europe/Warsaw
 Status: APPLIED_PENDING_TEST_OR_PUSH
 Goal: Calendar/Today action handlers block unsupported actions for lead shadow entries and use the shared operational entry action contract.
 Next: R1E DOM normalizer cleanup.
+
+### STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE_QUEUE
+
+Date: 2026-06-23 11:15 Europe/Warsaw
+Status: APPLIED_PENDING_TEST_OR_PUSH
+Goal: stop anonymous Calendar post-render DOM surgery by routing known active normalizers through a central policy before retirement/removal.
+Next: R1F final parity guard and manual smoke.

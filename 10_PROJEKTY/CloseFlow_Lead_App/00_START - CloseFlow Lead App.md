@@ -188,3 +188,10 @@ Date: 2026-06-23 10:05 Europe/Warsaw
 Status: APPLIED_PENDING_TEST_OR_PUSH
 Scope: Calendar/Today action policy respects operational entry contract.
 Next: STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE
+
+### STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE_00_START
+
+Date: 2026-06-23 11:15 Europe/Warsaw
+Status: APPLIED_PENDING_TEST_OR_PUSH
+Scope: Calendar DOM normalizers are centrally gated before retirement.
+Next: STAGE232G_R1F_CALENDAR_TODAY_FINAL_PARITY_GUARD_AND_SMOKE

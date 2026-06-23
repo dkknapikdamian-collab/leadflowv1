@@ -100,6 +100,11 @@ import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';import {
   getOperationalEntryActionDecision,
   isOperationalEntryActionAllowed,
 } from '../lib/calendar-operational-entry-action-policy';
+import {
+  CALENDAR_DOM_NORMALIZER_IDS,
+  shouldRunCalendarDomNormalizer,
+} from '../lib/calendar-dom-normalizer-policy';
+
 
 
 const STAGE228R25_UNSUPPORTED_DELETE_KIND_NO_FALSE_SUCCESS = 'Calendar must not show false delete success for unsupported entry kinds';
@@ -114,6 +119,9 @@ const STAGE232G_R1D_RESTORE_ACTION_CONTRACT_GUARD = 'restore action must respect
 void STAGE232G_R1D_COMPLETE_ACTION_CONTRACT_GUARD;
 void STAGE232G_R1D_DELETE_ACTION_CONTRACT_GUARD;
 void STAGE232G_R1D_RESTORE_ACTION_CONTRACT_GUARD;
+const STAGE232G_R1E_CALENDAR_DOM_NORMALIZER_POLICY_GUARD = 'STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE: active DOM normalizers must be gated by calendar-dom-normalizer-policy before retirement';
+void STAGE232G_R1E_CALENDAR_DOM_NORMALIZER_POLICY_GUARD;
+
 
 
 
@@ -843,6 +851,11 @@ export default function Calendar() {
 
 
   useEffect(() => {
+    // STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE: gate color tooltip DOM normalizer
+    if (!shouldRunCalendarDomNormalizer(CALENDAR_DOM_NORMALIZER_IDS.colorTooltipV2)) {
+      return;
+    }
+
     // CLOSEFLOW_CALENDAR_COLOR_TOOLTIP_V2_EFFECT: native hover tooltips for clipped calendar text + visual type hints.
     if (typeof document === 'undefined') return;
 
@@ -918,6 +931,11 @@ export default function Calendar() {
   }, [calendarView, calendarScale, currentMonth, events.length, tasks.length, leads.length, cases.length, clients.length, loading]);
 
   useEffect(() => {
+    // STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE: gate high-risk month structural DOM normalizer
+    if (!shouldRunCalendarDomNormalizer(CALENDAR_DOM_NORMALIZER_IDS.monthEntryStructuralV3)) {
+      return;
+    }
+
     // CLOSEFLOW_CALENDAR_MONTH_ENTRY_STRUCTURAL_FIX_V3_REPAIR2_EFFECT:
     // normalize compact month entries into stable one-row chips.
     if (calendarView !== 'month') return;
@@ -1023,6 +1041,11 @@ export default function Calendar() {
   }, [calendarView, calendarScale, currentMonth, events.length, tasks.length, leads.length, cases.length, clients.length, loading]);
 
   useEffect(() => {
+    // STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE: gate high-risk month plain-text rows DOM normalizer
+    if (!shouldRunCalendarDomNormalizer(CALENDAR_DOM_NORMALIZER_IDS.monthPlainTextRowsV4)) {
+      return;
+    }
+
     // CLOSEFLOW_CALENDAR_MONTH_PLAIN_TEXT_ROWS_V4_EFFECT:
     // Month cells must use plain one-line text rows, not mini-cards.
     if (calendarView !== 'month') return;

@@ -5332,3 +5332,10 @@ Date: 2026-06-23 10:05 Europe/Warsaw
 Guard: node scripts/check-stage232g-r1d-calendar-actions-respect-operational-entry-contract.cjs
 Test: node --test tests/stage232g-r1d-calendar-actions-respect-operational-entry-contract.test.cjs
 Required: npm run build, npm run verify:closeflow:quiet, git diff --check.
+
+### STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE_GUARDS
+
+Date: 2026-06-23 11:15 Europe/Warsaw
+Guard: node scripts/check-stage232g-r1e-calendar-dom-normalizers-limit-or-retire.cjs
+Test: node --test tests/stage232g-r1e-calendar-dom-normalizers-limit-or-retire.test.cjs
+Required: CF_RUNTIME_00, npm run build, npm run verify:closeflow:quiet, git diff --check.
