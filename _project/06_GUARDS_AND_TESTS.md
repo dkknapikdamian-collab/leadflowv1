@@ -5318,3 +5318,10 @@ Date: 2026-06-23 08:20 Europe/Warsaw
 Guard: node scripts/check-stage232g-r1b-today-uses-operational-entry-contract.cjs
 Test: node --test tests/stage232g-r1b-today-uses-operational-entry-contract.test.cjs
 Required: npm run build, npm run verify:closeflow:quiet, git diff --check.
+
+### STAGE232G_R1C_LEAD_SHADOW_ENTRIES_POLICY_AND_DEDUP_GUARDS
+
+Date: 2026-06-23 09:10 Europe/Warsaw
+Guard: node scripts/check-stage232g-r1c-lead-shadow-entries-policy-and-dedup.cjs
+Test: node --test tests/stage232g-r1c-lead-shadow-entries-policy-and-dedup.test.cjs
+Required: npm run build, npm run verify:closeflow:quiet, git diff --check.

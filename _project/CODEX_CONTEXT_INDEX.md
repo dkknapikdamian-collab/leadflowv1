@@ -291,3 +291,9 @@ Files: pi/work-items.ts, scripts/check-stage232g-r1a-work-items-ts-build-hotfix
 Date: 2026-06-23 08:20 Europe/Warsaw
 Files: TodayStable, Today adapter, R1B guard/test, CF runtime guard allowlist.
 Do not treat R1B as Calendar UI parity closure.
+
+### STAGE232G_R1C_LEAD_SHADOW_ENTRIES_POLICY_AND_DEDUP_CODEX
+
+Date: 2026-06-23 09:10 Europe/Warsaw
+Files: scheduling, lead shadow policy module, R1C guard/test, CF runtime guard allowlist.
+Do not treat R1C as Calendar actions final closure.

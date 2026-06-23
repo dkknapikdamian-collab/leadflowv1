@@ -2671,3 +2671,10 @@ Date: 2026-06-23 08:20 Europe/Warsaw
 Status: APPLIED_PENDING_TEST_OR_PUSH
 Goal: wire TodayStable moment/dayKey helpers to shared operational entry contract.
 Next: R1C lead shadow entry policy and deduplication.
+
+### STAGE232G_R1C_LEAD_SHADOW_ENTRIES_POLICY_AND_DEDUP_QUEUE
+
+Date: 2026-06-23 09:10 Europe/Warsaw
+Status: APPLIED_PENDING_TEST_OR_PUSH
+Goal: central policy for lead shadow dedupe and safe lead actions.
+Next: R1D Calendar actions use operational entry contract.

@@ -2399,3 +2399,10 @@ Date: 2026-06-23 08:20 Europe/Warsaw
 Risk: Today filtering may depend on old local helper edge cases.
 Mitigation: R1B keeps helper names as wrappers and does not change row rendering.
 Open: R1C must handle lead shadow entry policy/deduplication.
+
+### STAGE232G_R1C_LEAD_SHADOW_ENTRIES_POLICY_AND_DEDUP_RISKS
+
+Date: 2026-06-23 09:10 Europe/Warsaw
+Risk: lead shadow is derived, not authoritative task.
+Mitigation: no complete/restore/delete actions for lead shadow; dedupe covered task/event entries.
+Open: R1D must wire Calendar actions to operational entry contract.

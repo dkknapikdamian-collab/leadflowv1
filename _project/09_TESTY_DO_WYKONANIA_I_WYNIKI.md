@@ -976,3 +976,9 @@ Zakres testu: TypeScript build blockers in pi/work-items.ts.
 Date: 2026-06-23 08:20 Europe/Warsaw
 Planned tests: R1B guard, R1B node test, build, verify quiet, diff check.
 Manual smoke: Today loads, Calendar loads, no red console errors, Today entries still visible.
+
+### STAGE232G_R1C_LEAD_SHADOW_ENTRIES_POLICY_AND_DEDUP_TESTS
+
+Date: 2026-06-23 09:10 Europe/Warsaw
+Planned tests: R1C guard, R1C node test, CF runtime guard, build, verify quiet, diff check.
+Manual smoke: Calendar/Today still load; duplicated lead shadow entries should not multiply when task/event covers same planned action.

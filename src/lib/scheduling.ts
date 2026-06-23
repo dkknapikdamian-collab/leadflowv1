@@ -48,7 +48,8 @@ import {
   startOfDay,
   subMinutes,
 } from 'date-fns';
-import type { CalendarReminderRule } from './work-items/normalize';
+import type { CalendarReminderRule } from './work-items/normalize';import { applyLeadShadowEntryPolicy } from './calendar-lead-shadow-entry-policy';
+
 
 export type ScheduleRawRecord = Record<string, unknown> & {
   id?: string | number;
@@ -526,7 +527,8 @@ function shouldHideLeadEntry(leadEntry: ScheduleEntry, entries: ScheduleEntry[])
 }
 
 function removeLeadShadowEntries(entries: ScheduleEntry[]) {
-  return entries.filter((entry) => !shouldHideLeadEntry(entry, entries));
+  // STAGE232G_R1C_LEAD_SHADOW_ENTRIES_POLICY_AND_DEDUP
+  return applyLeadShadowEntryPolicy(entries);
 }
 
 // P0_TODAY_OPERATOR_SECTIONS_FIX
