@@ -279,3 +279,9 @@ Code context:
 
 Do not treat R1A as full Calendar/Today parity closure.
 <!-- /STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_CODEX -->
+
+
+## STAGE232G_R1A_WORK_ITEMS_TS_BUILD_HOTFIX_CODEX
+
+Data: 2026-06-23 07:25 Europe/Warsaw
+Files: pi/work-items.ts, scripts/check-stage232g-r1a-work-items-ts-build-hotfix.cjs, _project/runs/STAGE232G_R1A_WORK_ITEMS_TS_BUILD_HOTFIX.md.

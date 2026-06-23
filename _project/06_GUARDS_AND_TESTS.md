@@ -5302,3 +5302,12 @@ Wymaga:
 - exportu przez scheduling,
 - allowlisty CF_RUNTIME_00.
 <!-- /STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_GUARDS -->
+
+
+## STAGE232G_R1A_WORK_ITEMS_TS_BUILD_HOTFIX_GUARDS
+
+Data: 2026-06-23 07:25 Europe/Warsaw
+Guard:
+ode scripts/check-stage232g-r1a-work-items-ts-build-hotfix.cjs
+Also required: build/typecheck,
+pm run verify:closeflow:quiet, git diff --check.

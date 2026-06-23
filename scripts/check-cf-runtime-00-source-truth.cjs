@@ -121,6 +121,11 @@ if (exists('scripts/closeflow-release-check-quiet.cjs')) {
 }
 
 const allowedChangePrefixes = [
+  'scripts/check-stage232g-r1a-work-items-ts-build-hotfix.cjs',
+  '_project/runs/STAGE232G_R1A_WORK_ITEMS_TS_BUILD_HOTFIX_REMAINING_EXISTING_CONTEXT.txt',
+  '_project/runs/STAGE232G_R1A_WORK_ITEMS_TS_BUILD_HOTFIX.md',
+  '_project/obsidian_updates/2026-06-23_STAGE232G_R1A_WORK_ITEMS_TS_BUILD_HOTFIX.md',
+  'api/work-items.ts',
   // STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_ALLOWLIST
   'src/lib/calendar-operational-entry-contract.ts',
   'src/lib/scheduling.ts',

@@ -2657,3 +2657,10 @@ Zakres:
 NastÄ™pny etap:
 `STAGE232G_R1B_TODAY_USES_OPERATIONAL_ENTRY_CONTRACT`.
 <!-- /STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_QUEUE -->
+
+
+## STAGE232G_R1A_WORK_ITEMS_TS_BUILD_HOTFIX_QUEUE
+
+Data: 2026-06-23 07:25 Europe/Warsaw
+Status: HOTFIX_BEFORE_R1B
+NastÄ™pny etap R1B wolno rozpoczÄ…Ä‡ dopiero po zielonym build/typecheck dla pi/work-items.ts.

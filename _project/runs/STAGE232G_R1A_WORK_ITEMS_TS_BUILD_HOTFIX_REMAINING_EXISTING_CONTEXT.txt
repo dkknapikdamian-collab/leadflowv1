@@ -1,0 +1,17 @@
+  25:
+  26: const isBlockingMissingItemStage232I4R9 = (row: any = {}, body: any = {}) => {
+  27:   const rawStatus = String(body.status ?? row.status ?? '').toLowerCase();
+  28:   const rawPriority = String(body.priority ?? row.priority ?? '').toLowerCase();
+  29:   return isBlocksProgressTrueStage232GR1A(body, row) || rawStatus === 'blocking_missing_item' || rawPriority === 'high';
+  30: };
+  31:
+  32:
+  33: const STAGE232G_R1A_WORK_ITEMS_TS_BUILD_HOTFIX_R2 = 'api/work-items TypeScript-safe blocksProgress compatibility and no unscoped existing';
+  34: void STAGE232G_R1A_WORK_ITEMS_TS_BUILD_HOTFIX_R2;
+  35:
+  36: function readBlocksProgressStage232GR1A(value: unknown): boolean | null {
+  37:   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  38:   const record = value as Record<string, unknown>;
+  39:   const raw = record['blocksProgress'] ?? record['blocks_progress'];
+  40:   if (raw === true || raw === 'true' || raw === 1 || raw === '1') return true;
+  41:   if (raw === false || raw === 'false' || raw === 0 || raw === '0') return false;

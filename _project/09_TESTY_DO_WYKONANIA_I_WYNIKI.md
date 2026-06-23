@@ -963,3 +963,10 @@ git status --short --branch
 
 Manual smoke po R1A: brak wymaganego smoke UI, bo R1A nie przepina widokĂłw. R1B bÄ™dzie wymagaĹ‚ smoke Today/Calendar.
 <!-- /STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_TESTS -->
+
+
+## STAGE232G_R1A_WORK_ITEMS_TS_BUILD_HOTFIX_TESTS
+
+Data: 2026-06-23 07:25 Europe/Warsaw
+Status: do wykonania przez APPLY script.
+Zakres testu: TypeScript build blockers in pi/work-items.ts.

@@ -26,8 +26,25 @@ const normalizeMissingItemDbStatusStage232I4R9 = (body: any = {}, row: any = {})
 const isBlockingMissingItemStage232I4R9 = (row: any = {}, body: any = {}) => {
   const rawStatus = String(body.status ?? row.status ?? '').toLowerCase();
   const rawPriority = String(body.priority ?? row.priority ?? '').toLowerCase();
-  return body.blocksProgress === true || body.blocks_progress === true || row.blocksProgress === true || row.blocks_progress === true || rawStatus === 'blocking_missing_item' || rawPriority === 'high';
+  return isBlocksProgressTrueStage232GR1A(body, row) || rawStatus === 'blocking_missing_item' || rawPriority === 'high';
 };
+
+
+const STAGE232G_R1A_WORK_ITEMS_TS_BUILD_HOTFIX_R2 = 'api/work-items TypeScript-safe blocksProgress compatibility and no unscoped existing';
+void STAGE232G_R1A_WORK_ITEMS_TS_BUILD_HOTFIX_R2;
+
+function readBlocksProgressStage232GR1A(value: unknown): boolean | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const record = value as Record<string, unknown>;
+  const raw = record['blocksProgress'] ?? record['blocks_progress'];
+  if (raw === true || raw === 'true' || raw === 1 || raw === '1') return true;
+  if (raw === false || raw === 'false' || raw === 0 || raw === '0') return false;
+  return null;
+}
+
+function isBlocksProgressTrueStage232GR1A(...values: unknown[]) {
+  return values.some((value) => readBlocksProgressStage232GR1A(value) === true);
+}
 
 function asIsoDate(value: unknown) {
   if (typeof value !== 'string' || !value.trim()) return null;
@@ -87,10 +104,7 @@ function isMissingItemTaskStage232I4R8(row: any, body?: any) {
     payload.type, payload.kind, payload.status,
   ].map(lowerTextStage232I4R8);
   return values.some((value) => value.includes('missing') || value.includes('block'))
-    || body?.blocksProgress === true
-    || body?.blocks_progress === true
-    || row?.blocks_progress === true
-    || row?.blocksProgress === true;
+    || isBlocksProgressTrueStage232GR1A(body, row);
 }
 
 function syntheticMissingPayloadStage232I4R8(row: any) {

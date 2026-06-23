@@ -2385,3 +2385,10 @@ Ryzyka po R1A:
 3. Month DOM normalizatory nadal istniejÄ… i nie sÄ… ruszane w R1A.
 4. R1A nie wolno traktowaÄ‡ jako peĹ‚nego zamkniÄ™cia STAGE232G.
 <!-- /STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT_RISKS -->
+
+
+## STAGE232G_R1A_WORK_ITEMS_TS_BUILD_HOTFIX_RISKS
+
+Data: 2026-06-23 07:25 Europe/Warsaw
+Ryzyko: pi/work-items.ts ma luĹşne typy work-item/source payload; trzeba pilnowaÄ‡ camelCase/snake_case i scope zmiennych.
+Backlog: warning url.parse() DEP0169 do osobnego etapu security cleanup, nie w tym hotfixie.
