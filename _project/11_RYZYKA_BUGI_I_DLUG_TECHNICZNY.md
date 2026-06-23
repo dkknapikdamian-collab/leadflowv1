@@ -2441,3 +2441,16 @@ Open: real retirement/removal only after manual smoke or R1F parity evidence.
 - Ryzyko: guard potwierdza anchory i kontrakty, ale nie zastępuje ręcznego kliknięcia Calendar/Today po deployu.
 - Ryzyko uboczne: jeśli Vercel po R1E1 nadal był czerwony, R1F nie powinien być commitowany przed naprawą konkretnego błędu.
 - Decyzja: R1F nie dodaje nowych funkcji; zamyka tylko aktualnie przekazaną serię.
+
+## 2026-06-23 20:05 Europe/Warsaw — STAGE232G_R1I_R2_CALENDAR_COMPLETED_RETENTION_AFTER_REFRESH_FIX
+
+Status: APPLIED_PENDING_GUARDS_AND_MANUAL_SMOKE
+
+Zakres:
+- R1G oznaczony jako false-positive smoke fail; nie commitować tamtej poprawki.
+- Calendar ma utrzymać zakończony event/task po refreshu przez lokalny retention cache, gdy backendowy bundle tymczasowo nie zwraca done/completed.
+- Wpis po Zrobione ma zostać widoczny, przekreślony i przesunięty na dół listy dnia; Przywróć usuwa retention.
+- Guard/test: scripts/check-stage232g-r1i-calendar-completed-retention-after-refresh-fix.cjs oraz tests/stage232g-r1i-calendar-completed-retention-after-refresh-fix.test.cjs.
+
+Ryzyko:
+- Retention działa jako undo-safety-net dla wpisów zakończonych z Calendar w tej przeglądarce. Docelowo backend/API bundle powinien zwracać done/completed zgodnie z polityką Calendar.

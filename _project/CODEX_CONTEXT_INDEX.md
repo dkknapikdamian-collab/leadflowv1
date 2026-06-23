@@ -319,3 +319,16 @@ Do not remove month DOM normalizers without manual smoke evidence.
 - Dotyczy: finalny parity/smoke gate dla STAGE232G Calendar/Today.
 - Źródła prawdy sprawdzane przez guard: R1A operational contract, R1B Today adapter, R1C lead shadow policy, R1D action policy, R1E DOM normalizer policy, R1E1 work-items TS hotfix.
 - Po zamknięciu: nie proponować nowych etapów bez błędu z aktualnej serii.
+
+## 2026-06-23 20:05 Europe/Warsaw — STAGE232G_R1I_R2_CALENDAR_COMPLETED_RETENTION_AFTER_REFRESH_FIX
+
+Status: APPLIED_PENDING_GUARDS_AND_MANUAL_SMOKE
+
+Zakres:
+- R1G oznaczony jako false-positive smoke fail; nie commitować tamtej poprawki.
+- Calendar ma utrzymać zakończony event/task po refreshu przez lokalny retention cache, gdy backendowy bundle tymczasowo nie zwraca done/completed.
+- Wpis po Zrobione ma zostać widoczny, przekreślony i przesunięty na dół listy dnia; Przywróć usuwa retention.
+- Guard/test: scripts/check-stage232g-r1i-calendar-completed-retention-after-refresh-fix.cjs oraz tests/stage232g-r1i-calendar-completed-retention-after-refresh-fix.test.cjs.
+
+Ryzyko:
+- Retention działa jako undo-safety-net dla wpisów zakończonych z Calendar w tej przeglądarce. Docelowo backend/API bundle powinien zwracać done/completed zgodnie z polityką Calendar.

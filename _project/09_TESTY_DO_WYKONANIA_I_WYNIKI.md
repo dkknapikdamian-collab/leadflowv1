@@ -1016,3 +1016,16 @@ Manual smoke: Calendar month/week/selected day still renders entries; R1D task/e
 - Status: DO_WYKONANIA_LOKALNIE
 - Oczekiwane PASS: R1F guard, R1F node test, R1E1 guard, CF_RUNTIME_00, build, verify:closeflow:quiet, diff-check.
 - Po pushu: potwierdzić Vercel build oraz ręczny smoke na aplikacji.
+
+## 2026-06-23 20:05 Europe/Warsaw — STAGE232G_R1I_R2_CALENDAR_COMPLETED_RETENTION_AFTER_REFRESH_FIX
+
+Status: APPLIED_PENDING_GUARDS_AND_MANUAL_SMOKE
+
+Zakres:
+- R1G oznaczony jako false-positive smoke fail; nie commitować tamtej poprawki.
+- Calendar ma utrzymać zakończony event/task po refreshu przez lokalny retention cache, gdy backendowy bundle tymczasowo nie zwraca done/completed.
+- Wpis po Zrobione ma zostać widoczny, przekreślony i przesunięty na dół listy dnia; Przywróć usuwa retention.
+- Guard/test: scripts/check-stage232g-r1i-calendar-completed-retention-after-refresh-fix.cjs oraz tests/stage232g-r1i-calendar-completed-retention-after-refresh-fix.test.cjs.
+
+Ryzyko:
+- Retention działa jako undo-safety-net dla wpisów zakończonych z Calendar w tej przeglądarce. Docelowo backend/API bundle powinien zwracać done/completed zgodnie z polityką Calendar.

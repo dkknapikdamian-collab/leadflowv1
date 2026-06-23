@@ -5351,3 +5351,16 @@ Required: CF_RUNTIME_00, npm run build, npm run verify:closeflow:quiet, git diff
 - Test: tests/stage232g-r1f-calendar-today-final-parity-guard-and-smoke.test.cjs
 - Dodatkowo: R1E1 work-items guard, CF_RUNTIME_00, npm run build, npm run verify:closeflow:quiet, git diff --check.
 - Manual smoke po deployu: Calendar month/week, tooltip/kolory, akcje task/event, Today task/event/lead shadow, brak fake done/delete dla lead shadow, brak czerwonych błędów w konsoli.
+
+## 2026-06-23 20:05 Europe/Warsaw — STAGE232G_R1I_R2_CALENDAR_COMPLETED_RETENTION_AFTER_REFRESH_FIX
+
+Status: APPLIED_PENDING_GUARDS_AND_MANUAL_SMOKE
+
+Zakres:
+- R1G oznaczony jako false-positive smoke fail; nie commitować tamtej poprawki.
+- Calendar ma utrzymać zakończony event/task po refreshu przez lokalny retention cache, gdy backendowy bundle tymczasowo nie zwraca done/completed.
+- Wpis po Zrobione ma zostać widoczny, przekreślony i przesunięty na dół listy dnia; Przywróć usuwa retention.
+- Guard/test: scripts/check-stage232g-r1i-calendar-completed-retention-after-refresh-fix.cjs oraz tests/stage232g-r1i-calendar-completed-retention-after-refresh-fix.test.cjs.
+
+Ryzyko:
+- Retention działa jako undo-safety-net dla wpisów zakończonych z Calendar w tej przeglądarce. Docelowo backend/API bundle powinien zwracać done/completed zgodnie z polityką Calendar.

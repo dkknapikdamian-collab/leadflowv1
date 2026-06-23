@@ -604,7 +604,7 @@ function CalendarSelectedDayEntryRowV9({ entry, actionPendingId, onEdit, onShift
           <span className="cf-vst-badge cf-vst-pill cf-selected-day-v9-status" data-cf-vst-kind={getCalendarEntryStatusVstKindStage220A20(entry)} title={getCalendarEntryStatusLabel(entry)}>{getCalendarEntryStatusLabel(entry)}</span>
         </div>
 
-        <p className="cf-selected-day-v9-entry-title" title={title} data-cf-entry-title="true">{title}</p>
+        <p className={'cf-selected-day-v9-entry-title ' + (isCompletedEntry ? 'line-through text-slate-500' : '')} title={title} data-cf-entry-title="true">{title}</p>
 
         <div className="cf-selected-day-v9-relation" data-cf-entry-relation="true">
           <span title={relationFallback}>{relationFallback}</span>
@@ -724,6 +724,161 @@ export default function Calendar() {
   const calendarLoadSeqRef = useRef(0);
   const calendarReadyRetryTimersRef = useRef<number[]>([]);
   const calendarGoogleInboundRefreshSeqRef = useRef(0);
+
+  // STAGE232G_R1I_CALENDAR_COMPLETED_RETENTION_AFTER_REFRESH_FIX
+  // Calendar must keep a just-completed task/event visible after refresh even if the backend bundle temporarily omits completed rows.
+  const calendarCompletedRetentionRef = useRef<Record<string, any>>({});
+
+  function getCalendarCompletedRetentionStorageKeyStage232GR1I() {
+    const workspaceId = String(workspace?.id || 'default');
+    return 'closeflow:calendar:completed-retention:v1:' + workspaceId;
+  }
+
+  function readCalendarCompletedRetentionStage232GR1I() {
+    if (typeof window === 'undefined') return calendarCompletedRetentionRef.current || {};
+    try {
+      const raw = window.localStorage.getItem(getCalendarCompletedRetentionStorageKeyStage232GR1I());
+      const parsed = raw ? JSON.parse(raw) : {};
+      const record = parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed as Record<string, any> : {};
+      calendarCompletedRetentionRef.current = record;
+      return record;
+    } catch {
+      return calendarCompletedRetentionRef.current || {};
+    }
+  }
+
+  function writeCalendarCompletedRetentionStage232GR1I(nextRetention: Record<string, any>) {
+    calendarCompletedRetentionRef.current = nextRetention;
+    if (typeof window === 'undefined') return;
+    try {
+      const keys = Object.keys(nextRetention || {});
+      if (keys.length === 0) {
+        window.localStorage.removeItem(getCalendarCompletedRetentionStorageKeyStage232GR1I());
+        return;
+      }
+      window.localStorage.setItem(getCalendarCompletedRetentionStorageKeyStage232GR1I(), JSON.stringify(nextRetention));
+    } catch {
+      // Retention is an undo safety net only. If localStorage is unavailable, in-memory retention still protects the current session.
+    }
+  }
+
+  function getCalendarRetentionIdStage232GR1I(kind: 'event' | 'task', rowOrEntry: any) {
+    return String(rowOrEntry?.sourceId || rowOrEntry?.source_id || rowOrEntry?.raw?.id || rowOrEntry?.id || rowOrEntry?.entryId || '').trim();
+  }
+
+  function getCalendarRetentionKeyStage232GR1I(kind: 'event' | 'task', rowOrEntry: any) {
+    const id = getCalendarRetentionIdStage232GR1I(kind, rowOrEntry);
+    return id ? kind + ':' + id : '';
+  }
+
+  function isCalendarRetainedRowCompletedStage232GR1I(row: any) {
+    const status = String(row?.status || '').trim().toLowerCase();
+    return ['done', 'completed', 'complete', 'finished', 'zrobione', 'wykonane'].includes(status) || row?.done === true || row?.isDone === true || row?.is_done === true || Boolean(row?.completedAt || row?.completed_at || row?.doneAt || row?.done_at);
+  }
+
+  function buildCalendarCompletedRetentionRowStage232GR1I(entry: ScheduleEntry) {
+    const completedAt = new Date().toISOString();
+    const sourceId = String(entry.sourceId || entry.raw?.id || entry.id || '');
+    const base: any = {
+      ...(entry.raw || {}),
+      id: sourceId,
+      title: readCalendarRawText(entry.raw?.title, entry.title),
+      status: entry.kind === 'event' ? 'completed' : 'done',
+      done: true,
+      isDone: true,
+      is_done: true,
+      completedAt,
+      completed_at: completedAt,
+      doneAt: completedAt,
+      done_at: completedAt,
+      leadId: entry.raw?.leadId ?? entry.raw?.lead_id ?? entry.leadId ?? null,
+      lead_id: entry.raw?.lead_id ?? entry.raw?.leadId ?? entry.leadId ?? null,
+      caseId: entry.raw?.caseId ?? entry.raw?.case_id ?? null,
+      case_id: entry.raw?.case_id ?? entry.raw?.caseId ?? null,
+      clientId: entry.raw?.clientId ?? entry.raw?.client_id ?? null,
+      client_id: entry.raw?.client_id ?? entry.raw?.clientId ?? null,
+    };
+
+    if (entry.kind === 'event') {
+      base.type = readCalendarRawText(entry.raw?.type, 'meeting');
+      base.startAt = readCalendarRawText(entry.raw?.startAt, entry.startsAt);
+      base.start_at = readCalendarRawText(entry.raw?.start_at, base.startAt);
+      base.startsAt = base.startAt;
+      base.starts_at = base.startAt;
+      base.scheduledAt = readCalendarRawText(entry.raw?.scheduledAt, base.startAt);
+      base.scheduled_at = readCalendarRawText(entry.raw?.scheduled_at, base.scheduledAt || base.startAt);
+      base.endAt = entry.raw?.endAt || entry.raw?.end_at || entry.endsAt || null;
+      base.end_at = entry.raw?.end_at || entry.raw?.endAt || entry.endsAt || null;
+    } else {
+      const startAt = readCalendarRawText(entry.raw?.scheduledAt || entry.raw?.dueAt || entry.raw?.startAt, entry.startsAt);
+      base.type = readCalendarRawText(entry.raw?.type, 'task');
+      base.scheduledAt = startAt;
+      base.scheduled_at = startAt;
+      base.dueAt = readCalendarRawText(entry.raw?.dueAt, startAt);
+      base.due_at = readCalendarRawText(entry.raw?.due_at, base.dueAt);
+      base.startAt = startAt;
+      base.start_at = startAt;
+      base.startsAt = startAt;
+      base.starts_at = startAt;
+      base.date = readCalendarRawText(entry.raw?.date, startAt.slice(0, 10));
+      base.time = readCalendarRawText(entry.raw?.time, startAt.slice(11, 16));
+      base.priority = readCalendarRawText(entry.raw?.priority, 'medium');
+    }
+
+    return base;
+  }
+
+  function retainCalendarCompletedEntryStage232GR1I(entry: ScheduleEntry) {
+    if (entry.kind !== 'event' && entry.kind !== 'task') return;
+    const key = getCalendarRetentionKeyStage232GR1I(entry.kind, entry);
+    if (!key) return;
+    const retention = { ...readCalendarCompletedRetentionStage232GR1I() };
+    retention[key] = {
+      kind: entry.kind,
+      sourceId: getCalendarRetentionIdStage232GR1I(entry.kind, entry),
+      row: buildCalendarCompletedRetentionRowStage232GR1I(entry),
+      retainedAt: new Date().toISOString(),
+      reason: 'calendar-completed-undo-retention',
+      stage: 'STAGE232G_R1I_CALENDAR_COMPLETED_RETENTION_AFTER_REFRESH_FIX',
+    };
+    writeCalendarCompletedRetentionStage232GR1I(retention);
+  }
+
+  function releaseCalendarCompletedEntryStage232GR1I(entry: ScheduleEntry) {
+    if (entry.kind !== 'event' && entry.kind !== 'task') return;
+    const key = getCalendarRetentionKeyStage232GR1I(entry.kind, entry);
+    if (!key) return;
+    const retention = { ...readCalendarCompletedRetentionStage232GR1I() };
+    if (Object.prototype.hasOwnProperty.call(retention, key)) {
+      delete retention[key];
+      writeCalendarCompletedRetentionStage232GR1I(retention);
+    }
+  }
+
+  function mergeCalendarCompletedRetentionRowsStage232GR1I(kind: 'event' | 'task', rows: any[]) {
+    const safeRows = Array.isArray(rows) ? rows : [];
+    const retention = { ...readCalendarCompletedRetentionStage232GR1I() };
+    const existingKeys = new Set<string>();
+    let changed = false;
+
+    for (const row of safeRows) {
+      const key = getCalendarRetentionKeyStage232GR1I(kind, row);
+      if (!key) continue;
+      existingKeys.add(key);
+      if (retention[key] && !isCalendarRetainedRowCompletedStage232GR1I(row)) {
+        delete retention[key];
+        changed = true;
+      }
+    }
+
+    const retainedRows = Object.entries(retention)
+      .filter(([, value]: [string, any]) => value?.kind === kind && value?.row && !existingKeys.has(getCalendarRetentionKeyStage232GR1I(kind, value.row)))
+      .map(([, value]: [string, any]) => ({ ...value.row, _calendarCompletedRetentionStage232GR1I: true }));
+
+    if (changed) writeCalendarCompletedRetentionStage232GR1I(retention);
+    return retainedRows.length ? [...safeRows, ...retainedRows] : safeRows;
+  }
+
 
   const [taskSubmitting, setTaskSubmitting] = useState(false);
   const [eventSubmitting, setEventSubmitting] = useState(false);
@@ -1303,8 +1458,10 @@ export default function Calendar() {
       fetchCalendarBundleFromSupabase(),
       fetchClientsFromSupabase().catch(() => []),
     ]);
-    setEvents(appendStage181ILocalCalendarSeed((bundle.events || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })) as any[], 'events') as any[]);
-    setTasks(appendStage181ILocalCalendarSeed((bundle.tasks || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })) as any[], 'tasks') as any[]);
+    const nextCalendarEventsStage232GR1I = appendStage181ILocalCalendarSeed((bundle.events || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })) as any[], 'events') as any[];
+    const nextCalendarTasksStage232GR1I = appendStage181ILocalCalendarSeed((bundle.tasks || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })) as any[], 'tasks') as any[];
+    setEvents(mergeCalendarCompletedRetentionRowsStage232GR1I('event', nextCalendarEventsStage232GR1I) as any[]);
+    setTasks(mergeCalendarCompletedRetentionRowsStage232GR1I('task', nextCalendarTasksStage232GR1I) as any[]);
     setLeads(bundle.leads || []);
     setCases((bundle.cases || []) as any[]);
     setClients(clientRows as any[]);
@@ -2102,6 +2259,12 @@ export default function Calendar() {
         });
       }
 
+
+      if (wasCompleted) {
+        releaseCalendarCompletedEntryStage232GR1I(entry);
+      } else {
+        retainCalendarCompletedEntryStage232GR1I(entry);
+      }
       await logCalendarEntryActivity(
         entry,
         wasCompleted ? 'calendar_entry_restored' : 'calendar_entry_completed',

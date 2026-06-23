@@ -208,3 +208,16 @@ Next: STAGE232G_R1F_CALENDAR_TODAY_FINAL_PARITY_GUARD_AND_SMOKE
 - Cel: zamknąć serię STAGE232G przez finalny guard parytetu Calendar/Today i smoke checklist.
 - Zakres: bez zmian runtime UI; tylko guard, test, raport, payload Obsidiana i CF_RUNTIME_00 allowlist.
 - Po PASS: dozwolone tylko commit/push R1F i ręczny smoke. Brak proponowania kolejnych etapów, chyba że wyjdzie błąd z tej serii.
+
+## 2026-06-23 20:05 Europe/Warsaw — STAGE232G_R1I_R2_CALENDAR_COMPLETED_RETENTION_AFTER_REFRESH_FIX
+
+Status: APPLIED_PENDING_GUARDS_AND_MANUAL_SMOKE
+
+Zakres:
+- R1G oznaczony jako false-positive smoke fail; nie commitować tamtej poprawki.
+- Calendar ma utrzymać zakończony event/task po refreshu przez lokalny retention cache, gdy backendowy bundle tymczasowo nie zwraca done/completed.
+- Wpis po Zrobione ma zostać widoczny, przekreślony i przesunięty na dół listy dnia; Przywróć usuwa retention.
+- Guard/test: scripts/check-stage232g-r1i-calendar-completed-retention-after-refresh-fix.cjs oraz tests/stage232g-r1i-calendar-completed-retention-after-refresh-fix.test.cjs.
+
+Ryzyko:
+- Retention działa jako undo-safety-net dla wpisów zakończonych z Calendar w tej przeglądarce. Docelowo backend/API bundle powinien zwracać done/completed zgodnie z polityką Calendar.

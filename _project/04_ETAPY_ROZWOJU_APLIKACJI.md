@@ -2705,3 +2705,16 @@ Next: R1F final parity guard and manual smoke.
 - Poprzednik: STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX pushed.
 - Wykonać: finalny guard parytetu Calendar/Today, potwierdzenie R1A-R1E1 markerów i smoke checklist.
 - Następny etap: BRAK PLANOWANEGO KOLEJNEGO ETAPU po zamknięciu R1F. Wyjątek: hotfix, jeśli test/Vercel/smoke pokaże błąd z tej serii.
+
+## 2026-06-23 20:05 Europe/Warsaw — STAGE232G_R1I_R2_CALENDAR_COMPLETED_RETENTION_AFTER_REFRESH_FIX
+
+Status: APPLIED_PENDING_GUARDS_AND_MANUAL_SMOKE
+
+Zakres:
+- R1G oznaczony jako false-positive smoke fail; nie commitować tamtej poprawki.
+- Calendar ma utrzymać zakończony event/task po refreshu przez lokalny retention cache, gdy backendowy bundle tymczasowo nie zwraca done/completed.
+- Wpis po Zrobione ma zostać widoczny, przekreślony i przesunięty na dół listy dnia; Przywróć usuwa retention.
+- Guard/test: scripts/check-stage232g-r1i-calendar-completed-retention-after-refresh-fix.cjs oraz tests/stage232g-r1i-calendar-completed-retention-after-refresh-fix.test.cjs.
+
+Ryzyko:
+- Retention działa jako undo-safety-net dla wpisów zakończonych z Calendar w tej przeglądarce. Docelowo backend/API bundle powinien zwracać done/completed zgodnie z polityką Calendar.
