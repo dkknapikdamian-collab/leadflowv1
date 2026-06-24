@@ -1,6 +1,6 @@
 # STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT
 
-Data/czas: 2026-06-24 HH:mm Europe/Warsaw
+Data/czas: 2026-06-24 21:30 Europe/Warsaw
 canonical_name: CloseFlow / LeadFlow
 project_id: closeflow_lead_app
 repo: dkknapikdamian-collab/leadflowv1
@@ -10,7 +10,7 @@ Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
 
 ## Status
 
-APPLIED_LOCAL_PENDING_TESTS / OWNER_SMOKE_PENDING
+PASS_PUSHED / CLOSED / MANUAL_SMOKE_OK
 
 ## Cel
 
@@ -27,6 +27,7 @@ Zmienione:
 - src/lib/owner-control/owner-control-baseline.ts
 - src/lib/owner-control/next-move-contract.ts
 - src/pages/TodayStable.tsx
+- scripts/check-cf-runtime-00-source-truth.cjs
 - scripts/check-stage-a35b-mandatory-next-step-contract.cjs
 - tests/stage-a35b-mandatory-next-step-contract.test.cjs
 - _project documentation files
@@ -42,9 +43,10 @@ Nie zmieniano SQL, RLS, migracji, finansow, billing, Google Calendar, AI Drafts,
 - Duplikat Lead/Client jest tlumiony przez clientIdsWithRelatedRecordProblem.
 - Zalegly next step ma priorytet 150, zwykly brak next step 130, blokujace braki z I3 zostaja w osobnym mechanizmie missing item.
 
-## Testy wymagane
+## Testy wykonane
 
 ```powershell
+node scripts/check-cf-runtime-00-source-truth.cjs
 node scripts/check-stage-a35b-mandatory-next-step-contract.cjs
 node --test tests/stage-a35b-mandatory-next-step-contract.test.cjs
 npm run build
@@ -53,33 +55,48 @@ git diff --check
 git status --short --branch
 ```
 
+Wynik:
+- CF-RUNTIME-00 guard: PASS.
+- A35B guard: PASS.
+- A35B node test: 10/10 PASS.
+- npm run build: PASS.
+- npm run verify:closeflow:quiet: PASS.
+- git diff --check: PASS.
+- Selective commit/push: PASS.
+- Commit pushed: 3a1bd164 fix(closeflow): enforce mandatory next step owner control contract.
+
 ## Manual smoke
 
-OWNER_SMOKE_PENDING zgodnie z instrukcja etapu.
+MANUAL_SMOKE_OK - push script `PUSH_STAGE_A35B_AFTER_OWNER_SMOKE_OK_REPAIR_R5_2026_06_24.ps1` zostal uruchomiony po sciezce owner-smoke-ok.
 
 ## Ryzyka
 
-- Reguly aktywnego klienta moga wymagac doprecyzowania po realnym smoke na produkcyjnych danych.
+- Reguly aktywnego klienta moga wymagac doprecyzowania po dalszym realnym smoke na danych produkcyjnych.
 - Jesli dane klientow maja inne statusy aktywnosci, trzeba dopisac status do ACTIVE_CLIENT_SERVICE_STATUSES, nie robic SQL.
 
-## STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT_REPAIR_R3 — test false-positive repair
+## STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT_REPAIR_R3 - test false-positive repair
 
-Status: APPLIED_PENDING_COMMANDS
+Status: CLOSED_AS_PART_OF_A35B
 
 Reason: R2 implementation passed guard and 9/10 tests, but the Today test failed because the stage marker text contained the phrase "without UI redesign" while the test asserted against /A35B.*redesign/i. This was a test false positive, not a runtime failure.
 
 Change: the test now checks that Today still uses the existing TodaySectionKey model and does not add explicit redesign markers/panels.
 
-Manual smoke: OWNER_SMOKE_PENDING.
-
-
 ## STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT_REPAIR_R5_CF_RUNTIME_ALLOWLIST_SYNC
 
-Status: APPLIED_LOCAL / VERIFY_PENDING
+Status: CLOSED_AS_PART_OF_A35B
 
 Zakres:
-- zsynchronizowano allowlistę CF-RUNTIME-00 dla plików etapu STAGE-A35B,
+- zsynchronizowano allowliste CF-RUNTIME-00 dla plikow etapu STAGE-A35B,
 - nie zmieniano runtime Owner Control ani Today,
-- cel: odblokować verify:closeflow:quiet po zielonym guard/test/build A35B.
+- odblokowano verify:closeflow:quiet po zielonym guard/test/build A35B.
 
-Czas zapisu technicznego: 2026-06-24T19:16:42.068Z
+## Closeout status sync R2 - 2026-06-24 21:30 Europe/Warsaw
+
+Status: PASS_PUSHED / CLOSED / MANUAL_SMOKE_OK
+
+Zakres:
+- docs/status sync only,
+- bez zmian runtime,
+- bez SQL,
+- bez finansow, billing, Google Calendar, AI Drafts, DudekHome i .tmp.driveupload.
