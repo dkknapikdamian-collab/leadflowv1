@@ -1048,3 +1048,26 @@ Guard/test:
 Manual smoke:
 - /today, kafelek Wymaga ruchu, ownerless lead/case, note-without-follow-up, refresh/F5, liczniki zgodne z listami.
 <!-- /STAGE-A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC -->
+
+## 2026-06-24 STAGE-A35_R2_REMOVE_SINGLE_USER_OWNERLESS_NOISE
+
+Status: APPLIED_LOCAL / NEEDS_PUSH / OWNER_SMOKE_PENDING
+
+Decision: remove ownerless / missing responsible person logic from Owner Control. In single-user CloseFlow, a record without ownerId is not an operational issue because Damian is the implicit owner.
+
+Keep active: note without follow-up, missing next step, overdue next step, silence, high-value without safe movement.
+
+Tests: R1 guard/test updated, R2 guard/test added, build and verify quiet required.
+
+## STAGE-A35_R2F_OWNERLESS_GUARD_SELF_REFERENCE_FIX
+
+Status: DO_WYKONANIA.
+
+Commands:
+- node scripts/check-stage-a35-r1-owner-control-baseline-gap-close-and-queue-sync.cjs
+- node scripts/check-stage-a35-r2-remove-single-user-ownerless-noise.cjs
+- node --test tests/stage-a35-r1-owner-control-baseline-gap-close-and-queue-sync.test.cjs
+- node --test tests/stage-a35-r2-remove-single-user-ownerless-noise.test.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check

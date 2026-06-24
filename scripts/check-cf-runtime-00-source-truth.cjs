@@ -23,6 +23,7 @@
 // CF_RUNTIME_00_STAGE232I4_CLIENT_MISSING_TOP_TILE_SCOPE_COMPAT
 // CF_RUNTIME_00_STAGE232I4_R16Z_R5_SCOPE_COMPAT
 // CF_RUNTIME_00_STAGE_A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_SCOPE_COMPAT
+// CF_RUNTIME_00_STAGE_A35_R2_REMOVE_SINGLE_USER_OWNERLESS_NOISE_SCOPE_COMPAT
 // CF_RUNTIME_00_STAGE232I1_R8_MISSING_MODAL_READABLE_STYLE
 // CF_RUNTIME_00_R19_MASS_SCOPE_CLOSURE_ALLOWED
 // CF_RUNTIME_00_R18_SHEBANG_SCOPE_ALLOWED
@@ -128,6 +129,11 @@ const allowedChangePrefixes = [
   'scripts/check-cf-runtime-00-source-truth.cjs',
   'scripts/check-stage-a35-r1-owner-control-baseline-gap-close-and-queue-sync.cjs',
   'tests/stage-a35-r1-owner-control-baseline-gap-close-and-queue-sync.test.cjs',
+  // STAGE_A35_R2_REMOVE_SINGLE_USER_OWNERLESS_NOISE_ALLOWLIST
+  'scripts/check-stage-a35-r2-remove-single-user-ownerless-noise.cjs',
+  'tests/stage-a35-r2-remove-single-user-ownerless-noise.test.cjs',
+  '_project/runs/STAGE-A35_R2_REMOVE_SINGLE_USER_OWNERLESS_NOISE.md',
+  '_project/obsidian_updates/2026-06-24_STAGE-A35_R2_REMOVE_SINGLE_USER_OWNERLESS_NOISE.md',
   '_project/runs/STAGE-A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC.md',
   '_project/obsidian_updates/2026-06-24_STAGE-A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC.md',
   '_project/CODEX_CONTEXT_INDEX.md',

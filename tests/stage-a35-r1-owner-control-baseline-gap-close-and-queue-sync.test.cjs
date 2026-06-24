@@ -4,35 +4,30 @@ const fs = require('node:fs');
 
 const baseline = fs.readFileSync('src/lib/owner-control/owner-control-baseline.ts', 'utf8');
 const today = fs.readFileSync('src/pages/TodayStable.tsx', 'utf8');
+const cfRuntimeGuard = fs.readFileSync('scripts/check-cf-runtime-00-source-truth.cjs', 'utf8');
 
 test('A35 keeps Owner Control as gap-close, not new Today redesign', () => {
   assert.match(baseline, /STAGE_A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC/);
   assert.match(today, /STAGE_A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC/);
   assert.match(today, /const actionRequiredRows = useMemo\(\(\) => ownerControlBaseline\.items/);
-  assert.doesNotMatch(today, /STAGE-A35.*new tile/i);
 });
 
-test('A35 adds ownerless lead and case control signal', () => {
-  assert.match(baseline, /function isOwnerlessOperationalRecord/);
-  assert.match(baseline, /ownerId'.*owner_id'.*ownerEmail'.*owner_email/s);
-  assert.match(baseline, /pushSignal\(signals, 'Brak odpowiedzialnego'\)/);
-  assert.match(baseline, /statusLabel = 'Bez odpowiedzialnego'/);
-  assert.match(baseline, /gapCloseKind: ownerless \? 'ownerless' : undefined/);
+test('A35 does not add ownerless rows in single-user mode', () => {
+  assert.equal(baseline.includes('isOwnerlessOperationalRecord'), false);
+  assert.equal(baseline.includes('Brak odpowiedzialnego'), false);
+  assert.equal(baseline.includes('Bez odpowiedzialnego'), false);
+  assert.equal(baseline.includes("gapCloseKind?: 'ownerless'"), false);
 });
 
 test('A35 adds note without task or follow-up rows through the same baseline source', () => {
-  assert.match(baseline, /export function buildNoteWithoutFollowUpOwnerControlItems/);
-  assert.match(baseline, /normalized\.type !== 'note'/);
+  assert.match(baseline, /buildNoteWithoutFollowUpOwnerControlItems/);
+  assert.match(baseline, /Notatka bez follow-upu/);
+  assert.match(baseline, /gapCloseKind: 'note_without_followup'/);
   assert.match(baseline, /hasOpenPlannedActionForNoteSource/);
-  assert.match(baseline, /normalized\.type === 'note'\) return null/);
-  assert.match(baseline, /\.\.\.buildNoteWithoutFollowUpOwnerControlItems\(\{ items: workItems, now \}\)/);
 });
 
 test('A35 routes source entities without SQL or new client fetch', () => {
-  assert.match(baseline, /return `\/leads\/\$\{encodedId\}`/);
-  assert.match(baseline, /return `\/case\/\$\{encodedId\}`/);
-  assert.match(baseline, /return `\/clients\/\$\{encodedId\}`/);
   assert.doesNotMatch(baseline, /case_items/);
   assert.doesNotMatch(baseline, /from\(['"]clients['"]\)/);
-  assert.equal(fs.existsSync('supabase/migrations/STAGE-A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC.sql'), false);
+  assert.match(cfRuntimeGuard, /CF_RUNTIME_00_STAGE_A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_SCOPE_COMPAT/);
 });

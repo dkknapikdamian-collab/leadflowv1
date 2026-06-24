@@ -33,7 +33,7 @@ export type OwnerControlItem = {
   sourceBadge?: 'Lead' | 'Sprawa' | 'Klient';
   isMissingItem?: boolean;
   isBlockingMissingItem?: boolean;
-  gapCloseKind?: 'ownerless' | 'note_without_followup';
+  gapCloseKind?: 'note_without_followup';
 };
 
 export type OwnerControlBaseline = {
@@ -111,14 +111,6 @@ function classifySilence(silentDays: number | null, settings: OwnerRiskSettings)
   return null;
 }
 
-
-function isOwnerlessOperationalRecord(record: Record<string, unknown>) {
-  const owner = readString(record, [
-    'ownerId', 'owner_id', 'ownerEmail', 'owner_email', 'assignedTo', 'assigned_to',
-    'assigneeId', 'assignee_id', 'responsibleId', 'responsible_id', 'handlerId', 'handler_id',
-  ]);
-  return !owner;
-}
 
 function getOwnerControlSourceLabel(sourceEntityType: 'lead' | 'case' | 'client') {
   if (sourceEntityType === 'lead') return 'Lead' as const;
@@ -239,9 +231,6 @@ function buildRecordItem(input: {
   const silenceSeverity = classifySilence(silentDays, input.settings);
   const valuePln = input.entityType === 'case' ? getCaseFinanceValue(input.record) : getValue(input.record);
   const signals: string[] = [];
-  const ownerless = isOwnerlessOperationalRecord(input.record);
-
-  if (ownerless) pushSignal(signals, 'Brak odpowiedzialnego');
   if (nextMove.isMissing) pushSignal(signals, 'Brak następnego kroku');
   if (nextMove.isOverdue) pushSignal(signals, 'Następny krok jest zaległy');
   if (silenceSeverity === 'critical') pushSignal(signals, `${silentDays} dni bez kontaktu lub ruchu`);
@@ -284,12 +273,6 @@ function buildRecordItem(input: {
     statusLabel = `Cisza ${input.settings.warningDays}+ dni`;
     reason = `${silentDays} dni bez potwierdzonego kontaktu lub świeżego ruchu.`;
     suggestedAction = 'Sprawdź status i zaplanuj następny kontakt.';
-  } else if (ownerless) {
-    severity = 'warning';
-    priority = 70;
-    statusLabel = 'Bez odpowiedzialnego';
-    reason = 'Rekord nie ma przypisanego odpowiedzialnego, więc może wypaść z operacyjnej kontroli.';
-    suggestedAction = 'Przypisz właściciela albo świadomie zamknij temat.';
   }
 
   return {
@@ -307,7 +290,6 @@ function buildRecordItem(input: {
     valuePln,
     nextMoveAt: nextMove.nextMoveAt,
     signals,
-    gapCloseKind: ownerless ? 'ownerless' : undefined,
   };
 }
 
