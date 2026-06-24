@@ -1,6 +1,6 @@
 # 2026-06-24_STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT
 
-Data/czas: 2026-06-24 HH:mm Europe/Warsaw
+Data/czas: 2026-06-24 21:30 Europe/Warsaw
 canonical_name: CloseFlow / LeadFlow
 project_id: closeflow_lead_app
 repo: dkknapikdamian-collab/leadflowv1
@@ -11,7 +11,7 @@ Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
 ## Status do wpisania w Obsidian
 
 STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT:
-APPLIED_LOCAL_PENDING_TESTS / OWNER_SMOKE_PENDING
+PASS_PUSHED / CLOSED / MANUAL_SMOKE_OK
 
 ## Streszczenie
 
@@ -22,36 +22,40 @@ Wdrozenie dodaje obowiazkowy kontrakt next step dla Owner Control / Today bez tw
 - src/lib/owner-control/owner-control-baseline.ts
 - src/lib/owner-control/next-move-contract.ts
 - src/pages/TodayStable.tsx
+- scripts/check-cf-runtime-00-source-truth.cjs
 - scripts/check-stage-a35b-mandatory-next-step-contract.cjs
 - tests/stage-a35b-mandatory-next-step-contract.test.cjs
 - _project/runs/STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT.md
 
 ## Wyniki testow
 
-Do wykonania lokalnie przez apply script.
+- CF-RUNTIME-00 guard: PASS.
+- A35B guard: PASS.
+- A35B node test: 10/10 PASS.
+- npm run build: PASS.
+- npm run verify:closeflow:quiet: PASS.
+- git diff --check: PASS.
+- Commit/push: PASS, commit 3a1bd164.
+- Docs closeout sync: applied in GitHub after failed local PowerShell closeout R1.
 
-## Zakaz / granice
+## Granice
 
 Nie wykonano SQL. Nie dodano tabel. Nie ruszono finansow, billing, Google Calendar, AI Drafts, DudekHome ani .tmp.driveupload.
 
 ## Manual smoke
 
-OWNER_SMOKE_PENDING zgodnie z run reportem.
+MANUAL_SMOKE_OK. Push script R5 zostal uruchomiony po sciezce owner-smoke-ok.
 
-## STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT_REPAIR_R3
+## Repair notes
 
-Status: APPLIED_PENDING_COMMANDS / OWNER_SMOKE_PENDING
+R3 zamknal false-positive test assertion. R5 zamknal CF-RUNTIME-00 allowlist sync. Closeout status sync R2 aktualizuje tylko dokumentacje statusowa.
 
-R2 stopped on a false-positive test: the implementation marker said "without UI redesign", and the test rejected /A35B.*redesign/i. R3 corrects only the brittle test assertion. No SQL, no finance, no billing, no Calendar, no AI Drafts.
+## Closeout status sync R2 - 2026-06-24 21:30 Europe/Warsaw
 
-
-## STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT_REPAIR_R5_CF_RUNTIME_ALLOWLIST_SYNC
-
-Status: APPLIED_LOCAL / VERIFY_PENDING
+Status: PASS_PUSHED / CLOSED / MANUAL_SMOKE_OK
 
 Zakres:
-- zsynchronizowano allowlistę CF-RUNTIME-00 dla plików etapu STAGE-A35B,
-- nie zmieniano runtime Owner Control ani Today,
-- cel: odblokować verify:closeflow:quiet po zielonym guard/test/build A35B.
-
-Czas zapisu technicznego: 2026-06-24T19:16:42.068Z
+- docs/status sync only,
+- bez zmian runtime,
+- bez SQL,
+- bez finansow, billing, Google Calendar, AI Drafts, DudekHome i .tmp.driveupload.
