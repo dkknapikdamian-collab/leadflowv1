@@ -6,7 +6,10 @@ import { buildNextMoveContract } from './next-move-contract';
 import { normalizeOwnerRiskSettings, type OwnerRiskSettings } from './owner-risk-rules';
 import { getCaseFinanceValue } from '../finance/case-finance-source';
 
-export type OwnerControlEntityType = 'lead' | 'case' | 'task' | 'event';
+const STAGE_A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC = 'STAGE-A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC';
+void STAGE_A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC;
+
+export type OwnerControlEntityType = 'lead' | 'case' | 'client' | 'task' | 'event';
 export type OwnerControlSeverity = 'critical' | 'warning' | 'normal';
 
 export type OwnerControlItem = {
@@ -30,6 +33,7 @@ export type OwnerControlItem = {
   sourceBadge?: 'Lead' | 'Sprawa' | 'Klient';
   isMissingItem?: boolean;
   isBlockingMissingItem?: boolean;
+  gapCloseKind?: 'ownerless' | 'note_without_followup';
 };
 
 export type OwnerControlBaseline = {
@@ -107,6 +111,100 @@ function classifySilence(silentDays: number | null, settings: OwnerRiskSettings)
   return null;
 }
 
+
+function isOwnerlessOperationalRecord(record: Record<string, unknown>) {
+  const owner = readString(record, [
+    'ownerId', 'owner_id', 'ownerEmail', 'owner_email', 'assignedTo', 'assigned_to',
+    'assigneeId', 'assignee_id', 'responsibleId', 'responsible_id', 'handlerId', 'handler_id',
+  ]);
+  return !owner;
+}
+
+function getOwnerControlSourceLabel(sourceEntityType: 'lead' | 'case' | 'client') {
+  if (sourceEntityType === 'lead') return 'Lead' as const;
+  if (sourceEntityType === 'case') return 'Sprawa' as const;
+  return 'Klient' as const;
+}
+
+function getOwnerControlSourceHref(sourceEntityType: 'lead' | 'case' | 'client', sourceEntityId: string) {
+  const encodedId = encodeURIComponent(sourceEntityId);
+  if (sourceEntityType === 'lead') return `/leads/${encodedId}`;
+  if (sourceEntityType === 'case') return `/case/${encodedId}`;
+  return `/clients/${encodedId}`;
+}
+
+function resolveNoteSource(normalized: ReturnType<typeof normalizeWorkItem>): { sourceEntityType: 'lead' | 'case' | 'client'; sourceEntityId: string } | null {
+  if (normalized.caseId) return { sourceEntityType: 'case', sourceEntityId: normalized.caseId };
+  if (normalized.leadId) return { sourceEntityType: 'lead', sourceEntityId: normalized.leadId };
+  if (normalized.clientId) return { sourceEntityType: 'client', sourceEntityId: normalized.clientId };
+  return null;
+}
+
+function workItemMatchesSource(normalized: ReturnType<typeof normalizeWorkItem>, source: { sourceEntityType: 'lead' | 'case' | 'client'; sourceEntityId: string }) {
+  if (source.sourceEntityType === 'case') return normalized.caseId === source.sourceEntityId;
+  if (source.sourceEntityType === 'lead') return normalized.leadId === source.sourceEntityId;
+  return normalized.clientId === source.sourceEntityId;
+}
+
+function hasOpenPlannedActionForNoteSource(input: {
+  source: { sourceEntityType: 'lead' | 'case' | 'client'; sourceEntityId: string };
+  noteId: string;
+  items: unknown[];
+}) {
+  for (const candidate of input.items) {
+    if (isOwnerMissingControlItem(candidate)) continue;
+    const normalized = normalizeWorkItem(candidate);
+    if (!normalized.id || normalized.id === input.noteId) continue;
+    if (normalized.type === 'note') continue;
+    if (!normalized.dateAt) continue;
+    if (isClosedWorkItemStatus(normalized.status)) continue;
+    if (workItemMatchesSource(normalized, input.source)) return true;
+  }
+  return false;
+}
+
+export function buildNoteWithoutFollowUpOwnerControlItems(input: { items?: unknown[]; now?: Date }): OwnerControlItem[] {
+  const deduped = new Map<string, OwnerControlItem>();
+  void input.now;
+  const items = input.items || [];
+
+  for (const raw of items) {
+    if (isOwnerMissingControlItem(raw)) continue;
+    const normalized = normalizeWorkItem(raw);
+    if (!normalized.id || normalized.type !== 'note') continue;
+    if (isClosedWorkItemStatus(normalized.status)) continue;
+    const source = resolveNoteSource(normalized);
+    if (!source) continue;
+    if (hasOpenPlannedActionForNoteSource({ source, noteId: normalized.id, items })) continue;
+
+    const sourceLabel = getOwnerControlSourceLabel(source.sourceEntityType);
+    const sourceKey = `${source.sourceEntityType}:${source.sourceEntityId}:${normalized.id}`;
+    deduped.set(sourceKey, {
+      key: `note-without-followup:${sourceKey}`,
+      entityType: source.sourceEntityType,
+      entityId: source.sourceEntityId,
+      title: normalized.title || 'Notatka bez follow-upu',
+      href: getOwnerControlSourceHref(source.sourceEntityType, source.sourceEntityId),
+      severity: 'warning',
+      priority: 125,
+      reason: `${sourceLabel}: notatka nie ma powiazanego zadania ani follow-upu.`,
+      suggestedAction: 'Otworz zrodlo i dodaj konkretny nastepny ruch albo swiadomie zamknij temat.',
+      statusLabel: `[${sourceLabel}] Notatka bez follow-upu`,
+      silentDays: null,
+      valuePln: 0,
+      nextMoveAt: normalized.createdAt || normalized.updatedAt || normalized.dateAt,
+      signals: ['Notatka bez zadania/follow-upu', `Zrodlo: ${sourceLabel}`],
+      sourceEntityType: source.sourceEntityType,
+      sourceEntityId: source.sourceEntityId,
+      sourceItemId: normalized.id,
+      sourceBadge: sourceLabel,
+      gapCloseKind: 'note_without_followup',
+    });
+  }
+
+  return [...deduped.values()];
+}
+
 function buildRecordItem(input: {
   entityType: 'lead' | 'case';
   record: Record<string, unknown>;
@@ -141,7 +239,9 @@ function buildRecordItem(input: {
   const silenceSeverity = classifySilence(silentDays, input.settings);
   const valuePln = input.entityType === 'case' ? getCaseFinanceValue(input.record) : getValue(input.record);
   const signals: string[] = [];
+  const ownerless = isOwnerlessOperationalRecord(input.record);
 
+  if (ownerless) pushSignal(signals, 'Brak odpowiedzialnego');
   if (nextMove.isMissing) pushSignal(signals, 'Brak następnego kroku');
   if (nextMove.isOverdue) pushSignal(signals, 'Następny krok jest zaległy');
   if (silenceSeverity === 'critical') pushSignal(signals, `${silentDays} dni bez kontaktu lub ruchu`);
@@ -184,6 +284,12 @@ function buildRecordItem(input: {
     statusLabel = `Cisza ${input.settings.warningDays}+ dni`;
     reason = `${silentDays} dni bez potwierdzonego kontaktu lub świeżego ruchu.`;
     suggestedAction = 'Sprawdź status i zaplanuj następny kontakt.';
+  } else if (ownerless) {
+    severity = 'warning';
+    priority = 70;
+    statusLabel = 'Bez odpowiedzialnego';
+    reason = 'Rekord nie ma przypisanego odpowiedzialnego, więc może wypaść z operacyjnej kontroli.';
+    suggestedAction = 'Przypisz właściciela albo świadomie zamknij temat.';
   }
 
   return {
@@ -201,6 +307,7 @@ function buildRecordItem(input: {
     valuePln,
     nextMoveAt: nextMove.nextMoveAt,
     signals,
+    gapCloseKind: ownerless ? 'ownerless' : undefined,
   };
 }
 
@@ -209,6 +316,7 @@ function buildWorkItem(input: { item: unknown; kind: 'task' | 'event'; now: Date
   if (isOwnerMissingControlItem(record)) return null;
   const normalized = normalizeWorkItem(record);
   if (!normalized.id || !normalized.dateAt || isClosedWorkItemStatus(normalized.status)) return null;
+  if (normalized.type === 'note') return null;
   const when = new Date(normalized.dateAt);
   if (!Number.isFinite(when.getTime())) return null;
 
@@ -256,6 +364,7 @@ export function buildOwnerControlBaseline(input: BuildOwnerControlBaselineInput)
 
   const candidates: Array<OwnerControlItem | null> = [
     ...buildMissingOwnerControlItems({ tasks, now }),
+    ...buildNoteWithoutFollowUpOwnerControlItems({ items: workItems, now }),
     ...leads.map((record) => buildRecordItem({
       entityType: 'lead', record, relatedCaseIds: caseIdsByLeadId.get(readString(record, ['id'])) || [], workItems, settings, now,
     })),

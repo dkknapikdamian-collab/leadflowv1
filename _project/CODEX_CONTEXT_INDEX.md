@@ -332,3 +332,22 @@ Zakres:
 
 Ryzyko:
 - Retention działa jako undo-safety-net dla wpisów zakończonych z Calendar w tej przeglądarce. Docelowo backend/API bundle powinien zwracać done/completed zgodnie z polityką Calendar.
+
+<!-- STAGE-A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC -->
+## 2026-06-24 08:00 Europe/Warsaw - STAGE-A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC
+
+Status: APPLIED_LOCAL_PENDING_GUARDS_BUILD_VERIFY_OWNER_SMOKE_PUSH.
+
+Zakres:
+- gap-close istniejacego Owner Control baseline w /today,
+- Brak odpowiedzialnego dla aktywnych leadow/spraw,
+- Notatka bez follow-upu z istniejacego feedu task/work-item,
+- bez nowych kafelkow, bez SQL, bez Calendar/finance/billing.
+
+Guard/test:
+- scripts/check-stage-a35-r1-owner-control-baseline-gap-close-and-queue-sync.cjs
+- tests/stage-a35-r1-owner-control-baseline-gap-close-and-queue-sync.test.cjs
+
+Manual smoke:
+- /today, kafelek Wymaga ruchu, ownerless lead/case, note-without-follow-up, refresh/F5, liczniki zgodne z listami.
+<!-- /STAGE-A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC -->

@@ -22,6 +22,7 @@
 // CF_RUNTIME_00_STAGE232I3_OWNER_CONTROL_MISSING_BLOCKER_SCOPE_COMPAT
 // CF_RUNTIME_00_STAGE232I4_CLIENT_MISSING_TOP_TILE_SCOPE_COMPAT
 // CF_RUNTIME_00_STAGE232I4_R16Z_R5_SCOPE_COMPAT
+// CF_RUNTIME_00_STAGE_A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_SCOPE_COMPAT
 // CF_RUNTIME_00_STAGE232I1_R8_MISSING_MODAL_READABLE_STYLE
 // CF_RUNTIME_00_R19_MASS_SCOPE_CLOSURE_ALLOWED
 // CF_RUNTIME_00_R18_SHEBANG_SCOPE_ALLOWED
@@ -121,6 +122,19 @@ if (exists('scripts/closeflow-release-check-quiet.cjs')) {
 }
 
 const allowedChangePrefixes = [
+  // STAGE_A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_ALLOWLIST
+  'src/lib/owner-control/owner-control-baseline.ts',
+  'src/pages/TodayStable.tsx',
+  'scripts/check-cf-runtime-00-source-truth.cjs',
+  'scripts/check-stage-a35-r1-owner-control-baseline-gap-close-and-queue-sync.cjs',
+  'tests/stage-a35-r1-owner-control-baseline-gap-close-and-queue-sync.test.cjs',
+  '_project/runs/STAGE-A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC.md',
+  '_project/obsidian_updates/2026-06-24_STAGE-A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC.md',
+  '_project/CODEX_CONTEXT_INDEX.md',
+  '_project/04_ETAPY_ROZWOJU_APLIKACJI.md',
+  '_project/06_GUARDS_AND_TESTS.md',
+  '_project/09_TESTY_DO_WYKONANIA_I_WYNIKI.md',
+  '_project/11_RYZYKA_BUGI_I_DLUG_TECHNICZNY.md',
   // STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R3_ALLOWLIST
   'api/work-items.ts',
   '_project/obsidian_updates/2026-06-23_STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX.md',
