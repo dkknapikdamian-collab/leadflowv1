@@ -1095,3 +1095,8 @@ Zakres:
 - cel: odblokować verify:closeflow:quiet po zielonym guard/test/build A35B.
 
 Czas zapisu technicznego: 2026-06-24T19:16:42.068Z
+
+## 2026-06-24 23:30 Europe/Warsaw â€” STAGE232G_R1I_R3_CALENDAR_DELETE_RELEASES_COMPLETED_RETENTION
+- Status: APPLIED_LOCAL_PENDING_GUARDS_AND_OWNER_SMOKE.
+- Zakres: Calendar delete must release completed retention so a deleted completed event/task is not resurrected after refresh.
+- Testy: R1I guard/test, CF runtime, build, verify quiet, diff-check, owner smoke.

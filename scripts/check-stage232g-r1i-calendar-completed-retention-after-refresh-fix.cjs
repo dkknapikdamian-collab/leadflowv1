@@ -59,6 +59,9 @@ expect(calendar, "setTasks(mergeCalendarCompletedRetentionRowsStage232GR1I('task
 expect(calendar, 'retainCalendarCompletedEntryStage232GR1I(entry);', 'retain on complete');
 expect(calendar, 'releaseCalendarCompletedEntryStage232GR1I(entry);', 'release on restore');
 expect(calendar, 'delete retention[key];', 'restore removes retained entry');
+expect(calendar, 'releaseCalendarCompletedRetentionByKindAndIdStage232GR1I', 'delete release helper');
+expect(calendar, "releaseCalendarCompletedRetentionByKindAndIdStage232GR1I('event', sourceId);", 'delete releases retained event');
+expect(calendar, "releaseCalendarCompletedRetentionByKindAndIdStage232GR1I('task', sourceId);", 'delete releases retained task');
 expect(calendar, 'isCompletedCalendarEntry(entry)', 'completed detection still used');
 expect(calendar, 'sortCalendarEntriesForDisplay', 'completed-last display sort still used');
 expect(calendar, "return aDone ? 1 : -1;", 'completed entries are sorted below open entries');

@@ -15,3 +15,8 @@ Commits docs-only:
 - 22d4ad85 docs(closeflow): close a35b obsidian payload status
 
 Granice: bez runtime, bez SQL, bez finansow, bez billing, bez Google Calendar, bez AI Drafts, bez DudekHome, bez .tmp.driveupload.
+
+## 2026-06-24 23:30 Europe/Warsaw â€” STAGE232G_R1I_R3_CALENDAR_DELETE_RELEASES_COMPLETED_RETENTION
+- Status: APPLIED_LOCAL_PENDING_GUARDS_AND_OWNER_SMOKE.
+- Zakres: Calendar delete must release completed retention so a deleted completed event/task is not resurrected after refresh.
+- Testy: R1I guard/test, CF runtime, build, verify quiet, diff-check, owner smoke.

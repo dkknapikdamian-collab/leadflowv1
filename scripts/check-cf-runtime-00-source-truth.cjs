@@ -183,6 +183,8 @@ const allowedChangePrefixes = [
   '_project/obsidian_updates/2026-06-23_STAGE232G_R1I_R2_CALENDAR_COMPLETED_RETENTION_AFTER_REFRESH_FIX.md',
   '_project/runs/STAGE232G_R1I_R2_CALENDAR_COMPLETED_RETENTION_AFTER_REFRESH_FIX.md',
   'tests/stage232g-r1i-calendar-completed-retention-after-refresh-fix.test.cjs',
+  '_project/obsidian_updates/2026-06-24_STAGE232G_R1I_R3_CALENDAR_DELETE_RELEASES_COMPLETED_RETENTION.md',
+  '_project/runs/STAGE232G_R1I_R3_CALENDAR_DELETE_RELEASES_COMPLETED_RETENTION.md',
   'tests/stage232g-r1f-calendar-today-final-parity-guard-and-smoke.test.cjs',
 
   // STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE_ALLOWLIST

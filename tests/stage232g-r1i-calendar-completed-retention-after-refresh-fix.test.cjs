@@ -86,3 +86,13 @@ test('R1I_R2 stays inside Calendar retention scope and documents the closeout', 
   assert.match(runReport(), /STAGE232G_R1I_R2_CALENDAR_COMPLETED_RETENTION_AFTER_REFRESH_FIX/);
   assert.match(obsidianPayload(), /STAGE232G_R1I_R2_CALENDAR_COMPLETED_RETENTION_AFTER_REFRESH_FIX/);
 });
+
+test('R1I_R3 delete releases completed retention so deleted rows are not resurrected', () => {
+  const src = calendar();
+  assert.match(src, /function releaseCalendarCompletedRetentionByKindAndIdStage232GR1I\(kind: 'event' \| 'task', sourceIdInput: unknown\)/);
+  assert.match(src, /STAGE232G_R1I_R3_CALENDAR_DELETE_RELEASES_COMPLETED_RETENTION/);
+  assert.match(src, /releaseCalendarCompletedRetentionByKindAndIdStage232GR1I\('event', sourceId\);/);
+  assert.match(src, /releaseCalendarCompletedRetentionByKindAndIdStage232GR1I\('task', sourceId\);/);
+  assert.match(src, /deleteEventFromSupabase\(sourceId\);[\s\S]{0,180}releaseCalendarCompletedRetentionByKindAndIdStage232GR1I\('event', sourceId\);/);
+  assert.match(src, /deleteTaskFromSupabase\(sourceId\);[\s\S]{0,180}releaseCalendarCompletedRetentionByKindAndIdStage232GR1I\('task', sourceId\);/);
+});

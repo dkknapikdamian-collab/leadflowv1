@@ -855,6 +855,33 @@ export default function Calendar() {
     }
   }
 
+  function releaseCalendarCompletedRetentionByKindAndIdStage232GR1I(kind: 'event' | 'task', sourceIdInput: unknown) {
+    // STAGE232G_R1I_R3_CALENDAR_DELETE_RELEASES_COMPLETED_RETENTION
+    // Delete must release the retention safety net so removed completed rows are not resurrected after refresh.
+    const sourceId = String(sourceIdInput || '').trim();
+    if (!sourceId) return;
+
+    const retention = { ...readCalendarCompletedRetentionStage232GR1I() };
+    let changed = false;
+    const directKey = kind + ':' + sourceId;
+
+    if (Object.prototype.hasOwnProperty.call(retention, directKey)) {
+      delete retention[directKey];
+      changed = true;
+    }
+
+    for (const [retentionKey, value] of Object.entries(retention)) {
+      if ((value as any)?.kind !== kind) continue;
+      const retainedSourceId = getCalendarRetentionIdStage232GR1I(kind, (value as any)?.row);
+      if (retainedSourceId === sourceId) {
+        delete retention[retentionKey];
+        changed = true;
+      }
+    }
+
+    if (changed) writeCalendarCompletedRetentionStage232GR1I(retention);
+  }
+
   function mergeCalendarCompletedRetentionRowsStage232GR1I(kind: 'event' | 'task', rows: any[]) {
     const safeRows = Array.isArray(rows) ? rows : [];
     const retention = { ...readCalendarCompletedRetentionStage232GR1I() };
@@ -2343,9 +2370,11 @@ export default function Calendar() {
       let deleteResult: unknown = null;
       if (entry.kind === 'event') {
         deleteResult = await deleteEventFromSupabase(sourceId);
+        releaseCalendarCompletedRetentionByKindAndIdStage232GR1I('event', sourceId);
         setEvents((previousEvents: any[]) => previousEvents.filter((row) => String(row?.id || '') !== sourceId));
       } else if (entry.kind === 'task') {
         deleteResult = await deleteTaskFromSupabase(sourceId);
+        releaseCalendarCompletedRetentionByKindAndIdStage232GR1I('task', sourceId);
         setTasks((previousTasks: any[]) => previousTasks.filter((row) => String(row?.id || '') !== sourceId));
       }
       emitCloseflowDeleteDebug({

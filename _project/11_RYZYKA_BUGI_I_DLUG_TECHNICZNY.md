@@ -2504,3 +2504,8 @@ Status: APPLIED_LOCAL / VERIFY_PENDING
 Ryzyko wykryte w R4: CF-RUNTIME-00 miał nieaktualną allowlistę i blokował legalne pliki A35B. Naprawa R5 ogranicza się do synchronizacji guarda, bez zmian SQL, finansów, billing, Google Calendar, AI Drafts ani runtime szczegółów lead/case/client.
 
 Czas zapisu technicznego: 2026-06-24T19:16:42.068Z
+
+## 2026-06-24 23:30 Europe/Warsaw â€” STAGE232G_R1I_R3_CALENDAR_DELETE_RELEASES_COMPLETED_RETENTION
+- Status: APPLIED_LOCAL_PENDING_GUARDS_AND_OWNER_SMOKE.
+- Zakres: Calendar delete must release completed retention so a deleted completed event/task is not resurrected after refresh.
+- Testy: R1I guard/test, CF runtime, build, verify quiet, diff-check, owner smoke.
