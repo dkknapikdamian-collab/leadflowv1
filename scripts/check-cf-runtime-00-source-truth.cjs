@@ -24,6 +24,7 @@
 // CF_RUNTIME_00_STAGE232I4_R16Z_R5_SCOPE_COMPAT
 // CF_RUNTIME_00_STAGE_A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_SCOPE_COMPAT
 // CF_RUNTIME_00_STAGE_A35_R2_REMOVE_SINGLE_USER_OWNERLESS_NOISE_SCOPE_COMPAT
+// CF_RUNTIME_00_STAGE_A35B_MANDATORY_NEXT_STEP_CONTRACT_SCOPE_COMPAT
 // CF_RUNTIME_00_STAGE232I1_R8_MISSING_MODAL_READABLE_STYLE
 // CF_RUNTIME_00_R19_MASS_SCOPE_CLOSURE_ALLOWED
 // CF_RUNTIME_00_R18_SHEBANG_SCOPE_ALLOWED
@@ -140,6 +141,19 @@ const allowedChangePrefixes = [
   '_project/04_ETAPY_ROZWOJU_APLIKACJI.md',
   '_project/06_GUARDS_AND_TESTS.md',
   '_project/09_TESTY_DO_WYKONANIA_I_WYNIKI.md',
+  '_project/11_RYZYKA_BUGI_I_DLUG_TECHNICZNY.md',
+  // STAGE_A35B_MANDATORY_NEXT_STEP_CONTRACT_ALLOWLIST
+  'src/lib/owner-control/owner-control-baseline.ts',
+  'src/lib/owner-control/next-move-contract.ts',
+  'src/pages/TodayStable.tsx',
+  'scripts/check-stage-a35b-mandatory-next-step-contract.cjs',
+  'tests/stage-a35b-mandatory-next-step-contract.test.cjs',
+  '_project/runs/STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT.md',
+  '_project/obsidian_updates/2026-06-24_STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT.md',
+  '_project/04_ETAPY_ROZWOJU_APLIKACJI.md',
+  '_project/06_GUARDS_AND_TESTS.md',
+  '_project/09_TESTY_DO_WYKONANIA_I_WYNIKI.md',
+  '_project/10_ZIPY_WDROZENIA_PUSH.md',
   '_project/11_RYZYKA_BUGI_I_DLUG_TECHNICZNY.md',
   // STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R3_ALLOWLIST
   'api/work-items.ts',

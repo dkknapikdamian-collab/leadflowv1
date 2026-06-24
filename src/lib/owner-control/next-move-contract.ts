@@ -1,5 +1,8 @@
 import { isClosedWorkItemStatus } from '../work-items/planned-actions';
 
+const STAGE_A35B_MANDATORY_NEXT_STEP_CONTRACT = 'STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT: next step may come from task, event, follow_up or existing nextActionAt fallback';
+void STAGE_A35B_MANDATORY_NEXT_STEP_CONTRACT;
+
 export type NextMoveStatus = 'missing' | 'overdue' | 'today' | 'planned' | 'closed';
 
 export type NextMoveSeverity = 'none' | 'low' | 'medium' | 'high';
@@ -11,7 +14,7 @@ export type NextMoveContract = {
   reason: string;
   nextMoveAt: string | null;
   nextMoveTitle: string | null;
-  nextMoveType: 'task' | 'event' | 'manual' | null;
+  nextMoveType: 'task' | 'event' | 'follow_up' | 'manual' | null;
   isMissing: boolean;
   isOverdue: boolean;
   isToday: boolean;
@@ -35,9 +38,11 @@ export type BuildNextMoveContractInput = {
 const STAGE223_NEXT_MOVE_CONTRACT = 'one contract for missing, overdue, today, planned and closed next move';
 void STAGE223_NEXT_MOVE_CONTRACT;
 
-function normalizeActionType(value: unknown): 'task' | 'event' | 'manual' | null {
+function normalizeActionType(value: unknown): 'task' | 'event' | 'follow_up' | 'manual' | null {
   const normalized = String(value || '').trim().toLowerCase();
   if (normalized === 'task' || normalized === 'event') return normalized;
+  if (normalized === 'follow_up' || normalized === 'follow-up' || normalized === 'followup') return 'follow_up';
+  if (normalized === 'meeting') return 'event';
   if (normalized === 'manual') return 'manual';
   return normalized ? 'manual' : null;
 }
@@ -72,7 +77,7 @@ function buildContract(status: NextMoveStatus, input: {
   severity: NextMoveSeverity;
   nextMoveAt?: string | null;
   nextMoveTitle?: string | null;
-  nextMoveType?: 'task' | 'event' | 'manual' | null;
+  nextMoveType?: 'task' | 'event' | 'follow_up' | 'manual' | null;
 }): NextMoveContract {
   return {
     status,

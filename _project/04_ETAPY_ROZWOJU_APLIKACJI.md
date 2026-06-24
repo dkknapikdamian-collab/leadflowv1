@@ -2747,3 +2747,9 @@ Decision: remove ownerless / missing responsible person logic from Owner Control
 Keep active: note without follow-up, missing next step, overdue next step, silence, high-value without safe movement.
 
 Tests: R1 guard/test updated, R2 guard/test added, build and verify quiet required.
+
+## 2026-06-24 HH:mm Europe/Warsaw — STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT
+
+Status: APPLIED_LOCAL_PENDING_TESTS / OWNER_SMOKE_PENDING
+
+Zakres: Owner Control / Today dostaje obowiazkowy kontrakt realnego next step bez SQL, bez ownerless noise i bez nowego zrodla prawdy.

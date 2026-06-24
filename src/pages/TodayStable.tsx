@@ -22,6 +22,7 @@ import {
   deleteEventFromSupabase,
   deleteTaskFromSupabase,
   fetchCasesFromSupabase,
+  fetchClientsFromSupabase,
   fetchEventsFromSupabase,
   fetchLeadsFromSupabase,
   fetchTasksFromSupabase,
@@ -114,6 +115,8 @@ const STAGE232B_R6_TODAY_NO_DEV_HELPER_COPY = 'STAGE232B_R6: Today UI must not s
 void STAGE232B_R6_TODAY_NO_DEV_HELPER_COPY;
 const STAGE_A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC = 'STAGE-A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC: Today uses Owner Control baseline gap-close rows without adding duplicate tiles';
 void STAGE_A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC;
+const STAGE_A35B_MANDATORY_NEXT_STEP_CONTRACT = 'STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT: Today feeds clients into Owner Control baseline without UI redesign';
+void STAGE_A35B_MANDATORY_NEXT_STEP_CONTRACT;
 const STAGE232G_R1D_TODAY_ACTION_POLICY_IMPORT = 'STAGE232G_R1D_CALENDAR_ACTIONS_RESPECT_OPERATIONAL_ENTRY_CONTRACT: TODAY imports shared action policy';
 void STAGE232G_R1D_TODAY_ACTION_POLICY_IMPORT;
 const STAGE232G_R1D_COMPLETE_ACTION_CONTRACT_GUARD = 'complete action must respect getSupportedOperationalEntryActions; lead shadow cannot be completed as task/event';
@@ -141,6 +144,7 @@ type DashboardData = {
   leads: any[];
   events: any[];
   cases: any[];
+  clients: any[];
   drafts: AiLeadDraft[];
 };
 
@@ -205,6 +209,7 @@ const emptyData: DashboardData = {
   leads: [],
   events: [],
   cases: [],
+  clients: [],
   drafts: [],
 };
 
@@ -726,11 +731,12 @@ function RowLink({
 }
 
 async function loadStableTodayData(): Promise<DashboardData> {
-  const [tasks, leads, events, cases, drafts] = await Promise.all([
+  const [tasks, leads, events, cases, clients, drafts] = await Promise.all([
     fetchTasksFromSupabase().catch(() => []),
     fetchLeadsFromSupabase().catch(() => []),
     fetchEventsFromSupabase().catch(() => []),
     fetchCasesFromSupabase().catch(() => []),
+    fetchClientsFromSupabase().catch(() => []),
     getAiLeadDraftsAsync().catch(() => []),
   ]);
 
@@ -739,6 +745,7 @@ async function loadStableTodayData(): Promise<DashboardData> {
     leads: Array.isArray(leads) ? leads : [],
     events: Array.isArray(events) ? events : [],
     cases: Array.isArray(cases) ? cases : [],
+    clients: Array.isArray(clients) ? clients : [],
     drafts: Array.isArray(drafts) ? drafts : [],
   };
 }
@@ -1169,10 +1176,11 @@ function TodayStable() {
   const ownerControlBaseline = useMemo(() => buildOwnerControlBaseline({
     leads: data.leads,
     cases: data.cases,
+    clients: data.clients,
     tasks: data.tasks,
     events: data.events,
     settings: readOwnerRiskSettings(workspace),
-  }), [data.cases, data.events, data.leads, data.tasks, workspace]);
+  }), [data.cases, data.clients, data.events, data.leads, data.tasks, workspace]);
   const leadById = useMemo(() => new Map(data.leads.map((lead: any) => [String(lead?.id || ''), lead])), [data.leads]);
   const ownerControlLeadRows = useMemo(() => ownerControlBaseline.items
     .filter((item) => item.entityType === 'lead')

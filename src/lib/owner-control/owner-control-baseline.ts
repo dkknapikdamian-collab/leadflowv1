@@ -8,6 +8,8 @@ import { getCaseFinanceValue } from '../finance/case-finance-source';
 
 const STAGE_A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC = 'STAGE-A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC';
 void STAGE_A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC;
+const STAGE_A35B_MANDATORY_NEXT_STEP_CONTRACT = 'STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT: Owner Control requires concrete next steps from existing tasks/events/follow-ups/nextActionAt without ownerless noise';
+void STAGE_A35B_MANDATORY_NEXT_STEP_CONTRACT;
 
 export type OwnerControlEntityType = 'lead' | 'case' | 'client' | 'task' | 'event';
 export type OwnerControlSeverity = 'critical' | 'warning' | 'normal';
@@ -52,6 +54,7 @@ export type OwnerControlBaseline = {
 export type BuildOwnerControlBaselineInput = {
   leads?: unknown[];
   cases?: unknown[];
+  clients?: unknown[];
   tasks?: unknown[];
   events?: unknown[];
   settings?: unknown;
@@ -60,6 +63,11 @@ export type BuildOwnerControlBaselineInput = {
 
 const CLOSED_RECORD_STATUSES = new Set([
   'won', 'lost', 'closed', 'archived', 'done', 'completed', 'cancelled', 'canceled', 'moved_to_service',
+]);
+
+const ACTIVE_CLIENT_SERVICE_STATUSES = new Set([
+  'active', 'open', 'in_progress', 'onboarding', 'service', 'servicing', 'waiting', 'waiting_on_client',
+  'needs_action', 'requires_action', 'follow_up', 'follow-up', 'client_active', 'active_service',
 ]);
 
 function asRecord(value: unknown): Record<string, unknown> {
@@ -87,6 +95,26 @@ function readNumber(record: Record<string, unknown>, keys: string[]) {
   return 0;
 }
 
+function readBoolean(record: Record<string, unknown>, keys: string[]) {
+  for (const key of keys) {
+    const value = record[key];
+    if (typeof value === 'boolean') return value;
+    if (typeof value === 'number') return value !== 0;
+    if (typeof value === 'string') {
+      const normalized = value.trim().toLowerCase();
+      if (['true', '1', 'yes', 'tak'].includes(normalized)) return true;
+      if (['false', '0', 'no', 'nie'].includes(normalized)) return false;
+    }
+  }
+  return false;
+}
+
+function addToStringArrayMap(map: Map<string, string[]>, key: string, value: string) {
+  if (!key || !value) return;
+  const current = map.get(key) || [];
+  if (!current.includes(value)) map.set(key, [...current, value]);
+}
+
 function getValue(record: Record<string, unknown>) {
   return readNumber(record, [
     'contractValue', 'contract_value', 'expectedRevenue', 'expected_revenue', 'caseValue', 'case_value',
@@ -110,7 +138,6 @@ function classifySilence(silentDays: number | null, settings: OwnerRiskSettings)
   if (silentDays >= settings.warningDays) return 'warning' as const;
   return null;
 }
-
 
 function getOwnerControlSourceLabel(sourceEntityType: 'lead' | 'case' | 'client') {
   if (sourceEntityType === 'lead') return 'Lead' as const;
@@ -136,6 +163,38 @@ function workItemMatchesSource(normalized: ReturnType<typeof normalizeWorkItem>,
   if (source.sourceEntityType === 'case') return normalized.caseId === source.sourceEntityId;
   if (source.sourceEntityType === 'lead') return normalized.leadId === source.sourceEntityId;
   return normalized.clientId === source.sourceEntityId;
+}
+
+function getRecordNextAction(record: Record<string, unknown>) {
+  const when = readString(record, ['nextActionAt', 'next_action_at', 'nextMoveAt', 'next_move_at', 'followUpAt', 'follow_up_at']);
+  if (!when) return null;
+  return {
+    id: readString(record, ['nextActionId', 'next_action_id'], 'record-next-action'),
+    when,
+    title: readString(record, ['nextActionTitle', 'next_action_title', 'nextActionLabel', 'next_action_label'], 'Następny ruch'),
+    type: readString(record, ['nextActionType', 'next_action_type'], 'manual'),
+    status: readString(record, ['nextActionStatus', 'next_action_status'], 'todo'),
+  };
+}
+
+function hasDirectOpenClientWorkItem(clientId: string, workItems: unknown[]) {
+  if (!clientId) return false;
+  return workItems.some((item) => {
+    const normalized = normalizeWorkItem(item);
+    if (normalized.clientId !== clientId) return false;
+    if (normalized.type === 'note') return false;
+    return !isClosedWorkItemStatus(normalized.status);
+  });
+}
+
+function clientRequiresOwnerControlRecord(record: Record<string, unknown>, workItems: unknown[]) {
+  const clientId = readString(record, ['id']);
+  if (!clientId || isClosedRecord(record)) return false;
+  if (readBoolean(record, ['requiresService', 'requires_service', 'requiresAttention', 'requires_attention', 'needsAction', 'needs_action'])) return true;
+  const status = readString(record, ['status', 'clientStatus', 'client_status', 'serviceStatus', 'service_status', 'lifecycleStatus', 'lifecycle_status']).toLowerCase();
+  if (ACTIVE_CLIENT_SERVICE_STATUSES.has(status)) return true;
+  if (readString(record, ['primaryCaseId', 'primary_case_id', 'activeCaseId', 'active_case_id'])) return true;
+  return hasDirectOpenClientWorkItem(clientId, workItems);
 }
 
 function hasOpenPlannedActionForNoteSource(input: {
@@ -198,9 +257,11 @@ export function buildNoteWithoutFollowUpOwnerControlItems(input: { items?: unkno
 }
 
 function buildRecordItem(input: {
-  entityType: 'lead' | 'case';
+  entityType: 'lead' | 'case' | 'client';
   record: Record<string, unknown>;
   relatedCaseIds?: string[];
+  relatedLeadIds?: string[];
+  suppressMissingNextStep?: boolean;
   workItems: unknown[];
   settings: OwnerRiskSettings;
   now: Date;
@@ -212,8 +273,10 @@ function buildRecordItem(input: {
     recordType: input.entityType,
     recordId: id,
     relatedCaseIds: input.relatedCaseIds,
+    relatedLeadIds: input.relatedLeadIds,
     items: input.workItems,
-  });
+  }) || getRecordNextAction(input.record);
+
   const nextMove = buildNextMoveContract({
     entityType: input.entityType,
     entityId: id,
@@ -221,6 +284,9 @@ function buildRecordItem(input: {
     nearestAction,
     now: input.now,
   });
+
+  if (input.entityType === 'client' && input.suppressMissingNextStep && nextMove.isMissing) return null;
+
   const activity = buildActivityTruth({
     entityType: input.entityType,
     entityId: id,
@@ -247,14 +313,18 @@ function buildRecordItem(input: {
   let reason = nextMove.reason;
   let suggestedAction = 'Wykonaj zaplanowany ruch.';
 
-  if (nextMove.isMissing || nextMove.isOverdue) {
+  if (nextMove.isOverdue) {
     severity = 'critical';
-    priority = 120;
-    statusLabel = nextMove.isMissing ? 'Brak next step' : 'Zaległe';
+    priority = 150;
+    statusLabel = 'Zaległy next step';
     reason = nextMove.reason;
-    suggestedAction = nextMove.isMissing
-      ? 'Ustaw konkretny następny krok albo świadomie zamknij temat.'
-      : 'Wykonaj zaległy ruch albo ustaw nowy realny termin.';
+    suggestedAction = 'Wykonaj zaległy ruch albo ustaw nowy realny termin.';
+  } else if (nextMove.isMissing) {
+    severity = 'critical';
+    priority = 130;
+    statusLabel = 'Brak next step';
+    reason = nextMove.reason;
+    suggestedAction = 'Ustaw konkretny następny krok albo świadomie zamknij temat.';
   } else if (valuePln >= input.settings.highValueThresholdPln && silenceSeverity) {
     severity = 'critical';
     priority = 110;
@@ -276,11 +346,15 @@ function buildRecordItem(input: {
   }
 
   return {
-    key: `${input.entityType}:${id}`,
+    key: `record:${input.entityType}:${id}`,
     entityType: input.entityType,
     entityId: id,
-    title: readString(input.record, input.entityType === 'lead' ? ['name', 'company', 'title'] : ['title', 'clientName', 'client_name', 'name'], input.entityType === 'lead' ? 'Lead' : 'Sprawa'),
-    href: input.entityType === 'lead' ? `/leads/${encodeURIComponent(id)}` : `/case/${encodeURIComponent(id)}`,
+    title: readString(
+      input.record,
+      input.entityType === 'lead' ? ['name', 'company', 'title'] : ['title', 'clientName', 'client_name', 'name'],
+      input.entityType === 'lead' ? 'Lead' : input.entityType === 'client' ? 'Klient' : 'Sprawa',
+    ),
+    href: getOwnerControlSourceHref(input.entityType, id),
     severity,
     priority,
     reason,
@@ -290,6 +364,9 @@ function buildRecordItem(input: {
     valuePln,
     nextMoveAt: nextMove.nextMoveAt,
     signals,
+    sourceEntityType: input.entityType,
+    sourceEntityId: id,
+    sourceBadge: getOwnerControlSourceLabel(input.entityType),
   };
 }
 
@@ -299,6 +376,9 @@ function buildWorkItem(input: { item: unknown; kind: 'task' | 'event'; now: Date
   const normalized = normalizeWorkItem(record);
   if (!normalized.id || !normalized.dateAt || isClosedWorkItemStatus(normalized.status)) return null;
   if (normalized.type === 'note') return null;
+  const source = resolveNoteSource(normalized);
+  if (!source) return null;
+  const sourceLabel = getOwnerControlSourceLabel(source.sourceEntityType);
   const when = new Date(normalized.dateAt);
   if (!Number.isFinite(when.getTime())) return null;
 
@@ -310,20 +390,24 @@ function buildWorkItem(input: { item: unknown; kind: 'task' | 'event'; now: Date
 
   const overdue = when.getTime() < startToday.getTime();
   return {
-    key: `${input.kind}:${normalized.id}`,
+    key: `${input.kind}:${source.sourceEntityType}:${source.sourceEntityId}:${normalized.id}`,
     entityType: input.kind,
     entityId: normalized.id,
     title: normalized.title || (input.kind === 'task' ? 'Zadanie' : 'Wydarzenie'),
-    href: input.kind === 'task' ? `/tasks?id=${encodeURIComponent(normalized.id)}` : '/calendar',
+    href: getOwnerControlSourceHref(source.sourceEntityType, source.sourceEntityId),
     severity: overdue ? 'critical' : 'normal',
     priority: overdue ? 115 : 50,
-    reason: overdue ? 'Termin minął i rekord nadal jest otwarty.' : 'Termin przypada dzisiaj.',
+    reason: overdue ? `${sourceLabel}: termin minął i rekord nadal jest otwarty.` : `${sourceLabel}: termin przypada dzisiaj.`,
     suggestedAction: input.kind === 'task' ? 'Wykonaj zadanie albo ustaw realny nowy termin.' : 'Obsłuż wydarzenie albo przełóż je świadomie.',
-    statusLabel: overdue ? 'Zaległe' : 'Dzisiaj',
+    statusLabel: `[${sourceLabel}] ${overdue ? 'Zaległe' : 'Dzisiaj'}`,
     silentDays: null,
     valuePln: 0,
     nextMoveAt: normalized.dateAt,
-    signals: [overdue ? 'Zaległy termin' : 'Zaplanowane na dzisiaj'],
+    signals: [overdue ? 'Zaległy termin' : 'Zaplanowane na dzisiaj', `Zrodlo: ${sourceLabel}`],
+    sourceEntityType: source.sourceEntityType,
+    sourceEntityId: source.sourceEntityId,
+    sourceItemId: normalized.id,
+    sourceBadge: sourceLabel,
   };
 }
 
@@ -332,25 +416,83 @@ export function buildOwnerControlBaseline(input: BuildOwnerControlBaselineInput)
   const settings = normalizeOwnerRiskSettings(input.settings || {});
   const leads = (input.leads || []).map(asRecord);
   const cases = (input.cases || []).map(asRecord);
+  const clients = (input.clients || []).map(asRecord);
   const tasks = input.tasks || [];
   const events = input.events || [];
   const workItems = [...tasks, ...events];
   const caseIdsByLeadId = new Map<string, string[]>();
+  const caseIdsByClientId = new Map<string, string[]>();
+  const leadIdsByClientId = new Map<string, string[]>();
+
+  for (const leadRecord of leads) {
+    const leadId = readString(leadRecord, ['id']);
+    const clientId = readString(leadRecord, ['clientId', 'client_id', 'linkedClientId', 'linked_client_id']);
+    addToStringArrayMap(leadIdsByClientId, clientId, leadId);
+  }
 
   for (const caseRecord of cases) {
     const leadId = readString(caseRecord, ['leadId', 'lead_id']);
+    const clientId = readString(caseRecord, ['clientId', 'client_id']);
     const caseId = readString(caseRecord, ['id']);
-    if (!leadId || !caseId) continue;
-    caseIdsByLeadId.set(leadId, [...(caseIdsByLeadId.get(leadId) || []), caseId]);
+    addToStringArrayMap(caseIdsByLeadId, leadId, caseId);
+    addToStringArrayMap(caseIdsByClientId, clientId, caseId);
   }
 
+  const missingControlItems = buildMissingOwnerControlItems({ tasks, now });
+  const noteGapItems = buildNoteWithoutFollowUpOwnerControlItems({ items: workItems, now });
+
+  const leadRecordEntries = leads.map((record) => ({
+    record,
+    item: buildRecordItem({
+      entityType: 'lead',
+      record,
+      relatedCaseIds: caseIdsByLeadId.get(readString(record, ['id'])) || [],
+      workItems,
+      settings,
+      now,
+    }),
+  }));
+
+  const caseRecordEntries = cases.map((record) => ({
+    record,
+    item: buildRecordItem({ entityType: 'case', record, workItems, settings, now }),
+  }));
+
+  const clientIdsWithRelatedRecordProblem = new Set<string>();
+  for (const entry of leadRecordEntries) {
+    const clientId = readString(entry.record, ['clientId', 'client_id', 'linkedClientId', 'linked_client_id']);
+    if (clientId && entry.item && (entry.item.signals.includes('Brak następnego kroku') || entry.item.signals.includes('Następny krok jest zaległy'))) {
+      clientIdsWithRelatedRecordProblem.add(clientId);
+    }
+  }
+  for (const entry of caseRecordEntries) {
+    const clientId = readString(entry.record, ['clientId', 'client_id']);
+    if (clientId && entry.item && (entry.item.signals.includes('Brak następnego kroku') || entry.item.signals.includes('Następny krok jest zaległy'))) {
+      clientIdsWithRelatedRecordProblem.add(clientId);
+    }
+  }
+
+  const clientRecordItems = clients.map((record) => {
+    const clientId = readString(record, ['id']);
+    if (!clientRequiresOwnerControlRecord(record, workItems)) return null;
+    return buildRecordItem({
+      entityType: 'client',
+      record,
+      relatedLeadIds: leadIdsByClientId.get(clientId) || [],
+      relatedCaseIds: caseIdsByClientId.get(clientId) || [],
+      workItems,
+      settings,
+      now,
+      suppressMissingNextStep: clientIdsWithRelatedRecordProblem.has(clientId),
+    });
+  });
+
   const candidates: Array<OwnerControlItem | null> = [
-    ...buildMissingOwnerControlItems({ tasks, now }),
-    ...buildNoteWithoutFollowUpOwnerControlItems({ items: workItems, now }),
-    ...leads.map((record) => buildRecordItem({
-      entityType: 'lead', record, relatedCaseIds: caseIdsByLeadId.get(readString(record, ['id'])) || [], workItems, settings, now,
-    })),
-    ...cases.map((record) => buildRecordItem({ entityType: 'case', record, workItems, settings, now })),
+    ...missingControlItems,
+    ...noteGapItems,
+    ...leadRecordEntries.map((entry) => entry.item),
+    ...caseRecordEntries.map((entry) => entry.item),
+    ...clientRecordItems,
     ...tasks.map((item) => buildWorkItem({ item, kind: 'task', now })),
     ...events.map((item) => buildWorkItem({ item, kind: 'event', now })),
   ];
@@ -358,8 +500,11 @@ export function buildOwnerControlBaseline(input: BuildOwnerControlBaselineInput)
   const deduped = new Map<string, OwnerControlItem>();
   for (const item of candidates) {
     if (!item) continue;
-    const current = deduped.get(item.key);
-    if (!current || item.priority > current.priority) deduped.set(item.key, item);
+    const sourceKey = item.sourceEntityType && item.sourceEntityId && item.sourceItemId
+      ? `${item.sourceEntityType}:${item.sourceEntityId}:${item.sourceItemId}`
+      : item.key;
+    const current = deduped.get(sourceKey);
+    if (!current || item.priority > current.priority) deduped.set(sourceKey, item);
   }
 
   const items = [...deduped.values()].sort((left, right) => {

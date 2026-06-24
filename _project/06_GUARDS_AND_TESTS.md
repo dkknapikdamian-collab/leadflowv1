@@ -5399,3 +5399,10 @@ Tests: R1 guard/test updated, R2 guard/test added, build and verify quiet requir
 Status: DO_WYKONANIA / by local apply.
 
 Guard fix: R2 ownerless-removal guard checks runtime baseline only. It must not fail because the forbidden text appears inside negative assertions in guard/test files.
+
+## 2026-06-24 HH:mm Europe/Warsaw — STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT
+
+Guard: scripts/check-stage-a35b-mandatory-next-step-contract.cjs
+Test: tests/stage-a35b-mandatory-next-step-contract.test.cjs
+
+Komendy: node guard, node --test, npm run build, npm run verify:closeflow:quiet, git diff --check.

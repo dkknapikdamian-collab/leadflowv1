@@ -2487,3 +2487,20 @@ Tests: R1 guard/test updated, R2 guard/test added, build and verify quiet requir
 ## STAGE-A35_R2F_OWNERLESS_GUARD_SELF_REFERENCE_FIX
 
 Risk: guard self-reference false positive. The string 'Brak odpowiedzialnego' can appear in guard/test files as a negative assertion, but must not appear in runtime Owner Control baseline.
+
+## 2026-06-24 HH:mm Europe/Warsaw — STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT
+
+Ryzyko: definicja aktywnego klienta moze wymagac dopasowania do realnych statusow danych. Nie naprawiac tego przez ownerId, SQL ani nowa tabele.
+
+## 2026-06-24 STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT_REPAIR_R3
+
+Risk found: brittle stage-marker regex caused a false-positive test failure. Guard/test text must not reject its own documentation marker. Runtime risk unchanged: verify that active clients do not create false Owner Control noise in /today.
+
+
+## STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT_REPAIR_R5_CF_RUNTIME_ALLOWLIST_SYNC
+
+Status: APPLIED_LOCAL / VERIFY_PENDING
+
+Ryzyko wykryte w R4: CF-RUNTIME-00 miał nieaktualną allowlistę i blokował legalne pliki A35B. Naprawa R5 ogranicza się do synchronizacji guarda, bez zmian SQL, finansów, billing, Google Calendar, AI Drafts ani runtime szczegółów lead/case/client.
+
+Czas zapisu technicznego: 2026-06-24T19:16:42.068Z

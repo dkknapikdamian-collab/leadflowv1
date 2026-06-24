@@ -1071,3 +1071,27 @@ Commands:
 - npm run build
 - npm run verify:closeflow:quiet
 - git diff --check
+
+## 2026-06-24 HH:mm Europe/Warsaw — STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT
+
+Automatyczne do wykonania przez apply script.
+Manual smoke: OWNER_SMOKE_PENDING.
+
+## 2026-06-24 STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT_REPAIR_R3
+
+- R2 guard: PASS.
+- R2 node test: 9/10 PASS, 1 false-positive failure in Today UI redesign assertion.
+- R3 change: test assertion narrowed to explicit redesign markers and existing TodaySectionKey contract.
+- Required after R3: guard, node test, build, verify:closeflow:quiet, git diff --check, manual /today smoke.
+
+
+## STAGE-A35B_MANDATORY_NEXT_STEP_CONTRACT_REPAIR_R5_CF_RUNTIME_ALLOWLIST_SYNC
+
+Status: APPLIED_LOCAL / VERIFY_PENDING
+
+Zakres:
+- zsynchronizowano allowlistę CF-RUNTIME-00 dla plików etapu STAGE-A35B,
+- nie zmieniano runtime Owner Control ani Today,
+- cel: odblokować verify:closeflow:quiet po zielonym guard/test/build A35B.
+
+Czas zapisu technicznego: 2026-06-24T19:16:42.068Z
