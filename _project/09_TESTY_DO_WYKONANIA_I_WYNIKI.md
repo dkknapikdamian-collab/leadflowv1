@@ -1131,3 +1131,14 @@ Manual smoke:
 4. Edytuj ten sam wpis na 14:05.
 5. Sync ma zaktualizowac ten sam event bez duplikatu.
 6. Drugi sync nie moze stworzyc duplikatu.
+
+## STAGE232G_R6_GOOGLE_DELETE_TOMBSTONE_AND_REMOTE_DELETE
+
+Manual smoke:
+1. Utworz wpis w CloseFlow i zsynchronizuj do Google.
+2. Usun wpis w CloseFlow.
+3. Refresh kalendarza.
+4. Wpis nie moze wrocic.
+5. Kliknij Synchronizuj teraz.
+6. Wpis nadal nie moze wrocic.
+7. R6A nie gwarantuje jeszcze usuniecia eventu z Google Calendar; to R6B.

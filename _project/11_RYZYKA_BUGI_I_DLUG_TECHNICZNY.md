@@ -2533,3 +2533,11 @@ Ryzyka:
 - Nie wolno traktowac timestampow z Z/offsetem jak lokalnych.
 - Nie ruszac Google OAuth verification w runtime patchu.
 - Nie ruszac SQL/RLS bez osobnej decyzji.
+
+## STAGE232G_R6_GOOGLE_DELETE_TOMBSTONE_AND_REMOTE_DELETE
+
+Ryzyka:
+- R6A zatrzymuje resurrection, ale remote Google event moze nadal istniec.
+- R6B musi zdecydowac UX: usun tylko z CloseFlow czy takze z Google Calendar.
+- Nie wolno reaktywowac lokalnego tombstone przez inbound sync.
+- Nie ruszac R4 timezone i R5 OAuth verification w tym etapie.

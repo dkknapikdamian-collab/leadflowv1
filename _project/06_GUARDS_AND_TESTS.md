@@ -5448,3 +5448,17 @@ Required:
 - npm run build
 - npm run verify:closeflow:quiet
 - git diff --check
+
+## STAGE232G_R6_GOOGLE_DELETE_TOMBSTONE_AND_REMOTE_DELETE
+
+Guard:
+- node scripts/check-stage232g-r6-google-delete-tombstone-and-remote-delete.cjs
+
+Test:
+- node --test tests/stage232g-r6-google-delete-tombstone-and-remote-delete.test.cjs
+
+Required:
+- node scripts/check-cf-runtime-00-source-truth.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check

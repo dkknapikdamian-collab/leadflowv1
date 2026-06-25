@@ -127,3 +127,21 @@ PRIORYTET_NAPRAWY / DO_WDROZENIA_NEXT / BLOCKS_R4_SMOKE_CLOSE
 ## Nastepny krok
 
 Najpierw nie robic pelnego smoke R4 jako CLOSED. Zrobic R6 jako kolejny runtime hotfix: tombstone guard w inbound + delete lifecycle guard/test.
+
+## R6A runtime implementation package - 2026-06-25 14:10 Europe/Warsaw
+
+Status: APPLIED_LOCAL_PENDING_FULL_GATE_AND_OWNER_SMOKE.
+
+Runtime scope:
+- inbound Google Calendar sync detects local deleted/tombstoned Google-linked rows;
+- active Google event no longer resurrects a local deleted work item;
+- action returned: skipped_local_deleted;
+- R6A does not yet remove remote Google event.
+
+Required tests:
+- node scripts/check-stage232g-r6-google-delete-tombstone-and-remote-delete.cjs
+- node --test tests/stage232g-r6-google-delete-tombstone-and-remote-delete.test.cjs
+- node scripts/check-cf-runtime-00-source-truth.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check

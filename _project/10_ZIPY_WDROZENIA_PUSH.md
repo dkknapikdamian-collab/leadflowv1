@@ -38,3 +38,9 @@ Push: dopiero po PASS guard/test/build/verify/diff-check.
 ZIP/local package: STAGE232G_R4_GOOGLE_CALENDAR_OUTBOUND_TIMEZONE_NO_SHIFT_2026_06_25.zip.
 Status: APPLIED_LOCAL_PENDING_FULL_GATE_AND_OWNER_SMOKE.
 Push: dopiero po PASS guard/test/build/verify/diff-check.
+
+## 2026-06-25 14:10 Europe/Warsaw â€” STAGE232G_R6_GOOGLE_DELETE_TOMBSTONE_AND_REMOTE_DELETE
+
+ZIP/local package: STAGE232G_R6_GOOGLE_DELETE_TOMBSTONE_GUARD_2026_06_25.zip.
+Status: APPLIED_LOCAL_PENDING_FULL_GATE_AND_OWNER_SMOKE.
+Push: dopiero po PASS guard/test/build/verify/diff-check.

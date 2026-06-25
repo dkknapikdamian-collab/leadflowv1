@@ -2799,3 +2799,24 @@ Nie ruszac:
 - Google Cloud verification,
 - SQL/RLS,
 - Owner Control, finance, billing, AI Drafts.
+
+## 2026-06-25 14:10 Europe/Warsaw â€” STAGE232G_R6_GOOGLE_DELETE_TOMBSTONE_AND_REMOTE_DELETE
+
+Status: APPLIED_LOCAL_PENDING_FULL_GATE_AND_OWNER_SMOKE.
+
+Priorytet: P1 produkcyjny blocker.
+
+Problem:
+- wpis usuniety w CloseFlow wraca po refreshu/syncu, prawdopodobnie przez Google inbound sync.
+
+Zakres R6A:
+- `google-calendar-inbound.ts` dostaje tombstone guard;
+- local deleted Google-linked row nie moze byc patchowany z powrotem jako scheduled/show_in_calendar=true;
+- dodany guard/test R6.
+
+Nie ruszac:
+- R4 timezone,
+- R5 OAuth verification,
+- R3 onboarding,
+- SQL/RLS,
+- finance/billing/AI Drafts.

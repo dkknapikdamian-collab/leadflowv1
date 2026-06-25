@@ -169,6 +169,45 @@ async function findExistingWorkItem(workspaceId: string, userId: string, googleE
   }
   return null;
 }
+const GOOGLE_INBOUND_LOCAL_DELETE_TOMBSTONE_STATUSES_STAGE232G_R6 = new Set(['deleted', 'archived', 'removed']);
+
+function booleanFalseLikeStage232GR6(value: unknown) {
+  return value === false || String(value).trim().toLowerCase() === 'false';
+}
+
+function isLocalDeletedGoogleCalendarWorkItemStage232GR6(row: WorkItemRow | null | undefined) {
+  // STAGE232G_R6_GOOGLE_DELETE_TOMBSTONE_AND_REMOTE_DELETE
+  // Local CloseFlow delete must win over inbound Google Calendar refresh.
+  // If the linked Google event still exists, inbound sync must not resurrect a local tombstone.
+  if (!row) return false;
+  const status = asText((row as any).status).toLowerCase();
+  const hasGoogleIdentity = Boolean(
+    asText((row as any).source_external_id)
+    || asText((row as any).sourceExternalId)
+    || asText((row as any).google_calendar_event_id)
+    || asText((row as any).googleCalendarEventId)
+  );
+  if (!hasGoogleIdentity) return false;
+
+  const hasDeleteMarker = Boolean(
+    (row as any).deleted_at
+    || (row as any).deletedAt
+    || (row as any).local_deleted_at
+    || (row as any).localDeletedAt
+    || (row as any).source_deleted_at
+    || (row as any).sourceDeletedAt
+  );
+
+  const hiddenFromCalendar = booleanFalseLikeStage232GR6((row as any).show_in_calendar)
+    || booleanFalseLikeStage232GR6((row as any).showInCalendar);
+  const hiddenFromTasks = booleanFalseLikeStage232GR6((row as any).show_in_tasks)
+    || booleanFalseLikeStage232GR6((row as any).showInTasks);
+
+  return GOOGLE_INBOUND_LOCAL_DELETE_TOMBSTONE_STATUSES_STAGE232G_R6.has(status)
+    || hasDeleteMarker
+    || (hiddenFromCalendar && hiddenFromTasks && status === 'deleted');
+}
+
 function normalizeWindow(row: WorkItemRow) {
   const start = toIso(row.start_at || row.startAt || row.scheduled_at || row.scheduledAt || row.due_at || row.dueAt);
   if (!start) return null;
@@ -271,6 +310,15 @@ async function applyGoogleEvent(workspaceId: string, userId: string, googleEvent
       return { action: 'deleted', id: existingId, conflicts: [] as any[] };
     }
     return { action: 'skipped_deleted', conflicts: [] as any[] };
+  }
+
+  if (existingId && isLocalDeletedGoogleCalendarWorkItemStage232GR6(existing)) {
+    return {
+      action: 'skipped_local_deleted',
+      id: existingId,
+      reason: 'local_delete_tombstone',
+      conflicts: [] as any[],
+    };
   }
 
   const startAt = googleEventStart(googleEvent);
