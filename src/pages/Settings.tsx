@@ -938,7 +938,7 @@ useEffect(() => {
                   {!googleCalendarConnected ? (
                     <Button type="button" onClick={() => void handleConnectGoogleCalendar()} disabled={connectingGoogleCalendar || checkingGoogleCalendar || !canUseGoogleCalendarByPlan || !googleCalendarConfigured}>
                       <CalendarDays className="h-4 w-4" />
-                      {connectingGoogleCalendar ? 'ĹÄ…czÄ™...' : 'Polacz Google Calendar'}
+                      {connectingGoogleCalendar ? 'Lacze...' : 'Polacz Google Calendar'}
                     </Button>
                   ) : (
                     <>

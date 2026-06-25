@@ -11,7 +11,7 @@ test('R3 Settings shows connect CTA instead of only disabled sync for disconnect
   assert.match(settings, /STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_AND_OWNER_STAMP/);
   assert.match(settings, /data-google-calendar-user-onboarding-stage232g-r3/);
   assert.match(settings, /Polacz Google Calendar/);
-  assert.match(settings, /Nie poĹ‚Ä…czono\. DokoĹ„cz poĹ‚Ä…czenie Google Calendar/);
+  assert.match(settings, /Nie polaczono\. Dokoncz polaczenie Google Calendar/);
   assert.match(settings, /!googleCalendarConnected \? \(/);
 });
 

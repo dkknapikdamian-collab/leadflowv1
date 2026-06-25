@@ -25,7 +25,7 @@ const auth = read('src/lib/supabase-auth.ts');
 expect(settings, 'STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_AND_OWNER_STAMP', 'Settings stage marker');
 expect(settings, 'data-google-calendar-user-onboarding-stage232g-r3', 'Settings onboarding action row');
 expect(settings, 'Polacz Google Calendar', 'Disconnected connect CTA');
-expect(settings, 'Nie poĹ‚Ä…czono. DokoĹ„cz poĹ‚Ä…czenie Google Calendar', 'Disconnected explanatory copy');
+expect(settings, 'Nie polaczono. Dokoncz polaczenie Google Calendar', 'Disconnected explanatory copy');
 expect(settings, 'Polaczono:', 'Connected account label');
 expect(settings, 'Rozlacz', 'Disconnect action');
 expect(settings, 'handleConnectGoogleCalendar', 'connect handler still present');
