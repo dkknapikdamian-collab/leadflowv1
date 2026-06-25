@@ -1121,3 +1121,13 @@ Manual smoke:
 5. Drugi sync nie tworzy duplikatu.
 6. Rozlaczenie blokuje sync.
 7. Konto email+haslo moze polaczyc Google Calendar tym samym CTA.
+
+## STAGE232G_R4_GOOGLE_CALENDAR_OUTBOUND_TIMEZONE_NO_SHIFT
+
+Manual smoke:
+1. Dodaj event/task w CloseFlow na 13:19.
+2. Kliknij Synchronizuj teraz.
+3. Google Calendar ma pokazac 13:19, nie 15:19.
+4. Edytuj ten sam wpis na 14:05.
+5. Sync ma zaktualizowac ten sam event bez duplikatu.
+6. Drugi sync nie moze stworzyc duplikatu.

@@ -32,3 +32,9 @@ Push: do wykonania po PASS guard/test/build/verify/diff-check i smoke.
 ZIP/local package: STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_OWNER_STAMP_V4_2026_06_25.zip.
 Status: APPLIED_LOCAL_PENDING_FULL_GATE_AND_OWNER_SMOKE.
 Push: dopiero po PASS guard/test/build/verify/diff-check.
+
+## 2026-06-25 13:35 Europe/Warsaw â€” STAGE232G_R4_GOOGLE_CALENDAR_OUTBOUND_TIMEZONE_NO_SHIFT
+
+ZIP/local package: STAGE232G_R4_GOOGLE_CALENDAR_OUTBOUND_TIMEZONE_NO_SHIFT_2026_06_25.zip.
+Status: APPLIED_LOCAL_PENDING_FULL_GATE_AND_OWNER_SMOKE.
+Push: dopiero po PASS guard/test/build/verify/diff-check.

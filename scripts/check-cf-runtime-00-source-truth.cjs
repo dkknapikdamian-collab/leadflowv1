@@ -199,6 +199,13 @@ const allowedChangePrefixes = [
   'tests/stage232g-r3-google-calendar-user-onboarding-owner-stamp.test.cjs',
   '_project/runs/STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_AND_OWNER_STAMP_PRIORITY.md',
   '_project/obsidian_updates/2026-06-25_STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_AND_OWNER_STAMP.md',
+  // STAGE232G_R4_GOOGLE_CALENDAR_OUTBOUND_TIMEZONE_NO_SHIFT_ALLOWLIST
+  'src/server/google-calendar-outbound.ts',
+  'src/lib/calendar-timezone-contract.ts',
+  'scripts/check-stage232g-r4-google-calendar-outbound-timezone-no-shift.cjs',
+  'tests/stage232g-r4-google-calendar-outbound-timezone-no-shift.test.cjs',
+  '_project/runs/STAGE232G_R4_GOOGLE_CALENDAR_OUTBOUND_TIMEZONE_NO_SHIFT_PRIORITY.md',
+  '_project/obsidian_updates/2026-06-25_STAGE232G_R4_R5_GOOGLE_CALENDAR_PRODUCTION_ISSUES.md',
   'tests/stage232g-r1f-calendar-today-final-parity-guard-and-smoke.test.cjs',
 
   // STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE_ALLOWLIST

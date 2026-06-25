@@ -113,3 +113,24 @@ PRIORYTET_NAPRAWY / DO_WDROZENIA_NEXT / CODE_STAGE
 ## Nastepny krok
 
 Przygotowac ZIP runtime R4 i przeprowadzic standard: apply -> guard/test -> build -> verify -> diff-check -> selective commit/push -> Vercel success -> smoke.
+
+## R4 runtime implementation package - 2026-06-25 13:35 Europe/Warsaw
+
+Status: APPLIED_LOCAL_PENDING_FULL_GATE_AND_OWNER_SMOKE.
+
+Runtime scope:
+- google-calendar-outbound.ts no longer parses no-offset timestamps through raw new Date(raw).toISOString().
+- Outbound sync delegates timestamp normalization to the central CloseFlow timezone contract.
+- No-offset CloseFlow times are treated as Europe/Warsaw.
+- Explicit UTC/offset timestamps are not double-shifted.
+
+Required tests:
+- node scripts/check-stage232g-r4-google-calendar-outbound-timezone-no-shift.cjs
+- node --test tests/stage232g-r4-google-calendar-outbound-timezone-no-shift.test.cjs
+- node scripts/check-cf-runtime-00-source-truth.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+Manual smoke:
+- Create/sync 13:19 -> Google must show 13:19, not 15:19.

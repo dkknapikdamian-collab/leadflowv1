@@ -1,4 +1,5 @@
 import { supabaseRequest, updateById } from './_supabase.js';
+import { normalizeCloseFlowDateTimeToUtcIso } from '../lib/calendar-timezone-contract.js';
 import {
   createGoogleCalendarEvent,
   deleteGoogleCalendarEvent,
@@ -15,10 +16,11 @@ function asText(value: unknown) {
 }
 
 function asIsoDate(value: unknown) {
-  const raw = asText(value);
-  if (!raw) return null;
-  const parsed = new Date(raw);
-  return Number.isFinite(parsed.getTime()) ? parsed.toISOString() : null;
+  // STAGE232G_R4_GOOGLE_CALENDAR_OUTBOUND_TIMEZONE_NO_SHIFT
+  // Supabase can return timestamp values without an explicit offset.
+  // Treat no-offset CloseFlow calendar times as Europe/Warsaw through the central contract,
+  // not as UTC via raw new Date(raw).toISOString().
+  return normalizeCloseFlowDateTimeToUtcIso(value);
 }
 
 function asNumber(value: unknown, fallback: number) {

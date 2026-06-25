@@ -5434,3 +5434,17 @@ Required:
 - npm run build
 - npm run verify:closeflow:quiet
 - git diff --check
+
+## STAGE232G_R4_GOOGLE_CALENDAR_OUTBOUND_TIMEZONE_NO_SHIFT
+
+Guard:
+- node scripts/check-stage232g-r4-google-calendar-outbound-timezone-no-shift.cjs
+
+Test:
+- node --test tests/stage232g-r4-google-calendar-outbound-timezone-no-shift.test.cjs
+
+Required:
+- node scripts/check-cf-runtime-00-source-truth.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check

@@ -2776,3 +2776,26 @@ Zakres:
 - guard/test R3.
 
 Nie ruszac: SQL/RLS, finance, billing, AI Drafts, Owner Control runtime, Braki/Blokady.
+
+## 2026-06-25 13:35 Europe/Warsaw â€” STAGE232G_R4_GOOGLE_CALENDAR_OUTBOUND_TIMEZONE_NO_SHIFT
+
+Status: APPLIED_LOCAL_PENDING_FULL_GATE_AND_OWNER_SMOKE.
+
+Priorytet: P1 produkcyjny runtime.
+
+Problem:
+- CloseFlow 13:19 synchronizuje do Google Calendar jako 15:19.
+
+Zakres:
+- naprawic outbound parse czasu w `src/server/google-calendar-outbound.ts`,
+- uzyc centralnego `normalizeCloseFlowDateTimeToUtcIso()`,
+- no-offset datetime traktowac jako Europe/Warsaw,
+- nie podwojnie przesuwac timestampow z Z/offsetem,
+- guard/test na 13:19 -> 13:19.
+
+Nie ruszac:
+- R3 onboarding UI,
+- OAuth token storage,
+- Google Cloud verification,
+- SQL/RLS,
+- Owner Control, finance, billing, AI Drafts.

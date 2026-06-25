@@ -2525,3 +2525,11 @@ Ryzyka:
 - workspace fallback token dla zwyklego usera moglby wypchnac cudze wpisy;
 - brak created_by_user_id powoduje personalScopeSkipped w outbound sync;
 - nie ruszac SQL/RLS w tym etapie bez osobnej decyzji.
+
+## STAGE232G_R4_GOOGLE_CALENDAR_OUTBOUND_TIMEZONE_NO_SHIFT
+
+Ryzyka:
+- Nie wolno naprawiac przez stale -2h, bo zima/DST/offsety beda bledne.
+- Nie wolno traktowac timestampow z Z/offsetem jak lokalnych.
+- Nie ruszac Google OAuth verification w runtime patchu.
+- Nie ruszac SQL/RLS bez osobnej decyzji.
