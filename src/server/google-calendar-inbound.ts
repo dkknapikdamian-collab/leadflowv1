@@ -347,7 +347,7 @@ export async function syncGoogleCalendarInbound(input: InboundSyncInput) {
       if (result.conflicts?.length) {
         conflicts.push({
           googleEventId: googleEvent.id,
-          title: googleEvent.summary || '(Google Calendar) Bez tytuĹ‚u',
+          title: googleEvent.summary || '(Google Calendar) Bez tytulu',
           startAt: googleEventStart(googleEvent),
           endAt: googleEventEnd(googleEvent, googleEventStart(googleEvent)),
           conflictCount: result.conflicts.length,
@@ -381,4 +381,3 @@ export async function syncGoogleCalendarInbound(input: InboundSyncInput) {
     nextSyncToken: listed.nextSyncToken || null,
   };
 }
-
