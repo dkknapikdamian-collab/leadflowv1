@@ -127,3 +127,11 @@ PRIORYTET_NAPRAWY / BLOCKER_PRODUKCYJNY / DO_WDROZENIA_NEXT
 ## Nastepny krok
 
 Przygotowac ZIP R7A. Najpierw naprawa source identity i de-dupe, potem dopiero test delete/smoke. Nie robic juz recznych testow na produkcji, dopoki R7A nie wejdzie.
+
+## R7A runtime implementation package - 2026-06-25 16:45 Europe/Warsaw
+
+Status: APPLIED_LOCAL_PENDING_FULL_GATE_AND_OWNER_SMOKE.
+
+Core rule: duplicate titles are allowed; identity is local id + Google event id + source user id.
+
+Runtime scope: outbound stamps canonical source identity; inbound prefers local task/event by google_calendar_event_id; imported mirrors can be hidden during canonical collision repair.

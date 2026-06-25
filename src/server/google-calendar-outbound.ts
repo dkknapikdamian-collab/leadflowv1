@@ -144,6 +144,30 @@ function isGoogleAlreadyGoneStage229B(error: unknown) {
   return /\b(404|410)\b|not\s*found|gone/i.test(message);
 }
 
+function encodeStage232GR7A(value: unknown) { return encodeURIComponent(String(value || '')); }
+function isGoogleInboundDuplicateKeyErrorStage232GR7A(error: unknown) {
+  const message = String(error instanceof Error ? error.message : error || '').toLowerCase();
+  return message.includes('23505') || message.includes('duplicate key') || message.includes('idx_work_items_google_calendar_source_external') || message.includes('workspace_id, source_provider, source_external_id');
+}
+function isImportedExternalGoogleEventStage232GR7A(row: WorkItemRow | null | undefined) {
+  if (!row) return false;
+  const recordType = asText(row.record_type || row.recordType).toLowerCase();
+  const type = asText(row.type).toLowerCase();
+  const sourceProvider = asText(row.source_provider || row.sourceProvider).toLowerCase();
+  return recordType === 'event' && (type === 'external_google_event' || sourceProvider === 'google_calendar');
+}
+async function findCanonicalGoogleCalendarDuplicateStage232GR7A(workspaceId: string, googleEventId: string) {
+  if (!workspaceId || !googleEventId) return null;
+  const rows = await supabaseRequest('work_items?workspace_id=eq.' + encodeStage232GR7A(workspaceId) + '&source_provider=eq.google_calendar&source_external_id=eq.' + encodeStage232GR7A(googleEventId) + '&select=*&limit=5', { method: 'GET' });
+  return Array.isArray(rows) ? (rows as WorkItemRow[])[0] || null : null;
+}
+async function hideDuplicateImportedGoogleEventStage232GR7A(sourceRow: WorkItemRow, duplicateRow: WorkItemRow) {
+  const sourceId = itemId(sourceRow); const duplicateId = itemId(duplicateRow);
+  if (!sourceId || !duplicateId || sourceId === duplicateId) return false;
+  if (!isImportedExternalGoogleEventStage232GR7A(duplicateRow)) return false;
+  await updateById('work_items', duplicateId, { status: 'deleted', show_in_calendar: false, show_in_tasks: false, source_deleted_at: new Date().toISOString(), google_calendar_sync_status: 'duplicate_hidden_by_r7a', updated_at: new Date().toISOString() });
+  return true;
+}
 async function writeSyncDeletedStage229B(row: WorkItemRow, calendarId: string) {
   await updateById('work_items', itemId(row), {
     google_calendar_sync_enabled: true,
@@ -231,14 +255,18 @@ async function fetchWorkspaceCalendarItems(workspaceId: string, limit: number) {
   return Array.isArray(rows) ? rows as WorkItemRow[] : [];
 }
 
-async function writeSyncSuccess(row: WorkItemRow, googleEvent: any, existingGoogleEventId: string, calendarId: string) {
-  await updateById('work_items', itemId(row), {
+async function writeSyncSuccess(row: WorkItemRow, googleEvent: any, existingGoogleEventId: string, calendarId: string, userId: string, workspaceId: string) {
+  // STAGE232G_R7A_CALENDAR_ACTION_SOURCE_IDENTITY_DEDUPE
+  // Duplicate titles are allowed. Title is not identity.
+  const googleEventId = asText(googleEvent?.id) || existingGoogleEventId || null;
+  const now = new Date().toISOString();
+  const payload: WorkItemRow = {
     google_calendar_sync_enabled: true,
     google_calendar_id: calendarId || 'primary',
-    google_calendar_event_id: googleEvent?.id || existingGoogleEventId || null,
+    google_calendar_event_id: googleEventId,
     google_calendar_event_etag: googleEvent?.etag || null,
     google_calendar_html_link: googleEvent?.htmlLink || null,
-    google_calendar_synced_at: new Date().toISOString(),
+    google_calendar_synced_at: now,
     google_calendar_sync_status: 'synced',
     google_calendar_sync_error: null,
     google_calendar_reminders: googleEvent?.reminders || null,
@@ -247,8 +275,22 @@ async function writeSyncSuccess(row: WorkItemRow, googleEvent: any, existingGoog
     google_all_day: Boolean(googleEvent?.start?.date && !googleEvent?.start?.dateTime),
     google_start_date: googleEvent?.start?.date || null,
     google_end_date: googleEvent?.end?.date || null,
-    updated_at: new Date().toISOString(),
-  });
+    source_provider: googleEventId ? 'google_calendar' : null,
+    source_external_id: googleEventId,
+    source_calendar_id: googleEventId ? (calendarId || 'primary') : null,
+    source_user_id: userId || null,
+    google_calendar_user_id: userId || null,
+    owner_user_id: asText(row.owner_user_id || row.ownerUserId) || userId || null,
+    created_by_user_id: asText(row.created_by_user_id || row.createdByUserId) || userId || null,
+    updated_at: now,
+  };
+  try { await updateById('work_items', itemId(row), payload); return; }
+  catch (error) {
+    if (!googleEventId || !isGoogleInboundDuplicateKeyErrorStage232GR7A(error)) throw error;
+    const duplicate = await findCanonicalGoogleCalendarDuplicateStage232GR7A(workspaceId, googleEventId);
+    if (duplicate && await hideDuplicateImportedGoogleEventStage232GR7A(row, duplicate)) { await updateById('work_items', itemId(row), payload); return; }
+    throw error;
+  }
 }
 
 async function writeSyncFailure(row: WorkItemRow, message: string) {
@@ -341,7 +383,7 @@ export async function syncGoogleCalendarOutbound(input: {
       const googleEvent = existingGoogleEventId
         ? await updateGoogleCalendarEvent(connection, existingGoogleEventId, event)
         : await createGoogleCalendarEvent(connection, event);
-      await writeSyncSuccess(row, googleEvent, existingGoogleEventId, String(connection.google_calendar_id || 'primary'));
+      await writeSyncSuccess(row, googleEvent, existingGoogleEventId, String(connection.google_calendar_id || 'primary'), userId, workspaceId);
       if (existingGoogleEventId) updated += 1;
       else created += 1;
     } catch (error) {

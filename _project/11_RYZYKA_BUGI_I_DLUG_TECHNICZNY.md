@@ -2541,3 +2541,7 @@ Ryzyka:
 - R6B musi zdecydowac UX: usun tylko z CloseFlow czy takze z Google Calendar.
 - Nie wolno reaktywowac lokalnego tombstone przez inbound sync.
 - Nie ruszac R4 timezone i R5 OAuth verification w tym etapie.
+
+## STAGE232G_R7A_CALENDAR_ACTION_SOURCE_IDENTITY_DEDUPE
+
+Ryzyko: historyczne duplikaty moga wymagac R7B cleanupu. Nie wolno laczyc po tytule.

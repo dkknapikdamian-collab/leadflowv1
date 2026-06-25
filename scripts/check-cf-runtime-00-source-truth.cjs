@@ -212,6 +212,13 @@ const allowedChangePrefixes = [
   'tests/stage232g-r6-google-delete-tombstone-and-remote-delete.test.cjs',
   '_project/runs/STAGE232G_R6_GOOGLE_DELETE_TOMBSTONE_AND_REMOTE_DELETE_PRIORITY.md',
   '_project/obsidian_updates/2026-06-25_STAGE232G_R6_GOOGLE_DELETE_TOMBSTONE_AND_REMOTE_DELETE.md',
+  // STAGE232G_R7A_CALENDAR_ACTION_SOURCE_IDENTITY_DEDUPE_ALLOWLIST
+  'src/server/google-calendar-outbound.ts',
+  'src/server/google-calendar-inbound.ts',
+  'scripts/check-stage232g-r7a-calendar-action-source-identity-dedupe.cjs',
+  'tests/stage232g-r7a-calendar-action-source-identity-dedupe.test.cjs',
+  '_project/runs/STAGE232G_R7_CALENDAR_ACTION_SOURCE_IDENTITY_DEDUPE_AUDIT.md',
+  '_project/obsidian_updates/2026-06-25_STAGE232G_R7A_CALENDAR_ACTION_SOURCE_IDENTITY_DEDUPE.md',
   'tests/stage232g-r1f-calendar-today-final-parity-guard-and-smoke.test.cjs',
 
   // STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE_ALLOWLIST

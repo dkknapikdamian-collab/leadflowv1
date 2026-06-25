@@ -146,6 +146,35 @@ function isGoogleInboundDuplicateKeyError(error: unknown) {
     || message.includes('idx_work_items_google_calendar_source_external')
     || message.includes('workspace_id, source_provider, source_external_id');
 }
+function isImportedExternalGoogleEventStage232GR7A(row: WorkItemRow | null | undefined) {
+  const recordType = asText(row?.record_type || row?.recordType).toLowerCase();
+  const type = asText(row?.type).toLowerCase();
+  const sourceProvider = asText(row?.source_provider || row?.sourceProvider).toLowerCase();
+  return recordType === 'event' && (type === 'external_google_event' || sourceProvider === 'google_calendar');
+}
+function personalScopeMatchesOrIsMissingStage232GR7A(row: WorkItemRow | null | undefined, userId: string) {
+  if (!row) return false; const expected = asText(userId); if (!expected) return true;
+  const candidates = [row.source_user_id,row.sourceUserId,row.google_calendar_user_id,row.googleCalendarUserId,row.owner_user_id,row.ownerUserId,row.created_by_user_id,row.createdByUserId,row.user_id,row.userId].map(asText).filter(Boolean);
+  return candidates.length === 0 || candidates.includes(expected);
+}
+function preferGoogleCalendarSourceIdentityRowStage232GR7A(rows: WorkItemRow[], userId: string) {
+  const scoped = rows.filter((row) => personalScopeMatchesOrIsMissingStage232GR7A(row, userId));
+  const pool = scoped.length ? scoped : rows;
+  const localLinked = pool.find((row) => !isImportedExternalGoogleEventStage232GR7A(row));
+  return localLinked || pool[0] || null;
+}
+async function findExistingGoogleCalendarWorkItemByAnyIdentityStage232GR7A(workspaceId: string, userId: string, googleEventId: string) {
+  // STAGE232G_R7A_CALENDAR_ACTION_SOURCE_IDENTITY_DEDUPE
+  // Duplicate titles are allowed; this intentionally does not match by title.
+  if (!workspaceId || !googleEventId) return null;
+  const queryParts = [
+    `work_items?workspace_id=eq.${encode(workspaceId)}&google_calendar_event_id=eq.${encode(googleEventId)}&select=*&limit=20`,
+    `work_items?workspace_id=eq.${encode(workspaceId)}&source_provider=eq.google_calendar&source_external_id=eq.${encode(googleEventId)}&select=*&limit=20`,
+  ];
+  const rowsById = new Map<string, WorkItemRow>();
+  for (const query of queryParts) { const rows = await safeSelect(query); for (const row of rows) { const id = asText(row.id); if (id) rowsById.set(id,row); } }
+  return preferGoogleCalendarSourceIdentityRowStage232GR7A([...rowsById.values()], userId);
+}
 async function findExistingGoogleCalendarWorkItemByCanonicalKey(workspaceId: string, googleEventId: string) {
   if (!workspaceId || !googleEventId) return null;
   const rows = await safeSelect(`work_items?workspace_id=eq.${encode(workspaceId)}&source_provider=eq.google_calendar&source_external_id=eq.${encode(googleEventId)}&select=*&limit=1`);
@@ -154,19 +183,14 @@ async function findExistingGoogleCalendarWorkItemByCanonicalKey(workspaceId: str
 async function findExistingWorkItem(workspaceId: string, userId: string, googleEvent: GoogleEvent) {
   const googleId = asText(googleEvent?.id);
   const closeflowId = getPrivateProperty(googleEvent, 'closeflowId');
-  const canonicalExisting = googleId ? await findExistingGoogleCalendarWorkItemByCanonicalKey(workspaceId, googleId) : null;
-  if (canonicalExisting) return canonicalExisting;
+  const identityExisting = googleId ? await findExistingGoogleCalendarWorkItemByAnyIdentityStage232GR7A(workspaceId, userId, googleId) : null;
+  if (identityExisting) return identityExisting;
   const scopedQueries = [
-    googleId ? `work_items?workspace_id=eq.${encode(workspaceId)}&source_provider=eq.google_calendar&source_external_id=eq.${encode(googleId)}&source_user_id=eq.${encode(userId)}&select=*&limit=1` : '',
-    googleId ? `work_items?workspace_id=eq.${encode(workspaceId)}&google_calendar_event_id=eq.${encode(googleId)}&source_user_id=eq.${encode(userId)}&select=*&limit=1` : '',
-    googleId ? `work_items?workspace_id=eq.${encode(workspaceId)}&source_provider=eq.google_calendar&source_external_id=eq.${encode(googleId)}&google_calendar_user_id=eq.${encode(userId)}&select=*&limit=1` : '',
     closeflowId ? `work_items?workspace_id=eq.${encode(workspaceId)}&id=eq.${encode(closeflowId)}&source_user_id=eq.${encode(userId)}&select=*&limit=1` : '',
     closeflowId ? `work_items?workspace_id=eq.${encode(workspaceId)}&id=eq.${encode(closeflowId)}&owner_user_id=eq.${encode(userId)}&select=*&limit=1` : '',
+    closeflowId ? `work_items?workspace_id=eq.${encode(workspaceId)}&id=eq.${encode(closeflowId)}&select=*&limit=1` : '',
   ].filter(Boolean);
-  for (const query of scopedQueries) {
-    const rows = await safeSelect(query);
-    if (rows[0]) return rows[0];
-  }
+  for (const query of scopedQueries) { const rows = await safeSelect(query); if (rows[0]) return rows[0]; }
   return null;
 }
 const GOOGLE_INBOUND_LOCAL_DELETE_TOMBSTONE_STATUSES_STAGE232G_R6 = new Set(['deleted', 'archived', 'removed']);

@@ -2820,3 +2820,9 @@ Nie ruszac:
 - R3 onboarding,
 - SQL/RLS,
 - finance/billing/AI Drafts.
+
+## 2026-06-25 16:45 Europe/Warsaw â€” STAGE232G_R7A_CALENDAR_ACTION_SOURCE_IDENTITY_DEDUPE
+
+Status: APPLIED_LOCAL_PENDING_FULL_GATE_AND_OWNER_SMOKE.
+
+Zakres: source identity dla Google-linked calendar items. Nie deduplikowac po tytule.

@@ -1142,3 +1142,7 @@ Manual smoke:
 5. Kliknij Synchronizuj teraz.
 6. Wpis nadal nie moze wrocic.
 7. R6A nie gwarantuje jeszcze usuniecia eventu z Google Calendar; to R6B.
+
+## STAGE232G_R7A_CALENDAR_ACTION_SOURCE_IDENTITY_DEDUPE
+
+Manual smoke: dwa identyczne tytuly maja pozostac osobnymi wpisami; akcje na jednym nie zmieniaja drugiego.

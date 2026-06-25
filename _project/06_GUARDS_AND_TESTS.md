@@ -5462,3 +5462,8 @@ Required:
 - npm run build
 - npm run verify:closeflow:quiet
 - git diff --check
+
+## STAGE232G_R7A_CALENDAR_ACTION_SOURCE_IDENTITY_DEDUPE
+
+Guard: node scripts/check-stage232g-r7a-calendar-action-source-identity-dedupe.cjs
+Test: node --test tests/stage232g-r7a-calendar-action-source-identity-dedupe.test.cjs
