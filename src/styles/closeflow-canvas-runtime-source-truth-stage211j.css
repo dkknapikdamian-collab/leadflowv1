@@ -2,7 +2,7 @@
    owner: CloseFlow Visual System
    reason: runtime map showed html/body and route root on #f8fafc, while #root/app/main/view were still #f3f6fb.
    rule: one canvas token for every non-card page/background layer. Cards and panels remain surfaces.
-*/
+ */
 
 :root,
 html,
@@ -87,6 +87,65 @@ body,
 #root .cf-html-shell .main,
 #root .cf-html-shell .view.active {
   background-color: #f8fafc !important;
+}
+
+/* STAGE232T_R1B_TODAY_EQUAL_TILE_GRID_3UP
+   Today cards must not create a moat/fosa by mixing 2-column and full-width groups.
+   Keep the fix scoped to Today root only; no finance/calendar/runtime data change.
+ */
+#root .cf-html-shell [data-p0-today-stable-rebuild="true"] {
+  --stage232t-r1b-today-card-gap: 1rem;
+  --stage232t-r1b-today-card-min-height: 5.25rem;
+}
+
+#root .cf-html-shell [data-p0-today-stable-rebuild="true"] > section.grid,
+#root .cf-html-shell [data-p0-today-stable-rebuild="true"] > div:not([hidden]) {
+  width: 100% !important;
+}
+
+#root .cf-html-shell [data-p0-today-stable-rebuild="true"] > section.grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: var(--stage232t-r1b-today-card-gap) !important;
+  align-items: stretch !important;
+}
+
+#root .cf-html-shell [data-p0-today-stable-rebuild="true"] > div:not([hidden]) {
+  max-width: calc((100% - (2 * var(--stage232t-r1b-today-card-gap))) / 3) !important;
+}
+
+#root .cf-html-shell [data-p0-today-stable-rebuild="true"] :is(.cf-vst-card, [data-cf-vst-card="true"]) {
+  min-height: var(--stage232t-r1b-today-card-min-height);
+}
+
+#root .cf-html-shell [data-p0-today-stable-rebuild="true"] > section.grid > *,
+#root .cf-html-shell [data-p0-today-stable-rebuild="true"] > div:not([hidden]) > * {
+  min-width: 0 !important;
+  height: 100% !important;
+}
+
+#root .cf-html-shell [data-p0-today-stable-rebuild="true"] > section.grid > * :is(.cf-vst-card, [data-cf-vst-card="true"]),
+#root .cf-html-shell [data-p0-today-stable-rebuild="true"] > div:not([hidden]) > :is(.cf-vst-card, [data-cf-vst-card="true"]) {
+  height: 100% !important;
+}
+
+@media (max-width: 1279px) {
+  #root .cf-html-shell [data-p0-today-stable-rebuild="true"] > section.grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #root .cf-html-shell [data-p0-today-stable-rebuild="true"] > div:not([hidden]) {
+    max-width: calc((100% - var(--stage232t-r1b-today-card-gap)) / 2) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  #root .cf-html-shell [data-p0-today-stable-rebuild="true"] > section.grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #root .cf-html-shell [data-p0-today-stable-rebuild="true"] > div:not([hidden]) {
+    max-width: 100% !important;
+  }
 }
 
 /* STAGE211J_CANVAS_RUNTIME_SOURCE_TRUTH_GUARD */
