@@ -185,6 +185,12 @@ const allowedChangePrefixes = [
   'tests/stage232g-r1i-calendar-completed-retention-after-refresh-fix.test.cjs',
   '_project/obsidian_updates/2026-06-24_STAGE232G_R1I_R3_CALENDAR_DELETE_RELEASES_COMPLETED_RETENTION.md',
   '_project/runs/STAGE232G_R1I_R3_CALENDAR_DELETE_RELEASES_COMPLETED_RETENTION.md',
+  // STAGE232G_R2_GOOGLE_INBOUND_SYNC_IDEMPOTENCY_ALLOWLIST
+  'src/server/google-calendar-inbound.ts',
+  'scripts/check-stage232g-r2-google-inbound-sync-idempotency.cjs',
+  'tests/stage232g-r2-google-inbound-sync-idempotency.test.cjs',
+  '_project/runs/STAGE232G_R2_GOOGLE_INBOUND_SYNC_IDEMPOTENCY.md',
+  '_project/obsidian_updates/2026-06-25_STAGE232G_R2_GOOGLE_INBOUND_SYNC_IDEMPOTENCY.md',
   'tests/stage232g-r1f-calendar-today-final-parity-guard-and-smoke.test.cjs',
 
   // STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE_ALLOWLIST

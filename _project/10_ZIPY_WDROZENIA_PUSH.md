@@ -20,3 +20,9 @@ Granice: bez runtime, bez SQL, bez finansow, bez billing, bez Google Calendar, b
 - Status: APPLIED_LOCAL_PENDING_GUARDS_AND_OWNER_SMOKE.
 - Zakres: Calendar delete must release completed retention so a deleted completed event/task is not resurrected after refresh.
 - Testy: R1I guard/test, CF runtime, build, verify quiet, diff-check, owner smoke.
+
+## 2026-06-25 12:20 Europe/Warsaw â€” STAGE232G_R2_GOOGLE_INBOUND_SYNC_IDEMPOTENCY
+
+Status: APPLIED_LOCAL_PENDING_GUARDS_AND_OWNER_SMOKE.
+ZIP/local package: STAGE232G_R2_GOOGLE_INBOUND_SYNC_IDEMPOTENCY_V4_2026_06_25.zip.
+Push: do wykonania po PASS guard/test/build/verify/diff-check i smoke.

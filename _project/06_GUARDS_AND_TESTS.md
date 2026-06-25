@@ -5406,3 +5406,17 @@ Guard: scripts/check-stage-a35b-mandatory-next-step-contract.cjs
 Test: tests/stage-a35b-mandatory-next-step-contract.test.cjs
 
 Komendy: node guard, node --test, npm run build, npm run verify:closeflow:quiet, git diff --check.
+
+## STAGE232G_R2_GOOGLE_INBOUND_SYNC_IDEMPOTENCY
+
+Guard:
+- node scripts/check-stage232g-r2-google-inbound-sync-idempotency.cjs
+
+Test:
+- node --test tests/stage232g-r2-google-inbound-sync-idempotency.test.cjs
+
+Required:
+- node scripts/check-cf-runtime-00-source-truth.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check

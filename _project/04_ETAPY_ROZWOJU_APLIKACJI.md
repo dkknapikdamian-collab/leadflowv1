@@ -2753,3 +2753,12 @@ Tests: R1 guard/test updated, R2 guard/test added, build and verify quiet requir
 Status: APPLIED_LOCAL_PENDING_TESTS / OWNER_SMOKE_PENDING
 
 Zakres: Owner Control / Today dostaje obowiazkowy kontrakt realnego next step bez SQL, bez ownerless noise i bez nowego zrodla prawdy.
+
+## 2026-06-25 12:20 Europe/Warsaw â€” STAGE232G_R2_GOOGLE_INBOUND_SYNC_IDEMPOTENCY
+
+Status: APPLIED_LOCAL_PENDING_GUARDS_AND_OWNER_SMOKE
+
+Zakres:
+- Google inbound sync nie moĹĽe zwracaÄ‡ duplicate-key 500 dla idx_work_items_google_calendar_source_external.
+- Ten sam Google event ma byÄ‡ update/skip/deduped, nie drugi insert.
+- Bez zmian w Calendar retention R1I/R3, Owner Control, A35B, finansach, billing i AI Drafts.

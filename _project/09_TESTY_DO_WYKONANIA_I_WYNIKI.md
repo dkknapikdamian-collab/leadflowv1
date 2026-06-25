@@ -1100,3 +1100,13 @@ Czas zapisu technicznego: 2026-06-24T19:16:42.068Z
 - Status: APPLIED_LOCAL_PENDING_GUARDS_AND_OWNER_SMOKE.
 - Zakres: Calendar delete must release completed retention so a deleted completed event/task is not resurrected after refresh.
 - Testy: R1I guard/test, CF runtime, build, verify quiet, diff-check, owner smoke.
+
+## STAGE232G_R2_GOOGLE_INBOUND_SYNC_IDEMPOTENCY
+
+Do wykonania:
+- pierwszy Google sync: insert,
+- drugi Google sync tego samego external ID: update/deduped, bez 500,
+- duplicate key fallback: kontrolowany wynik,
+- Calendar nadal pokazuje eventy,
+- rÄ™czne task/event bez zmian,
+- retention R1I/R3 bez regresji.

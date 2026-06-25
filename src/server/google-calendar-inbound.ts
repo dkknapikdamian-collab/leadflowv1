@@ -16,6 +16,9 @@ type InboundSyncInput = {
 type GoogleEvent = Record<string, any>;
 type WorkItemRow = Record<string, any>;
 
+const STAGE232G_R2_GOOGLE_INBOUND_SYNC_IDEMPOTENCY = 'google inbound sync uses workspace_id/source_provider/source_external_id idempotency and handles 23505 duplicate key without 500';
+void STAGE232G_R2_GOOGLE_INBOUND_SYNC_IDEMPOTENCY;
+
 function nowIso() { return new Date().toISOString(); }
 function asText(value: unknown) { return typeof value === 'string' ? value.trim() : ''; }
 function clampInt(value: unknown, fallback: number, min: number, max: number) {
@@ -133,9 +136,26 @@ async function safeInsertWorkItem(payload: Record<string, unknown>) {
   }
   throw new Error('GOOGLE_INBOUND_SAFE_INSERT_EXHAUSTED');
 }
+
+function isGoogleInboundDuplicateKeyError(error: unknown) {
+  // STAGE232G_R2_GOOGLE_INBOUND_SYNC_IDEMPOTENCY
+  // Supabase/Postgres can race after pre-check and throw 23505 / duplicate key for idx_work_items_google_calendar_source_external.
+  const message = String(error instanceof Error ? error.message : error || '').toLowerCase();
+  return message.includes('23505')
+    || message.includes('duplicate key')
+    || message.includes('idx_work_items_google_calendar_source_external')
+    || message.includes('workspace_id, source_provider, source_external_id');
+}
+async function findExistingGoogleCalendarWorkItemByCanonicalKey(workspaceId: string, googleEventId: string) {
+  if (!workspaceId || !googleEventId) return null;
+  const rows = await safeSelect(`work_items?workspace_id=eq.${encode(workspaceId)}&source_provider=eq.google_calendar&source_external_id=eq.${encode(googleEventId)}&select=*&limit=1`);
+  return rows[0] || null;
+}
 async function findExistingWorkItem(workspaceId: string, userId: string, googleEvent: GoogleEvent) {
   const googleId = asText(googleEvent?.id);
   const closeflowId = getPrivateProperty(googleEvent, 'closeflowId');
+  const canonicalExisting = googleId ? await findExistingGoogleCalendarWorkItemByCanonicalKey(workspaceId, googleId) : null;
+  if (canonicalExisting) return canonicalExisting;
   const scopedQueries = [
     googleId ? `work_items?workspace_id=eq.${encode(workspaceId)}&source_provider=eq.google_calendar&source_external_id=eq.${encode(googleId)}&source_user_id=eq.${encode(userId)}&select=*&limit=1` : '',
     googleId ? `work_items?workspace_id=eq.${encode(workspaceId)}&google_calendar_event_id=eq.${encode(googleId)}&source_user_id=eq.${encode(userId)}&select=*&limit=1` : '',
@@ -236,9 +256,10 @@ function basePayload(workspaceId: string, userId: string, googleEvent: GoogleEve
   if (!existing) payload.created_at = nowIso();
   return payload;
 }
+
 async function applyGoogleEvent(workspaceId: string, userId: string, googleEvent: GoogleEvent) {
   const googleId = asText(googleEvent.id);
-  if (!googleId) return { action: 'skipped', conflicts: [] as any[] };
+  if (!googleId) return { action: 'skipped', reason: 'missing_external_id', conflicts: [] as any[] };
   const existing = await findExistingWorkItem(workspaceId, userId, googleEvent);
   const existingId = asText(existing?.id);
 
@@ -264,10 +285,31 @@ async function applyGoogleEvent(workspaceId: string, userId: string, googleEvent
     return { action: 'updated', id: existingId, conflicts, row: Array.isArray(rows) ? rows[0] : null };
   }
 
-  const rows = await safeInsertWorkItem(payload);
-  const row = Array.isArray(rows) ? rows[0] : null;
-  return { action: 'created', id: row?.id || null, conflicts, row };
+  try {
+    const rows = await safeInsertWorkItem(payload);
+    const row = Array.isArray(rows) ? rows[0] : null;
+    return { action: 'created', id: row?.id || null, conflicts, row };
+  } catch (error) {
+    if (!isGoogleInboundDuplicateKeyError(error)) throw error;
+
+    const existingAfterRace = await findExistingGoogleCalendarWorkItemByCanonicalKey(workspaceId, googleId);
+    const existingAfterRaceId = asText(existingAfterRace?.id);
+    if (!existingAfterRaceId) throw error;
+
+    const dedupePayload = basePayload(workspaceId, userId, googleEvent, existingAfterRace, conflicts);
+    const rows = await safePatchWorkItem(existingAfterRaceId, dedupePayload);
+    return {
+      action: 'deduped',
+      id: existingAfterRaceId,
+      conflicts,
+      row: Array.isArray(rows) ? rows[0] : null,
+      duplicateConstraint: 'idx_work_items_google_calendar_source_external',
+      duplicateCode: '23505',
+    };
+  }
 }
+
+
 export async function syncGoogleCalendarInbound(input: InboundSyncInput) {
   // GOOGLE_CALENDAR_STAGE10K_INBOUND_SYNC_BACKEND
   if (!input.workspaceId) throw new Error('GOOGLE_INBOUND_WORKSPACE_REQUIRED');
@@ -276,7 +318,7 @@ export async function syncGoogleCalendarInbound(input: InboundSyncInput) {
   // STAGE231F_R1: ordinary user sync must never use a silent workspace fallback token.
   const connection = await getGoogleCalendarUserConnection(input.workspaceId, userId);
   if (!connection || connection.sync_enabled === false) {
-    return { ok: true, connected: false, connectionScope: 'none', reason: 'user_not_connected', scanned: 0, created: 0, updated: 0, deleted: 0, conflicts: [] as any[] };
+    return { ok: true, connected: false, connectionScope: 'none', reason: 'user_not_connected', scanned: 0, inserted: 0, created: 0, updated: 0, deleted: 0, deduped: 0, skipped: 0, conflicts: [] as any[], errors: [] as any[] };
   }
   const daysBack = clampInt(input.daysBack, 30, 0, 365);
   const daysForward = clampInt(input.daysForward, 90, 1, 730);
@@ -287,34 +329,56 @@ export async function syncGoogleCalendarInbound(input: InboundSyncInput) {
   let created = 0;
   let updated = 0;
   let deleted = 0;
+  let deduped = 0;
+  let skipped = 0;
   const conflicts: any[] = [];
+  const errors: any[] = [];
   for (const googleEvent of listed.items || []) {
-    const result = await applyGoogleEvent(input.workspaceId, userId, googleEvent);
-    if (result.action === 'created') created += 1;
-    if (result.action === 'updated') updated += 1;
-    if (result.action === 'deleted') deleted += 1;
-    if (result.conflicts?.length) {
-      conflicts.push({
-        googleEventId: googleEvent.id,
-        title: googleEvent.summary || '(Google Calendar) Bez tytułu',
-        startAt: googleEventStart(googleEvent),
-        endAt: googleEventEnd(googleEvent, googleEventStart(googleEvent)),
-        conflictCount: result.conflicts.length,
-        message: buildConflictMessage(googleEvent, result.conflicts),
+    try {
+      const result = await applyGoogleEvent(input.workspaceId, userId, googleEvent);
+      if (result.action === 'created') created += 1;
+      if (result.action === 'updated') updated += 1;
+      if (result.action === 'deduped') {
+        deduped += 1;
+        updated += 1;
+      }
+      if (result.action === 'deleted') deleted += 1;
+      if (String(result.action || '').startsWith('skipped')) skipped += 1;
+      if (result.conflicts?.length) {
+        conflicts.push({
+          googleEventId: googleEvent.id,
+          title: googleEvent.summary || '(Google Calendar) Bez tytuĹ‚u',
+          startAt: googleEventStart(googleEvent),
+          endAt: googleEventEnd(googleEvent, googleEventStart(googleEvent)),
+          conflictCount: result.conflicts.length,
+          message: buildConflictMessage(googleEvent, result.conflicts),
+        });
+      }
+    } catch (error) {
+      errors.push({
+        externalId: asText(googleEvent?.id) || null,
+        reason: error instanceof Error ? error.message : String(error || 'GOOGLE_INBOUND_EVENT_FAILED'),
       });
     }
   }
   return {
     ok: true,
     connected: true,
+    source: 'google_calendar',
+    route: 'sync-inbound',
     connectionScope: 'user',
     personalScope: 'user',
     workspaceWideDefault: false,
     scanned: (listed.items || []).length,
+    inserted: created,
     created,
     updated,
     deleted,
+    deduped,
+    skipped,
+    errors,
     conflicts,
     nextSyncToken: listed.nextSyncToken || null,
   };
 }
+
