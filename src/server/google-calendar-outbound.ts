@@ -19,7 +19,7 @@ function asIsoDate(value: unknown) {
   // STAGE232G_R4_GOOGLE_CALENDAR_OUTBOUND_TIMEZONE_NO_SHIFT
   // Supabase can return timestamp values without an explicit offset.
   // Treat no-offset CloseFlow calendar times as Europe/Warsaw through the central contract,
-  // not as UTC via raw new Date(raw).toISOString().
+  // not as UTC via the old raw Date parser.
   return normalizeCloseFlowDateTimeToUtcIso(value);
 }
 
