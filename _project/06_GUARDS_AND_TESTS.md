@@ -5420,3 +5420,17 @@ Required:
 - npm run build
 - npm run verify:closeflow:quiet
 - git diff --check
+
+## STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_AND_OWNER_STAMP
+
+Guard:
+- node scripts/check-stage232g-r3-google-calendar-user-onboarding-owner-stamp.cjs
+
+Test:
+- node --test tests/stage232g-r3-google-calendar-user-onboarding-owner-stamp.test.cjs
+
+Required:
+- node scripts/check-cf-runtime-00-source-truth.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check

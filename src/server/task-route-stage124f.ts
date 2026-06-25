@@ -1,7 +1,7 @@
 // STAGE124F_VERCEL_HOBBY_CONSOLIDATED_TASK_ROUTE
 // STAGE124D_SUPABASE_EGRESS_LIGHT_TASK_ROUTE
 import { deleteByIdScoped, insertWithVariants, selectFirstAvailable, updateByIdScoped, updateById } from './_supabase.js';
-import { resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
+import { requireRequestIdentity, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
 import { normalizeTaskListContract } from '../lib/data-contract.js';
 import { normalizeCloseFlowDateTimeToUtcIso } from '../lib/calendar-timezone-contract.js';
 
@@ -227,6 +227,8 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
 
     const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : req.body || {};
     const workspaceId = await resolveRequestWorkspaceId(req, body);
+    const requestIdentityStage232GR3 = await requireRequestIdentity(req, body);
+    const requestUserIdStage232GR3 = asText(requestIdentityStage232GR3.userId || requestIdentityStage232GR3.uid || '');
 
     if (req.method === 'PATCH') {
       if (!body.id) {
@@ -357,7 +359,10 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
 
     const payload = {
       workspace_id: workspaceId,
-      created_by_user_id: null,
+      // STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_AND_OWNER_STAMP
+      // Outbound Google Calendar sync is user-scoped and checks created_by_user_id.
+      // New tasks must be stamped with the authenticated request user, not null.
+      created_by_user_id: requestUserIdStage232GR3 || null,
       lead_id: body.leadId || null,
       case_id: body.caseId || null,
       client_id: body.clientId || null,

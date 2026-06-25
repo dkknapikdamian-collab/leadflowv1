@@ -1110,3 +1110,14 @@ Do wykonania:
 - Calendar nadal pokazuje eventy,
 - rÄ™czne task/event bez zmian,
 - retention R1I/R3 bez regresji.
+
+## STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_AND_OWNER_STAMP
+
+Manual smoke:
+1. Konto bez polaczenia Google Calendar widzi `Polacz Google Calendar`.
+2. Consent Google otwiera sie i wraca do Settings.
+3. Po polaczeniu widac konto Google, `Synchronizuj teraz`, `Rozlacz`.
+4. Nowe zadanie/event pojawia sie w Google Calendar po sync.
+5. Drugi sync nie tworzy duplikatu.
+6. Rozlaczenie blokuje sync.
+7. Konto email+haslo moze polaczyc Google Calendar tym samym CTA.

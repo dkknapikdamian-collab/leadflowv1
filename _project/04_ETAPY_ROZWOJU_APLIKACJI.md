@@ -2762,3 +2762,17 @@ Zakres:
 - Google inbound sync nie moĹĽe zwracaÄ‡ duplicate-key 500 dla idx_work_items_google_calendar_source_external.
 - Ten sam Google event ma byÄ‡ update/skip/deduped, nie drugi insert.
 - Bez zmian w Calendar retention R1I/R3, Owner Control, A35B, finansach, billing i AI Drafts.
+
+## 2026-06-25 13:40 Europe/Warsaw â€” STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_AND_OWNER_STAMP
+
+Status: APPLIED_LOCAL_PENDING_FULL_GATE_AND_OWNER_SMOKE.
+
+Priorytet: P1 naprawczy po STAGE232G_R2.
+
+Zakres:
+- UI polaczenia Google Calendar dla disconnected user,
+- stan polaczenia i akcja rozlaczenia,
+- created_by_user_id stamp przy tworzeniu task/event,
+- guard/test R3.
+
+Nie ruszac: SQL/RLS, finance, billing, AI Drafts, Owner Control runtime, Braki/Blokady.

@@ -89,6 +89,8 @@ const DAILY_DIGEST_EMAIL_ENV_COPY_GUARD = 'RESEND_API_KEY: DIGEST_FROM_EMAIL:';
 const GOOGLE_CALENDAR_CONFIG_REQUIRED_IS_NOT_USER_ERROR_STAGE86 = 'Google Calendar wymaga konfiguracji w Vercel';
 const CLOSEFLOW_FB1_SETTINGS_COPY_NOISE_CLEANUP = 'CLOSEFLOW_FB1_COPY_NOISE_CLEANUP_2026_05_09';
 const SETTINGS_DATA_SECTION_VISIBLE = false;
+const STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_AND_OWNER_STAMP = 'Google Calendar disconnected users see connect CTA and connected users see account/sync/disconnect controls';
+void STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_AND_OWNER_STAMP;
 
 type SettingsTab = 'account' | 'notifications' | 'integrations' | 'app' | 'security' | 'data';
 
@@ -410,7 +412,7 @@ useEffect(() => {
   const handleDisconnectGoogleCalendar = async () => {
     if (!workspace?.id || !activeUserId) return;
 
-    if (!window.confirm('Rozłączyć Google Calendar dla tego workspace? Nowe wydarzenia nie będą synchronizowane.')) return;
+    if (!window.confirm('Rozlaczyć Google Calendar dla tego workspace? Nowe wydarzenia nie będą synchronizowane.')) return;
 
     setDisconnectingGoogleCalendar(true);
     try {
@@ -932,7 +934,29 @@ useEffect(() => {
                   </span>
                 </div>
 
-                {googleCalendarOutboundResult ? (
+                                <div className="settings-action-row" data-google-calendar-user-onboarding-stage232g-r3="true">
+                  {!googleCalendarConnected ? (
+                    <Button type="button" onClick={() => void handleConnectGoogleCalendar()} disabled={connectingGoogleCalendar || checkingGoogleCalendar || !canUseGoogleCalendarByPlan || !googleCalendarConfigured}>
+                      <CalendarDays className="h-4 w-4" />
+                      {connectingGoogleCalendar ? 'ĹÄ…czÄ™...' : 'Polacz Google Calendar'}
+                    </Button>
+                  ) : (
+                    <>
+                      <Button type="button" variant="outline" onClick={() => void handleDisconnectGoogleCalendar()} disabled={disconnectingGoogleCalendar || checkingGoogleCalendar}>
+                        {disconnectingGoogleCalendar ? 'Rozlaczam...' : 'Rozlacz'}
+                      </Button>
+                    </>
+                  )}
+                  <span className="settings-muted-note" data-google-calendar-connection-state-stage232g-r3="true">
+                    {!googleCalendarConfigured
+                      ? `Google Calendar wymaga konfiguracji w Vercel${googleCalendarMissingText ? ': ' + googleCalendarMissingText : ''}.`
+                      : googleCalendarConnected
+                        ? `Polaczono: ${googleCalendarStatus?.connection?.googleAccountEmail || googleCalendarStatus?.connection?.googleCalendarId || 'Google Calendar'}`
+                        : 'Nie polaczono. Dokoncz polaczenie Google Calendar, zeby wpisy tego uzytkownika synchronizowaly sie z jego kalendarzem.'}
+                  </span>
+                </div>
+
+{googleCalendarOutboundResult ? (
                   <div className="settings-muted-note" data-google-calendar-stage12-result="true">
                     Sprawdzono: {googleCalendarOutboundResult.scanned ?? 0}. Utworzono: {googleCalendarOutboundResult.created ?? 0}. Zaktualizowano: {googleCalendarOutboundResult.updated ?? 0}. Pominięto: {googleCalendarOutboundResult.skipped ?? 0}. Błędy: {googleCalendarOutboundResult.failed ?? 0}.
                   </div>
@@ -1233,7 +1257,7 @@ useEffect(() => {
                     onClick={() => void handleDisconnectGoogleCalendar()}
                     disabled={disconnectingGoogleCalendar || !workspace?.id}
                   >
-                    {disconnectingGoogleCalendar ? 'Rozłączanie...' : 'Rozłącz Google'}
+                    {disconnectingGoogleCalendar ? 'Rozlaczanie...' : 'Rozlacz Google'}
                   </Button>
                 ) : (
                   <Button

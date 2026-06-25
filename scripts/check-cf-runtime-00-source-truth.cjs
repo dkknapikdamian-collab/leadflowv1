@@ -191,6 +191,14 @@ const allowedChangePrefixes = [
   'tests/stage232g-r2-google-inbound-sync-idempotency.test.cjs',
   '_project/runs/STAGE232G_R2_GOOGLE_INBOUND_SYNC_IDEMPOTENCY.md',
   '_project/obsidian_updates/2026-06-25_STAGE232G_R2_GOOGLE_INBOUND_SYNC_IDEMPOTENCY.md',
+  // STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_AND_OWNER_STAMP_ALLOWLIST
+  'src/pages/Settings.tsx',
+  'src/server/task-route-stage124f.ts',
+  'src/server/event-route-stage124f.ts',
+  'scripts/check-stage232g-r3-google-calendar-user-onboarding-owner-stamp.cjs',
+  'tests/stage232g-r3-google-calendar-user-onboarding-owner-stamp.test.cjs',
+  '_project/runs/STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_AND_OWNER_STAMP_PRIORITY.md',
+  '_project/obsidian_updates/2026-06-25_STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_AND_OWNER_STAMP.md',
   'tests/stage232g-r1f-calendar-today-final-parity-guard-and-smoke.test.cjs',
 
   // STAGE232G_R1E_CALENDAR_DOM_NORMALIZERS_LIMIT_OR_RETIRE_ALLOWLIST

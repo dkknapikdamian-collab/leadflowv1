@@ -138,3 +138,23 @@ R3 startuje po R2 jako osobny etap produktowo-runtime.
 ## Następny krok
 
 Wdrozyc R3 jako najblizszy etap naprawczy, scan-first, z guardami i testem. Nie zaczynac od nowa Google Calendar R2. Naprawiac onboarding/user connection/ownership stamp.
+
+## R3 runtime implementation package - 2026-06-25 13:40 Europe/Warsaw
+
+Status: APPLIED_LOCAL_PENDING_FULL_GATE_AND_OWNER_SMOKE.
+
+Runtime scope:
+- Settings disconnected Google Calendar users now get a visible connect CTA block.
+- Connected users get account state and disconnect action.
+- Existing sync button remains; cleanup can be a later UI polish after smoke.
+- Task/Event POST stamps created_by_user_id from verified request identity.
+- Calendar OAuth consent remains separate from Supabase Google login.
+- Outbound user-scoped fail-closed remains.
+
+Tests:
+- node scripts/check-stage232g-r3-google-calendar-user-onboarding-owner-stamp.cjs
+- node --test tests/stage232g-r3-google-calendar-user-onboarding-owner-stamp.test.cjs
+- node scripts/check-cf-runtime-00-source-truth.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check

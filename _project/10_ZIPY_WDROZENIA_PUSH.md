@@ -26,3 +26,9 @@ Granice: bez runtime, bez SQL, bez finansow, bez billing, bez Google Calendar, b
 Status: APPLIED_LOCAL_PENDING_GUARDS_AND_OWNER_SMOKE.
 ZIP/local package: STAGE232G_R2_GOOGLE_INBOUND_SYNC_IDEMPOTENCY_V4_2026_06_25.zip.
 Push: do wykonania po PASS guard/test/build/verify/diff-check i smoke.
+
+## 2026-06-25 13:40 Europe/Warsaw â€” STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_AND_OWNER_STAMP
+
+ZIP/local package: STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_OWNER_STAMP_V4_2026_06_25.zip.
+Status: APPLIED_LOCAL_PENDING_FULL_GATE_AND_OWNER_SMOKE.
+Push: dopiero po PASS guard/test/build/verify/diff-check.

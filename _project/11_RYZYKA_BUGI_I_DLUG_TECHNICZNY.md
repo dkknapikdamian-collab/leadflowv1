@@ -2517,3 +2517,11 @@ Ryzyko:
 - nie wolno usuwaÄ‡ unique constraint jako naprawy,
 - nie wolno tworzyÄ‡ nowych external_id dla tego samego Google eventu,
 - Google inbound sync musi byÄ‡ idempotentny.
+
+## STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_AND_OWNER_STAMP
+
+Ryzyka:
+- silent Calendar connect bez consentu Google jest niedozwolony;
+- workspace fallback token dla zwyklego usera moglby wypchnac cudze wpisy;
+- brak created_by_user_id powoduje personalScopeSkipped w outbound sync;
+- nie ruszac SQL/RLS w tym etapie bez osobnej decyzji.
