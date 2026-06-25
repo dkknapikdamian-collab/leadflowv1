@@ -3,6 +3,8 @@ import { cn } from "../../lib/utils"
 
 const STAGE220A19_CARDS_BADGES_METRICS_VST = "shared Card primitive uses CloseFlow Visual Source of Truth";
 void STAGE220A19_CARDS_BADGES_METRICS_VST;
+const STAGE232T_R1A_TODAY_VIEW_SECTION_CARD_VISIBILITY = "STAGE232T_R1A_TODAY_VIEW_SECTION_CARD_VISIBILITY";
+void STAGE232T_R1A_TODAY_VIEW_SECTION_CARD_VISIBILITY;
 
 const Card = React.forwardRef<
   HTMLDivElement,
