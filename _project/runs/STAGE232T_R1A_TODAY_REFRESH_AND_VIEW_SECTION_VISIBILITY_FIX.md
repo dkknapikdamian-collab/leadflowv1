@@ -7,7 +7,7 @@ branch: dev-rollout-freeze
 
 ## Status
 
-PUSHED / NEEDS_LOCAL_GUARDS_BUILD_VERIFY / MANUAL_SMOKE_PENDING
+LOCAL_TECH_PASS / MANUAL_SMOKE_PENDING
 
 ## Scope
 
@@ -32,21 +32,21 @@ Small runtime fix for /today:
 - LeadDetail / ClientDetail / CaseDetail runtime
 - large Today redesign
 
-## Required local verification
+## Local verification result from Damian log
 
-Run locally from `C:\Users\malim\Desktop\biznesy_ai\2.closeflow`:
+PASS:
+- `node scripts/check-stage232t-r1a-today-refresh-and-view-section-visibility.cjs`
+- `node --test tests/stage232t-r1a-today-refresh-and-view-section-visibility.test.cjs` — 4/4 PASS.
+- `node scripts/check-cf-runtime-00-source-truth.cjs`
+- `npm run build`
+- `npm run verify:closeflow:quiet`
+- `git diff --check`
+- `git status --short --branch` — clean, `dev-rollout-freeze...origin/dev-rollout-freeze`.
 
-```powershell
-node scripts/check-stage232t-r1a-today-refresh-and-view-section-visibility.cjs
-node --test tests/stage232t-r1a-today-refresh-and-view-section-visibility.test.cjs
-node scripts/check-cf-runtime-00-source-truth.cjs
-npm run build
-npm run verify:closeflow:quiet
-git diff --check
-git status --short --branch
-```
+Build note:
+- Vite dynamic/static import and chunk-size warnings appeared, but build finished successfully.
 
-## Manual smoke
+## Manual smoke remaining
 
 1. Open /today.
 2. Click Odśwież dane.
