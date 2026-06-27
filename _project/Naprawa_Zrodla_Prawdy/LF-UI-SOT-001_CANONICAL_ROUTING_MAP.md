@@ -1,10 +1,10 @@
 # LF-UI-SOT-001 - Canonical routing
 
-Status: DONE / ROUTING_SOT_GUARD_ADDED
-Date: 2026-06-27 Europe/Warsaw
+Status: TECH_DONE / ROUTING_SOT_GUARD_ADDED / CLOSE_VERIFY_GUARD_ADDED / NEEDS_LOCAL_COMMAND_CONFIRMATION / NEEDS_MANUAL_SMOKE / FULL_ALIAS_POLICY_PENDING
+Date: 2026-06-28 00:30 Europe/Warsaw
 Project: CloseFlow / LeadFlow
 Branch checked: dev-rollout-freeze
-Scope: canonical route source of truth, alias redirect contract, route guard
+Scope: canonical route source of truth, alias redirect contract, route guard, close verify guard
 
 ## Scan report
 
@@ -36,15 +36,22 @@ Scope: canonical route source of truth, alias redirect contract, route guard
   - Inactive `src/pages/Dashboard.tsx` and `src/pages/Today.tsx` still contain legacy `/case/` links.
   - `src/components/Layout.tsx` still treats `/case/` as active for visual highlighting so old shared links do not visually break before redirect. This was not edited because layouts are out of scope.
   - FIN-15 route-adjacent test remains red for an unrelated finance ghost in `LeadDetail`.
+  - Full alias policy is still pending because `/today`, `/start`, `/support` and `/dev/funnel` are not all redirect-only aliases.
 - Tests/guards relevant:
   - `npm run guard:routes:canonical`
-  - `node --test tests/routes-canonical.test.cjs tests/stage233a-route-canonicalization.test.cjs tests/lead-start-service-case-redirect.test.cjs tests/lead-service-mode-v1.test.cjs`
+  - `node scripts/check-lf-ui-sot-001-close-verify-and-smoke.cjs`
+  - `node --test tests/routes-canonical.test.cjs tests/lf-ui-sot-001-close-verify-and-smoke.test.cjs`
+  - `node --test tests/stage233a-route-canonicalization.test.cjs tests/lead-start-service-case-redirect.test.cjs tests/lead-service-mode-v1.test.cjs`
   - `node scripts/check-stage232i3-owner-control-missing-blocker-cross-entity-integration.cjs`
   - `node --test tests/stage232i3-owner-control-missing-blocker-cross-entity-integration.test.cjs`
+  - `npm run build`
+  - `npm run verify:closeflow:quiet`
   - `git diff --check`
 - Next step:
+  - Run local commands.
   - Manual Damian smoke on canonical/alias URLs.
   - Separate cleanup stage for inactive Dashboard/Today legacy links and layout route constants.
+  - Separate R2 stage for full alias policy if Damian wants redirect-only aliases everywhere.
 
 ## Canonical route map
 
@@ -116,6 +123,26 @@ The guard checks:
 - `LeadDetail` handoff uses `caseDetailPath`,
 - active owner-control/reminder link builders no longer manually build `/case/` links.
 
+## Close verify guard
+
+Added for the closeout stage:
+
+```txt
+scripts/check-lf-ui-sot-001-close-verify-and-smoke.cjs
+tests/lf-ui-sot-001-close-verify-and-smoke.test.cjs
+_project/runs/LF-UI-SOT-001_CLOSE_VERIFY_AND_SMOKE.md
+```
+
+This guard protects the honest status of the stage:
+
+```txt
+TECH_DONE / ROUTING_SOT_GUARD_ADDED / CLOSE_VERIFY_GUARD_ADDED / NEEDS_LOCAL_COMMAND_CONFIRMATION / NEEDS_MANUAL_SMOKE / FULL_ALIAS_POLICY_PENDING
+```
+
+It checks that the core `/case/:caseId` vs `/cases/:caseId` problem is closed, while `/today`, `/start`, `/support` and `/dev/funnel` remain explicit follow-up policy decisions.
+
+Nie zamykac jako `ZAMKNIETE_FULL` or `FULL_ALIAS_POLICY_PASS` until the full alias policy is decided and guarded.
+
 ## Known legacy left intentionally
 
 - `src/pages/Dashboard.tsx` still has legacy `/case/` links, but Dashboard is not mounted in `src/App.tsx`.
@@ -125,13 +152,32 @@ The guard checks:
 
 ## Verification
 
-PASS:
+Previously recorded PASS:
 
 ```txt
 npm run guard:routes:canonical
 node --test tests/routes-canonical.test.cjs tests/stage233a-route-canonicalization.test.cjs tests/lead-start-service-case-redirect.test.cjs tests/lead-service-mode-v1.test.cjs
 node scripts/check-stage232i3-owner-control-missing-blocker-cross-entity-integration.cjs
 node --test tests/stage232i3-owner-control-missing-blocker-cross-entity-integration.test.cjs
+```
+
+Closeout verification added in this stage:
+
+```txt
+node scripts/check-lf-ui-sot-001-close-verify-and-smoke.cjs
+node --test tests/routes-canonical.test.cjs tests/lf-ui-sot-001-close-verify-and-smoke.test.cjs
+```
+
+LOCAL_COMMANDS_PENDING:
+
+```txt
+npm run guard:routes:canonical
+node scripts/check-lf-ui-sot-001-close-verify-and-smoke.cjs
+node --test tests/routes-canonical.test.cjs tests/lf-ui-sot-001-close-verify-and-smoke.test.cjs
+npm run build
+npm run verify:closeflow:quiet
+git diff --check
+git status --short --branch
 ```
 
 Known unrelated red:
@@ -162,3 +208,20 @@ Expected:
 - `/case/:caseId` redirects with replace to `/cases/:caseId`.
 - Lead service handoff opens canonical CaseDetail.
 - No duplicate CaseDetail component route renders from alias.
+
+## Follow-up
+
+If Damian wants full alias purity, use a separate small stage:
+
+```txt
+LF-UI-SOT-001R2_ROUTE_ALIAS_POLICY_CLOSEOUT
+```
+
+Questions for R2:
+
+- should `/today` redirect replace to `/`, or remain a release-candidate smoke alias?
+- should `/start` redirect replace to `/login`, or remain auth-entry alias behavior?
+- should `/support` redirect replace to `/help`?
+- should `/dev/funnel` remain DEV-only legacy route?
+
+Do not mix R2 with CSS, layout, cards, icons, business data or runtime refactor.
