@@ -43,12 +43,14 @@ nodeTest('Faza 4 Etap 4.3 static wiring and docs are present', () => {
   assert.match(technicalDoc, /CRITICAL CRUD \/ RELOAD SMOKE/);
 });
 
-nodeTest('Faza 4 Etap 4.3 keeps task/event API rewrite and stage42 syntax clean', () => {
+nodeTest('Faza 4 Etap 4.3 keeps current task/event API rewrite and stage42 syntax clean', () => {
   const vercel = read('vercel.json');
   const workItems = read('api/work-items.ts');
 
-  assert.match(vercel, /"source":\s*"\/api\/tasks"[\s\S]*"destination":\s*"\/api\/work-items\?kind=tasks"/);
-  assert.match(vercel, /"source":\s*"\/api\/events"[\s\S]*"destination":\s*"\/api\/work-items\?kind=events"/);
+  assert.match(vercel, /"source":\s*"\/api\/tasks"[\s\S]*"destination":\s*"\/api\/system\?apiRoute=tasks"/);
+  assert.match(vercel, /"source":\s*"\/api\/events"[\s\S]*"destination":\s*"\/api\/system\?apiRoute=events"/);
+  assert.doesNotMatch(vercel, /"destination":\s*"\/api\/work-items\?kind=tasks"/);
+  assert.doesNotMatch(vercel, /"destination":\s*"\/api\/work-items\?kind=events"/);
   assert.doesNotMatch(workItems, /^\uFEFF/);
   assert.doesNotMatch(workItems, /function isEventRow\(row: any\) \{function isEventRow/);
   assert.doesNotMatch(workItems, /syncLeadNextActionasync function syncLeadNextAction/);
