@@ -15,12 +15,12 @@ expectIncludes('src/components/Layout.tsx', 'VISUAL_STAGE_05_CLIENTS_ROUTE_SCOPE
 expectIncludes('src/components/Layout.tsx', "const isClientsRoute = location.pathname === '/clients';", 'clients route detection');
 expectIncludes('src/components/Layout.tsx', 'main-clients', 'main-clients scoped class');
 expectIncludes('src/components/Layout.tsx', "data-visual-stage-clients={isClientsRoute ? '05-clients' : undefined}", 'clients visual data marker');
-expectIncludes('src/styles/visual-stage05-clients.css', 'VISUAL_STAGE_05_CLIENTS', 'Stage 05 CSS marker');
-expectIncludes('src/styles/visual-stage05-clients.css', '.main-clients', 'scoped Clients selector');
-expectIncludes('src/styles/visual-stage05-clients.css', 'table-card', 'table-card pattern');
-expectIncludes('src/styles/visual-stage05-clients.css', 'right-card', 'right-card pattern');
-expectIncludes('src/styles/visual-stage05-clients.css', '@media (max-width: 760px)', 'mobile polish');
-expectIncludes('src/index.css', '@import "./styles/visual-stage05-clients.css";', 'Stage 05 CSS import');
+expectIncludes('src/pages/Clients.tsx', "import '../styles/visual-stage23-client-case-forms-vnext.css';", 'active Clients case form CSS import');
+expectIncludes('src/pages/Clients.tsx', "import '../styles/clients-next-action-layout.css';", 'active Clients next-action CSS import');
+expectIncludes('src/pages/Clients.tsx', "import '../styles/closeflow-record-list-source-truth.css';", 'active Clients record-list CSS import');
+expectIncludes('src/pages/Clients.tsx', "import '../styles/closeflow-unified-page-canvas-stage211c.css';", 'active Clients unified canvas CSS import');
+expectIncludes('src/pages/Clients.tsx', "import '../styles/closeflow-canvas-source-truth-stage211e.css';", 'active Clients canvas source CSS import');
+expectIncludes('src/pages/Clients.tsx', 'data-clients-real-view="true"', 'Clients real-view marker');
 expectIncludes('src/pages/Clients.tsx', 'createClientInSupabase', 'client create flow remains present');
 expectIncludes('src/pages/Clients.tsx', 'fetchClientsFromSupabase', 'client read flow remains present');
 expectIncludes('src/pages/Clients.tsx', 'fetchLeadsFromSupabase', 'lead counters remain present');

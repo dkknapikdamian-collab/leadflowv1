@@ -70,6 +70,7 @@ import {
   getTodayDateInputValue,
 } from '../lib/owner-control/last-contact-intake';
 import { buildTopClientValueEntries } from '../lib/client-value';
+import { isActiveClientCase } from '../lib/client-cases';
 import { getCaseFinanceSummary, getClientCasesFinanceSummary } from '../lib/finance/case-finance-source';
 import '../styles/visual-stage23-client-case-forms-vnext.css';
 import '../styles/clients-next-action-layout.css';
@@ -146,7 +147,9 @@ const STAGE228R5R2_CLIENT_CASE_FINANCE_FLOW_LOCK = 'client create modal only ask
 const STAGE228R5R3_CLIENT_CASE_NAME_ONLY_MODAL = 'client create modal shows only case title; all case value and commission fields live in CaseDetail finance modal';
 const STAGE226R10_CLIENTS_LIST_SOURCE_TRUTH = 'clients page renders rows only from clients state; leads are relation context only';
 const STAGE231D0B_CLIENT_LIST_CARD_VISUAL_FREEZE = 'ClientListCard uses 2-line relationship row: active commission, lifetime earned, cases, nearest action; no leads count or active-case badge';
+const STAGE232C_CLIENTS_RELATION_TILE_SOURCE_OF_TRUTH = 'Clients relation counters use active case truth without changing Aktywni tile semantics';
 void STAGE231D0B_CLIENT_LIST_CARD_VISUAL_FREEZE;
+void STAGE232C_CLIENTS_RELATION_TILE_SOURCE_OF_TRUTH;
 void STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL;
 void STAGE228R5R2_CLIENT_CASE_FINANCE_FLOW_LOCK;
 void STAGE228R5R3_CLIENT_CASE_NAME_ONLY_MODAL;
@@ -319,6 +322,7 @@ export default function Clients() {
       touch(clientId).leads += 1;
     }
     for (const caseRecord of cases) {
+      if (!isActiveClientCase(caseRecord)) continue;
       const clientId = getStage35RelationClientId(caseRecord);
       if (!clientId) continue;
       touch(clientId).cases += 1;
@@ -869,7 +873,7 @@ export default function Clients() {
             title="Pokaż aktywnych klientów"
             ariaLabel="Pokaż aktywnych klientów"
             tone="blue"
-            helper="z otwartą sprawą"
+            helper="niearchiwalni klienci"
           />
           <StatShortcutCard
             label="Bez sprawy"

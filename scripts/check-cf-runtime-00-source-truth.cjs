@@ -583,6 +583,13 @@ const allowedChangePrefixes = [
   '_project/runs/STAGE232I4_R16Z_R10_R3_GUARD_SCOPE_STATUS_SYNC_AND_OWNER_SMOKE_CLOSE.md',
   '_project/obsidian_updates/2026-06-21_STAGE232I4_R16Z_R10_R3_GUARD_SCOPE_STATUS_SYNC_AND_OWNER_SMOKE_CLOSE.md',
 
+  // STAGE232C_CLIENTS_RELATION_TILE_SOURCE_OF_TRUTH_ALLOWLIST
+  'src/pages/Clients.tsx',
+  'scripts/check-stage231d0b-client-list-card-freeze.cjs',
+  'scripts/check-visual-stage05-clients.cjs',
+  'scripts/check-stage232c-clients-relation-tile-source-of-truth.cjs',
+  'tests/stage232c-clients-relation-tile-source-of-truth.test.cjs',
+
   // STAGE232K_R1D_CF_RUNTIME_ALLOWLIST_REPAIR
   'src/lib/finance/case-finance-source.ts',
   'src/components/finance/CaseFinanceEditorDialog.tsx',
