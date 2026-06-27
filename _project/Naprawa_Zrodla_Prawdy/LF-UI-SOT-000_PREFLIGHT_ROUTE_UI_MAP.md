@@ -1,7 +1,7 @@
 # Naprawa zrodla prawdy — LF-UI-SOT-000 preflight UI/routes
 
-Data: 2026-06-27 23:59 Europe/Warsaw
-Status: CANONICAL_MOVED_HERE / DOCS_ONLY / RUNTIME_NOT_TOUCHED
+Data: 2026-06-28 00:28 Europe/Warsaw
+Status: CANONICAL_MOVED_HERE / COMPLETE_MAP / DOCS_ONLY / RUNTIME_NOT_TOUCHED
 canonical_name: CloseFlow / LeadFlow
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
@@ -14,18 +14,20 @@ To miejsce zbiera prace typu: naprawa zrodla prawdy, mapa aktywnych routes, akty
 
 Nie jest to folder na zwykle run reporty. To jest punkt decyzyjny przed zmianami UI/runtime, zeby AI nie poprawialo wygladu przez nakladanie kolejnej warstwy na stara.
 
-## Werdykt z audytu
+## Werdykt
 
-Ten etap nie zmienial UI i nie poprawial wygladu. Audyt scalil:
+Ten etap nie zmienial UI i nie poprawial wygladu.
+
+Scalono:
 
 1. mape routera z `src/App.tsx`, aktywne importy, aktywne routes, aliasy i ryzyka globalnego CSS;
 2. lokalny log Codexa: spis `src/pages`, `src/components`, `src/components/ui`, `src/lib`, route scan, legacy scan, anti-patch scan i forbidden doc import scan.
 
 Status nie jest pelnym PASS runtime, bo lokalne repo wedlug raportu Codexa mialo wczesniejsze brudne zmiany w `TodayStable`, stylach, skryptach i testach.
 
-## Aktywne zrodla prawdy z routera
+## Aktywny router
 
-Aktywny router: `src/App.tsx`.
+Aktywne zrodlo routes: `src/App.tsx`.
 
 Aktywne strony produkcyjne / route importy:
 
@@ -58,37 +60,37 @@ Aktywne strony produkcyjne / route importy:
 
 ## Aktywne routes
 
-- `/login` -> Login albo redirect `/`
-- `/start` -> Login albo redirect `/`
-- `/privacy` -> LegalPrivacy
-- `/terms` -> LegalTerms
-- `/portal/:caseId/:token` -> ClientPortal
-- `/` -> Today albo Login
-- `/today` -> Today albo redirect `/login`
-- `/leads` -> Leads
-- `/dev/funnel` -> SalesFunnel tylko DEV
-- `/funnel` -> SalesFunnel
-- `/leads/:leadId` -> LeadDetail
-- `/tasks` -> Tasks
-- `/calendar` -> Calendar
-- `/cases` -> Cases
-- `/case/:caseId` -> LegacyCaseRedirect
-- `/cases/:caseId` -> CaseDetail
-- `/clients` -> Clients
-- `/clients/:clientId` -> ClientDetail
-- `/activity` -> Activity
-- `/ai-drafts` -> AiDrafts
-- `/notifications` -> NotificationsCenter
-- `/templates` -> Templates
+- `/login` -> `Login` albo redirect `/`
+- `/start` -> `Login` albo redirect `/`
+- `/privacy` -> `LegalPrivacy`
+- `/terms` -> `LegalTerms`
+- `/portal/:caseId/:token` -> `ClientPortal`
+- `/` -> `Today` albo `Login`
+- `/today` -> `Today` albo redirect `/login`
+- `/leads` -> `Leads`
+- `/dev/funnel` -> `SalesFunnel` tylko DEV
+- `/funnel` -> `SalesFunnel`
+- `/leads/:leadId` -> `LeadDetail`
+- `/tasks` -> `Tasks`
+- `/calendar` -> `Calendar`
+- `/cases` -> `Cases`
+- `/case/:caseId` -> `LegacyCaseRedirect`
+- `/cases/:caseId` -> `CaseDetail`
+- `/clients` -> `Clients`
+- `/clients/:clientId` -> `ClientDetail`
+- `/activity` -> `Activity`
+- `/ai-drafts` -> `AiDrafts`
+- `/notifications` -> `NotificationsCenter`
+- `/templates` -> `Templates`
 - `/case-templates` -> redirect `/templates`
-- `/response-templates` -> ResponseTemplates
-- `/billing` -> Billing
-- `/help` -> SupportCenter
-- `/support` -> SupportCenter
-- `/settings/ai` -> AdminAiSettings
-- `/settings` -> Settings
-- `/ui-preview-vnext` -> UiPreviewVNext tylko DEV
-- `/ui-preview-vnext-full` -> UiPreviewVNextFull tylko DEV
+- `/response-templates` -> `ResponseTemplates`
+- `/billing` -> `Billing`
+- `/help` -> `SupportCenter`
+- `/support` -> `SupportCenter`
+- `/settings/ai` -> `AdminAiSettings`
+- `/settings` -> `Settings`
+- `/ui-preview-vnext` -> `UiPreviewVNext` tylko DEV
+- `/ui-preview-vnext-full` -> `UiPreviewVNextFull` tylko DEV
 - `*` -> redirect `/`
 
 ## Lokalny spis `src/pages`
@@ -302,13 +304,14 @@ git diff -- _project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-000_PREFLIGHT_ROUTE_UI_MAP.
 
 ## Zapis do Obsidiana
 
-- data i godzina: 2026-06-27 23:59 Europe/Warsaw
+- data i godzina: 2026-06-28 00:28 Europe/Warsaw
 - nazwa / alias: Naprawa zrodla prawdy — LF-UI-SOT-000
 - canonical_name: CloseFlow / LeadFlow
-- repo: dkknapikdamian-collab/leadflowv1
-- branch: dev-rollout-freeze
+- repo aplikacji: dkknapikdamian-collab/leadflowv1
+- branch aplikacji: dev-rollout-freeze
 - target file/path: `_project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-000_PREFLIGHT_ROUTE_UI_MAP.md`
-- save status: zapisane w repo aplikacji przez GitHub connector
-- Obsidian GitHub sync: nie wykonano w repo obsidian-vault
-- Obsidian local sync: LOCAL_SYNC_PENDING
+- save status: zapisane w repo aplikacji
 - runtime/UI: nietkniete
+- SQL/API/Supabase: nietkniete
+- Obsidian vault: wymaga osobnego wpisu w `dkknapikdamian-collab/obsidian-vault`
+- Obsidian local sync: LOCAL_SYNC_PENDING
