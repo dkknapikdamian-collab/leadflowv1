@@ -133,6 +133,10 @@ const allowedChangePrefixes = [
   'tests/stage232t-r1d-today-work-item-actions-source-truth.test.cjs',
   'tests/stage97-today-overdue-task-done-button.test.cjs',
   '_project/runs/STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH.md',
+  // STAGE232T_R1E_TODAY_ACTIONS_CLOSEOUT_DELETE_EDIT_TRASH_VST_ALLOWLIST
+  'scripts/check-stage232t-r1e-today-actions-closeout-delete-edit-trash-vst.cjs',
+  'tests/stage232t-r1e-today-actions-closeout-delete-edit-trash-vst.test.cjs',
+  '_project/runs/STAGE232T_R1E_TODAY_ACTIONS_CLOSEOUT_DELETE_EDIT_TRASH_VST.md',
   // STAGE_A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_ALLOWLIST
   'src/lib/owner-control/owner-control-baseline.ts',
   'src/pages/TodayStable.tsx',

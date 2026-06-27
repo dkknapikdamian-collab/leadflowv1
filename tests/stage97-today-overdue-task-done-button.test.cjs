@@ -44,8 +44,8 @@ test('Stage97 operator overdue/today task rows use WorkItemCard with task identi
   assert.ok(block.includes('tone={getTodayWorkItemTone(task?.status, momentRaw, todayKey)}'), 'Task rows must keep red overdue tone source.');
   assert.ok(block.includes("onDone={() => void handleMarkTaskDone(String(task.id || ''))}"), 'Task rows must pass task identity into done handler.');
   assert.ok(block.includes('doneBusy={actionPendingId === `task-done:'), 'Task rows must expose done busy state keyed by task id.');
-  assert.ok(block.includes('getTodayTaskEditHrefStage232TR1D(task)'), 'Task rows must keep concrete edit action.');
-  assert.ok(block.includes('editTaskId'), 'Task edit action must carry task identity.');
+  assert.ok(block.includes('openTodayTaskEditStage232TR1E(task)'), 'Task rows must keep concrete local edit action.');
+  assert.ok(today.includes('data-stage232t-r1e-today-edit-modal="true"'), 'Task edit action must open the Today edit modal.');
   assert.ok(block.includes('onDelete={() => void handleDeleteTask(task)}'), 'Task rows must keep delete action.');
 });
 
@@ -57,10 +57,10 @@ test('Stage97 task rows are not edit-only after WorkItemCard migration', () => {
     '}) : <EmptyState text="Brak zadań zaległych lub na dziś." />'
   );
 
-  const editIndex = block.indexOf('getTodayTaskEditHrefStage232TR1D(task)');
+  const editIndex = block.indexOf('openTodayTaskEditStage232TR1E(task)');
   const doneIndex = block.indexOf("onDone={() => void handleMarkTaskDone(String(task.id || ''))}");
   const hrefIndex = block.indexOf('href="/tasks"');
-  assert.ok(editIndex !== -1, 'Missing concrete edit action.');
+  assert.ok(editIndex !== -1, 'Missing concrete local edit action.');
   assert.ok(doneIndex !== -1, 'Missing done action with task identity.');
   assert.ok(hrefIndex !== -1, 'Missing /tasks route.');
 });

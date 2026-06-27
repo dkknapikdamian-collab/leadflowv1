@@ -1,4 +1,4 @@
-import { type MouseEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { type FormEvent, type MouseEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AlertTriangle, ArrowRight, Calendar, CalendarDays, CheckSquare, ChevronDown, ChevronUp, Loader2, RefreshCcw, SlidersHorizontal, Trash2, TrendingUp } from 'lucide-react';
 import {
@@ -12,11 +12,21 @@ This page intentionally bypasses the legacy Today.tsx scheduler stack for operat
 
 
 import Layout from '../components/Layout';
-import { EntityActionButton } from '../components/entity-actions';
+import { EntityActionButton, modalFooterClass } from '../components/entity-actions';
 import { Card,
   CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../components/ui/dialog';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { toast } from 'sonner';
 
 import {
   deleteEventFromSupabase,
@@ -39,6 +49,7 @@ import { readOwnerRiskSettings } from '../lib/owner-control/owner-risk-settings'
 import { useWorkspace } from '../hooks/useWorkspace';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import WorkItemCard, { getWorkItemCardStatusTone } from '../components/work-item-card';
+import { EVENT_TYPES, PRIORITY_OPTIONS, TASK_TYPES } from '../lib/options';
 import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import '../styles/closeflow-canvas-source-truth-stage211e.css';
@@ -123,6 +134,8 @@ const STAGE232G_R1D_TODAY_ACTION_POLICY_IMPORT = 'STAGE232G_R1D_CALENDAR_ACTIONS
 void STAGE232G_R1D_TODAY_ACTION_POLICY_IMPORT;
 const STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH = 'STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH';
 void STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH;
+const STAGE232T_R1E_TODAY_ACTIONS_CLOSEOUT_DELETE_EDIT_TRASH_VST = 'STAGE232T_R1E_TODAY_ACTIONS_CLOSEOUT_DELETE_EDIT_TRASH_VST';
+void STAGE232T_R1E_TODAY_ACTIONS_CLOSEOUT_DELETE_EDIT_TRASH_VST;
 const STAGE232G_R1D_COMPLETE_ACTION_CONTRACT_GUARD = 'complete action must respect getSupportedOperationalEntryActions; lead shadow cannot be completed as task/event';
 const STAGE232G_R1D_DELETE_ACTION_CONTRACT_GUARD = 'delete action must respect getSupportedOperationalEntryActions; lead shadow cannot be deleted as task/event';
 const STAGE232G_R1D_RESTORE_ACTION_CONTRACT_GUARD = 'restore action must respect getSupportedOperationalEntryActions; lead shadow cannot be restored as task/event';
@@ -150,6 +163,18 @@ type DashboardData = {
   cases: any[];
   clients: any[];
   drafts: AiLeadDraft[];
+};
+
+type TodayEditDraft = {
+  kind: 'task' | 'event';
+  record: any;
+  id: string;
+  title: string;
+  type: string;
+  startAt: string;
+  endAt: string;
+  status: string;
+  priority: string;
 };
 
 type UpcomingRow = {
@@ -219,7 +244,14 @@ const emptyData: DashboardData = {
 
 function isClosedStatus(value: unknown) {
   const status = String(value || '').trim().toLowerCase();
-  return status === 'done' || status === 'completed' || status === 'closed' || status === 'cancelled' || status === 'canceled';
+  return status === 'done'
+    || status === 'completed'
+    || status === 'closed'
+    || status === 'cancelled'
+    || status === 'canceled'
+    || status === 'deleted'
+    || status === 'archived'
+    || status === 'removed';
 }
 
 function isClosedLead(value: any) {
@@ -350,22 +382,6 @@ function getTodayShiftPendingKeyStage227G1(kind: 'task' | 'event', id: string, d
   return kind + '-shift:' + id + ':' + String(days);
 }
 
-function getTodayTaskEditHrefStage232TR1D(task: any) {
-  const taskId = String(task?.id || '').trim();
-  return taskId ? '/tasks?editTaskId=' + encodeURIComponent(taskId) : '/tasks';
-}
-
-function getTodayEventEditHrefStage232TR1D(event: any) {
-  const eventId = String(event?.id || '').trim();
-  if (!eventId) return '/calendar';
-  const focus = getDateKey(getEventMomentRaw(event));
-  const params = new URLSearchParams({ editEventId: eventId });
-  if (focus) params.set('focus', focus);
-  return '/calendar?' + params.toString();
-}
-
-
-
 function formatUpcomingDayName(date: Date, index: number) {
   if (index === 0) return 'Dzisiaj';
   const label = date.toLocaleDateString('pl-PL', { weekday: 'long' });
@@ -404,6 +420,42 @@ function buildUpcomingDayCards(rows: UpcomingRow[]) {
 
 function getTaskTitle(task: any) {
   return readText(task, ['title', 'name'], 'Zadanie bez tytułu');
+}
+
+function buildTodayTaskEditDraftStage232TR1E(task: any): TodayEditDraft | null {
+  const id = String(task?.id || '').trim();
+  if (!id) return null;
+  const startAt = getTaskMomentRaw(task) || toTodayLocalDateTimeStage227G1(new Date());
+  return {
+    kind: 'task',
+    record: task,
+    id,
+    title: getTaskTitle(task),
+    type: readText(task, ['type', 'taskType', 'task_type'], 'follow_up'),
+    startAt,
+    endAt: '',
+    status: readText(task, ['status'], 'todo'),
+    priority: readText(task, ['priority'], 'medium'),
+  };
+}
+
+function buildTodayEventEditDraftStage232TR1E(event: any): TodayEditDraft | null {
+  const id = String(event?.id || '').trim();
+  if (!id) return null;
+  const startAt = getEventMomentRaw(event) || toTodayLocalDateTimeStage227G1(new Date());
+  const endAt = readMomentRaw(event, ['endAt', 'end_at', 'endsAt', 'ends_at'])
+    || shiftTodayEndMomentStage227G1(startAt, startAt, startAt);
+  return {
+    kind: 'event',
+    record: event,
+    id,
+    title: readText(event, ['title'], 'Wydarzenie'),
+    type: readText(event, ['type'], 'meeting'),
+    startAt,
+    endAt,
+    status: readText(event, ['status'], 'scheduled'),
+    priority: 'medium',
+  };
 }
 
 function getLeadTitle(lead: any) {
@@ -921,6 +973,8 @@ function TodayStable() {
   const [actionPendingId, setActionPendingId] = useState<string>('');
   const [collapsedSections, setCollapsedSections] = useState<TodaySectionKey[]>(() => [...TODAY_SECTION_KEYS]);
   const [activeTodaySection, setActiveTodaySection] = useState<TodaySectionKey | null>(null);
+  const [todayEditDraft, setTodayEditDraft] = useState<TodayEditDraft | null>(null);
+  const [todayEditSaving, setTodayEditSaving] = useState(false);
   const todayRefreshInFlightRef = useRef<Promise<void> | null>(null);
   const todayLastSuccessfulRefreshAtRef = useRef(0);
 
@@ -1414,6 +1468,123 @@ function TodayStable() {
     }
   }, [refreshData]);
 
+  const openTodayTaskEditStage232TR1E = useCallback((task: any) => {
+    const draft = buildTodayTaskEditDraftStage232TR1E(task);
+    if (!draft) {
+      toast.error('Nie udalo sie otworzyc edycji zadania.');
+      return;
+    }
+    setTodayEditDraft(draft);
+  }, []);
+
+  const openTodayEventEditStage232TR1E = useCallback((event: any) => {
+    const draft = buildTodayEventEditDraftStage232TR1E(event);
+    if (!draft) {
+      toast.error('Nie udalo sie otworzyc edycji wydarzenia.');
+      return;
+    }
+    setTodayEditDraft(draft);
+  }, []);
+
+  const closeTodayEditStage232TR1E = useCallback(() => {
+    if (todayEditSaving) return;
+    setTodayEditDraft(null);
+  }, [todayEditSaving]);
+
+  const handleSaveTodayEditStage232TR1E = useCallback(async (event: FormEvent) => {
+    event.preventDefault();
+    if (!todayEditDraft) return;
+    if (!todayEditDraft.title.trim()) {
+      toast.error(todayEditDraft.kind === 'task' ? 'Podaj tytul zadania.' : 'Podaj tytul wydarzenia.');
+      return;
+    }
+
+    setTodayEditSaving(true);
+    setActionPendingId(`${todayEditDraft.kind}-edit:${todayEditDraft.id}`);
+    try {
+      if (todayEditDraft.kind === 'task') {
+        const nextDate = todayEditDraft.startAt.slice(0, 10);
+        const nextTime = todayEditDraft.startAt.slice(11, 16) || '09:00';
+        await updateTaskInSupabase({
+          id: todayEditDraft.id,
+          title: todayEditDraft.title.trim(),
+          type: todayEditDraft.type || 'follow_up',
+          date: nextDate,
+          time: nextTime,
+          scheduledAt: todayEditDraft.startAt,
+          dueAt: todayEditDraft.startAt,
+          status: todayEditDraft.status || 'todo',
+          priority: todayEditDraft.priority || 'medium',
+          leadId: readText(todayEditDraft.record, ['leadId', 'lead_id'], '') || null,
+          caseId: readText(todayEditDraft.record, ['caseId', 'case_id'], '') || null,
+          clientId: readText(todayEditDraft.record, ['clientId', 'client_id'], '') || null,
+        } as any);
+
+        setData((current) => ({
+          ...current,
+          tasks: Array.isArray(current.tasks)
+            ? current.tasks.map((task) => String(task?.id || '') === todayEditDraft.id ? {
+              ...task,
+              title: todayEditDraft.title.trim(),
+              type: todayEditDraft.type || 'follow_up',
+              date: nextDate,
+              time: nextTime,
+              scheduledAt: todayEditDraft.startAt,
+              scheduled_at: todayEditDraft.startAt,
+              dueAt: todayEditDraft.startAt,
+              due_at: todayEditDraft.startAt,
+              status: todayEditDraft.status || 'todo',
+              priority: todayEditDraft.priority || 'medium',
+            } : task)
+            : [],
+        }));
+      } else {
+        await updateEventInSupabase({
+          id: todayEditDraft.id,
+          title: todayEditDraft.title.trim(),
+          type: todayEditDraft.type || 'meeting',
+          startAt: todayEditDraft.startAt,
+          endAt: todayEditDraft.endAt || null,
+          status: todayEditDraft.status || 'scheduled',
+          leadId: readText(todayEditDraft.record, ['leadId', 'lead_id'], '') || null,
+          caseId: readText(todayEditDraft.record, ['caseId', 'case_id'], '') || null,
+          clientId: readText(todayEditDraft.record, ['clientId', 'client_id'], '') || null,
+        } as any);
+
+        setData((current) => ({
+          ...current,
+          events: Array.isArray(current.events)
+            ? current.events.map((row) => String(row?.id || '') === todayEditDraft.id ? {
+              ...row,
+              title: todayEditDraft.title.trim(),
+              type: todayEditDraft.type || 'meeting',
+              startAt: todayEditDraft.startAt,
+              start_at: todayEditDraft.startAt,
+              startsAt: todayEditDraft.startAt,
+              starts_at: todayEditDraft.startAt,
+              endAt: todayEditDraft.endAt || null,
+              end_at: todayEditDraft.endAt || null,
+              endsAt: todayEditDraft.endAt || null,
+              ends_at: todayEditDraft.endAt || null,
+              status: todayEditDraft.status || 'scheduled',
+            } : row)
+            : [],
+        }));
+      }
+
+      await refreshData({ force: true, reason: 'operation' });
+      toast.success(todayEditDraft.kind === 'task' ? 'Zadanie zapisane' : 'Wydarzenie zapisane');
+      setTodayEditDraft(null);
+    } catch (error: any) {
+      const message = error?.message || 'REQUEST_FAILED';
+      setErrorMessage('Nie udalo sie zapisac wpisu: ' + message);
+      toast.error('Nie udalo sie zapisac wpisu.');
+    } finally {
+      setTodayEditSaving(false);
+      setActionPendingId('');
+    }
+  }, [refreshData, todayEditDraft]);
+
 
   const handleMarkTaskDone = useCallback(async (taskId: string) => {
     if (!taskId) return;
@@ -1438,11 +1609,22 @@ function TodayStable() {
     setActionPendingId(`task:${taskId}`);
     try {
       await deleteTaskFromSupabase(taskId);
+      setData((current) => ({
+        ...current,
+        tasks: Array.isArray(current.tasks)
+          ? current.tasks.filter((row) => String(row?.id || '') !== taskId)
+          : [],
+      }));
       await refreshData({ force: true, reason: 'operation' });
+      toast.success('Zadanie usuniete.');
+    } catch (error: any) {
+      const message = error?.message || 'REQUEST_FAILED';
+      setErrorMessage('Nie udalo sie usunac zadania: ' + message);
+      toast.error('Nie udalo sie usunac zadania.');
     } finally {
       setActionPendingId('');
     }
-  }, [refreshData]);
+  }, [refreshData, setData]);
 
   const handleDeleteEvent = useCallback(async (event: any) => {
     const eventId = String(event?.id || '');
@@ -1450,11 +1632,22 @@ function TodayStable() {
     setActionPendingId(`event:${eventId}`);
     try {
       await deleteEventFromSupabase(eventId);
+      setData((current) => ({
+        ...current,
+        events: Array.isArray(current.events)
+          ? current.events.filter((row) => String(row?.id || '') !== eventId)
+          : [],
+      }));
       await refreshData({ force: true, reason: 'operation' });
+      toast.success('Wydarzenie usuniete.');
+    } catch (error: any) {
+      const message = error?.message || 'REQUEST_FAILED';
+      setErrorMessage('Nie udalo sie usunac wydarzenia: ' + message);
+      toast.error('Nie udalo sie usunac wydarzenia.');
     } finally {
       setActionPendingId('');
     }
-  }, [refreshData]);
+  }, [refreshData, setData]);
 
   const handleMarkEventDone = useCallback(async (eventId: string) => {
     // STAGE76_TODAY_EVENT_DONE_ACTION: events use the same operational closeout status contract as tasks.
@@ -1695,7 +1888,7 @@ function TodayStable() {
                   completed={isClosedStatus(task?.status)}
                   onDone={() => void handleMarkTaskDone(String(task.id || ''))}
                   doneBusy={actionPendingId === `task-done:${String(task.id || '')}`}
-                  onEdit={() => navigate(getTodayTaskEditHrefStage232TR1D(task), { state: { editTaskId: String(task.id || '') } })}
+                  onEdit={() => openTodayTaskEditStage232TR1E(task)}
                   onDelete={() => void handleDeleteTask(task)}
                   deleteBusy={actionPendingId === `task:${String(task.id || '')}`}
                   shiftActions={buildTodayRescheduleActionsStage227G1('task', task)}
@@ -1725,7 +1918,7 @@ function TodayStable() {
                 completed={isClosedStatus(event?.status)}
                 onDone={() => void handleMarkEventDone(String(event.id || ''))}
                 doneBusy={actionPendingId === `event-done:${String(event.id || '')}`}
-                onEdit={() => navigate(getTodayEventEditHrefStage232TR1D(event), { state: { editEventId: String(event.id || '') } })}
+                onEdit={() => openTodayEventEditStage232TR1E(event)}
                 onDelete={() => void handleDeleteEvent(event)}
                 deleteBusy={actionPendingId === `event:${String(event.id || '')}`}
                 shiftActions={buildTodayRescheduleActionsStage227G1('event', event)}
@@ -1826,6 +2019,120 @@ function TodayStable() {
 
   return (
     <Layout>
+      <Dialog open={Boolean(todayEditDraft)} onOpenChange={(open) => (!open ? closeTodayEditStage232TR1E() : undefined)}>
+        <DialogContent
+          className="cf-vst-dialog event-form-vnext-content sm:max-w-2xl"
+          data-stage232t-r1e-today-edit-modal="true"
+          data-calendar-entry-form-source="event-form-vnext"
+          data-calendar-entry-form-mode={todayEditDraft?.kind === 'event' ? 'today-edit-event' : 'today-edit-task'}
+          aria-describedby={undefined}
+        >
+          <DialogHeader>
+            <DialogTitle>{todayEditDraft?.kind === 'event' ? 'Edytuj wydarzenie' : 'Edytuj zadanie'}</DialogTitle>
+          </DialogHeader>
+          {todayEditDraft ? (
+            <form onSubmit={handleSaveTodayEditStage232TR1E} className="event-form-vnext" data-stage232t-r1e-today-edit-form="true">
+              <div className="event-form-field">
+                <Label>Tytul</Label>
+                <Input
+                  value={todayEditDraft.title}
+                  onChange={(event) => setTodayEditDraft((current) => current ? { ...current, title: event.target.value } : current)}
+                  required
+                />
+              </div>
+              <div className="event-form-field">
+                <Label>Typ</Label>
+                <select
+                  className="event-form-select"
+                  value={todayEditDraft.type}
+                  onChange={(event) => setTodayEditDraft((current) => current ? { ...current, type: event.target.value } : current)}
+                >
+                  {(todayEditDraft.kind === 'event' ? EVENT_TYPES : TASK_TYPES).map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div className={`grid gap-4 ${todayEditDraft.kind === 'event' ? 'sm:grid-cols-2' : 'grid-cols-1'}`}>
+                <div className="event-form-field">
+                  <Label>{todayEditDraft.kind === 'event' ? 'Start' : 'Termin'}</Label>
+                  <Input
+                    type="datetime-local"
+                    value={todayEditDraft.startAt}
+                    onChange={(event) => {
+                      const nextStartAt = event.target.value;
+                      setTodayEditDraft((current) => {
+                        if (!current) return current;
+                        if (current.kind !== 'event') return { ...current, startAt: nextStartAt };
+                        return {
+                          ...current,
+                          startAt: nextStartAt,
+                          endAt: current.endAt ? shiftTodayEndMomentStage227G1(current.startAt, current.endAt, nextStartAt) : current.endAt,
+                        };
+                      });
+                    }}
+                    required
+                  />
+                </div>
+                {todayEditDraft.kind === 'event' ? (
+                  <div className="event-form-field">
+                    <Label>Koniec</Label>
+                    <Input
+                      type="datetime-local"
+                      value={todayEditDraft.endAt}
+                      onChange={(event) => setTodayEditDraft((current) => current ? { ...current, endAt: event.target.value } : current)}
+                      required
+                    />
+                  </div>
+                ) : null}
+              </div>
+              {todayEditDraft.kind === 'task' ? (
+                <div className="event-form-field">
+                  <Label>Priorytet</Label>
+                  <select
+                    className="event-form-select"
+                    value={todayEditDraft.priority}
+                    onChange={(event) => setTodayEditDraft((current) => current ? { ...current, priority: event.target.value } : current)}
+                  >
+                    {PRIORITY_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </div>
+              ) : null}
+              <div className="event-form-field">
+                <Label>Status</Label>
+                <select
+                  className="event-form-select"
+                  value={todayEditDraft.status}
+                  onChange={(event) => setTodayEditDraft((current) => current ? { ...current, status: event.target.value } : current)}
+                >
+                  {todayEditDraft.kind === 'event' ? (
+                    <>
+                      <option value="scheduled">Zaplanowane</option>
+                      <option value="done">Odbyte</option>
+                      <option value="completed">Zrobione</option>
+                      <option value="cancelled">Anulowane</option>
+                    </>
+                  ) : (
+                    <>
+                      <option value="todo">Do zrobienia</option>
+                      <option value="in_progress">W toku</option>
+                      <option value="done">Zrobione</option>
+                    </>
+                  )}
+                </select>
+              </div>
+              <DialogFooter className={modalFooterClass('event-form-footer')} data-stage232t-r1e-today-edit-footer="true">
+                <Button type="button" variant="outline" onClick={closeTodayEditStage232TR1E} disabled={todayEditSaving}>Anuluj</Button>
+                <Button type="submit" disabled={todayEditSaving}>
+                  {todayEditSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  Zapisz
+                </Button>
+              </DialogFooter>
+            </form>
+          ) : null}
+        </DialogContent>
+      </Dialog>
       <main className="cf-route-work-root flex w-full flex-col gap-6 p-4 sm:p-6" data-p0-today-stable-rebuild="true" data-stage70-today-decision-engine-starter="true" data-stage81-today-risk-reason-next-action="true" data-stage82-today-next-7-days="true">
         <section className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
           <div className="cf-section-head flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">

@@ -1,6 +1,6 @@
 import { ArrowRight, CalendarDays, CheckCircle2, CheckSquare, Loader2, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { EntityActionButton } from './entity-actions';
+import { EntityTrashButton, trashActionIconClass } from './entity-actions';
 import { Button } from './ui/button';
 import { EntityIcon } from './ui-system';
 import '../styles/work-item-card.css';
@@ -16,6 +16,8 @@ void STAGE227G1R1_TODAY_REASON_COPY_FINAL_REMOVAL;
 
 const STAGE232T_R1D_WORK_ITEM_ACTION_EVENT_BOUNDARY = 'STAGE232T_R1D WorkItemCard edit/delete actions stop card/link propagation';
 void STAGE232T_R1D_WORK_ITEM_ACTION_EVENT_BOUNDARY;
+const STAGE232T_R1E_WORK_ITEM_TRASH_VST = 'STAGE232T_R1E WorkItemCard uses EntityTrashButton and trashActionIconClass';
+void STAGE232T_R1E_WORK_ITEM_TRASH_VST;
 
 export function getWorkItemCardStatusTone(statusLabel: string, options?: { completed?: boolean; overdue?: boolean }): WorkItemCardTone {
   if (options?.completed || /zrobione|wykonane|completed|done/i.test(statusLabel)) return 'success';
@@ -159,12 +161,12 @@ export default function WorkItemCard({
           </Button>
         ) : null}
         {onDelete ? (
-          <EntityActionButton
+          <EntityTrashButton
             type="button"
             size="sm"
             variant="ghost"
-            tone="danger"
             data-stage232t-r1d-work-item-delete-action="true"
+            data-stage232t-r1e-work-item-delete-action="true"
             onClick={(event) => {
               event.preventDefault();
               event.stopPropagation();
@@ -174,8 +176,8 @@ export default function WorkItemCard({
             aria-label={deleteBusy ? 'Usuwanie' : 'Kosz'}
             title={deleteBusy ? 'Usuwanie' : 'Kosz'}
           >
-            {deleteBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
-          </EntityActionButton>
+            {deleteBusy ? <Loader2 className={trashActionIconClass('h-4 w-4 animate-spin')} /> : <Trash2 className={trashActionIconClass('h-4 w-4')} />}
+          </EntityTrashButton>
         ) : null}
         {href ? (
           <Link to={href} className="cf-work-item-card-open" aria-label="Otwórz wpis">
