@@ -141,6 +141,17 @@ import { requireWorkspaceId } from '../lib/workspace-context';
 import { startLeadToCaseHandoff } from '../lib/lead-case-handoff';
 import { caseDetailPath, leadsPath } from '../lib/routes';
 import {
+  LEAD_STATUS_OPTIONS as STATUS_OPTIONS,
+  getLeadStatusLabel,
+  getLeadStatusPillClass,
+} from '../lib/config/lead-status';
+import {
+  getCalendarEventStatusLabel,
+  getTaskStatusLabel,
+  isDoneStatus,
+} from '../lib/config/calendar-status';
+import { getStatusPillClass } from '../lib/config/badges';
+import {
   deleteEventFromSupabase,
   deleteLeadFromSupabase,
   hardDeleteTaskFromSupabase,
@@ -209,30 +220,6 @@ const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_LEAD = {
     copy: 'info-row-inline-action',
   },
 } as const;
-
-const LEAD_STATUS_LABELS_STAGE77 = {
-  new: 'Nowy',
-  contacted: 'Skontaktowany',
-  qualification: 'Kwalifikacja',
-  proposal_sent: 'Oferta wysłana',
-  waiting_response: 'Czeka na odpowiedź',
-  accepted: 'Zaakceptowany',
-  moved_to_service: 'Przeniesiony do obsługi',
-  negotiation: 'Negocjacje',
-  lost: 'Przegrany',
-} as const;
-
-const STATUS_OPTIONS = [
-  { value: 'new', label: LEAD_STATUS_LABELS_STAGE77.new },
-  { value: 'contacted', label: LEAD_STATUS_LABELS_STAGE77.contacted },
-  { value: 'qualification', label: LEAD_STATUS_LABELS_STAGE77.qualification },
-  { value: 'proposal_sent', label: LEAD_STATUS_LABELS_STAGE77.proposal_sent },
-  { value: 'waiting_response', label: LEAD_STATUS_LABELS_STAGE77.waiting_response },
-  { value: 'accepted', label: LEAD_STATUS_LABELS_STAGE77.accepted },
-  { value: 'moved_to_service', label: LEAD_STATUS_LABELS_STAGE77.moved_to_service },
-  { value: 'negotiation', label: LEAD_STATUS_LABELS_STAGE77.negotiation },
-  { value: 'lost', label: LEAD_STATUS_LABELS_STAGE77.lost },
-];
 
 const SOURCE_OPTIONS = [
   { value: 'instagram', label: 'Instagram' },
@@ -385,8 +372,7 @@ function getLeadName(lead: any) {
   return String(lead?.name || lead?.company || 'Lead bez nazwy');
 }
 function statusLabel(status?: string) {
-  const normalized = String(status || '').trim();
-  return LEAD_STATUS_LABELS_STAGE77[normalized as keyof typeof LEAD_STATUS_LABELS_STAGE77] || normalized || 'Lead';
+  return getLeadStatusLabel(status);
 }
 function sourceLabel(source?: string) {
   return SOURCE_OPTIONS.find((entry) => entry.value === source)?.label || source || 'Brak źródła';
@@ -418,27 +404,18 @@ function eventTypeLabel(type?: string) {
 }
 function taskStatusLabel(status?: string, dateValue?: unknown) {
   const normalized = String(status || '').toLowerCase();
-  if (isWorkItemOverdue(dateValue, normalized)) return 'Zaległe';
-  if (normalized === 'done' || normalized === 'completed') return 'Zrobione';
-  if (normalized === 'cancelled' || normalized === 'canceled') return 'Anulowane';
-  if (normalized === 'in_progress') return 'W trakcie';
-  return 'Do zrobienia';
+  if (isWorkItemOverdue(dateValue, normalized)) return 'Zalegle';
+  return getTaskStatusLabel(normalized);
 }
 function eventStatusLabel(status?: string, dateValue?: unknown) {
   const normalized = String(status || '').toLowerCase();
-  if (isWorkItemOverdue(dateValue, normalized)) return 'Zaległe';
-  if (normalized === 'done' || normalized === 'completed') return 'Zrobione';
-  if (normalized === 'cancelled' || normalized === 'canceled') return 'Anulowane';
-  return 'Zaplanowane';
+  if (isWorkItemOverdue(dateValue, normalized)) return 'Zalegle';
+  return getCalendarEventStatusLabel(normalized);
 }
 function statusClass(status?: string, dateValue?: unknown) {
   const normalized = String(status || '').toLowerCase();
-  if (isWorkItemOverdue(dateValue, normalized) || normalized === 'overdue') return 'lead-detail-pill-danger';
-  if (normalized === 'done' || normalized === 'completed') return 'lead-detail-pill-green';
-  if (normalized === 'lost' || normalized === 'cancelled' || normalized === 'canceled') return 'lead-detail-pill-muted';
-  if (normalized === 'waiting_response' || normalized === 'proposal_sent' || normalized === 'negotiation') return 'lead-detail-pill-amber';
-  if (normalized === 'moved_to_service' || normalized === 'accepted') return 'lead-detail-pill-purple';
-  return 'lead-detail-pill-blue';
+  if (!dateValue) return getLeadStatusPillClass(normalized);
+  return getStatusPillClass(normalized, 'lead-detail', dateValue);
 }
 function getTaskDate(task: any) {
   const normalized = normalizeWorkItem(task);
@@ -448,9 +425,7 @@ function getEventDate(event: any) {
   const normalized = normalizeWorkItem(event);
   return String(normalized.startAt || normalized.scheduledAt || normalized.reminderAt || event?.updatedAt || event?.createdAt || '');
 }
-function isDoneStatus(status: unknown) {
-  return ['done', 'completed', 'cancelled', 'canceled', 'archived', 'deleted'].includes(String(status || '').toLowerCase());
-}
+
 function isMissingItemTimelineEntry(entry: any) {
   const raw = entry?.raw || entry || {};
   const payload = raw?.payload && typeof raw.payload === 'object' ? raw.payload : {};

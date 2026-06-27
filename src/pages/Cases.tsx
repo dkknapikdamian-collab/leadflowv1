@@ -36,6 +36,8 @@ import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { getCaseOwnerRiskBadges, ownerRiskTone } from '../lib/owner-control/owner-risk-rules';
 import { readOwnerRiskSettings } from '../lib/owner-control/owner-risk-settings';
+import { getCaseStatusLabel } from '../lib/config/case-status';
+import { getOwnerRiskLabel } from '../lib/config/funnel-stages';
 import { caseDetailPath } from '../lib/routes';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import '../styles/visual-stage23-client-case-forms-vnext.css';
@@ -155,25 +157,6 @@ function buildClientOptions(cases: CaseRecord[], leads: any[], clients: any[] = 
   return [...map.values()].sort((left, right) => left.name.localeCompare(right.name, 'pl', { sensitivity: 'base' }));
 }
 
-function caseStatusLabel(status?: string) {
-  switch (status) {
-    case 'waiting_on_client':
-      return 'Czeka na klienta';
-    case 'blocked':
-      return 'Zablokowana';
-    case 'ready_to_start':
-      return 'Gotowa do startu';
-    case 'to_approve':
-      return 'Do akceptacji';
-    case 'in_progress':
-      return 'W realizacji';
-    case 'completed':
-      return 'Zamknięta';
-    default:
-      return 'W realizacji';
-  }
-}
-
 function caseNeedsAttention(caseRecord: CaseRecord) {
   return caseRecord.status === 'blocked' || caseRecord.status === 'waiting_on_client' || (caseRecord.completenessPercent || 0) < 35;
 }
@@ -222,12 +205,6 @@ function lifecycleBadgeVariant(bucket: string): 'default' | 'secondary' | 'destr
   if (bucket === 'ready_to_start' || bucket === 'completed') return 'secondary';
   if (bucket === 'needs_next_step' || bucket === 'waiting_approval') return 'outline';
   return 'default';
-}
-
-function lifecycleRiskLabel(level: string) {
-  if (level === 'high') return 'Ryzyko wysokie';
-  if (level === 'medium') return 'Ryzyko średnie';
-  return 'Ryzyko niskie';
 }
 
 function lifecycleCompactLabel(record: CaseRecord, lifecycle: ReturnType<typeof resolveCaseLifecycleV1>) {
@@ -827,7 +804,7 @@ const attention = isCaseClosedStage231B0R13 ? false : caseNeedsAttention(record)
                   const percent = Math.round(record.completenessPercent || 0);
                   const updatedAt = toUpdatedDate(record.updatedAt);
                   const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
-                  const statusLabel = caseStatusLabel(record.status);
+                  const statusLabel = getCaseStatusLabel(record.status);
                   const statusTone = isCaseClosedStage231B0R13 ? 'green' : record.status === 'blocked' ? 'red' : record.status === 'waiting_on_client' ? 'amber' : 'blue';
                   const compactLifecycleLabel = lifecycleCompactLabel(record, lifecycle);
                   const compactLifecyclePill = isCaseClosedStage231B0R13 ? null : (compactLifecycleLabel === statusLabel ? null : compactLifecycleLabel);
@@ -968,7 +945,7 @@ const metaParts = [
               <div className="quick-list">
                 {filteredCases.slice(0, 4).map((record) => {
                   const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
-                  const riskTitle = `${record.title || 'Sprawa'} — ${lifecycleRiskLabel(lifecycle.riskLevel)} · Braki ${lifecycle.missingRequiredCount}`;
+                  const riskTitle = `${record.title || 'Sprawa'} — ${getOwnerRiskLabel(lifecycle.riskLevel)} · Braki ${lifecycle.missingRequiredCount}`;
                   return (
                     <Link
                       key={record.id}
@@ -978,7 +955,7 @@ const metaParts = [
                       data-cf-operator-rail-tone={lifecycle.riskLevel === 'high' ? 'red' : lifecycle.riskLevel === 'medium' ? 'amber' : 'blue'}
                     className="cf-rail-risk-row"
                     >
-                      <span className="cf-rail-risk-copy"><strong className="cf-rail-risk-title" title={record.title || 'Sprawa'}>{record.title || 'Sprawa'}</strong><small className="cf-rail-risk-meta">{lifecycleRiskLabel(lifecycle.riskLevel)} · Braki {lifecycle.missingRequiredCount}</small></span>
+                      <span className="cf-rail-risk-copy"><strong className="cf-rail-risk-title" title={record.title || 'Sprawa'}>{record.title || 'Sprawa'}</strong><small className="cf-rail-risk-meta">{getOwnerRiskLabel(lifecycle.riskLevel)} · Braki {lifecycle.missingRequiredCount}</small></span>
                       <ChevronRight className="h-4 w-4" />
                     </Link>
                   );

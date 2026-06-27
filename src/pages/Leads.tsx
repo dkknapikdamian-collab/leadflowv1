@@ -96,6 +96,7 @@ import {
 import { getNearestPlannedAction } from '../lib/nearest-action';
 
 import { buildRelationFunnelValue, buildRelationValueEntries, formatRelationValue } from '../lib/relation-value';
+import { LEAD_STATUS_OPTIONS as STATUS_OPTIONS, getLeadStatusLabel, getLeadStatusTone } from '../lib/config/lead-status';
 
 import '../styles/visual-stage20-lead-form-vnext.css';
 
@@ -136,30 +137,6 @@ void STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG;
 const STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE = 'lead duplicate conflict preflight fails closed and requires explicit add anyway';
 void STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE;
 // Guard marker: \n\nTen lead ma powiązaną sprawę
-
-const STATUS_OPTIONS = [
-  { value: 'new', label: 'Nowy', tone: 'blue' },
-  { value: 'contacted', label: 'Skontaktowany', tone: 'blue' },
-  { value: 'qualification', label: 'Kwalifikacja', tone: 'blue' },
-  { value: 'proposal_sent', label: 'Oferta wysłana', tone: 'amber' },
-  { value: 'waiting_response', label: 'Czeka na odpowiedź', tone: 'amber' },
-  { value: 'accepted', label: 'Zaakceptowany', tone: 'green' },
-  { value: 'moved_to_service', label: 'Przeniesiony do obsługi', tone: 'blue' },
-  { value: 'negotiation', label: 'Negocjacje', tone: 'amber' },
-  { value: 'lost', label: 'Przegrany', tone: 'neutral' },
-  { value: 'archived', label: 'W koszu', tone: 'amber' },
-];
-
-type LeadStatusTone = 'blue' | 'green' | 'amber' | 'red' | 'neutral';
-function getLeadStatusLabel(value: unknown) {
-  const normalized = String(value || 'new');
-  return STATUS_OPTIONS.find((option) => option.value === normalized)?.label || 'Nowy';
-}
-
-function getLeadStatusTone(value: unknown) {
-  const normalized = String(value || 'new');
-  return STATUS_OPTIONS.find((option) => option.value === normalized)?.tone || 'blue';
-}
 
 const SOURCE_OPTIONS = [
   { value: 'instagram', label: 'Instagram' },

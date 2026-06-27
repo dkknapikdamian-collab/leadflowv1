@@ -23,6 +23,12 @@ import {
   type SalesFunnelMovementCard,
   type SalesFunnelMovementView,
 } from '../lib/owner-control/sales-funnel-movement';
+import {
+  FUNNEL_OWNER_TILE_CONFIG,
+  getOwnerRiskBadgeClass,
+  getOwnerRiskLabel,
+  resolveFunnelStageFilterTone,
+} from '../lib/config/funnel-stages';
 
 const STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW = 'read-only owner sales funnel movement view: next-step silence risk value';
 const STAGE227B_SALES_FUNNEL_DECISION_LIST = 'sales funnel is a readable owner decision list, not a crowded CRM kanban';
@@ -83,60 +89,12 @@ type FunnelFilterState = {
 };
 
 const FUNNEL_OWNER_TILE_TONE_MAP: Record<FunnelTileFilter, FunnelTileDefinition> = {
-  move_now: {
-    label: 'Do ruchu teraz',
-    helper: 'Ryzyko, cisza albo brak kroku.',
-    tone: 'blue',
-    iconToneKey: 'funnel:move_now:blue:Target',
-    valueKind: 'count',
-    Icon: Target,
-  },
-  no_next_move: {
-    label: 'Bez kroku',
-    helper: 'Rekordy bez akcji.',
-    tone: 'amber',
-    iconToneKey: 'funnel:no_next_move:amber:Filter',
-    valueKind: 'count',
-    Icon: Filter,
-  },
-  silent_7: {
-    label: 'Cisza 7+',
-    helper: 'Brak kontaktu 7+ dni.',
-    tone: 'purple',
-    iconToneKey: 'funnel:silent_7:purple:Clock3',
-    valueKind: 'count',
-    Icon: Clock3,
-  },
-  high_risk: {
-    label: 'Wysokie ryzyko',
-    helper: 'High i critical.',
-    tone: 'red',
-    iconToneKey: 'funnel:high_risk:red:ShieldAlert',
-    valueKind: 'count',
-    Icon: ShieldAlert,
-  },
-  money: {
-    label: 'Pieniądze',
-    helper: 'Kliknij — pokaż rekordy, z których liczona jest kwota.',
-    tone: 'green',
-    iconToneKey: 'funnel:money:green:PaymentEntityIcon',
-    valueKind: 'money',
-    Icon: FunnelMoneyMetricIcon,
-  },
+  move_now: { ...FUNNEL_OWNER_TILE_CONFIG.move_now, Icon: Target },
+  no_next_move: { ...FUNNEL_OWNER_TILE_CONFIG.no_next_move, Icon: Filter },
+  silent_7: { ...FUNNEL_OWNER_TILE_CONFIG.silent_7, Icon: Clock3 },
+  high_risk: { ...FUNNEL_OWNER_TILE_CONFIG.high_risk, Icon: ShieldAlert },
+  money: { ...FUNNEL_OWNER_TILE_CONFIG.money, Icon: FunnelMoneyMetricIcon },
 };
-
-function resolveFunnelStageFilterTone(key: string, label: string): FunnelStageTone {
-  const source = `${key} ${label}`.toLowerCase();
-  if (key === 'all' || source.includes('wszystkie')) return resolveCloseflowMetricIconTone({ id: 'all', label, semantic: 'all' });
-  if (source.includes('utrac') || source.includes('lost')) return resolveCloseflowMetricIconTone({ id: key, label, semantic: 'lost' });
-  if (source.includes('obsług') || source.includes('obslug') || source.includes('moved_to_service')) return resolveCloseflowMetricIconTone({ id: key, label, semantic: 'do obslugi' });
-  if (source.includes('negocj')) return resolveCloseflowMetricIconTone({ id: key, label, semantic: 'negocjacje' });
-  if (source.includes('kontakt')) return resolveCloseflowMetricIconTone({ id: key, label, semantic: 'kontakt' });
-  if (source.includes('kwalifik')) return resolveCloseflowMetricIconTone({ id: key, label, semantic: 'kwalifikacja' });
-  if (source.includes('oferta') || source.includes('czeka') || source.includes('odp')) return resolveCloseflowMetricIconTone({ id: key, label, semantic: 'waiting' });
-  if (source.includes('now')) return resolveCloseflowMetricIconTone({ id: key, label, semantic: 'lead' });
-  return resolveCloseflowMetricIconTone({ id: key, label, semantic: label, fallback: 'neutral' });
-}
 
 function buildDateRange(now = new Date()) {
   const from = new Date(now.getTime() - 120 * 86_400_000).toISOString();
@@ -176,13 +134,6 @@ function silenceLabel(days: number | null) {
   return `${days} dni ciszy`;
 }
 
-function riskLabel(level: SalesFunnelMovementCard['riskLevel']) {
-  if (level === 'critical') return 'krytyczne';
-  if (level === 'high') return 'wysokie';
-  if (level === 'medium') return 'średnie';
-  return 'niskie';
-}
-
 function riskRank(level: SalesFunnelMovementCard['riskLevel']) {
   if (level === 'critical') return 4;
   if (level === 'high') return 3;
@@ -211,13 +162,6 @@ function cardSort(left: SalesFunnelMovementCard, right: SalesFunnelMovementCard)
   if (rightSilence !== leftSilence) return rightSilence - leftSilence;
 
   return (right.valueAmount || 0) - (left.valueAmount || 0);
-}
-
-function riskBadgeClass(level: SalesFunnelMovementCard['riskLevel']) {
-  if (level === 'critical') return 'border-red-200 bg-red-50 text-red-700';
-  if (level === 'high') return 'border-amber-200 bg-amber-50 text-amber-800';
-  if (level === 'medium') return 'border-sky-200 bg-sky-50 text-sky-700';
-  return 'border-slate-200 bg-slate-50 text-slate-600';
 }
 
 export function getMoneyTotalForCards(cards: SalesFunnelMovementCard[]) {
@@ -400,9 +344,9 @@ function FunnelDecisionListCard({ card }: { card: SalesFunnelMovementCard }) {
           <Badge variant="outline" className="border-slate-200 bg-slate-50 text-[10px] font-black uppercase tracking-[0.12em] text-slate-600">
             {card.entityType === 'lead' ? 'Lead' : 'Sprawa'}
           </Badge>
-          <Badge variant="outline" className={riskBadgeClass(card.riskLevel)} data-stage227a-funnel-risk-flag="true">
+          <Badge variant="outline" className={getOwnerRiskBadgeClass(card.riskLevel)} data-stage227a-funnel-risk-flag="true">
             <ShieldAlert className="mr-1 h-3 w-3" />
-            {riskLabel(card.riskLevel)} ryzyko
+            {getOwnerRiskLabel(card.riskLevel)} ryzyko
           </Badge>
           <Badge variant="outline" className={movementTone}>
             {needsMovement(card) ? 'Do decyzji' : 'Ruch zaplanowany'}
@@ -616,7 +560,7 @@ export function SalesFunnel() {
                   {topPriority ? (
                     <div className="mt-4 space-y-3">
                       <div>
-                        <Badge variant="outline" className={riskBadgeClass(topPriority.riskLevel)}>{riskLabel(topPriority.riskLevel)} ryzyko</Badge>
+                        <Badge variant="outline" className={getOwnerRiskBadgeClass(topPriority.riskLevel)}>{getOwnerRiskLabel(topPriority.riskLevel)} ryzyko</Badge>
                         <h3 className="mt-2 text-base font-black text-slate-950">{topPriority.title}</h3>
                         <p className="mt-1 text-sm text-slate-500">{topPriority.entityType === 'case' ? 'Sprawa' : 'Lead'} · {topPriority.stageLabel}</p>
                       </div>

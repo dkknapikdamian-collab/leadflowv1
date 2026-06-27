@@ -133,6 +133,9 @@ import '../styles/visual-stage12-client-detail-vnext.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 import { getClientCasesFinanceSummary, getCaseFinanceSummary } from '../lib/finance/case-finance-source';
+import { getLeadStatusLabel as getConfiguredLeadStatusLabel } from '../lib/config/lead-status';
+import { getCaseClientPillClass, getCaseStatusLabel as getConfiguredCaseStatusLabel } from '../lib/config/case-status';
+import { getClientNextActionToneClass } from '../lib/config/badges';
 import ContextActionButton from '../components/ContextActionButton';
 import { EntityContactInfoList } from '../components/entity-contact-card';
 import { MissingItemQuickActionModal } from '../components/detail/MissingItemQuickActionModal';
@@ -538,54 +541,10 @@ function getActivityTime(activity: any) {
   return String(activity?.createdAt || activity?.updatedAt || activity?.happenedAt || '');
 }
 function leadStatusLabel(status?: string) {
-  switch (status) {
-    case 'new':
-      return 'Nowy';
-    case 'contacted':
-      return 'Skontaktowany';
-    case 'qualification':
-      return 'Kwalifikacja';
-    case 'proposal_sent':
-      return 'Oferta wysłana';
-    case 'waiting_response':
-      return 'Czeka na odpowiedź';
-    case 'accepted':
-      return 'Zaakceptowany';
-    case 'moved_to_service':
-      return 'W obsłudze';
-    case 'won':
-      return 'Wygrany';
-    case 'lost':
-      return 'Przegrany';
-    case 'archived':
-      return 'Archiwum';
-    default:
-      return status || 'Lead';
-  }
+  return getConfiguredLeadStatusLabel(status);
 }
 function caseStatusLabel(status?: string) {
-  switch (status) {
-    case 'new':
-      return 'Nowa';
-    case 'waiting_on_client':
-      return 'Czeka na klienta';
-    case 'blocked':
-      return 'Zablokowana';
-    case 'to_approve':
-      return 'Do akceptacji';
-    case 'ready_to_start':
-      return 'Gotowa do startu';
-    case 'in_progress':
-      return 'W realizacji';
-    case 'on_hold':
-      return 'Wstrzymana';
-    case 'completed':
-      return 'Zakończona';
-    case 'canceled':
-      return 'Anulowana';
-    default:
-      return status || 'Sprawa';
-  }
+  return getConfiguredCaseStatusLabel(status);
 }
 function paymentStatusLabel(status?: string) {
   switch (status) {
@@ -981,19 +940,10 @@ function relativeActionLabel(value: unknown) {
   return formatDate(value);
 }
 function statusBadgeClass(status: unknown) {
-  const normalized = String(status || '').toLowerCase();
-  if (['blocked', 'overdue'].includes(normalized)) return 'client-detail-pill-danger';
-  if (['waiting_on_client', 'on_hold', 'to_approve'].includes(normalized)) return 'client-detail-pill-amber';
-  if (['completed', 'done', 'paid', 'ready_to_start'].includes(normalized)) return 'client-detail-pill-green';
-  if (['canceled', 'cancelled', 'lost'].includes(normalized)) return 'client-detail-pill-muted';
-  return 'client-detail-pill-blue';
+  return getCaseClientPillClass(status);
 }
 function nextActionToneClass(tone: ClientNextAction['tone']) {
-  if (tone === 'red') return 'client-detail-callout-danger';
-  if (tone === 'amber') return 'client-detail-callout-amber';
-  if (tone === 'emerald') return 'client-detail-callout-green';
-  if (tone === 'blue') return 'client-detail-callout-blue';
-  return 'client-detail-callout-muted';
+  return getClientNextActionToneClass(tone);
 }
 function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events: any[], clientId: string): ClientNextAction {
   const relatedLeadIds = leads.map((lead) => String(lead?.id || '')).filter(Boolean);

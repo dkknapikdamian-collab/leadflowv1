@@ -114,6 +114,16 @@ import '../styles/closeflow-case-detail-stage220a10-tabs-layout-repair.css';
 import '../styles/case-detail-stage228r9-shell-rail-lift.css';
 import '../styles/closeflow-case-finance-modal-stage220a30.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
+import {
+  getCaseItemStatusLabel as getConfiguredCaseItemStatusLabel,
+  getCaseStatusHint as getConfiguredCaseStatusHint,
+  getCaseStatusLabel as getConfiguredCaseStatusLabel,
+} from '../lib/config/case-status';
+import {
+  getCalendarEventStatusLabel as getConfiguredEventStatusLabel,
+  getTaskStatusLabel as getConfiguredTaskStatusLabel,
+} from '../lib/config/calendar-status';
+import { getStatusPillClass } from '../lib/config/badges';
 import { buildCaseFinancePatch, getCaseFinanceSummary as getCaseFinanceSourceSummary } from '../lib/finance/case-finance-source';
 import { CASE_COST_FINANCE_LABELS, getCaseCostsSummary, type CaseCostLike } from '../lib/finance/case-costs-source';
 
@@ -444,59 +454,12 @@ type WorkItem = {
   source: TaskRecord | EventRecord | CaseItem | CaseActivity;
 };
 
-const CASE_STATUS_LABELS: Record<string, string> = {
-  new: 'Nowa',
-  waiting_on_client: 'Czeka na klienta',
-  in_progress: 'W realizacji',
-  to_approve: 'Do sprawdzenia',
-  blocked: 'Zablokowana',
-  ready_to_start: 'Gotowa do startu',
-  completed: 'Zrobiona',
-  canceled: 'Anulowana',
-};
-
-const CASE_STATUS_HINTS: Record<string, string> = {
-  new: 'Dodaj pierwszy brak albo zaplanuj pierwszą akcję.',
-  waiting_on_client: 'Czekamy na klienta. Najpierw zdejmij braki po jego stronie.',
-  in_progress: 'Sprawa jest w pracy. Pilnuj najbliższej akcji i terminów.',
-  to_approve: 'Klient coś przesłał. Sprawdź i zaakceptuj albo odrzuć.',
-  blocked: 'Sprawa stoi. Usuń blokery zanim przejdziesz dalej.',
-  ready_to_start: 'Sprawa jest gotowa do dalszej pracy operacyjnej.',
-  completed: 'Sprawa zrobiona. Historia zostaje jako ślad pracy.',
-  canceled: 'Sprawa została anulowana.',
-};
-
-const ITEM_STATUS_LABELS: Record<string, string> = {
-  missing: 'Brak',
-  uploaded: 'Do akceptacji',
-  accepted: 'Zaakceptowane',
-  rejected: 'Odrzucone',
-  sent: 'Wysłane',
-};
-
 const ITEM_TYPE_LABELS: Record<string, string> = {
   file: 'Plik',
   decision: 'Decyzja',
   text: 'Tekst',
 };
 
-const TASK_STATUS_LABELS: Record<string, string> = {
-  todo: 'Do zrobienia',
-  open: 'Otwarte',
-  in_progress: 'W trakcie',
-  done: 'Zrobione',
-  completed: 'Zrobione',
-  cancelled: 'Anulowane',
-};
-
-const EVENT_STATUS_LABELS: Record<string, string> = {
-  planned: 'Zaplanowane',
-  open: 'Zaplanowane',
-  scheduled: 'Zaplanowane',
-  done: 'Odbyte',
-  completed: 'Odbyte',
-  cancelled: 'Anulowane',
-};
 function normalizeRecord<T>(value: unknown): T | null {
   if (Array.isArray(value)) return (value[0] || null) as T | null;
   if (value && typeof value === 'object') return value as T;
@@ -949,28 +912,23 @@ function getCaseHeaderCaseLabel(caseData?: CaseRecord | null) {
   return fallbackTitle;
 }
 function getCaseStatusLabel(status?: string) {
-  if (!status) return 'Bez statusu';
-  return CASE_STATUS_LABELS[status] || status;
+  return status ? getConfiguredCaseStatusLabel(status) : 'Bez statusu';
 }
 function getCaseStatusHint(status?: string) {
-  if (!status) return 'Ustal status sprawy i najbliższy ruch.';
-  return CASE_STATUS_HINTS[status] || 'Sprawdź najbliższe działania i blokery.';
+  return status ? getConfiguredCaseStatusHint(status) : 'Ustal status sprawy i najblizszy ruch.';
 }
 function getItemStatusLabel(status?: string) {
-  if (!status) return 'Brak';
-  return ITEM_STATUS_LABELS[status] || status;
+  return getConfiguredCaseItemStatusLabel(status);
 }
 function getItemTypeLabel(type?: string) {
   if (!type) return 'Element';
   return ITEM_TYPE_LABELS[type] || type;
 }
 function getTaskStatusLabel(status?: string) {
-  if (!status) return 'Do zrobienia';
-  return TASK_STATUS_LABELS[status] || status;
+  return getConfiguredTaskStatusLabel(status);
 }
 function getEventStatusLabel(status?: string) {
-  if (!status) return 'Zaplanowane';
-  return EVENT_STATUS_LABELS[status] || status;
+  return getConfiguredEventStatusLabel(status);
 }
 
 const CLOSEFLOW_CASE_HISTORY_WORKROW_LEAK_FIX_2026_05_13 = 'CaseActivity history entries must not render through case-detail-work-row';
@@ -994,11 +952,7 @@ function isCaseActivitySourceForWorkRow(source: WorkItem['source']) {
 }
 
 function getStatusClass(status?: string) {
-  if (['accepted', 'done', 'completed', 'ready_to_start'].includes(String(status || ''))) return 'case-detail-pill-green';
-  if (['uploaded', 'to_approve', 'in_progress', 'scheduled', 'planned', 'open'].includes(String(status || ''))) return 'case-detail-pill-blue';
-  if (['rejected', 'blocked', 'overdue'].includes(String(status || ''))) return 'case-detail-pill-red';
-  if (['missing', 'waiting_on_client', 'on_hold'].includes(String(status || ''))) return 'case-detail-pill-amber';
-  return 'case-detail-pill-muted';
+  return getStatusPillClass(status, 'case-detail');
 }
 function getActivityText(activity: CaseActivity) {
   const title = activity.payload?.title || activity.payload?.itemTitle || 'element';

@@ -2938,3 +2938,34 @@ Nie ruszano:
 - Supabase/Firebase/API,
 - katalogu `10_PROJEKTY`,
 - `obsidian_updates`.
+
+## 2026-06-28 Europe/Warsaw - LF-UI-SOT-003_CONFIG_STATUS_SOURCE_OF_TRUTH
+
+Status: DONE / CONFIG_SOT_GUARD_ADDED / NO_LAYOUT_CSS_REFACTOR.
+
+Cel:
+- stworzyc centralny config dla statusow leadow, spraw, klientow, funnel/risk, badge'y, work-item Done/calendar labels i finansowych labeli;
+- usunac lokalne mapy status labels z aktywnych page components;
+- zablokowac powrot lokalnych map przez guard.
+
+Deliverable:
+- `_project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-003_CONFIG_STATUS_SOURCE_OF_TRUTH.md`
+
+Zmiany:
+- dodano `src/lib/config/*`;
+- `Leads`, `LeadDetail`, `Cases`, `ClientDetail`, `CaseDetail`, `SalesFunnel` uzywaja centralnego configu dla status labels/tone/classes;
+- `src/lib/cases.ts` i `src/lib/options.ts` sa podpiete pod config jako kompatybilne bridge;
+- dodano `guard:config:status-source-of-truth`.
+
+Guardy/testy:
+- `npm run guard:config:status-source-of-truth`;
+- `node --test tests/config-status-source-of-truth.test.cjs`;
+- `git diff --check`.
+
+Nie ruszano:
+- layoutow,
+- CSS visual source,
+- SQL/migracji,
+- Supabase/Firebase/API,
+- katalogu `10_PROJEKTY`,
+- `obsidian_updates`.
