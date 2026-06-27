@@ -19,7 +19,7 @@ test('LF-UI-SOT-001 core CaseDetail alias is closed but full alias policy is not
   assert.match(app, /<Route path=\{CLOSEFLOW_ROUTES\.legacyCaseDetail\} element=\{isLoggedIn \? <LegacyCaseRedirect \/> : <Navigate to=\{loginPath\(\)\} \/>\} \/>/);
   assert.doesNotMatch(app, /path="\/case\/:caseId" element=\{isLoggedIn \? <CaseDetail \/>/);
   assert.match(stageDoc, /FULL_ALIAS_POLICY_PENDING/);
-  assert.doesNotMatch(stageDoc, /ZAMKNIETE_FULL/);
+  assert.match(stageDoc, /Nie zamykac jako `ZAMKNIETE_FULL`/);
 });
 
 test('LF-UI-SOT-001 known alias exceptions are explicitly deferred to R2', () => {
