@@ -124,6 +124,16 @@ function shouldHideEventFromCalendarStage229A(value: unknown) { return CALENDAR_
 function shouldHideEventFromTasksStage229A(value: unknown) { return ['deleted', 'archived', 'removed'].includes(asText(value).toLowerCase()); }
 const CALENDAR_RESTORED_EVENT_STATUSES_STAGE232T_R3 = new Set(['scheduled', 'todo', 'open', 'pending']);
 function shouldRestoreEventVisibilityStage232T_R3(value: unknown) { return CALENDAR_RESTORED_EVENT_STATUSES_STAGE232T_R3.has(asText(value).toLowerCase()); }
+const EVENT_DB_STATUSES_STAGE232T_R3A = new Set(['scheduled', 'in_progress', 'done', 'canceled', 'deleted']);
+const EVENT_COMPLETED_ALIASES_STAGE232T_R3A = new Set(['completed', 'complete', 'finished', 'closed', 'zrobione', 'wykonane']);
+function normalizeEventStatusForDbStage232T_R3A(value: unknown) {
+  const status = asText(value).toLowerCase();
+  if (!status) return undefined;
+  if (EVENT_COMPLETED_ALIASES_STAGE232T_R3A.has(status)) return 'done';
+  if (status === 'cancelled') return 'canceled';
+  if (status === 'todo' || status === 'open' || status === 'pending') return 'scheduled';
+  return EVENT_DB_STATUSES_STAGE232T_R3A.has(status) ? status : 'scheduled';
+}
 
 async function readEvents(req: any, workspaceId: string) {
   const limit = capLimit(queryValue(req, 'limit'));
@@ -180,7 +190,8 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
       const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
       if (body.title !== undefined) payload.title = body.title;
       if (body.type !== undefined) payload.type = body.type;
-      if (body.status !== undefined) payload.status = body.status;
+      const normalizedEventStatusStage232T_R3A = normalizeEventStatusForDbStage232T_R3A(body.status);
+      if (body.status !== undefined && normalizedEventStatusStage232T_R3A) payload.status = normalizedEventStatusStage232T_R3A;
       if (body.startAt !== undefined) {
         const iso = body.startAt ? normalizeCloseFlowDateTimeToUtcIso(body.startAt) : null;
         payload.start_at = iso;
@@ -197,7 +208,7 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
       if (body.show_in_tasks !== undefined) payload.show_in_tasks = Boolean(body.show_in_tasks);
       if (body.showInCalendar !== undefined) payload.show_in_calendar = Boolean(body.showInCalendar);
       if (body.show_in_calendar !== undefined) payload.show_in_calendar = Boolean(body.show_in_calendar);
-      const nextStatusForCalendarStage229A = body.status ?? payload.status;
+      const nextStatusForCalendarStage229A = payload.status ?? body.status;
       if (shouldRestoreEventVisibilityStage232T_R3(nextStatusForCalendarStage229A)) payload.show_in_calendar = true;
       if (shouldHideEventFromCalendarStage229A(nextStatusForCalendarStage229A)) payload.show_in_calendar = false;
       if (shouldHideEventFromTasksStage229A(nextStatusForCalendarStage229A)) payload.show_in_tasks = false;
@@ -303,7 +314,7 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
       type: body.type || 'meeting',
       title: body.title,
       description: body.description || '',
-      status: body.status || 'scheduled',
+      status: normalizeEventStatusForDbStage232T_R3A(body.status) || 'scheduled',
       priority: 'medium',
       scheduled_at: startAt,
       start_at: startAt,
