@@ -35,6 +35,9 @@ const leadPolicy = read('src/lib/calendar-lead-shadow-entry-policy.ts');
 const calendar = read('src/pages/Calendar.tsx');
 const leadsApi = read('api/leads.ts');
 const cfRuntime = read('scripts/check-cf-runtime-00-source-truth.cjs');
+const completeHandlerIndex = calendar.indexOf('const handleCompleteEntry = async (entry: ScheduleEntry) => {');
+const completeLeadBranchIndex = completeHandlerIndex >= 0 ? calendar.indexOf("if (entry.kind === 'lead')", completeHandlerIndex) : -1;
+const localSeedIndex = completeHandlerIndex >= 0 ? calendar.indexOf('const isLocalCalendarSeed', completeHandlerIndex) : -1;
 
 contains(contract, "return ['edit', 'shift', 'complete', 'delete', 'open-related'];", 'lead operational action contract includes complete/delete');
 contains(leadPolicy, "new Set(['edit', 'shift', 'complete', 'delete', 'open-related'])", 'lead-shadow policy allows complete/delete');
@@ -49,6 +52,9 @@ contains(calendar, 'STAGE232T_R4_CALENDAR_LEAD_SHADOW_ACTION_SOURCE_TRUTH', 'Cal
 contains(calendar, 'getLeadShadowSourceIdStage232T_R4', 'Calendar resolves canonical lead id');
 contains(calendar, 'clearLeadNextActionLocalStateStage232T_R4', 'Calendar can clear lead next action locally');
 contains(calendar, 'shiftLeadNextActionLocalStateStage232T_R4', 'Calendar can shift lead next action locally');
+contains(calendar, 'retainCompletedLeadShadowEntryStage232T_R5', 'Calendar keeps completed lead shadow visibly crossed out');
+contains(calendar, 'releaseCompletedLeadShadowEntryStage232T_R5', 'Calendar can remove completed lead shadow retention');
+contains(calendar, 'completedLeadShadowEntriesStage232T_R5', 'Calendar merges completed lead shadow entries into visible entries');
 contains(calendar, "action: 'calendar_lead_next_action_completed'", 'Calendar lead complete action payload marker');
 contains(calendar, "action: 'calendar_lead_next_action_deleted'", 'Calendar lead delete action payload marker');
 contains(calendar, 'lastContactAt: completedAtStage232T_R4', 'Calendar lead complete stamps lastContactAt');
@@ -56,8 +62,8 @@ contains(calendar, 'nextActionAt: null', 'Calendar lead complete/delete clears n
 contains(calendar, "nextActionTitle: ''", 'Calendar lead complete/delete clears nextActionTitle');
 contains(calendar, 'nextActionItemId: null', 'Calendar lead complete/delete clears nextActionItemId');
 contains(calendar, "toast.success('Akcja leada oznaczona jako zrobiona')", 'Calendar lead complete has explicit success');
-contains(calendar, "toast.success('Zaplanowana akcja leada usunięta z kalendarza')", 'Calendar lead delete has explicit success');
-contains(calendar, "window.confirm('Usunąć zaplanowaną akcję leada z kalendarza? Lead zostanie.')", 'Calendar lead delete confirms lead is kept');
+matches(calendar, /toast\.success\('Zaplanowana akcja leada usuni.{0,8}ta z kalendarza'\)/, 'Calendar lead delete has explicit success');
+matches(calendar, /window\.confirm\('Usun.{0,8} zaplanowan.{0,8} akcj.{0,8} leada z kalendarza\? Lead zostanie\.'\)/, 'Calendar lead delete confirms lead is kept');
 contains(calendar, 'shiftLeadNextActionLocalStateStage232T_R4(leadId, shiftedStartAt, nextTitle);', 'Calendar lead shift updates local state');
 contains(calendar, "await updateLeadInSupabase({\n          id: leadId,", 'Calendar lead actions PATCH /api/leads via updateLeadInSupabase');
 notContains(calendar, "if (entry.kind === 'lead') {\n        deleteLeadFromSupabase", 'Calendar lead delete must not delete lead');
@@ -65,6 +71,11 @@ notContains(calendar, "if (entry.kind === 'lead') {\n        deleteLeadFromSupab
 matches(calendar, /if \(entry\.kind === 'lead'\)[\s\S]{0,1200}calendar_lead_next_action_completed/, 'handleCompleteEntry has lead branch');
 matches(calendar, /if \(entry\.kind === 'lead'\)[\s\S]{0,1400}calendar_lead_next_action_deleted/, 'handleDeleteEntry has lead branch');
 matches(calendar, /actionEntry\.kind === 'lead'[\s\S]{0,700}nextActionAt: shiftedStartAt[\s\S]{0,700}shiftLeadNextActionLocalStateStage232T_R4/, 'lead shift branch persists and locally updates nextActionAt');
+if (completeHandlerIndex >= 0 && completeLeadBranchIndex > completeHandlerIndex && localSeedIndex > completeLeadBranchIndex) {
+  pass('lead complete branch runs before local seed fallback');
+} else {
+  fail('lead complete branch must be outside and before isLocalCalendarSeed fallback');
+}
 
 contains(cfRuntime, 'STAGE232T_R4_CALENDAR_LEAD_SHADOW_ACTIONS_FIX_ALLOWLIST', 'CF runtime allowlist includes R4 stage');
 contains(cfRuntime, 'scripts/check-stage232t-r4-calendar-lead-shadow-actions.cjs', 'CF runtime allowlist includes R4 guard');

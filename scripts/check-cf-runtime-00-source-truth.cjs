@@ -597,6 +597,8 @@ const allowedChangePrefixes = [
   'scripts/check-visual-stage05-clients.cjs',
   'scripts/check-stage232c-clients-relation-tile-source-of-truth.cjs',
   'tests/stage232c-clients-relation-tile-source-of-truth.test.cjs',
+  'tests/stage91-clients-top-value-runtime-contract.test.cjs',
+  '_project/runs/STAGE232C_CLIENTS_RELATION_TILE_SOURCE_OF_TRUTH.md',
 
   // STAGE232K_R1D_CF_RUNTIME_ALLOWLIST_REPAIR
   'src/lib/finance/case-finance-source.ts',

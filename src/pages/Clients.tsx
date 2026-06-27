@@ -69,7 +69,6 @@ import {
   getLastContactDateInputError,
   getTodayDateInputValue,
 } from '../lib/owner-control/last-contact-intake';
-import { buildTopClientValueEntries } from '../lib/client-value';
 import { isActiveClientCase } from '../lib/client-cases';
 import { getCaseFinanceSummary, getClientCasesFinanceSummary } from '../lib/finance/case-finance-source';
 import '../styles/visual-stage23-client-case-forms-vnext.css';
@@ -94,6 +93,22 @@ type ClientRecord = {
   lastContactAt?: string | null;
   archivedAt?: string | null;
 };
+
+type ClientRelationFilterStage232C =
+  | 'all'
+  | 'without_case'
+  | 'needs_contact'
+  | 'active_commission'
+  | 'archived';
+
+const NEEDS_CONTACT_BUCKETS_STAGE232C: ContactCadenceBucketKey[] = [
+  'silent_3',
+  'silent_5',
+  'silent_7',
+  'silent_14_plus',
+  'unknown',
+];
+
 const STAGE35_REAL_CLIENT_VALUE = 'STAGE35_REAL_CLIENT_VALUE';
 
 function getStage35NumericValue(value: unknown) {
@@ -113,6 +128,18 @@ function getStage35FirstMoneyValue(row: Record<string, unknown>, keys: string[])
 
 function getStage35RelationClientId(row: Record<string, unknown>) {
   return String(row.clientId || row.client_id || row.customerId || row.customer_id || '').trim();
+}
+
+function getStage232CRecordId(row: Record<string, unknown>) {
+  return String(row.id || '').trim();
+}
+
+function getStage232CRelationLeadId(row: Record<string, unknown>) {
+  return String(row.leadId || row.lead_id || '').trim();
+}
+
+function getStage232CRelationCaseId(row: Record<string, unknown>) {
+  return String(row.caseId || row.case_id || '').trim();
 }
 
 function formatClientMoney(value: number) {
@@ -228,6 +255,8 @@ export default function Clients() {
   const [events, setEvents] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [showArchived, setShowArchived] = useState(false);
+  const [clientRelationFilterStage232C, setClientRelationFilterStage232C] =
+    useState<ClientRelationFilterStage232C>('all');
   const [cadenceFilter, setCadenceFilter] = useState<ContactCadenceBucketKey | 'all'>('all');
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [createPending, setCreatePending] = useState(false);
@@ -242,6 +271,12 @@ export default function Clients() {
   const [clientConflictCandidates, setClientConflictCandidates] = useState<EntityConflictCandidate[]>([]);
   const [clientConflictPendingInput, setClientConflictPendingInput] = useState<any | null>(null);
   const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '', lastContactAt: getDefaultLastContactDateInput(), notes: '', createCase: true, caseTitle: '' });
+
+  const applyClientRelationFilterStage232C = useCallback((filter: ClientRelationFilterStage232C) => {
+    setClientRelationFilterStage232C(filter);
+    setShowArchived(filter === 'archived');
+    if (filter !== 'needs_contact') setCadenceFilter('all');
+  }, []);
 
   const reload = useCallback(async () => {
     if (!workspace?.id) {
@@ -282,33 +317,70 @@ export default function Clients() {
   const activeCount = useMemo(() => clients.filter((client) => !client.archivedAt).length, [clients]);
   const archivedCount = useMemo(() => clients.filter((client) => Boolean(client.archivedAt)).length, [clients]);
 
+  const relatedRecordsByClientIdStage232C = useMemo(() => {
+    const map = new Map<string, unknown[]>();
+    const leadClientById = new Map<string, string>();
+    const caseClientById = new Map<string, string>();
+    const touch = (clientId: string) => {
+      if (!map.has(clientId)) map.set(clientId, []);
+      return map.get(clientId)!;
+    };
+    const addForClient = (clientId: string, row: unknown) => {
+      const safeClientId = String(clientId || '').trim();
+      if (safeClientId) touch(safeClientId).push(row);
+    };
+
+    for (const client of clients) {
+      addForClient(client.id, client);
+    }
+
+    for (const lead of leads as Record<string, unknown>[]) {
+      const clientId = getStage35RelationClientId(lead);
+      const leadId = getStage232CRecordId(lead);
+      if (leadId && clientId) leadClientById.set(leadId, clientId);
+      addForClient(clientId, lead);
+    }
+
+    for (const caseRecord of cases as Record<string, unknown>[]) {
+      const clientId = getStage35RelationClientId(caseRecord);
+      const caseId = getStage232CRecordId(caseRecord);
+      if (caseId && clientId) caseClientById.set(caseId, clientId);
+      addForClient(clientId, caseRecord);
+    }
+
+    const addByAnyRelation = (row: Record<string, unknown>) => {
+      const directClientId = getStage35RelationClientId(row);
+      if (directClientId) {
+        addForClient(directClientId, row);
+        return;
+      }
+      const caseClientId = caseClientById.get(getStage232CRelationCaseId(row));
+      if (caseClientId) {
+        addForClient(caseClientId, row);
+        return;
+      }
+      const leadClientId = leadClientById.get(getStage232CRelationLeadId(row));
+      if (leadClientId) addForClient(leadClientId, row);
+    };
+
+    for (const row of payments as Record<string, unknown>[]) addByAnyRelation(row);
+    for (const row of tasks as Record<string, unknown>[]) addByAnyRelation(row);
+    for (const row of events as Record<string, unknown>[]) addByAnyRelation(row);
+
+    return map;
+  }, [cases, clients, events, leads, payments, tasks]);
+
   const contactCadenceGrid = useMemo(
     () => buildContactCadenceGrid({
       entityType: 'client',
       records: clients.filter((client) => !client.archivedAt),
+      relatedRecordsById: relatedRecordsByClientIdStage232C,
       settings: workspace,
     }),
-    [clients, workspace],
+    [clients, relatedRecordsByClientIdStage232C, workspace],
   );
 
   const contactCadenceBuckets = useMemo(() => buildContactCadenceBuckets(workspace), [workspace]);
-
-  // STAGE226R10_FILTERED_CLIENT_ROWS_ONLY: main /clients list starts from clients and never maps leads into client rows.
-  const filtered = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    const activeCadenceIds = cadenceFilter === 'all'
-      ? null
-      : new Set((contactCadenceGrid.buckets[cadenceFilter] || []).map((row) => row.entityId));
-    return clients
-      .filter((client) => (showArchived ? Boolean(client.archivedAt) : !client.archivedAt))
-      .filter((client) => {
-        const matchesCadence = showArchived || !activeCadenceIds || activeCadenceIds.has(String(client.id || ''));
-        if (!matchesCadence) return false;
-        if (!query) return true;
-        return [client.name, client.company, client.email, client.phone].some((entry) => String(entry || '').toLowerCase().includes(query));
-      })
-      .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'pl'));
-  }, [cadenceFilter, clients, contactCadenceGrid, search, showArchived]);
 
   const countersByClientId = useMemo(() => {
     const map = new Map<string, { leads: number; cases: number; payments: number }>();
@@ -487,20 +559,30 @@ export default function Clients() {
     () => clients.filter((client) => !client.archivedAt && (countersByClientId.get(client.id)?.cases || 0) === 0).length,
     [clients, countersByClientId],
   );
-  const relationValue = useMemo(
-    () => clients.filter((client) => !client.archivedAt).reduce((sum, client) => sum + (clientValueByClientId.get(client.id) || 0), 0),
-    [clientValueByClientId, clients],
-  );
-  const staleClients = useMemo(
-    () => clients.filter((client) => !client.archivedAt && (countersByClientId.get(client.id)?.leads || 0) === 0).length,
-    [clients, countersByClientId],
+
+  const needsContactClientIdsStage232C = useMemo(() => {
+    const ids = new Set<string>();
+    for (const key of NEEDS_CONTACT_BUCKETS_STAGE232C) {
+      for (const row of contactCadenceGrid.buckets[key] || []) {
+        const id = String(row.entityId || '').trim();
+        if (id) ids.add(id);
+      }
+    }
+    return ids;
+  }, [contactCadenceGrid]);
+
+  const activeCommissionValueStage232C = useMemo(
+    () => clients
+      .filter((client) => !client.archivedAt)
+      .reduce((sum, client) => sum + (clientFinanceByClientId.get(client.id)?.activeCommission || 0), 0),
+    [clientFinanceByClientId, clients],
   );
 
-  const topClientValueEntries = useMemo(() => {
+  const topClientCommissionEntriesStage232C = useMemo(() => {
     return clients
       .filter((client) => !client.archivedAt)
       .map((client) => {
-        const value = clientValueByClientId.get(client.id) || 0;
+        const value = clientFinanceByClientId.get(client.id)?.activeCommission || 0;
         return {
           key: client.id,
           href: '/clients/' + client.id,
@@ -512,7 +594,43 @@ export default function Clients() {
       .filter((entry) => entry.value > 0)
       .sort((a, b) => b.value - a.value)
       .slice(0, 5);
-  }, [clients, clientValueByClientId]);
+  }, [clients, clientFinanceByClientId]);
+
+  // STAGE226R10_FILTERED_CLIENT_ROWS_ONLY: main /clients list starts from clients and never maps leads into client rows.
+  const filtered = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    const activeCadenceIds = cadenceFilter === 'all'
+      ? null
+      : new Set((contactCadenceGrid.buckets[cadenceFilter] || []).map((row) => row.entityId));
+    return clients
+      .filter((client) => {
+        const isArchived = Boolean(client.archivedAt);
+        if (clientRelationFilterStage232C === 'archived') return isArchived;
+        if (isArchived) return false;
+        if (clientRelationFilterStage232C === 'without_case') {
+          return (countersByClientId.get(client.id)?.cases || 0) === 0;
+        }
+        if (clientRelationFilterStage232C === 'needs_contact') {
+          return needsContactClientIdsStage232C.has(String(client.id || ''));
+        }
+        if (clientRelationFilterStage232C === 'active_commission') {
+          return (clientFinanceByClientId.get(client.id)?.activeCommission || 0) > 0;
+        }
+        return true;
+      })
+      .filter((client) => {
+        const matchesCadence = clientRelationFilterStage232C === 'archived' || !activeCadenceIds || activeCadenceIds.has(String(client.id || ''));
+        if (!matchesCadence) return false;
+        if (!query) return true;
+        return [client.name, client.company, client.email, client.phone].some((entry) => String(entry || '').toLowerCase().includes(query));
+      })
+      .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'pl'));
+  }, [cadenceFilter, clientFinanceByClientId, clientRelationFilterStage232C, clients, contactCadenceGrid, countersByClientId, needsContactClientIdsStage232C, search]);
+
+  const staleClients = useMemo(
+    () => needsContactClientIdsStage232C.size,
+    [needsContactClientIdsStage232C],
+  );
 
   const resetNewClientForm = () => { setNewClient({ name: '', company: '', email: '', phone: '', lastContactAt: getDefaultLastContactDateInput(), notes: '', createCase: true, caseTitle: '' }); };
 
@@ -735,7 +853,7 @@ export default function Clients() {
             <>
               <div className="head-actions">
                           <Button type="button" variant="outline" className="btn soft-blue" data-cf-header-action="ai">? Zapytaj AI</Button>
-                          <Button type="button" variant="outline" className="btn" onClick={() => setShowArchived((current) => !current)}>
+                          <Button type="button" variant="outline" className="btn" onClick={() => applyClientRelationFilterStage232C(showArchived ? 'all' : 'archived')}>
                             {showArchived ? <RotateCcw className="w-4 h-4" /> : <Trash2 className="w-4 h-4" />}
                             {showArchived ? 'Pokaż aktywnych' : 'Kosz'}
                             <span className="pill">{showArchived ? activeCount : archivedCount}</span>
@@ -868,8 +986,8 @@ export default function Clients() {
             label="Aktywni"
             value={activeCount}
             icon={LeadEntityIcon}
-            active={!showArchived}
-            onClick={() => setShowArchived(false)}
+            active={clientRelationFilterStage232C === 'all'}
+            onClick={() => applyClientRelationFilterStage232C('all')}
             title="Pokaż aktywnych klientów"
             ariaLabel="Pokaż aktywnych klientów"
             tone="blue"
@@ -879,7 +997,8 @@ export default function Clients() {
             label="Bez sprawy"
             value={clientsWithoutCases}
             icon={CaseEntityIcon}
-            onClick={() => setShowArchived(false)}
+            active={clientRelationFilterStage232C === 'without_case'}
+            onClick={() => applyClientRelationFilterStage232C('without_case')}
             title="Pokaż klientów bez sprawy"
             ariaLabel="Pokaż klientów bez sprawy"
             tone="neutral"
@@ -887,19 +1006,21 @@ export default function Clients() {
           />
           <StatShortcutCard
             label="Prowizja"
-            value={formatClientMoney(relationValue)}
+            value={formatClientMoney(activeCommissionValueStage232C)}
             icon={PaymentEntityIcon}
-            onClick={() => setShowArchived(false)}
+            active={clientRelationFilterStage232C === 'active_commission'}
+            onClick={() => applyClientRelationFilterStage232C('active_commission')}
             title="Pokaż prowizję relacji"
             ariaLabel="Pokaż prowizję relacji"
             tone="green"
-            helper="do zarobienia"
+            helper="aktywna prowizja"
           />
           <StatShortcutCard
-            label="Bez ruchu"
+            label="Wymaga kontaktu"
             value={staleClients}
             icon={AlertTriangle}
-            onClick={() => setShowArchived(false)}
+            active={clientRelationFilterStage232C === 'needs_contact'}
+            onClick={() => applyClientRelationFilterStage232C('needs_contact')}
             title="Pokaż klientów bez ruchu"
             ariaLabel="Pokaż klientów bez ruchu"
             tone="red"
@@ -1016,10 +1137,11 @@ export default function Clients() {
               description=""
               dataTestId="clients-simple-filters-card"
               items={[
-                { key: 'active', label: 'Aktywni', value: activeCount, onClick: () => setShowArchived(false) },
-                { key: 'without-case', label: 'Bez sprawy', value: clientsWithoutCases, onClick: () => setShowArchived(false) },
-                { key: 'stale', label: 'Bez ruchu', value: staleClients, onClick: () => setShowArchived(false) },
-                { key: 'trash', label: 'Kosz', value: archivedCount, onClick: () => setShowArchived(true) },
+                { key: 'active', label: 'Aktywni', value: activeCount, onClick: () => applyClientRelationFilterStage232C('all') },
+                { key: 'without-case', label: 'Bez sprawy', value: clientsWithoutCases, onClick: () => applyClientRelationFilterStage232C('without_case') },
+                { key: 'needs-contact', label: 'Wymaga kontaktu', value: needsContactClientIdsStage232C.size, onClick: () => applyClientRelationFilterStage232C('needs_contact') },
+                { key: 'commission', label: 'Aktywna prowizja', value: formatClientMoney(activeCommissionValueStage232C), onClick: () => applyClientRelationFilterStage232C('active_commission') },
+                { key: 'trash', label: 'Kosz', value: archivedCount, onClick: () => applyClientRelationFilterStage232C('archived') },
               ]}
             />
             <TopValueRecordsCard
@@ -1028,7 +1150,7 @@ export default function Clients() {
               className="operator-top-value-card"
               dataTestId="clients-top-value-records-card"
               dataAttrs={{ 'data-clients-top-value-board': true }}
-              items={topClientValueEntries.map((entry) => ({
+              items={topClientCommissionEntriesStage232C.map((entry) => ({
                 key: entry.key,
                 href: entry.href || '/clients',
                 label: entry.label,

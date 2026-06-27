@@ -16,6 +16,9 @@ test('lead shadow action contract allows the buttons Calendar renders', () => {
 
 test('lead delete/complete clear lead next-action fields without deleting the lead', () => {
   const calendar = read('src/pages/Calendar.tsx');
+  const completeHandlerIndex = calendar.indexOf('const handleCompleteEntry = async (entry: ScheduleEntry) => {');
+  const completeLeadBranchIndex = calendar.indexOf("if (entry.kind === 'lead')", completeHandlerIndex);
+  const localSeedIndex = calendar.indexOf('const isLocalCalendarSeed', completeHandlerIndex);
 
   assert.match(calendar, /calendar_lead_next_action_completed/);
   assert.match(calendar, /calendar_lead_next_action_deleted/);
@@ -23,6 +26,10 @@ test('lead delete/complete clear lead next-action fields without deleting the le
   assert.match(calendar, /nextActionAt: null/);
   assert.match(calendar, /nextActionTitle: ''/);
   assert.match(calendar, /nextActionItemId: null/);
+  assert.match(calendar, /retainCompletedLeadShadowEntryStage232T_R5/);
+  assert.match(calendar, /completedLeadShadowEntriesStage232T_R5/);
+  assert.ok(completeLeadBranchIndex > completeHandlerIndex, 'lead complete branch must exist in handleCompleteEntry');
+  assert.ok(localSeedIndex > completeLeadBranchIndex, 'lead complete branch must run before local seed fallback');
   assert.doesNotMatch(calendar, /deleteLeadFromSupabase/);
 });
 

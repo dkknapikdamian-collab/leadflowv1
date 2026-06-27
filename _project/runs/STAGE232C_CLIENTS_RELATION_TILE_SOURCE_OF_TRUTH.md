@@ -1,68 +1,67 @@
-# STAGE232C_CLIENTS_RELATION_TILE_SOURCE_OF_TRUTH - audit / run decision
+# STAGE232C_CLIENTS_RELATION_TILE_SOURCE_OF_TRUTH
 
-Data: 2026-06-15 Europe/Warsaw
+Status: LOCAL_TECH_PASS / NEEDS_OWNER_SMOKE
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
-Status: DOCS_PREPARED / DO_WDROZENIA
-Tryb: audit-first / source-of-truth / no runtime changes in this package
+Date: 2026-06-27 Europe/Warsaw
 
-## Scan proof
+## R2
 
-Przeczytane pliki repo:
+- Guard sync commit: 129dab63.
+- Aktywni restored to activeCount.
 
-- `src/App.tsx`
-- `src/pages/Clients.tsx`
-- `src/pages/Leads.tsx` jako porównanie stylu i kafelków
-- `src/components/StatShortcutCard.tsx`
-- `src/styles/clients-next-action-layout.css`
-- `src/styles/closeflow-record-list-source-truth.css`
-- `src/lib/client-value.ts`
-- `src/lib/owner-control/contact-cadence-grid.ts`
-- `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`
-- `_project/04_KIERUNEK_ROZWOJU_APLIKACJI.md`
+## R3
 
-Lokalnego Obsidiana nie aktualizowano bezpośrednio z tego pakietu. Payload do synchronizacji jest w `_project/obsidian_updates/`.
+- Real `without_case` client relation filter.
+- Real `needs_contact` filter from Contact Cadence Grid buckets, not clients without leads.
+- Contact Cadence Grid receives related client context.
+- Prowizja uses active commission source truth.
+- Najwyzsza prowizja uses active commission entries.
+- Top tiles and right rail share `applyClientRelationFilterStage232C`.
+- STAGE232C guard/test expanded.
+- Legacy Stage91 top value test aligned to active commission source truth.
 
-## Fakty z kodu
+## Additional Runtime Fix From Owner Report
 
-- `/clients` używa `Clients` z `src/pages/Clients.tsx`.
-- `Clients.tsx` pobiera klientów, leady, sprawy, płatności, zadania i wydarzenia.
-- Główna lista klientów startuje z `clients`, nie z leadów.
-- `activeCount` liczy wszystkich niearchiwalnych klientów.
-- `clientsWithoutCases` liczy klientów bez spraw.
-- `staleClients` liczy klientów bez leadów, co nie jest poprawną definicją `bez ruchu`.
-- `contactCadenceGrid` dla klientów jest budowany bez `relatedRecordsById`.
-- Kafelek `Bez sprawy` i prawy filtr `Bez sprawy` nie ustawiają realnego filtra bez spraw; wywołują tylko `setShowArchived(false)`.
-- `Prowizja` i `Najwyższa prowizja` wymagają ujednolicenia definicji z aktywną prowizją w wierszu klienta.
-- Kolorystyka kafelków idzie przez `StatShortcutCard`, co jest dobrym kierunkiem, ale semantyka tonu musi odpowiadać danym.
-- Lista klientów korzysta ze wspólnego `closeflow-record-list-source-truth.css`, co wspiera spójność z LeadListCard.
+- Calendar lead shadow actions repaired:
+  - `+1H`, `+1D`, `+1W` keep writing `leads.nextActionAt`.
+  - `Zrobione` now reaches the real lead branch before local seed fallback and shows a completed crossed-out lead shadow entry in the current Calendar session.
+  - `Usun` clears the lead next action without deleting the lead.
+- Calendar mojibake/BOM cleanup was required by Stage98 after touching `Calendar.tsx`.
+- STAGE232T_R4 guard/test expanded so the lead complete branch must run before local seed fallback.
 
-## Decyzja produktu
+## Not Touched
 
-Zakładka `Klienci` nie ma być katalogiem kontaktów. Ma być relacyjnym panelem kontroli:
+- Obsidian.
+- SQL/RLS/migrations.
+- Google Calendar OAuth/sync backend.
+- TodayStable runtime.
+- LeadDetail runtime.
+- ClientDetail runtime.
+- CaseDetail runtime.
+- Finance schema.
 
-- kto jest aktywny,
-- kto nie ma sprawy,
-- gdzie jest aktywna prowizja,
-- kto wymaga kontaktu,
-- co jest najbliższym ruchem.
+## Manual Smoke
 
-## Wdrożenie R1
+MANUAL_UI_NOT_EXECUTED
 
-Patrz etap `STAGE232C_CLIENTS_RELATION_TILE_SOURCE_OF_TRUTH` w `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`.
+Recommended smoke:
 
-## Ryzyka
+- `/clients`: Aktywni, Bez sprawy, Wymaga kontaktu, Prowizja, Kosz, search combined with filters.
+- `/calendar` month view selected day: lead row `+1H`, `+1D`, `+1W`, `Zrobione`, `Usun`.
+- Lead after Calendar action: next action moves/clears consistently after refresh.
 
-- Zmiana definicji `Bez ruchu` może zmienić liczby widoczne użytkownikowi; trzeba opisać to w changelogu.
-- Ujednolicenie prowizji może obniżyć lub podwyższyć licznik względem starego fallbacku; to poprawka prawdy danych, ale wymaga testu ręcznego.
-- Related records dla klientów mogą być kosztowniejsze obliczeniowo; robić jako memoized mapy, nie filtrować wielokrotnie w renderze.
-- Nie usuwać starych CSS klientów bez guardu, bo część reguł jest legacy, ale nadal może chronić mobile/wide layout.
+## Local Verification
 
-## Guardy do dodania
-
-- `scripts/check-stage232c-clients-relation-tiles.cjs`
-- `tests/stage232c-clients-relation-tiles.test.cjs`
-
-## Test ręczny
-
-Zobacz sekcję etapu w `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`.
+- `node scripts/check-stage232c-clients-relation-tile-source-of-truth.cjs`: PASS
+- `node --test tests/stage232c-clients-relation-tile-source-of-truth.test.cjs`: PASS
+- `node scripts/check-stage232t-r4-calendar-lead-shadow-actions.cjs`: PASS
+- `node --test tests/stage232t-r4-calendar-lead-shadow-actions.test.cjs`: PASS
+- `node --test tests/stage91-clients-top-value-runtime-contract.test.cjs`: PASS
+- `node --test tests/stage98-polish-mojibake-calendar-guard.test.cjs`: PASS
+- `node scripts/check-stage231d0b-client-list-card-freeze.cjs`: PASS
+- `node scripts/check-visual-stage05-clients.cjs`: PASS
+- `node scripts/check-cf-runtime-00-source-truth.cjs`: PASS
+- `npm run build`: PASS
+- `npm run verify:closeflow:quiet`: PASS
+- `git diff --check`: PASS
