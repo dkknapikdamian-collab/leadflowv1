@@ -65,7 +65,8 @@ contains(calendar, "toast.success('Akcja leada oznaczona jako zrobiona')", 'Cale
 matches(calendar, /toast\.success\('Zaplanowana akcja leada usuni.{0,8}ta z kalendarza'\)/, 'Calendar lead delete has explicit success');
 matches(calendar, /window\.confirm\('Usun.{0,8} zaplanowan.{0,8} akcj.{0,8} leada z kalendarza\? Lead zostanie\.'\)/, 'Calendar lead delete confirms lead is kept');
 contains(calendar, 'shiftLeadNextActionLocalStateStage232T_R4(leadId, shiftedStartAt, nextTitle);', 'Calendar lead shift updates local state');
-contains(calendar, "await updateLeadInSupabase({\n          id: leadId,", 'Calendar lead actions PATCH /api/leads via updateLeadInSupabase');
+// STAGE232T_R6D_R4_GUARD_COMPAT: R6D inserts durable completed-task delete before lead update, so allow code between call and id.
+matches(calendar, /await updateLeadInSupabase\(\{[\s\S]{0,500}id: leadId,/, 'Calendar lead actions PATCH /api/leads via updateLeadInSupabase');
 notContains(calendar, "if (entry.kind === 'lead') {\n        deleteLeadFromSupabase", 'Calendar lead delete must not delete lead');
 
 matches(calendar, /if \(entry\.kind === 'lead'\)[\s\S]{0,5000}calendar_lead_next_action_completed/, 'handleCompleteEntry has lead branch');

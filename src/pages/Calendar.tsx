@@ -574,7 +574,8 @@ function ScheduleEntryCard(props: ScheduleEntryCardProps) {
   const completedTitleClass = isCompletedEntry ? 'text-slate-500 line-through' : 'text-slate-900';
   const typeLabel = getCalendarEntryTypeLabel(entry);
   const title = String(entry.title || getCalendarEntryTypeLabel(entry) || "Wpis").trim();
-  const relationLabel = getCalendarEntryRelationLabel(entry, caseTitle);
+  const relationTargetStage232T_R6 = getCalendarEntryRelationTargetStage232T_R6(entry, caseTitle);
+  const relationLabel = relationTargetStage232T_R6?.label || getCalendarEntryRelationLabel(entry, caseTitle);
 
   return (
     <div
@@ -603,14 +604,12 @@ function ScheduleEntryCard(props: ScheduleEntryCardProps) {
           {title}
         </p>
 
-        <div className="cf-calendar-week-plan-entry-relation" data-cf-entry-relation="true">
-          {relationLabel ? <span title={relationLabel}>{relationLabel}</span> : <span>Brak powiązania</span>}
-          {entry.raw?.leadId ? (
-            <Link to={"/leads/" + entry.raw.leadId}>Otwórz lead</Link>
-          ) : null}
-          {entry.raw?.caseId ? (
-            <Link to={"/cases/" + entry.raw.caseId}>Otwórz sprawę</Link>
-          ) : null}
+        <div className="cf-calendar-week-plan-entry-relation" data-cf-entry-relation="true" data-stage232t-r6d-calendar-week-relation-name-link="true">
+          {relationTargetStage232T_R6 ? (
+            <Link to={relationTargetStage232T_R6.href} title={relationLabel}>{relationLabel}</Link>
+          ) : (
+            <span>Brak powiązania</span>
+          )}
         </div>
       </div>
 
@@ -652,9 +651,9 @@ function CalendarSelectedDayEntryRowV9({ entry, actionPendingId, onEdit, onShift
   const isCompletedEntry = isCompletedCalendarEntry(entry);
   const typeLabel = getCalendarEntryTypeLabel(entry);
   const title = String(entry.title || typeLabel || 'Wpis').trim();
-  const relationLabel = getCalendarEntryRelationLabel(entry);
+  const relationTargetSelectedStage232T_R6 = getCalendarEntryRelationTargetStage232T_R6(entry);
+  const relationLabel = relationTargetSelectedStage232T_R6?.label || getCalendarEntryRelationLabel(entry);
   const relationFallback = relationLabel || 'Brak powiązania';
-  const hasRelationLink = Boolean(entry.raw?.leadId || entry.raw?.caseId || entry.raw?.clientId);
 
   return (
     <div
@@ -674,21 +673,12 @@ function CalendarSelectedDayEntryRowV9({ entry, actionPendingId, onEdit, onShift
 
         <p className={'cf-selected-day-v9-entry-title ' + (isCompletedEntry ? 'line-through text-slate-500' : '')} title={title} data-cf-entry-title="true">{title}</p>
 
-        <div className="cf-selected-day-v9-relation" data-cf-entry-relation="true">
-          <span title={relationFallback}>{relationFallback}</span>
-          {hasRelationLink ? (
-            <span className="cf-selected-day-v9-relation-links" aria-label="Powiązane rekordy">
-              {entry.raw?.leadId ? (
-                <Link to={'/leads/' + entry.raw.leadId}>Otwórz lead</Link>
-              ) : null}
-              {entry.raw?.caseId ? (
-                <Link to={'/cases/' + entry.raw.caseId}>Otwórz sprawę</Link>
-              ) : null}
-              {entry.raw?.clientId ? (
-                <Link to={'/clients/' + entry.raw.clientId}>Otwórz klienta</Link>
-              ) : null}
-            </span>
-          ) : null}
+        <div className="cf-selected-day-v9-relation" data-cf-entry-relation="true" data-stage232t-r6d-calendar-selected-relation-name-link="true">
+          {relationTargetSelectedStage232T_R6 ? (
+            <Link to={relationTargetSelectedStage232T_R6.href} title={relationFallback}>{relationFallback}</Link>
+          ) : (
+            <span title={relationFallback}>{relationFallback}</span>
+          )}
         </div>
       </div>
 
@@ -757,6 +747,75 @@ export default function Calendar() {
   const [completedLeadShadowEntriesStage232T_R5, setCompletedLeadShadowEntriesStage232T_R5] = useState<ScheduleEntry[]>([]);
   const [cases, setCases] = useState<any[]>([]);
   const [clients, setClients] = useState<any[]>([]);
+
+  const leadRecordByIdStage232T_R6 = useMemo(
+    () => new Map(leads.map((lead: any) => [String(lead?.id || ''), lead])),
+    [leads],
+  );
+
+  const clientRecordByIdStage232T_R6 = useMemo(
+    () => new Map(clients.map((client: any) => [String(client?.id || ''), client])),
+    [clients],
+  );
+
+  function readCalendarPersonLabelStage232T_R6(record: any, fallback = '') {
+    return readCalendarRawText(
+      record?.name
+      || record?.fullName
+      || record?.full_name
+      || record?.clientName
+      || record?.client_name
+      || record?.company
+      || record?.email
+      || record?.phone,
+      fallback,
+    );
+  }
+
+  function enrichCalendarEntryRelationsStage232T_R6(entries: ScheduleEntry[]) {
+    return entries.map((entry) => {
+      const raw = entry.raw || {};
+      const leadId = readCalendarEntryLeadIdStage232T_R6(entry);
+      const leadRecord = leadId ? leadRecordByIdStage232T_R6.get(leadId) as any : null;
+      const leadName = readCalendarRawText(
+        entry.leadName
+        || raw.leadName
+        || raw.lead_name
+        || readCalendarPersonLabelStage232T_R6(leadRecord),
+      );
+
+      const leadClientId = readCalendarRawText(leadRecord?.clientId || leadRecord?.client_id);
+      const clientId = readCalendarRawText(raw.clientId || raw.client_id || leadClientId);
+      const clientRecord = clientId ? clientRecordByIdStage232T_R6.get(clientId) as any : null;
+      const clientName = readCalendarRawText(
+        raw.clientName
+        || raw.client_name
+        || raw.customerName
+        || raw.customer_name
+        || readCalendarPersonLabelStage232T_R6(clientRecord),
+      );
+
+      if (!leadId && !clientId && !leadName && !clientName) return entry;
+
+      return {
+        ...entry,
+        leadId: leadId || entry.leadId,
+        leadName: leadName || entry.leadName,
+        raw: {
+          ...raw,
+          leadId: leadId || raw.leadId,
+          lead_id: leadId || raw.lead_id,
+          leadName: leadName || raw.leadName,
+          lead_name: leadName || raw.lead_name,
+          clientId: clientId || raw.clientId,
+          client_id: clientId || raw.client_id,
+          clientName: clientName || raw.clientName,
+          client_name: clientName || raw.client_name,
+        },
+      } as ScheduleEntry;
+    });
+  }
+
   const [loading, setLoading] = useState(true);
 
   const [isNewEventOpen, setIsNewEventOpen] = useState(false);
@@ -2114,7 +2173,7 @@ export default function Calendar() {
   void monthRangeEnd;
 
   const scheduleEntries = useMemo(
-    () => [
+    () => enrichCalendarEntryRelationsStage232T_R6([
       ...combineScheduleEntries({
         events,
         tasks,
@@ -2123,12 +2182,12 @@ export default function Calendar() {
         rangeEnd: calendarDataRangeEnd,
       }),
       ...completedLeadShadowEntriesStage232T_R5,
-    ],
-    [calendarDataRangeEnd, completedLeadShadowEntriesStage232T_R5, events, leads, monthRangeStart, tasks],
+    ]),
+    [calendarDataRangeEnd, clientRecordByIdStage232T_R6, completedLeadShadowEntriesStage232T_R5, events, leadRecordByIdStage232T_R6, leads, monthRangeStart, tasks],
   );
 
   const weekEntries = useMemo(
-    () => [
+    () => enrichCalendarEntryRelationsStage232T_R6([
       ...combineScheduleEntries({
         events,
         tasks,
@@ -2137,8 +2196,8 @@ export default function Calendar() {
         rangeEnd: rollingWeekEnd,
       }),
       ...completedLeadShadowEntriesStage232T_R5,
-    ],
-    [completedLeadShadowEntriesStage232T_R5, events, leads, rollingWeekEnd, rollingWeekStart, tasks],
+    ]),
+    [clientRecordByIdStage232T_R6, completedLeadShadowEntriesStage232T_R5, events, leadRecordByIdStage232T_R6, leads, rollingWeekEnd, rollingWeekStart, tasks],
   );
 
   const entriesByDayKey = useMemo(
@@ -2763,6 +2822,17 @@ export default function Calendar() {
         if (!leadId) throw new Error('CALENDAR_LEAD_NEXT_ACTION_DELETE_SOURCE_ID_REQUIRED');
 
         setActionPendingId(`${entry.id}:delete`);
+        const completedLeadTaskIdStage232T_R6 = findCompletedLeadCalendarActionTaskIdStage232T_R5(
+          leadId,
+          entry.startsAt,
+          readCalendarRawText(entry.raw?.nextActionTitle || entry.raw?.next_action_title, entry.title),
+        );
+        if (completedLeadTaskIdStage232T_R6) {
+          await deleteTaskFromSupabase(completedLeadTaskIdStage232T_R6);
+          releaseCalendarCompletedRetentionByKindAndIdStage232GR1I('task', completedLeadTaskIdStage232T_R6);
+          setTasks((previousTasks: any[]) => previousTasks.filter((row: any) => String(row?.id || '') !== completedLeadTaskIdStage232T_R6));
+        }
+
         await updateLeadInSupabase({
           id: leadId,
           nextActionAt: null,
@@ -2832,6 +2902,8 @@ export default function Calendar() {
       } else if (entry.kind === 'task') {
         deleteResult = await deleteTaskFromSupabase(sourceId);
         releaseCalendarCompletedRetentionByKindAndIdStage232GR1I('task', sourceId);
+        const deletedTaskLeadIdStage232T_R6 = readCalendarEntryLeadIdStage232T_R6(entry);
+        if (deletedTaskLeadIdStage232T_R6) releaseCompletedLeadShadowEntryStage232T_R5(deletedTaskLeadIdStage232T_R6);
         setTasks((previousTasks: any[]) => previousTasks.filter((row) => String(row?.id || '') !== sourceId));
       }
       emitCloseflowDeleteDebug({

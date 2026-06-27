@@ -153,7 +153,12 @@ const allowedChangePrefixes = [
   'src/server/task-route-stage124f.ts',
   'scripts/check-stage232t-r5-calendar-lead-done-persist-after-refresh.cjs',
   'tests/stage232t-r5-calendar-lead-done-persist-after-refresh.test.cjs',
-  '_project/runs/STAGE232T_R5_CALENDAR_LEAD_DONE_PERSIST_AFTER_REFRESH.md',  'tests/stage232t-r1d-today-work-item-actions-source-truth.test.cjs',
+  '_project/runs/STAGE232T_R5_CALENDAR_LEAD_DONE_PERSIST_AFTER_REFRESH.md',
+  // STAGE232T_R6D_CALENDAR_LEAD_DELETE_AND_RELATION_LABEL_ALLOWLIST
+  'src/pages/Calendar.tsx',
+  'scripts/check-stage232t-r6d-calendar-lead-delete-and-relation-label.cjs',
+  'tests/stage232t-r6d-calendar-lead-delete-and-relation-label.test.cjs',
+  '_project/runs/STAGE232T_R6D_CALENDAR_LEAD_DELETE_AND_RELATION_LABEL.md',  'tests/stage232t-r1d-today-work-item-actions-source-truth.test.cjs',
   'tests/stage97-today-overdue-task-done-button.test.cjs',
   '_project/runs/STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH.md',
   // STAGE232T_R1E_TODAY_ACTIONS_CLOSEOUT_DELETE_EDIT_TRASH_VST_ALLOWLIST
