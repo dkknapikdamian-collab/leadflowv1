@@ -47,6 +47,7 @@ BUGFIX:
 UI / TODAY / LEADS / CLIENTS / CASES / CASEDETAIL:
 - czytaj Obsidian 04, 07, 09 i 11 wedlug zakresu.
 - sprawdz zaakceptowane baseline'y wizualne przed zmiana.
+- sprawdz `_project/Naprawa_Zrodla_Prawdy/00_START_NAPRAWA_ZRODLA_PRAWDY.md` i aktualny raport source-of-truth przed zmianami UI.
 - nie ruszaj SQL bez powodu.
 
 SUPABASE / SQL / RLS / MIGRACJE:
@@ -75,6 +76,8 @@ CLEANUP / ARCHIWUM:
 - _project/00_AI_START_SPIS_TRESCI.md - ten plik.
 - _project/CODEX_CONTEXT_INDEX.md - legacy bridge dla starych workflowow.
 - _project/13_SQL_LEDGER_I_MIGRACJE.md - repo-local bridge SQL/migracji.
+- _project/Naprawa_Zrodla_Prawdy/00_START_NAPRAWA_ZRODLA_PRAWDY.md - indeks miejsca Naprawa zrodla prawdy.
+- _project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-000_PREFLIGHT_ROUTE_UI_MAP.md - mapa UI/routes/source-of-truth przed kolejnymi zmianami UI.
 - package.json - lista skryptow, testow i guardow.
 
 ## Nie czytac na starcie
