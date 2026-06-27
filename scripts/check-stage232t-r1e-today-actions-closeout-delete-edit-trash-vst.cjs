@@ -41,6 +41,8 @@ function changedFiles() {
 
 const today = read('src/pages/TodayStable.tsx');
 const card = read('src/components/work-item-card.tsx');
+const supabase = read('src/lib/supabase-fallback.ts');
+const vercel = read('vercel.json');
 const changed = changedFiles();
 
 contains(today, 'STAGE232T_R1E_TODAY_ACTIONS_CLOSEOUT_DELETE_EDIT_TRASH_VST', 'Today R1E marker');
@@ -67,14 +69,36 @@ notContains(today, 'editEventId', 'Today does not pass editEventId from work ite
 
 contains(today, 'await deleteTaskFromSupabase(taskId);', 'task delete uses source truth helper');
 contains(today, 'await deleteEventFromSupabase(eventId);', 'event delete uses source truth helper');
-matches(today, /await deleteTaskFromSupabase\(taskId\);[\s\S]*?setData\(\(current\) => \(\{[\s\S]*?tasks:[\s\S]*?\.filter\(\(row\) => String\(row\?\.id \|\| ''\) !== taskId\)/, 'task delete prunes local Today rows');
-matches(today, /await deleteEventFromSupabase\(eventId\);[\s\S]*?setData\(\(current\) => \(\{[\s\S]*?events:[\s\S]*?\.filter\(\(row\) => String\(row\?\.id \|\| ''\) !== eventId\)/, 'event delete prunes local Today rows');
+matches(today, /await deleteTaskFromSupabase\(taskId\);[\s\S]*?setData\(\(current\) => \(\{[\s\S]*?tasks:[\s\S]*?\.filter\(\(row\) => String\(row\?\.id \|\| ''\) !== taskId\)/, 'task delete prunes local Today rows only after backend helper');
+matches(today, /await deleteEventFromSupabase\(eventId\);[\s\S]*?setData\(\(current\) => \(\{[\s\S]*?events:[\s\S]*?\.filter\(\(row\) => String\(row\?\.id \|\| ''\) !== eventId\)/, 'event delete prunes local Today rows only after backend helper');
 contains(today, "await refreshData({ force: true, reason: 'operation' });", 'delete/edit actions refresh Today data');
-contains(today, "toast.success('Zadanie usuni", 'task delete confirms success');
-contains(today, "toast.success('Wydarzenie usuni", 'event delete confirms success');
+contains(today, "setErrorMessage('Nie udalo sie usunac zadania: ' + message);", 'task delete fail is visible');
+contains(today, "toast.error('Nie udalo sie usunac zadania.');", 'task delete fail shows toast');
+contains(today, "setErrorMessage('Nie udalo sie usunac wydarzenia: ' + message);", 'event delete fail is visible');
+contains(today, "toast.error('Nie udalo sie usunac wydarzenia.');", 'event delete fail shows toast');
 contains(today, "status === 'deleted'", 'deleted status is closed');
 contains(today, "status === 'archived'", 'archived status is closed');
 contains(today, "status === 'removed'", 'removed status is closed');
+notContains(today, 'localStorage.setItem(\'closeflow:today:deleted', 'no localStorage deleted-id tombstone final fix');
+notContains(today, 'deletedIds', 'no local deleted-id tombstone set');
+
+contains(supabase, "'/api/system?apiRoute=tasks' + buildTaskEventRangeQueryStage124E(params).replace('?', '&')", 'task fetch uses system apiRoute source truth');
+contains(supabase, "'/api/system?apiRoute=events' + buildTaskEventRangeQueryStage124E(params).replace('?', '&')", 'event fetch uses system apiRoute source truth');
+contains(supabase, 'export async function softDeleteTaskInSupabase', 'task soft delete helper exists');
+contains(supabase, "status: 'deleted'", 'task soft delete sends deleted status');
+contains(supabase, 'show_in_tasks: false', 'task soft delete hides from tasks');
+contains(supabase, 'show_in_calendar: false', 'task soft delete hides from calendar');
+contains(supabase, 'export async function hardDeleteTaskFromSupabase', 'hard delete helper remains available');
+contains(supabase, '`/api/system?apiRoute=tasks&id=${encodeURIComponent(taskId)}`', 'system task delete helper targets active task route');
+contains(supabase, '`/api/events?id=${encodeURIComponent(eventId)}`', 'event delete helper target is routed by Vercel');
+contains(supabase, 'else { clearApiGetCache(); emitCloseflowDataMutation(path, method); }', 'non-GET mutation clears cache and emits mutation');
+
+contains(vercel, '"source": "/api/tasks"', 'Vercel has /api/tasks rewrite');
+contains(vercel, '"destination": "/api/system?apiRoute=tasks"', 'Vercel routes /api/tasks to active task source truth');
+contains(vercel, '"source": "/api/events"', 'Vercel has /api/events rewrite');
+contains(vercel, '"destination": "/api/system?apiRoute=events"', 'Vercel routes /api/events to active event source truth');
+notContains(vercel, '"destination": "/api/work-items?kind=tasks"', 'Vercel no longer routes task mutations to work-items legacy handler');
+notContains(vercel, '"destination": "/api/work-items?kind=events"', 'Vercel no longer routes event mutations to work-items legacy handler');
 
 const forbiddenChanged = changed.filter((file) => (
   /\.sql$/i.test(file) ||

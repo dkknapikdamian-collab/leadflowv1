@@ -12,11 +12,11 @@
   "rewrites": [
     {
       "source": "/api/tasks",
-      "destination": "/api/work-items?kind=tasks"
+      "destination": "/api/system?apiRoute=tasks"
     },
     {
       "source": "/api/events",
-      "destination": "/api/work-items?kind=events"
+      "destination": "/api/system?apiRoute=events"
     },
     {
       "source": "/api/response-templates",
