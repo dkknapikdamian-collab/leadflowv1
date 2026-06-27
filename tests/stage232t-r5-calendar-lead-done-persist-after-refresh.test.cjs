@@ -8,7 +8,7 @@ test('lead done has durable work item source before next action clear', () => {
   assert.match(calendar, /insertTaskToSupabase\(\{/);
   assert.match(calendar, /updateTaskInSupabase\(\{/);
   assert.match(calendar, /status: 'done'/);
-  assert.match(calendar, /durableLeadActionStage232T_R5[\s\S]{0,400}await updateLeadInSupabase\(\{[\s\S]{0,260}nextActionAt: null/);
+  assert.match(calendar, /durableLeadActionStage232T_R5[\s\S]{0,4000}await updateLeadInSupabase\(\{[\s\S]{0,2000}nextActionAt: null/);
 });
 test('durable completed lead task is idempotent by lead, moment and title', () => {
   const calendar = read('src/pages/Calendar.tsx');

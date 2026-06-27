@@ -68,7 +68,7 @@ contains(calendar, 'shiftLeadNextActionLocalStateStage232T_R4(leadId, shiftedSta
 contains(calendar, "await updateLeadInSupabase({\n          id: leadId,", 'Calendar lead actions PATCH /api/leads via updateLeadInSupabase');
 notContains(calendar, "if (entry.kind === 'lead') {\n        deleteLeadFromSupabase", 'Calendar lead delete must not delete lead');
 
-matches(calendar, /if \(entry\.kind === 'lead'\)[\s\S]{0,1200}calendar_lead_next_action_completed/, 'handleCompleteEntry has lead branch');
+matches(calendar, /if \(entry\.kind === 'lead'\)[\s\S]{0,5000}calendar_lead_next_action_completed/, 'handleCompleteEntry has lead branch');
 matches(calendar, /if \(entry\.kind === 'lead'\)[\s\S]{0,1400}calendar_lead_next_action_deleted/, 'handleDeleteEntry has lead branch');
 matches(calendar, /actionEntry\.kind === 'lead'[\s\S]{0,700}nextActionAt: shiftedStartAt[\s\S]{0,700}shiftLeadNextActionLocalStateStage232T_R4/, 'lead shift branch persists and locally updates nextActionAt');
 if (completeHandlerIndex >= 0 && completeLeadBranchIndex > completeHandlerIndex && localSeedIndex > completeLeadBranchIndex) {

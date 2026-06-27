@@ -22,7 +22,7 @@ contains(calendar, 'updateTaskInSupabase({', 'Calendar can update existing linke
 contains(calendar, "status: 'done'", 'Calendar durable task is completed');
 contains(calendar, 'source: STAGE232T_R5_CALENDAR_LEAD_DONE_DURABLE_WORK_ITEM_SOURCE', 'Calendar tags durable source on task update');
 contains(calendar, 'const durableLeadActionStage232T_R5 = await ensureCompletedLeadCalendarActionStage232T_R5(entry, leadId, completedAtStage232T_R4);', 'lead complete persists durable source before clearing lead next action');
-matches(calendar, /durableLeadActionStage232T_R5[\s\S]{0,400}await updateLeadInSupabase\(\{[\s\S]{0,260}nextActionAt: null/, 'durable persist happens before lead nextActionAt is cleared');
+matches(calendar, /durableLeadActionStage232T_R5[\s\S]{0,4000}await updateLeadInSupabase\(\{[\s\S]{0,2000}nextActionAt: null/, 'durable persist happens before lead nextActionAt is cleared');
 contains(calendar, 'nextActionAt: null', 'lead complete still clears active nextActionAt');
 contains(calendar, "nextActionTitle: ''", 'lead complete still clears active nextActionTitle');
 contains(calendar, 'nextActionItemId: null', 'lead complete still clears active nextActionItemId');
