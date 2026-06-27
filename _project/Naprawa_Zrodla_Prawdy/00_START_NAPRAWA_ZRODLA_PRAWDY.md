@@ -15,6 +15,8 @@ Tu trafiaja audyty i mapy, ktore maja naprawiac zrodlo prawdy przed kolejnymi zm
 ## Aktywne pliki
 
 - `LF-UI-SOT-000_PREFLIGHT_ROUTE_UI_MAP.md` - mapa UI/routes: aktywne routes, aktywne pages, legacy kandydaci, CSS layers, anti-patch scan.
+- `LF-UI-SOT-001_CANONICAL_ROUTING_MAP.md` - canonical routing: route SOT, aliasy, helpery tras i guard `guard:routes:canonical`.
+- `LF-UI-SOT-002_UI_PATCH_LAYERS_GUARD.md` - guard na plastry UI: blokada nowych runtime/CSS/delete-action obejsc.
 
 ## Zasada uzycia
 
@@ -29,6 +31,8 @@ Dopisac pod sekcja `04 - Etapy i kierunek` w:
 ```md
 - `_project/Naprawa_Zrodla_Prawdy/00_START_NAPRAWA_ZRODLA_PRAWDY.md` - indeks miejsca Naprawa zrodla prawdy.
 - `_project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-000_PREFLIGHT_ROUTE_UI_MAP.md` - mapa UI/routes/source-of-truth; czytac przed kolejnymi zmianami UI.
+- `_project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-001_CANONICAL_ROUTING_MAP.md` - mapa canonical routing i guard tras.
+- `_project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-002_UI_PATCH_LAYERS_GUARD.md` - guard na plastry UI i jawny baseline dlugu.
 ```
 
 ## Zapis do Obsidiana

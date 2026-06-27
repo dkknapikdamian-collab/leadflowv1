@@ -78,6 +78,8 @@ CLEANUP / ARCHIWUM:
 - _project/13_SQL_LEDGER_I_MIGRACJE.md - repo-local bridge SQL/migracji.
 - _project/Naprawa_Zrodla_Prawdy/00_START_NAPRAWA_ZRODLA_PRAWDY.md - indeks miejsca Naprawa zrodla prawdy.
 - _project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-000_PREFLIGHT_ROUTE_UI_MAP.md - mapa UI/routes/source-of-truth przed kolejnymi zmianami UI.
+- _project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-001_CANONICAL_ROUTING_MAP.md - canonical routing source-of-truth i guard tras.
+- _project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-002_UI_PATCH_LAYERS_GUARD.md - guard przeciw nakladaniu kolejnych plastrow UI/CSS/runtime.
 - package.json - lista skryptow, testow i guardow.
 
 ## Nie czytac na starcie

@@ -2826,3 +2826,115 @@ Nie ruszac:
 Status: APPLIED_LOCAL_PENDING_FULL_GATE_AND_OWNER_SMOKE.
 
 Zakres: source identity dla Google-linked calendar items. Nie deduplikowac po tytule.
+
+## 2026-06-27 Europe/Warsaw - LF-UI-SOT-000_PREFLIGHT_ROUTE_UI_MAP
+
+Status: DONE / AUDIT_ONLY / NO_RUNTIME_CHANGES.
+
+Cel:
+- zablokowac chaos przed kolejnymi zmianami UI;
+- ustalic aktywne routes/pages, UI components, legacy kandydatow, duplikaty i ryzyka;
+- nie zmieniac runtime UI.
+
+Deliverable:
+- `_project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-000_PREFLIGHT_ROUTE_UI_MAP.md`
+
+Najwazniejsze ustalenia:
+- aktywne `/today` renderuje `src/pages/TodayStable.tsx`, nie `src/pages/Today.tsx`;
+- aktywne `/tasks` renderuje `src/pages/TasksStable.tsx`, nie `src/pages/Tasks.tsx`;
+- `LeadDetail` i `ClientDetail` sa statycznie importowane w `src/App.tsx`;
+- `Today`, `Tasks`, `Dashboard` i pliki `.bak` w `src` sa kandydatami legacy/do decyzji;
+- `src/index.css` globalnie importuje legacy/temporary/emergency CSS layers;
+- przed etapami UI trzeba uwzglednic dirty worktree i nie mieszac cudzych zmian z nowym zakresem.
+
+Nastepne kandydaty:
+- `LF-UI-SOT-001_ROUTE_OWNERSHIP_AND_LEGACY_PAGE_DECISION`;
+- `LF-UI-SOT-002_CSS_LAYER_INFLUENCE_MAP`;
+- `LF-UI-SOT-003_UI_SYSTEM_USAGE_CONTRACT`;
+- `LF-UI-SOT-004_TODAY_ROUTE_SAFE_UI_PRECHECK`.
+
+Nie ruszano:
+- `src/pages/*`,
+- `src/components/*`,
+- `src/lib/*`,
+- `src/index.css`,
+- `package.json`,
+- migracji,
+- Supabase/Firebase/API,
+- katalogu `10_PROJEKTY`,
+- `obsidian_updates`.
+
+## 2026-06-27 Europe/Warsaw - LF-UI-SOT-001_CANONICAL_ROUTING_MAP
+
+Status: DONE / ROUTING_SOT_GUARD_ADDED.
+
+Cel:
+- ustalic jedno zrodlo prawdy dla tras aplikacji;
+- oznaczyc trasy jako canonical / alias / legacy;
+- wymusic, ze `/case/:caseId` nie renderuje osobnego CaseDetail, tylko robi redirect replace do `/cases/:caseId`.
+
+Deliverable:
+- `_project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-001_CANONICAL_ROUTING_MAP.md`
+
+Zmiany:
+- `src/lib/routes.ts` zawiera teraz `CLOSEFLOW_ROUTES`, `CLOSEFLOW_ROUTE_MAP` i helpery `todayPath`, `leadsPath`, `leadDetailPath`, `clientsPath`, `clientDetailPath`, `casesPath`, `caseDetailPath`, `calendarPath`, `funnelPath`;
+- `src/App.tsx` deklaruje trasy przez `CLOSEFLOW_ROUTES`;
+- `LeadDetail` handoff po rozpoczeciu obslugi uzywa `caseDetailPath(startServiceSuccess.caseId)`;
+- owner-control/reminders buduja hrefy do detaili przez helpery, nie przez reczne `/case/`;
+- dodano `guard:routes:canonical`.
+
+Guardy/testy:
+- PASS `npm run guard:routes:canonical`;
+- PASS `node --test tests/routes-canonical.test.cjs tests/stage233a-route-canonicalization.test.cjs tests/lead-start-service-case-redirect.test.cjs tests/lead-service-mode-v1.test.cjs`;
+- PASS `node scripts/check-stage232i3-owner-control-missing-blocker-cross-entity-integration.cjs`;
+- PASS `node --test tests/stage232i3-owner-control-missing-blocker-cross-entity-integration.test.cjs`.
+
+Znane ograniczenia:
+- `src/pages/Dashboard.tsx` i `src/pages/Today.tsx` nadal maja stare `/case/`, ale nie sa aktywnymi route SOT;
+- `src/components/Layout.tsx` nadal rozpoznaje `/case/` dla highlightu aliasu przed redirectem;
+- FIN-15 test pozostaje czerwony z powodu istniejacego problemu finansowego w `LeadDetail`, poza zakresem routingu.
+
+Nie ruszano:
+- layoutow wizualnych/CSS,
+- kart/przyciskow/ikon jako UI refactor,
+- danych biznesowych,
+- Supabase/Firebase/API,
+- katalogu `10_PROJEKTY`,
+- `obsidian_updates`.
+
+## 2026-06-27 Europe/Warsaw - LF-UI-SOT-002_UI_PATCH_LAYERS_GUARD
+
+Status: DONE / GUARD_ADDED / NO_UI_REFACTOR.
+
+Cel:
+- zablokowac dokladanie kolejnych plastrów UI na stare warstwy;
+- wymusic, ze delete actions ida przez `EntityTrashButton` albo `EntityActionButton tone="danger"`;
+- lapac nowe runtime DOM patche, direct `Trash2`, inline action styles, stage-only klasy i kolejne source-truth CSS warstwy.
+
+Deliverable:
+- `_project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-002_UI_PATCH_LAYERS_GUARD.md`
+
+Zmiany:
+- dodano `scripts/check-ui-patch-layers.cjs`;
+- dodano `tests/ui-patch-layers-guard.test.cjs`;
+- dodano npm script `guard:ui:patch-layers`;
+- guard ma jawna allowliste istniejacego dlugu zamiast ukrywac go jako standard.
+
+Aktualny baseline dlugu widoczny w guardzie:
+- `domPatchFiles: 16`;
+- `directTrash2Files: 15`;
+- `styleLayerFiles: 32`;
+- `stageClassFiles: 35`.
+
+Guardy/testy:
+- PASS `npm run guard:ui:patch-layers`;
+- PASS `node --test tests/ui-patch-layers-guard.test.cjs`.
+
+Nie ruszano:
+- komponentow UI,
+- CSS/runtime behavior,
+- layoutow,
+- danych biznesowych,
+- Supabase/Firebase/API,
+- katalogu `10_PROJEKTY`,
+- `obsidian_updates`.
