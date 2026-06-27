@@ -124,6 +124,15 @@ if (exists('scripts/closeflow-release-check-quiet.cjs')) {
 }
 
 const allowedChangePrefixes = [
+  // STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH_ALLOWLIST
+  'src/pages/TodayStable.tsx',
+  'src/pages/TasksStable.tsx',
+  'src/pages/Calendar.tsx',
+  'src/components/work-item-card.tsx',
+  'scripts/check-stage232t-r1d-today-work-item-actions-source-truth.cjs',
+  'tests/stage232t-r1d-today-work-item-actions-source-truth.test.cjs',
+  'tests/stage97-today-overdue-task-done-button.test.cjs',
+  '_project/runs/STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH.md',
   // STAGE_A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_ALLOWLIST
   'src/lib/owner-control/owner-control-baseline.ts',
   'src/pages/TodayStable.tsx',

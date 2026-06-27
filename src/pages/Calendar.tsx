@@ -113,6 +113,8 @@ const STAGE228R37_UNSUPPORTED_DELETE_KIND_NO_FALSE_SUCCESS = 'Calendar unsupport
 void STAGE228R37_UNSUPPORTED_DELETE_KIND_NO_FALSE_SUCCESS;
 const STAGE232G_R1D_CALENDAR_ACTION_POLICY_IMPORT = 'STAGE232G_R1D_CALENDAR_ACTIONS_RESPECT_OPERATIONAL_ENTRY_CONTRACT: CALENDAR imports shared action policy';
 void STAGE232G_R1D_CALENDAR_ACTION_POLICY_IMPORT;
+const STAGE232T_R1D_CALENDAR_EDIT_QUERY_CONTRACT = 'STAGE232T_R1D Calendar opens existing entry editor from editEventId/editTaskId query';
+void STAGE232T_R1D_CALENDAR_EDIT_QUERY_CONTRACT;
 const STAGE232G_R1D_COMPLETE_ACTION_CONTRACT_GUARD = 'complete action must respect getSupportedOperationalEntryActions; lead shadow cannot be completed as task/event';
 const STAGE232G_R1D_DELETE_ACTION_CONTRACT_GUARD = 'delete action must respect getSupportedOperationalEntryActions; lead shadow cannot be deleted as task/event';
 const STAGE232G_R1D_RESTORE_ACTION_CONTRACT_GUARD = 'restore action must respect getSupportedOperationalEntryActions; lead shadow cannot be restored as task/event';
@@ -1962,6 +1964,36 @@ export default function Calendar() {
     () => getPrecomputedEntriesForDay(entriesByDayKey, selectedDate),
     [entriesByDayKey, selectedDate],
   );
+
+  useEffect(() => {
+    const editEventId = String(searchParams.get('editEventId') || '').trim();
+    const editTaskId = String(searchParams.get('editTaskId') || '').trim();
+    const editKind = editEventId ? 'event' : editTaskId ? 'task' : '';
+    const editSourceId = editEventId || editTaskId;
+    if (!editKind || !editSourceId || !scheduleEntries.length) return;
+
+    const entry = scheduleEntries.find((item) => (
+      item.kind === editKind &&
+      (String(item.sourceId || '') === editSourceId || String(item.raw?.id || '') === editSourceId)
+    ));
+    if (!entry) return;
+
+    const entryDate = parseISO(entry.startsAt);
+    if (!Number.isNaN(entryDate.getTime())) {
+      setSelectedDate(entryDate);
+      setCurrentMonth(entryDate);
+    }
+    setIsNewEventOpen(false);
+    setIsNewTaskOpen(false);
+    setEditEntry(entry);
+    setEditDraft(buildEditDraft(entry));
+
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('editEventId');
+    nextParams.delete('editTaskId');
+    setSearchParams(nextParams, { replace: true });
+  }, [scheduleEntries, searchParams, setSearchParams]);
+
   const caseTitleById = useMemo(
     () => new Map(cases.map((caseRecord: any) => [String(caseRecord.id || ''), String(caseRecord.title || caseRecord.clientName || 'Powiązana sprawa')])),
     [cases],

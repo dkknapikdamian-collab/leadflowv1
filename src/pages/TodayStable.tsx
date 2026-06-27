@@ -121,6 +121,8 @@ const STAGE_A35B_MANDATORY_NEXT_STEP_CONTRACT = 'STAGE-A35B_MANDATORY_NEXT_STEP_
 void STAGE_A35B_MANDATORY_NEXT_STEP_CONTRACT;
 const STAGE232G_R1D_TODAY_ACTION_POLICY_IMPORT = 'STAGE232G_R1D_CALENDAR_ACTIONS_RESPECT_OPERATIONAL_ENTRY_CONTRACT: TODAY imports shared action policy';
 void STAGE232G_R1D_TODAY_ACTION_POLICY_IMPORT;
+const STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH = 'STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH';
+void STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH;
 const STAGE232G_R1D_COMPLETE_ACTION_CONTRACT_GUARD = 'complete action must respect getSupportedOperationalEntryActions; lead shadow cannot be completed as task/event';
 const STAGE232G_R1D_DELETE_ACTION_CONTRACT_GUARD = 'delete action must respect getSupportedOperationalEntryActions; lead shadow cannot be deleted as task/event';
 const STAGE232G_R1D_RESTORE_ACTION_CONTRACT_GUARD = 'restore action must respect getSupportedOperationalEntryActions; lead shadow cannot be restored as task/event';
@@ -346,6 +348,20 @@ function shiftTodayEndMomentStage227G1(startRaw: string, endRaw: string, nextSta
 
 function getTodayShiftPendingKeyStage227G1(kind: 'task' | 'event', id: string, days: number) {
   return kind + '-shift:' + id + ':' + String(days);
+}
+
+function getTodayTaskEditHrefStage232TR1D(task: any) {
+  const taskId = String(task?.id || '').trim();
+  return taskId ? '/tasks?editTaskId=' + encodeURIComponent(taskId) : '/tasks';
+}
+
+function getTodayEventEditHrefStage232TR1D(event: any) {
+  const eventId = String(event?.id || '').trim();
+  if (!eventId) return '/calendar';
+  const focus = getDateKey(getEventMomentRaw(event));
+  const params = new URLSearchParams({ editEventId: eventId });
+  if (focus) params.set('focus', focus);
+  return '/calendar?' + params.toString();
 }
 
 
@@ -1410,10 +1426,11 @@ function TodayStable() {
           ? current.tasks.map((task) => String(task?.id || '') === taskId ? { ...task, status: 'done' } : task)
           : [],
       }));
+      await refreshData({ force: true, reason: 'operation' });
     } finally {
       setActionPendingId('');
     }
-  }, [setData]);
+  }, [refreshData, setData]);
 
   const handleDeleteTask = useCallback(async (task: any) => {
     const taskId = String(task?.id || '');
@@ -1451,12 +1468,13 @@ function TodayStable() {
           ? current.events.map((event) => String(event?.id || '') === eventId ? { ...event, status: 'done' } : event)
           : [],
       }));
+      await refreshData({ force: true, reason: 'operation' });
     } catch (error) {
       console.error('Nie udało się oznaczyć wydarzenia jako zrobione', error);
     } finally {
       setActionPendingId('');
     }
-  }, [setData]);
+  }, [refreshData, setData]);
 
   const handleShiftTodayWorkItemStage227G1 = useCallback(async (kind: 'task' | 'event', record: any, days: number) => {
     const sourceId = String(record?.id || '').trim();
@@ -1677,7 +1695,7 @@ function TodayStable() {
                   completed={isClosedStatus(task?.status)}
                   onDone={() => void handleMarkTaskDone(String(task.id || ''))}
                   doneBusy={actionPendingId === `task-done:${String(task.id || '')}`}
-                  onEdit={() => navigate('/tasks')}
+                  onEdit={() => navigate(getTodayTaskEditHrefStage232TR1D(task), { state: { editTaskId: String(task.id || '') } })}
                   onDelete={() => void handleDeleteTask(task)}
                   deleteBusy={actionPendingId === `task:${String(task.id || '')}`}
                   shiftActions={buildTodayRescheduleActionsStage227G1('task', task)}
@@ -1707,7 +1725,7 @@ function TodayStable() {
                 completed={isClosedStatus(event?.status)}
                 onDone={() => void handleMarkEventDone(String(event.id || ''))}
                 doneBusy={actionPendingId === `event-done:${String(event.id || '')}`}
-                onEdit={() => navigate('/calendar')}
+                onEdit={() => navigate(getTodayEventEditHrefStage232TR1D(event), { state: { editEventId: String(event.id || '') } })}
                 onDelete={() => void handleDeleteEvent(event)}
                 deleteBusy={actionPendingId === `event:${String(event.id || '')}`}
                 shiftActions={buildTodayRescheduleActionsStage227G1('event', event)}

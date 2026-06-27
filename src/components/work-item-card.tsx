@@ -14,6 +14,9 @@ export type WorkItemCardTone = 'neutral' | 'danger' | 'success';
 const STAGE227G1R1_TODAY_REASON_COPY_FINAL_REMOVAL = 'WorkItemCard never renders Powod/Powód helper copy and always exposes Today reschedule actions when passed';
 void STAGE227G1R1_TODAY_REASON_COPY_FINAL_REMOVAL;
 
+const STAGE232T_R1D_WORK_ITEM_ACTION_EVENT_BOUNDARY = 'STAGE232T_R1D WorkItemCard edit/delete actions stop card/link propagation';
+void STAGE232T_R1D_WORK_ITEM_ACTION_EVENT_BOUNDARY;
+
 export function getWorkItemCardStatusTone(statusLabel: string, options?: { completed?: boolean; overdue?: boolean }): WorkItemCardTone {
   if (options?.completed || /zrobione|wykonane|completed|done/i.test(statusLabel)) return 'success';
   if (options?.overdue || /zaleg|po terminie|overdue/i.test(statusLabel)) return 'danger';
@@ -140,14 +143,33 @@ export default function WorkItemCard({
             {doneBusy ? 'Zapisywanie...' : <><CheckCircle2 className="h-4 w-4" /> Zrobione</>}
           </Button>
         ) : null}
-        {onEdit ? <Button type="button" size="sm" variant="outline" onClick={onEdit}>Edytuj</Button> : null}
+        {onEdit ? (
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            data-stage232t-r1d-work-item-edit-action="true"
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onEdit();
+            }}
+          >
+            Edytuj
+          </Button>
+        ) : null}
         {onDelete ? (
           <EntityActionButton
             type="button"
             size="sm"
             variant="ghost"
             tone="danger"
-            onClick={onDelete}
+            data-stage232t-r1d-work-item-delete-action="true"
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onDelete();
+            }}
             disabled={deleteBusy}
             aria-label={deleteBusy ? 'Usuwanie' : 'Kosz'}
             title={deleteBusy ? 'Usuwanie' : 'Kosz'}

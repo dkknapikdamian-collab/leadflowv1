@@ -1,4 +1,5 @@
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { AlertTriangle, CheckCircle2, CheckSquare, Clock, Loader2, RefreshCcw, Search, Trash2 } from 'lucide-react';
 /*
 P0_TASKS_STABLE_REBUILD
@@ -23,6 +24,8 @@ import {
 import { toast } from 'sonner';
 const STAGE228R52_TASKS_STABLE_NO_FLICKER_DELETE = 'TasksStable delete removes the row locally, rolls back on failure and does not call refreshData after delete';
 void STAGE228R52_TASKS_STABLE_NO_FLICKER_DELETE;
+const STAGE232T_R1D_TASKS_EDIT_QUERY_CONTRACT = 'STAGE232T_R1D TasksStable opens existing task editor from editTaskId query';
+void STAGE232T_R1D_TASKS_EDIT_QUERY_CONTRACT;
 import {
   deleteTaskFromSupabase,
   fetchCasesFromSupabase,
@@ -271,6 +274,7 @@ void STAGE228R50_TASKS_STABLE_NO_FLICKER_REAL_ANCHORS;
 
 export default function TasksStable() {
   const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [tasks, setTasks] = useState<any[]>([]);
   const [cases, setCases] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -389,6 +393,18 @@ export default function TasksStable() {
     });
     setIsDialogOpen(true);
   };
+
+  useEffect(() => {
+    const editTaskId = String(searchParams.get('editTaskId') || '').trim();
+    if (!editTaskId || !tasks.length) return;
+    const task = tasks.find((row) => String(row?.id || '') === editTaskId);
+    if (!task) return;
+
+    openEditTask(task);
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('editTaskId');
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams, tasks]);
 
   const closeDialog = () => {
     if (saving) return;
