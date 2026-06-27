@@ -147,6 +147,24 @@ function shouldHideTaskFromTasksStage229A(value: unknown) { return ['deleted', '
 const CALENDAR_RESTORED_TASK_STATUSES_STAGE232T_R3 = new Set(['todo', 'in_progress', 'open', 'pending', 'scheduled']);
 function shouldRestoreTaskVisibilityStage232T_R3(value: unknown) { return CALENDAR_RESTORED_TASK_STATUSES_STAGE232T_R3.has(asText(value).toLowerCase()); }
 
+function getTaskRouteSourceTextStage232T_R5(value: unknown): string {
+  if (!value || typeof value !== 'object') return '';
+  const record = value as Record<string, unknown>;
+  const payload = record.payload && typeof record.payload === 'object' ? record.payload as Record<string, unknown> : {};
+  return [
+    record.source,
+    record.action,
+    record.description,
+    payload.source,
+    payload.action,
+    payload.idempotencyKey,
+  ].filter(Boolean).map((part) => asText(part).toLowerCase()).join(' ');
+}
+
+function shouldKeepCompletedLeadCalendarActionVisibleStage232T_R5(body: unknown) {
+  return getTaskRouteSourceTextStage232T_R5(body).includes('calendar_lead_done_persist_after_refresh');
+}
+
 function preserveTaskDatePatchTimeStage232T_R3(dateValue: unknown, currentRow: Record<string, unknown> | null | undefined) {
   const date = asText(dateValue);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return date ? normalizeCloseFlowDateTimeToUtcIso(String(date) + 'T09:00') : null;
@@ -287,6 +305,10 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
       }
       if (shouldHideTaskFromCalendarStage229A(nextStatusForCalendarStage229A)) payload.show_in_calendar = false;
       if (shouldHideTaskFromTasksStage229A(nextStatusForCalendarStage229A)) payload.show_in_tasks = false;
+      if (shouldKeepCompletedLeadCalendarActionVisibleStage232T_R5(body)) {
+        payload.show_in_calendar = true;
+        payload.show_in_tasks = true;
+      }
 
       const data = await updateByIdScoped('work_items', String(body.id), workspaceId, payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };

@@ -147,7 +147,13 @@ const allowedChangePrefixes = [
   'scripts/check-stage232t-r4-calendar-lead-shadow-actions.cjs',
   'tests/stage232t-r4-calendar-lead-shadow-actions.test.cjs',
   '_project/runs/STAGE232T_R4_CALENDAR_LEAD_SHADOW_ACTIONS_FIX.md',  'scripts/check-stage232t-r1d-today-work-item-actions-source-truth.cjs',
-  'tests/stage232t-r1d-today-work-item-actions-source-truth.test.cjs',
+
+  // STAGE232T_R5_CALENDAR_LEAD_DONE_PERSIST_AFTER_REFRESH_ALLOWLIST
+  'src/pages/Calendar.tsx',
+  'src/server/task-route-stage124f.ts',
+  'scripts/check-stage232t-r5-calendar-lead-done-persist-after-refresh.cjs',
+  'tests/stage232t-r5-calendar-lead-done-persist-after-refresh.test.cjs',
+  '_project/runs/STAGE232T_R5_CALENDAR_LEAD_DONE_PERSIST_AFTER_REFRESH.md',  'tests/stage232t-r1d-today-work-item-actions-source-truth.test.cjs',
   'tests/stage97-today-overdue-task-done-button.test.cjs',
   '_project/runs/STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH.md',
   // STAGE232T_R1E_TODAY_ACTIONS_CLOSEOUT_DELETE_EDIT_TRASH_VST_ALLOWLIST

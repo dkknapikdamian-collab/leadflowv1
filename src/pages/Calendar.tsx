@@ -2389,6 +2389,106 @@ export default function Calendar() {
     }
   };
 
+
+  const STAGE232T_R5_CALENDAR_LEAD_DONE_DURABLE_WORK_ITEM_SOURCE = 'calendar_lead_done_persist_after_refresh';
+  void STAGE232T_R5_CALENDAR_LEAD_DONE_DURABLE_WORK_ITEM_SOURCE;
+
+  function normalizeLeadDoneMomentKeyStage232T_R5(value: unknown) {
+    const raw = readCalendarRawText(value);
+    if (!raw) return '';
+    const parsed = parseISO(raw);
+    if (Number.isNaN(parsed.getTime())) return raw.slice(0, 16);
+    return toDateTimeLocalValue(parsed);
+  }
+
+  function findCompletedLeadCalendarActionTaskIdStage232T_R5(leadId: string, scheduledAt: string, title: string) {
+    const leadKey = String(leadId || '').trim();
+    const momentKey = normalizeLeadDoneMomentKeyStage232T_R5(scheduledAt);
+    const titleKey = String(title || '').trim().toLowerCase();
+    if (!leadKey || !momentKey || !titleKey) return '';
+
+    const existing = tasks.find((task: any) => {
+      const taskLeadId = String(task?.leadId || task?.lead_id || '').trim();
+      const taskStatus = String(task?.status || '').trim().toLowerCase();
+      const taskTitle = String(task?.title || '').trim().toLowerCase();
+      const taskMoment = normalizeLeadDoneMomentKeyStage232T_R5(task?.scheduledAt || task?.dueAt || task?.startAt || task?.scheduled_at || task?.due_at || task?.date);
+      return (
+        taskLeadId === leadKey &&
+        taskMoment === momentKey &&
+        taskTitle === titleKey &&
+        (taskStatus === 'done' || taskStatus === 'completed')
+      );
+    }) as any;
+
+    return String(existing?.id || '').trim();
+  }
+
+  async function ensureCompletedLeadCalendarActionStage232T_R5(entry: ScheduleEntry, leadId: string, completedAt: string) {
+    const previousNextActionAt = readCalendarRawText(
+      entry.raw?.nextActionAt || entry.raw?.next_action_at || entry.raw?.followUpAt || entry.raw?.follow_up_at,
+      entry.startsAt,
+    );
+    const previousNextActionDate = parseISO(previousNextActionAt);
+    if (Number.isNaN(previousNextActionDate.getTime())) {
+      throw new Error('CALENDAR_LEAD_DONE_PERSIST_INVALID_NEXT_ACTION_AT');
+    }
+
+    const scheduledAt = toDateTimeLocalValue(previousNextActionDate);
+    const scheduledDate = format(previousNextActionDate, 'yyyy-MM-dd');
+    const scheduledTime = format(previousNextActionDate, 'HH:mm');
+    const title = readCalendarRawText(entry.raw?.nextActionTitle || entry.raw?.next_action_title, entry.title || 'Wykonana akcja leada');
+    const linkedItemId = readCalendarRawText(entry.raw?.nextActionItemId || entry.raw?.next_action_item_id);
+    const linkedTaskExists = Boolean(linkedItemId && tasks.some((task: any) => String(task?.id || '') === linkedItemId));
+    const existingTaskId = linkedTaskExists
+      ? linkedItemId
+      : findCompletedLeadCalendarActionTaskIdStage232T_R5(leadId, scheduledAt, title);
+    const idempotencyKey = ['calendar-lead-done', leadId, normalizeLeadDoneMomentKeyStage232T_R5(scheduledAt), title.trim().toLowerCase()].join('|');
+
+    if (existingTaskId) {
+      await updateTaskInSupabase({
+        id: existingTaskId,
+        title,
+        type: 'follow_up',
+        date: scheduledDate,
+        scheduledAt,
+        dueAt: scheduledAt,
+        time: scheduledTime,
+        status: 'done',
+        priority: readCalendarRawText(entry.raw?.priority, 'medium'),
+        leadId,
+        caseId: readCalendarRawText(entry.raw?.caseId || entry.raw?.case_id) || null,
+        showInCalendar: true,
+        showInTasks: true,
+        source: STAGE232T_R5_CALENDAR_LEAD_DONE_DURABLE_WORK_ITEM_SOURCE,
+        payload: {
+          source: STAGE232T_R5_CALENDAR_LEAD_DONE_DURABLE_WORK_ITEM_SOURCE,
+          idempotencyKey,
+          completedAt,
+        },
+      });
+
+      return { mode: 'updated_task', taskId: existingTaskId, idempotencyKey, scheduledAt, title };
+    }
+
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) throw new Error('CALENDAR_LEAD_DONE_PERSIST_WORKSPACE_REQUIRED');
+
+    await insertTaskToSupabase({
+      title,
+      type: 'follow_up',
+      date: scheduledDate,
+      scheduledAt,
+      dueAt: scheduledAt,
+      priority: readCalendarRawText(entry.raw?.priority, 'medium'),
+      status: 'done',
+      leadId,
+      caseId: readCalendarRawText(entry.raw?.caseId || entry.raw?.case_id) || null,
+      ownerId: auth.currentUser?.uid,
+      workspaceId,
+    });
+
+    return { mode: 'created_task', taskId: '', idempotencyKey, scheduledAt, title };
+  }
   const handleCompleteEntry = async (entry: ScheduleEntry) => {
   // STAGE232G_R1D_COMPLETE_ACTION_CONTRACT_GUARD
   if (!isOperationalEntryActionAllowed(entry, 'complete')) {
@@ -2409,6 +2509,7 @@ export default function Calendar() {
         const leadId = getLeadShadowSourceIdStage232T_R4(entry);
         if (!leadId) throw new Error('CALENDAR_LEAD_NEXT_ACTION_COMPLETE_SOURCE_ID_REQUIRED');
         const completedAtStage232T_R4 = new Date().toISOString();
+        const durableLeadActionStage232T_R5 = await ensureCompletedLeadCalendarActionStage232T_R5(entry, leadId, completedAtStage232T_R4);
         const nextTitle = readCalendarRawText(entry.raw?.nextActionTitle || entry.raw?.next_action_title, entry.title);
 
         if (wasCompleted) {
@@ -2439,6 +2540,7 @@ export default function Calendar() {
             sourceId: entry.sourceId,
             previousNextActionAt: entry.startsAt,
             previousNextActionTitle: entry.title,
+            durableLeadAction: durableLeadActionStage232T_R5,
           },
         });
 
