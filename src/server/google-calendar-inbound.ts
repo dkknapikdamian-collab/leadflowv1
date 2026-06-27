@@ -18,6 +18,8 @@ type WorkItemRow = Record<string, any>;
 
 const STAGE232G_R2_GOOGLE_INBOUND_SYNC_IDEMPOTENCY = 'google inbound sync uses workspace_id/source_provider/source_external_id idempotency and handles 23505 duplicate key without 500';
 void STAGE232G_R2_GOOGLE_INBOUND_SYNC_IDEMPOTENCY;
+const STAGE232G_R1J_GOOGLE_CALENDAR_INBOUND_SYNC_IDEMPOTENT_UPSERT = 'google inbound sync prefers canonical workspace_id/source_provider/source_external_id row before broader Google identity matches';
+void STAGE232G_R1J_GOOGLE_CALENDAR_INBOUND_SYNC_IDEMPOTENT_UPSERT;
 
 function nowIso() { return new Date().toISOString(); }
 function asText(value: unknown) { return typeof value === 'string' ? value.trim() : ''; }
@@ -183,6 +185,8 @@ async function findExistingGoogleCalendarWorkItemByCanonicalKey(workspaceId: str
 async function findExistingWorkItem(workspaceId: string, userId: string, googleEvent: GoogleEvent) {
   const googleId = asText(googleEvent?.id);
   const closeflowId = getPrivateProperty(googleEvent, 'closeflowId');
+  const canonicalExisting = googleId ? await findExistingGoogleCalendarWorkItemByCanonicalKey(workspaceId, googleId) : null;
+  if (canonicalExisting) return canonicalExisting;
   const identityExisting = googleId ? await findExistingGoogleCalendarWorkItemByAnyIdentityStage232GR7A(workspaceId, userId, googleId) : null;
   if (identityExisting) return identityExisting;
   const scopedQueries = [

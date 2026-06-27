@@ -209,6 +209,10 @@ const allowedChangePrefixes = [
   'tests/stage232g-r2-google-inbound-sync-idempotency.test.cjs',
   '_project/runs/STAGE232G_R2_GOOGLE_INBOUND_SYNC_IDEMPOTENCY.md',
   '_project/obsidian_updates/2026-06-25_STAGE232G_R2_GOOGLE_INBOUND_SYNC_IDEMPOTENCY.md',
+  // STAGE232G_R1J_GOOGLE_CALENDAR_INBOUND_SYNC_IDEMPOTENT_UPSERT_ALLOWLIST
+  'scripts/check-stage232g-r1j-google-calendar-inbound-idempotent-upsert.cjs',
+  'tests/stage232g-r1j-google-calendar-inbound-idempotent-upsert.test.cjs',
+  '_project/runs/STAGE232G_R1J_GOOGLE_CALENDAR_INBOUND_SYNC_IDEMPOTENT_UPSERT.md',
   // STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_AND_OWNER_STAMP_ALLOWLIST
   'src/pages/Settings.tsx',
   'src/server/task-route-stage124f.ts',
