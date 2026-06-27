@@ -36,6 +36,7 @@ import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { getCaseOwnerRiskBadges, ownerRiskTone } from '../lib/owner-control/owner-risk-rules';
 import { readOwnerRiskSettings } from '../lib/owner-control/owner-risk-settings';
+import { caseDetailPath } from '../lib/routes';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import '../styles/visual-stage23-client-case-forms-vnext.css';
 import {
@@ -874,7 +875,7 @@ const metaParts = [
                       <span className="index">{index + 1}</span>
                       <span className="lead-main-cell min-w-0">
                         <span className="case-row-title-line">
-                          <Link to={`/case/${record.id}`} className="title">{cleanCaseListTitle(record.title || record.clientName || 'Sprawa bez nazwy')}</Link>
+                          <Link to={caseDetailPath(record.id)} className="title">{cleanCaseListTitle(record.title || record.clientName || 'Sprawa bez nazwy')}</Link>
                         </span>
                         <span className="cf-list-row-meta" data-stage228g-case-row-copy-clean="true">
                           <span className="cf-list-row-client">Klient: {record.clientName || 'Brak nazwy klienta'}</span>
@@ -908,7 +909,7 @@ const metaParts = [
                       </span>
                       <span className="lead-actions cf-case-row-actions-stage220a28">
                         <Button variant="outline" className="btn ghost cf-icon-action-button cf-case-row-open-indicator" asChild data-stage220a28-case-row-open-icon="true">
-                          <Link to={`/case/${record.id}`} aria-label={`Otwórz sprawę ${record.title || ''}`}><ChevronRight className="h-4 w-4" /></Link>
+                          <Link to={caseDetailPath(record.id)} aria-label={`Otwórz sprawę ${record.title || ''}`}><ChevronRight className="h-4 w-4" /></Link>
                         </Button>
                         <EntityTrashButton
                           type="button"
@@ -971,7 +972,7 @@ const metaParts = [
                   return (
                     <Link
                       key={record.id}
-                      to={`/case/${record.id}`}
+                      to={caseDetailPath(record.id)}
                       title={riskTitle}
                       data-cf-operator-rail-item="true"
                       data-cf-operator-rail-tone={lifecycle.riskLevel === 'high' ? 'red' : lifecycle.riskLevel === 'medium' ? 'amber' : 'blue'}

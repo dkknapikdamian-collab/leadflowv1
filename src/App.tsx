@@ -1,5 +1,5 @@
 import { lazy, Suspense, type ComponentType, useEffect, useState } from 'react';
-import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Navigate, Route, Routes, useParams } from 'react-router-dom';
 import NotificationRuntime from './components/NotificationRuntime';
 import { Toaster } from './components/ui/sonner';
 
@@ -15,6 +15,7 @@ import { PwaInstallPrompt } from './components/PwaInstallPrompt';
 import EmailVerificationGate from './components/EmailVerificationGate';
 import ClientDetailStatic from './pages/ClientDetail';
 import LeadDetailStatic from './pages/LeadDetail';
+import { caseDetailPath } from './lib/routes';
 import './styles/closeflow-visual-source-truth.css';
 import './styles/closeflow-action-tokens.css';
 import './styles/closeflow-action-clusters.css';
@@ -123,6 +124,11 @@ function AppRouteFallback() {
       </div>
     </div>
   );
+}
+
+function LegacyCaseRedirect() {
+  const { caseId = '' } = useParams();
+  return <Navigate to={caseDetailPath(caseId)} replace />;
 }
 
 function buildLocalProfile(user: any) {
@@ -285,7 +291,7 @@ export default function App() {
               <Route path="/tasks" element={isLoggedIn ? <Tasks /> : <Navigate to="/login" />} />
               <Route path="/calendar" element={isLoggedIn ? <Calendar /> : <Navigate to="/login" />} />
               <Route path="/cases" element={isLoggedIn ? <Cases /> : <Navigate to="/login" />} />
-              <Route path="/case/:caseId" element={isLoggedIn ? <CaseDetail /> : <Navigate to="/login" />} />
+              <Route path="/case/:caseId" element={isLoggedIn ? <LegacyCaseRedirect /> : <Navigate to="/login" />} />
               <Route path="/cases/:caseId" element={isLoggedIn ? <CaseDetail /> : <Navigate to="/login" />} />
               <Route path="/clients" element={isLoggedIn ? <Clients /> : <Navigate to="/login" />} />
               <Route path="/clients/:clientId" element={isLoggedIn ? <ClientDetail /> : <Navigate to="/login" />} />
