@@ -461,6 +461,72 @@ function getCalendarEntryRelationLabel(entry: ScheduleEntry, caseTitle?: string 
   return '';
 }
 
+type CalendarEntryRelationTargetStage232T_R6 = {
+  type: 'lead' | 'client' | 'case';
+  id: string;
+  label: string;
+  href: string;
+};
+
+function readCalendarRelationIdStage232T_R6(value: unknown) {
+  return readCalendarRawText(value).trim();
+}
+
+function readCalendarEntryLeadIdStage232T_R6(entry: ScheduleEntry) {
+  return readCalendarRelationIdStage232T_R6(
+    entry.raw?.leadId
+    || entry.raw?.lead_id
+    || entry.leadId
+    || (entry.kind === 'lead' ? entry.sourceId : '')
+    || (entry.kind === 'lead' ? entry.raw?.id : ''),
+  );
+}
+
+function readCalendarEntryClientIdStage232T_R6(entry: ScheduleEntry) {
+  return readCalendarRelationIdStage232T_R6(entry.raw?.clientId || entry.raw?.client_id);
+}
+
+function readCalendarEntryCaseIdStage232T_R6(entry: ScheduleEntry) {
+  return readCalendarRelationIdStage232T_R6(entry.raw?.caseId || entry.raw?.case_id);
+}
+
+function getCalendarEntryRelationTargetStage232T_R6(entry: ScheduleEntry, caseTitle?: string | null): CalendarEntryRelationTargetStage232T_R6 | null {
+  const caseId = readCalendarEntryCaseIdStage232T_R6(entry);
+  if (caseId) {
+    const label = caseTitle || readCalendarRawText(entry.raw?.caseTitle || entry.raw?.case_title || entry.raw?.caseName || entry.raw?.case_name, 'Powiązana sprawa');
+    return { type: 'case', id: caseId, label: 'Sprawa: ' + label, href: '/cases/' + caseId };
+  }
+
+  const leadId = readCalendarEntryLeadIdStage232T_R6(entry);
+  if (leadId) {
+    const label = readCalendarRawText(
+      entry.leadName
+      || entry.raw?.leadName
+      || entry.raw?.lead_name
+      || entry.raw?.leadTitle
+      || entry.raw?.lead_title
+      || entry.raw?.name
+      || entry.raw?.company,
+      'Lead',
+    );
+    return { type: 'lead', id: leadId, label: 'Lead: ' + label, href: '/leads/' + leadId };
+  }
+
+  const clientId = readCalendarEntryClientIdStage232T_R6(entry);
+  if (clientId) {
+    const label = readCalendarRawText(
+      entry.raw?.clientName
+      || entry.raw?.client_name
+      || entry.raw?.customerName
+      || entry.raw?.customer_name,
+      'Klient',
+    );
+    return { type: 'client', id: clientId, label: 'Klient: ' + label, href: '/clients/' + clientId };
+  }
+
+  return null;
+}
+
 function getCalendarDayNavLabel(day: Date, index: number) {
   if (index === 0 || isToday(day)) return 'Dzisiaj';
   return capitalizeCalendarLabel(format(day, 'eeee', { locale: pl }));
