@@ -128,6 +128,11 @@ const allowedChangePrefixes = [
   'src/lib/owner-control/owner-control-baseline.ts',
   'src/pages/TodayStable.tsx',
   'scripts/check-cf-runtime-00-source-truth.cjs',
+  // STAGE232T_R1C_TODAY_PRODUCTION_UI_CLEANUP_ALLOWLIST
+  'src/styles/closeflow-canvas-runtime-source-truth-stage211j.css',
+  'scripts/check-stage232t-r1c-today-production-ui-cleanup-and-source-truth.cjs',
+  'tests/stage232t-r1c-today-production-ui-cleanup-and-source-truth.test.cjs',
+  '_project/runs/STAGE232T_R1C_TODAY_PRODUCTION_UI_CLEANUP_AND_SOURCE_TRUTH.md',
   'scripts/check-stage-a35-r1-owner-control-baseline-gap-close-and-queue-sync.cjs',
   'tests/stage-a35-r1-owner-control-baseline-gap-close-and-queue-sync.test.cjs',
   // STAGE_A35_R2_REMOVE_SINGLE_USER_OWNERLESS_NOISE_ALLOWLIST

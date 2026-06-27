@@ -78,6 +78,8 @@ const STAGE81_TODAY_RISK_REASON_NEXT_ACTION = 'STAGE81_TODAY_RISK_REASON_NEXT_AC
 const STAGE82_TODAY_NEXT_7_DAYS = 'STAGE82_TODAY_NEXT_7_DAYS';
 const STAGE116_TODAY_WORK_ITEM_CARD_SOURCE_TRUTH = 'Today work item cards use one visual source of truth for tasks and events';
 const STAGE116_STAGE76_EVENT_DONE_GUARD_COMPAT = 'doneLabel="Zrobione" | data-stage76-event-done-action="true"';
+const STAGE232T_R1C_TODAY_PRODUCTION_UI_CLEANUP_AND_SOURCE_TRUTH = 'STAGE232T_R1C_TODAY_PRODUCTION_UI_CLEANUP_AND_SOURCE_TRUTH';
+void STAGE232T_R1C_TODAY_PRODUCTION_UI_CLEANUP_AND_SOURCE_TRUTH;
 const STAGE227G1_TODAY_RESCHEDULE_ACTION_SOURCE = 'TodayStable uses the Calendar action source for +1D/+3D/+1W task/event reschedule actions';
 const STAGE227G1R1_TODAY_REASON_COPY_FINAL_REMOVAL = 'Today removes all Powod/Powód helper copy and keeps +1D/+3D/+1W visible on task/event cards';
 const STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE = 'STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE';
@@ -662,12 +664,7 @@ function RowLink({
           {helper ? <p className="mt-1 text-sm text-slate-600 break-words">{helper}</p> : null}
           {meta ? (
             <p className="mt-1 text-xs font-medium text-slate-500">
-              {meta.startsWith('Ruch:') ? (
-                <>
-                  <span className="font-semibold text-blue-700">Ruch:</span>
-                  {' ' + meta.slice(5).trim()}
-                </>
-              ) : meta}
+              {meta}
             </p>
           ) : null}
         </div>
@@ -1212,7 +1209,7 @@ function TodayStable() {
         kind: 'task' as const,
         title: getTaskTitle(entry.task),
         helper: '',
-        meta: 'Ruch: przygotuj materiały albo obsłuż w terminie · ' + formatDateTime(entry.momentRaw),
+        meta: 'Zaplanowane zadanie · ' + formatDateTime(entry.momentRaw),
         momentRaw: entry.momentRaw,
         to: '/tasks',
         badge: 'Zadanie',
@@ -1233,7 +1230,7 @@ function TodayStable() {
         kind: 'event' as const,
         title: readText(entry.event, ['title'], 'Wydarzenie'),
         helper: '',
-        meta: 'Ruch: sprawdź przygotowanie i kontekst · ' + formatDateTime(entry.momentRaw),
+        meta: 'Zaplanowane wydarzenie · ' + formatDateTime(entry.momentRaw),
         momentRaw: entry.momentRaw,
         to: '/calendar',
         badge: 'Wydarzenie',
@@ -1256,7 +1253,7 @@ function TodayStable() {
         kind: 'lead' as const,
         title: getLeadTitle(entry.lead),
         helper: '',
-        meta: 'Ruch: wykonaj zaplanowany kontakt i ustaw kolejny konkretny krok · ' + formatDateTime(entry.momentRaw),
+        meta: 'Zaplanowany kontakt · ' + formatDateTime(entry.momentRaw),
         momentRaw: entry.momentRaw,
         to: entry.lead.id ? '/leads/' + String(entry.lead.id) : '/leads',
         badge: 'Lead',
@@ -1563,6 +1560,251 @@ function TodayStable() {
     }));
   }, [actionPendingId, handleShiftTodayWorkItemStage227G1]);
 
+  const todaySectionCards: Array<{ key: TodaySectionKey; node: ReactNode }> = [
+    {
+      key: 'no_action',
+      node: (
+        <StableCard>
+          <SectionHeader title={todaySectionLabels.no_action} count={noActionLeads.length} icon={<AlertTriangle className="h-5 w-5" />} tone="cf-severity:error" collapsed={isCollapsed('no_action')} onToggle={() => toggleSectionCollapse('no_action')} />
+          <div hidden={isCollapsed('no_action')}>
+            {noActionLeads.length ? noActionLeads.map(({ lead, item }) => (
+              <RowLink
+                key={String(lead.id || getLeadTitle(lead))}
+                to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
+                title={getLeadTitle(lead)}
+                helper=""
+                meta={item.suggestedAction + ' · ' + item.reason}
+                badge={item.statusLabel}
+                badgeTone="red"
+                onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
+                onDelete={() => void handleArchiveLead(lead)}
+                deleting={actionPendingId === `lead:${String(lead.id || '')}`}
+              />
+            )) : <EmptyState text="Brak leadów bez najbliższej zaplanowanej akcji." />}
+          </div>
+        </StableCard>
+      ),
+    },
+    {
+      key: 'risk',
+      node: (
+        <StableCard>
+          <SectionHeader title={todaySectionLabels.risk} count={highValueAtRiskRows.length} icon={<TrendingUp className="h-5 w-5" />} tone="cf-severity:error" collapsed={isCollapsed('risk')} onToggle={() => toggleSectionCollapse('risk')} />
+          <div hidden={isCollapsed('risk')}>
+            {highValueAtRiskRows.length ? highValueAtRiskRows.map(({ lead, item }) => (
+              <RowLink
+                key={String(lead.id || getLeadTitle(lead))}
+                to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
+                title={getLeadTitle(lead)}
+                helper=""
+                meta={item.suggestedAction + ' · ' + item.reason}
+                badge={String(Math.round(item.valuePln)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' PLN'}
+                badgeTone="red"
+                onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
+                onDelete={() => void handleArchiveLead(lead)}
+                deleting={actionPendingId === `lead:${String(lead.id || '')}`}
+              />
+            )) : <EmptyState text="Brak wartościowych leadów w ryzyku." />}
+          </div>
+        </StableCard>
+      ),
+    },
+    {
+      key: 'waiting',
+      node: (
+        <StableCard>
+          <SectionHeader title={todaySectionLabels.waiting} count={waitingLeadRows.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" collapsed={isCollapsed('waiting')} onToggle={() => toggleSectionCollapse('waiting')} />
+          <div hidden={isCollapsed('waiting')}>
+            {waitingLeadRows.length ? waitingLeadRows.map(({ lead, item }) => (
+              <RowLink
+                key={String(lead.id || getLeadTitle(lead))}
+                to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
+                title={getLeadTitle(lead)}
+                helper=""
+                meta={item.suggestedAction + ' · ' + item.reason}
+                badge={item.statusLabel}
+                badgeTone={item.severity === 'critical' ? 'red' : 'amber'}
+                onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
+                onDelete={() => void handleArchiveLead(lead)}
+                deleting={actionPendingId === `lead:${String(lead.id || '')}`}
+              />
+            )) : <EmptyState text="Brak leadów w trybie waiting wymagających pilnej kontroli." />}
+          </div>
+        </StableCard>
+      ),
+    },
+    {
+      key: 'leads',
+      node: (
+        <StableCard>
+          <SectionHeader title={todaySectionLabels.leads} count={actionRequiredRows.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" collapsed={isCollapsed('leads')} onToggle={() => toggleSectionCollapse('leads')} />
+          <div hidden={isCollapsed('leads')}>
+            {actionRequiredRows.length ? actionRequiredRows.map((item) => (
+              <RowLink
+                key={item.key}
+                to={item.href}
+                title={item.title}
+                helper=""
+                meta={item.suggestedAction + ' · ' + item.reason}
+                badge={item.statusLabel}
+                badgeTone={item.severity === 'critical' ? 'red' : item.severity === 'warning' ? 'amber' : 'blue'}
+                taskId={item.entityType === 'task' ? item.entityId : undefined}
+                doneKind={item.entityType === 'task' || item.entityType === 'event' ? item.entityType : undefined}
+              />
+            )) : <EmptyState text="Brak tematów wymagających ruchu." />}
+          </div>
+        </StableCard>
+      ),
+    },
+    {
+      key: 'tasks',
+      node: (
+        <StableCard>
+          <SectionHeader title={todaySectionLabels.tasks} count={operatorTasks.length} icon={<CheckSquare className="h-5 w-5" />} tone="bg-emerald-50 text-emerald-700" collapsed={isCollapsed('tasks')} onToggle={() => toggleSectionCollapse('tasks')} />
+          <div hidden={isCollapsed('tasks')}>
+            {operatorTasks.length ? operatorTasks.map(({ task, momentRaw }) => {
+              const caseRecord = task.caseId ? casesById.get(String(task.caseId)) : null;
+              return (
+                <WorkItemCard
+                  key={String(task.id || getTaskTitle(task))}
+                  kind="task"
+                  href="/tasks"
+                  title={getTaskTitle(task)}
+                  helper={caseRecord ? getCaseTitle(caseRecord) : readText(task, ['leadName', 'lead_name'], '')}
+                  dateLabel={formatDateTime(momentRaw)}
+                  statusLabel={getTodayWorkItemStatusLabel('task', task?.status, momentRaw, todayKey)}
+                  tone={getTodayWorkItemTone(task?.status, momentRaw, todayKey)}
+                  completed={isClosedStatus(task?.status)}
+                  onDone={() => void handleMarkTaskDone(String(task.id || ''))}
+                  doneBusy={actionPendingId === `task-done:${String(task.id || '')}`}
+                  onEdit={() => navigate('/tasks')}
+                  onDelete={() => void handleDeleteTask(task)}
+                  deleteBusy={actionPendingId === `task:${String(task.id || '')}`}
+                  shiftActions={buildTodayRescheduleActionsStage227G1('task', task)}
+                />
+              );
+            }) : <EmptyState text="Brak zadań zaległych lub na dziś." />}
+          </div>
+        </StableCard>
+      ),
+    },
+    {
+      key: 'events',
+      node: (
+        <StableCard>
+          <SectionHeader title={todaySectionLabels.events} count={todayEvents.length} icon={<CalendarDays className="h-5 w-5" />} tone="bg-indigo-50 text-indigo-700" collapsed={isCollapsed('events')} onToggle={() => toggleSectionCollapse('events')} />
+          <div hidden={isCollapsed('events')}>
+            {todayEvents.length ? todayEvents.map(({ event, momentRaw }) => (
+              <WorkItemCard
+                key={String(event.id || event.title)}
+                kind="event"
+                href="/calendar"
+                title={readText(event, ['title'], 'Wydarzenie')}
+                helper={readText(event, ['type'], 'event')}
+                dateLabel={formatDateTime(momentRaw)}
+                statusLabel={getTodayWorkItemStatusLabel('event', event?.status, momentRaw, todayKey)}
+                tone={getTodayWorkItemTone(event?.status, momentRaw, todayKey)}
+                completed={isClosedStatus(event?.status)}
+                onDone={() => void handleMarkEventDone(String(event.id || ''))}
+                doneBusy={actionPendingId === `event-done:${String(event.id || '')}`}
+                onEdit={() => navigate('/calendar')}
+                onDelete={() => void handleDeleteEvent(event)}
+                deleteBusy={actionPendingId === `event:${String(event.id || '')}`}
+                shiftActions={buildTodayRescheduleActionsStage227G1('event', event)}
+              />
+            )) : <EmptyState text="Brak wydarzeń na dziś." />}
+          </div>
+        </StableCard>
+      ),
+    },
+    {
+      key: 'drafts',
+      node: (
+        <StableCard>
+          <SectionHeader title={todaySectionLabels.drafts} count={pendingDrafts.length} icon={<EntityIcon entity="template" className="h-5 w-5" />} tone="cf-severity:warning" collapsed={isCollapsed('drafts')} onToggle={() => toggleSectionCollapse('drafts')} />
+          <div hidden={isCollapsed('drafts')}>
+            {pendingDrafts.length ? pendingDrafts.map((draft: any) => (
+              <RowLink
+                key={String(draft.id || getDraftText(draft))}
+                to="/ai-drafts"
+                title={getDraftText(draft)}
+                meta={formatDateTime(readText(draft, ['createdAt', 'created_at'], ''))}
+                badge="Szkic"
+              />
+            )) : <EmptyState text="Brak szkiców do zatwierdzenia." />}
+          </div>
+        </StableCard>
+      ),
+    },
+    {
+      key: 'upcoming',
+      node: (
+        <StableCard>
+          <SectionHeader title={todaySectionLabels.upcoming} count={upcomingRowsAll.length} icon={<CalendarDays className="h-5 w-5" />} tone="bg-indigo-50 text-indigo-700" collapsed={isCollapsed('upcoming')} onToggle={() => toggleSectionCollapse('upcoming')} />
+          <div hidden={isCollapsed('upcoming')}>
+            {upcomingRowsAll.length > upcomingRowsPreview.length ? (
+              <p className="px-4 pt-3 text-xs font-semibold text-slate-500" data-stage232b-upcoming-preview-disclosure="true">pokazano {upcomingRowsPreview.length} z {upcomingRowsAll.length}</p>
+            ) : null}
+            {upcomingDayCards.length ? (
+              <div data-today-next7-v30="true" className="grid gap-3 p-4">
+                {upcomingDayCards.map((day) => (
+                  <div key={day.dateKey} data-today-next7-day-card="true" className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="text-sm font-black text-slate-900">{day.title}</p>
+                        <p className="text-xs font-semibold text-slate-500">{day.dateLabel}</p>
+                      </div>
+                      <span data-today-next7-count-badge="true" className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-700">
+                        {day.countLabel}
+                      </span>
+                    </div>
+
+                    {day.rows.length ? (
+                      <div className="mt-3 space-y-2" data-today-next7-day-items="true">
+                        {day.rows.map((row) => (
+                          row.kind === 'task' || row.kind === 'event' ? (
+                            <WorkItemCard
+                              key={row.id}
+                              kind={row.kind}
+                              href={row.to}
+                              title={row.title}
+                              helper={row.helper}
+                              dateLabel={formatDateTime(row.momentRaw)}
+                              statusLabel={getTodayWorkItemStatusLabel(row.kind, row.status, row.momentRaw, todayKey)}
+                              tone={getTodayWorkItemTone(row.status, row.momentRaw, todayKey)}
+                              completed={isClosedStatus(row.status)}
+                              compact
+                              onDone={() => row.kind === 'task' ? void handleMarkTaskDone(row.rawId || '') : void handleMarkEventDone(row.rawId || '')}
+                              doneBusy={actionPendingId === `${row.kind}-done:${row.rawId || ''}`}
+                              shiftActions={row.kind === 'task' || row.kind === 'event' ? buildTodayRescheduleActionsStage227G1(row.kind, row.raw) : []}
+                            />
+                          ) : (
+                            <Link key={row.id} to={row.to} className="block rounded-xl border border-slate-100 bg-slate-50/70 p-3 text-sm transition hover:border-blue-200 hover:bg-blue-50">
+                              <div className="flex items-start justify-between gap-3">
+                                <div className="min-w-0">
+                                  <p className="font-semibold text-slate-900">{row.title}</p>
+                                  <p className="mt-1 text-xs font-medium text-slate-500">{row.meta}</p>
+                                </div>
+                                <span className="inline-flex shrink-0 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-bold text-slate-600">
+                                  {row.badge}
+                                </span>
+                              </div>
+                            </Link>
+                          )
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            ) : <EmptyState text="Brak zaplanowanych akcji w kolejnych 7 dniach." />}
+          </div>
+        </StableCard>
+      ),
+    },
+  ];
+  const visibleSectionCards = todaySectionCards.filter(({ key }) => sectionVisible(key));
+
 
   return (
     <Layout>
@@ -1704,220 +1946,13 @@ function TodayStable() {
           })}
         </section>
 
-        <section className="grid gap-4 xl:grid-cols-3" hidden={!sectionVisible('risk') && !sectionVisible('no_action') && !sectionVisible('waiting')}>
-          <StableCard>
-            <SectionHeader title={todaySectionLabels.no_action} count={noActionLeads.length} icon={<AlertTriangle className="h-5 w-5" />} tone="cf-severity:error" collapsed={isCollapsed('no_action')} onToggle={() => toggleSectionCollapse('no_action')} />
-            <div hidden={isCollapsed('no_action')}>
-            {noActionLeads.length ? noActionLeads.map(({ lead, item }) => (
-              <RowLink
-                key={String(lead.id || getLeadTitle(lead))}
-                to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
-                title={getLeadTitle(lead)}
-                helper=""
-                meta={'Ruch: ' + item.suggestedAction + ' · ' + item.reason}
-                badge={item.statusLabel}
-                badgeTone="red"
-                onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
-                onDelete={() => void handleArchiveLead(lead)}
-                deleting={actionPendingId === `lead:${String(lead.id || '')}`}
-              />
-            )) : <EmptyState text="Brak leadów bez najbliższej zaplanowanej akcji." />}
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3" data-stage232t-r1c-today-section-grid="true">
+          {visibleSectionCards.map(({ key, node }) => (
+            <div key={key} data-stage232t-r1c-today-section-card={key} className="min-w-0">
+              {node}
             </div>
-          </StableCard>
-
-          <StableCard>
-            <SectionHeader title={todaySectionLabels.risk} count={highValueAtRiskRows.length} icon={<TrendingUp className="h-5 w-5" />} tone="cf-severity:error" collapsed={isCollapsed('risk')} onToggle={() => toggleSectionCollapse('risk')} />
-            <div hidden={isCollapsed('risk')}>
-            {highValueAtRiskRows.length ? highValueAtRiskRows.map(({ lead, item }) => (
-              <RowLink
-                key={String(lead.id || getLeadTitle(lead))}
-                to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
-                title={getLeadTitle(lead)}
-                helper=""
-                meta={'Ruch: ' + item.suggestedAction + ' · ' + item.reason}
-                badge={String(Math.round(item.valuePln)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' PLN'}
-                badgeTone="red"
-                onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
-                onDelete={() => void handleArchiveLead(lead)}
-                deleting={actionPendingId === `lead:${String(lead.id || '')}`}
-              />
-            )) : <EmptyState text="Brak wartościowych leadów w ryzyku." />}
-            </div>
-          </StableCard>
-
-          <StableCard>
-            <SectionHeader title={todaySectionLabels.waiting} count={waitingLeadRows.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" collapsed={isCollapsed('waiting')} onToggle={() => toggleSectionCollapse('waiting')} />
-            <div hidden={isCollapsed('waiting')}>
-            {waitingLeadRows.length ? waitingLeadRows.map(({ lead, item }) => (
-              <RowLink
-                key={String(lead.id || getLeadTitle(lead))}
-                to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
-                title={getLeadTitle(lead)}
-                helper=""
-                meta={'Ruch: ' + item.suggestedAction + ' · ' + item.reason}
-                badge={item.statusLabel}
-                badgeTone={item.severity === 'critical' ? 'red' : 'amber'}
-                onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
-                onDelete={() => void handleArchiveLead(lead)}
-                deleting={actionPendingId === `lead:${String(lead.id || '')}`}
-              />
-            )) : <EmptyState text="Brak leadów w trybie waiting wymagających pilnej kontroli." />}
-            </div>
-          </StableCard>
+          ))}
         </section>
-
-        <section className="grid gap-4 xl:grid-cols-2" hidden={!sectionVisible('leads') && !sectionVisible('tasks') && !sectionVisible('events') && !sectionVisible('drafts')}>
-          <StableCard>
-            <SectionHeader title={todaySectionLabels.leads} count={actionRequiredRows.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" collapsed={isCollapsed('leads')} onToggle={() => toggleSectionCollapse('leads')} />
-<div hidden={isCollapsed('leads')}>
-            {actionRequiredRows.length ? actionRequiredRows.map((item) => (
-              <RowLink
-                key={item.key}
-                to={item.href}
-                title={item.title}
-                helper=""
-                meta={'Ruch: ' + item.suggestedAction + ' · ' + item.reason}
-                badge={item.statusLabel}
-                badgeTone={item.severity === 'critical' ? 'red' : item.severity === 'warning' ? 'amber' : 'blue'}
-                taskId={item.entityType === 'task' ? item.entityId : undefined}
-                doneKind={item.entityType === 'task' || item.entityType === 'event' ? item.entityType : undefined}
-              />
-            )) : <EmptyState text="Brak tematów wymagających ruchu." />}
-            </div>
-          </StableCard>
-
-          <StableCard>
-            <SectionHeader title={todaySectionLabels.tasks} count={operatorTasks.length} icon={<CheckSquare className="h-5 w-5" />} tone="bg-emerald-50 text-emerald-700" collapsed={isCollapsed('tasks')} onToggle={() => toggleSectionCollapse('tasks')} />
-            <div hidden={isCollapsed('tasks')}>
-            {operatorTasks.length ? operatorTasks.map(({ task, momentRaw }) => {
-              const caseRecord = task.caseId ? casesById.get(String(task.caseId)) : null;
-              return (
-                <WorkItemCard
-                  key={String(task.id || getTaskTitle(task))}
-                  kind="task"
-                  href="/tasks"
-                  title={getTaskTitle(task)}
-                  helper={caseRecord ? getCaseTitle(caseRecord) : readText(task, ['leadName', 'lead_name'], '')}
-                  dateLabel={formatDateTime(momentRaw)}
-                  statusLabel={getTodayWorkItemStatusLabel('task', task?.status, momentRaw, todayKey)}
-                  tone={getTodayWorkItemTone(task?.status, momentRaw, todayKey)}
-                  completed={isClosedStatus(task?.status)}
-                  onDone={() => void handleMarkTaskDone(String(task.id || ''))}
-                  doneBusy={actionPendingId === `task-done:${String(task.id || '')}`}
-                  onEdit={() => navigate('/tasks')}
-                  onDelete={() => void handleDeleteTask(task)}
-                  deleteBusy={actionPendingId === `task:${String(task.id || '')}`}
-                  shiftActions={buildTodayRescheduleActionsStage227G1('task', task)}
-                />
-              );
-            }) : <EmptyState text="Brak zadań zaległych lub na dziś." />}
-            </div>
-          </StableCard>
-
-          <StableCard>
-            <SectionHeader title={todaySectionLabels.events} count={todayEvents.length} icon={<CalendarDays className="h-5 w-5" />} tone="bg-indigo-50 text-indigo-700" collapsed={isCollapsed('events')} onToggle={() => toggleSectionCollapse('events')} />
-            <div hidden={isCollapsed('events')}>
-            {todayEvents.length ? todayEvents.map(({ event, momentRaw }) => (
-              <WorkItemCard
-                key={String(event.id || event.title)}
-                kind="event"
-                href="/calendar"
-                title={readText(event, ['title'], 'Wydarzenie')}
-                helper={readText(event, ['type'], 'event')}
-                dateLabel={formatDateTime(momentRaw)}
-                statusLabel={getTodayWorkItemStatusLabel('event', event?.status, momentRaw, todayKey)}
-                tone={getTodayWorkItemTone(event?.status, momentRaw, todayKey)}
-                completed={isClosedStatus(event?.status)}
-                onDone={() => void handleMarkEventDone(String(event.id || ''))}
-                doneBusy={actionPendingId === `event-done:${String(event.id || '')}`}
-                onEdit={() => navigate('/calendar')}
-                onDelete={() => void handleDeleteEvent(event)}
-                deleteBusy={actionPendingId === `event:${String(event.id || '')}`}
-                shiftActions={buildTodayRescheduleActionsStage227G1('event', event)}
-              />
-            )) : <EmptyState text="Brak wydarzeń na dziś." />}
-            </div>
-          </StableCard>
-
-          <StableCard>
-            <SectionHeader title={todaySectionLabels.drafts} count={pendingDrafts.length} icon={<EntityIcon entity="template" className="h-5 w-5" />} tone="cf-severity:warning" collapsed={isCollapsed('drafts')} onToggle={() => toggleSectionCollapse('drafts')} />
-            <div hidden={isCollapsed('drafts')}>
-            {pendingDrafts.length ? pendingDrafts.map((draft: any) => (
-              <RowLink
-                key={String(draft.id || getDraftText(draft))}
-                to="/ai-drafts"
-                title={getDraftText(draft)}
-                meta={formatDateTime(readText(draft, ['createdAt', 'created_at'], ''))}
-                badge="Szkic"
-              />
-            )) : <EmptyState text="Brak szkiców do zatwierdzenia." />}
-            </div>
-          </StableCard>
-        </section>
-
-        <div hidden={!sectionVisible('upcoming')}>
-          <StableCard>
-            <SectionHeader title={todaySectionLabels.upcoming} count={upcomingRowsAll.length} icon={<CalendarDays className="h-5 w-5" />} tone="bg-indigo-50 text-indigo-700" collapsed={isCollapsed('upcoming')} onToggle={() => toggleSectionCollapse('upcoming')} />
-            <div hidden={isCollapsed('upcoming')}>
-              {upcomingRowsAll.length > upcomingRowsPreview.length ? (
-                <p className="px-4 pt-3 text-xs font-semibold text-slate-500" data-stage232b-upcoming-preview-disclosure="true">pokazano {upcomingRowsPreview.length} z {upcomingRowsAll.length}</p>
-              ) : null}
-              {upcomingDayCards.length ? (
-                <div data-today-next7-v30="true" className="grid gap-3 p-4">
-                  {upcomingDayCards.map((day) => (
-                    <div key={day.dateKey} data-today-next7-day-card="true" className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <p className="text-sm font-black text-slate-900">{day.title}</p>
-                          <p className="text-xs font-semibold text-slate-500">{day.dateLabel}</p>
-                        </div>
-                        <span data-today-next7-count-badge="true" className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-700">
-                          {day.countLabel}
-                        </span>
-                      </div>
-
-                      {day.rows.length ? (
-                        <div className="mt-3 space-y-2" data-today-next7-day-items="true">
-                          {day.rows.map((row) => (
-                            row.kind === 'task' || row.kind === 'event' ? (
-                              <WorkItemCard
-                                key={row.id}
-                                kind={row.kind}
-                                href={row.to}
-                                title={row.title}
-                                helper={row.helper}
-                                dateLabel={formatDateTime(row.momentRaw)}
-                                statusLabel={getTodayWorkItemStatusLabel(row.kind, row.status, row.momentRaw, todayKey)}
-                                tone={getTodayWorkItemTone(row.status, row.momentRaw, todayKey)}
-                                completed={isClosedStatus(row.status)}
-                                compact
-                                onDone={() => row.kind === 'task' ? void handleMarkTaskDone(row.rawId || '') : void handleMarkEventDone(row.rawId || '')}
-                                doneBusy={actionPendingId === `${row.kind}-done:${row.rawId || ''}`}
-                                shiftActions={row.kind === 'task' || row.kind === 'event' ? buildTodayRescheduleActionsStage227G1(row.kind, row.raw) : []}
-                              />
-                            ) : (
-                              <Link key={row.id} to={row.to} className="block rounded-xl border border-slate-100 bg-slate-50/70 p-3 text-sm transition hover:border-blue-200 hover:bg-blue-50">
-                                <div className="flex items-start justify-between gap-3">
-                                  <div className="min-w-0">
-                                    <p className="font-semibold text-slate-900">{row.title}</p>
-                                    <p className="mt-1 text-xs font-medium text-slate-500">{row.meta}</p>
-                                  </div>
-                                  <span className="inline-flex shrink-0 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-bold text-slate-600">
-                                    {row.badge}
-                                  </span>
-                                </div>
-                              </Link>
-                            )
-                          ))}
-                        </div>
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
-              ) : <EmptyState text="Brak zaplanowanych akcji w kolejnych 7 dniach." />}
-            </div>
-          </StableCard>
-        </div>
 
         {loading ? (
           <div className="fixed bottom-4 right-4 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 shadow-lg">
