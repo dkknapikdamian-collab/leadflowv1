@@ -18,16 +18,16 @@ async function loadRuntimeSourceTruth() {
   }
 }
 
-test('CF-RUNTIME-00 route truth keeps canonical /case and recognizes legacy /cases alias', async () => {
+test('CF-RUNTIME-00 route truth keeps canonical /cases and recognizes legacy /case alias', async () => {
   const runtime = await loadRuntimeSourceTruth();
-  assert.equal(runtime.buildCaseDetailPath('abc'), '/case/abc');
-  assert.equal(runtime.buildCaseDetailPath('a b/ą'), '/case/a%20b%2F%C4%85');
-  assert.equal(runtime.buildLegacyCaseDetailPath('abc'), '/cases/abc');
+  assert.equal(runtime.buildCaseDetailPath('abc'), '/cases/abc');
+  assert.equal(runtime.buildCaseDetailPath('a b/ą'), '/cases/a%20b%2F%C4%85');
+  assert.equal(runtime.buildLegacyCaseDetailPath('abc'), '/case/abc');
   assert.equal(runtime.isCaseDetailPath('/case/abc'), true);
   assert.equal(runtime.isCaseDetailPath('/cases/abc'), true);
-  assert.equal(runtime.isCanonicalCaseDetailPath('/case/abc'), true);
-  assert.equal(runtime.isCanonicalCaseDetailPath('/cases/abc'), false);
-  assert.equal(runtime.isLegacyCaseDetailPath('/cases/abc?tab=history'), true);
+  assert.equal(runtime.isCanonicalCaseDetailPath('/cases/abc'), true);
+  assert.equal(runtime.isCanonicalCaseDetailPath('/case/abc'), false);
+  assert.equal(runtime.isLegacyCaseDetailPath('/case/abc?tab=history'), true);
   assert.equal(runtime.isCaseDetailPath('/clients/abc'), false);
 });
 

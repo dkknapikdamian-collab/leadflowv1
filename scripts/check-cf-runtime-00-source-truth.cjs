@@ -25,6 +25,7 @@
 // CF_RUNTIME_00_STAGE_A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_SCOPE_COMPAT
 // CF_RUNTIME_00_STAGE_A35_R2_REMOVE_SINGLE_USER_OWNERLESS_NOISE_SCOPE_COMPAT
 // CF_RUNTIME_00_STAGE_A35B_MANDATORY_NEXT_STEP_CONTRACT_SCOPE_COMPAT
+// CF_RUNTIME_00_STAGE233A_R1_CASE_DETAIL_CANONICAL_ROUTE_SCOPE_COMPAT
 // CF_RUNTIME_00_STAGE232I1_R8_MISSING_MODAL_READABLE_STYLE
 // CF_RUNTIME_00_R19_MASS_SCOPE_CLOSURE_ALLOWED
 // CF_RUNTIME_00_R18_SHEBANG_SCOPE_ALLOWED
@@ -100,8 +101,8 @@ if (exists('src/lib/closeflow-runtime-source-truth.ts')) {
   expect(helper.includes('CF_RUNTIME_00_SOURCE_TRUTH_STAGE_OPEN'), 'helper missing stage marker CF_RUNTIME_00_SOURCE_TRUTH_STAGE_OPEN');
   expect(helper.includes('MISSING_GUARD_TEST_STAGE_OPEN'), 'helper missing MISSING_GUARD_TEST_STAGE_OPEN marker');
   expect(helper.includes('CASE_DETAIL_CANONICAL_ROUTE_PREFIX'), 'helper missing CASE_DETAIL_CANONICAL_ROUTE_PREFIX');
-  expect(helper.includes("CASE_DETAIL_CANONICAL_ROUTE_PREFIX = '/case'"), 'helper canonical route must remain /case');
-  expect(helper.includes("CASE_DETAIL_LEGACY_ROUTE_PREFIX = '/cases'"), 'helper legacy route alias must remain /cases');
+  expect(helper.includes("CASE_DETAIL_CANONICAL_ROUTE_PREFIX = '/cases'"), 'helper canonical route must remain /cases');
+  expect(helper.includes("CASE_DETAIL_LEGACY_ROUTE_PREFIX = '/case'"), 'helper legacy route alias must remain /case');
   expect(helper.includes('buildRuntimeAccessPlanTruth'), 'helper missing buildRuntimeAccessPlanTruth');
   expect(helper.includes("planSource: 'fallback_status'"), 'helper must expose fallback_status for paid_active without planId');
   expect(helper.includes('requiresPlanIdConfirmation: true'), 'helper must require planId confirmation for paid_active without planId');
@@ -158,7 +159,11 @@ const allowedChangePrefixes = [
   'src/pages/Calendar.tsx',
   'scripts/check-stage232t-r6d-calendar-lead-delete-and-relation-label.cjs',
   'tests/stage232t-r6d-calendar-lead-delete-and-relation-label.test.cjs',
-  '_project/runs/STAGE232T_R6D_CALENDAR_LEAD_DELETE_AND_RELATION_LABEL.md',  'tests/stage232t-r1d-today-work-item-actions-source-truth.test.cjs',
+  '_project/runs/STAGE232T_R6D_CALENDAR_LEAD_DELETE_AND_RELATION_LABEL.md',
+  // STAGE232T_R6E_CALENDAR_LEAD_DONE_NO_DUPLICATE_ALLOWLIST
+  'scripts/check-stage232t-r6e-calendar-lead-done-no-duplicate.cjs',
+  'tests/stage232t-r6e-calendar-lead-done-no-duplicate.test.cjs',
+  '_project/runs/STAGE232T_R6E_CALENDAR_LEAD_DONE_NO_DUPLICATE.md',  'tests/stage232t-r1d-today-work-item-actions-source-truth.test.cjs',
   'tests/stage97-today-overdue-task-done-button.test.cjs',
   '_project/runs/STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH.md',
   // STAGE232T_R1E_TODAY_ACTIONS_CLOSEOUT_DELETE_EDIT_TRASH_VST_ALLOWLIST
@@ -201,6 +206,14 @@ const allowedChangePrefixes = [
   '_project/09_TESTY_DO_WYKONANIA_I_WYNIKI.md',
   '_project/10_ZIPY_WDROZENIA_PUSH.md',
   '_project/11_RYZYKA_BUGI_I_DLUG_TECHNICZNY.md',
+  // STAGE233A_R1_CASE_DETAIL_CANONICAL_ROUTE_ALLOWLIST
+  'src/App.tsx',
+  'src/pages/Cases.tsx',
+  'src/lib/routes.ts',
+  'src/lib/closeflow-runtime-source-truth.ts',
+  'scripts/check-stage233a-route-canonicalization.cjs',
+  'tests/stage233a-route-canonicalization.test.cjs',
+  '_project/runs/STAGE233A_R1_CASE_DETAIL_CANONICAL_ROUTE.md',
   // STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX_R3_ALLOWLIST
   'api/work-items.ts',
   '_project/obsidian_updates/2026-06-23_STAGE232G_R1E1_WORK_ITEMS_VERCEL_TSC_HOTFIX.md',

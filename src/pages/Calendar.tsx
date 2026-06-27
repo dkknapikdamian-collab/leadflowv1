@@ -816,6 +816,65 @@ export default function Calendar() {
     });
   }
 
+
+  function getCalendarLeadActionDedupKeyStage232T_R6E(entry: ScheduleEntry) {
+    const leadId = readCalendarEntryLeadIdStage232T_R6(entry);
+    if (!leadId) return '';
+
+    const rawStart = readCalendarRawText(
+      entry.startsAt
+      || entry.raw?.scheduledAt
+      || entry.raw?.scheduled_at
+      || entry.raw?.nextActionAt
+      || entry.raw?.next_action_at,
+    );
+
+    const minuteKey = rawStart ? rawStart.slice(0, 16) : '';
+    const titleKey = readCalendarRawText(
+      entry.title
+      || entry.raw?.nextActionTitle
+      || entry.raw?.next_action_title
+      || entry.raw?.title,
+    ).replace(/\s+/g, ' ').trim().toLowerCase();
+
+    return [leadId, minuteKey, titleKey].join('|');
+  }
+
+  function getCalendarLeadActionDedupeRankStage232T_R6E(entry: ScheduleEntry) {
+    const completed = isCompletedCalendarEntry(entry);
+    if (completed && entry.kind === 'task') return 30;
+    if (completed) return 20;
+    if (entry.kind === 'task') return 10;
+    return 0;
+  }
+
+  function dedupeCalendarLeadActionRowsStage232T_R6E(entries: ScheduleEntry[]) {
+    const winners = new Map<string, ScheduleEntry>();
+
+    for (const entry of entries) {
+      const key = getCalendarLeadActionDedupKeyStage232T_R6E(entry);
+      if (!key) continue;
+
+      const current = winners.get(key);
+      if (!current || getCalendarLeadActionDedupeRankStage232T_R6E(entry) > getCalendarLeadActionDedupeRankStage232T_R6E(current)) {
+        winners.set(key, entry);
+      }
+    }
+
+    const emitted = new Set<string>();
+    return entries.filter((entry) => {
+      const key = getCalendarLeadActionDedupKeyStage232T_R6E(entry);
+      if (!key) return true;
+
+      const winner = winners.get(key);
+      if (winner !== entry) return false;
+      if (emitted.has(key)) return false;
+
+      emitted.add(key);
+      return true;
+    });
+  }
+
   const [loading, setLoading] = useState(true);
 
   const [isNewEventOpen, setIsNewEventOpen] = useState(false);
@@ -2173,7 +2232,7 @@ export default function Calendar() {
   void monthRangeEnd;
 
   const scheduleEntries = useMemo(
-    () => enrichCalendarEntryRelationsStage232T_R6([
+    () => dedupeCalendarLeadActionRowsStage232T_R6E(enrichCalendarEntryRelationsStage232T_R6([
       ...combineScheduleEntries({
         events,
         tasks,
@@ -2182,12 +2241,12 @@ export default function Calendar() {
         rangeEnd: calendarDataRangeEnd,
       }),
       ...completedLeadShadowEntriesStage232T_R5,
-    ]),
+    ])),
     [calendarDataRangeEnd, clientRecordByIdStage232T_R6, completedLeadShadowEntriesStage232T_R5, events, leadRecordByIdStage232T_R6, leads, monthRangeStart, tasks],
   );
 
   const weekEntries = useMemo(
-    () => enrichCalendarEntryRelationsStage232T_R6([
+    () => dedupeCalendarLeadActionRowsStage232T_R6E(enrichCalendarEntryRelationsStage232T_R6([
       ...combineScheduleEntries({
         events,
         tasks,
@@ -2196,7 +2255,7 @@ export default function Calendar() {
         rangeEnd: rollingWeekEnd,
       }),
       ...completedLeadShadowEntriesStage232T_R5,
-    ]),
+    ])),
     [clientRecordByIdStage232T_R6, completedLeadShadowEntriesStage232T_R5, events, leadRecordByIdStage232T_R6, leads, rollingWeekEnd, rollingWeekStart, tasks],
   );
 
