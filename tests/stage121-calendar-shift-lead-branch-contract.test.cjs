@@ -49,10 +49,10 @@ test('Stage121 calendar shift handlers support lead entries instead of no-op suc
   );
 
   for (const source of [shiftDays, shiftHours]) {
-    assert.match(source, /entry\.kind\s*===\s*'lead'/, 'lead branch missing in shift handler.');
+    assert.match(source, /actionEntry\.kind\s*===\s*'lead'/, 'lead branch missing in shift handler.');
     assert.match(source, /await\s+updateLeadInSupabase\(/, 'lead branch must persist nextActionAt.');
     assert.match(source, /nextActionAt:\s*shiftedStartAt/, 'lead branch must write shifted nextActionAt.');
-    assert.match(source, /applyCalendarShiftOptimisticState\(entry,\s*shiftedStartAt/, 'shift handler must patch visible local state after persistence.');
+    assert.match(source, /applyCalendarShiftOptimisticState\(actionEntry,\s*shiftedStartAt/, 'shift handler must patch visible local state after persistence.');
     assert.match(source, /toast\.error\('Nie można przesunąć tego typu wpisu\.'\);[\s\S]*return;/, 'unsupported kinds must not show success toast.');
   }
 });

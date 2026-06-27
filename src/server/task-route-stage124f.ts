@@ -144,6 +144,23 @@ function isClosedTaskStatusForLeadNextActionStage228R17(value: unknown) {
 const CALENDAR_HIDDEN_TASK_STATUSES_STAGE229A = new Set(['done', 'completed', 'cancelled', 'canceled', 'archived', 'deleted', 'removed']);
 function shouldHideTaskFromCalendarStage229A(value: unknown) { return CALENDAR_HIDDEN_TASK_STATUSES_STAGE229A.has(asText(value).toLowerCase()); }
 function shouldHideTaskFromTasksStage229A(value: unknown) { return ['deleted', 'archived', 'removed'].includes(asText(value).toLowerCase()); }
+const CALENDAR_RESTORED_TASK_STATUSES_STAGE232T_R3 = new Set(['todo', 'in_progress', 'open', 'pending', 'scheduled']);
+function shouldRestoreTaskVisibilityStage232T_R3(value: unknown) { return CALENDAR_RESTORED_TASK_STATUSES_STAGE232T_R3.has(asText(value).toLowerCase()); }
+
+function preserveTaskDatePatchTimeStage232T_R3(dateValue: unknown, currentRow: Record<string, unknown> | null | undefined) {
+  const date = asText(dateValue);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return date ? normalizeCloseFlowDateTimeToUtcIso(String(date) + 'T09:00') : null;
+  const existing = asText(
+    currentRow?.scheduled_at
+    || currentRow?.due_at
+    || currentRow?.start_at
+    || currentRow?.time,
+  );
+  const timeMatch = existing.match(/T(\d{2}:\d{2})(?::\d{2}(?:\.\d{1,3})?)?/);
+  const plainTimeMatch = existing.match(/^(\d{2}:\d{2})$/);
+  const preservedTime = timeMatch?.[1] || plainTimeMatch?.[1] || '09:00';
+  return normalizeCloseFlowDateTimeToUtcIso(date + 'T' + preservedTime);
+}
 
 function isMissingItemTypeForLeadNextActionStage228R17(value: unknown) {
   return asText(value).toLowerCase() === 'missing_item';
@@ -236,13 +253,23 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
         return;
       }
 
+      const existingTaskStage232T_R3 = await selectFirstAvailable([
+        withWorkspaceFilter(
+          'work_items?select=id,scheduled_at,due_at,start_at,time,status,show_in_tasks,show_in_calendar&id=eq.' + encodeURIComponent(String(body.id)) + '&limit=1',
+          workspaceId,
+        ),
+      ]).catch(() => null);
+      const existingTaskRowStage232T_R3 = Array.isArray(existingTaskStage232T_R3?.data)
+        ? existingTaskStage232T_R3.data[0] as Record<string, unknown> | undefined
+        : undefined;
       const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
       if (body.title !== undefined) payload.title = body.title;
       if (body.type !== undefined) payload.type = body.type;
       if (body.status !== undefined) payload.status = body.status;
       if (body.priority !== undefined) payload.priority = body.priority;
-      if (body.date !== undefined) payload.scheduled_at = body.date ? normalizeCloseFlowDateTimeToUtcIso(String(body.date) + 'T09:00') : null;
+      if (body.date !== undefined) payload.scheduled_at = preserveTaskDatePatchTimeStage232T_R3(body.date, existingTaskRowStage232T_R3);
       if (body.scheduledAt !== undefined) payload.scheduled_at = body.scheduledAt ? normalizeCloseFlowDateTimeToUtcIso(body.scheduledAt) : null;
+      if (body.dueAt !== undefined) payload.scheduled_at = body.dueAt ? normalizeCloseFlowDateTimeToUtcIso(body.dueAt) : null;
       if (body.leadId !== undefined) payload.lead_id = body.leadId || null;
       if (body.caseId !== undefined) payload.case_id = body.caseId || null;
       if (body.clientId !== undefined) payload.client_id = body.clientId || null;
@@ -254,6 +281,10 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
       if (body.showInCalendar !== undefined) payload.show_in_calendar = Boolean(body.showInCalendar);
       if (body.show_in_calendar !== undefined) payload.show_in_calendar = Boolean(body.show_in_calendar);
       const nextStatusForCalendarStage229A = body.status ?? payload.status;
+      if (shouldRestoreTaskVisibilityStage232T_R3(nextStatusForCalendarStage229A)) {
+        payload.show_in_calendar = true;
+        payload.show_in_tasks = true;
+      }
       if (shouldHideTaskFromCalendarStage229A(nextStatusForCalendarStage229A)) payload.show_in_calendar = false;
       if (shouldHideTaskFromTasksStage229A(nextStatusForCalendarStage229A)) payload.show_in_tasks = false;
 

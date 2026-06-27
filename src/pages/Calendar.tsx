@@ -726,6 +726,7 @@ export default function Calendar() {
   const calendarLoadSeqRef = useRef(0);
   const calendarReadyRetryTimersRef = useRef<number[]>([]);
   const calendarGoogleInboundRefreshSeqRef = useRef(0);
+  const calendarOperationalMutationPendingRef = useRef<Set<string>>(new Set());
 
   // STAGE232G_R1I_CALENDAR_COMPLETED_RETENTION_AFTER_REFRESH_FIX
   // Calendar must keep a just-completed task/event visible after refresh even if the backend bundle temporarily omits completed rows.
@@ -1565,6 +1566,46 @@ export default function Calendar() {
     }
   }
 
+  function acquireCalendarOperationalMutationStage232T_R3(key: string) {
+    if (calendarOperationalMutationPendingRef.current.has(key)) return false;
+    calendarOperationalMutationPendingRef.current.add(key);
+    return true;
+  }
+
+  function releaseCalendarOperationalMutationStage232T_R3(key: string) {
+    calendarOperationalMutationPendingRef.current.delete(key);
+  }
+
+  function getLatestCalendarEntrySnapshotStage232T_R3(entry: ScheduleEntry): ScheduleEntry {
+    const sourceId = String(entry.sourceId || entry.raw?.id || entry.id || '').trim();
+    if (!sourceId) return entry;
+    const currentRows = entry.kind === 'event'
+      ? events
+      : entry.kind === 'task'
+        ? tasks
+        : entry.kind === 'lead'
+          ? leads
+          : [];
+    const currentRow = (currentRows as any[]).find((row: any) => String(row?.id || '') === sourceId);
+    if (!currentRow) return entry;
+    const normalized = normalizeWorkItem(currentRow);
+    const nextStartAt = entry.kind === 'event'
+      ? normalized.startAt || normalized.dateAt || entry.startsAt
+      : entry.kind === 'task'
+        ? normalized.scheduledAt || normalized.dateAt || getTaskStartAt(currentRow) || entry.startsAt
+        : readCalendarRawText(currentRow?.nextActionAt || currentRow?.next_action_at, entry.startsAt);
+    return {
+      ...entry,
+      startsAt: nextStartAt || entry.startsAt,
+      endsAt: normalized.endAt || entry.endsAt,
+      raw: {
+        ...(entry.raw || {}),
+        ...currentRow,
+        ...normalized,
+      },
+    };
+  }
+
   useEffect(() => {
     // STAGE114B_CALENDAR_LIVE_REFRESH_WORKSPACE_READY_CONTRACT: subscribe/refetch only after workspace is fully ready.
     // FAZA4_ETAP44A_CALENDAR_LIVE_REFRESH: refetch mounted Calendar after task/event/lead mutations.
@@ -2071,39 +2112,43 @@ export default function Calendar() {
       return;
     }
 
+    const sourceId = String(entry.sourceId || entry.raw?.id || entry.id);
+    const mutationKey = entry.kind + ':' + sourceId + ':shift-days';
+    if (!acquireCalendarOperationalMutationStage232T_R3(mutationKey)) return;
+
     try {
       setActionPendingId(String(entry.id) + ':' + String(days));
-      const sourceId = String(entry.sourceId || entry.raw?.id || entry.id);
+      const actionEntry = getLatestCalendarEntrySnapshotStage232T_R3(entry);
       let shiftedStartAt = '';
       let shiftedEndAt: string | null = null;
 
-      if (entry.kind === 'event') {
-        const baseStart = parseISO(toCalendarDateInput(entry.raw?.startAt, entry.startsAt));
+      if (actionEntry.kind === 'event') {
+        const baseStart = parseISO(toCalendarDateInput(actionEntry.raw?.startAt, actionEntry.startsAt));
         shiftedStartAt = toDateTimeLocalValue(addDays(baseStart, days));
-        shiftedEndAt = entry.raw?.endAt
-          ? toDateTimeLocalValue(addDays(parseISO(toCalendarDateInput(entry.raw.endAt, entry.endsAt || entry.startsAt)), days))
+        shiftedEndAt = actionEntry.raw?.endAt
+          ? toDateTimeLocalValue(addDays(parseISO(toCalendarDateInput(actionEntry.raw.endAt, actionEntry.endsAt || actionEntry.startsAt)), days))
           : null;
 
         await updateEventInSupabase({
           id: sourceId,
-          title: readCalendarRawText(entry.raw?.title, entry.title),
-          type: readCalendarRawText(entry.raw?.type, 'meeting'),
+          title: readCalendarRawText(actionEntry.raw?.title, actionEntry.title),
+          type: readCalendarRawText(actionEntry.raw?.type, 'meeting'),
           startAt: shiftedStartAt,
           endAt: shiftedEndAt,
-          leadId: readCalendarRawText(entry.raw?.leadId) || null,
-          caseId: readCalendarRawText(entry.raw?.caseId) || null,
+          leadId: readCalendarRawText(actionEntry.raw?.leadId) || null,
+          caseId: readCalendarRawText(actionEntry.raw?.caseId) || null,
         });
-      } else if (entry.kind === 'task') {
+      } else if (actionEntry.kind === 'task') {
         // STAGE123_CALENDAR_TASK_SHIFT_PAYLOAD_SOURCE:
         // syncTaskDerivedFields prefers scheduledAt, so the shifted value must overwrite
         // scheduledAt/scheduled_at before normalization. Otherwise dueAt loses to the old date.
-        const baseStart = parseISO(getTaskStartAt(entry.raw) || entry.startsAt);
+        const baseStart = parseISO(getTaskStartAt(actionEntry.raw) || actionEntry.startsAt);
         const nextStart = addDays(baseStart, days);
         const shiftedDate = format(nextStart, 'yyyy-MM-dd');
         const shiftedTime = format(nextStart, 'HH:mm');
         shiftedStartAt = toDateTimeLocalValue(nextStart);
         const shiftedTaskDraft = {
-          ...entry.raw,
+          ...actionEntry.raw,
           scheduledAt: shiftedStartAt,
           scheduled_at: shiftedStartAt,
           dueAt: shiftedStartAt,
@@ -2117,78 +2162,89 @@ export default function Calendar() {
         await updateTaskInSupabase({
           id: sourceId,
           title: taskPayload.title,
-          type: readScheduleRawText(entry.raw, 'type', 'follow_up'),
+          type: readScheduleRawText(actionEntry.raw, 'type', 'follow_up'),
           date: taskPayload.date,
           scheduledAt: taskPayload.dueAt,
           dueAt: taskPayload.dueAt,
           time: taskPayload.time,
           status: taskPayload.status,
-          priority: readScheduleRawText(entry.raw, 'priority', 'medium'),
+          priority: readScheduleRawText(actionEntry.raw, 'priority', 'medium'),
           leadId: (taskPayload as any).leadId ?? (taskPayload as any).lead_id ?? null,
-          caseId: readCalendarRawText(entry.raw?.caseId || entry.raw?.case_id) || null,
+          caseId: readCalendarRawText(actionEntry.raw?.caseId || actionEntry.raw?.case_id) || null,
         });
-      } else if (entry.kind === 'lead') {
-        const nextStart = addDays(parseISO(entry.startsAt), days);
+      } else if (actionEntry.kind === 'lead') {
+        const nextStart = addDays(parseISO(actionEntry.startsAt), days);
         shiftedStartAt = toDateTimeLocalValue(nextStart);
         await updateLeadInSupabase({
           id: sourceId,
           nextActionAt: shiftedStartAt,
-          nextActionTitle: readCalendarRawText(entry.raw?.nextActionTitle || entry.raw?.next_action_title, entry.title),
+          nextActionTitle: readCalendarRawText(actionEntry.raw?.nextActionTitle || actionEntry.raw?.next_action_title, actionEntry.title),
         });
       } else {
         toast.error('Nie można przesunąć tego typu wpisu.');
         return;
       }
 
-      applyCalendarShiftOptimisticState(entry, shiftedStartAt, shiftedEndAt);
+      applyCalendarShiftOptimisticState(actionEntry, shiftedStartAt, shiftedEndAt);
       await refreshSupabaseBundle();
-      applyCalendarShiftOptimisticState(entry, shiftedStartAt, shiftedEndAt);
+      applyCalendarShiftOptimisticState(actionEntry, shiftedStartAt, shiftedEndAt);
       toast.success(days === 1 ? 'Przesunięto o 1 dzień' : 'Przesunięto o 1 tydzień');
     } catch (error: any) {
       toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
     } finally {
       setActionPendingId(null);
+      releaseCalendarOperationalMutationStage232T_R3(mutationKey);
     }
   };
 
   const handleShiftEntryHours = async (entry: ScheduleEntry, hours: number) => {
+  // STAGE232T_R3_CALENDAR_SHIFT_HOURS_ACTION_CONTRACT_GUARD
+  if (!isOperationalEntryActionAllowed(entry, 'shift')) {
+    console.warn('STAGE232G_R1D_CALENDAR_ACTIONS_RESPECT_OPERATIONAL_ENTRY_CONTRACT_BLOCKED_UNSUPPORTED_ACTION', getOperationalEntryActionDecision(entry, 'shift'));
+    return;
+  }
+
     if (!hasAccess) {
       toast.error('Trial wygasł.');
       return;
     }
 
+    const sourceId = String(entry.sourceId || entry.raw?.id || entry.id);
+    const mutationKey = entry.kind + ':' + sourceId + ':shift-hours';
+    if (!acquireCalendarOperationalMutationStage232T_R3(mutationKey)) return;
+
     try {
       setActionPendingId(String(entry.id) + ':h' + String(hours));
-      const sourceId = String(entry.sourceId || entry.raw?.id || entry.id);
+      const actionEntry = getLatestCalendarEntrySnapshotStage232T_R3(entry);
       let shiftedStartAt = '';
       let shiftedEndAt: string | null = null;
 
-      if (entry.kind === 'event') {
-        const baseStart = parseISO(toCalendarDateInput(entry.raw?.startAt, entry.startsAt));
+      if (actionEntry.kind === 'event') {
+        const baseStart = parseISO(toCalendarDateInput(actionEntry.raw?.startAt, actionEntry.startsAt));
         shiftedStartAt = toDateTimeLocalValue(addHours(baseStart, hours));
-        shiftedEndAt = entry.raw?.endAt
-          ? toDateTimeLocalValue(addHours(parseISO(toCalendarDateInput(entry.raw.endAt, entry.endsAt || entry.startsAt)), hours))
+        shiftedEndAt = actionEntry.raw?.endAt
+          ? toDateTimeLocalValue(addHours(parseISO(toCalendarDateInput(actionEntry.raw.endAt, actionEntry.endsAt || actionEntry.startsAt)), hours))
           : null;
 
         await updateEventInSupabase({
           id: sourceId,
-          title: readCalendarRawText(entry.raw?.title, entry.title),
-          type: readCalendarRawText(entry.raw?.type, 'meeting'),
+          title: readCalendarRawText(actionEntry.raw?.title, actionEntry.title),
+          type: readCalendarRawText(actionEntry.raw?.type, 'meeting'),
           startAt: shiftedStartAt,
           endAt: shiftedEndAt,
-          leadId: readCalendarRawText(entry.raw?.leadId) || null,
-          caseId: readCalendarRawText(entry.raw?.caseId) || null,
+          leadId: readCalendarRawText(actionEntry.raw?.leadId) || null,
+          caseId: readCalendarRawText(actionEntry.raw?.caseId) || null,
         });
-      } else if (entry.kind === 'task') {
+      } else if (actionEntry.kind === 'task') {
         // STAGE123_CALENDAR_TASK_SHIFT_PAYLOAD_SOURCE_HOURS:
         // See day shift branch: scheduledAt/scheduled_at must be overwritten before normalization.
-        const baseStart = parseISO(getTaskStartAt(entry.raw) || entry.startsAt);
+        const baseStart = parseISO(getTaskStartAt(actionEntry.raw) || actionEntry.startsAt);
         const nextStart = addHours(baseStart, hours);
         const shiftedDate = format(nextStart, 'yyyy-MM-dd');
         const shiftedTime = format(nextStart, 'HH:mm');
         shiftedStartAt = toDateTimeLocalValue(nextStart);
         const shiftedTaskDraft = {
-          ...entry.raw,
+          ...actionEntry.raw,
           scheduledAt: shiftedStartAt,
           scheduled_at: shiftedStartAt,
           dueAt: shiftedStartAt,
@@ -2202,37 +2258,38 @@ export default function Calendar() {
         await updateTaskInSupabase({
           id: sourceId,
           title: taskPayload.title,
-          type: readScheduleRawText(entry.raw, 'type', 'follow_up'),
+          type: readScheduleRawText(actionEntry.raw, 'type', 'follow_up'),
           date: taskPayload.date,
           scheduledAt: taskPayload.dueAt,
           dueAt: taskPayload.dueAt,
           time: taskPayload.time,
           status: taskPayload.status,
-          priority: readScheduleRawText(entry.raw, 'priority', 'medium'),
+          priority: readScheduleRawText(actionEntry.raw, 'priority', 'medium'),
           leadId: (taskPayload as any).leadId ?? (taskPayload as any).lead_id ?? null,
-          caseId: readCalendarRawText(entry.raw?.caseId || entry.raw?.case_id) || null,
+          caseId: readCalendarRawText(actionEntry.raw?.caseId || actionEntry.raw?.case_id) || null,
         });
-      } else if (entry.kind === 'lead') {
-        const nextStart = addHours(parseISO(entry.startsAt), hours);
+      } else if (actionEntry.kind === 'lead') {
+        const nextStart = addHours(parseISO(actionEntry.startsAt), hours);
         shiftedStartAt = toDateTimeLocalValue(nextStart);
         await updateLeadInSupabase({
           id: sourceId,
           nextActionAt: shiftedStartAt,
-          nextActionTitle: readCalendarRawText(entry.raw?.nextActionTitle || entry.raw?.next_action_title, entry.title),
+          nextActionTitle: readCalendarRawText(actionEntry.raw?.nextActionTitle || actionEntry.raw?.next_action_title, actionEntry.title),
         });
       } else {
         toast.error('Nie można przesunąć tego typu wpisu.');
         return;
       }
 
-      applyCalendarShiftOptimisticState(entry, shiftedStartAt, shiftedEndAt);
+      applyCalendarShiftOptimisticState(actionEntry, shiftedStartAt, shiftedEndAt);
       await refreshSupabaseBundle();
-      applyCalendarShiftOptimisticState(entry, shiftedStartAt, shiftedEndAt);
+      applyCalendarShiftOptimisticState(actionEntry, shiftedStartAt, shiftedEndAt);
       toast.success(hours === 1 ? 'Przesunięto o 1 godzinę' : 'Przesunięto o ' + String(hours) + ' godz.');
     } catch (error: any) {
       toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
     } finally {
       setActionPendingId(null);
+      releaseCalendarOperationalMutationStage232T_R3(mutationKey);
     }
   };
 
@@ -2295,23 +2352,30 @@ export default function Calendar() {
       }
 
       if (entry.kind === 'event') {
+        const eventStartAt = readCalendarRawText(entry.raw?.startAt, entry.startsAt);
         await updateEventInSupabase({
           id: entry.sourceId,
           title: readCalendarRawText(entry.raw?.title, entry.title),
           type: readCalendarRawText(entry.raw?.type, 'meeting'),
-          startAt: readCalendarRawText(entry.raw?.startAt, entry.startsAt),
+          startAt: eventStartAt,
           endAt: entry.raw?.endAt || entry.endsAt || null,
           status: wasCompleted ? 'scheduled' : 'completed',
+          showInCalendar: wasCompleted,
           leadId: readCalendarRawText(entry.raw?.leadId) || null,
           caseId: readCalendarRawText(entry.raw?.caseId) || null,
         });
       } else if (entry.kind === 'task') {
+        const taskStartAt = readCalendarRawText(entry.raw?.scheduledAt || entry.raw?.dueAt || entry.raw?.startAt, entry.startsAt);
         await updateTaskInSupabase({
           id: entry.sourceId,
           title: readCalendarRawText(entry.raw?.title, entry.title),
           type: entry.raw?.type,
-          date: entry.raw?.date || entry.startsAt.slice(0, 10),
+          date: taskStartAt.slice(0, 10),
+          scheduledAt: taskStartAt,
+          dueAt: taskStartAt,
+          time: taskStartAt.slice(11, 16),
           status: wasCompleted ? 'todo' : 'done',
+          ...(wasCompleted ? { showInCalendar: true, showInTasks: true } : { showInCalendar: false }),
           priority: entry.raw?.priority,
           leadId: readCalendarRawText(entry.raw?.leadId) || null,
           caseId: readCalendarRawText(entry.raw?.caseId) || null,

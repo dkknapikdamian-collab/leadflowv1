@@ -14,7 +14,7 @@ function getFunctionBlock(name) {
 }
 
 function getTaskUpdateBlock(fnBlock) {
-  const taskBranch = fnBlock.indexOf("entry.kind === 'task'");
+  const taskBranch = fnBlock.indexOf("actionEntry.kind === 'task'");
   assert.notEqual(taskBranch, -1, 'task branch missing');
   const updateStart = fnBlock.indexOf('await updateTaskInSupabase({', taskBranch);
   assert.notEqual(updateStart, -1, 'updateTaskInSupabase missing in task branch');

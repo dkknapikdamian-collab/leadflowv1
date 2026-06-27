@@ -26,9 +26,10 @@ function extractFunctionBody(source, functionName) {
 
 function assertTaskShiftBranch(label, body) {
   assert.match(body, /STAGE123_CALENDAR_TASK_SHIFT_PAYLOAD_SOURCE/, label + ': missing Stage123 marker');
-  assert.match(body, /const shiftedTaskDraft = \{[\s\S]*\.\.\.entry\.raw[\s\S]*scheduledAt: shiftedStartAt[\s\S]*scheduled_at: shiftedStartAt[\s\S]*dueAt: shiftedStartAt[\s\S]*due_at: shiftedStartAt[\s\S]*date: shiftedDate[\s\S]*time: shiftedTime[\s\S]*\};/, label + ': shifted draft must overwrite every date field before normalization');
+  assert.match(body, /const shiftedTaskDraft = \{[\s\S]*\.\.\.actionEntry\.raw[\s\S]*scheduledAt: shiftedStartAt[\s\S]*scheduled_at: shiftedStartAt[\s\S]*dueAt: shiftedStartAt[\s\S]*due_at: shiftedStartAt[\s\S]*date: shiftedDate[\s\S]*time: shiftedTime[\s\S]*\};/, label + ': shifted draft must overwrite every date field before normalization from latest row snapshot');
   assert.match(body, /const taskPayload = syncTaskDerivedFields\(shiftedTaskDraft\);/, label + ': must normalize shifted draft');
   assert.doesNotMatch(body, /syncTaskDerivedFields\(\{\s*\.\.\.entry\.raw,\s*dueAt:/, label + ': stale scheduledAt-over-dueAt bug must not return');
+  assert.doesNotMatch(body, /const shiftedTaskDraft = \{[\s\S]*\.\.\.entry\.raw/, label + ': stale rendered entry snapshot must not feed shifted draft');
   assert.match(body, /date:\s*taskPayload\.date,[\s\S]*scheduledAt:\s*taskPayload\.dueAt,[\s\S]*dueAt:\s*taskPayload\.dueAt,[\s\S]*time:\s*taskPayload\.time,/, label + ': API payload must preserve Stage114 contract shape');
   assert.doesNotMatch(body, /date:\s*shiftedDate,[\s\S]*scheduledAt:\s*shiftedStartAt,[\s\S]*dueAt:\s*shiftedStartAt,[\s\S]*time:\s*shiftedTime,/, label + ': do not bypass Stage114 payload fields');
 }

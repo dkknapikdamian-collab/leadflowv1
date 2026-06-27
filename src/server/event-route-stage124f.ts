@@ -122,6 +122,8 @@ async function syncLeadNextAction(workspaceId: string, leadId: unknown, item: { 
 const CALENDAR_HIDDEN_EVENT_STATUSES_STAGE229A = new Set(['done', 'completed', 'cancelled', 'canceled', 'archived', 'deleted', 'removed']);
 function shouldHideEventFromCalendarStage229A(value: unknown) { return CALENDAR_HIDDEN_EVENT_STATUSES_STAGE229A.has(asText(value).toLowerCase()); }
 function shouldHideEventFromTasksStage229A(value: unknown) { return ['deleted', 'archived', 'removed'].includes(asText(value).toLowerCase()); }
+const CALENDAR_RESTORED_EVENT_STATUSES_STAGE232T_R3 = new Set(['scheduled', 'todo', 'open', 'pending']);
+function shouldRestoreEventVisibilityStage232T_R3(value: unknown) { return CALENDAR_RESTORED_EVENT_STATUSES_STAGE232T_R3.has(asText(value).toLowerCase()); }
 
 async function readEvents(req: any, workspaceId: string) {
   const limit = capLimit(queryValue(req, 'limit'));
@@ -196,6 +198,7 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
       if (body.showInCalendar !== undefined) payload.show_in_calendar = Boolean(body.showInCalendar);
       if (body.show_in_calendar !== undefined) payload.show_in_calendar = Boolean(body.show_in_calendar);
       const nextStatusForCalendarStage229A = body.status ?? payload.status;
+      if (shouldRestoreEventVisibilityStage232T_R3(nextStatusForCalendarStage229A)) payload.show_in_calendar = true;
       if (shouldHideEventFromCalendarStage229A(nextStatusForCalendarStage229A)) payload.show_in_calendar = false;
       if (shouldHideEventFromTasksStage229A(nextStatusForCalendarStage229A)) payload.show_in_tasks = false;
 

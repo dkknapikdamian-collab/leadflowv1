@@ -38,9 +38,10 @@ test('day and hour task shift overwrite scheduledAt before syncTaskDerivedFields
 
   for (const [label, body] of [['day', day], ['hour', hour]]) {
     assert.match(body, /STAGE123_CALENDAR_TASK_SHIFT_PAYLOAD_SOURCE/, label + ' branch should carry Stage123 marker');
-    assert.match(body, /const shiftedTaskDraft = \{[\s\S]*\.\.\.entry\.raw[\s\S]*scheduledAt: shiftedStartAt[\s\S]*scheduled_at: shiftedStartAt[\s\S]*dueAt: shiftedStartAt[\s\S]*due_at: shiftedStartAt[\s\S]*date: shiftedDate[\s\S]*time: shiftedTime[\s\S]*\};/, label + ' branch must overwrite all task date fields before normalization');
+    assert.match(body, /const shiftedTaskDraft = \{[\s\S]*\.\.\.actionEntry\.raw[\s\S]*scheduledAt: shiftedStartAt[\s\S]*scheduled_at: shiftedStartAt[\s\S]*dueAt: shiftedStartAt[\s\S]*due_at: shiftedStartAt[\s\S]*date: shiftedDate[\s\S]*time: shiftedTime[\s\S]*\};/, label + ' branch must overwrite all task date fields before normalization from latest row snapshot');
     assert.match(body, /const taskPayload = syncTaskDerivedFields\(shiftedTaskDraft\);/, label + ' branch must normalize the shifted draft, not stale entry.raw');
     assert.doesNotMatch(body, /syncTaskDerivedFields\(\{\s*\.\.\.entry\.raw,\s*dueAt:/, label + ' branch must not let stale scheduledAt win over dueAt');
+    assert.doesNotMatch(body, /const shiftedTaskDraft = \{[\s\S]*\.\.\.entry\.raw/, label + ' branch must not use stale rendered entry snapshot');
     assert.match(body, /date:\s*taskPayload\.date,[\s\S]*scheduledAt:\s*taskPayload\.dueAt,[\s\S]*dueAt:\s*taskPayload\.dueAt,[\s\S]*time:\s*taskPayload\.time/, label + ' API payload must preserve Stage114 contract while using shifted taskPayload fields');
     assert.doesNotMatch(body, /date:\s*shiftedDate,[\s\S]*scheduledAt:\s*shiftedStartAt,[\s\S]*dueAt:\s*shiftedStartAt,[\s\S]*time:\s*shiftedTime/, label + ' API payload must not bypass taskPayload Stage114 contract');
   }
