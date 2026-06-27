@@ -4,6 +4,7 @@ import type {
 import type {
   NotificationItem
 } from './notifications';
+import { caseDetailPath, leadDetailPath } from './routes';
 
 const REMINDER_SETTINGS_KEY = 'closeflow:reminders:settings:v1';
 
@@ -135,7 +136,7 @@ export function buildAdditionalReminderItems({
     const id = asText((lead as any).id);
     if (!id) continue;
     const title = asText((lead as any).name || (lead as any).title || (lead as any).company) || 'Lead bez nazwy';
-    items.push(itemForNoAction('lead', id, title, `/leads/${id}`));
+    items.push(itemForNoAction('lead', id, title, leadDetailPath(id)));
   }
 
   const noActionCases = (bundle.cases || []).filter((caseItem) => {
@@ -148,7 +149,7 @@ export function buildAdditionalReminderItems({
     const id = asText((caseItem as any).id);
     if (!id) continue;
     const title = asText((caseItem as any).title || (caseItem as any).name) || 'Sprawa bez nazwy';
-    items.push(itemForNoAction('case', id, title, `/case/${id}`));
+    items.push(itemForNoAction('case', id, title, caseDetailPath(id)));
   }
 
   return items;

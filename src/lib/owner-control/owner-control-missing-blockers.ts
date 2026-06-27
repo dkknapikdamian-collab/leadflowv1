@@ -1,4 +1,5 @@
 import { normalizeWorkItem } from '../work-items/normalize';
+import { caseDetailPath, clientDetailPath, leadDetailPath } from '../routes';
 import type { OwnerControlItem } from './owner-control-baseline';
 
 const STAGE232I3_OWNER_CONTROL_MISSING_BLOCKER_CROSS_ENTITY_INTEGRATION = 'STAGE232I3_OWNER_CONTROL_MISSING_BLOCKER_CROSS_ENTITY_INTEGRATION';
@@ -64,10 +65,9 @@ function getSourceLabel(sourceEntityType: MissingSourceEntityType) {
 }
 
 function getSourceHref(sourceEntityType: MissingSourceEntityType, sourceEntityId: string) {
-  const encodedId = encodeURIComponent(sourceEntityId);
-  if (sourceEntityType === 'lead') return `/leads/${encodedId}`;
-  if (sourceEntityType === 'case') return `/case/${encodedId}`;
-  return `/clients/${encodedId}`;
+  if (sourceEntityType === 'lead') return leadDetailPath(sourceEntityId);
+  if (sourceEntityType === 'case') return caseDetailPath(sourceEntityId);
+  return clientDetailPath(sourceEntityId);
 }
 
 export function isOwnerMissingControlItem(input: unknown) {

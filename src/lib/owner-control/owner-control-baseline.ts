@@ -5,6 +5,7 @@ import { buildActivityTruth } from './activity-truth';
 import { buildNextMoveContract } from './next-move-contract';
 import { normalizeOwnerRiskSettings, type OwnerRiskSettings } from './owner-risk-rules';
 import { getCaseFinanceValue } from '../finance/case-finance-source';
+import { caseDetailPath, clientDetailPath, leadDetailPath } from '../routes';
 
 const STAGE_A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC = 'STAGE-A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC';
 void STAGE_A35_R1_OWNER_CONTROL_BASELINE_GAP_CLOSE_AND_QUEUE_SYNC;
@@ -146,10 +147,9 @@ function getOwnerControlSourceLabel(sourceEntityType: 'lead' | 'case' | 'client'
 }
 
 function getOwnerControlSourceHref(sourceEntityType: 'lead' | 'case' | 'client', sourceEntityId: string) {
-  const encodedId = encodeURIComponent(sourceEntityId);
-  if (sourceEntityType === 'lead') return `/leads/${encodedId}`;
-  if (sourceEntityType === 'case') return `/case/${encodedId}`;
-  return `/clients/${encodedId}`;
+  if (sourceEntityType === 'lead') return leadDetailPath(sourceEntityId);
+  if (sourceEntityType === 'case') return caseDetailPath(sourceEntityId);
+  return clientDetailPath(sourceEntityId);
 }
 
 function resolveNoteSource(normalized: ReturnType<typeof normalizeWorkItem>): { sourceEntityType: 'lead' | 'case' | 'client'; sourceEntityId: string } | null {

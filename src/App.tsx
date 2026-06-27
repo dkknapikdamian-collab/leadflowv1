@@ -15,7 +15,7 @@ import { PwaInstallPrompt } from './components/PwaInstallPrompt';
 import EmailVerificationGate from './components/EmailVerificationGate';
 import ClientDetailStatic from './pages/ClientDetail';
 import LeadDetailStatic from './pages/LeadDetail';
-import { caseDetailPath } from './lib/routes';
+import { CLOSEFLOW_ROUTES, caseDetailPath, loginPath, templatesPath, todayPath } from './lib/routes';
 import './styles/closeflow-visual-source-truth.css';
 import './styles/closeflow-action-tokens.css';
 import './styles/closeflow-action-clusters.css';
@@ -277,44 +277,44 @@ export default function App() {
         <AppChunkErrorBoundary>
           <Suspense fallback={<AppRouteFallback />}>
             <Routes>
-              <Route path="/login" element={!isLoggedIn ? <Login /> : <Navigate to="/" />} />
-              <Route path="/start" element={!isLoggedIn ? <Login /> : <Navigate to="/" />} />
-              <Route path="/privacy" element={<LegalPrivacy />} />
-              <Route path="/terms" element={<LegalTerms />} />
-              <Route path="/portal/:caseId/:token" element={<ClientPortal />} />
-              <Route path="/" element={isLoggedIn ? <Today /> : <Login />} />
-              <Route path="/today" element={isLoggedIn ? <Today /> : <Navigate to="/login" />} />
-              <Route path="/leads" element={isLoggedIn ? <Leads /> : <Navigate to="/login" />} />
-              <Route path="/dev/funnel" element={import.meta.env.DEV ? <SalesFunnel /> : <Navigate to="/login" />} />
-              <Route path="/funnel" element={isLoggedIn ? <SalesFunnel /> : <Navigate to="/login" />} />
-              <Route path="/leads/:leadId" element={isLoggedIn ? <LeadDetail /> : <Navigate to="/login" />} />
-              <Route path="/tasks" element={isLoggedIn ? <Tasks /> : <Navigate to="/login" />} />
-              <Route path="/calendar" element={isLoggedIn ? <Calendar /> : <Navigate to="/login" />} />
-              <Route path="/cases" element={isLoggedIn ? <Cases /> : <Navigate to="/login" />} />
-              <Route path="/case/:caseId" element={isLoggedIn ? <LegacyCaseRedirect /> : <Navigate to="/login" />} />
-              <Route path="/cases/:caseId" element={isLoggedIn ? <CaseDetail /> : <Navigate to="/login" />} />
-              <Route path="/clients" element={isLoggedIn ? <Clients /> : <Navigate to="/login" />} />
-              <Route path="/clients/:clientId" element={isLoggedIn ? <ClientDetail /> : <Navigate to="/login" />} />
-              <Route path="/activity" element={isLoggedIn ? <Activity /> : <Navigate to="/login" />} />
-              <Route path="/ai-drafts" element={isLoggedIn ? <AiDrafts /> : <Navigate to="/login" />} />
-              <Route path="/notifications" element={isLoggedIn ? <NotificationsCenter /> : <Navigate to="/login" />} />
-              <Route path="/templates" element={isLoggedIn ? <Templates /> : <Navigate to="/login" />} />
-              <Route path="/case-templates" element={isLoggedIn ? <Navigate to="/templates" replace /> : <Navigate to="/login" />} />
-              <Route path="/response-templates" element={isLoggedIn ? <ResponseTemplates /> : <Navigate to="/login" />} />
-              <Route path="/billing" element={isLoggedIn ? <Billing /> : <Navigate to="/login" />} />
-              <Route path="/help" element={isLoggedIn ? <SupportCenter /> : <Navigate to="/login" />} />
-              <Route path="/support" element={isLoggedIn ? <SupportCenter /> : <Navigate to="/login" />} />
-              <Route path="/settings/ai" element={isLoggedIn ? <AdminAiSettings /> : <Navigate to="/login" />} />
-              <Route path="/settings" element={isLoggedIn ? <Settings /> : <Navigate to="/login" />} />
+              <Route path={CLOSEFLOW_ROUTES.login} element={!isLoggedIn ? <Login /> : <Navigate to={todayPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.start} element={!isLoggedIn ? <Login /> : <Navigate to={todayPath()} replace />} />
+              <Route path={CLOSEFLOW_ROUTES.privacy} element={<LegalPrivacy />} />
+              <Route path={CLOSEFLOW_ROUTES.terms} element={<LegalTerms />} />
+              <Route path={CLOSEFLOW_ROUTES.clientPortal} element={<ClientPortal />} />
+              <Route path={CLOSEFLOW_ROUTES.root} element={isLoggedIn ? <Today /> : <Login />} />
+              <Route path={CLOSEFLOW_ROUTES.today} element={isLoggedIn ? <Today /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.leads} element={isLoggedIn ? <Leads /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.devFunnel} element={import.meta.env.DEV ? <SalesFunnel /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.funnel} element={isLoggedIn ? <SalesFunnel /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.leadDetail} element={isLoggedIn ? <LeadDetail /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.tasks} element={isLoggedIn ? <Tasks /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.calendar} element={isLoggedIn ? <Calendar /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.cases} element={isLoggedIn ? <Cases /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.legacyCaseDetail} element={isLoggedIn ? <LegacyCaseRedirect /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.caseDetail} element={isLoggedIn ? <CaseDetail /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.clients} element={isLoggedIn ? <Clients /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.clientDetail} element={isLoggedIn ? <ClientDetail /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.activity} element={isLoggedIn ? <Activity /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.aiDrafts} element={isLoggedIn ? <AiDrafts /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.notifications} element={isLoggedIn ? <NotificationsCenter /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.templates} element={isLoggedIn ? <Templates /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.caseTemplates} element={isLoggedIn ? <Navigate to={templatesPath()} replace /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.responseTemplates} element={isLoggedIn ? <ResponseTemplates /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.billing} element={isLoggedIn ? <Billing /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.help} element={isLoggedIn ? <SupportCenter /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.support} element={isLoggedIn ? <SupportCenter /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.adminAiSettings} element={isLoggedIn ? <AdminAiSettings /> : <Navigate to={loginPath()} />} />
+              <Route path={CLOSEFLOW_ROUTES.settings} element={isLoggedIn ? <Settings /> : <Navigate to={loginPath()} />} />
               <Route
-                path="/ui-preview-vnext"
-                element={isDevelopmentPreviewEnabled ? <UiPreviewVNext /> : <Navigate to="/login" replace />}
+                path={CLOSEFLOW_ROUTES.uiPreviewVNext}
+                element={isDevelopmentPreviewEnabled ? <UiPreviewVNext /> : <Navigate to={loginPath()} replace />}
               />
               <Route
-                path="/ui-preview-vnext-full"
-                element={isDevelopmentPreviewEnabled ? <UiPreviewVNextFull /> : <Navigate to="/login" replace />}
+                path={CLOSEFLOW_ROUTES.uiPreviewVNextFull}
+                element={isDevelopmentPreviewEnabled ? <UiPreviewVNextFull /> : <Navigate to={loginPath()} replace />}
               />
-              <Route path="*" element={<Navigate to="/" />} />
+              <Route path="*" element={<Navigate to={todayPath()} />} />
             </Routes>
           </Suspense>
         </AppChunkErrorBoundary>

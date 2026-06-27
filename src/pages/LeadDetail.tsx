@@ -139,6 +139,7 @@ import { getNearestPlannedAction } from '../lib/nearest-action';
 import { getActivityTimelineDescription, getActivityTimelineTitle } from '../lib/activity-timeline';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import { startLeadToCaseHandoff } from '../lib/lead-case-handoff';
+import { caseDetailPath, leadsPath } from '../lib/routes';
 import {
   deleteEventFromSupabase,
   deleteLeadFromSupabase,
@@ -1470,7 +1471,7 @@ export default function LeadDetail() {
 
 useEffect(() => {
     if (!startServiceSuccess?.caseId) return;
-    navigate(`/case/${startServiceSuccess.caseId}`);
+    navigate(caseDetailPath(startServiceSuccess.caseId));
   }, [startServiceSuccess?.caseId, navigate]);
 
   const sortedLinkedTasks = useMemo(
@@ -1726,14 +1727,14 @@ useEffect(() => {
             <AlertTriangle className="h-4 w-4" /> Brak
           </LeadActionButton>
           {serviceCaseId ? (
-            <LeadActionButton onClick={() => navigate(`/cases/${serviceCaseId}`)}>
+            <LeadActionButton onClick={() => navigate(caseDetailPath(serviceCaseId))}>
               <EntityIcon entity="case" className="h-4 w-4" /> Otwórz sprawę
             </LeadActionButton>
           ) : null}
         </div>
       ) : (
         <div className="lead-detail-work-actions lead-detail-work-actions-service">
-          <LeadActionButton onClick={() => serviceCaseId && navigate(`/cases/${serviceCaseId}`)} disabled={!serviceCaseId}>
+          <LeadActionButton onClick={() => serviceCaseId && navigate(caseDetailPath(serviceCaseId))} disabled={!serviceCaseId}>
             <EntityIcon entity="case" className="h-4 w-4" /> Otwórz sprawę
           </LeadActionButton>
           <span>{leadServiceLockedMessage}</span>
@@ -1886,7 +1887,7 @@ useEffect(() => {
     try {
       await deleteLeadFromSupabase(leadId);
       toast.success('Lead usunięty');
-      navigate('/leads');
+      navigate(leadsPath());
     } catch (error: any) {
       toast.error(`Błąd usuwania: ${error?.message || 'REQUEST_FAILED'}`);
     }
@@ -2313,7 +2314,7 @@ useEffect(() => {
     if (!leadId || !lead) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
     if (leadInService && serviceCaseId) {
-      navigate(`/cases/${serviceCaseId}`);
+      navigate(caseDetailPath(serviceCaseId));
       return;
     }
 
@@ -2350,12 +2351,12 @@ useEffect(() => {
       setIsCreateCaseOpen(false);
       toast.success('Sprawa utworzona. Przechodzę do obsługi.');
       await loadLead();
-      navigate(`/cases/${result.caseId}`);
+      navigate(caseDetailPath(result.caseId));
     } catch (error: any) {
       const message = String(error?.message || 'REQUEST_FAILED');
       if (message.includes('LEAD_ALREADY_HAS_CASE') && serviceCaseId) {
         toast.success('Temat jest już w obsłudze. Otwieram sprawę.');
-        navigate(`/cases/${serviceCaseId}`);
+        navigate(caseDetailPath(serviceCaseId));
         return;
       }
       toast.error(`Nie udało się rozpocząć obsługi: ${message}`);
@@ -2387,7 +2388,7 @@ useEffect(() => {
   };
 
   const openCase = () => {
-    if (serviceCaseId) navigate(`/cases/${serviceCaseId}`);
+    if (serviceCaseId) navigate(caseDetailPath(serviceCaseId));
   };
 
   if (loading) {
@@ -2411,7 +2412,7 @@ useEffect(() => {
             <EntityIcon entity="lead" className="h-8 w-8" />
             <h1>Nie znaleziono leada</h1>
             <p>{loadError || 'Ten rekord mógł zostać usunięty albo nie należy do aktualnego workspace.'}</p>
-            <Button type="button" variant="outline" onClick={() => navigate('/leads')}>
+            <Button type="button" variant="outline" onClick={() => navigate(leadsPath())}>
               <ArrowLeft className="h-4 w-4" />
               Wróć do leadów
             </Button>
@@ -2427,7 +2428,7 @@ useEffect(() => {
       <main className="lead-detail-vnext-page">
         <header className="lead-detail-header">
           <div className="lead-detail-header-copy">
-            <button type="button" className="lead-detail-back-button" onClick={() => navigate('/leads')}>
+            <button type="button" className="lead-detail-back-button" onClick={() => navigate(leadsPath())}>
               <ArrowLeft className="h-4 w-4" />
               Leady
             </button>
