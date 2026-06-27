@@ -1498,6 +1498,48 @@ export default function Calendar() {
     return { ...bundle, cases: (bundle.cases || []) as any[], clients: clientRows as any[] };
   }
 
+
+  const STAGE232T_R4_CALENDAR_LEAD_SHADOW_ACTION_SOURCE_TRUTH = 'lead-shadow calendar actions write leads.next_action_* and never delete the lead';
+  void STAGE232T_R4_CALENDAR_LEAD_SHADOW_ACTION_SOURCE_TRUTH;
+
+  function getLeadShadowSourceIdStage232T_R4(entry: ScheduleEntry) {
+    return String(entry.leadId || entry.raw?.leadId || entry.raw?.lead_id || entry.sourceId || entry.raw?.id || '').trim();
+  }
+
+  function clearLeadNextActionLocalStateStage232T_R4(leadId: string) {
+    if (!leadId) return;
+    setLeads((previousLeads: any[]) => previousLeads.map((lead: any) => {
+      if (String(lead?.id || '') !== leadId) return lead;
+      return {
+        ...lead,
+        nextActionAt: null,
+        next_action_at: null,
+        followUpAt: null,
+        follow_up_at: null,
+        nextActionTitle: '',
+        next_action_title: '',
+        nextActionItemId: null,
+        next_action_item_id: null,
+      };
+    }));
+  }
+
+  function shiftLeadNextActionLocalStateStage232T_R4(leadId: string, nextAt: string, title: string) {
+    if (!leadId || !nextAt) return;
+    setLeads((previousLeads: any[]) => previousLeads.map((lead: any) => {
+      if (String(lead?.id || '') !== leadId) return lead;
+      const nextTitle = lead?.nextActionTitle || lead?.next_action_title || title;
+      return {
+        ...lead,
+        nextActionAt: nextAt,
+        next_action_at: nextAt,
+        followUpAt: nextAt,
+        follow_up_at: nextAt,
+        nextActionTitle: nextTitle,
+        next_action_title: nextTitle,
+      };
+    }));
+  }
   function applyCalendarShiftOptimisticState(entry: ScheduleEntry, nextStartAt: string, nextEndAt?: string | null) {
     // STAGE121_CALENDAR_SHIFT_LEAD_BRANCH_AND_OPTIMISTIC_STATE:
     // Do not show a success toast while the visible calendar still points at the old date.
@@ -2173,13 +2215,18 @@ export default function Calendar() {
           caseId: readCalendarRawText(actionEntry.raw?.caseId || actionEntry.raw?.case_id) || null,
         });
       } else if (actionEntry.kind === 'lead') {
+        const leadId = getLeadShadowSourceIdStage232T_R4(actionEntry);
+        if (!leadId) throw new Error('CALENDAR_LEAD_NEXT_ACTION_SHIFT_SOURCE_ID_REQUIRED');
         const nextStart = addDays(parseISO(actionEntry.startsAt), days);
         shiftedStartAt = toDateTimeLocalValue(nextStart);
+        const nextTitle = readCalendarRawText(actionEntry.raw?.nextActionTitle || actionEntry.raw?.next_action_title, actionEntry.title);
         await updateLeadInSupabase({
-          id: sourceId,
+          id: leadId,
           nextActionAt: shiftedStartAt,
-          nextActionTitle: readCalendarRawText(actionEntry.raw?.nextActionTitle || actionEntry.raw?.next_action_title, actionEntry.title),
+          nextActionTitle: nextTitle,
+          nextActionItemId: readCalendarRawText(actionEntry.raw?.nextActionItemId || actionEntry.raw?.next_action_item_id) || null,
         });
+        shiftLeadNextActionLocalStateStage232T_R4(leadId, shiftedStartAt, nextTitle);
       } else {
         toast.error('Nie można przesunąć tego typu wpisu.');
         return;
@@ -2269,13 +2316,18 @@ export default function Calendar() {
           caseId: readCalendarRawText(actionEntry.raw?.caseId || actionEntry.raw?.case_id) || null,
         });
       } else if (actionEntry.kind === 'lead') {
+        const leadId = getLeadShadowSourceIdStage232T_R4(actionEntry);
+        if (!leadId) throw new Error('CALENDAR_LEAD_NEXT_ACTION_SHIFT_SOURCE_ID_REQUIRED');
         const nextStart = addHours(parseISO(actionEntry.startsAt), hours);
         shiftedStartAt = toDateTimeLocalValue(nextStart);
+        const nextTitle = readCalendarRawText(actionEntry.raw?.nextActionTitle || actionEntry.raw?.next_action_title, actionEntry.title);
         await updateLeadInSupabase({
-          id: sourceId,
+          id: leadId,
           nextActionAt: shiftedStartAt,
-          nextActionTitle: readCalendarRawText(actionEntry.raw?.nextActionTitle || actionEntry.raw?.next_action_title, actionEntry.title),
+          nextActionTitle: nextTitle,
+          nextActionItemId: readCalendarRawText(actionEntry.raw?.nextActionItemId || actionEntry.raw?.next_action_item_id) || null,
         });
+        shiftLeadNextActionLocalStateStage232T_R4(leadId, shiftedStartAt, nextTitle);
       } else {
         toast.error('Nie można przesunąć tego typu wpisu.');
         return;
@@ -2339,7 +2391,41 @@ export default function Calendar() {
           return nextRow;
         };
 
-        if (entry.kind === 'event') {
+  
+      if (entry.kind === 'lead') {
+        const leadId = getLeadShadowSourceIdStage232T_R4(entry);
+        if (!leadId) throw new Error('CALENDAR_LEAD_NEXT_ACTION_COMPLETE_SOURCE_ID_REQUIRED');
+        const completedAtStage232T_R4 = new Date().toISOString();
+
+        await updateLeadInSupabase({
+          id: leadId,
+          lastContactAt: completedAtStage232T_R4,
+          nextActionAt: null,
+          nextActionTitle: '',
+          nextActionItemId: null,
+          action: 'calendar_lead_next_action_completed',
+          payload: {
+            source: 'calendar',
+            action: 'calendar_lead_next_action_completed',
+            entryId: entry.id,
+            sourceId: entry.sourceId,
+            previousNextActionAt: entry.startsAt,
+            previousNextActionTitle: entry.title,
+          },
+        });
+
+        clearLeadNextActionLocalStateStage232T_R4(leadId);
+        await logCalendarEntryActivity(entry, 'calendar_lead_next_action_completed', {
+          leadId,
+          completedAt: completedAtStage232T_R4,
+          previousNextActionAt: entry.startsAt,
+        });
+
+        await refreshSupabaseBundle();
+        toast.success('Akcja leada oznaczona jako zrobiona');
+        return;
+      }
+      if (entry.kind === 'event') {
           setEvents((previousEvents: any[]) => previousEvents.map(patchLocalRow));
         }
 
@@ -2434,6 +2520,51 @@ export default function Calendar() {
     return;
   }
 
+
+    if (entry.kind === 'lead') {
+      if (!hasAccess) {
+        toast.error('Trial wygasł.');
+        return;
+      }
+
+      if (!window.confirm('Usunąć zaplanowaną akcję leada z kalendarza? Lead zostanie.')) return;
+
+      try {
+        const leadId = getLeadShadowSourceIdStage232T_R4(entry);
+        if (!leadId) throw new Error('CALENDAR_LEAD_NEXT_ACTION_DELETE_SOURCE_ID_REQUIRED');
+
+        setActionPendingId(`${entry.id}:delete`);
+        await updateLeadInSupabase({
+          id: leadId,
+          nextActionAt: null,
+          nextActionTitle: '',
+          nextActionItemId: null,
+          action: 'calendar_lead_next_action_deleted',
+          payload: {
+            source: 'calendar',
+            action: 'calendar_lead_next_action_deleted',
+            entryId: entry.id,
+            sourceId: entry.sourceId,
+            previousNextActionAt: entry.startsAt,
+            previousNextActionTitle: entry.title,
+          },
+        });
+
+        clearLeadNextActionLocalStateStage232T_R4(leadId);
+        await logCalendarEntryActivity(entry, 'calendar_lead_next_action_deleted', {
+          leadId,
+          previousNextActionAt: entry.startsAt,
+        });
+
+        await refreshSupabaseBundle();
+        toast.success('Zaplanowana akcja leada usunięta z kalendarza');
+      } catch (error: any) {
+        toast.error('Nie udało się usunąć zaplanowanej akcji leada.');
+      } finally {
+        setActionPendingId(null);
+      }
+      return;
+    }
     // STAGE228R37_UNSUPPORTED_DELETE_KIND_NO_FALSE_SUCCESS
     if (entry.kind !== 'event' && entry.kind !== 'task') {
       toast.error('Nie można usunąć tego typu wpisu z kalendarza.');

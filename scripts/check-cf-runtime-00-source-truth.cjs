@@ -138,7 +138,15 @@ const allowedChangePrefixes = [
   'tests/stage123-calendar-task-shift-payload-source-contract.test.cjs',
   'tests/stage114-calendar-shift-persistence-contract.test.cjs',
   '_project/runs/STAGE232T_R3_OPERATIONAL_ENTRY_ACTION_STATE_MACHINE_GUARD.md',
-  'scripts/check-stage232t-r1d-today-work-item-actions-source-truth.cjs',
+
+  // STAGE232T_R4_CALENDAR_LEAD_SHADOW_ACTIONS_FIX_ALLOWLIST
+  'api/leads.ts',
+  'src/pages/Calendar.tsx',
+  'src/lib/calendar-operational-entry-contract.ts',
+  'src/lib/calendar-lead-shadow-entry-policy.ts',
+  'scripts/check-stage232t-r4-calendar-lead-shadow-actions.cjs',
+  'tests/stage232t-r4-calendar-lead-shadow-actions.test.cjs',
+  '_project/runs/STAGE232T_R4_CALENDAR_LEAD_SHADOW_ACTIONS_FIX.md',  'scripts/check-stage232t-r1d-today-work-item-actions-source-truth.cjs',
   'tests/stage232t-r1d-today-work-item-actions-source-truth.test.cjs',
   'tests/stage97-today-overdue-task-done-button.test.cjs',
   '_project/runs/STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH.md',

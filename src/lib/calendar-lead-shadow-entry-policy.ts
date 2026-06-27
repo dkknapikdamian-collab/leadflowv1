@@ -18,7 +18,7 @@ export interface LeadShadowEntryDecision {
 
 type AnyRecord = Record<string, unknown>;
 
-const LEAD_ALLOWED_ACTIONS = new Set(['edit', 'shift', 'open-related']);
+const LEAD_ALLOWED_ACTIONS = new Set(['edit', 'shift', 'complete', 'delete', 'open-related']);
 
 function asRecord(value: unknown): AnyRecord {
   return value && typeof value === 'object' && !Array.isArray(value) ? value as AnyRecord : {};

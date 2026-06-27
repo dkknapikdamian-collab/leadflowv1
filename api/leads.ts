@@ -1016,6 +1016,9 @@ export default async function handler(req: any, res: any) {
       if (body.nextActionAt !== undefined) payload.next_action_at = toIsoDateTime(body.nextActionAt);
       if (body.lastContactAt !== undefined || body.last_contact_at !== undefined) payload.last_contact_at = toIsoDateTime(body.lastContactAt ?? body.last_contact_at);
       if (body.nextActionTitle !== undefined) payload.next_action_title = normalizeNextActionTitle(body.nextActionTitle);
+      // STAGE232T_R4_LEAD_NEXT_ACTION_ITEM_ID_PATCH
+      // Calendar lead-shadow actions clear or update the canonical lead next-action link.
+      if (body.nextActionItemId !== undefined || body.next_action_item_id !== undefined) payload.next_action_item_id = asText(body.nextActionItemId ?? body.next_action_item_id) || null;
       if (body.isAtRisk !== undefined) {
         payload.is_at_risk = Boolean(body.isAtRisk);
         payload.priority = body.isAtRisk ? 'high' : 'medium';

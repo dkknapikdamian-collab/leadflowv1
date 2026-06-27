@@ -140,7 +140,7 @@ export function toOperationalDayKey(value: unknown): string | null {
 
 export function getSupportedOperationalEntryActions(kind: OperationalEntryKind): OperationalEntryAction[] {
   if (kind === 'lead') {
-    return ['edit', 'shift', 'open-related'];
+    return ['edit', 'shift', 'complete', 'delete', 'open-related'];
   }
   return ['edit', 'shift', 'complete', 'restore', 'delete', 'open-related'];
 }
