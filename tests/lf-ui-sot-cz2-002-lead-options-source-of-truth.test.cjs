@@ -6,10 +6,35 @@ const test = require('node:test');
 const ROOT = path.resolve(__dirname, '..');
 const read = (file) => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
+function extractExportedArrayBody(source, constName) {
+  const declaration = `export const ${constName}`;
+  const start = source.indexOf(declaration);
+  assert.notEqual(start, -1, `${constName} export not found`);
+
+  const equals = source.indexOf('=', start);
+  assert.notEqual(equals, -1, `${constName} assignment not found`);
+
+  const open = source.indexOf('[', equals);
+  assert.notEqual(open, -1, `${constName} array open bracket not found`);
+
+  let depth = 0;
+  for (let index = open; index < source.length; index += 1) {
+    const char = source[index];
+    if (char === '[') depth += 1;
+    if (char === ']') {
+      depth -= 1;
+      if (depth === 0) return source.slice(open + 1, index);
+    }
+  }
+
+  throw new Error(`${constName} array close bracket not found`);
+}
+
 function extractArrayValues(source, constName) {
-  const match = source.match(new RegExp(`export const ${constName}[^=]*= \\[([\\s\\S]*?)\\]`, 'm'));
-  assert.ok(match, `${constName} array not found`);
-  return [...match[1].matchAll(/value:\\s*'([^']+)'/g)].map((entry) => entry[1]);
+  const body = extractExportedArrayBody(source, constName);
+  const objectValues = [...body.matchAll(/value:\s*['"]([^'"]+)['"]/g)].map((entry) => entry[1]);
+  if (objectValues.length) return objectValues;
+  return [...body.matchAll(/['"]([^'"]+)['"]/g)].map((entry) => entry[1]);
 }
 
 function extractFunctionBody(source, fnName) {
