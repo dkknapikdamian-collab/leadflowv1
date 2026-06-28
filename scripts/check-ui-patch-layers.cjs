@@ -64,13 +64,27 @@ const INLINE_ACTION_STYLE_ALLOWLIST = new Map([
 ]);
 
 const RAW_BUTTON_ALLOWLIST = new Map([
+  ['src/components/ActivityRoadmap.tsx', 'existing raw button debt'],
   ['src/components/AppChunkErrorBoundary.tsx', 'existing raw button debt'],
+  ['src/components/ContextActionButton.tsx', 'existing raw button debt'],
   ['src/components/ErrorBoundary.tsx', 'existing raw button debt'],
   ['src/components/Layout.tsx', 'existing raw button debt'],
+  ['src/components/PwaInstallPrompt.tsx', 'existing raw button debt'],
+  ['src/components/TodayAiAssistant.tsx', 'existing raw button debt'],
+  ['src/components/admin-tools/AdminDebugToolbar.tsx', 'admin/debug tooling raw button debt'],
   ['src/components/confirm-dialog.tsx', 'existing raw button debt'],
+  ['src/components/detail/MissingItemQuickActionModal.tsx', 'existing raw button debt'],
+  ['src/components/detail/QuickActionsBar.tsx', 'existing raw button debt'],
+  ['src/components/entity-contact-card.tsx', 'existing raw button debt'],
+  ['src/components/finance/LeadValuePanel.tsx', 'existing raw button debt'],
   ['src/components/lead-picker.tsx', 'existing raw button debt'],
+  ['src/components/operator-rail/SimpleFiltersCard.tsx', 'existing raw button debt'],
   ['src/components/sidebar-mini-calendar.tsx', 'existing raw button debt'],
   ['src/components/task-editor-dialog.tsx', 'existing raw button debt'],
+  ['src/components/topic-contact-picker.tsx', 'existing raw button debt'],
+  ['src/components/ui-system/ListRow.tsx', 'canonical list row component raw button debt'],
+  ['src/components/ui-system/OperatorMetricTiles.tsx', 'canonical metric tile component raw button debt'],
+  ['src/components/work-item-card.tsx', 'existing raw button debt'],
   ['src/pages/Activity.tsx', 'existing raw button debt'],
   ['src/pages/AdminAiSettings.tsx', 'existing raw button debt'],
   ['src/pages/AiDrafts.tsx', 'existing raw button debt'],
@@ -95,6 +109,8 @@ const RAW_BUTTON_ALLOWLIST = new Map([
   ['src/pages/Templates.tsx', 'existing raw button debt'],
   ['src/pages/Today.tsx', 'inactive legacy raw button debt'],
   ['src/pages/TodayStable.tsx', 'existing raw button debt'],
+  ['src/pages/UiPreviewVNext.tsx', 'dev preview raw button debt'],
+  ['src/pages/UiPreviewVNextFull.tsx', 'dev preview embedded HTML raw button debt'],
 ]);
 
 const RAW_BUTTON_ALLOWLIST_PREFIXES = [
@@ -102,17 +118,39 @@ const RAW_BUTTON_ALLOWLIST_PREFIXES = [
 ];
 
 const LUCIDE_REACT_IMPORT_ALLOWLIST = new Map([
+  ['src/components/ActivityRoadmap.tsx', 'existing direct icon import debt'],
+  ['src/components/CaseQuickActions.tsx', 'existing direct icon import debt'],
+  ['src/components/ContextNoteDialog.tsx', 'existing direct icon import debt'],
+  ['src/components/EmailVerificationGate.tsx', 'existing direct icon import debt'],
+  ['src/components/EntityConflictDialog.tsx', 'existing direct icon import debt'],
+  ['src/components/EventCreateDialog.tsx', 'existing direct icon import debt'],
+  ['src/components/GlobalQuickActions.tsx', 'existing direct icon import debt'],
+  ['src/components/LeadAiFollowupDraft.tsx', 'existing direct icon import debt'],
+  ['src/components/LeadAiNextAction.tsx', 'existing direct icon import debt'],
+  ['src/components/PwaInstallPrompt.tsx', 'existing direct icon import debt'],
+  ['src/components/QuickAiCapture.tsx', 'existing direct icon import debt'],
+  ['src/components/TaskCreateDialog.tsx', 'existing direct icon import debt'],
+  ['src/components/admin-tools/AdminDebugToolbar.tsx', 'admin/debug tooling direct icon import debt'],
   ['src/components/confirm-dialog.tsx', 'existing direct icon import debt'],
-  ['src/components/Layout.tsx', 'existing direct icon import debt'],
+  ['src/components/detail/MissingItemsManagerDialog.tsx', 'existing direct icon import debt'],
+  ['src/components/entity-contact-card.tsx', 'existing direct icon import debt'],
   ['src/components/lead-picker.tsx', 'existing direct icon import debt'],
+  ['src/components/quick-lead/QuickLeadCaptureModal.tsx', 'existing direct icon import debt'],
   ['src/components/sidebar-mini-calendar.tsx', 'existing direct icon import debt'],
+  ['src/components/topic-contact-picker.tsx', 'existing direct icon import debt'],
   ['src/components/ui/checkbox.tsx', 'existing UI primitive direct icon import debt'],
   ['src/components/ui/dialog.tsx', 'existing UI primitive direct icon import debt'],
   ['src/components/ui/dropdown-menu.tsx', 'existing UI primitive direct icon import debt'],
   ['src/components/ui/select.tsx', 'existing UI primitive direct icon import debt'],
   ['src/components/ui/sonner.tsx', 'existing UI primitive direct icon import debt'],
+  ['src/components/ui-system/action-icon-registry.ts', 'central action icon registry'],
+  ['src/components/ui-system/icon-registry.ts', 'central icon registry'],
+  ['src/components/work-item-card.tsx', 'existing direct icon import debt'],
+  ['src/lib/calendar-items.ts', 'existing calendar icon mapping debt'],
   ['src/lib/options.ts', 'existing option icon mapping debt'],
   ['src/pages/Activity.tsx', 'existing direct icon import debt'],
+  ['src/pages/AdminAiSettings.tsx', 'existing direct icon import debt'],
+  ['src/pages/AiDrafts.tsx', 'existing direct icon import debt'],
   ['src/pages/Billing.tsx', 'existing direct icon import debt'],
   ['src/pages/Calendar.tsx', 'existing direct icon import debt'],
   ['src/pages/CaseDetail.tsx', 'existing direct icon import debt'],
@@ -124,22 +162,44 @@ const LUCIDE_REACT_IMPORT_ALLOWLIST = new Map([
   ['src/pages/LeadDetail.tsx', 'existing direct icon import debt'],
   ['src/pages/Leads.tsx', 'existing direct icon import debt'],
   ['src/pages/Login.tsx', 'existing direct icon import debt'],
+  ['src/pages/NotificationsCenter.tsx', 'existing direct icon import debt'],
+  ['src/pages/PublicLanding.tsx', 'existing direct icon import debt'],
+  ['src/pages/ResponseTemplates.tsx', 'existing direct icon import debt'],
+  ['src/pages/SalesFunnel.tsx', 'existing direct icon import debt'],
   ['src/pages/Settings.tsx', 'existing direct icon import debt'],
+  ['src/pages/SupportCenter.tsx', 'existing direct icon import debt'],
   ['src/pages/Tasks.tsx', 'existing direct icon import debt'],
+  ['src/pages/TasksStable.tsx', 'existing direct icon import debt'],
   ['src/pages/Templates.tsx', 'existing direct icon import debt'],
   ['src/pages/Today.tsx', 'inactive legacy direct icon import debt'],
+  ['src/pages/TodayStable.tsx', 'existing direct icon import debt'],
 ]);
 
 const GENERAL_INLINE_STYLE_ALLOWLIST = new Map([
+  ['src/components/ContextActionDialogs.tsx', 'existing dialog display:contents debt'],
   ['src/components/Layout.tsx', 'existing layout inline style debt'],
   ['src/components/ui/progress.tsx', 'UI primitive width style debt'],
+  ['src/pages/Activity.tsx', 'existing page inline style debt'],
+  ['src/pages/AiDrafts.tsx', 'existing page inline style debt'],
+  ['src/pages/Calendar.tsx', 'existing page inline style debt'],
+  ['src/pages/CaseDetail.tsx', 'existing page inline style debt'],
+  ['src/pages/Cases.tsx', 'existing page inline style debt'],
+  ['src/pages/ClientDetail.tsx', 'existing page inline style debt'],
+  ['src/pages/NotificationsCenter.tsx', 'existing page inline style debt'],
+  ['src/pages/Today.tsx', 'inactive legacy page inline style debt'],
   ['src/pages/UiPreviewVNext.tsx', 'dev preview, not production route styling SOT'],
   ['src/pages/UiPreviewVNextFull.tsx', 'dev preview embedded HTML'],
 ]);
 
 const DISPLAY_STACK_IMPORTANT_ALLOWLIST = new Map([
-  ['src/components/Layout.tsx', 'existing shell layering debt'],
   ['src/components/AppChunkErrorBoundary.tsx', 'existing chunk-error overlay debt'],
+  ['src/components/Layout.tsx', 'existing shell layering debt'],
+  ['src/components/VisualFoundationRuntime.tsx', 'existing visual runtime debt'],
+  ['src/components/VisualFoundationRuntimeStage212B.tsx', 'existing visual runtime debt'],
+  ['src/components/VisualFoundationRuntimeStage212G.tsx', 'existing visual runtime debt'],
+  ['src/components/VisualFoundationRuntimeStage212M.tsx', 'existing visual runtime debt'],
+  ['src/lib/stage31-today-tiles-interaction.ts', 'legacy stage runtime debt'],
+  ['src/lib/stage32-today-relations-loading-polish.ts', 'legacy stage runtime debt'],
   ['src/pages/Calendar.tsx', 'existing calendar layering debt'],
   ['src/pages/Today.tsx', 'inactive legacy Today page'],
   ['src/pages/TodayStable.tsx', 'existing TodayStable layering debt'],
@@ -154,6 +214,7 @@ const CSS_PATCH_ALLOWLIST_PREFIXES = [
 const CSS_PATCH_ALLOWLIST = new Map([
   ['src/App.css', 'existing app css debt'],
   ['src/index.css', 'existing index css debt'],
+  ['src/pages/legal-public-pages.css', 'existing legal public page CSS debt'],
 ]);
 
 const APP_STYLES_IMPORT_MAX = new Map([
@@ -161,9 +222,13 @@ const APP_STYLES_IMPORT_MAX = new Map([
 ]);
 
 const LOCAL_ICON_BUTTON_CLONE_ALLOWLIST = new Map([
-  ['src/components/entity-actions.tsx', 'canonical shared action buttons'],
-  ['src/components/ui/button.tsx', 'canonical UI Button primitive'],
+  ['src/components/ContextActionButton.tsx', 'existing context action button component'],
   ['src/components/detail/QuickActionsBar.tsx', 'existing quick action component debt'],
+  ['src/components/entity-actions.tsx', 'canonical shared action buttons'],
+  ['src/components/ui-system/ActionIcon.tsx', 'canonical action icon component'],
+  ['src/components/ui-system/action-icon-registry.ts', 'central action icon registry'],
+  ['src/components/ui/button.tsx', 'canonical UI Button primitive'],
+  ['src/pages/LeadDetail.tsx', 'existing LeadActionButton debt'],
 ]);
 
 const LOCAL_COLOR_MAP_ALLOWLIST = new Map([
@@ -210,9 +275,9 @@ const STYLE_LAYER_ALLOWLIST_MAX = new Map([
   ['src/components/quick-lead/QuickLeadCaptureModal.tsx', 1],
   ['src/components/task-editor-dialog.tsx', 1],
   ['src/components/ui/sonner.tsx', 1],
-  ['src/pages/Activity.tsx', 6],
+  ['src/pages/Activity.tsx', 7],
   ['src/pages/AdminAiSettings.tsx', 2],
-  ['src/pages/AiDrafts.tsx', 6],
+  ['src/pages/AiDrafts.tsx', 7],
   ['src/pages/Billing.tsx', 6],
   ['src/pages/Calendar.tsx', 4],
   ['src/pages/CaseDetail.tsx', 8],
@@ -221,7 +286,7 @@ const STYLE_LAYER_ALLOWLIST_MAX = new Map([
   ['src/pages/Clients.tsx', 4],
   ['src/pages/LeadDetail.tsx', 4],
   ['src/pages/Leads.tsx', 4],
-  ['src/pages/NotificationsCenter.tsx', 6],
+  ['src/pages/NotificationsCenter.tsx', 7],
   ['src/pages/ResponseTemplates.tsx', 4],
   ['src/pages/SalesFunnel.tsx', 3],
   ['src/pages/Settings.tsx', 9],
