@@ -125,6 +125,7 @@ const LUCIDE_REACT_IMPORT_ALLOWLIST = new Map([
   ['src/components/EntityConflictDialog.tsx', 'existing direct icon import debt'],
   ['src/components/EventCreateDialog.tsx', 'existing direct icon import debt'],
   ['src/components/GlobalQuickActions.tsx', 'existing direct icon import debt'],
+  ['src/components/Layout.tsx', 'existing shell direct icon import debt'],
   ['src/components/LeadAiFollowupDraft.tsx', 'existing direct icon import debt'],
   ['src/components/LeadAiNextAction.tsx', 'existing direct icon import debt'],
   ['src/components/PwaInstallPrompt.tsx', 'existing direct icon import debt'],
