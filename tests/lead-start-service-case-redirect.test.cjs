@@ -1,4 +1,4 @@
-const assert = require('node:assert/strict');
+﻿const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -13,24 +13,23 @@ function expectText(source, text) {
   assert.ok(source.includes(text), 'Missing text: ' + text);
 }
 
-function rejectText(source, text) {
-  assert.ok(!source.includes(text), 'Unexpected text: ' + text);
-}
-
-test('starting lead service redirects directly to case detail window', () => {
+test('starting lead service redirects directly to canonical case detail window', () => {
   const leadDetail = read('src/pages/LeadDetail.tsx');
 
   expectText(leadDetail, 'startServiceSuccess?.caseId');
-  expectText(leadDetail, 'navigate(`/case/${startServiceSuccess.caseId}`);');
-  rejectText(leadDetail, 'navigate(`/cases/${startServiceSuccess.caseId}`);');
+  expectText(leadDetail, 'caseDetailPath');
+  expectText(leadDetail, 'navigate(caseDetailPath(result.caseId));');
+  expectText(leadDetail, 'navigate(caseDetailPath(serviceCaseId));');
 });
 
-test('case detail route supports singular and legacy plural URLs', () => {
+test('case detail route uses route constants and legacy redirect component', () => {
   const app = read('src/App.tsx');
 
-  expectText(app, 'path="/case/:caseId"');
-  expectText(app, 'path="/cases/:caseId"');
+  expectText(app, 'CLOSEFLOW_ROUTES.legacyCaseDetail');
+  expectText(app, 'CLOSEFLOW_ROUTES.caseDetail');
+  expectText(app, '<LegacyCaseRedirect />');
   expectText(app, '<CaseDetail />');
+  expectText(app, 'caseDetailPath(caseId)');
 });
 
 test('release gates include lead start service case redirect regression test', () => {
