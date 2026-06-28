@@ -1,13 +1,15 @@
 # LF-UI-SOT-006_CSS_OWNER_GUARDS_BEFORE_CLEANUP
 
-Date: 2026-06-28 19:20 Europe/Warsaw
+Date: 2026-06-28 19:55 Europe/Warsaw
 Project: CloseFlow / LeadFlow
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
+Stage: LF-UI-SOT-006
+Closeout: LF-UI-SOT-006R1_CLOSEOUT_STATUS_SYNC
 
 ## Status
 
-APPLIED_PARTIAL / GUARD_AND_TEST_ADDED / PACKAGE_SCRIPT_PENDING / LOCAL_VERIFY_PENDING / NO_UI_CSS_CLEANUP
+DONE / GUARD_ADDED / TESTS_GREEN / BUILD_PASS / PUSH_CONFIRMED / VERCEL_SUCCESS / NO_UI_CSS_CLEANUP
 
 ## Cel
 
@@ -25,21 +27,19 @@ To nie jest etap czyszczenia CSS. To jest etap blokad ochronnych przed nastepnym
 - APP_STYLES_IMPORT_MAX: NOT_TOUCHED
 - hotfix/stage CSS: NOT_DELETED
 
-## Pliki dodane
+## Pliki dodane / zaktualizowane
 
 - scripts/check-lf-ui-sot-006-css-owner-guards-before-cleanup.cjs
 - tests/lf-ui-sot-006-css-owner-guards-before-cleanup.test.cjs
+- package.json script: guard:ui:css-owner-before-cleanup
 - _project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-006_CSS_OWNER_GUARDS_BEFORE_CLEANUP.md
 - _project/runs/LF-UI-SOT-006_CSS_OWNER_GUARDS_BEFORE_CLEANUP.md
 - _project/obsidian_updates/2026-06-28_LF-UI-SOT-006_CSS_OWNER_GUARDS_BEFORE_CLEANUP.md
 
-## Wymagany lokalny follow-up
+## App commits
 
-package.json musi dostac wpis w scripts:
-
-guard:ui:css-owner-before-cleanup = node scripts/check-lf-ui-sot-006-css-owner-guards-before-cleanup.cjs
-
-Nie nadpisano package.json przez connector, bo pelny plik byl zwracany w odpowiedzi obcietej i nadpisanie byloby ryzykowne.
+- 2ff2012993d0da1650238a3ef9bfd9f78a9efb53 - guard/test/docs added
+- c583beade64040541aea54e558d4a736b0eddcc3 - npm script wired in package.json
 
 ## Guardy dodane w SOT-006
 
@@ -56,6 +56,35 @@ Guard sprawdza:
 9. Right rail owner guard.
 10. Density/runtime guard z runtime scroll/scale w Layout.tsx.
 11. DEV preview routes jako DEV_PREVIEW_NOT_PRODUCTION_SOT.
+
+## Local verify results
+
+- node scripts/check-lf-ui-sot-006-css-owner-guards-before-cleanup.cjs: PASS
+- node --test tests/lf-ui-sot-006-css-owner-guards-before-cleanup.test.cjs: PASS 11/11
+- npm run guard:ui:css-owner-before-cleanup: PASS
+- npm run guard:ui:patch-layers: PASS
+- npm run guard:routes:canonical: PASS
+- npm run guard:config:status-source-of-truth: PASS
+- npm run build: PASS
+- git diff --check -- package.json: PASS, only Windows LF/CRLF warning
+- git status after push: clean against origin/dev-rollout-freeze
+
+## Guard baseline
+
+- activeCssImports: 45
+- disabledLegacyCssImports: 1
+- appStylesImportMax: 45
+- routeOwners: 32
+- cssOwners: 45
+- searchLayersBlocked: 4
+- modalLayersGuarded: 14
+- rightRailLayersGuarded: 3
+- densityLayersGuarded: 4
+
+## Vercel
+
+- Vercel - 2.closeflow: success
+- Vercel - closedockapp: success
 
 ## Route owner dictionary summary
 
@@ -78,9 +107,7 @@ Statusy ownerow:
 
 Search layers maja status DO_POTWIERDZENIA i sa blokowane przed cleanupem.
 
-## Ryzyka
-
-Najwieksze ryzyka:
+## Ryzyka nadal aktywne
 
 - modal stack
 - search layers
@@ -90,11 +117,17 @@ Najwieksze ryzyka:
 - cards/list density split
 - DEV preview jako falszywe zrodlo prawdy
 
-## Decyzja
+## Decyzja / STOP
 
-SOT-006 nie jest cleanupem. Nie usuwac ani nie scalac CSS po tym commicie automatycznie.
+SOT-006 jest zamkniety jako etap guardow. Nie jest cleanupem.
 
-Nastepny mozliwy etap dopiero po package script i lokalnych testach:
+Po SOT-006 obowiazuje STOP:
+
+- nie wdrazac SOT-007 automatycznie,
+- nie wdrazac cleanupu CSS automatycznie,
+- najpierw szczegolowy audyt zrodla prawdy i decyzja Damiana.
+
+Nastepny mozliwy ruch dopiero po decyzji:
 
 - LF-UI-SOT-007_FIRST_SAFE_CSS_MERGE_CANDIDATE
 - albo osobne owner closeout dla search/modal/right rail/density runtime
