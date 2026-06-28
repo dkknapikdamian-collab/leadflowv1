@@ -5,8 +5,10 @@ const assert = require('node:assert/strict');
 
 const root = path.resolve(__dirname, '..');
 
-const SCAN_ROOTS = ['src/pages', 'src/components', 'src/lib'];
+const UI_SCAN_ROOTS = ['src/pages', 'src/components', 'src/lib'];
+const CSS_SCAN_ROOTS = ['src'];
 const UI_EXTENSIONS = new Set(['.ts', '.tsx']);
+const CSS_EXTENSIONS = new Set(['.css']);
 
 const DOM_PATCH_ALLOWLIST = new Map([
   ['src/components/AppChunkErrorBoundary.tsx', 'existing modal/input guard before patch-layer contract'],
@@ -61,7 +63,14 @@ const INLINE_ACTION_STYLE_ALLOWLIST = new Map([
   ['src/pages/UiPreviewVNext.tsx', 'dev preview, not production route styling SOT'],
 ]);
 
-const RAW_PAGE_BUTTON_ALLOWLIST = new Map([
+const RAW_BUTTON_ALLOWLIST = new Map([
+  ['src/components/AppChunkErrorBoundary.tsx', 'existing raw button debt'],
+  ['src/components/ErrorBoundary.tsx', 'existing raw button debt'],
+  ['src/components/Layout.tsx', 'existing raw button debt'],
+  ['src/components/confirm-dialog.tsx', 'existing raw button debt'],
+  ['src/components/lead-picker.tsx', 'existing raw button debt'],
+  ['src/components/sidebar-mini-calendar.tsx', 'existing raw button debt'],
+  ['src/components/task-editor-dialog.tsx', 'existing raw button debt'],
   ['src/pages/Activity.tsx', 'existing raw button debt'],
   ['src/pages/AdminAiSettings.tsx', 'existing raw button debt'],
   ['src/pages/AiDrafts.tsx', 'existing raw button debt'],
@@ -87,6 +96,10 @@ const RAW_PAGE_BUTTON_ALLOWLIST = new Map([
   ['src/pages/Today.tsx', 'inactive legacy raw button debt'],
   ['src/pages/TodayStable.tsx', 'existing raw button debt'],
 ]);
+
+const RAW_BUTTON_ALLOWLIST_PREFIXES = [
+  'src/components/ui/',
+];
 
 const LUCIDE_REACT_IMPORT_ALLOWLIST = new Map([
   ['src/components/confirm-dialog.tsx', 'existing direct icon import debt'],
@@ -118,6 +131,8 @@ const LUCIDE_REACT_IMPORT_ALLOWLIST = new Map([
 ]);
 
 const GENERAL_INLINE_STYLE_ALLOWLIST = new Map([
+  ['src/components/Layout.tsx', 'existing layout inline style debt'],
+  ['src/components/ui/progress.tsx', 'UI primitive width style debt'],
   ['src/pages/UiPreviewVNext.tsx', 'dev preview, not production route styling SOT'],
   ['src/pages/UiPreviewVNextFull.tsx', 'dev preview embedded HTML'],
 ]);
@@ -132,6 +147,15 @@ const DISPLAY_STACK_IMPORTANT_ALLOWLIST = new Map([
   ['src/pages/UiPreviewVNextFull.tsx', 'dev preview embedded HTML'],
 ]);
 
+const CSS_PATCH_ALLOWLIST_PREFIXES = [
+  'src/styles/',
+];
+
+const CSS_PATCH_ALLOWLIST = new Map([
+  ['src/App.css', 'existing app css debt'],
+  ['src/index.css', 'existing index css debt'],
+]);
+
 const APP_STYLES_IMPORT_MAX = new Map([
   ['src/App.tsx', 45],
 ]);
@@ -139,6 +163,7 @@ const APP_STYLES_IMPORT_MAX = new Map([
 const LOCAL_ICON_BUTTON_CLONE_ALLOWLIST = new Map([
   ['src/components/entity-actions.tsx', 'canonical shared action buttons'],
   ['src/components/ui/button.tsx', 'canonical UI Button primitive'],
+  ['src/components/detail/QuickActionsBar.tsx', 'existing quick action component debt'],
 ]);
 
 const LOCAL_COLOR_MAP_ALLOWLIST = new Map([
@@ -248,7 +273,7 @@ const STAGE_CLASS_ALLOWLIST_MAX = new Map([
   ['src/pages/UiPreviewVNext.tsx', 1],
 ]);
 
-function walk(dir) {
+function walk(dir, extensions) {
   const absolute = path.join(root, dir);
   if (!fs.existsSync(absolute)) return [];
 
@@ -257,8 +282,8 @@ function walk(dir) {
     if (entry.name.endsWith('.bak')) continue;
     const child = path.join(dir, entry.name).replace(/\\/g, '/');
     if (entry.isDirectory()) {
-      results.push(...walk(child));
-    } else if (UI_EXTENSIONS.has(path.extname(entry.name))) {
+      results.push(...walk(child, extensions));
+    } else if (extensions.has(path.extname(entry.name))) {
       results.push(child);
     }
   }
@@ -277,7 +302,16 @@ function lineFindings(file, source, predicate) {
   return source.split(/\r?\n/).flatMap((line, index) => predicate(line, index + 1) ? [`${file}:${index + 1}: ${line.trim()}`] : []);
 }
 
-const files = SCAN_ROOTS.flatMap(walk);
+function isAllowlisted(file, exactMap, prefixes = []) {
+  return exactMap.has(file) || prefixes.some((prefix) => file.startsWith(prefix));
+}
+
+function allowlistReason(file, exactMap, prefixes = []) {
+  return exactMap.get(file) || prefixes.find((prefix) => file.startsWith(prefix)) || 'existing explicit debt';
+}
+
+const files = UI_SCAN_ROOTS.flatMap((dir) => walk(dir, UI_EXTENSIONS));
+const cssFiles = CSS_SCAN_ROOTS.flatMap((dir) => walk(dir, CSS_EXTENSIONS));
 const errors = [];
 const debt = {
   domPatchFiles: [],
@@ -288,6 +322,7 @@ const debt = {
   lucideImportFiles: [],
   inlineStyleFiles: [],
   displayStackImportantFiles: [],
+  cssPatchFiles: [],
   appStyleImportFiles: [],
   localIconButtonCloneFiles: [],
   localColorMapFiles: [],
@@ -313,12 +348,12 @@ for (const file of files) {
     }
   }
 
-  const rawPageButtonFindings = lineFindings(file, source, (line) => /<button\b/.test(line));
-  if (file.startsWith('src/pages/') && rawPageButtonFindings.length > 0) {
-    if (!RAW_PAGE_BUTTON_ALLOWLIST.has(file)) {
-      errors.push(`${file}: raw <button> in page component is not allowed for new UI work. Use the central Button/action primitive.\n${rawPageButtonFindings.join('\n')}`);
+  const rawButtonFindings = lineFindings(file, source, (line) => /<button\b/.test(line));
+  if ((file.startsWith('src/pages/') || file.startsWith('src/components/')) && rawButtonFindings.length > 0) {
+    if (!isAllowlisted(file, RAW_BUTTON_ALLOWLIST, RAW_BUTTON_ALLOWLIST_PREFIXES)) {
+      errors.push(`${file}: raw <button> in page/component is not allowed for new UI work. Use the central Button/action primitive.\n${rawButtonFindings.join('\n')}`);
     } else {
-      debt.rawButtonFiles.push({ file, count: rawPageButtonFindings.length, reason: RAW_PAGE_BUTTON_ALLOWLIST.get(file) });
+      debt.rawButtonFiles.push({ file, count: rawButtonFindings.length, reason: allowlistReason(file, RAW_BUTTON_ALLOWLIST, RAW_BUTTON_ALLOWLIST_PREFIXES) });
     }
   }
 
@@ -350,10 +385,10 @@ for (const file of files) {
   }
 
   const iconButtonCloneDefinitions = lineFindings(file, source, (line) =>
-    /\b(?:function|const|export\s+(?:function|const))\s+\w*(?:IconButton|ActionIcon|ToolbarButton|QuickActionButton)\b/.test(line)
+    /\b(?:function|const|export\s+(?:function|const))\s+\w*(?:IconButton|ActionIcon|ActionButton|DangerButton|ToolbarButton|QuickActionButton)\b/.test(line)
   );
   if (iconButtonCloneDefinitions.length > 0 && !LOCAL_ICON_BUTTON_CLONE_ALLOWLIST.has(file)) {
-    errors.push(`${file}: local IconButton/ActionIcon clone detected. Use the shared action primitive or make the canonical component explicit.\n${iconButtonCloneDefinitions.join('\n')}`);
+    errors.push(`${file}: local IconButton/ActionIcon/ActionButton clone detected. Use the shared action primitive or make the canonical component explicit.\n${iconButtonCloneDefinitions.join('\n')}`);
   } else if (iconButtonCloneDefinitions.length > 0) {
     debt.localIconButtonCloneFiles.push({ file, count: iconButtonCloneDefinitions.length, reason: LOCAL_ICON_BUTTON_CLONE_ALLOWLIST.get(file) });
   }
@@ -365,13 +400,14 @@ for (const file of files) {
     errors.push(`${file}: inline style on action/icon/delete control is not allowed.\n${inlineActionStyle.join('\n')}`);
   }
 
-  const pageInlineStyle = lineFindings(file, source, (line) =>
-    file.startsWith('src/pages/') && line.includes('style={{')
+  const broadInlineStyle = lineFindings(file, source, (line) =>
+    (file.startsWith('src/pages/') || file.startsWith('src/components/'))
+    && line.includes('style={{')
   );
-  if (pageInlineStyle.length > 0 && !GENERAL_INLINE_STYLE_ALLOWLIST.has(file)) {
-    errors.push(`${file}: inline style in page component is not allowed for new UI work. Move this into the canonical component/CSS source.\n${pageInlineStyle.join('\n')}`);
-  } else if (pageInlineStyle.length > 0) {
-    debt.inlineStyleFiles.push({ file, count: pageInlineStyle.length, reason: GENERAL_INLINE_STYLE_ALLOWLIST.get(file) });
+  if (broadInlineStyle.length > 0 && !GENERAL_INLINE_STYLE_ALLOWLIST.has(file)) {
+    errors.push(`${file}: broad inline style in page/component is not allowed for new UI work. Move this into the canonical component/CSS source.\n${broadInlineStyle.join('\n')}`);
+  } else if (broadInlineStyle.length > 0) {
+    debt.inlineStyleFiles.push({ file, count: broadInlineStyle.length, reason: GENERAL_INLINE_STYLE_ALLOWLIST.get(file) });
   }
 
   const inlineHideOrStacking = lineFindings(file, source, (line) =>
@@ -410,7 +446,7 @@ for (const file of files) {
   }
 
   const localColorMapFindings = lineFindings(file, source, (line) =>
-    /\b(?:statusColorMap|badgeColorMap|statusToneMap|badgeToneMap|priorityColorMap)\b/.test(line)
+    /\b(?:statusColorMap|badgeColorMap|statusToneMap|badgeToneMap|priorityColorMap|leadStatusLabels|caseStatusLabels|getStatusColor|getBadgeColor)\b/.test(line)
   );
   if (localColorMapFindings.length > 0) {
     if (!LOCAL_COLOR_MAP_ALLOWLIST.has(file)) {
@@ -432,11 +468,11 @@ for (const file of files) {
     }
   }
 
-  const styleLayerCount = countMatches(source, /import\s+['"][^'"]*styles\/[^'"]*(?:stage|source-truth|legacy|temporary|emergency)[^'"]*\.css['"]/g);
+  const styleLayerCount = countMatches(source, /import\s+['"][^'"]*styles\/[^'"]*(?:stage|source-truth|legacy|temporary|emergency|hotfix)[^'"]*\.css['"]/g);
   if (styleLayerCount > 0) {
     const allowed = STYLE_LAYER_ALLOWLIST_MAX.get(file) || 1;
     if (styleLayerCount > allowed) {
-      errors.push(`${file}: ${styleLayerCount} stage/source-truth CSS imports exceeds allowed baseline ${allowed}. Do not stack another CSS layer; consolidate the source.`);
+      errors.push(`${file}: ${styleLayerCount} stage/source-truth/hotfix CSS imports exceeds allowed baseline ${allowed}. Do not stack another CSS layer; consolidate the source.`);
     } else {
       debt.styleLayerFiles.push({ file, count: styleLayerCount });
     }
@@ -453,6 +489,24 @@ for (const file of files) {
   }
 }
 
+for (const file of cssFiles) {
+  const source = read(file);
+  const cssPatchFindings = lineFindings(file, source, (line) =>
+    /display\s*:\s*none\b/i.test(line)
+    || /\bz-index\s*:/i.test(line)
+    || /!important\b/i.test(line)
+    || /position\s*:\s*(fixed|absolute)\b/i.test(line)
+  );
+
+  if (cssPatchFindings.length > 0) {
+    if (!isAllowlisted(file, CSS_PATCH_ALLOWLIST, CSS_PATCH_ALLOWLIST_PREFIXES)) {
+      errors.push(`${file}: CSS display:none/z-index/!important/fixed/absolute patch pattern is not allowed outside explicit CSS debt allowlist.\n${cssPatchFindings.join('\n')}`);
+    } else {
+      debt.cssPatchFiles.push({ file, count: cssPatchFindings.length, reason: allowlistReason(file, CSS_PATCH_ALLOWLIST, CSS_PATCH_ALLOWLIST_PREFIXES) });
+    }
+  }
+}
+
 assert.equal(errors.length, 0, errors.join('\n\n'));
 
 console.log(JSON.stringify({
@@ -460,25 +514,27 @@ console.log(JSON.stringify({
   guard: 'guard:ui:patch-layers',
   contract: {
     deleteAction: 'EntityTrashButton or EntityActionButton tone="danger"',
-    buttonAction: 'central Button/action primitive instead of raw page <button>',
+    buttonAction: 'central Button/action primitive instead of raw page/component <button>',
     iconAction: 'central icon registry/primitive instead of new direct lucide-react imports',
     routeAction: 'src/lib/routes helpers instead of manual route literals where helper exists',
+    cssAction: 'no CSS display:none/z-index/!important/fixed/absolute patch patterns outside explicit debt allowlist',
     forbiddenNewPatterns: [
       'querySelector/querySelectorAll runtime UI patches',
       'replaceChildren DOM rewrites',
       'inline style on action/icon/delete controls',
-      'inline style in page components',
-      'raw <button> in src/pages outside explicit debt allowlist',
+      'broad inline style in page/components',
+      'raw <button> in src/pages or src/components outside explicit debt allowlist',
       'new direct lucide-react imports',
       'local delete button abstractions',
-      'local IconButton/ActionIcon clones',
-      'local status/badge color maps',
+      'local IconButton/ActionIcon/ActionButton/DangerButton clones',
+      'local status/badge color maps and status label helpers',
       'manual route literals where route helpers exist',
       'new direct Trash2 delete controls',
       'new stacked App/global CSS imports',
-      'new stacked stage/source-truth CSS imports',
+      'new stacked stage/source-truth/hotfix CSS imports',
       'new stage-only className final styling',
-      'display:none/z-index/!important workarounds',
+      'display:none/z-index/!important workarounds in TSX',
+      'CSS display:none/z-index/!important/fixed/absolute patch patterns',
     ],
   },
   knownDebt: {
@@ -490,6 +546,7 @@ console.log(JSON.stringify({
     lucideImportFiles: debt.lucideImportFiles.length,
     inlineStyleFiles: debt.inlineStyleFiles.length,
     displayStackImportantFiles: debt.displayStackImportantFiles.length,
+    cssPatchFiles: debt.cssPatchFiles.length,
     appStyleImportFiles: debt.appStyleImportFiles.length,
     localIconButtonCloneFiles: debt.localIconButtonCloneFiles.length,
     localColorMapFiles: debt.localColorMapFiles.length,
