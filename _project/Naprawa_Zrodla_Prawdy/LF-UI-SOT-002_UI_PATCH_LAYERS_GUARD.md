@@ -8,8 +8,8 @@ Scope: guard przeciw dokladaniu kolejnych runtime/CSS/UI plastrow
 
 ## LF-UI-SOT-002R2 - UI patch guard widening policy
 
-Status: IMPLEMENTED_IN_REPO / GUARD_WIDENED / NO_UI_REFACTOR / NEEDS_LOCAL_VERIFY
-Date: 2026-06-28 01:55 Europe/Warsaw
+Status: IMPLEMENTED_IN_REPO / BASELINE_REPAIR_AFTER_LOCAL_RED_GUARD / NO_UI_REFACTOR / NEEDS_LOCAL_VERIFY
+Date: 2026-06-28 02:05 Europe/Warsaw
 
 ## Decyzja R2
 
@@ -49,6 +49,21 @@ R2 rozszerza polityke o:
 - `CSS_SCAN_ROOTS` / `CSS_PATCH_ALLOWLIST` - skan plikow `.css` pod `display:none`, `z-index`, `!important`, `position: fixed`, `position: absolute`;
 - szerszy kontrakt na `display:none` / `z-index` / `!important` jako workaround.
 
+## Naprawa baseline po czerwonym lokalnym guardzie
+
+Damian odpalil lokalnie `npm run guard:ui:patch-layers` i guard slusznie ujawnil, ze baseline allowlist byl za waski.
+
+Dopisana naprawa zamraza istniejacy dlug, m.in.:
+
+- direct `lucide-react` w istniejacych pages/components/lib;
+- raw `<button>` w istniejacych pages/components/dev preview/admin tools;
+- broad inline style w istniejacych pages/components;
+- istniejace visual runtime `!important` debt;
+- istniejacy CSS debt `src/pages/legal-public-pages.css`;
+- realny baseline stage CSS imports dla Activity/AiDrafts/NotificationsCenter = 7.
+
+To nie jest zgoda na nowe plastry. To jest zamrozenie obecnego stanu, zeby guard blokowal przyrost.
+
 ## Interpretacja allowlist
 
 Allowlisty nie sa zgoda na nowe plastry.
@@ -71,6 +86,7 @@ Do uruchomienia lokalnie:
 ```powershell
 cd "C:\Users\malim\Desktop\biznesy_ai\2.closeflow"
 
+git pull --ff-only origin dev-rollout-freeze
 npm run guard:ui:patch-layers
 node --test tests/ui-patch-layers-guard.test.cjs
 npm run guard:routes:canonical
@@ -87,7 +103,7 @@ LF-UI-SOT-002:
 DONE / GUARD_ADDED / BASELINE_PROTECTS_AGAINST_SOME_PATCHES
 
 LF-UI-SOT-002R2:
-IMPLEMENTED_IN_REPO / POSZERZENIE_GUARDA / BEZ_UI_REFACTORU / NEEDS_LOCAL_VERIFY
+IMPLEMENTED_IN_REPO / BASELINE_REPAIR_AFTER_LOCAL_RED_GUARD / BEZ_UI_REFACTORU / NEEDS_LOCAL_VERIFY
 ```
 
 ## Ryzyko
@@ -96,7 +112,7 @@ IMPLEMENTED_IN_REPO / POSZERZENIE_GUARDA / BEZ_UI_REFACTORU / NEEDS_LOCAL_VERIFY
 
 ## Zapis
 
-- data i godzina: 2026-06-28 01:55 Europe/Warsaw
+- data i godzina: 2026-06-28 02:05 Europe/Warsaw
 - repo: dkknapikdamian-collab/leadflowv1
 - branch: dev-rollout-freeze
 - files touched:
@@ -108,4 +124,4 @@ IMPLEMENTED_IN_REPO / POSZERZENIE_GUARDA / BEZ_UI_REFACTORU / NEEDS_LOCAL_VERIFY
 - runtime UI: nietkniete
 - CSS/layout: nietkniete
 - SQL/API/Supabase: nietkniete
-- Obsidian central: zapisane w `10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY - CloseFlow Lead App.md`
+- Obsidian central: zapisac aktualizacje po tej naprawie baseline
