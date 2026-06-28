@@ -1,17 +1,20 @@
 # Obsidian update - LF-UI-SOT-006_CSS_OWNER_GUARDS_BEFORE_CLEANUP
 
-Date: 2026-06-28 19:20 Europe/Warsaw
+Date: 2026-06-28 19:55 Europe/Warsaw
 Project: CloseFlow / LeadFlow
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
+Stage: LF-UI-SOT-006
+Closeout: LF-UI-SOT-006R1_CLOSEOUT_STATUS_SYNC
 
 ## Status to record
 
 LF-UI-SOT-006_CSS_OWNER_GUARDS_BEFORE_CLEANUP:
-APPLIED_PARTIAL / GUARD_AND_TEST_ADDED / PACKAGE_SCRIPT_PENDING / LOCAL_VERIFY_PENDING / NO_UI_CSS_CLEANUP
+DONE / GUARD_ADDED / TESTS_GREEN / BUILD_PASS / PUSH_CONFIRMED / VERCEL_SUCCESS / NO_UI_CSS_CLEANUP
 
 ## Paths
 
+- package.json
 - scripts/check-lf-ui-sot-006-css-owner-guards-before-cleanup.cjs
 - tests/lf-ui-sot-006-css-owner-guards-before-cleanup.test.cjs
 - _project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-006_CSS_OWNER_GUARDS_BEFORE_CLEANUP.md
@@ -20,18 +23,25 @@ APPLIED_PARTIAL / GUARD_AND_TEST_ADDED / PACKAGE_SCRIPT_PENDING / LOCAL_VERIFY_P
 
 ## Results
 
-Remote files added: DONE
-package.json npm script: PENDING
-local guard/test/build: PENDING
-Vercel: NOT_CHECKED
+- package.json npm script: DONE
+- local guard/test/build: PASS
+- existing guards: PASS
+- git diff --check: PASS, only Windows LF/CRLF warning for package.json
+- git status after push: clean against origin/dev-rollout-freeze
+- Vercel - 2.closeflow: success
+- Vercel - closedockapp: success
 
-## Required package.json script
+## Guard baseline
 
-guard:ui:css-owner-before-cleanup -> node scripts/check-lf-ui-sot-006-css-owner-guards-before-cleanup.cjs
-
-## Next step
-
-Add package.json script locally, run verify commands, then close SOT-006 only if guard/test/build/diff are green.
+- activeCssImports: 45
+- disabledLegacyCssImports: 1
+- appStylesImportMax: 45
+- routeOwners: 32
+- cssOwners: 45
+- searchLayersBlocked: 4
+- modalLayersGuarded: 14
+- rightRailLayersGuarded: 3
+- densityLayersGuarded: 4
 
 ## Do not touch
 
@@ -43,7 +53,13 @@ Add package.json script locally, run verify commands, then close SOT-006 only if
 - APP_STYLES_IMPORT_MAX
 - hotfix/stage CSS files
 
+## STOP after SOT-006
+
+Wszystko wdrozone w kolejce naprawy zrodla prawdy UI/routes.
+Nie wdrazac dalej automatycznie.
+Nastepny krok: szczegolowy audyt zrodla prawdy i dopiero po decyzji Damiana wybor kolejnego etapu.
+
 ## Obsidian sync
 
-Obsidian GitHub sync: TO_UPDATE_AFTER_LOCAL_VERIFY_OR_STATUS_SYNC
+Obsidian GitHub sync: REQUIRED_AFTER_THIS_PAYLOAD
 Obsidian local sync: LOCAL_SYNC_PENDING
