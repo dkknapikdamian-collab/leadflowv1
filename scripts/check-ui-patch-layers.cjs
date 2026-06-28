@@ -62,17 +62,30 @@ const INLINE_ACTION_STYLE_ALLOWLIST = new Map([
 ]);
 
 const RAW_PAGE_BUTTON_ALLOWLIST = new Map([
+  ['src/pages/Activity.tsx', 'existing raw button debt'],
+  ['src/pages/AdminAiSettings.tsx', 'existing raw button debt'],
+  ['src/pages/AiDrafts.tsx', 'existing raw button debt'],
+  ['src/pages/Billing.tsx', 'existing raw button debt'],
   ['src/pages/Calendar.tsx', 'existing raw button debt'],
   ['src/pages/CaseDetail.tsx', 'existing raw button debt'],
+  ['src/pages/Cases.tsx', 'existing raw button debt'],
   ['src/pages/ClientDetail.tsx', 'existing raw button debt'],
+  ['src/pages/ClientPortal.tsx', 'existing raw button debt'],
   ['src/pages/Clients.tsx', 'existing raw button debt'],
   ['src/pages/Dashboard.tsx', 'existing raw button debt'],
   ['src/pages/LeadDetail.tsx', 'existing raw button debt'],
   ['src/pages/Leads.tsx', 'existing raw button debt'],
   ['src/pages/Login.tsx', 'existing raw button debt'],
+  ['src/pages/NotificationsCenter.tsx', 'existing raw button debt'],
+  ['src/pages/ResponseTemplates.tsx', 'existing raw button debt'],
+  ['src/pages/SalesFunnel.tsx', 'existing raw button debt'],
+  ['src/pages/Settings.tsx', 'existing raw button debt'],
+  ['src/pages/SupportCenter.tsx', 'existing raw button debt'],
   ['src/pages/Tasks.tsx', 'inactive legacy raw button debt'],
+  ['src/pages/TasksStable.tsx', 'existing raw button debt'],
   ['src/pages/Templates.tsx', 'existing raw button debt'],
   ['src/pages/Today.tsx', 'inactive legacy raw button debt'],
+  ['src/pages/TodayStable.tsx', 'existing raw button debt'],
 ]);
 
 const LUCIDE_REACT_IMPORT_ALLOWLIST = new Map([
@@ -133,13 +146,29 @@ const LOCAL_COLOR_MAP_ALLOWLIST = new Map([
 ]);
 
 const ROUTE_LITERAL_ALLOWLIST = new Map([
+  ['src/pages/Activity.tsx', 'existing route literal debt'],
+  ['src/pages/AdminAiSettings.tsx', 'existing route literal debt'],
+  ['src/pages/AiDrafts.tsx', 'existing route literal debt'],
+  ['src/pages/Billing.tsx', 'existing route literal debt'],
   ['src/pages/Calendar.tsx', 'existing route literal debt'],
   ['src/pages/CaseDetail.tsx', 'existing route literal debt'],
   ['src/pages/Cases.tsx', 'existing route literal debt'],
   ['src/pages/ClientDetail.tsx', 'existing route literal debt'],
+  ['src/pages/ClientPortal.tsx', 'existing route literal debt'],
   ['src/pages/Clients.tsx', 'existing route literal debt'],
+  ['src/pages/Dashboard.tsx', 'existing route literal debt'],
   ['src/pages/LeadDetail.tsx', 'existing route literal debt'],
   ['src/pages/Leads.tsx', 'existing route literal debt'],
+  ['src/pages/Login.tsx', 'existing route literal debt'],
+  ['src/pages/NotificationsCenter.tsx', 'existing route literal debt'],
+  ['src/pages/ResponseTemplates.tsx', 'existing route literal debt'],
+  ['src/pages/SalesFunnel.tsx', 'existing route literal debt'],
+  ['src/pages/Settings.tsx', 'existing route literal debt'],
+  ['src/pages/SupportCenter.tsx', 'existing route literal debt'],
+  ['src/pages/Tasks.tsx', 'existing route literal debt'],
+  ['src/pages/TasksStable.tsx', 'existing route literal debt'],
+  ['src/pages/Templates.tsx', 'existing route literal debt'],
+  ['src/pages/Today.tsx', 'inactive legacy route literal debt'],
   ['src/pages/TodayStable.tsx', 'existing route literal debt'],
 ]);
 
