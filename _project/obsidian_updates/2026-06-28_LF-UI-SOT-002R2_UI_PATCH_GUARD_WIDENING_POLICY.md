@@ -1,6 +1,6 @@
 # LF-UI-SOT-002R2 UI patch guard widening policy
 
-Date: 2026-06-28 01:50 Europe/Warsaw
+Date: 2026-06-28 02:05 Europe/Warsaw
 Project: CloseFlow / LeadFlow
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
@@ -10,7 +10,7 @@ Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
 ## Status
 
 LF-UI-SOT-002R2:
-IMPLEMENTED_IN_REPO / POSZERZENIE_GUARDA / BEZ_UI_REFACTORU / NEEDS_LOCAL_VERIFY
+IMPLEMENTED_IN_REPO / BASELINE_REPAIR_AFTER_LOCAL_RED_GUARD / BEZ_UI_REFACTORU / NEEDS_LOCAL_VERIFY
 
 ## Scope
 
@@ -25,25 +25,40 @@ No runtime UI refactor.
 No CSS/layout change.
 No SQL/API/Supabase change.
 
-## Policy added
+## Local red guard from Damian
 
-The existing guard now records wider anti-patch policy for:
+Damian pulled commit 80be0aa0 and ran:
 
-- raw button debt in pages/components
-- direct lucide-react import debt
-- broad inline style scan in pages/components
-- CSS scan for display:none, z-index, !important, fixed/absolute positioning
-- App global CSS import baseline
-- local IconButton/ActionIcon/ActionButton/DangerButton clones
+```powershell
+npm run guard:ui:patch-layers
+node --test tests/ui-patch-layers-guard.test.cjs
+```
+
+Result: red.
+
+Reason: R2 policy was valid, but allowlists were too narrow and caught existing debt instead of only blocking new patch growth.
+
+## Baseline repair added
+
+The existing guard now freezes current baseline debt for:
+
+- raw button debt in existing pages/components/dev preview/admin tools
+- direct lucide-react import debt in existing pages/components/lib
+- broad inline style debt in existing pages/components
+- CSS scan debt for display:none, z-index, !important, fixed/absolute positioning
+- App/global/stage CSS import baseline
+- local IconButton/ActionIcon/ActionButton/DangerButton debt
 - local status/badge/status-label/color helpers
 - manual route literals where route helpers exist
-- display:none/z-index/!important TSX workarounds
+- visual runtime !important debt
+- legal public page CSS debt
 
-## Verify locally
+## Verify locally again
 
 ```powershell
 cd "C:\Users\malim\Desktop\biznesy_ai\2.closeflow"
 
+git pull --ff-only origin dev-rollout-freeze
 npm run guard:ui:patch-layers
 node --test tests/ui-patch-layers-guard.test.cjs
 npm run guard:routes:canonical
