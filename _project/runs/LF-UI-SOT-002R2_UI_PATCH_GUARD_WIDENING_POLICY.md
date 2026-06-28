@@ -1,13 +1,13 @@
 # LF-UI-SOT-002R2 UI patch guard widening policy - run report
 
-Date: 2026-06-28 02:05 Europe/Warsaw
+Date: 2026-06-28 02:20 Europe/Warsaw
 Project: CloseFlow / LeadFlow
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
 
 ## Status
 
-IMPLEMENTED_IN_REPO / BASELINE_REPAIR_AFTER_LOCAL_RED_GUARD / BEZ_UI_REFACTORU / NEEDS_LOCAL_VERIFY
+IMPLEMENTED_IN_REPO / LAYOUT_LUCIDE_BASELINE_FIX / BEZ_UI_REFACTORU / NEEDS_LOCAL_VERIFY
 
 ## Local verify from Damian
 
@@ -16,28 +16,32 @@ Damian ran:
 ```powershell
 npm run guard:ui:patch-layers
 node --test tests/ui-patch-layers-guard.test.cjs
+npm run guard:routes:canonical
+npm run build
+npm run verify:closeflow:quiet
+git diff --check
+git status --short --branch
 ```
 
-Result:
+Result after first baseline repair:
 
 ```txt
 guard:ui:patch-layers RED
 tests/ui-patch-layers-guard.test.cjs RED because embedded guard run was RED
+guard:routes:canonical PASS
+build PASS
+verify:closeflow:quiet RED due unrelated dirty workspace
+```
+
+Remaining R2 guard error:
+
+```txt
+src/components/Layout.tsx: direct lucide-react import is not allowed for new UI work.
 ```
 
 Reason:
 
-The R2 guard rules were correct as policy, but the baseline allowlists did not yet freeze all existing debt. The guard was catching old debt in current repo instead of only preventing new patch growth.
-
-Examples from local red guard:
-
-- broad inline style debt in Activity, Calendar, CaseDetail, Cases, ClientDetail, NotificationsCenter, Today;
-- direct lucide-react debt in AdminAiSettings, AiDrafts, NotificationsCenter, PublicLanding, ResponseTemplates, SalesFunnel, SupportCenter, TasksStable, TodayStable and components;
-- raw button debt in UiPreview files and several components;
-- local LeadActionButton / ActionIcon debt;
-- existing visual runtime `!important` debt;
-- legal public page CSS debt;
-- Activity/AiDrafts/NotificationsCenter stage CSS import baseline was 7, not 6.
+`src/components/Layout.tsx` is existing shell/layout debt and was already allowlisted in other R2 baseline sections. It was missing only from `LUCIDE_REACT_IMPORT_ALLOWLIST`.
 
 ## Baseline repair performed
 
@@ -51,6 +55,20 @@ No src/pages refactor.
 No src/components refactor.
 No src/styles changes.
 No SQL/API/Supabase changes.
+
+## Earlier baseline repair context
+
+The R2 guard rules were correct as policy, but the baseline allowlists did not yet freeze all existing debt. The guard was catching old debt in current repo instead of only preventing new patch growth.
+
+Examples from local red guard:
+
+- broad inline style debt in Activity, Calendar, CaseDetail, Cases, ClientDetail, NotificationsCenter, Today;
+- direct lucide-react debt in AdminAiSettings, AiDrafts, NotificationsCenter, PublicLanding, ResponseTemplates, SalesFunnel, SupportCenter, TasksStable, TodayStable and components;
+- raw button debt in UiPreview files and several components;
+- local LeadActionButton / ActionIcon debt;
+- existing visual runtime `!important` debt;
+- legal public page CSS debt;
+- Activity/AiDrafts/NotificationsCenter stage CSS import baseline was 7, not 6.
 
 ## Guard state after repair
 
