@@ -8,8 +8,8 @@ export {
 export const TASK_TYPES = [
   { value: 'follow_up', label: 'Follow-up', icon: MessageSquareReply },
   { value: 'phone', label: 'Telefon', icon: Phone },
-  { value: 'reply', label: 'OdpisaĂ„â€ˇ', icon: MessageSquareReply },
-  { value: 'send_offer', label: 'WyÄąâ€şlij ofertĂ„â„˘', icon: FileText },
+  { value: 'reply', label: 'OdpisaÄ‚â€žĂ˘â‚¬Ë‡', icon: MessageSquareReply },
+  { value: 'send_offer', label: 'WyĂ„Ä…Ă˘â‚¬Ĺźlij ofertÄ‚â€žĂ˘â€žË', icon: FileText },
   { value: 'meeting', label: 'Spotkanie', icon: CalendarDays },
   { value: 'other', label: 'Inne', icon: CircleDot },
 ];
@@ -19,14 +19,14 @@ export const EVENT_TYPES = [
   { value: 'phone_call', label: 'Rozmowa', icon: Phone },
   { value: 'follow_up', label: 'Follow-up', icon: MessageSquareReply },
   { value: 'deadline', label: 'Deadline', icon: FileText },
-  { value: 'custom', label: 'WÄąâ€šasne wydarzenie', icon: CircleDot },
+  { value: 'custom', label: 'WĂ„Ä…Ă˘â‚¬Ĺˇasne wydarzenie', icon: CircleDot },
 ];
 
 export const RECURRENCE_OPTIONS = [
   { value: 'none', label: 'Brak' },
   { value: 'daily', label: 'Codziennie' },
-  { value: 'weekly', label: 'Co tydzieÄąâ€ž' },
-  { value: 'monthly', label: 'Co miesiĂ„â€¦c' },
+  { value: 'weekly', label: 'Co tydzieĂ„Ä…Ă˘â‚¬Ĺľ' },
+  { value: 'monthly', label: 'Co miesiÄ‚â€žĂ˘â‚¬Â¦c' },
 ];
 
 export const REMINDER_MODE_OPTIONS = [
@@ -37,13 +37,13 @@ export const REMINDER_MODE_OPTIONS = [
 
 export const REMINDER_OFFSET_OPTIONS = [
   { value: 540, label: 'Tego samego dnia o 09:00' },
-  { value: 1440, label: 'DzieÄąâ€ž wczeÄąâ€şniej o 09:00' },
-  { value: 2880, label: '2 dni wczeÄąâ€şniej o 09:00' },
-  { value: 10080, label: '1 tydzieÄąâ€ž wczeÄąâ€şniej o 09:00' },
+  { value: 1440, label: 'DzieĂ„Ä…Ă˘â‚¬Ĺľ wczeĂ„Ä…Ă˘â‚¬Ĺźniej o 09:00' },
+  { value: 2880, label: '2 dni wczeĂ„Ä…Ă˘â‚¬Ĺźniej o 09:00' },
+  { value: 10080, label: '1 tydzieĂ„Ä…Ă˘â‚¬Ĺľ wczeĂ„Ä…Ă˘â‚¬Ĺźniej o 09:00' },
 ];
 
 export const GOOGLE_CALENDAR_REMINDER_METHOD_OPTIONS = [
-  { value: 'default', label: 'DomyÄąâ€şlne z Google Calendar' },
+  { value: 'default', label: 'DomyĂ„Ä…Ă˘â‚¬Ĺźlne z Google Calendar' },
   { value: 'popup', label: 'Powiadomienie w Google Calendar' },
   { value: 'email', label: 'E-mail z Google Calendar' },
   { value: 'popup_email', label: 'Powiadomienie + e-mail' },
@@ -51,7 +51,7 @@ export const GOOGLE_CALENDAR_REMINDER_METHOD_OPTIONS = [
 
 export const PRIORITY_OPTIONS = [
   { value: 'low', label: 'Niski' },
-  { value: 'medium', label: 'ÄąĹˇredni' },
+  { value: 'medium', label: 'Ă„Ä…ÄąË‡redni' },
   { value: 'high', label: 'Wysoki' },
 ];
 

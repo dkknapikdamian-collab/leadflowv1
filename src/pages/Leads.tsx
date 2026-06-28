@@ -111,13 +111,13 @@ import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-record-list-source-truth.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import '../styles/closeflow-canvas-source-truth-stage211e.css';
-const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadÄ‚Ĺ‚w jest pusty';
-const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'PrzywrÄ‚Ĺ‚Ă„â€ˇ leada';
-const STAGE_PANEL_DELETE_LEADS_CONFIRM_GUARD = '\\\\n\\\\nTen lead ma powiĂ„â€¦zanĂ„â€¦ sprawĂ„â„˘';
-const STAGE31_LEADS_SEARCH_COPY_GUARD_1 = 'Szukaj: nazwa, telefon, e-mail, firma, ÄąĹźrÄ‚Ĺ‚dÄąâ€šo albo sprawa...';
-const STAGE31_LEADS_SEARCH_COPY_GUARD_2 = 'Podpowiedzi pojawiajĂ„â€¦ siĂ„â„˘ pod wyszukiwarkĂ„â€¦. UsuÄąâ€ž czĂ„â„˘Äąâ€şĂ„â€ˇ tekstu albo wybierz inny filtr.';
-const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_1 = 'Szukaj: nazwa, telefon, e-mail, firma, ÄąĹźrÄ‚Ĺ‚dÄąâ€šo albo sprawa...';
-const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_2 = 'Podpowiedzi pojawiajĂ„â€¦ siĂ„â„˘ pod wyszukiwarkĂ„â€¦. UsuÄąâ€ž czĂ„â„˘Äąâ€şĂ„â€ˇ tekstu albo wybierz inny filtr.';
+const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadĂ„â€šÄąâ€šw jest pusty';
+const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'PrzywrĂ„â€šÄąâ€šÄ‚â€žĂ˘â‚¬Ë‡ leada';
+const STAGE_PANEL_DELETE_LEADS_CONFIRM_GUARD = '\\\\n\\\\nTen lead ma powiÄ‚â€žĂ˘â‚¬Â¦zanÄ‚â€žĂ˘â‚¬Â¦ sprawÄ‚â€žĂ˘â€žË';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_1 = 'Szukaj: nazwa, telefon, e-mail, firma, Ă„Ä…ÄąĹşrĂ„â€šÄąâ€šdĂ„Ä…Ă˘â‚¬Ĺˇo albo sprawa...';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_2 = 'Podpowiedzi pojawiajÄ‚â€žĂ˘â‚¬Â¦ siÄ‚â€žĂ˘â€žË pod wyszukiwarkÄ‚â€žĂ˘â‚¬Â¦. UsuĂ„Ä…Ă˘â‚¬Ĺľ czÄ‚â€žĂ˘â€žËĂ„Ä…Ă˘â‚¬ĹźÄ‚â€žĂ˘â‚¬Ë‡ tekstu albo wybierz inny filtr.';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_1 = 'Szukaj: nazwa, telefon, e-mail, firma, Ă„Ä…ÄąĹşrĂ„â€šÄąâ€šdĂ„Ä…Ă˘â‚¬Ĺˇo albo sprawa...';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_2 = 'Podpowiedzi pojawiajÄ‚â€žĂ˘â‚¬Â¦ siÄ‚â€žĂ˘â€žË pod wyszukiwarkÄ‚â€žĂ˘â‚¬Â¦. UsuĂ„Ä…Ă˘â‚¬Ĺľ czÄ‚â€žĂ˘â€žËĂ„Ä…Ă˘â‚¬ĹźÄ‚â€žĂ˘â‚¬Ë‡ tekstu albo wybierz inny filtr.';
 const STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT = 'Leads right rail starts at search height, simple filters first, top value below, no overlap';
 const STAGE222_R4_LEADS_CLIENTS_OPERATIONAL_BADGES = 'lead rows show missing contact, missing next action and 7/14 day silence badges';
 const STAGE223R3_LAST_CONTACT_INTAKE_LEADS = 'lead creation captures explicit lastContactAt for activity truth';
@@ -126,7 +126,7 @@ const STAGE226_LOST_LEAD_RESCUE_LEADS = 'lead list exposes Do odzyskania rescue 
 const STAGE226R10_LEAD_CLIENT_SEPARATION_RUNTIME = 'lead create stays lead-only and never creates or displays a client row';
 const STAGE227F6_LEADS_CONTACT_CADENCE_COMPACT = 'Leads Contact Cadence Grid is a compact filter strip without explanatory runtime copy';
 const STAGE231D0C_LEAD_LIST_CARD_CLIENT_VIEW_FREEZE = 'LeadListCard reuses frozen ClientListCard visual shell: size, axes, ellipsis and action column; lead data semantics stay unchanged';
-const STAGE231G_LEAD_CREATE_POTENTIAL_INPUT = 'Lead create form exposes PotencjaÄąâ€š / wartoÄąâ€şĂ„â€ˇ and persists dealValue';
+const STAGE231G_LEAD_CREATE_POTENTIAL_INPUT = 'Lead create form exposes PotencjaĂ„Ä…Ă˘â‚¬Ĺˇ / wartoĂ„Ä…Ă˘â‚¬ĹźÄ‚â€žĂ˘â‚¬Ë‡ and persists dealValue';
 const CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER = 'Szukaj po nazwie, telefonie, e-mailu, firmie albo sprawie...';
 const CLOSEFLOW_STAGE134_TRASH_SEARCH_PLACEHOLDER = 'Szukaj w koszu...';
 void STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT;
@@ -142,7 +142,7 @@ const STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG = 'lead creation duplicate
 void STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG;
 const STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE = 'lead duplicate conflict preflight fails closed and requires explicit add anyway';
 void STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE;
-// Guard marker: \n\nTen lead ma powiĂ„â€¦zanĂ„â€¦ sprawĂ„â„˘
+// Guard marker: \n\nTen lead ma powiÄ‚â€žĂ˘â‚¬Â¦zanÄ‚â€žĂ˘â‚¬Â¦ sprawÄ‚â€žĂ˘â€žË
 
 
 type CaseRecord = {
@@ -205,7 +205,7 @@ function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sou
     sourceLabel,
     company,
     caseLabel,
-  ].filter(Boolean).join(' Ă‚Â· ');
+  ].filter(Boolean).join(' Ä‚â€šĂ‚Â· ');
 }
 
 function sanitizeNewLeadCreatePayloadA1(input: any) {
@@ -237,7 +237,7 @@ function getNextActionKindLabel(action: { kind?: string } | null | undefined) {
 function buildNextActionMeta(action: { title: string | null; at: string | null; kind?: string | null; status?: string } | null | undefined) {
   if (!action?.at || !action?.title) {
     return {
-      title: 'Brak zaplanowanych dziaÄąâ€šaÄąâ€ž',
+      title: 'Brak zaplanowanych dziaĂ„Ä…Ă˘â‚¬ĹˇaĂ„Ä…Ă˘â‚¬Ĺľ',
       subtitle: '',
       overdue: false,
     };
@@ -249,7 +249,7 @@ function buildNextActionMeta(action: { title: string | null; at: string | null; 
 
   return {
     title: action.title,
-    subtitle: `${getNextActionKindLabel(action)} Ă‚Â· ${dateLabel} Ă‚Â· ${String(action.status || 'todo')}`,
+    subtitle: `${getNextActionKindLabel(action)} Ä‚â€šĂ‚Â· ${dateLabel} Ä‚â€šĂ‚Â· ${String(action.status || 'todo')}`,
     overdue,
   };
 }
@@ -354,9 +354,9 @@ export default function Leads() {
       setEvents(eventRows as any[]);
       setClients(clientRows as any[]);
     } catch (error: any) {
-      const message = error?.message || 'Nie udaÄąâ€šo siĂ„â„˘ pobraĂ„â€ˇ leadÄ‚Ĺ‚w';
+      const message = error?.message || 'Nie udaĂ„Ä…Ă˘â‚¬Ĺˇo siÄ‚â€žĂ˘â€žË pobraÄ‚â€žĂ˘â‚¬Ë‡ leadĂ„â€šÄąâ€šw';
       setLoadError(message);
-      toast.error(`BÄąâ€šĂ„â€¦d odczytu leadÄ‚Ĺ‚w: ${message}`);
+      toast.error(`BĂ„Ä…Ă˘â‚¬ĹˇÄ‚â€žĂ˘â‚¬Â¦d odczytu leadĂ„â€šÄąâ€šw: ${message}`);
     } finally {
       setLoading(false);
     }
@@ -446,17 +446,17 @@ export default function Leads() {
 
   const restoreConflictCandidate = async (candidate: EntityConflictCandidate) => {
     if (candidate.entityType === 'client') {
-      toast.info('Znaleziono podobnego klienta. To nie jest ten sam rekord. OtwÄ‚Ĺ‚rz klienta albo utwÄ‚Ĺ‚rz osobnego leada.');
+      toast.info('Znaleziono podobnego klienta. To nie jest ten sam rekord. OtwĂ„â€šÄąâ€šrz klienta albo utwĂ„â€šÄąâ€šrz osobnego leada.');
       return;
     }
-    if (!candidate.canRestore) { toast.info('Ten rekord ma historiĂ„â„˘. Najpierw go otwÄ‚Ĺ‚rz i zdecyduj, co zrobiĂ„â€ˇ.'); return; }
+    if (!candidate.canRestore) { toast.info('Ten rekord ma historiÄ‚â€žĂ˘â€žË. Najpierw go otwĂ„â€šÄąâ€šrz i zdecyduj, co zrobiÄ‚â€žĂ˘â‚¬Ë‡.'); return; }
     try {
       setLeadSubmitting(true);
       await updateLeadInSupabase({ id: candidate.id, status: 'new', leadVisibility: 'active', salesOutcome: 'open', closedAt: null });
-      toast.success('Lead przywrÄ‚Ĺ‚cony');
+      toast.success('Lead przywrĂ„â€šÄąâ€šcony');
       setLeadConflictOpen(false);
       await loadLeads();
-    } catch (error: any) { toast.error('Nie udaÄąâ€šo siĂ„â„˘ przywrÄ‚Ĺ‚ciĂ„â€ˇ rekordu: ' + (error?.message || 'REQUEST_FAILED')); }
+    } catch (error: any) { toast.error('Nie udaĂ„Ä…Ă˘â‚¬Ĺˇo siÄ‚â€žĂ˘â€žË przywrĂ„â€šÄąâ€šciÄ‚â€žĂ˘â‚¬Ë‡ rekordu: ' + (error?.message || 'REQUEST_FAILED')); }
     finally { setLeadSubmitting(false); }
   };
 
@@ -464,12 +464,12 @@ export default function Leads() {
   const handleCreateLead = async (e: FormEvent) => {
     e.preventDefault();
     if (createLeadSubmitLockRef.current) return;
-    if (!hasAccess) return toast.error('TwÄ‚Ĺ‚j trial wygasÄąâ€š.');
+    if (!hasAccess) return toast.error('TwĂ„â€šÄąâ€šj trial wygasĂ„Ä…Ă˘â‚¬Ĺˇ.');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     const hasLeadIdentity = Boolean(newLead.name.trim() || newLead.phone.trim() || newLead.email.trim() || newLead.company.trim());
     const hasContactOrNeed = Boolean(newLead.phone.trim() || newLead.email.trim() || newLead.summary.trim() || newLead.notes.trim());
-    if (!hasLeadIdentity) return toast.error('Podaj nazwĂ„â„˘ albo kontakt.');
+    if (!hasLeadIdentity) return toast.error('Podaj nazwÄ‚â€žĂ˘â€žË albo kontakt.');
     if (!hasContactOrNeed) return toast.error('Podaj telefon, e-mail albo opis potrzeby.');
     const lastContactError = getLastContactDateInputError(newLead.lastContactAt);
     if (lastContactError) return toast.error(lastContactError);
@@ -481,14 +481,14 @@ export default function Leads() {
       try {
         conflicts = await findEntityConflictsInSupabase({ targetType: 'lead', name: preparedLead.name, email: preparedLead.email, phone: preparedLead.phone, company: preparedLead.company, workspaceId });
       } catch (error: any) {
-        toast.error('Nie udaÄąâ€šo siĂ„â„˘ sprawdziĂ„â€ˇ duplikatÄ‚Ĺ‚w. Zapis leada zatrzymany, ÄąÄ˝eby nie dodaĂ„â€ˇ konfliktu po cichu.');
+        toast.error('Nie udaĂ„Ä…Ă˘â‚¬Ĺˇo siÄ‚â€žĂ˘â€žË sprawdziÄ‚â€žĂ˘â‚¬Ë‡ duplikatĂ„â€šÄąâ€šw. Zapis leada zatrzymany, Ă„Ä…Ă„Ëťeby nie dodaÄ‚â€žĂ˘â‚¬Ë‡ konfliktu po cichu.');
         return;
       }
       const candidates = Array.isArray(conflicts.candidates)
         ? (conflicts.candidates as EntityConflictCandidate[]).map((candidate) => candidate.entityType === 'client' ? { ...candidate, canRestore: false } : candidate)
         : [];
       if (candidates.length) {
-        toast.info('Znaleziono podobny rekord. Zapis leada wymaga potwierdzenia albo klikniĂ„â„˘cia Ă˘â‚¬ĹľDodaj mimo toĂ˘â‚¬ĹĄ.');
+        toast.info('Znaleziono podobny rekord. Zapis leada wymaga potwierdzenia albo klikniÄ‚â€žĂ˘â€žËcia Ä‚ËĂ˘â€šÂ¬ÄąÄľDodaj mimo toÄ‚ËĂ˘â€šÂ¬ÄąÄ„.');
         setLeadConflictCandidates(candidates);
         setLeadConflictPendingInput(preparedLead);
         setIsNewLeadOpen(false);
@@ -496,14 +496,14 @@ export default function Leads() {
         return;
       }
       await createLeadFromPreparedInput(preparedLead);
-    } catch (error: any) { toast.error(`BÄąâ€šĂ„â€¦d zapisu leada: ${error.message}`); }
+    } catch (error: any) { toast.error(`BĂ„Ä…Ă˘â‚¬ĹˇÄ‚â€žĂ˘â‚¬Â¦d zapisu leada: ${error.message}`); }
     finally { createLeadSubmitLockRef.current = false; setLeadSubmitting(false); }
   };
 
   const handleCreateLeadAnyway = async () => {
     if (!leadConflictPendingInput || leadSubmitting) return;
     try { setLeadSubmitting(true); await createLeadFromPreparedInput(leadConflictPendingInput, { forceDuplicate: true }); setLeadConflictOpen(false); setLeadConflictPendingInput(null); setLeadConflictCandidates([]); }
-    catch (error: any) { toast.error('BÄąâ€šĂ„â€¦d zapisu leada: ' + (error?.message || 'REQUEST_FAILED')); }
+    catch (error: any) { toast.error('BĂ„Ä…Ă˘â‚¬ĹˇÄ‚â€žĂ˘â‚¬Â¦d zapisu leada: ' + (error?.message || 'REQUEST_FAILED')); }
     finally { setLeadSubmitting(false); }
   };
 
@@ -532,7 +532,7 @@ export default function Leads() {
       toast.success('Rekord przeniesiony do kosza');
       await loadLeads();
     } catch (error: any) {
-      toast.error('Nie udaÄąâ€šo siĂ„â„˘ przenieÄąâ€şĂ„â€ˇ rekordu do kosza: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Nie udaĂ„Ä…Ă˘â‚¬Ĺˇo siÄ‚â€žĂ˘â€žË przenieĂ„Ä…Ă˘â‚¬ĹźÄ‚â€žĂ˘â‚¬Ë‡ rekordu do kosza: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setLeadSubmitting(false);
     }
@@ -559,7 +559,7 @@ export default function Leads() {
       toast.success('Lead przeniesiony do kosza');
       await loadLeads();
     } catch (error: any) {
-      toast.error('BÄąâ€šĂ„â€¦d przenoszenia leada do kosza: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('BĂ„Ä…Ă˘â‚¬ĹˇÄ‚â€žĂ˘â‚¬Â¦d przenoszenia leada do kosza: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setArchivePendingId(null);
     }
@@ -570,7 +570,7 @@ export default function Leads() {
     event.stopPropagation();
 
     if (!hasAccess) {
-      toast.error('TwÄ‚Ĺ‚j trial wygasÄąâ€š.');
+      toast.error('TwĂ„â€šÄąâ€šj trial wygasĂ„Ä…Ă˘â‚¬Ĺˇ.');
       return;
     }
 
@@ -588,7 +588,7 @@ export default function Leads() {
     event.stopPropagation();
 
     if (!hasAccess) {
-      toast.error('TwÄ‚Ĺ‚j trial wygasÄąâ€š.');
+      toast.error('TwĂ„â€šÄąâ€šj trial wygasĂ„Ä…Ă˘â‚¬Ĺˇ.');
       return;
     }
 
@@ -600,7 +600,7 @@ export default function Leads() {
     const nextVisibility = nextStatus === 'moved_to_service' ? 'archived' : 'active';
     const nextOutcome = nextStatus === 'moved_to_service' ? 'moved_to_service' : 'open';
 
-    if (!window.confirm('PrzywrÄ‚Ĺ‚ciĂ„â€ˇ leada do listy: ' + (lead.name || 'Lead') + '?')) return;
+    if (!window.confirm('PrzywrĂ„â€šÄąâ€šciÄ‚â€žĂ˘â‚¬Ë‡ leada do listy: ' + (lead.name || 'Lead') + '?')) return;
 
     try {
       setArchivePendingId(leadId);
@@ -611,10 +611,10 @@ export default function Leads() {
         salesOutcome: nextOutcome,
         closedAt: null,
       });
-      toast.success('Lead przywrÄ‚Ĺ‚cony');
+      toast.success('Lead przywrĂ„â€šÄąâ€šcony');
       await loadLeads();
     } catch (error: any) {
-      toast.error('BÄąâ€šĂ„â€¦d przywracania leada: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('BĂ„Ä…Ă˘â‚¬ĹˇÄ‚â€žĂ˘â‚¬Â¦d przywracania leada: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setArchivePendingId(null);
     }
@@ -642,7 +642,7 @@ export default function Leads() {
     [activeLeads, clients, cases],
   );
 
-  // CLOSEFLOW_FB2_RIGHT_RAIL_LEADS_ONLY: right rail pokazuje tylko aktywne leady, bez klientÄ‚Ĺ‚w i spraw.
+  // CLOSEFLOW_FB2_RIGHT_RAIL_LEADS_ONLY: right rail pokazuje tylko aktywne leady, bez klientĂ„â€šÄąâ€šw i spraw.
   const mostValuableRelations = useMemo(
     () => buildRelationValueEntries({ leads: activeLeads, clients: [], cases: [] }).slice(0, 5),
     [activeLeads],
@@ -788,7 +788,7 @@ export default function Leads() {
                             onClick={toggleTrashView}
                           >
                             {showTrash ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
-                            {showTrash ? 'PokaÄąÄ˝ aktywne' : 'Kosz'}
+                            {showTrash ? 'PokaĂ„Ä…Ă„Ëť aktywne' : 'Kosz'}
                             <span className="pill">{showTrash ? stats.total : stats.trash}</span>
                           </button>
 
@@ -844,24 +844,24 @@ export default function Leads() {
                                         max={getTodayDateInputValue()}
                                         onChange={(event) => setNewLead({ ...newLead, lastContactAt: event.target.value })}
                                       />
-                                      <small className="sub">JeÄąâ€şli dodajesz starszy kontakt, wpisz dzieÄąâ€ž ostatniej rozmowy. To wpÄąâ€šywa na oznaczenia ciszy 7/14 dni.</small>
+                                      <small className="sub">JeĂ„Ä…Ă˘â‚¬Ĺźli dodajesz starszy kontakt, wpisz dzieĂ„Ä…Ă˘â‚¬Ĺľ ostatniej rozmowy. To wpĂ„Ä…Ă˘â‚¬Ĺˇywa na oznaczenia ciszy 7/14 dni.</small>
                                     </div>
 
                                     <div className="lead-form-field">
-                                      <Label>ÄąÄ…rÄ‚Ĺ‚dÄąâ€šo</Label>
+                                      <Label>Ă„Ä…Ă„â€¦rĂ„â€šÄąâ€šdĂ„Ä…Ă˘â‚¬Ĺˇo</Label>
                                       <select
                                         className="lead-form-select"
                                         value={newLead.source}
                                         onChange={(event) => setNewLead({ ...newLead, source: event.target.value })}
                                       >
-                                        {LEAD_LEAD_SOURCE_OPTIONS.map((source) => (
+                                        {LEAD_LEAD_LEAD_SOURCE_OPTIONS.map((source) => (
                                           <option key={source.value} value={source.value}>{source.label}</option>
                                         ))}
                                       </select>
                                     </div>
 
                                     <div className="lead-form-field" data-stage231g-lead-create-potential-field="true">
-                                      <Label>PotencjaÄąâ€š / wartoÄąâ€şĂ„â€ˇ</Label>
+                                      <Label>PotencjaĂ„Ä…Ă˘â‚¬Ĺˇ / wartoĂ„Ä…Ă˘â‚¬ĹźÄ‚â€žĂ˘â‚¬Ë‡</Label>
                                       <Input
                                         data-stage231g-lead-create-potential-input="true"
                                         type="number"
@@ -871,7 +871,7 @@ export default function Leads() {
                                         onChange={(event) => setNewLead({ ...newLead, dealValue: event.target.value })}
                                         placeholder="np. 12000"
                                       />
-                                      <small className="sub">Kwota trafia do potencjaÄąâ€šu leada i finansÄ‚Ĺ‚w na karcie leada.</small>
+                                      <small className="sub">Kwota trafia do potencjaĂ„Ä…Ă˘â‚¬Ĺˇu leada i finansĂ„â€šÄąâ€šw na karcie leada.</small>
                                     </div>
 
                                     <div className="lead-form-field lead-form-field-wide">
@@ -879,7 +879,7 @@ export default function Leads() {
                                       <Input
                                         value={newLead.summary}
                                         onChange={(event) => setNewLead({ ...newLead, summary: event.target.value })}
-                                        placeholder="Np. strona www, kampania, nieruchomoÄąâ€şĂ„â€ˇ, dokumenty..."
+                                        placeholder="Np. strona www, kampania, nieruchomoĂ„Ä…Ă˘â‚¬ĹźÄ‚â€žĂ˘â‚¬Ë‡, dokumenty..."
                                       />
                                     </div>
 
@@ -889,7 +889,7 @@ export default function Leads() {
                                         className="lead-form-textarea"
                                         value={newLead.notes}
                                         onChange={(event) => setNewLead({ ...newLead, notes: event.target.value })}
-                                        placeholder="KrÄ‚Ĺ‚tki kontekst rozmowy. Bez dÄąâ€šugiej odprawy."
+                                        placeholder="KrĂ„â€šÄąâ€štki kontekst rozmowy. Bez dĂ„Ä…Ă˘â‚¬Ĺˇugiej odprawy."
                                       />
                                     </div>
                                   </div>
@@ -914,7 +914,7 @@ export default function Leads() {
                                         value={newLead.status}
                                         onChange={(event) => setNewLead({ ...newLead, status: event.target.value })}
                                       >
-                                        {LEAD_LEAD_STATUS_OPTIONS.filter((status) => status.value !== 'archived').map((status) => (
+                                        {LEAD_LEAD_LEAD_STATUS_OPTIONS.filter((status) => status.value !== 'archived').map((status) => (
                                           <option key={status.value} value={status.value}>{status.label}</option>
                                         ))}
                                       </select>
@@ -928,7 +928,7 @@ export default function Leads() {
                                       />
                                       <span>
                                         <strong>Wysoki priorytet</strong>
-                                        <small>Oznacz, jeÄąâ€şli lead wymaga szybkiej reakcji.</small>
+                                        <small>Oznacz, jeĂ„Ä…Ă˘â‚¬Ĺźli lead wymaga szybkiej reakcji.</small>
                                       </span>
                                     </label>
                                   </div>
@@ -957,8 +957,8 @@ export default function Leads() {
             icon={LeadEntityIcon}
             active={quickFilter === 'all' && !valueSortEnabled && !showTrash}
             onClick={() => { setShowTrash(false); setQuickFilter('all'); setValueSortEnabled(false); }}
-            title="PokaÄąÄ˝ wszystkie leady"
-            ariaLabel="PokaÄąÄ˝ wszystkie leady"
+            title="PokaĂ„Ä…Ă„Ëť wszystkie leady"
+            ariaLabel="PokaĂ„Ä…Ă„Ëť wszystkie leady"
           />
 
           <StatShortcutCard
@@ -967,31 +967,31 @@ export default function Leads() {
             icon={TrendingUp}
             active={quickFilter === 'active' && !showTrash}
             onClick={() => toggleQuickFilter('active')}
-            title="PokaÄąÄ˝ aktywne leady"
-            ariaLabel="PokaÄąÄ˝ aktywne leady"
+            title="PokaĂ„Ä…Ă„Ëť aktywne leady"
+            ariaLabel="PokaĂ„Ä…Ă„Ëť aktywne leady"
             valueClassName="text-slate-900"
             iconClassName="bg-blue-50 text-blue-500"
           />
 
           <StatShortcutCard
-            label="WartoÄąâ€şĂ„â€ˇ"
+            label="WartoĂ„Ä…Ă˘â‚¬ĹźÄ‚â€žĂ˘â‚¬Ë‡"
             value={`${stats.value.toLocaleString('pl-PL')} PLN`}
             icon={TrendingUp}
             active={valueSortEnabled && !showTrash}
             onClick={toggleValueSorting}
-            title="Sortuj leady po wartoÄąâ€şci"
-            ariaLabel="Sortuj leady po wartoÄąâ€şci"
-            helper={valueSortEnabled ? 'sortowanie aktywne' : 'kliknij, aby sortowaĂ„â€ˇ!'}
+            title="Sortuj leady po wartoĂ„Ä…Ă˘â‚¬Ĺźci"
+            ariaLabel="Sortuj leady po wartoĂ„Ä…Ă˘â‚¬Ĺźci"
+            helper={valueSortEnabled ? 'sortowanie aktywne' : 'kliknij, aby sortowaÄ‚â€žĂ˘â‚¬Ë‡!'}
           />
 
           <StatShortcutCard
-            label="ZagroÄąÄ˝one"
+            label="ZagroĂ„Ä…Ă„Ëťone"
             value={stats.atRisk}
             icon={AlertTriangle}
             active={quickFilter === 'at-risk' && !showTrash}
             onClick={() => toggleQuickFilter('at-risk')}
-            title="PokaÄąÄ˝ zagroÄąÄ˝one leady"
-            ariaLabel="PokaÄąÄ˝ zagroÄąÄ˝one leady"
+            title="PokaĂ„Ä…Ă„Ëť zagroĂ„Ä…Ă„Ëťone leady"
+            ariaLabel="PokaĂ„Ä…Ă„Ëť zagroĂ„Ä…Ă„Ëťone leady"
             tone="risk"
           />
 
@@ -1001,10 +1001,10 @@ export default function Leads() {
             icon={AlertTriangle}
             active={quickFilter === 'rescue' && !showTrash}
             onClick={() => toggleQuickFilter('rescue')}
-            title="PokaÄąÄ˝ leady do odzyskania"
-            ariaLabel="PokaÄąÄ˝ leady do odzyskania"
+            title="PokaĂ„Ä…Ă„Ëť leady do odzyskania"
+            ariaLabel="PokaĂ„Ä…Ă„Ëť leady do odzyskania"
             tone="risk"
-            helper={lostLeadRescueSummary.critical ? `${lostLeadRescueSummary.critical} krytyczne` : 'sprawdÄąĹź ciszĂ„â„˘'}
+            helper={lostLeadRescueSummary.critical ? `${lostLeadRescueSummary.critical} krytyczne` : 'sprawdĂ„Ä…ÄąĹş ciszÄ‚â€žĂ˘â€žË'}
           />
 
         </div>
@@ -1052,7 +1052,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 </div>
               ) : (
                 <div className="suggestions lead-search-suggestions-stage31 cf-main-search" data-stage31-lead-search-suggestions="true" data-stage117-leads-search-suggestions="true" data-cf-main-search-source="stage173">
-                  <span className="sub">Podpowiedzi pojawiajĂ„â€¦ siĂ„â„˘ pod wyszukiwarkĂ„â€¦. UsuÄąâ€ž czĂ„â„˘Äąâ€şĂ„â€ˇ tekstu albo wybierz inny filtr.</span>
+                  <span className="sub">Podpowiedzi pojawiajÄ‚â€žĂ˘â‚¬Â¦ siÄ‚â€žĂ˘â€žË pod wyszukiwarkÄ‚â€žĂ˘â‚¬Â¦. UsuĂ„Ä…Ă˘â‚¬Ĺľ czÄ‚â€žĂ˘â€žËĂ„Ä…Ă˘â‚¬ĹźÄ‚â€žĂ˘â‚¬Ë‡ tekstu albo wybierz inny filtr.</span>
                 </div>
               )
             ) : null}
@@ -1095,13 +1095,13 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   <span className="index"><AlertTriangle className="h-4 w-4" /></span>
                   <span>
                     <span className="title">Do odzyskania</span>
-                    <span className="sub">Lista priorytetowa dla wÄąâ€šaÄąâ€şciciela: najpierw leady krytyczne, potem wysokie i Äąâ€şrednie ryzyko.</span>
+                    <span className="sub">Lista priorytetowa dla wĂ„Ä…Ă˘â‚¬ĹˇaĂ„Ä…Ă˘â‚¬Ĺźciciela: najpierw leady krytyczne, potem wysokie i Ă„Ä…Ă˘â‚¬Ĺźrednie ryzyko.</span>
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-2 p-3 pt-0" data-stage226r7-rescue-summary="true">
                   <span className="cf-status-pill" data-cf-status-tone="red">Krytyczne: {lostLeadRescueSummary.critical}</span>
                   <span className="cf-status-pill" data-cf-status-tone="amber">Wysokie: {lostLeadRescueSummary.high}</span>
-                  <span className="cf-status-pill" data-cf-status-tone="blue">ÄąĹˇrednie: {lostLeadRescueSummary.medium}</span>
+                  <span className="cf-status-pill" data-cf-status-tone="blue">Ă„Ä…ÄąË‡rednie: {lostLeadRescueSummary.medium}</span>
                   {lostLeadRescueSummary.total > 8 ? <span className="pill">Pokazano 8 z {lostLeadRescueSummary.total}</span> : null}
                 </div>
                 {lostLeadRescueSummary.rows.length ? (
@@ -1119,14 +1119,14 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                         <span className="sub">{row.reasonDetail}</span>
                       </span>
                       <span className="lead-action-cell" title={nextActionMeta.title}>
-                        <span className="mini">NastĂ„â„˘pny ruch</span>
+                        <span className="mini">NastÄ‚â€žĂ˘â€žËpny ruch</span>
                         <strong>{row.nextMoveTitle || 'Brak zaplanowanej akcji'}</strong>
-                        <span className="sub">{row.nextMoveAt || 'Ustaw zadanie rĂ„â„˘cznie po otwarciu leada.'}</span>
+                        <span className="sub">{row.nextMoveAt || 'Ustaw zadanie rÄ‚â€žĂ˘â€žËcznie po otwarciu leada.'}</span>
                       </span>
                       <span className="lead-actions">
-                        <Link to={row.href} className="btn ghost">OtwÄ‚Ĺ‚rz</Link>
+                        <Link to={row.href} className="btn ghost">OtwĂ„â€šÄąâ€šrz</Link>
                         <button type="button" className="btn ghost" disabled title="Do potwierdzenia: bezpieczne tworzenie zadania z rescue">Ustaw zadanie</button>
-                        <button type="button" className="btn ghost" disabled title="Do potwierdzenia: trwaÄąâ€šy snooze rescue">OdÄąâ€šÄ‚Ĺ‚ÄąÄ˝</button>
+                        <button type="button" className="btn ghost" disabled title="Do potwierdzenia: trwaĂ„Ä…Ă˘â‚¬Ĺˇy snooze rescue">OdĂ„Ä…Ă˘â‚¬ĹˇĂ„â€šÄąâ€šĂ„Ä…Ă„Ëť</button>
                         <button type="button" className="btn ghost danger" disabled title="Do potwierdzenia: bezpieczne oznaczanie jako martwy">Oznacz jako martwy</button>
                       </span>
                     </div>
@@ -1135,8 +1135,8 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   <div className="row row-empty">
                     <span className="index">0</span>
                     <span>
-                      <span className="title">Brak leadÄ‚Ĺ‚w do odzyskania</span>
-                      <span className="sub">Brak leadÄ‚Ĺ‚w wymagajĂ„â€¦cych odzyskania wedÄąâ€šug aktualnych reguÄąâ€š.</span>
+                      <span className="title">Brak leadĂ„â€šÄąâ€šw do odzyskania</span>
+                      <span className="sub">Brak leadĂ„â€šÄąâ€šw wymagajÄ‚â€žĂ˘â‚¬Â¦cych odzyskania wedĂ„Ä…Ă˘â‚¬Ĺˇug aktualnych reguĂ„Ä…Ă˘â‚¬Ĺˇ.</span>
                     </span>
                   </div>
                 )}
@@ -1148,7 +1148,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 <div className="row row-empty">
                   <span className="index"><Loader2 className="h-4 w-4 animate-spin" /></span>
                   <span>
-                    <span className="title">ÄąÂadowanie leadÄ‚Ĺ‚w</span>
+                    <span className="title">Ă„Ä…Ă‚Âadowanie leadĂ„â€šÄąâ€šw</span>
                     <span className="sub">Pobieram dane z aplikacji.</span>
                   </span>
                 </div>
@@ -1156,7 +1156,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 <div className="row row-empty">
                   <span className="index">!</span>
                   <span>
-                    <span className="title">Nie udaÄąâ€šo siĂ„â„˘ pobraĂ„â€ˇ leadÄ‚Ĺ‚w</span>
+                    <span className="title">Nie udaĂ„Ä…Ă˘â‚¬Ĺˇo siÄ‚â€žĂ˘â€žË pobraÄ‚â€žĂ˘â‚¬Ë‡ leadĂ„â€šÄąâ€šw</span>
                     <span className="sub">{loadError}</span>
                   </span>
                 </div>
@@ -1212,13 +1212,13 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                           </span>
                         </span>
 
-                        <span className="lead-value-cell" title={'WartoÄąâ€şĂ„â€ˇ: ' + leadValueLabel}>
-                          <span className="mini">WartoÄąâ€şĂ„â€ˇ</span>
+                        <span className="lead-value-cell" title={'WartoĂ„Ä…Ă˘â‚¬ĹźÄ‚â€žĂ˘â‚¬Ë‡: ' + leadValueLabel}>
+                          <span className="mini">WartoĂ„Ä…Ă˘â‚¬ĹźÄ‚â€žĂ˘â‚¬Ë‡</span>
                           <strong className="cf-list-row-value lead-card-value-pill" data-lead-value-pill="true">{leadValueLabel}</strong>
                         </span>
 
                         <span className="lead-action-cell">
-                          <span className="mini">NajbliÄąÄ˝sza zaplanowana akcja</span>
+                          <span className="mini">NajbliĂ„Ä…Ă„Ëťsza zaplanowana akcja</span>
                           <strong className={nextActionMeta.overdue ? 'danger cf-lead-next-action-title' : 'cf-lead-next-action-title'} title={nextActionMeta.title}>{nextActionMeta.title}</strong>
                           {nextActionMeta.subtitle ? <span className="sub">{nextActionMeta.subtitle}</span> : null}
                         </span>
@@ -1232,8 +1232,8 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                             className={actionIconClass('danger', 'btn ghost lead-icon-btn')}
                             disabled={pending}
                             onClick={(event) => (showTrash ? handleRestoreLead(event, lead) : handleArchiveLead(event, lead))}
-                            aria-label={showTrash ? 'PrzywrÄ‚Ĺ‚Ă„â€ˇ leada' : 'PrzenieÄąâ€ş leada do kosza'}
-                            title={showTrash ? 'PrzywrÄ‚Ĺ‚Ă„â€ˇ leada' : 'PrzenieÄąâ€ş leada do kosza'}
+                            aria-label={showTrash ? 'PrzywrĂ„â€šÄąâ€šÄ‚â€žĂ˘â‚¬Ë‡ leada' : 'PrzenieĂ„Ä…Ă˘â‚¬Ĺź leada do kosza'}
+                            title={showTrash ? 'PrzywrĂ„â€šÄąâ€šÄ‚â€žĂ˘â‚¬Ë‡ leada' : 'PrzenieĂ„Ä…Ă˘â‚¬Ĺź leada do kosza'}
                           >
                             {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : showTrash ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
                           </button>
@@ -1247,8 +1247,8 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 <div className="row row-empty">
                   <span className="index">0</span>
                   <span>
-                    <span className="title">{showTrash ? 'Kosz leadÄ‚Ĺ‚w jest pusty.' : 'Brak leadÄ‚Ĺ‚w w tym widoku'}</span>
-                    <span className="sub">{showTrash ? 'Nie ma rekordÄ‚Ĺ‚w do przywrÄ‚Ĺ‚cenia.' : 'ZmieÄąâ€ž filtr albo dodaj pierwszego leada.'}</span>
+                    <span className="title">{showTrash ? 'Kosz leadĂ„â€šÄąâ€šw jest pusty.' : 'Brak leadĂ„â€šÄąâ€šw w tym widoku'}</span>
+                    <span className="sub">{showTrash ? 'Nie ma rekordĂ„â€šÄąâ€šw do przywrĂ„â€šÄąâ€šcenia.' : 'ZmieĂ„Ä…Ă˘â‚¬Ĺľ filtr albo dodaj pierwszego leada.'}</span>
                   </span>
                 </div>
               )}
@@ -1276,7 +1276,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 },
                 {
                   key: 'at-risk',
-                  label: 'ZagroÄąÄ˝one',
+                  label: 'ZagroĂ„Ä…Ă„Ëťone',
                   value: stats.atRisk,
                   onClick: () => {
                     setShowTrash(false);
@@ -1325,7 +1325,7 @@ items={mostValuableRelations.map((entry) => ({
                   'data-stage32-valuable-relation-row': true,
                 },
               }))}
-              emptyLabel="Brak relacji z wyliczonĂ„â€¦ wartoÄąâ€şciĂ„â€¦."
+              emptyLabel="Brak relacji z wyliczonÄ‚â€žĂ˘â‚¬Â¦ wartoĂ„Ä…Ă˘â‚¬ĹźciÄ‚â€žĂ˘â‚¬Â¦."
             />
 
             <div hidden data-leads-stage35-removed-ai-side-card="true" />
@@ -1339,13 +1339,13 @@ items={mostValuableRelations.map((entry) => ({
           onOpenChange={(open) => {
             if (!open && !archivePendingId) setLeadArchiveConfirmStage220A29(null);
           }}
-          title="PrzenieÄąâ€şĂ„â€ˇ leada do kosza?"
+          title="PrzenieĂ„Ä…Ă˘â‚¬ĹźÄ‚â€žĂ˘â‚¬Ë‡ leada do kosza?"
           description={
             leadArchiveConfirmStage220A29?.linkedCase
-              ? 'Lead ' + (leadArchiveConfirmStage220A29?.lead?.name || 'Lead') + ' ma powiĂ„â€¦zanĂ„â€¦ sprawĂ„â„˘: ' + (leadArchiveConfirmStage220A29.linkedCase.title || leadArchiveConfirmStage220A29.linkedCase.id) + '. Rekord zniknie z aktywnej listy, ale nie zostanie trwale skasowany.'
-              : 'Lead ' + (leadArchiveConfirmStage220A29?.lead?.name || 'Lead') + ' zniknie z aktywnej listy, ale bĂ„â„˘dzie moÄąÄ˝na go przywrÄ‚Ĺ‚ciĂ„â€ˇ z kosza.'
+              ? 'Lead ' + (leadArchiveConfirmStage220A29?.lead?.name || 'Lead') + ' ma powiÄ‚â€žĂ˘â‚¬Â¦zanÄ‚â€žĂ˘â‚¬Â¦ sprawÄ‚â€žĂ˘â€žË: ' + (leadArchiveConfirmStage220A29.linkedCase.title || leadArchiveConfirmStage220A29.linkedCase.id) + '. Rekord zniknie z aktywnej listy, ale nie zostanie trwale skasowany.'
+              : 'Lead ' + (leadArchiveConfirmStage220A29?.lead?.name || 'Lead') + ' zniknie z aktywnej listy, ale bÄ‚â€žĂ˘â€žËdzie moĂ„Ä…Ă„Ëťna go przywrĂ„â€šÄąâ€šciÄ‚â€žĂ˘â‚¬Ë‡ z kosza.'
           }
-          confirmLabel="PrzenieÄąâ€ş do kosza"
+          confirmLabel="PrzenieĂ„Ä…Ă˘â‚¬Ĺź do kosza"
           cancelLabel="Anuluj"
           confirmTone="destructive"
           pending={Boolean(archivePendingId)}
@@ -1359,9 +1359,9 @@ items={mostValuableRelations.map((entry) => ({
           onOpenChange={(open) => {
             if (!open && !leadSubmitting) setConflictArchiveConfirmStage220A29(null);
           }}
-          title="PrzenieÄąâ€şĂ„â€ˇ rekord do kosza?"
-          description={'Rekord ' + (conflictArchiveConfirmStage220A29?.label || 'bez nazwy') + ' zniknie z aktywnej listy, ale bĂ„â„˘dzie moÄąÄ˝na go przywrÄ‚Ĺ‚ciĂ„â€ˇ z kosza.'}
-          confirmLabel="PrzenieÄąâ€ş do kosza"
+          title="PrzenieĂ„Ä…Ă˘â‚¬ĹźÄ‚â€žĂ˘â‚¬Ë‡ rekord do kosza?"
+          description={'Rekord ' + (conflictArchiveConfirmStage220A29?.label || 'bez nazwy') + ' zniknie z aktywnej listy, ale bÄ‚â€žĂ˘â€žËdzie moĂ„Ä…Ă„Ëťna go przywrĂ„â€šÄąâ€šciÄ‚â€žĂ˘â‚¬Ë‡ z kosza.'}
+          confirmLabel="PrzenieĂ„Ä…Ă˘â‚¬Ĺź do kosza"
           cancelLabel="Anuluj"
           confirmTone="destructive"
           pending={leadSubmitting}
