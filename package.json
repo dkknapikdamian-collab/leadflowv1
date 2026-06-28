@@ -1028,7 +1028,8 @@
     "test:stage231f-r3-owner-control-baseline": "node --test tests/stage231f-r3-owner-control-baseline.test.cjs",
     "check:cf-runtime-00-source-truth": "node scripts/check-cf-runtime-00-source-truth.cjs",
     "test:cf-runtime-00-source-truth": "node --test tests/cf-runtime-00-source-truth.test.cjs",
-    "guard:ui:css-owner-before-cleanup": "node scripts/check-lf-ui-sot-006-css-owner-guards-before-cleanup.cjs"
+    "guard:ui:css-owner-before-cleanup": "node scripts/check-lf-ui-sot-006-css-owner-guards-before-cleanup.cjs",
+    "verify:lf-ui-sot-cz2-001-route-page-canonical-inventory": "node scripts/guards/verify-lf-ui-sot-cz2-001-route-page-canonical-inventory.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
