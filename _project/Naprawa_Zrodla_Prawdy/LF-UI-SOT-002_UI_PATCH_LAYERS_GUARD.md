@@ -9,7 +9,7 @@ Scope: guard przeciw dokladaniu kolejnych runtime/CSS/UI plastrow
 ## LF-UI-SOT-002R2 - UI patch guard widening policy
 
 Status: IMPLEMENTED_IN_REPO / GUARD_WIDENED / NO_UI_REFACTOR / NEEDS_LOCAL_VERIFY
-Date: 2026-06-28 01:35 Europe/Warsaw
+Date: 2026-06-28 01:50 Europe/Warsaw
 
 ## Decyzja R2
 
@@ -39,13 +39,15 @@ Guard nadal blokuje stare kontrakty:
 
 R2 rozszerza polityke o:
 
-- `RAW_PAGE_BUTTON_ALLOWLIST` - nowe surowe `<button>` w `src/pages` poza jawna allowlista;
+- `RAW_BUTTON_ALLOWLIST` - nowe surowe `<button>` w `src/pages` i `src/components` poza jawna allowlista;
 - `LUCIDE_REACT_IMPORT_ALLOWLIST` - nowe bezposrednie importy z `lucide-react`;
 - `APP_STYLES_IMPORT_MAX` - nowe globalne importy CSS w `src/App.tsx` ponad baseline;
-- `LOCAL_ICON_BUTTON_CLONE_ALLOWLIST` - lokalne `IconButton` / `ActionIcon` / podobne klony;
-- `LOCAL_COLOR_MAP_ALLOWLIST` - lokalne mapy status/badge/priority color/tone;
+- `LOCAL_ICON_BUTTON_CLONE_ALLOWLIST` - lokalne `IconButton` / `ActionIcon` / `ActionButton` / `DangerButton` clones;
+- `LOCAL_COLOR_MAP_ALLOWLIST` - lokalne mapy status/badge/priority color/tone oraz label helpers;
 - `ROUTE_LITERAL_ALLOWLIST` - reczne route literals dla case/lead/client tam, gdzie powinny isc helpery;
-- szerszy kontrakt na `display:none` / `z-index` / `!important` jako workaround.
+- broad inline `style={{` w pages/components;
+- `CSS_SCAN_ROOTS` / `CSS_PATCH_ALLOWLIST` - skan plikow `.css` pod `display:none`, `z-index`, `!important`, `position: fixed`, `position: absolute`;
+- szerszy kontrakt na `display:none` / `z-index` / `!important` jako TSX workaround.
 
 ## Interpretacja allowlist
 
@@ -94,13 +96,15 @@ IMPLEMENTED_IN_REPO / POSZERZENIE_GUARDA / BEZ_UI_REFACTORU / NEEDS_LOCAL_VERIFY
 
 ## Zapis
 
-- data i godzina: 2026-06-28 01:35 Europe/Warsaw
+- data i godzina: 2026-06-28 01:50 Europe/Warsaw
 - repo: dkknapikdamian-collab/leadflowv1
 - branch: dev-rollout-freeze
 - files touched:
   - `scripts/check-ui-patch-layers.cjs`
   - `tests/ui-patch-layers-guard.test.cjs`
   - `_project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-002_UI_PATCH_LAYERS_GUARD.md`
+  - `_project/runs/LF-UI-SOT-002R2_UI_PATCH_GUARD_WIDENING_POLICY.md`
+  - `_project/obsidian_updates/2026-06-28_LF-UI-SOT-002R2_UI_PATCH_GUARD_WIDENING_POLICY.md`
 - runtime UI: nietkniete
 - CSS/layout: nietkniete
 - SQL/API/Supabase: nietkniete
