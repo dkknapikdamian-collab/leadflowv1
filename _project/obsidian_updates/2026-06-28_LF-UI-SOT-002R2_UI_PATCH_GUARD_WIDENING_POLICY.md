@@ -1,6 +1,6 @@
 # LF-UI-SOT-002R2 UI patch guard widening policy
 
-Date: 2026-06-28 01:35 Europe/Warsaw
+Date: 2026-06-28 01:50 Europe/Warsaw
 Project: CloseFlow / LeadFlow
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
@@ -19,6 +19,7 @@ Expanded existing guard only:
 - scripts/check-ui-patch-layers.cjs
 - tests/ui-patch-layers-guard.test.cjs
 - _project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-002_UI_PATCH_LAYERS_GUARD.md
+- _project/runs/LF-UI-SOT-002R2_UI_PATCH_GUARD_WIDENING_POLICY.md
 
 No runtime UI refactor.
 No CSS/layout change.
@@ -28,13 +29,15 @@ No SQL/API/Supabase change.
 
 The existing guard now records wider anti-patch policy for:
 
-- raw page button debt
+- raw button debt in pages/components
 - direct lucide-react import debt
+- broad inline style scan in pages/components
+- CSS scan for display:none, z-index, !important, fixed/absolute positioning
 - App global CSS import baseline
-- local IconButton/ActionIcon clones
-- local status/badge color maps
+- local IconButton/ActionIcon/ActionButton/DangerButton clones
+- local status/badge/status-label/color helpers
 - manual route literals where route helpers exist
-- display:none/z-index/!important workarounds
+- display:none/z-index/!important TSX workarounds
 
 ## Verify locally
 
