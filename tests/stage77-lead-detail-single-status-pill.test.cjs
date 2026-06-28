@@ -49,10 +49,20 @@ test('LeadDetail title row renders one status label only', () => {
 // STAGE118B_RELEASE_GATE_STAGE77_COMPAT: statusClass may accept optional dateValue for overdue tone after Stage115D.
 test('LeadDetail keeps one shared status mapping and required labels', () => {
   const text = read('src/pages/LeadDetail.tsx');
+  const leadStatusConfig = read('src/lib/config/lead-status.ts');
+  const domainStatuses = read('src/lib/domain-statuses.ts');
+
   assert.match(text, /function statusLabel\(status\?: string\)/);
   assert.match(text, /function statusClass\(status\?: string(?:,\s*dateValue\?: unknown)?\)/);
-  for (const label of ['Oferta wys\u0142ana', 'Nowy', 'Czeka na odpowied\u017A', 'Przegrany']) {
-    assert.ok(text.includes(label), 'missing label: ' + label);
+  assert.match(text, /return getLeadStatusLabel\(status\)/);
+  assert.match(text, /return getLeadStatusPillClass\(normalized\)/);
+  assert.match(leadStatusConfig, /LEAD_STATUS_CONFIG/);
+  assert.match(leadStatusConfig, /LEAD_STATUS_OPTIONS/);
+  assert.match(leadStatusConfig, /getLeadStatusLabel/);
+  assert.match(leadStatusConfig, /getLeadStatusPillClass/);
+
+  for (const label of ['Oferta wyslana', 'Nowy', 'Czeka na odpowiedz', 'Przegrany']) {
+    assert.ok(domainStatuses.includes(label), 'missing label in shared source: ' + label);
   }
 });
 
