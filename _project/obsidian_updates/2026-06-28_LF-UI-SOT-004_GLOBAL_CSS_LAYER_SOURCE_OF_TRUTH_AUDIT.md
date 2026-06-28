@@ -1,6 +1,6 @@
 # LF-UI-SOT-004_GLOBAL_CSS_LAYER_SOURCE_OF_TRUTH_AUDIT
 
-Date: 2026-06-28 04:00 Europe/Warsaw
+Date: 2026-06-28 04:15 Europe/Warsaw
 Project: CloseFlow / LeadFlow
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
@@ -8,13 +8,14 @@ Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
 
 ## Status
 
-AUDIT_MATRIX_RECORDED / DOCS_ONLY / RUNTIME_NOT_TOUCHED / NEEDS_LOCAL_VERIFY
+LOCAL_VERIFY_PARTIAL_PASS / GUARDS_PASS / CONFIG_GUARD_PASS / BUILD_PASS / VERIFY_BLOCKED_BY_UNRELATED_DIRTY_WORKSPACE
 
 ## Summary
 
 LF-UI-SOT-004 was executed as an audit/matrix stage only.
 No CSS cleanup was performed.
 No UI/layout/runtime code was touched.
+No App.tsx import order was changed.
 
 ## Findings
 
@@ -42,6 +43,49 @@ This means the current guard baseline matches the current App CSS import count. 
 - finance modal
 - cards/lists
 
+## Local verify from Damian
+
+PASS:
+
+```txt
+npm run guard:ui:patch-layers
+node --test tests/ui-patch-layers-guard.test.cjs
+npm run guard:routes:canonical
+npm run guard:config:status-source-of-truth
+node --test tests/config-status-source-of-truth.test.cjs
+npm run build
+```
+
+Blocked outside this stage:
+
+```txt
+npm run verify:closeflow:quiet
+```
+
+Reason:
+
+```txt
+CF-RUNTIME-00 source truth guard detects unrelated local dirty files.
+```
+
+Out-of-scope files:
+
+```txt
+scripts/check-a24-lead-to-case-flow.cjs
+scripts/check-fin15-lead-finance-ghosts.cjs
+src/lib/cases.ts
+src/lib/options.ts
+tests/fin15-lead-finance-ghosts.test.cjs
+tests/lead-service-mode-v1.test.cjs
+tests/lead-start-service-case-redirect.test.cjs
+```
+
+`git diff --check`:
+
+```txt
+Warnings only: LF will be replaced by CRLF in src/lib/cases.ts and src/lib/options.ts.
+```
+
 ## Output
 
 ```txt
@@ -49,25 +93,10 @@ _project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-004_GLOBAL_CSS_LAYER_SOURCE_OF_TRUTH_AU
 _project/runs/LF-UI-SOT-004_GLOBAL_CSS_LAYER_SOURCE_OF_TRUTH_AUDIT.md
 ```
 
-## Required local verify
+## Release interpretation
 
-```powershell
-npm run guard:ui:patch-layers
-node --test tests/ui-patch-layers-guard.test.cjs
-npm run guard:routes:canonical
-npm run guard:config:status-source-of-truth
-node --test tests/config-status-source-of-truth.test.cjs
-npm run build
-npm run verify:closeflow:quiet
-git diff --check
-git status --short --branch
-```
-
-If `verify:closeflow:quiet` is red because of the previously known dirty workspace, record:
-
-```txt
-VERIFY_BLOCKED_BY_UNRELATED_DIRTY_WORKSPACE
-```
+LF-UI-SOT-004 is green as docs-only audit with local guard/config/build verification.
+It is not full release PASS because `verify:closeflow:quiet` is blocked by known unrelated dirty workspace.
 
 ## Next recommendation
 
