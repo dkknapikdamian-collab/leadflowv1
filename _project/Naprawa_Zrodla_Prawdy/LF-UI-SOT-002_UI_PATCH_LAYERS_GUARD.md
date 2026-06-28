@@ -9,7 +9,7 @@ Scope: guard przeciw dokladaniu kolejnych runtime/CSS/UI plastrow
 ## LF-UI-SOT-002R2 - UI patch guard widening policy
 
 Status: IMPLEMENTED_IN_REPO / GUARD_WIDENED / NO_UI_REFACTOR / NEEDS_LOCAL_VERIFY
-Date: 2026-06-28 01:50 Europe/Warsaw
+Date: 2026-06-28 01:55 Europe/Warsaw
 
 ## Decyzja R2
 
@@ -47,7 +47,7 @@ R2 rozszerza polityke o:
 - `ROUTE_LITERAL_ALLOWLIST` - reczne route literals dla case/lead/client tam, gdzie powinny isc helpery;
 - broad inline `style={{` w pages/components;
 - `CSS_SCAN_ROOTS` / `CSS_PATCH_ALLOWLIST` - skan plikow `.css` pod `display:none`, `z-index`, `!important`, `position: fixed`, `position: absolute`;
-- szerszy kontrakt na `display:none` / `z-index` / `!important` jako TSX workaround.
+- szerszy kontrakt na `display:none` / `z-index` / `!important` jako workaround.
 
 ## Interpretacja allowlist
 
@@ -96,7 +96,7 @@ IMPLEMENTED_IN_REPO / POSZERZENIE_GUARDA / BEZ_UI_REFACTORU / NEEDS_LOCAL_VERIFY
 
 ## Zapis
 
-- data i godzina: 2026-06-28 01:50 Europe/Warsaw
+- data i godzina: 2026-06-28 01:55 Europe/Warsaw
 - repo: dkknapikdamian-collab/leadflowv1
 - branch: dev-rollout-freeze
 - files touched:
@@ -108,4 +108,4 @@ IMPLEMENTED_IN_REPO / POSZERZENIE_GUARDA / BEZ_UI_REFACTORU / NEEDS_LOCAL_VERIFY
 - runtime UI: nietkniete
 - CSS/layout: nietkniete
 - SQL/API/Supabase: nietkniete
-- Obsidian: wymaga wpisu centralnego w vault
+- Obsidian central: zapisane w `10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY - CloseFlow Lead App.md`
