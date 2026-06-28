@@ -37,7 +37,7 @@ test('Cases cards show operator next action and lifecycle counters', () => {
   assert.match(source, /const compactLifecycleLabel = lifecycleCompactLabel\(record, lifecycle\)/);
   assert.match(source, /compactLifecyclePill/);
   assert.match(source, /lifecycle\.nextOperatorAction/);
-  assert.match(source, /lifecycleRiskLabel\(lifecycle\.riskLevel\)/);
+  assert.match(source, /getOwnerRiskLabel\(lifecycle\.riskLevel\)/);
   assert.match(source, /lifecycle\.openActionCount/);
   assert.match(source, /lifecycle\.missingRequiredCount/);
   assert.match(source, /lifecycle\.waitingApprovalCount/);
