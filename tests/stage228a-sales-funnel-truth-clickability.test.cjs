@@ -76,12 +76,13 @@ describe('STAGE228A sales funnel truth and clickability', () => {
 
   it('money filter has source labels and explicit visible-record copy', () => {
     const page = readSource('src/pages/SalesFunnel.tsx');
+    const config = readSource('src/lib/config/funnel-stages.ts');
     assert.match(page, /export function getCardsForOwnerFilter/);
     assert.match(page, /if \(filter === 'money'\) return cards\.filter\(\(card\) => \(card\.valueAmount \|\| 0\) > 0\)/);
     assert.match(page, /export function getMoneyTotalForCards/);
     assert.match(page, /data-stage228a-money-source-card/);
     assert.match(page, /label=\{card\.valueSourceLabel \|\| 'Wartość\/prowizja'\}/);
-    assert.match(page, /Kliknij — pokaż rekordy, z których liczona jest kwota\./);
+    assert.match(config, /Kliknij — pokaż rekordy, z których liczona jest kwota\./);
     assert.match(page, /Pokazuję \{filteredCards\.length\} z \{allCards\.length\} rekordów/);
   });
 });
