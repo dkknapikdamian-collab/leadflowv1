@@ -1,6 +1,6 @@
 # LF-LOCAL-DIRTY-WORKTREE-SEGREGATION
 
-Date: 2026-06-28 03:00 Europe/Warsaw
+Date: 2026-06-28 03:15 Europe/Warsaw
 Project: CloseFlow / LeadFlow
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
@@ -8,7 +8,7 @@ Local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
 
 ## Status
 
-PARTIAL_DIFF_INSPECTION_RECORDED / NO_LOCAL_CHANGES_TOUCHED_BY_AI / NO_DISCARD / NO_STASH_YET / DO_NOT_CONTINUE_TO_LF_UI_SOT_003_YET
+DIFF_BUCKETS_CLASSIFIED / NO_LOCAL_CHANGES_TOUCHED_BY_AI / NO_DISCARD / NO_STASH_YET / DO_NOT_CONTINUE_TO_LF_UI_SOT_003_YET
 
 ## Goal
 
@@ -40,6 +40,8 @@ src/lib/cases.ts
 Observed diff:
 
 - `scripts/check-a24-lead-to-case-flow.cjs` changes expected route evidence from manual `/case/${...}` literal to `caseDetailPath(startServiceSuccess.caseId)`.
+- `tests/lead-service-mode-v1.test.cjs` now expects `navigate(caseDetailPath(startServiceSuccess.caseId));` and updates wording to canonical `/cases/:id`.
+- `tests/lead-start-service-case-redirect.test.cjs` was listed as dirty earlier but exact hunk was not included in the pasted diff output; keep it in this bucket until inspected.
 - `src/lib/cases.ts` starts moving closed case status source from local hardcoded array to `./config/case-status`.
 
 Verdict:
@@ -65,6 +67,7 @@ Observed diff:
 
 - required evidence changed from `navigate(`/case/${startServiceSuccess.caseId}`);` to `navigate(caseDetailPath(startServiceSuccess.caseId));`.
 - guard now rejects both manual `/case/:id` and manual `/cases/:id` construction.
+- `tests/fin15-lead-finance-ghosts.test.cjs` now asserts `navigate(caseDetailPath(startServiceSuccess.caseId));` and explicitly rejects manual `/case/:id` and `/cases/:id` navigation.
 
 Verdict:
 
@@ -118,23 +121,80 @@ D / separate CF-RUNTIME-00 guard maintenance + STAGE233B scope compatibility sta
 
 This is scope authorization. It must not be hidden inside another stage.
 
-## Files still needing exact diff inspection
+### Today / work-item-card UI readability scope
+
+Files:
 
 ```txt
 src/pages/TodayStable.tsx
 src/styles/closeflow-canvas-runtime-source-truth-stage211j.css
 src/styles/work-item-card.css
 tests/stage116-today-work-item-card-source-truth.test.cjs
-scripts/check-stage232i3-owner-control-missing-blocker-cross-entity-integration.cjs
-tests/stage232i3-owner-control-missing-blocker-cross-entity-integration.test.cjs
 scripts/check-stage232t-r1c-today-production-ui-cleanup-and-source-truth.cjs
 tests/stage232t-r1c-today-production-ui-cleanup-and-source-truth.test.cjs
+```
+
+Observed diff from pasted output:
+
+- `TodayStable.tsx` changes section grid from `xl:grid-cols-3` to `2xl:grid-cols-3`.
+- `closeflow-canvas-runtime-source-truth-stage211j.css` comment names STAGE233B readability/zoom goal.
+- `work-item-card.css`, STAGE116 test, and STAGE232T guard/test were listed dirty but complete hunks were not fully pasted yet.
+
+Verdict:
+
+```txt
+D / separate STAGE233B_TODAY_WORK_ITEM_READABILITY_ZOOM_FIX or stash after decision
+```
+
+This is a real UI/CSS source-truth change. Do not mix with route-helper or config/status work.
+
+### STAGE232I3 owner control route helpers
+
+Files:
+
+```txt
+scripts/check-stage232i3-owner-control-missing-blocker-cross-entity-integration.cjs
+tests/stage232i3-owner-control-missing-blocker-cross-entity-integration.test.cjs
+```
+
+Observed diff:
+
+- expected routes change from manual `/leads/${encodedId}`, `/case/${encodedId}`, `/clients/${encodedId}` to helper calls:
+  - `leadDetailPath(sourceEntityId)`
+  - `caseDetailPath(sourceEntityId)`
+  - `clientDetailPath(sourceEntityId)`
+- test expectations are being aligned with route helpers.
+
+Verdict:
+
+```txt
+D / separate STAGE232I3 route-helper canonicalization follow-up
+```
+
+This belongs to the route-helper cleanup family, but it is a separate I3-owned guard/test bucket.
+
+### STAGE233A route canonicalization guard alignment
+
+Files:
+
+```txt
 scripts/check-stage233a-route-canonicalization.cjs
 tests/stage233a-route-canonicalization.test.cjs
-tests/lead-service-mode-v1.test.cjs
-tests/lead-start-service-case-redirect.test.cjs
-tests/fin15-lead-finance-ghosts.test.cjs
 ```
+
+Observed diff:
+
+- route helper evidence becomes stricter: `return `${CLOSEFLOW_ROUTES.cases}/${encodeRouteId(caseId)}`;`.
+- App route evidence changes from hardcoded `/cases/:caseId` and `/case/:caseId` JSX to `CLOSEFLOW_ROUTES.caseDetail`, `CLOSEFLOW_ROUTES.legacyCaseDetail`, and `loginPath()`.
+- test file was listed dirty but full hunk was not pasted yet.
+
+Verdict:
+
+```txt
+D / separate STAGE233A route canonicalization guard alignment
+```
+
+This is not UI guard R2. It is route SOT guard hardening.
 
 ## Current bucket decision
 
@@ -144,9 +204,9 @@ tests/fin15-lead-finance-ghosts.test.cjs
 | FIN15 finance ghosts route helper | D | finish as separate stage or stash after decision |
 | LF-UI-SOT-003 config/status SOT candidate | D | do not start until workspace is clean/scoped |
 | CF-RUNTIME-00 / STAGE233B scope | D | separate guard-maintenance stage |
-| Today/work-item-card UI source truth | D | inspect exact diffs before any decision |
-| STAGE232I3 owner control | D | inspect exact diffs before any decision |
-| STAGE233A route canonicalization | D | inspect exact diffs before any decision |
+| Today/work-item-card UI source truth | D | separate STAGE233B UI/CSS source-truth stage or stash |
+| STAGE232I3 owner control route helper | D | separate I3 follow-up or stash |
+| STAGE233A route canonicalization | D | separate route guard alignment or stash |
 
 ## Hard rules
 
@@ -157,16 +217,11 @@ No `git add .`.
 No reset/clean.
 No push of local dirty files as one commit.
 
-## Next safe commands
+## Recommended next decision
 
-```powershell
-cd "C:\Users\malim\Desktop\biznesy_ai\2.closeflow"
+There are two safe routes:
 
-git diff -- tests/lead-service-mode-v1.test.cjs tests/lead-start-service-case-redirect.test.cjs tests/fin15-lead-finance-ghosts.test.cjs
+1. Stash all local dirty work as one named rescue stash, then start LF-UI-SOT-003 clean.
+2. Finish one small bucket first. Best candidate: STAGE233A route canonicalization guard alignment, because it is guard/test-only and directly supports Route SOT.
 
-git diff -- src/pages/TodayStable.tsx src/styles/closeflow-canvas-runtime-source-truth-stage211j.css src/styles/work-item-card.css tests/stage116-today-work-item-card-source-truth.test.cjs
-
-git diff -- scripts/check-stage232i3-owner-control-missing-blocker-cross-entity-integration.cjs tests/stage232i3-owner-control-missing-blocker-cross-entity-integration.test.cjs
-
-git diff -- scripts/check-stage233a-route-canonicalization.cjs tests/stage233a-route-canonicalization.test.cjs
-```
+No action taken by AI on local dirty files.
