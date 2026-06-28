@@ -8,8 +8,8 @@ Scope: guard przeciw dokladaniu kolejnych runtime/CSS/UI plastrow
 
 ## LF-UI-SOT-002R2 - UI patch guard widening policy
 
-Status: IMPLEMENTED_IN_REPO / BASELINE_REPAIR_AFTER_LOCAL_RED_GUARD / NO_UI_REFACTOR / NEEDS_LOCAL_VERIFY
-Date: 2026-06-28 02:05 Europe/Warsaw
+Status: LOCAL_R2_VERIFY_PASS / GUARD_PASS / TEST_PASS / ROUTES_GUARD_PASS / BUILD_PASS / VERIFY_QUIET_BLOCKED_BY_UNRELATED_DIRTY_WORKSPACE
+Date: 2026-06-28 02:30 Europe/Warsaw
 
 ## Decyzja R2
 
@@ -49,20 +49,36 @@ R2 rozszerza polityke o:
 - `CSS_SCAN_ROOTS` / `CSS_PATCH_ALLOWLIST` - skan plikow `.css` pod `display:none`, `z-index`, `!important`, `position: fixed`, `position: absolute`;
 - szerszy kontrakt na `display:none` / `z-index` / `!important` jako workaround.
 
-## Naprawa baseline po czerwonym lokalnym guardzie
+## Wynik lokalny po ostatniej poprawce baseline
 
-Damian odpalil lokalnie `npm run guard:ui:patch-layers` i guard slusznie ujawnil, ze baseline allowlist byl za waski.
+Damian odpalil lokalnie po `git pull --ff-only origin dev-rollout-freeze`:
 
-Dopisana naprawa zamraza istniejacy dlug, m.in.:
+```txt
+npm run guard:ui:patch-layers: PASS
+node --test tests/ui-patch-layers-guard.test.cjs: PASS 5/5
+npm run guard:routes:canonical: PASS
+npm run build: PASS
+npm run verify:closeflow:quiet: RED przez unrelated dirty workspace CF-RUNTIME-00
+git diff --check: tylko LF/CRLF warnings w src/lib/cases.ts i src/lib/options.ts
+```
 
-- direct `lucide-react` w istniejacych pages/components/lib;
-- raw `<button>` w istniejacych pages/components/dev preview/admin tools;
-- broad inline style w istniejacych pages/components;
-- istniejace visual runtime `!important` debt;
-- istniejacy CSS debt `src/pages/legal-public-pages.css`;
-- realny baseline stage CSS imports dla Activity/AiDrafts/NotificationsCenter = 7.
+Known debt po zielonym guardzie:
 
-To nie jest zgoda na nowe plastry. To jest zamrozenie obecnego stanu, zeby guard blokowal przyrost.
+```txt
+domPatchFiles: 16
+directTrash2Files: 15
+styleLayerFiles: 32
+stageClassFiles: 35
+rawButtonFiles: 40
+lucideImportFiles: 56
+inlineStyleFiles: 12
+displayStackImportantFiles: 8
+cssPatchFiles: 238
+appStyleImportFiles: 0
+localIconButtonCloneFiles: 5
+localColorMapFiles: 0
+routeLiteralFiles: 9
+```
 
 ## Interpretacja allowlist
 
@@ -81,19 +97,16 @@ Zwiekszenie allowlisty wymaga osobnego wpisu etapu i uzasadnienia.
 
 ## Komendy verify
 
-Do uruchomienia lokalnie:
+Etap R2 technicznie przeszedl guard/test/build. Full `verify:closeflow:quiet` zostaje zablokowany przez lokalne zmiany spoza zakresu.
+
+Do kolejnego sprzatania lokalnego workspace:
 
 ```powershell
 cd "C:\Users\malim\Desktop\biznesy_ai\2.closeflow"
-
-git pull --ff-only origin dev-rollout-freeze
-npm run guard:ui:patch-layers
-node --test tests/ui-patch-layers-guard.test.cjs
-npm run guard:routes:canonical
-npm run build
-npm run verify:closeflow:quiet
-git diff --check
 git status --short --branch
+git diff --name-only
+git diff --stat
+npm run verify:closeflow:quiet
 ```
 
 ## Status po R2
@@ -103,16 +116,22 @@ LF-UI-SOT-002:
 DONE / GUARD_ADDED / BASELINE_PROTECTS_AGAINST_SOME_PATCHES
 
 LF-UI-SOT-002R2:
-IMPLEMENTED_IN_REPO / BASELINE_REPAIR_AFTER_LOCAL_RED_GUARD / BEZ_UI_REFACTORU / NEEDS_LOCAL_VERIFY
+LOCAL_R2_VERIFY_PASS / GUARD_PASS / TEST_PASS / ROUTES_GUARD_PASS / BUILD_PASS / VERIFY_QUIET_BLOCKED_BY_UNRELATED_DIRTY_WORKSPACE
 ```
 
 ## Ryzyko
 
-`verify:closeflow:quiet` moze nadal byc czerwony lokalnie przez dirty workspace spoza tego etapu. Tego nie mieszac z R2.
+`verify:closeflow:quiet` jest czerwony przez dirty workspace spoza tego etapu. Tego nie mieszac z R2.
+
+Nastepny bezpieczny etap:
+
+```txt
+LF-LOCAL-DIRTY-WORKTREE-SEGREGATION
+```
 
 ## Zapis
 
-- data i godzina: 2026-06-28 02:05 Europe/Warsaw
+- data i godzina: 2026-06-28 02:30 Europe/Warsaw
 - repo: dkknapikdamian-collab/leadflowv1
 - branch: dev-rollout-freeze
 - files touched:
@@ -124,4 +143,3 @@ IMPLEMENTED_IN_REPO / BASELINE_REPAIR_AFTER_LOCAL_RED_GUARD / BEZ_UI_REFACTORU /
 - runtime UI: nietkniete
 - CSS/layout: nietkniete
 - SQL/API/Supabase: nietkniete
-- Obsidian central: zapisac aktualizacje po tej naprawie baseline
