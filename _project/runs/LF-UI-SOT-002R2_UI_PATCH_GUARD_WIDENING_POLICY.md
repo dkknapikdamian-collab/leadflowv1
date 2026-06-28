@@ -1,17 +1,17 @@
 # LF-UI-SOT-002R2 UI patch guard widening policy - run report
 
-Date: 2026-06-28 02:20 Europe/Warsaw
+Date: 2026-06-28 02:30 Europe/Warsaw
 Project: CloseFlow / LeadFlow
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
 
 ## Status
 
-IMPLEMENTED_IN_REPO / LAYOUT_LUCIDE_BASELINE_FIX / BEZ_UI_REFACTORU / NEEDS_LOCAL_VERIFY
+LOCAL_R2_VERIFY_PASS / GUARD_PASS / TEST_PASS / ROUTES_GUARD_PASS / BUILD_PASS / VERIFY_QUIET_BLOCKED_BY_UNRELATED_DIRTY_WORKSPACE
 
 ## Local verify from Damian
 
-Damian ran:
+Damian ran after pulling commit 0bcb1330:
 
 ```powershell
 npm run guard:ui:patch-layers
@@ -23,32 +23,55 @@ git diff --check
 git status --short --branch
 ```
 
-Result after first baseline repair:
+## Results
+
+PASS:
 
 ```txt
-guard:ui:patch-layers RED
-tests/ui-patch-layers-guard.test.cjs RED because embedded guard run was RED
-guard:routes:canonical PASS
-build PASS
-verify:closeflow:quiet RED due unrelated dirty workspace
+npm run guard:ui:patch-layers: PASS
+node --test tests/ui-patch-layers-guard.test.cjs: PASS, 5/5
+npm run guard:routes:canonical: PASS
+npm run build: PASS
 ```
 
-Remaining R2 guard error:
+Blocked outside this stage:
 
 ```txt
-src/components/Layout.tsx: direct lucide-react import is not allowed for new UI work.
+npm run verify:closeflow:quiet: RED
+Reason: CF-RUNTIME-00 out-of-scope changed files from unrelated local dirty workspace.
 ```
 
-Reason:
+`git diff --check`:
 
-`src/components/Layout.tsx` is existing shell/layout debt and was already allowlisted in other R2 baseline sections. It was missing only from `LUCIDE_REACT_IMPORT_ALLOWLIST`.
+```txt
+Warnings only: LF will be replaced by CRLF in src/lib/cases.ts and src/lib/options.ts.
+```
 
-## Baseline repair performed
+Dirty workspace files are outside LF-UI-SOT-002R2 and must not be pushed as one commit.
 
-Changed only:
+## Guard output after pass
 
-- scripts/check-ui-patch-layers.cjs
-- this run report
+Known debt frozen by guard:
+
+```txt
+domPatchFiles: 16
+directTrash2Files: 15
+styleLayerFiles: 32
+stageClassFiles: 35
+rawButtonFiles: 40
+lucideImportFiles: 56
+inlineStyleFiles: 12
+displayStackImportantFiles: 8
+cssPatchFiles: 238
+appStyleImportFiles: 0
+localIconButtonCloneFiles: 5
+localColorMapFiles: 0
+routeLiteralFiles: 9
+```
+
+This known debt is not approval for new patches. It is frozen baseline only.
+
+## Scope unchanged
 
 No runtime UI files changed.
 No src/pages refactor.
@@ -56,23 +79,9 @@ No src/components refactor.
 No src/styles changes.
 No SQL/API/Supabase changes.
 
-## Earlier baseline repair context
+## Guard state
 
-The R2 guard rules were correct as policy, but the baseline allowlists did not yet freeze all existing debt. The guard was catching old debt in current repo instead of only preventing new patch growth.
-
-Examples from local red guard:
-
-- broad inline style debt in Activity, Calendar, CaseDetail, Cases, ClientDetail, NotificationsCenter, Today;
-- direct lucide-react debt in AdminAiSettings, AiDrafts, NotificationsCenter, PublicLanding, ResponseTemplates, SalesFunnel, SupportCenter, TasksStable, TodayStable and components;
-- raw button debt in UiPreview files and several components;
-- local LeadActionButton / ActionIcon debt;
-- existing visual runtime `!important` debt;
-- legal public page CSS debt;
-- Activity/AiDrafts/NotificationsCenter stage CSS import baseline was 7, not 6.
-
-## Guard state after repair
-
-The guard still blocks the same R2 policy classes:
+The guard blocks the same R2 policy classes:
 
 - raw <button> in src/pages and src/components outside explicit debt allowlist
 - direct lucide-react imports outside explicit debt allowlist
@@ -83,28 +92,25 @@ The guard still blocks the same R2 policy classes:
 - local status/badge/status-label/color helpers
 - manual case/lead/client route literals where helpers exist
 
-## Allowlist rule
+## Next safe step
 
-Allowlists freeze existing debt only.
-Do not increase allowlists without a scoped stage note with file, pattern, reason, and cleanup target.
+Do not continue UI work while local dirty workspace is unresolved.
+Next safe stage:
 
-## Local verify required again
-
-Run locally:
-
-```powershell
-cd "C:\Users\malim\Desktop\biznesy_ai\2.closeflow"
-
-git pull --ff-only origin dev-rollout-freeze
-npm run guard:ui:patch-layers
-node --test tests/ui-patch-layers-guard.test.cjs
-npm run guard:routes:canonical
-npm run build
-npm run verify:closeflow:quiet
-git diff --check
-git status --short --branch
+```txt
+LF-LOCAL-DIRTY-WORKTREE-SEGREGATION
 ```
 
-## Known risk
+## Known blocker
 
-verify:closeflow:quiet may still be red because local workspace has unrelated dirty files. Do not mix that with this guard-only stage.
+`verify:closeflow:quiet` remains blocked by unrelated local changes:
+
+```txt
+scripts/check-a24-lead-to-case-flow.cjs
+scripts/check-fin15-lead-finance-ghosts.cjs
+src/lib/cases.ts
+src/lib/options.ts
+tests/fin15-lead-finance-ghosts.test.cjs
+tests/lead-service-mode-v1.test.cjs
+tests/lead-start-service-case-redirect.test.cjs
+```
