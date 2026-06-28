@@ -61,6 +61,88 @@ const INLINE_ACTION_STYLE_ALLOWLIST = new Map([
   ['src/pages/UiPreviewVNext.tsx', 'dev preview, not production route styling SOT'],
 ]);
 
+const RAW_PAGE_BUTTON_ALLOWLIST = new Map([
+  ['src/pages/Calendar.tsx', 'existing raw button debt'],
+  ['src/pages/CaseDetail.tsx', 'existing raw button debt'],
+  ['src/pages/ClientDetail.tsx', 'existing raw button debt'],
+  ['src/pages/Clients.tsx', 'existing raw button debt'],
+  ['src/pages/Dashboard.tsx', 'existing raw button debt'],
+  ['src/pages/LeadDetail.tsx', 'existing raw button debt'],
+  ['src/pages/Leads.tsx', 'existing raw button debt'],
+  ['src/pages/Login.tsx', 'existing raw button debt'],
+  ['src/pages/Tasks.tsx', 'inactive legacy raw button debt'],
+  ['src/pages/Templates.tsx', 'existing raw button debt'],
+  ['src/pages/Today.tsx', 'inactive legacy raw button debt'],
+]);
+
+const LUCIDE_REACT_IMPORT_ALLOWLIST = new Map([
+  ['src/components/confirm-dialog.tsx', 'existing direct icon import debt'],
+  ['src/components/Layout.tsx', 'existing direct icon import debt'],
+  ['src/components/lead-picker.tsx', 'existing direct icon import debt'],
+  ['src/components/sidebar-mini-calendar.tsx', 'existing direct icon import debt'],
+  ['src/components/ui/checkbox.tsx', 'existing UI primitive direct icon import debt'],
+  ['src/components/ui/dialog.tsx', 'existing UI primitive direct icon import debt'],
+  ['src/components/ui/dropdown-menu.tsx', 'existing UI primitive direct icon import debt'],
+  ['src/components/ui/select.tsx', 'existing UI primitive direct icon import debt'],
+  ['src/components/ui/sonner.tsx', 'existing UI primitive direct icon import debt'],
+  ['src/lib/options.ts', 'existing option icon mapping debt'],
+  ['src/pages/Activity.tsx', 'existing direct icon import debt'],
+  ['src/pages/Billing.tsx', 'existing direct icon import debt'],
+  ['src/pages/Calendar.tsx', 'existing direct icon import debt'],
+  ['src/pages/CaseDetail.tsx', 'existing direct icon import debt'],
+  ['src/pages/Cases.tsx', 'existing direct icon import debt'],
+  ['src/pages/ClientDetail.tsx', 'existing direct icon import debt'],
+  ['src/pages/ClientPortal.tsx', 'existing direct icon import debt'],
+  ['src/pages/Clients.tsx', 'existing direct icon import debt'],
+  ['src/pages/Dashboard.tsx', 'existing direct icon import debt'],
+  ['src/pages/LeadDetail.tsx', 'existing direct icon import debt'],
+  ['src/pages/Leads.tsx', 'existing direct icon import debt'],
+  ['src/pages/Login.tsx', 'existing direct icon import debt'],
+  ['src/pages/Settings.tsx', 'existing direct icon import debt'],
+  ['src/pages/Tasks.tsx', 'existing direct icon import debt'],
+  ['src/pages/Templates.tsx', 'existing direct icon import debt'],
+  ['src/pages/Today.tsx', 'inactive legacy direct icon import debt'],
+]);
+
+const GENERAL_INLINE_STYLE_ALLOWLIST = new Map([
+  ['src/pages/UiPreviewVNext.tsx', 'dev preview, not production route styling SOT'],
+  ['src/pages/UiPreviewVNextFull.tsx', 'dev preview embedded HTML'],
+]);
+
+const DISPLAY_STACK_IMPORTANT_ALLOWLIST = new Map([
+  ['src/components/Layout.tsx', 'existing shell layering debt'],
+  ['src/components/AppChunkErrorBoundary.tsx', 'existing chunk-error overlay debt'],
+  ['src/pages/Calendar.tsx', 'existing calendar layering debt'],
+  ['src/pages/Today.tsx', 'inactive legacy Today page'],
+  ['src/pages/TodayStable.tsx', 'existing TodayStable layering debt'],
+  ['src/pages/UiPreviewVNext.tsx', 'dev preview, not production route styling SOT'],
+  ['src/pages/UiPreviewVNextFull.tsx', 'dev preview embedded HTML'],
+]);
+
+const APP_STYLES_IMPORT_MAX = new Map([
+  ['src/App.tsx', 45],
+]);
+
+const LOCAL_ICON_BUTTON_CLONE_ALLOWLIST = new Map([
+  ['src/components/entity-actions.tsx', 'canonical shared action buttons'],
+  ['src/components/ui/button.tsx', 'canonical UI Button primitive'],
+]);
+
+const LOCAL_COLOR_MAP_ALLOWLIST = new Map([
+  ['src/lib/options.ts', 'central option/icon mapping debt'],
+]);
+
+const ROUTE_LITERAL_ALLOWLIST = new Map([
+  ['src/pages/Calendar.tsx', 'existing route literal debt'],
+  ['src/pages/CaseDetail.tsx', 'existing route literal debt'],
+  ['src/pages/Cases.tsx', 'existing route literal debt'],
+  ['src/pages/ClientDetail.tsx', 'existing route literal debt'],
+  ['src/pages/Clients.tsx', 'existing route literal debt'],
+  ['src/pages/LeadDetail.tsx', 'existing route literal debt'],
+  ['src/pages/Leads.tsx', 'existing route literal debt'],
+  ['src/pages/TodayStable.tsx', 'existing route literal debt'],
+]);
+
 const STYLE_LAYER_ALLOWLIST_MAX = new Map([
   ['src/App.tsx', 50],
   ['src/components/ClientCreateDialog.tsx', 2],
@@ -173,6 +255,14 @@ const debt = {
   directTrash2Files: [],
   styleLayerFiles: [],
   stageClassFiles: [],
+  rawButtonFiles: [],
+  lucideImportFiles: [],
+  inlineStyleFiles: [],
+  displayStackImportantFiles: [],
+  appStyleImportFiles: [],
+  localIconButtonCloneFiles: [],
+  localColorMapFiles: [],
+  routeLiteralFiles: [],
 };
 
 for (const file of files) {
@@ -194,6 +284,27 @@ for (const file of files) {
     }
   }
 
+  const rawPageButtonFindings = lineFindings(file, source, (line) => /<button\b/.test(line));
+  if (file.startsWith('src/pages/') && rawPageButtonFindings.length > 0) {
+    if (!RAW_PAGE_BUTTON_ALLOWLIST.has(file)) {
+      errors.push(`${file}: raw <button> in page component is not allowed for new UI work. Use the central Button/action primitive.\n${rawPageButtonFindings.join('\n')}`);
+    } else {
+      debt.rawButtonFiles.push({ file, count: rawPageButtonFindings.length, reason: RAW_PAGE_BUTTON_ALLOWLIST.get(file) });
+    }
+  }
+
+  const lucideImportFindings = lineFindings(file, source, (line) =>
+    /from\s+['"]lucide-react['"]/.test(line)
+    || /import\s+[^'"]+['"]lucide-react['"]/.test(line)
+  );
+  if (lucideImportFindings.length > 0) {
+    if (!LUCIDE_REACT_IMPORT_ALLOWLIST.has(file)) {
+      errors.push(`${file}: direct lucide-react import is not allowed for new UI work. Use the central icon registry/primitive or add a scoped stage decision.\n${lucideImportFindings.join('\n')}`);
+    } else {
+      debt.lucideImportFiles.push({ file, count: lucideImportFindings.length, reason: LUCIDE_REACT_IMPORT_ALLOWLIST.get(file) });
+    }
+  }
+
   if ((file.startsWith('src/pages/') || file.startsWith('src/components/')) && source.includes('Trash2')) {
     if (!DIRECT_TRASH2_ALLOWLIST.has(file)) {
       errors.push(`${file}: direct Trash2 import/use is not allowed for new delete actions. Use EntityTrashButton or EntityActionButton tone="danger".`);
@@ -209,11 +320,29 @@ for (const file of files) {
     errors.push(`${file}: local delete button/action component detected. Reuse EntityTrashButton or EntityActionButton tone="danger".\n${deleteComponentDefinitions.join('\n')}`);
   }
 
+  const iconButtonCloneDefinitions = lineFindings(file, source, (line) =>
+    /\b(?:function|const|export\s+(?:function|const))\s+\w*(?:IconButton|ActionIcon|ToolbarButton|QuickActionButton)\b/.test(line)
+  );
+  if (iconButtonCloneDefinitions.length > 0 && !LOCAL_ICON_BUTTON_CLONE_ALLOWLIST.has(file)) {
+    errors.push(`${file}: local IconButton/ActionIcon clone detected. Use the shared action primitive or make the canonical component explicit.\n${iconButtonCloneDefinitions.join('\n')}`);
+  } else if (iconButtonCloneDefinitions.length > 0) {
+    debt.localIconButtonCloneFiles.push({ file, count: iconButtonCloneDefinitions.length, reason: LOCAL_ICON_BUTTON_CLONE_ALLOWLIST.get(file) });
+  }
+
   const inlineActionStyle = lineFindings(file, source, (line) =>
     line.includes('style={{') && /(<Button\b|<button\b|Trash2|Loader2|EntityTrashButton|EntityActionButton|aria-label=.*Usu|title=.*Usu)/.test(line)
   );
   if (inlineActionStyle.length > 0 && !INLINE_ACTION_STYLE_ALLOWLIST.has(file)) {
     errors.push(`${file}: inline style on action/icon/delete control is not allowed.\n${inlineActionStyle.join('\n')}`);
+  }
+
+  const pageInlineStyle = lineFindings(file, source, (line) =>
+    file.startsWith('src/pages/') && line.includes('style={{')
+  );
+  if (pageInlineStyle.length > 0 && !GENERAL_INLINE_STYLE_ALLOWLIST.has(file)) {
+    errors.push(`${file}: inline style in page component is not allowed for new UI work. Move this into the canonical component/CSS source.\n${pageInlineStyle.join('\n')}`);
+  } else if (pageInlineStyle.length > 0) {
+    debt.inlineStyleFiles.push({ file, count: pageInlineStyle.length, reason: GENERAL_INLINE_STYLE_ALLOWLIST.get(file) });
   }
 
   const inlineHideOrStacking = lineFindings(file, source, (line) =>
@@ -223,6 +352,55 @@ for (const file of files) {
   );
   if (inlineHideOrStacking.length > 0 && !DOM_PATCH_ALLOWLIST.has(file)) {
     errors.push(`${file}: inline display:none/z-index workaround requires a named UI contract or CSS source, not a local patch.\n${inlineHideOrStacking.join('\n')}`);
+  }
+
+  const displayStackImportantFindings = lineFindings(file, source, (line) =>
+    /display\s*:\s*['"]?none['"]?/.test(line)
+    || /\bzIndex\s*:/.test(line)
+    || /['"]z-index['"]\s*:/.test(line)
+    || /!important\b/.test(line)
+  );
+  if (displayStackImportantFindings.length > 0) {
+    if (!DISPLAY_STACK_IMPORTANT_ALLOWLIST.has(file)) {
+      errors.push(`${file}: display:none/z-index/!important workaround is not allowed for new UI work.\n${displayStackImportantFindings.join('\n')}`);
+    } else {
+      debt.displayStackImportantFiles.push({ file, count: displayStackImportantFindings.length, reason: DISPLAY_STACK_IMPORTANT_ALLOWLIST.get(file) });
+    }
+  }
+
+  const appStyleImportCount = file === 'src/App.tsx'
+    ? countMatches(source, /^import\s+['"]\.\/styles\/[^'"]+\.css['"];?$/gm)
+    : 0;
+  if (appStyleImportCount > 0) {
+    const allowed = APP_STYLES_IMPORT_MAX.get(file) || 0;
+    if (appStyleImportCount > allowed) {
+      errors.push(`${file}: ${appStyleImportCount} App CSS imports exceeds approved baseline ${allowed}. Do not add another global CSS layer; consolidate the source.`);
+    } else {
+      debt.appStyleImportFiles.push({ file, count: appStyleImportCount, allowed });
+    }
+  }
+
+  const localColorMapFindings = lineFindings(file, source, (line) =>
+    /\b(?:statusColorMap|badgeColorMap|statusToneMap|badgeToneMap|priorityColorMap)\b/.test(line)
+  );
+  if (localColorMapFindings.length > 0) {
+    if (!LOCAL_COLOR_MAP_ALLOWLIST.has(file)) {
+      errors.push(`${file}: local status/badge color map detected. Use the central status/tone config instead of a page-local map.\n${localColorMapFindings.join('\n')}`);
+    } else {
+      debt.localColorMapFiles.push({ file, count: localColorMapFindings.length, reason: LOCAL_COLOR_MAP_ALLOWLIST.get(file) });
+    }
+  }
+
+  const routeLiteralFindings = lineFindings(file, source, (line) =>
+    file.startsWith('src/pages/')
+    && /['"`]\/(?:case|cases|lead|leads|client|clients)\/[^'"`]*['"`]/.test(line)
+  );
+  if (routeLiteralFindings.length > 0) {
+    if (!ROUTE_LITERAL_ALLOWLIST.has(file)) {
+      errors.push(`${file}: manual route literal detected. Use src/lib/routes helpers where a helper exists.\n${routeLiteralFindings.join('\n')}`);
+    } else {
+      debt.routeLiteralFiles.push({ file, count: routeLiteralFindings.length, reason: ROUTE_LITERAL_ALLOWLIST.get(file) });
+    }
   }
 
   const styleLayerCount = countMatches(source, /import\s+['"][^'"]*styles\/[^'"]*(?:stage|source-truth|legacy|temporary|emergency)[^'"]*\.css['"]/g);
@@ -253,15 +431,25 @@ console.log(JSON.stringify({
   guard: 'guard:ui:patch-layers',
   contract: {
     deleteAction: 'EntityTrashButton or EntityActionButton tone="danger"',
+    buttonAction: 'central Button/action primitive instead of raw page <button>',
+    iconAction: 'central icon registry/primitive instead of new direct lucide-react imports',
+    routeAction: 'src/lib/routes helpers instead of manual route literals where helper exists',
     forbiddenNewPatterns: [
       'querySelector/querySelectorAll runtime UI patches',
       'replaceChildren DOM rewrites',
       'inline style on action/icon/delete controls',
+      'inline style in page components',
+      'raw <button> in src/pages outside explicit debt allowlist',
+      'new direct lucide-react imports',
       'local delete button abstractions',
+      'local IconButton/ActionIcon clones',
+      'local status/badge color maps',
+      'manual route literals where route helpers exist',
       'new direct Trash2 delete controls',
+      'new stacked App/global CSS imports',
       'new stacked stage/source-truth CSS imports',
       'new stage-only className final styling',
-      'inline display:none/z-index workarounds',
+      'display:none/z-index/!important workarounds',
     ],
   },
   knownDebt: {
@@ -269,5 +457,13 @@ console.log(JSON.stringify({
     directTrash2Files: debt.directTrash2Files.length,
     styleLayerFiles: debt.styleLayerFiles.length,
     stageClassFiles: debt.stageClassFiles.length,
+    rawButtonFiles: debt.rawButtonFiles.length,
+    lucideImportFiles: debt.lucideImportFiles.length,
+    inlineStyleFiles: debt.inlineStyleFiles.length,
+    displayStackImportantFiles: debt.displayStackImportantFiles.length,
+    appStyleImportFiles: debt.appStyleImportFiles.length,
+    localIconButtonCloneFiles: debt.localIconButtonCloneFiles.length,
+    localColorMapFiles: debt.localColorMapFiles.length,
+    routeLiteralFiles: debt.routeLiteralFiles.length,
   },
 }, null, 2));
