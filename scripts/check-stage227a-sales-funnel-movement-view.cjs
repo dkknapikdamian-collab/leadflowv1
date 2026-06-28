@@ -42,7 +42,7 @@ for (const marker of [
 
 requireIncludes('App.tsx', app, "import('./pages/SalesFunnel')");
 requireIncludes('App.tsx', app, 'const SalesFunnel');
-requireIncludes('App.tsx', app, 'path="/funnel"');
+requireIncludes('App.tsx', app, 'CLOSEFLOW_ROUTES.funnel');
 requireIncludes('Layout.tsx', layout, "label: 'Lejek'");
 requireIncludes('Layout.tsx', layout, "path: '/funnel'");
 requireIncludes('package.json', pkg, 'check:stage227a-sales-funnel-movement-view');
