@@ -4,104 +4,104 @@ Status: DONE / GUARD_ADDED / NO_UI_REFACTOR
 Date: 2026-06-27 Europe/Warsaw
 Project: CloseFlow / LeadFlow
 Branch checked: dev-rollout-freeze
-Scope: guard przeciw dokladaniu kolejnych runtime/CSS/UI plastrów
+Scope: guard przeciw dokladaniu kolejnych runtime/CSS/UI plastrow
 
-## Scan report
+## LF-UI-SOT-002R2 - UI patch guard widening policy
 
-- Project: CloseFlow / LeadFlow.
-- Read mode: minimalny guard stage po canonical routing.
-- Files read:
-  - `AGENTS.md`
-  - `_project/00_AI_START_SPIS_TRESCI.md`
-  - selected existing guard/test examples
-  - scan of `querySelector`, `replaceChildren`, `Trash2`, `style={{`, stage/source-truth CSS imports
-- Files intentionally not read:
-  - Obsidian and `obsidian_updates`
-  - migrations, Supabase/Firebase/API
-  - full UI refactor targets
-- Current stage: `LF-UI-SOT-002 - Guard na plastry UI`.
-- Active decisions:
-  - guard ma blokowac nowe plastry, nie udawac, ze stary dlug nie istnieje;
-  - delete action contract: `EntityTrashButton` albo `EntityActionButton tone="danger"`;
-  - runtime DOM patches wymagaja jawnej allowlisty jako dlug, nie sa wzorcem dla nowych zmian.
-- Open risks:
-  - baseline zawiera juz duzo historycznych warstw i runtime patchy;
-  - future cleanup musi usuwac allowlisty po realnym uporzadkowaniu, nie zwiekszac limity.
-- Tests/guards relevant:
-  - `npm run guard:ui:patch-layers`
-  - `node --test tests/ui-patch-layers-guard.test.cjs`
-- Next step:
-  - przy kazdej naprawie UI uruchamiac `guard:ui:patch-layers`;
-  - jesli guard czerwony, naprawiac zrodlo albo dodac jawna decyzje etapu z uzasadnieniem, nie dokladac cichego obejscia.
+Status: IMPLEMENTED_IN_REPO / GUARD_WIDENED / NO_UI_REFACTOR / NEEDS_LOCAL_VERIFY
+Date: 2026-06-28 01:35 Europe/Warsaw
 
-## Guard
+## Decyzja R2
 
-New npm script:
+Jezeli przy weryfikacji etapu pojawia sie proba plastra UI, nie wdrazac dalej.
+Najpierw poszerzyc istniejacy guard, zeby ten typ plastra byl lapany automatycznie.
+Nie tworzyc drugiego guarda obok starego.
 
-```txt
-npm run guard:ui:patch-layers
-```
-
-Files:
+Existing guard:
 
 ```txt
 scripts/check-ui-patch-layers.cjs
 tests/ui-patch-layers-guard.test.cjs
 ```
 
-Guard catches:
+## Co R2 dodaje do guarda
 
-- `querySelector` / `querySelectorAll` runtime UI patches outside explicit debt allowlist;
-- `replaceChildren` DOM rewrites above current baseline;
-- inline `style={{ ... }}` on action/icon/delete controls;
-- inline `display:none` / `z-index` workarounds outside allowed runtime debt;
-- local delete button/action components instead of shared delete primitives;
-- direct `Trash2` usage in new page/component files;
-- new stacked `stage` / `source-truth` / `legacy` / `temporary` / `emergency` CSS imports beyond baseline;
-- new `stage` / `source-truth` className usage beyond baseline.
+Guard nadal blokuje stare kontrakty:
 
-## Delete action contract
+- `querySelector` / `querySelectorAll` runtime UI patches;
+- `replaceChildren` DOM rewrites;
+- inline style na action/icon/delete controls;
+- inline `display:none` / `z-index` workarounds;
+- lokalne delete button/action components;
+- direct `Trash2`;
+- nowe stacked `stage` / `source-truth` CSS imports;
+- nowe `stage` / `source-truth` className usage.
 
-Allowed:
+R2 rozszerza polityke o:
 
-```txt
-EntityTrashButton
-EntityActionButton tone="danger"
-```
+- `RAW_PAGE_BUTTON_ALLOWLIST` - nowe surowe `<button>` w `src/pages` poza jawna allowlista;
+- `LUCIDE_REACT_IMPORT_ALLOWLIST` - nowe bezposrednie importy z `lucide-react`;
+- `APP_STYLES_IMPORT_MAX` - nowe globalne importy CSS w `src/App.tsx` ponad baseline;
+- `LOCAL_ICON_BUTTON_CLONE_ALLOWLIST` - lokalne `IconButton` / `ActionIcon` / podobne klony;
+- `LOCAL_COLOR_MAP_ALLOWLIST` - lokalne mapy status/badge/priority color/tone;
+- `ROUTE_LITERAL_ALLOWLIST` - reczne route literals dla case/lead/client tam, gdzie powinny isc helpery;
+- szerszy kontrakt na `display:none` / `z-index` / `!important` jako workaround.
 
-Forbidden for new production list actions:
+## Interpretacja allowlist
 
-```txt
-<Button><Trash2 /></Button>
-<button><Trash2 /></button>
-local DeleteButton / TrashButton component clones
-inline styles on delete/action icons
-```
+Allowlisty nie sa zgoda na nowe plastry.
+One zamrazaja istniejacy dlug, zeby guard przeszedl na obecnym baseline i blokowal nowe miejsca/patterny.
 
-## Current explicit debt baseline
+Zwiekszenie allowlisty wymaga osobnego wpisu etapu i uzasadnienia.
 
-The guard currently passes with explicit known debt counts:
+## Czego nie zrobiono w R2
 
-```txt
-domPatchFiles: 16
-directTrash2Files: 15
-styleLayerFiles: 32
-stageClassFiles: 35
-```
+- nie usunieto starego dlugu UI;
+- nie refaktorowano UI;
+- nie poprawiano wygladu;
+- nie dodano CSS;
+- nie ruszono runtime UI, SQL, API, Supabase/Firebase.
 
-Interpretation:
+## Komendy verify
 
-- This is not approval to keep adding patches.
-- These are existing files that must be cleaned in later scoped stages.
-- Raising an allowlist number should require a stage note and concrete reason.
+Do uruchomienia lokalnie:
 
-## Verification
+```powershell
+cd "C:\Users\malim\Desktop\biznesy_ai\2.closeflow"
 
-PASS:
-
-```txt
 npm run guard:ui:patch-layers
 node --test tests/ui-patch-layers-guard.test.cjs
+npm run guard:routes:canonical
+npm run build
+npm run verify:closeflow:quiet
+git diff --check
+git status --short --branch
 ```
 
-No UI/CSS/runtime behavior was changed in this guard stage.
+## Status po R2
+
+```txt
+LF-UI-SOT-002:
+DONE / GUARD_ADDED / BASELINE_PROTECTS_AGAINST_SOME_PATCHES
+
+LF-UI-SOT-002R2:
+IMPLEMENTED_IN_REPO / POSZERZENIE_GUARDA / BEZ_UI_REFACTORU / NEEDS_LOCAL_VERIFY
+```
+
+## Ryzyko
+
+`verify:closeflow:quiet` moze nadal byc czerwony lokalnie przez dirty workspace spoza tego etapu. Tego nie mieszac z R2.
+
+## Zapis
+
+- data i godzina: 2026-06-28 01:35 Europe/Warsaw
+- repo: dkknapikdamian-collab/leadflowv1
+- branch: dev-rollout-freeze
+- files touched:
+  - `scripts/check-ui-patch-layers.cjs`
+  - `tests/ui-patch-layers-guard.test.cjs`
+  - `_project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-002_UI_PATCH_LAYERS_GUARD.md`
+- runtime UI: nietkniete
+- CSS/layout: nietkniete
+- SQL/API/Supabase: nietkniete
+- Obsidian: wymaga wpisu centralnego w vault
