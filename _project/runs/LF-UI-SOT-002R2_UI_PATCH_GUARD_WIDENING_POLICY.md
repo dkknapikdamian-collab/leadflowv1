@@ -1,22 +1,50 @@
 # LF-UI-SOT-002R2 UI patch guard widening policy - run report
 
-Date: 2026-06-28 01:50 Europe/Warsaw
+Date: 2026-06-28 02:05 Europe/Warsaw
 Project: CloseFlow / LeadFlow
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
 
 ## Status
 
-IMPLEMENTED_IN_REPO / POSZERZENIE_GUARDA / BEZ_UI_REFACTORU / NEEDS_LOCAL_VERIFY
+IMPLEMENTED_IN_REPO / BASELINE_REPAIR_AFTER_LOCAL_RED_GUARD / BEZ_UI_REFACTORU / NEEDS_LOCAL_VERIFY
 
-## Scope executed
+## Local verify from Damian
 
-Changed only guard/docs/test files:
+Damian ran:
+
+```powershell
+npm run guard:ui:patch-layers
+node --test tests/ui-patch-layers-guard.test.cjs
+```
+
+Result:
+
+```txt
+guard:ui:patch-layers RED
+tests/ui-patch-layers-guard.test.cjs RED because embedded guard run was RED
+```
+
+Reason:
+
+The R2 guard rules were correct as policy, but the baseline allowlists did not yet freeze all existing debt. The guard was catching old debt in current repo instead of only preventing new patch growth.
+
+Examples from local red guard:
+
+- broad inline style debt in Activity, Calendar, CaseDetail, Cases, ClientDetail, NotificationsCenter, Today;
+- direct lucide-react debt in AdminAiSettings, AiDrafts, NotificationsCenter, PublicLanding, ResponseTemplates, SalesFunnel, SupportCenter, TasksStable, TodayStable and components;
+- raw button debt in UiPreview files and several components;
+- local LeadActionButton / ActionIcon debt;
+- existing visual runtime `!important` debt;
+- legal public page CSS debt;
+- Activity/AiDrafts/NotificationsCenter stage CSS import baseline was 7, not 6.
+
+## Baseline repair performed
+
+Changed only:
 
 - scripts/check-ui-patch-layers.cjs
-- tests/ui-patch-layers-guard.test.cjs
-- _project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-002_UI_PATCH_LAYERS_GUARD.md
-- _project/obsidian_updates/2026-06-28_LF-UI-SOT-002R2_UI_PATCH_GUARD_WIDENING_POLICY.md
+- this run report
 
 No runtime UI files changed.
 No src/pages refactor.
@@ -24,9 +52,9 @@ No src/components refactor.
 No src/styles changes.
 No SQL/API/Supabase changes.
 
-## Guard widened
+## Guard state after repair
 
-The existing guard now includes policy/checks for:
+The guard still blocks the same R2 policy classes:
 
 - raw <button> in src/pages and src/components outside explicit debt allowlist
 - direct lucide-react imports outside explicit debt allowlist
@@ -42,13 +70,14 @@ The existing guard now includes policy/checks for:
 Allowlists freeze existing debt only.
 Do not increase allowlists without a scoped stage note with file, pattern, reason, and cleanup target.
 
-## Local verify required
+## Local verify required again
 
 Run locally:
 
 ```powershell
 cd "C:\Users\malim\Desktop\biznesy_ai\2.closeflow"
 
+git pull --ff-only origin dev-rollout-freeze
 npm run guard:ui:patch-layers
 node --test tests/ui-patch-layers-guard.test.cjs
 npm run guard:routes:canonical
