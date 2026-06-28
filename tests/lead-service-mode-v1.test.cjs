@@ -13,13 +13,25 @@ test('Lead service handoff opens case detail directly after start', () => {
   const source = read('src/pages/LeadDetail.tsx');
 
   assert.ok(
-    source.includes('navigate(`/case/${startServiceSuccess.caseId}`);'),
-    'Po starcie obs\u0142ugi ma kierowa\u0107 bezpo\u015Brednio do /case/:id.',
+    source.includes('navigate(caseDetailPath(result.caseId));'),
+    'Po starcie obsługi ma kierować bezpośrednio do canonical helpera /cases/:id.',
   );
 
   assert.ok(
-    !source.includes('navigate(`/cases/${startServiceSuccess.caseId}`);'),
-    'Nie mo\u017Ce zosta\u0107 b\u0142\u0119dny redirect na /cases/:id.',
+    source.includes('navigate(caseDetailPath(serviceCaseId));'),
+    'Istniejąca sprawa po LEAD_ALREADY_HAS_CASE ma być otwierana przez canonical helper.',
+  );
+
+  assert.equal(
+    source.includes('navigate(`/case/${'),
+    false,
+    'Nie może wrócić ręczne składanie legacy /case/:id.',
+  );
+
+  assert.equal(
+    source.includes('navigate(`/cases/${'),
+    false,
+    'Nie może wrócić ręczne składanie canonical /cases/:id bez helpera.',
   );
 });
 
