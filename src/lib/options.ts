@@ -1,5 +1,5 @@
 import { Calendar, CalendarDays, CircleDot, FileText, type LucideIcon, MessageSquareReply, Phone, UserRound } from 'lucide-react';
-import { LEAD_STATUS_OPTIONS } from './domain-statuses';
+import { LEAD_STATUS_OPTIONS } from './config/lead-status';
 
 export const SOURCE_OPTIONS = [
   { value: 'instagram', label: 'Instagram' },
