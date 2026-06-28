@@ -3,25 +3,34 @@ const path = require('node:path');
 
 const repoRoot = process.cwd();
 const appPath = path.join(repoRoot, 'src/App.tsx');
+const routesPath = path.join(repoRoot, 'src/lib/routes.ts');
 const errors = [];
 
 function fail(message) { errors.push(message); }
 if (!fs.existsSync(appPath)) fail('Missing src/App.tsx');
+if (!fs.existsSync(routesPath)) fail('Missing src/lib/routes.ts');
 const app = fs.existsSync(appPath) ? fs.readFileSync(appPath, 'utf8') : '';
+const routes = fs.existsSync(routesPath) ? fs.readFileSync(routesPath, 'utf8') : '';
 
 if (!app.includes("const SalesFunnel = lazyPage(() => import('./pages/SalesFunnel'), 'SalesFunnel');")) {
   fail('SalesFunnel lazy import is missing');
 }
-if (!app.includes('path="/funnel"')) {
-  fail('Protected /funnel route is missing');
+if (!routes.includes("funnel: '/funnel'")) {
+  fail('CLOSEFLOW_ROUTES.funnel is missing');
 }
-if (!app.includes('path="/dev/funnel"')) {
-  fail('Dev-only /dev/funnel preview route is missing');
+if (!routes.includes("devFunnel: '/dev/funnel'")) {
+  fail('CLOSEFLOW_ROUTES.devFunnel is missing');
 }
-if (!app.includes('import.meta.env.DEV ? <SalesFunnel /> : <Navigate to="/login" />')) {
+if (!app.includes('path={CLOSEFLOW_ROUTES.funnel}')) {
+  fail('Protected /funnel route constant is missing');
+}
+if (!app.includes('path={CLOSEFLOW_ROUTES.devFunnel}')) {
+  fail('Dev-only /dev/funnel preview route constant is missing');
+}
+if (!app.includes('import.meta.env.DEV ? <SalesFunnel /> : <Navigate to={loginPath()}')) {
   fail('Dev preview route must be gated by import.meta.env.DEV and redirect outside dev');
 }
-if (/path="\/dev\/funnel"[^\n]+isLoggedIn\s*\?/.test(app)) {
+if (/path=\{CLOSEFLOW_ROUTES\.devFunnel\}[^\n]+isLoggedIn\s*\?/.test(app)) {
   fail('/dev/funnel must not require isLoggedIn');
 }
 if (/label:\s*'Dev Lejek'|path:\s*'\/dev\/funnel'/.test(fs.existsSync(path.join(repoRoot, 'src/components/Layout.tsx')) ? fs.readFileSync(path.join(repoRoot, 'src/components/Layout.tsx'), 'utf8') : '')) {
