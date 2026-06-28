@@ -4,6 +4,7 @@ const path = require('node:path');
 const repoRoot = process.cwd();
 const pagePath = path.join(repoRoot, 'src/pages/SalesFunnel.tsx');
 const helperPath = path.join(repoRoot, 'src/lib/owner-control/sales-funnel-movement.ts');
+const configPath = path.join(repoRoot, 'src/lib/config/funnel-stages.ts');
 const releaseGatePath = path.join(repoRoot, 'scripts/closeflow-release-check-quiet.cjs');
 
 function read(filePath) {
@@ -27,6 +28,7 @@ function assertNotIncludes(source, needle, label) {
 
 const page = read(pagePath);
 const helper = read(helperPath);
+const config = read(configPath);
 const releaseGate = read(releaseGatePath);
 
 assertIncludes(page, 'STAGE228A_FUNNEL_TRUTH_CLICKABILITY', 'Stage228A page marker');
@@ -36,7 +38,7 @@ assertIncludes(page, 'resolveFunnelFilterAfterOwnerClick', 'owner filter click r
 assertIncludes(page, "return { ownerFilter, stageFilter: 'all' }", 'owner filter clears stage filter');
 assertIncludes(page, "return { ownerFilter: 'all', stageFilter }", 'stage filter clears owner filter');
 assertIncludes(page, "onClick={() => applyOwnerFilter('money')}", 'money tile is clickable and routes to owner money filter');
-assertIncludes(page, 'Kliknij — pokaż rekordy, z których liczona jest kwota.', 'money tile explains source visibility');
+assertIncludes(config, 'Kliknij — pokaż rekordy, z których liczona jest kwota.', 'money tile explains source visibility in funnel config source');
 assertIncludes(page, 'data-stage228a-money-source-card', 'cards mark money source visibility');
 assertIncludes(page, 'data-stage228a-clickable-filter', 'clickable filter markers exist');
 assertIncludes(page, 'data-stage228a-priority-link', 'priority link is real link');
