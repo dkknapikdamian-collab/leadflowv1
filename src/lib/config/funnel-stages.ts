@@ -28,7 +28,7 @@ export const FUNNEL_OWNER_TILE_CONFIG: Record<FunnelOwnerFilter, {
   no_next_move: { label: 'Bez kroku', helper: 'Rekordy bez akcji.', tone: 'amber', iconToneKey: 'funnel:no_next_move:amber:Filter', valueKind: 'count' },
   silent_7: { label: 'Cisza 7+', helper: 'Brak kontaktu 7+ dni.', tone: 'purple', iconToneKey: 'funnel:silent_7:purple:Clock3', valueKind: 'count' },
   high_risk: { label: 'Wysokie ryzyko', helper: 'High i critical.', tone: 'red', iconToneKey: 'funnel:high_risk:red:ShieldAlert', valueKind: 'count' },
-  money: { label: 'Pieniadze', helper: 'Kliknij - pokaz rekordy, z ktorych liczona jest kwota.', tone: 'green', iconToneKey: 'funnel:money:green:PaymentEntityIcon', valueKind: 'money' },
+  money: { label: 'Pieniądze', helper: 'Kliknij — pokaż rekordy, z których liczona jest kwota.', tone: 'green', iconToneKey: 'funnel:money:green:PaymentEntityIcon', valueKind: 'money' },
 };
 
 export function resolveFunnelStageFilterTone(key: string, label: string): FunnelStageTone {
