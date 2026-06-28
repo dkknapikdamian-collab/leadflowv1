@@ -2969,3 +2969,11 @@ Nie ruszano:
 - Supabase/Firebase/API,
 - katalogu `10_PROJEKTY`,
 - `obsidian_updates`.
+
+## 2026-06-28 15:35 Europe/Warsaw - LF-UI-SOT-004_GLOBAL_CSS_LAYER_SOURCE_OF_TRUTH_AUDIT
+
+<!-- LF-UI-SOT-004_GLOBAL_CSS_LAYER_SOURCE_OF_TRUTH_AUDIT_COMPLETION_R2 -->
+
+Status: DONE / DO SPRAWDZENIA RĘCZNIE PRZEZ DAMIANA.
+
+Zakres: docs-only CSS matrix for every global CSS import from src/App.tsx. Runtime/UI/CSS/import order not touched.

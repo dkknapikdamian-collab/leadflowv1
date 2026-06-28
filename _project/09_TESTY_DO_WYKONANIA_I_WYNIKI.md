@@ -1146,3 +1146,16 @@ Manual smoke:
 ## STAGE232G_R7A_CALENDAR_ACTION_SOURCE_IDENTITY_DEDUPE
 
 Manual smoke: dwa identyczne tytuly maja pozostac osobnymi wpisami; akcje na jednym nie zmieniaja drugiego.
+
+## 2026-06-28 15:35 Europe/Warsaw - LF-UI-SOT-004_GLOBAL_CSS_LAYER_SOURCE_OF_TRUTH_AUDIT test results
+
+<!-- LF-UI-SOT-004_GLOBAL_CSS_LAYER_SOURCE_OF_TRUTH_AUDIT_COMPLETION_R2 -->
+
+- npm run guard:ui:patch-layers: PASS
+- node --test tests/ui-patch-layers-guard.test.cjs: PASS
+- npm run guard:routes:canonical: PASS
+- npm run guard:config:status-source-of-truth: PASS
+- node --test tests/config-status-source-of-truth.test.cjs: PASS
+- npm run build: PASS
+- npm run verify:closeflow:quiet: PASS
+- git diff --check: PASS

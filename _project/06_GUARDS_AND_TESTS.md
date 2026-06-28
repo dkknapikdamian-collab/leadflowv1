@@ -5467,3 +5467,16 @@ Required:
 
 Guard: node scripts/check-stage232g-r7a-calendar-action-source-identity-dedupe.cjs
 Test: node --test tests/stage232g-r7a-calendar-action-source-identity-dedupe.test.cjs
+
+## 2026-06-28 15:35 Europe/Warsaw - LF-UI-SOT-004_GLOBAL_CSS_LAYER_SOURCE_OF_TRUTH_AUDIT guards
+
+<!-- LF-UI-SOT-004_GLOBAL_CSS_LAYER_SOURCE_OF_TRUTH_AUDIT_COMPLETION_R2 -->
+
+- npm run guard:ui:patch-layers: PASS
+- node --test tests/ui-patch-layers-guard.test.cjs: PASS
+- npm run guard:routes:canonical: PASS
+- npm run guard:config:status-source-of-truth: PASS
+- node --test tests/config-status-source-of-truth.test.cjs: PASS
+- npm run build: PASS
+- npm run verify:closeflow:quiet: PASS
+- git diff --check: PASS

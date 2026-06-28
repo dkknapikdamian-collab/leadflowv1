@@ -2545,3 +2545,11 @@ Ryzyka:
 ## STAGE232G_R7A_CALENDAR_ACTION_SOURCE_IDENTITY_DEDUPE
 
 Ryzyko: historyczne duplikaty moga wymagac R7B cleanupu. Nie wolno laczyc po tytule.
+
+## 2026-06-28 15:35 Europe/Warsaw - LF-UI-SOT-004_GLOBAL_CSS_LAYER_SOURCE_OF_TRUTH_AUDIT risk audit
+
+<!-- LF-UI-SOT-004_GLOBAL_CSS_LAYER_SOURCE_OF_TRUTH_AUDIT_COMPLETION_R2 -->
+
+Risk: MEDIUM CSS layer debt remains.
+
+Do not add App.tsx CSS imports. Do not clean up CSS before owner maps and guards. Main risks: modal stack, search duplication, density/scale split, finance modal final hotfix.

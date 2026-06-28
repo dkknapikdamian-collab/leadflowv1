@@ -1,201 +1,135 @@
-# LF-UI-SOT-004 - Global CSS layer source-of-truth audit
+# LF-UI-SOT-004_GLOBAL_CSS_LAYER_SOURCE_OF_TRUTH_AUDIT
 
-Status: AUDIT_MATRIX_RECORDED / DOCS_ONLY / RUNTIME_NOT_TOUCHED / NEEDS_LOCAL_VERIFY
-Date: 2026-06-28 03:55 Europe/Warsaw
+Status: DONE / LOCAL_CSS_MATRIX_RECORDED / DOCS_ONLY / RUNTIME_NOT_TOUCHED / CSS_NOT_TOUCHED / IMPORT_ORDER_NOT_TOUCHED
+Date: 2026-06-28 15:35 Europe/Warsaw
 Project: CloseFlow / LeadFlow
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
+Local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
 
-## Scan report
+## Scope
 
-Read mode: GitHub remote source scan + stage specification from Damian.
+This stage completes LF-UI-SOT-004 only. It does not start LF-UI-SOT-005.
 
-Files read / checked:
+Not touched:
 
-```txt
-src/App.tsx
-scripts/check-ui-patch-layers.cjs
-_project/04_ETAPY_ROZWOJU_APLIKACJI.md
-_project/04_ETAPY_DO_ZATWIERDZENIA_Z_AUDYTU_DIRTY_WORKTREE_2026_06_28.md
-```
+- UI runtime
+- CSS contents
+- CSS import order
+- src/App.tsx
+- pages/components/layout
+- SQL/API/Supabase/Firebase
 
-Files intentionally not changed:
+## Guard baseline
 
-```txt
-src/App.tsx
-src/styles/*
-src/pages/*
-src/components/*
-src/lib/*
-SQL / migrations / Supabase / Firebase / API
-```
+- active global CSS imports in src/App.tsx: 45
+- disabled legacy CSS import in src/App.tsx: 1
+- scripts/check-ui-patch-layers.cjs APP_STYLES_IMPORT_MAX for src/App.tsx: 45
 
-Current stage context:
+Decision: do not increase the App.tsx CSS import baseline and do not add new global CSS layers.
 
-```txt
-LF-UI-SOT-000: DONE / audit map
-LF-UI-SOT-001: DONE / canonical routing
-LF-UI-SOT-002R2: DONE in code / patch guard widened
-LF-UI-SOT-003: already listed as DONE in central stage file; do not implement again without reconciliation
-LF-UI-SOT-004: this audit/matrix stage
-```
+## Pattern summary
 
-Important current guard state:
+- aktywne importy CSS z App.tsx: 45
+- wyłączone importy CSS z App.tsx: 1
+- pliki aktywne z !important: 41
+- pliki aktywne z display:none: 10
+- pliki aktywne z z-index: 11
+- pliki aktywne z position fixed/absolute: 8
 
-```txt
-App.tsx active global CSS imports: 45
-App.tsx disabled legacy CSS import: 1
-scripts/check-ui-patch-layers.cjs APP_STYLES_IMPORT_MAX for src/App.tsx: 45
-```
+## Status counts
 
-Decision:
-
-- do not increase CSS import baseline,
-- do not add a new global CSS layer,
-- do not remove or reorder CSS imports in this audit stage,
-- do not edit CSS contents in this audit stage.
+- ACTIVE_COMPONENT_SYSTEM: 7
+- ACTIVE_FINANCE_SYSTEM: 1
+- ACTIVE_MODAL_SYSTEM: 1
+- ACTIVE_RUNTIME_COMPAT: 2
+- ACTIVE_TOKEN_SYSTEM: 5
+- DISABLED_LAYER: 1
+- DO_MIGRACJI: 7
+- DO_USUNIĘCIA_PO_GUARDZIE: 1
+- HOTFIX_STAGE: 21
 
 ## App.tsx CSS import matrix
 
-Pattern counts are marked `LOCAL_SCAN_REQUIRED` until Damian/runner executes local grep/stat scan on the actual worktree. Remote audit confirms import order, naming risk, owner area, and status classification.
+| kolejność importu | ścieżka | czy plik istnieje | obszar UI | status warstwy | ryzyko | czy ma !important | czy ma display:none | czy ma z-index | czy ma position fixed/absolute | rekomendacja |
+|---:|---|---|---|---|---|---|---|---|---|---|
+| 1 | `src/styles/closeflow-visual-source-truth.css` | TAK | app shell/layout | ACTIVE_RUNTIME_COMPAT | MEDIUM_CASCADE_RISK | TAK (277) | NIE (0) | NIE (0) | NIE (0) | Zostawić; wymaga osobnego etapu runtime/density przed cleanupem. |
+| 2 | `src/styles/closeflow-action-tokens.css` | TAK | buttons/actions | ACTIVE_TOKEN_SYSTEM | MEDIUM_CASCADE_RISK | TAK (37) | NIE (0) | NIE (0) | NIE (0) | Zostawić jako token SOT; nie nadpisywać nową warstwą. |
+| 3 | `src/styles/closeflow-action-clusters.css` | TAK | buttons/actions | ACTIVE_COMPONENT_SYSTEM | LOW_ACTIVE_SOT | NIE (0) | NIE (0) | NIE (0) | NIE (0) | Zostawić; przyszłe zmiany przez komponent/SOT właściciela. |
+| 4 | `src/styles/closeflow-form-actions.css` | TAK | buttons/actions | ACTIVE_COMPONENT_SYSTEM | LOW_ACTIVE_SOT | NIE (0) | NIE (0) | NIE (0) | NIE (0) | Zostawić; przyszłe zmiany przez komponent/SOT właściciela. |
+| 5 | `src/styles/closeflow-card-readability.css` | TAK | cards/metrics | ACTIVE_COMPONENT_SYSTEM | MEDIUM_CASCADE_RISK | TAK (13) | NIE (0) | NIE (0) | NIE (0) | Zostawić; przyszłe zmiany przez komponent/SOT właściciela. |
+| 6 | `src/styles/closeflow-surface-tokens.css` | TAK | DO_POTWIERDZENIA | ACTIVE_TOKEN_SYSTEM | MEDIUM_CASCADE_RISK | TAK (4) | NIE (0) | NIE (0) | NIE (0) | Zostawić jako token SOT; nie nadpisywać nową warstwą. |
+| 7 | `src/styles/closeflow-modal-visual-system.css` | TAK | modal/dialog/overlay | ACTIVE_MODAL_SYSTEM | HIGH_PATCH_LAYER | TAK (139) | TAK (1) | TAK (2) | TAK (1) | Zostawić jako bazę modal system; hotfixy scalać później. |
+| 8 | `src/styles/closeflow-metric-tiles.css` | TAK | cards/metrics | ACTIVE_COMPONENT_SYSTEM | HIGH_PATCH_LAYER | TAK (314) | NIE (0) | NIE (0) | TAK (1) | Zostawić; przyszłe zmiany przez komponent/SOT właściciela. |
+| 9 | `src/styles/closeflow-page-header.css` | TAK | page header | ACTIVE_COMPONENT_SYSTEM | MEDIUM_CASCADE_RISK | TAK (89) | NIE (0) | NIE (0) | NIE (0) | Zostawić; przyszłe zmiany przez komponent/SOT właściciela. |
+| 10 | `src/styles/closeflow-list-row-tokens.css` | TAK | lists/rows | ACTIVE_TOKEN_SYSTEM | LOW_ACTIVE_SOT | NIE (0) | NIE (0) | NIE (0) | NIE (0) | Zostawić jako token SOT; nie nadpisywać nową warstwą. |
+| 11 | `src/styles/closeflow-alert-severity.css` | TAK | DO_POTWIERDZENIA | ACTIVE_TOKEN_SYSTEM | LOW_ACTIVE_SOT | NIE (0) | NIE (0) | NIE (0) | NIE (0) | Zostawić jako token SOT; nie nadpisywać nową warstwą. |
+| 12 | `src/styles/finance/closeflow-finance.css` | TAK | finance / modal rozliczeń | ACTIVE_FINANCE_SYSTEM | MEDIUM_CASCADE_RISK | TAK (33) | NIE (0) | NIE (0) | NIE (0) | Zostawić jako bazę finance; final hotfix przenieść dopiero po guardzie. |
+| 13 | `src/styles/closeflow-right-rail-source-truth.css` | TAK | right rail | ACTIVE_COMPONENT_SYSTEM | HIGH_PATCH_LAYER | TAK (318) | TAK (1) | NIE (0) | NIE (0) | Zostawić; przyszłe zmiany przez komponent/SOT właściciela. |
+| 14 | `src/styles/closeflow-command-actions-source-truth.css` | TAK | buttons/actions | ACTIVE_COMPONENT_SYSTEM | MEDIUM_CASCADE_RISK | TAK (148) | NIE (0) | NIE (0) | NIE (0) | Zostawić; przyszłe zmiany przez komponent/SOT właściciela. |
+| 15 | `src/styles/closeflow-page-header-copy-source-truth.css` | TAK | page header | DO_MIGRACJI | HIGH_PATCH_LAYER | TAK (19) | TAK (1) | NIE (0) | NIE (0) | Przenieść do aktywnego SOT właściciela w późniejszym etapie. |
+| 16 | `src/styles/closeflow-page-header-action-semantics-packet1.css` | TAK | page header | DO_MIGRACJI | MEDIUM_CASCADE_RISK | TAK (47) | NIE (0) | NIE (0) | NIE (0) | Przenieść do aktywnego SOT właściciela w późniejszym etapie. |
+| 17 | `src/styles/closeflow-search-source-truth-stage134.css` | TAK | search | HOTFIX_STAGE | HIGH_PATCH_LAYER | TAK (5) | TAK (1) | NIE (0) | NIE (0) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 18 | `src/styles/closeflow-right-rail-heading-source-truth-stage135.css` | TAK | right rail | HOTFIX_STAGE | MEDIUM_CASCADE_RISK | TAK (23) | NIE (0) | NIE (0) | NIE (0) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 19 | `src/styles/closeflow-clean-desktop-app-shell-canvas-stage149.css` | TAK | app shell/layout | HOTFIX_STAGE | MEDIUM_CASCADE_RISK | TAK (109) | NIE (0) | NIE (0) | NIE (0) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 20 | `src/styles/closeflow-panel-typography-and-width-source-truth-stage150.css` | TAK | DO_POTWIERDZENIA | HOTFIX_STAGE | MEDIUM_CASCADE_RISK | TAK (34) | NIE (0) | NIE (0) | NIE (0) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 21 | `src/styles/closeflow-compact-cards-source-truth-stage151.css` | TAK | cards/metrics | HOTFIX_STAGE | MEDIUM_CASCADE_RISK | TAK (28) | NIE (0) | NIE (0) | NIE (0) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 22 | `src/styles/closeflow-dense-cards-80-percent-target-stage152.css` | TAK | cards/metrics | HOTFIX_STAGE | MEDIUM_CASCADE_RISK | TAK (30) | NIE (0) | NIE (0) | NIE (0) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 23 | `src/styles/closeflow-real-density-tokens-no-zoom-stage156.css` | TAK | density/scale | ACTIVE_TOKEN_SYSTEM | MEDIUM_CASCADE_RISK | TAK (67) | NIE (0) | NIE (0) | NIE (0) | Zostawić jako token SOT; nie nadpisywać nową warstwą. |
+| 24 | `src/styles/closeflow-overlay-portal-density-stage158.css` | TAK | modal/dialog/overlay | HOTFIX_STAGE | MEDIUM_CASCADE_RISK | TAK (28) | NIE (0) | NIE (0) | NIE (0) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 25 | `src/styles/closeflow-overlay-real-density-and-footer-stage159.css` | TAK | modal/dialog/overlay | HOTFIX_STAGE | HIGH_PATCH_LAYER | TAK (93) | NIE (0) | TAK (2) | TAK (2) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 26 | `src/styles/closeflow-modal-center-and-compact-all-stage160.css` | TAK | modal/dialog/overlay | HOTFIX_STAGE | HIGH_PATCH_LAYER | TAK (96) | NIE (0) | TAK (1) | TAK (4) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 27 | `src/styles/closeflow-cf-modal-surface-center-fix-stage161.css` | TAK | modal/dialog/overlay | HOTFIX_STAGE | HIGH_PATCH_LAYER | TAK (77) | NIE (0) | TAK (3) | TAK (2) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 28 | `src/styles/closeflow-cf-modal-surface-lower-smaller-stage162.css` | TAK | modal/dialog/overlay | HOTFIX_STAGE | MEDIUM_CASCADE_RISK | TAK (62) | NIE (0) | TAK (1) | NIE (0) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 29 | `src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css` | TAK | modal/dialog/overlay | HOTFIX_STAGE | MEDIUM_CASCADE_RISK | TAK (69) | NIE (0) | TAK (1) | NIE (0) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 30 | `src/styles/closeflow-cf-modal-top-anchor-light-surface-stage164.css` | TAK | modal/dialog/overlay | HOTFIX_STAGE | MEDIUM_CASCADE_RISK | TAK (97) | NIE (0) | TAK (1) | NIE (0) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 31 | `src/styles/closeflow-modal-unified-event-motif-source-truth-stage165.css` | TAK | modal/dialog/overlay | DO_MIGRACJI | HIGH_PATCH_LAYER | TAK (136) | NIE (0) | TAK (3) | TAK (3) | Przenieść do aktywnego SOT właściciela w późniejszym etapie. |
+| 32 | `src/styles/closeflow-modal-footer-in-flow-no-overlay-stage166.css` | TAK | modal/dialog/overlay | DO_MIGRACJI | HIGH_PATCH_LAYER | TAK (39) | TAK (1) | TAK (1) | NIE (0) | Przenieść do aktywnego SOT właściciela w późniejszym etapie. |
+| 33 | `src/styles/closeflow-topic-contact-picker-readable-stage169.css` | TAK | modal/dialog/overlay | HOTFIX_STAGE | MEDIUM_CASCADE_RISK | TAK (39) | NIE (0) | TAK (1) | NIE (0) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 34 | `src/styles/closeflow-task-dialog-relation-and-field-readability-stage170.css` | TAK | modal/dialog/overlay | HOTFIX_STAGE | MEDIUM_CASCADE_RISK | TAK (41) | NIE (0) | NIE (0) | NIE (0) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 35 | `src/styles/closeflow-remove-modal-helper-copy-stage171.css` | TAK | modal/dialog/overlay | DO_USUNIĘCIA_PO_GUARDZIE | HIGH_PATCH_LAYER | TAK (9) | NIE (0) | NIE (0) | TAK (1) | Usunąć dopiero po dodaniu guarda i ręcznym smoke. |
+| 36 | `src/styles/closeflow-global-client-create-dialog-stage172.css` | TAK | modal/dialog/overlay | HOTFIX_STAGE | MEDIUM_CASCADE_RISK | TAK (15) | NIE (0) | NIE (0) | NIE (0) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 37 | `src/styles/closeflow-main-search-source-truth-stage173.css` | TAK | search | DO_MIGRACJI | HIGH_PATCH_LAYER | TAK (40) | TAK (1) | NIE (0) | NIE (0) | Przenieść do aktywnego SOT właściciela w późniejszym etapie. |
+| 38 | `src/styles/closeflow-main-search-surface-and-text-normalization-stage174.css` | TAK | search | DO_MIGRACJI | HIGH_PATCH_LAYER | TAK (62) | TAK (1) | NIE (0) | NIE (0) | Przenieść do aktywnego SOT właściciela w późniejszym etapie. |
+| 39 | `src/styles/closeflow-extend-main-search-source-truth-secondary-pages-stage175.css` | TAK | search | DO_MIGRACJI | HIGH_PATCH_LAYER | TAK (63) | TAK (1) | NIE (0) | NIE (0) | Przenieść do aktywnego SOT właściciela w późniejszym etapie. |
+| 40 | `src/styles/closeflow-leads-clients-list-layout-source-truth-stage177.css` | TAK | lists/rows | HOTFIX_STAGE | MEDIUM_CASCADE_RISK | TAK (76) | NIE (0) | NIE (0) | NIE (0) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 41 | `src/styles/closeflow-tasks-right-rail-grouped-list-source-truth-stage178.css` | TAK | right rail | HOTFIX_STAGE | HIGH_PATCH_LAYER | TAK (214) | TAK (2) | TAK (2) | TAK (2) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 42 | `src/styles/closeflow-secondary-pages-full-width-stage181ad.css` | TAK | DO_POTWIERDZENIA | HOTFIX_STAGE | MEDIUM_CASCADE_RISK | TAK (32) | NIE (0) | NIE (0) | NIE (0) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 43 | `src/styles/closeflow-app-viewport-scale-75-stage201.css` | TAK | density/scale | ACTIVE_RUNTIME_COMPAT | MEDIUM_CASCADE_RISK | TAK (29) | NIE (0) | NIE (0) | NIE (0) | Zostawić; wymaga osobnego etapu runtime/density przed cleanupem. |
+| 44 | `src/styles/closeflow-ops-badges-and-icons-stretch-stage204.css` | TAK | DO_POTWIERDZENIA | HOTFIX_STAGE | MEDIUM_CASCADE_RISK | TAK (58) | NIE (0) | NIE (0) | NIE (0) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
+| 45 | `src/styles/stage231h-r1e-case-finance-correction-modal-final.css` | TAK | finance / modal rozliczeń | HOTFIX_STAGE | HIGH_PATCH_LAYER | TAK (13) | TAK (4) | NIE (0) | NIE (0) | Nie ruszać teraz; kandydat do konsolidacji po owner guardzie. |
 
-| # | CSS import | Exists | Category | Owner area | Status | Naming risk | Runtime pattern count |
-|---:|---|---|---|---|---|---|---|
-| 1 | `src/styles/closeflow-visual-source-truth.css` | APP_IMPORT | visual base | app shell | ACTIVE_RUNTIME_COMPAT | source-truth | LOCAL_SCAN_REQUIRED |
-| 2 | `src/styles/closeflow-action-tokens.css` | APP_IMPORT | tokens | buttons/actions | ACTIVE_TOKEN_SYSTEM | none | LOCAL_SCAN_REQUIRED |
-| 3 | `src/styles/closeflow-action-clusters.css` | APP_IMPORT | component | buttons/actions | ACTIVE_COMPONENT_SYSTEM | none | LOCAL_SCAN_REQUIRED |
-| 4 | `src/styles/closeflow-form-actions.css` | APP_IMPORT | component | buttons/actions | ACTIVE_COMPONENT_SYSTEM | none | LOCAL_SCAN_REQUIRED |
-| 5 | `src/styles/closeflow-card-readability.css` | APP_IMPORT | component | cards | ACTIVE_COMPONENT_SYSTEM | none | LOCAL_SCAN_REQUIRED |
-| 6 | `src/styles/closeflow-surface-tokens.css` | APP_IMPORT | tokens | surfaces/cards | ACTIVE_TOKEN_SYSTEM | none | LOCAL_SCAN_REQUIRED |
-| 7 | `src/styles/closeflow-modal-visual-system.css` | APP_IMPORT | modal system | modal/dialog | ACTIVE_MODAL_SYSTEM | none | LOCAL_SCAN_REQUIRED |
-| 8 | `src/styles/closeflow-metric-tiles.css` | APP_IMPORT | component | cards/metrics | ACTIVE_COMPONENT_SYSTEM | none | LOCAL_SCAN_REQUIRED |
-| 9 | `src/styles/closeflow-page-header.css` | APP_IMPORT | component | page header | ACTIVE_COMPONENT_SYSTEM | none | LOCAL_SCAN_REQUIRED |
-| 10 | `src/styles/closeflow-list-row-tokens.css` | APP_IMPORT | tokens | lists/rows | ACTIVE_TOKEN_SYSTEM | none | LOCAL_SCAN_REQUIRED |
-| 11 | `src/styles/closeflow-alert-severity.css` | APP_IMPORT | tokens | badges/alerts | ACTIVE_TOKEN_SYSTEM | none | LOCAL_SCAN_REQUIRED |
-| 12 | `src/styles/finance/closeflow-finance.css` | APP_IMPORT | finance system | finance | ACTIVE_FINANCE_SYSTEM | none | LOCAL_SCAN_REQUIRED |
-| 13 | `src/styles/closeflow-right-rail-source-truth.css` | APP_IMPORT | component | right rail | ACTIVE_COMPONENT_SYSTEM | source-truth | LOCAL_SCAN_REQUIRED |
-| 14 | `src/styles/closeflow-command-actions-source-truth.css` | APP_IMPORT | component | buttons/actions | ACTIVE_COMPONENT_SYSTEM | source-truth | LOCAL_SCAN_REQUIRED |
-| 15 | `src/styles/closeflow-page-header-copy-source-truth.css` | APP_IMPORT | component | page header | DO_MIGRACJI | source-truth | LOCAL_SCAN_REQUIRED |
-| 16 | `src/styles/closeflow-page-header-action-semantics-packet1.css` | APP_IMPORT | component | page header/buttons | DO_MIGRACJI | packet | LOCAL_SCAN_REQUIRED |
-| 17 | `src/styles/closeflow-search-source-truth-stage134.css` | APP_IMPORT | component | search | HOTFIX_STAGE | source-truth/stage | LOCAL_SCAN_REQUIRED |
-| 18 | `src/styles/closeflow-right-rail-heading-source-truth-stage135.css` | APP_IMPORT | component | right rail | HOTFIX_STAGE | source-truth/stage | LOCAL_SCAN_REQUIRED |
-| 19 | `src/styles/closeflow-clean-desktop-app-shell-canvas-stage149.css` | APP_IMPORT | layout | app shell | HOTFIX_STAGE | stage | LOCAL_SCAN_REQUIRED |
-| 20 | `src/styles/closeflow-panel-typography-and-width-source-truth-stage150.css` | APP_IMPORT | layout | panels | HOTFIX_STAGE | source-truth/stage | LOCAL_SCAN_REQUIRED |
-| 21 | `src/styles/closeflow-compact-cards-source-truth-stage151.css` | APP_IMPORT | component | cards | HOTFIX_STAGE | source-truth/stage | LOCAL_SCAN_REQUIRED |
-| 22 | `src/styles/closeflow-dense-cards-80-percent-target-stage152.css` | APP_IMPORT | density | cards/density | HOTFIX_STAGE | stage/percent | LOCAL_SCAN_REQUIRED |
-| 23 | `src/styles/closeflow-real-density-tokens-no-zoom-stage156.css` | APP_IMPORT | density tokens | density/scale | HOTFIX_STAGE | stage/no-zoom | LOCAL_SCAN_REQUIRED |
-| 24 | `src/styles/closeflow-overlay-portal-density-stage158.css` | APP_IMPORT | overlay density | modal/dialog | HOTFIX_STAGE | stage | LOCAL_SCAN_REQUIRED |
-| 25 | `src/styles/closeflow-overlay-real-density-and-footer-stage159.css` | APP_IMPORT | overlay density | modal/dialog | HOTFIX_STAGE | stage | LOCAL_SCAN_REQUIRED |
-| 26 | `src/styles/closeflow-modal-center-and-compact-all-stage160.css` | APP_IMPORT | modal layout | modal/dialog | HOTFIX_STAGE | stage | LOCAL_SCAN_REQUIRED |
-| 27 | `src/styles/closeflow-cf-modal-surface-center-fix-stage161.css` | APP_IMPORT | modal fix | modal/dialog | HOTFIX_STAGE | stage/fix | LOCAL_SCAN_REQUIRED |
-| 28 | `src/styles/closeflow-cf-modal-surface-lower-smaller-stage162.css` | APP_IMPORT | modal fix | modal/dialog | HOTFIX_STAGE | stage | LOCAL_SCAN_REQUIRED |
-| 29 | `src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css` | APP_IMPORT | modal fix | modal/dialog | HOTFIX_STAGE | stage | LOCAL_SCAN_REQUIRED |
-| 30 | `src/styles/closeflow-cf-modal-top-anchor-light-surface-stage164.css` | APP_IMPORT | modal fix | modal/dialog | HOTFIX_STAGE | stage | LOCAL_SCAN_REQUIRED |
-| 31 | `src/styles/closeflow-modal-unified-event-motif-source-truth-stage165.css` | APP_IMPORT | modal system | modal/dialog | DO_MIGRACJI | source-truth/stage | LOCAL_SCAN_REQUIRED |
-| 32 | `src/styles/closeflow-modal-footer-in-flow-no-overlay-stage166.css` | APP_IMPORT | modal system | modal/dialog | DO_MIGRACJI | stage/no-overlay | LOCAL_SCAN_REQUIRED |
-| 33 | `src/styles/closeflow-topic-contact-picker-readable-stage169.css` | APP_IMPORT | component modal | modal/dialog | HOTFIX_STAGE | stage | LOCAL_SCAN_REQUIRED |
-| 34 | `src/styles/closeflow-task-dialog-relation-and-field-readability-stage170.css` | APP_IMPORT | component modal | tasks/modal | HOTFIX_STAGE | stage | LOCAL_SCAN_REQUIRED |
-| 35 | `src/styles/closeflow-remove-modal-helper-copy-stage171.css` | APP_IMPORT | modal copy | modal/dialog | DO_USUNIĘCIA_PO_GUARDZIE | stage/remove | LOCAL_SCAN_REQUIRED |
-| 36 | `src/styles/closeflow-global-client-create-dialog-stage172.css` | APP_IMPORT | component modal | client/modal | HOTFIX_STAGE | stage | LOCAL_SCAN_REQUIRED |
-| 37 | `src/styles/closeflow-main-search-source-truth-stage173.css` | APP_IMPORT | component | search | DO_MIGRACJI | source-truth/stage | LOCAL_SCAN_REQUIRED |
-| 38 | `src/styles/closeflow-main-search-surface-and-text-normalization-stage174.css` | APP_IMPORT | component | search | DO_MIGRACJI | stage/normalization | LOCAL_SCAN_REQUIRED |
-| 39 | `src/styles/closeflow-extend-main-search-source-truth-secondary-pages-stage175.css` | APP_IMPORT | component | search/secondary pages | DO_MIGRACJI | source-truth/stage | LOCAL_SCAN_REQUIRED |
-| 40 | `src/styles/closeflow-leads-clients-list-layout-source-truth-stage177.css` | APP_IMPORT | layout | leads/clients layout | HOTFIX_STAGE | source-truth/stage | LOCAL_SCAN_REQUIRED |
-| 41 | `src/styles/closeflow-tasks-right-rail-grouped-list-source-truth-stage178.css` | APP_IMPORT | layout | tasks/right rail | HOTFIX_STAGE | source-truth/stage | LOCAL_SCAN_REQUIRED |
-| 42 | `src/styles/closeflow-secondary-pages-full-width-stage181ad.css` | APP_IMPORT | layout | secondary pages | HOTFIX_STAGE | stage | LOCAL_SCAN_REQUIRED |
-| 43 | `src/styles/closeflow-app-viewport-scale-75-stage201.css` | APP_IMPORT | density/scale | app shell/density | ACTIVE_RUNTIME_COMPAT | stage/scale | LOCAL_SCAN_REQUIRED |
-| 44 | `src/styles/closeflow-ops-badges-and-icons-stretch-stage204.css` | APP_IMPORT | component | badges/icons | HOTFIX_STAGE | stage | LOCAL_SCAN_REQUIRED |
-| 45 | `src/styles/stage231h-r1e-case-finance-correction-modal-final.css` | APP_IMPORT | finance modal hotfix | finance/modal | HOTFIX_STAGE | stage/final | LOCAL_SCAN_REQUIRED |
+## Disabled App.tsx CSS import matrix
 
-Disabled App.tsx import:
-
-| CSS import | Status | Note |
-|---|---|---|
-| `src/styles/closeflow-viewport-zoom-80-source-truth-stage157.css` | DISABLED_LAYER | disabled in App.tsx comment: STAGE200 disabled legacy visual/sidebar layer |
-
-## Canonical CSS source map
-
-| Area | Current CSS files | Canonical candidate | Files to merge later | Avoid touching now | Guard needed | Manual smoke needed |
-|---|---|---|---|---|---|---|
-| app shell | visual-source-truth, clean-desktop-shell stage149, viewport-scale stage201 | `closeflow-visual-source-truth.css` + shell tokens | stage149, stage201 | yes | block new App import | Today, Dashboard, mobile |
-| buttons/actions | action-tokens, action-clusters, form-actions, command-actions source-truth | `closeflow-action-tokens.css` + action primitive styles | command-actions source-truth | yes | raw button/action guard already exists | all primary actions |
-| cards | card-readability, metric-tiles, compact-cards stage151, dense-cards stage152 | `closeflow-card-readability.css` | stage151/stage152 | yes | no new card stage CSS | Today/Leads/Clients/Cases |
-| modal/dialog | modal-visual-system + stage158-166 + stage169-172 + finance final | `closeflow-modal-visual-system.css` | stage158-166, 169-172, finance final | yes | modal layer owner guard needed | task modal, finance modal, client create |
-| right rail | right-rail-source-truth, right-rail-heading stage135, tasks-right-rail stage178 | `closeflow-right-rail-source-truth.css` | stage135, stage178 | yes | right rail owner guard needed | CaseDetail, Tasks |
-| page header | page-header, page-header-copy, page-header-action-semantics | `closeflow-page-header.css` | copy/action semantics layers | yes | page header owner guard needed | Today/Leads/Clients/Cases |
-| search | search stage134, main-search stage173-175 | stage173 likely candidate after audit | stage134, 174, 175 | yes | search owner guard needed | main/secondary search |
-| lists/rows | list-row-tokens, leads-clients-list-layout stage177 | `closeflow-list-row-tokens.css` | stage177 | yes | list row owner guard needed | Leads/Clients |
-| finance | finance/closeflow-finance, case-finance-correction final | `finance/closeflow-finance.css` | stage231h final | yes | finance modal owner guard needed | CaseDetail finance |
-| density/scale | density stages 152/156/158/159/201 | `real-density-tokens` only after audit | 152/158/159/201 | yes | no new density layer | 100%, 120%, mobile |
+| ścieżka | czy plik istnieje | obszar UI | status warstwy | ryzyko | czy ma !important | czy ma display:none | czy ma z-index | czy ma position fixed/absolute | rekomendacja |
+|---|---|---|---|---|---|---|---|---|---|
+| `src/styles/closeflow-viewport-zoom-80-source-truth-stage157.css` | TAK | density/scale | DISABLED_LAYER | LOW_DISABLED | TAK (37) | NIE (0) | NIE (0) | NIE (0) | Zostawić wyłączone; nie reaktywować bez decyzji. |
 
 ## Conflict map
 
-| ID | Area | Files | Problem | Risk | Next repair stage |
-|---|---|---|---|---|---|
-| CSS-CONFLICT-001 | page header | page-header, page-header-copy, page-header-action-semantics | Three layers own header/copy/action semantics | header edits may land in wrong file | LF-UI-SOT-005 or page-header consolidation |
-| CSS-CONFLICT-002 | modal/dialog | modal-visual-system + stage158-166 + stage169-172 + finance final | Modal stack has many stage/hotfix layers | new modal fixes may add another stage layer | modal source-truth consolidation |
-| CSS-CONFLICT-003 | right rail | right-rail-source-truth + right-rail-heading stage135 + tasks stage178 | rail heading and grouped list split owners | CaseDetail/Tasks rail regressions | right-rail owner map |
-| CSS-CONFLICT-004 | search | search stage134 + stages173-175 | search source-truth appears duplicated | secondary search may diverge | search source-truth consolidation |
-| CSS-CONFLICT-005 | density/scale | stages152/156/158/159/201 | density and zoom are spread across cards, overlays, viewport | browser zoom fixes can fight layout | density/scale owner map |
-| CSS-CONFLICT-006 | finance modal | finance CSS + stage231h final | final hotfix exists outside modal system | finance modal may bypass modal canonical style | finance modal integration |
-| CSS-CONFLICT-007 | cards/list layout | card-readability + metric tiles + stages151/152/177 | cards and list layout split between base and stage layers | inconsistent cards across Today/Leads/Clients/Cases | active visual template dictionary |
+| ID | Area | Problem | Risk | Later repair direction |
+|---|---|---|---|---|
+| CSS-CONFLICT-001 | page header | page-header, page-header-copy and action semantics are split | edits may land in the wrong layer | page-header owner guard/consolidation |
+| CSS-CONFLICT-002 | modal/dialog | modal base plus many stage overlay layers | another modal fix can stack more CSS | modal owner map before cleanup |
+| CSS-CONFLICT-003 | right rail | right rail base, heading and grouped list are split | CaseDetail/Tasks rail regressions | right-rail owner map |
+| CSS-CONFLICT-004 | search | search source truth is duplicated across stage134 and 173-175 | secondary search divergence | search SOT consolidation |
+| CSS-CONFLICT-005 | density/scale | density and zoom spread across cards, overlays and viewport | browser zoom fixes may fight layout | density/scale owner map |
+| CSS-CONFLICT-006 | finance modal | finance base and final finance modal hotfix split ownership | finance modal can bypass modal canonical style | finance modal integration after guard |
+| CSS-CONFLICT-007 | cards/list layout | cards and list layout split between base and stage layers | inconsistent cards across screens | active visual template dictionary after this stage |
 
-## Guard impact
+## Tests / verify
 
-Current guard relevant findings:
+- npm run guard:ui:patch-layers: PASS
+- node --test tests/ui-patch-layers-guard.test.cjs: PASS
+- npm run guard:routes:canonical: PASS
+- npm run guard:config:status-source-of-truth: PASS
+- node --test tests/config-status-source-of-truth.test.cjs: PASS
+- npm run build: PASS
+- npm run verify:closeflow:quiet: PASS
+- git diff --check: PASS
 
-```txt
-APP_STYLES_IMPORT_MAX: src/App.tsx => 45
-active CSS imports in App.tsx: 45
-disabled legacy import in App.tsx: 1
-```
+## Final decision
 
-Impact:
+LF-UI-SOT-004 is now complete only if this report, run report and obsidian update file are committed and pushed.
 
-- current guard baseline is aligned with current `src/App.tsx` active imports,
-- do not increase the limit,
-- any new global CSS import should fail guard or be treated as explicit blocker,
-- recommended next guard extension: make App CSS import matrix explicit in a generated/audited report and block new `stage*.css`, `hotfix`, `final` imports unless a scoped stage approves them.
-
-## What was not touched
-
-- runtime UI,
-- CSS contents,
-- layout,
-- pages,
-- components,
-- data/business logic,
-- SQL/API/Supabase/Firebase,
-- App.tsx import order.
-
-## Tests / verify status
-
-Not executed by AI in local repo.
-
-Required local verify:
-
-```powershell
-npm run guard:ui:patch-layers
-node --test tests/ui-patch-layers-guard.test.cjs
-npm run guard:routes:canonical
-npm run guard:config:status-source-of-truth
-node --test tests/config-status-source-of-truth.test.cjs
-npm run build
-npm run verify:closeflow:quiet
-git diff --check
-git status --short --branch
-```
-
-Expected risk:
-
-```txt
-verify:closeflow:quiet may remain VERIFY_BLOCKED_BY_UNRELATED_DIRTY_WORKSPACE until local dirty worktree is stashed or isolated.
-```
-
-## Next stage recommendation
-
-```txt
-LF-UI-SOT-005_ACTIVE_VISUAL_TEMPLATE_DICTIONARY
-```
-
-Before visual cleanup, define active visual templates for Today, Leads, Clients, Cases, CaseDetail, ClientDetail, Calendar, cards, buttons, header, density, right rail and modals.
+NEXT is still not LF-UI-SOT-005 until Damian verifies Test-Path locally.
