@@ -1,41 +1,58 @@
 # LF-UI-SOT-006_CSS_OWNER_GUARDS_BEFORE_CLEANUP - run report
 
-Date: 2026-06-28 19:20 Europe/Warsaw
+Date: 2026-06-28 19:55 Europe/Warsaw
 Project: CloseFlow / LeadFlow
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
+Stage: LF-UI-SOT-006
+Closeout: LF-UI-SOT-006R1_CLOSEOUT_STATUS_SYNC
 
 ## Status
 
-APPLIED_PARTIAL / REMOTE_FILES_ADDED / PACKAGE_SCRIPT_PENDING / LOCAL_VERIFY_PENDING / NOT_CLOSED
+DONE / GUARD_ADDED / TESTS_GREEN / BUILD_PASS / PUSH_CONFIRMED / VERCEL_SUCCESS / NO_UI_CSS_CLEANUP
 
 ## Files changed
 
+- package.json
 - scripts/check-lf-ui-sot-006-css-owner-guards-before-cleanup.cjs
 - tests/lf-ui-sot-006-css-owner-guards-before-cleanup.test.cjs
 - _project/Naprawa_Zrodla_Prawdy/LF-UI-SOT-006_CSS_OWNER_GUARDS_BEFORE_CLEANUP.md
 - _project/runs/LF-UI-SOT-006_CSS_OWNER_GUARDS_BEFORE_CLEANUP.md
 - _project/obsidian_updates/2026-06-28_LF-UI-SOT-006_CSS_OWNER_GUARDS_BEFORE_CLEANUP.md
 
-## Required local verify
+## Commits
 
-Run the SOT-006 node guard, the SOT-006 node test, existing UI patch guard, route guard, config SOT guard, build, diff check and status check.
+- 2ff2012993d0da1650238a3ef9bfd9f78a9efb53 - guard/test/docs added
+- c583beade64040541aea54e558d4a736b0eddcc3 - package.json npm script wired
 
-After package.json is updated, also run npm script guard:ui:css-owner-before-cleanup.
+## Commands and results
 
-## Known blocker
+- node scripts/check-lf-ui-sot-006-css-owner-guards-before-cleanup.cjs: PASS
+- node --test tests/lf-ui-sot-006-css-owner-guards-before-cleanup.test.cjs: PASS 11/11
+- npm run guard:ui:css-owner-before-cleanup: PASS
+- npm run guard:ui:patch-layers: PASS
+- npm run guard:routes:canonical: PASS
+- npm run guard:config:status-source-of-truth: PASS
+- npm run build: PASS
+- git diff --check -- package.json: PASS, only Windows LF/CRLF warning
+- git status after push: clean against origin/dev-rollout-freeze
 
-package.json script is pending. Required script value:
+## Guard baseline
 
-guard:ui:css-owner-before-cleanup -> node scripts/check-lf-ui-sot-006-css-owner-guards-before-cleanup.cjs
+- activeCssImports: 45
+- disabledLegacyCssImports: 1
+- appStylesImportMax: 45
+- routeOwners: 32
+- cssOwners: 45
+- searchLayersBlocked: 4
+- modalLayersGuarded: 14
+- rightRailLayersGuarded: 3
+- densityLayersGuarded: 4
 
-Remote package file was not overwritten because full package content was not safely available.
+## Vercel
 
-## Results
-
-Remote file creation: DONE
-Local guard/test/build: PENDING_LOCAL_RUN
-Vercel: NOT_CHECKED
+- Vercel - 2.closeflow: success
+- Vercel - closedockapp: success
 
 ## Not touched
 
@@ -49,4 +66,6 @@ Vercel: NOT_CHECKED
 
 ## Closeout rule
 
-Do not mark SOT-006 as DONE until package.json script is added and local verify passes.
+SOT-006 is closed as guard stage only. Do not start SOT-007 or CSS cleanup automatically.
+
+Next step is STOP and owner decision: detailed source-of-truth audit, then Damian chooses the next stage.
