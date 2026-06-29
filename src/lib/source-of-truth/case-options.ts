@@ -162,3 +162,11 @@ export function isClosedCaseStatus(status: unknown) {
   if ((CASE_CLOSED_STATUSES as readonly string[]).includes(raw)) return true;
   return (CASE_CLOSED_STATUSES as readonly string[]).includes(normalizeCaseStatus(status));
 }
+
+export function caseStatusBadgeVariant(status: unknown): 'default' | 'secondary' | 'destructive' | 'outline' {
+  const tone = getCaseStatusTone(status);
+  if (tone === 'red') return 'destructive';
+  if (tone === 'green') return 'secondary';
+  if (tone === 'amber' || tone === 'neutral' || tone === 'slate') return 'outline';
+  return 'default';
+}
