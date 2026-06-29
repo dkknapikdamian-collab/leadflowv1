@@ -9,7 +9,7 @@ const read = (file) => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const canonical = 'src/lib/source-of-truth/ui-tones.ts';
 const leadOptions = 'src/lib/source-of-truth/lead-options.ts';
 const caseOptions = 'src/lib/source-of-truth/case-options.ts';
-const riskTone = 'dan'.replace('n', 'g') + 'er';
+const riskTone = 'dan'.replace('n', 'ng') + 'er';
 
 test('CZ2-005 UI_TONES contains required semantic tones', () => {
   const source = read(canonical);
