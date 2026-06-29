@@ -36,7 +36,7 @@ test('CZ2-011 IconButton wrapper requires accessible label', () => {
   assert.match(iconButton, /aria-label=\{label\}/);
   assert.match(iconButton, /title=\{title \|\| label\}/);
   assert.match(iconButton, /<AppIcon/);
-  assert.match(iconButton, /export \{ AppIconButton as IconButton \}/);
+  assert.match(iconButton, /export \{ AppIconControl as IconButton \}/);
 });
 
 test('CZ2-011 scoped migration uses registry wrapper', () => {
