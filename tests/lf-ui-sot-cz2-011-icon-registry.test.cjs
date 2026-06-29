@@ -5,6 +5,7 @@ const test = require('node:test');
 
 const ROOT = process.cwd();
 const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
+const MOJIBAKE_PATTERN = new RegExp(['\\u00c5', '\\u00c4', '\\u0102', '\\u00e2\\u20ac', '\\uFFFD'].join('|'));
 
 test('CZ2-011 icon registry exports required API and active icons', () => {
   const registry = read('src/lib/source-of-truth/icon-registry.ts');
@@ -35,6 +36,7 @@ test('CZ2-011 IconButton wrapper requires accessible label', () => {
   assert.match(iconButton, /aria-label=\{label\}/);
   assert.match(iconButton, /title=\{title \|\| label\}/);
   assert.match(iconButton, /<AppIcon/);
+  assert.match(iconButton, /export \{ AppIconButton as IconButton \}/);
 });
 
 test('CZ2-011 scoped migration uses registry wrapper', () => {
@@ -55,6 +57,6 @@ test('CZ2-011 source has no mojibake markers', () => {
 
   for (const file of files) {
     const content = read(file);
-    assert.equal(/[ÅÄĂ]|â€|�/.test(content), false, `${file} contains mojibake marker`);
+    assert.equal(MOJIBAKE_PATTERN.test(content), false, `${file} contains mojibake marker`);
   }
 });
