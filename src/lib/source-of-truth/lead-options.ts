@@ -4,8 +4,12 @@ import {
   normalizeLeadStatus,
   type LeadStatus,
 } from '../domain-statuses';
+import {
+  getLeadDetailPillClassForTone,
+  type CloseFlowStatusTone,
+} from './ui-tones';
 
-export type CloseFlowStatusTone = 'blue' | 'green' | 'amber' | 'red' | 'neutral' | 'purple' | 'slate';
+export type { CloseFlowStatusTone } from './ui-tones';
 export type LeadStatusValue = LeadStatus;
 export type LeadSourceValue =
   | 'instagram'
@@ -49,16 +53,6 @@ const LEAD_STATUS_LABEL_OVERRIDES: Partial<Record<LeadStatusValue, string>> = {
   moved_to_service: 'Przeniesiony do obslugi',
 };
 
-const LEAD_STATUS_PILL_CLASSES: Record<CloseFlowStatusTone, string> = {
-  blue: 'lead-detail-pill-blue',
-  green: 'lead-detail-pill-green',
-  amber: 'lead-detail-pill-amber',
-  red: 'lead-detail-pill-danger',
-  neutral: 'lead-detail-pill-muted',
-  purple: 'lead-detail-pill-purple',
-  slate: 'lead-detail-pill-muted',
-};
-
 export const LEAD_STATUS_META_BY_VALUE: Record<LeadStatusValue, LeadStatusConfig> = Object.fromEntries(
   LEAD_STATUS_VALUES.map((value) => {
     const tone = LEAD_STATUS_TONES[value];
@@ -66,7 +60,7 @@ export const LEAD_STATUS_META_BY_VALUE: Record<LeadStatusValue, LeadStatusConfig
       value,
       label: LEAD_STATUS_LABEL_OVERRIDES[value] || LEAD_STATUS_META[value].label,
       tone,
-      pillClass: LEAD_STATUS_PILL_CLASSES[tone],
+      pillClass: getLeadDetailPillClassForTone(tone),
     }];
   }),
 ) as Record<LeadStatusValue, LeadStatusConfig>;
