@@ -1033,7 +1033,8 @@
     "verify:lf-ui-sot-cz2-002-lead-options-source-of-truth": "node scripts/guards/verify-lf-ui-sot-cz2-002-lead-options-source-of-truth.cjs",
     "verify:lf-ui-sot-cz2-003-case-status-source-of-truth": "node scripts/guards/verify-lf-ui-sot-cz2-003-case-status-source-of-truth.cjs",
     "verify:lf-ui-sot-cz2-004-schedule-options-source-of-truth": "node scripts/guards/verify-lf-ui-sot-cz2-004-schedule-options-source-of-truth.cjs",
-    "verify:lf-ui-sot-cz2-005-semantic-ui-tones-source-of-truth": "node scripts/guards/verify-lf-ui-sot-cz2-005-semantic-ui-tones-source-of-truth.cjs"
+    "verify:lf-ui-sot-cz2-005-semantic-ui-tones-source-of-truth": "node scripts/guards/verify-lf-ui-sot-cz2-005-semantic-ui-tones-source-of-truth.cjs",
+    "verify:lf-ui-sot-cz2-006-access-billing-source-of-truth": "node scripts/guards/verify-lf-ui-sot-cz2-006-access-billing-source-of-truth.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

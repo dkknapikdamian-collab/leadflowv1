@@ -45,7 +45,22 @@ import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { Button } from '../components/ui/button';
 import { useWorkspace } from '../hooks/useWorkspace';
-import { PLAN_IDS, TRIAL_DAYS } from '../lib/plans';
+import { TRIAL_DAYS } from '../lib/plans';
+import {
+  BILLING_PLAN_OPTIONS,
+  BILLING_SETTLEMENT_STATUS_LABELS,
+  getBillingAccessCopy,
+  getBillingPlanAvailability,
+  getBillingPlanPeriodLabel,
+  getBillingPlanPrice,
+  getBillingPlanStatusLabel,
+  getBillingSettlementStatusLabel,
+  getCurrentBillingPlanName,
+  getDisplayBillingPlanId,
+  isBillingPlanCurrent,
+  type BillingPeriod,
+  type BillingPlanCard,
+} from '../lib/source-of-truth/billing-options';
 import {
   billingActionInSupabase,
   fetchCasesFromSupabase,
@@ -61,10 +76,7 @@ import '../styles/closeflow-billing-visual-taxonomy-stage181z.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import '../styles/closeflow-canvas-source-truth-stage211e.css';
 import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
-type BillingPeriod = 'monthly' | 'yearly';
 type BillingTab = 'plan' | 'settlements';
-type CheckoutPlanKey = 'basic' | 'pro' | 'ai';
-type PlanAvailability = 'current' | 'available' | 'disabled' | 'soon';
 
 const UI_TRUTH_BADGE_LABELS_STAGE14E = ['Gotowe', 'Beta', 'Wymaga konfiguracji', 'Niedostępne w Twoim planie', 'W przygotowaniu'] as const;
 
@@ -73,173 +85,6 @@ const CLOSEFLOW_FB1_BILLING_COPY_NOISE_CLEANUP = 'CLOSEFLOW_FB1_COPY_NOISE_CLEAN
 const BILLING_STRIPE_BLIK_CONTRACT = 'Stripe';
 const BILLING_UI_WEBHOOK_ACTIVATES_PAID_PLAN_STAGE86J = 'paid plan appears only after Stripe webhook confirmation';
 const BILLING_STRIPE_STAGE86_E2E_GATE = 'checkout → webhook → paid_active → access refresh → cancel/resume';
-
-type PlanCard = {
-  id: string;
-  key: 'free' | 'basic' | 'pro' | 'ai';
-  checkoutKey?: CheckoutPlanKey;
-  name: string;
-  monthlyPrice: number;
-  yearlyPrice: number;
-  description: string;
-  badge?: string;
-  features: string[];
-  availabilityHint?: string;
-};
-
-const BILLING_PLANS: PlanCard[] = [
-  {
-    id: 'free',
-    key: 'free',
-    name: 'Free',
-    monthlyPrice: 0,
-    yearlyPrice: 0,
-    description: 'Tryb demo i awaryjny po trialu, z limitami Free.',
-    features: [
-      'Podgląd podstawowego workflow',
-      'Dobry etap na pierwsze sprawdzenie aplikacji',
-      'Po zakończeniu triala dane zostają w systemie',
-    ],
-    availabilityHint: 'Dostęp przez trial albo tryb podglądu.',
-  },
-  {
-    id: 'closeflow_basic',
-    key: 'basic',
-    checkoutKey: 'basic',
-    name: 'Basic',
-    monthlyPrice: 19,
-    yearlyPrice: 190,
-    description: 'Najprostszy płatny start dla jednej osoby.',
-    features: [
-      'Leady, klienci i zadania',
-      'Dziś, kalendarz w aplikacji, digest po konfiguracji mail providera i powiadomienia',
-      'Lekki parser tekstu i szkice bez pełnego asystenta AI',
-    ],
-  },
-  {
-    id: 'closeflow_pro',
-    key: 'pro',
-    checkoutKey: 'pro',
-    name: 'Pro',
-    monthlyPrice: 39,
-    yearlyPrice: 390,
-    badge: 'Najlepszy wybór',
-    description: 'Pełny workflow lead -> klient -> sprawa -> rozliczenie.',
-    features: [
-      'Wszystko z Basic',
-      'Google Calendar sync — w przygotowaniu / wymaga konfiguracji OAuth',
-      'Raport tygodniowy, import CSV i cykliczne przypomnienia po konfiguracji',
-      'Bez pełnego asystenta AI',
-    ],
-  },
-  {
-    id: 'closeflow_ai',
-    key: 'ai',
-    checkoutKey: 'ai',
-    name: 'AI',
-    monthlyPrice: 69,
-    yearlyPrice: 690,
-    badge: 'Beta',
-    description: 'Plan przygotowany pod dodatki AI i większy zakres automatyzacji.',
-    features: [
-      'Wszystko z Pro',
-      'Asystent aplikacji i dyktowanie AI w trybie warunkowym (provider + env)',
-      'AI lokalne/regułowe i szkice do ręcznego zatwierdzenia działają także bez zewnętrznego modelu',
-      'Limity AI: 30/dzień i 300/miesiąc',
-    ],
-    availabilityHint: 'Beta. Wymaga konfiguracji AI w Vercel. Nie obiecujemy funkcji, które nie są jeszcze realnie podpięte.',
-  },
-];
-
-const ACCESS_COPY: Record<string, { label: string; headline: string; description: string; tone: 'green' | 'amber' | 'red' | 'slate'; cta: string }> = {
-  trial_active: {
-    label: 'Trial aktywny',
-    headline: 'Masz aktywny okres testowy',
-    description: 'Możesz sprawdzić główny workflow aplikacji przed wyborem płatnego planu.',
-    tone: 'amber',
-    cta: 'Przejdź do płatności',
-  },
-  trial_ending: {
-    label: 'Trial kończy się',
-    headline: 'Trial zaraz się skończy',
-    description: 'Dane zostają. Wybierz plan, żeby nie blokować dodawania nowych rekordów.',
-    tone: 'amber',
-    cta: 'Przejdź do płatności',
-  },
-  paid_active: {
-    label: 'Dostęp aktywny',
-    headline: 'Plan jest aktywny',
-    description: 'Plan jest aktywny',
-    tone: 'green',
-    cta: 'Zarządzaj planem',
-  },
-  trial_expired: {
-    label: 'Trial wygasł',
-    headline: 'Trial się zakończył',
-    description: 'Twoje dane zostają. Aby dodawać nowe leady, zadania i wydarzenia, wybierz plan.',
-    tone: 'red',
-    cta: 'Wznów dostęp',
-  },
-  payment_failed: {
-    label: 'Płatność wymaga reakcji',
-    headline: 'Dostęp wymaga odnowienia',
-    description: 'Dane zostają, ale tworzenie nowych rzeczy może być zablokowane do czasu odnowienia planu.',
-    tone: 'red',
-    cta: 'Wznów dostęp',
-  },
-  canceled: {
-    label: 'Plan wyłączony',
-    headline: 'Plan jest nieaktywny',
-    description: 'Workspace jest w trybie bez aktywnej subskrypcji. Dane zostają dostępne do podglądu.',
-    tone: 'slate',
-    cta: 'Wznów dostęp',
-  },
-  inactive: {
-    label: 'Brak aktywnego dostępu',
-    headline: 'Dostęp nie jest aktywny',
-    description: 'Wybierz plan, żeby odblokować pracę na leadach, zadaniach i wydarzeniach.',
-    tone: 'slate',
-    cta: 'Przejdź do płatności',
-  },
-  free_active: {
-    label: 'Free aktywny',
-    headline: 'Masz aktywny tryb Free',
-    description: 'Tryb Free ma limity: 5 aktywnych leadów, 5 aktywnych zadań/wydarzeń, 3 szkice i brak AI.',
-    tone: 'slate',
-    cta: 'Przejdź do płatności',
-  },
-};
-
-const LIMIT_ITEMS = [
-  { name: 'Leady', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' },
-  { name: 'Zadania', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' },
-  { name: 'Wydarzenia', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' },
-  { name: 'Kalendarz w aplikacji', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' },
-  { name: 'Poranny digest', basic: 'Wymaga konfiguracji', pro: 'Wymaga konfiguracji', ai: 'Wymaga konfiguracji' },
-  { name: 'Szkice do sprawdzenia', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' },
-  { name: 'Parser tekstu', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' },
-  { name: 'Google Calendar', basic: 'Niedostępne w Twoim planie', pro: 'Wymaga konfiguracji', ai: 'Wymaga konfiguracji' },
-  { name: 'Asystent AI (provider + env)', basic: 'Niedostępne w Twoim planie', pro: 'Niedostępne w Twoim planie', ai: 'Beta' },
-  { name: 'Raport tygodniowy', basic: 'Niedostępne w Twoim planie', pro: 'Wymaga konfiguracji', ai: 'Wymaga konfiguracji' },
-];
-const SETTLEMENT_STATUS_LABELS: Record<string, string> = {
-  awaiting_payment: 'Czeka na płatność',
-  partially_paid: 'Częściowo opłacone',
-  fully_paid: 'Opłacone',
-  commission_pending: 'Prowizja do rozliczenia',
-  paid: 'Zapłacone',
-  not_started: 'Nierozpoczęte',
-  refunded: 'Zwrot',
-  written_off: 'Spisane',
-};
-
-function getPlanPrice(plan: PlanCard, period: BillingPeriod) {
-  return period === 'yearly' ? plan.yearlyPrice : plan.monthlyPrice;
-}
-
-function getPlanPeriodLabel(period: BillingPeriod) {
-  return period === 'yearly' ? '/rok' : '/30 dni';
-}
 
 function formatMoney(value: unknown) {
   const amount = Number(value || 0);
@@ -255,73 +100,11 @@ function safeDateLabel(value?: string | null) {
   }
 }
 
-function getAccessCopy(status?: string | null) {
-  return ACCESS_COPY[String(status || 'inactive')] || ACCESS_COPY.inactive;
-}
-
 function getTrialContractEndsAtLabel(daysLeft?: unknown) {
   const numericDays = Number(daysLeft || 0);
   const safeDays = Number.isFinite(numericDays) ? Math.max(0, Math.min(TRIAL_DAYS, Math.floor(numericDays))) : 0;
   if (safeDays <= 0) return 'Nie ustawiono';
   return safeDateLabel(new Date(Date.now() + safeDays * 24 * 60 * 60 * 1000).toISOString());
-}
-
-function getDisplayPlanId(planId?: string | null, subscriptionStatus?: string | null) {
-  const normalized = String(planId || '');
-  if (['closeflow_basic', 'closeflow_basic_yearly', 'closeflow_pro', 'closeflow_pro_yearly', 'closeflow_business', 'closeflow_business_yearly'].includes(normalized)) {
-    return normalized;
-  }
-  if (['solo_mini', 'solo_full', 'team_mini', 'team_full', 'pro'].includes(normalized)) {
-    return 'closeflow_pro';
-  }
-  if (subscriptionStatus === 'paid_active') return 'closeflow_pro';
-  return PLAN_IDS.trial;
-}
-
-function getCurrentPlanName(displayPlanId: string, isPaidActive: boolean, isTrialActive: boolean) {
-  if (isPaidActive) {
-    const plan = BILLING_PLANS.find((entry) => displayPlanId === entry.id || displayPlanId === `${entry.id}_yearly`);
-    return plan?.name || 'Pro';
-  }
-  if (isTrialActive) return 'Free / trial';
-  return 'Nie ustawiono';
-}
-
-function isPlanCurrent(displayPlanId: string, plan: PlanCard, isPaidActive: boolean, isTrialActive: boolean) {
-  if (plan.key === 'free') return !isPaidActive && (isTrialActive || displayPlanId === 'free');
-  if (!isPaidActive) return false;
-  return displayPlanId === plan.id || displayPlanId === `${plan.id}_yearly`;
-}
-
-function getPlanAvailability(displayPlanId: string, plan: PlanCard, isPaidActive: boolean, isTrialActive: boolean): PlanAvailability {
-  if (isPlanCurrent(displayPlanId, plan, isPaidActive, isTrialActive)) return 'current';
-  if (!plan.checkoutKey) return plan.key === 'free' ? 'disabled' : 'soon';
-  return 'available';
-}
-
-function getPlanStatusLabel(status: PlanAvailability) {
-  if (status === 'current') return 'Obecny';
-  if (status === 'available') return 'Dostępny';
-  if (status === 'soon') return 'Wkrótce';
-  return 'Niedostępny';
-}
-
-function getSettlementStatusLabel(status?: string | null) {
-  return SETTLEMENT_STATUS_LABELS[String(status || 'not_started')] || 'Inny status';
-}
-
-function getLimitValue(item: typeof LIMIT_ITEMS[number], planKey: PlanCard['key']) {
-  if (planKey === 'ai') return item.ai;
-  if (planKey === 'pro') return item.pro;
-  if (planKey === 'basic') return item.basic;
-  return item.name === 'Leady' || item.name === 'Zadania' || item.name === 'Wydarzenia' ? 'Gotowe' : 'W przygotowaniu';
-}
-
-function getLimitTone(value: string) {
-  if (value === 'Gotowe') return 'billing-limit-ok';
-  if (value === 'Wymaga konfiguracji') return 'billing-limit-warn';
-  if (value === 'Niedostępne w Twoim planie') return 'billing-limit-locked';
-  return 'billing-limit-soon';
 }
 
 export default function Billing() {
@@ -419,10 +202,10 @@ export default function Billing() {
     };
   }, [workspace?.id]);
 
-  const accessCopy = getAccessCopy(access?.status);
-  const currentPlanId = getDisplayPlanId(workspace?.planId, workspace?.subscriptionStatus);
-  const currentPlanName = getCurrentPlanName(currentPlanId, Boolean(access?.isPaidActive), Boolean(access?.isTrialActive));
-  const effectivePlan = BILLING_PLANS.find((plan) => isPlanCurrent(currentPlanId, plan, Boolean(access?.isPaidActive), Boolean(access?.isTrialActive))) || BILLING_PLANS.find((plan) => plan.key === 'pro')!;
+  const accessCopy = getBillingAccessCopy(access?.status);
+  const currentPlanId = getDisplayBillingPlanId(workspace?.planId, workspace?.subscriptionStatus);
+  const currentPlanName = getCurrentBillingPlanName(currentPlanId, Boolean(access?.isPaidActive), Boolean(access?.isTrialActive));
+  const effectivePlan = BILLING_PLAN_OPTIONS.find((plan) => isBillingPlanCurrent(currentPlanId, plan, Boolean(access?.isPaidActive), Boolean(access?.isTrialActive))) || BILLING_PLAN_OPTIONS.find((plan) => plan.key === 'pro')!;
   const statusPlanToneKey =
     currentPlanId.includes('closeflow_ai') || currentPlanId.includes('ai')
       ? 'ai'
@@ -448,10 +231,10 @@ export default function Billing() {
   }, [payments, statusFilter]);
 
   const settlementFilters = useMemo(() => {
-    return ['all', ...Object.keys(SETTLEMENT_STATUS_LABELS)].filter((status, index, array) => array.indexOf(status) === index);
+    return ['all', ...Object.keys(BILLING_SETTLEMENT_STATUS_LABELS)].filter((status, index, array) => array.indexOf(status) === index);
   }, []);
 
-  const handleUpgrade = async (plan: PlanCard) => {
+  const handleUpgrade = async (plan: BillingPlanCard) => {
     if (!workspace?.id) return;
     if (!plan.checkoutKey) return;
 
@@ -577,9 +360,9 @@ export default function Billing() {
               </section>
 
               <section className="billing-plan-grid" aria-label="Karty planów" data-plan-visibility-stage32e="billing-plan-comparison">
-                {BILLING_PLANS.map((plan) => {
-                  const availability = getPlanAvailability(currentPlanId, plan, Boolean(access?.isPaidActive), Boolean(access?.isTrialActive));
-                  const price = getPlanPrice(plan, billingPeriod);
+                {BILLING_PLAN_OPTIONS.map((plan) => {
+                  const availability = getBillingPlanAvailability(currentPlanId, plan, Boolean(access?.isPaidActive), Boolean(access?.isTrialActive));
+                  const price = getBillingPlanPrice(plan, billingPeriod);
                   const isLoadingPlan = upgradingPlanKey === plan.key;
                   const stripeReady = stripeCheckoutConfigured !== false;
                   const canCheckout = availability === 'available' && Boolean(plan.checkoutKey) && stripeReady;
@@ -588,7 +371,7 @@ export default function Billing() {
                     <article key={plan.id} className={['billing-plan-card', availability === 'current' ? 'billing-plan-current' : ''].join(' ')} data-billing-plan-key={plan.key}>
                       <div className="billing-plan-head">
                         <div>
-                          <span className="billing-plan-status">{getPlanStatusLabel(availability)}</span>
+                          <span className="billing-plan-status">{getBillingPlanStatusLabel(availability)}</span>
                           <h2>{plan.name}</h2>
                           <p>{plan.description}</p>
                         </div>
@@ -596,7 +379,7 @@ export default function Billing() {
                       </div>
                       <div className="billing-plan-price">
                         <span>{price === 0 ? '0 PLN' : `${price} PLN`}</span>
-                        <small>{price === 0 ? 'trial / podgląd' : getPlanPeriodLabel(billingPeriod)}</small>
+                        <small>{price === 0 ? 'trial / podgląd' : getBillingPlanPeriodLabel(billingPeriod)}</small>
                       </div>
                       <ul>
                         {plan.features.map((feature) => (
@@ -701,7 +484,7 @@ export default function Billing() {
             <div className="billing-filter-row">
               {settlementFilters.map((status) => (
                 <button key={status} type="button" className={statusFilter === status ? 'billing-filter-active' : ''} onClick={() => setStatusFilter(status)}>
-                  {status === 'all' ? 'Wszystkie' : getSettlementStatusLabel(status)}
+                  {status === 'all' ? 'Wszystkie' : getBillingSettlementStatusLabel(status)}
                 </button>
               ))}
             </div>
@@ -721,7 +504,7 @@ export default function Billing() {
                         {clientById.get(String(payment.clientId || '')) || 'Klient nieznany'} · {leadById.get(String(payment.leadId || '')) || 'Bez leada'} · {caseById.get(String(payment.caseId || '')) || 'Bez sprawy'}
                       </p>
                     </div>
-                    <span>{getSettlementStatusLabel(payment.status)}</span>
+                    <span>{getBillingSettlementStatusLabel(payment.status)}</span>
                   </article>
                 ))}
                 {filteredPayments.length === 0 ? (
