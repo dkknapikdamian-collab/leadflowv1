@@ -11,7 +11,7 @@ export type IconButtonProps = Omit<ButtonProps, 'children' | 'aria-label' | 'tit
   loadingIcon?: IconName;
 };
 
-function AppIconButton({
+function AppIconControl({
   icon,
   label,
   title,
@@ -39,4 +39,4 @@ function AppIconButton({
   );
 }
 
-export { AppIconButton as IconButton };
+export { AppIconControl as IconButton };
