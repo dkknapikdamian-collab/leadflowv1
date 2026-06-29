@@ -3,7 +3,7 @@ import {
   normalizeCaseStatus,
   type CaseStatus,
 } from '../domain-statuses';
-import type { CloseFlowStatusTone } from './lead-options';
+import type { CloseFlowStatusTone } from './ui-tones';
 
 export type CaseStatusValue = CaseStatus;
 export type CaseItemStatusValue =
@@ -177,12 +177,4 @@ export function isClosedCaseStatus(status: unknown) {
   const raw = typeof status === 'string' ? status.trim().toLowerCase() : '';
   if ((CASE_CLOSED_STATUSES as readonly string[]).includes(raw)) return true;
   return (CASE_CLOSED_STATUSES as readonly string[]).includes(normalizeCaseStatus(status));
-}
-
-export function caseStatusBadgeVariant(status: unknown): 'default' | 'secondary' | 'destructive' | 'outline' {
-  const tone = getCaseStatusTone(status);
-  if (tone === 'red') return 'destructive';
-  if (tone === 'green') return 'secondary';
-  if (tone === 'amber' || tone === 'neutral' || tone === 'slate') return 'outline';
-  return 'default';
 }
