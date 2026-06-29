@@ -6,6 +6,7 @@ const ROOT = process.cwd();
 const STAGE = 'LF-UI-SOT-CZ2-011';
 const errors = [];
 const warnings = [];
+const MOJIBAKE_PATTERN = new RegExp(['\\u00c5', '\\u00c4', '\\u0102', '\\u00e2\\u20ac', '\\uFFFD'].join('|'));
 
 function read(rel) {
   const absolute = path.join(ROOT, rel);
@@ -23,9 +24,7 @@ function requireIncludes(file, text, message = `${file} must include ${text}`) {
 
 function assertNoMojibake(file) {
   const content = read(file);
-  const markers = ['Å', 'Ä', 'Ă', 'â€', '�'];
-  const hit = markers.find((marker) => content.includes(marker));
-  if (hit) errors.push(`Mojibake marker ${hit} found in ${file}`);
+  if (MOJIBAKE_PATTERN.test(content)) errors.push(`Mojibake marker found in ${file}`);
 }
 
 const files = [
