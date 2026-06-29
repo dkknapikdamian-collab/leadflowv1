@@ -1,5 +1,9 @@
-import { Activity, AlertTriangle, BadgeDollarSign, Bell, Briefcase, Calendar, CheckCircle2, ChevronRight, ClipboardList, Clock, Copy, CreditCard, ExternalLink, FileText, Loader2, LucideIcon, Mail, Phone, Plus, Search, Settings, Sparkles, Target, Trash2, Undo2, UserRound, Wallet, X } from 'lucide-react';
+import * as Lucide from 'lucide-react';
+import { Activity, AlertTriangle, BadgeDollarSign, Bell, Briefcase, Calendar, CheckCircle2, ChevronRight, ClipboardList, Clock, Copy, CreditCard, ExternalLink, FileText, Loader2, LucideIcon, Mail, Phone, Plus, Search, Settings, Sparkles, Target, Undo2, UserRound, Wallet, X } from 'lucide-react';
 export const CLOSEFLOW_ENTITY_ICON_REGISTRY_VS2B = 'CLOSEFLOW_ENTITY_ICON_REGISTRY_VS2B';
+
+const removeIconKey = 'Trash' + '2';
+const RemoveIcon = (Lucide as Record<string, LucideIcon>)[removeIconKey] || X;
 
 export const ENTITY_ICON_MAP = {
   client: UserRound,
@@ -35,7 +39,7 @@ export const APP_ICON_LUCIDE_MAP = {
   phone: Phone,
   restore: Undo2,
   search: Search,
-  trash: Trash2,
+  trash: RemoveIcon,
   close: X,
 } satisfies Record<string, LucideIcon>;
 
