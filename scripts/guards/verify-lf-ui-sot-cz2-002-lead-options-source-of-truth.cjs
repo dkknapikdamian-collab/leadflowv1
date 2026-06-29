@@ -11,12 +11,26 @@ const exists = (p) => fs.existsSync(rel(p));
 const errors = [];
 
 function fail(message) { errors.push(message); }
-function requireFile(file) { if (!exists(file)) fail(`missing file: ${file}`); }
+function requireFile(file) { if (!exists(file)) fail('missing file: ' + file); }
 function requireText(file, text, label = text) {
-  if (!read(file).includes(text)) fail(`${file} missing ${label}`);
+  if (!read(file).includes(text)) fail(file + ' missing ' + label);
+}
+function requireIdentifier(file, identifier) {
+  const source = read(file);
+  const regex = new RegExp('(^|[^A-Za-z0-9_])' + identifier + '([^A-Za-z0-9_]|$)');
+  if (!regex.test(source)) fail(file + ' missing identifier ' + identifier);
 }
 function forbid(file, pattern, label) {
-  if (pattern.test(read(file))) fail(`${file} still has forbidden ${label}`);
+  if (pattern.test(read(file))) fail(file + ' still has forbidden ' + label);
+}
+function forbidText(file, text, label = text) {
+  if (read(file).includes(text)) fail(file + ' still has forbidden ' + label);
+}
+function forbidMojibake(file) {
+  const source = read(file);
+  for (const marker of ['Ä', 'Ă', 'Ĺ', 'â€', '�']) {
+    if (source.includes(marker)) fail(file + ' contains mojibake marker: ' + marker);
+  }
 }
 
 const canonical = 'src/lib/source-of-truth/lead-options.ts';
@@ -28,8 +42,15 @@ const leadDetail = 'src/pages/LeadDetail.tsx';
 const app = 'src/App.tsx';
 const routes = 'src/lib/routes.ts';
 const obsidianReport = '10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-UI-SOT-CZ2-002_LEAD_OPTIONS_SOURCE_OF_TRUTH.md';
+const noMojibakeFiles = [leads, leadDetail, canonical, options, config, leadSources];
+const badLeadTokens = [
+  'LEAD_LEAD_SOURCE_OPTIONS',
+  'LEAD_LEAD_STATUS_OPTIONS',
+  'LEAD_LEAD_LEAD_SOURCE_OPTIONS',
+  'LEAD_LEAD_LEAD_STATUS_OPTIONS',
+];
 
-[canonical, config, options, leads, leadDetail, app, routes].forEach(requireFile);
+[canonical, config, options, leadSources, leads, leadDetail, app, routes].forEach(requireFile);
 
 if (exists(canonical)) {
   [
@@ -64,10 +85,11 @@ if (exists(options)) {
 
 if (exists(leads)) {
   requireText(leads, "from '../lib/source-of-truth/lead-options'", 'SOT import');
-  requireText(leads, 'LEAD_SOURCE_OPTIONS', 'LEAD_SOURCE_OPTIONS');
-  requireText(leads, 'getLeadSourceLabel', 'getLeadSourceLabel');
-  requireText(leads, 'getLeadStatusLabel', 'getLeadStatusLabel');
-  requireText(leads, 'getLeadStatusTone', 'getLeadStatusTone');
+  requireIdentifier(leads, 'LEAD_SOURCE_OPTIONS');
+  requireIdentifier(leads, 'LEAD_STATUS_OPTIONS');
+  requireIdentifier(leads, 'getLeadSourceLabel');
+  requireIdentifier(leads, 'getLeadStatusLabel');
+  requireIdentifier(leads, 'getLeadStatusTone');
   forbid(leads, /const\s+SOURCE_OPTIONS\s*=\s*\[/, 'local SOURCE_OPTIONS');
   forbid(leads, /LEAD_STATUS_OPTIONS\s+as\s+STATUS_OPTIONS/, 'LEAD_STATUS_OPTIONS as STATUS_OPTIONS alias');
   forbid(leads, /function\s+formatLeadSourceLabel\s*\(/, 'local formatLeadSourceLabel');
@@ -75,8 +97,11 @@ if (exists(leads)) {
 
 if (exists(leadDetail)) {
   requireText(leadDetail, "from '../lib/source-of-truth/lead-options'", 'SOT import');
-  requireText(leadDetail, 'LEAD_SOURCE_OPTIONS', 'LEAD_SOURCE_OPTIONS');
-  requireText(leadDetail, 'getLeadSourceLabel', 'getLeadSourceLabel');
+  requireIdentifier(leadDetail, 'LEAD_SOURCE_OPTIONS');
+  requireIdentifier(leadDetail, 'LEAD_STATUS_OPTIONS');
+  requireIdentifier(leadDetail, 'getLeadSourceLabel');
+  requireIdentifier(leadDetail, 'getLeadStatusLabel');
+  requireIdentifier(leadDetail, 'getLeadStatusPillClass');
   forbid(leadDetail, /const\s+SOURCE_OPTIONS\s*=\s*\[/, 'local SOURCE_OPTIONS');
   forbid(leadDetail, /LEAD_STATUS_OPTIONS\s+as\s+STATUS_OPTIONS/, 'LEAD_STATUS_OPTIONS as STATUS_OPTIONS alias');
 }
@@ -86,10 +111,15 @@ if (exists(leadSources)) {
   forbid(leadSources, /export\s+const\s+LEAD_SOURCE_OPTIONS\s*=\s*\[/, 'local LEAD_SOURCE_OPTIONS array');
 }
 
+for (const file of noMojibakeFiles) forbidMojibake(file);
+for (const file of noMojibakeFiles) {
+  for (const token of badLeadTokens) forbidText(file, token, 'bad lead options token ' + token);
+}
+
 const changed = childProcess.execSync('git diff --name-only', { cwd: ROOT, encoding: 'utf8' })
   .split(/\r?\n/).filter(Boolean);
 for (const file of changed) {
-  if (/\.css$/i.test(file)) fail(`CSS touched: ${file}`);
+  if (/\.css$/i.test(file)) fail('CSS touched: ' + file);
 }
 if (changed.includes(app)) fail('src/App.tsx touched');
 if (changed.includes(routes)) fail('src/lib/routes.ts touched');
@@ -103,6 +133,7 @@ const reportExists = reportCandidates.some((candidate) => fs.existsSync(candidat
 const result = {
   ok: errors.length === 0,
   stage: STAGE,
+  r1: 'BROKEN_IMPORTS_UTF8_GUARD_HARDENING',
   canonical,
   pagesChecked: [leads, leadDetail],
   compatibilityExports: [config, options, leadSources].filter(exists),
@@ -111,6 +142,8 @@ const result = {
   routesTouched: changed.includes(app) || changed.includes(routes),
   obsidianReportExists: reportExists,
   changedFiles: changed,
+  mojibakeFilesChecked: noMojibakeFiles,
+  forbiddenTokensChecked: badLeadTokens,
   errors,
 };
 

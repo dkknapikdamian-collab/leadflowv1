@@ -7,15 +7,15 @@ const ROOT = path.resolve(__dirname, '..');
 const read = (file) => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 function extractExportedArrayBody(source, constName) {
-  const declaration = `export const ${constName}`;
+  const declaration = 'export const ' + constName;
   const start = source.indexOf(declaration);
-  assert.notEqual(start, -1, `${constName} export not found`);
+  assert.notEqual(start, -1, constName + ' export not found');
 
   const equals = source.indexOf('=', start);
-  assert.notEqual(equals, -1, `${constName} assignment not found`);
+  assert.notEqual(equals, -1, constName + ' assignment not found');
 
   const open = source.indexOf('[', equals);
-  assert.notEqual(open, -1, `${constName} array open bracket not found`);
+  assert.notEqual(open, -1, constName + ' array open bracket not found');
 
   let depth = 0;
   for (let index = open; index < source.length; index += 1) {
@@ -27,7 +27,7 @@ function extractExportedArrayBody(source, constName) {
     }
   }
 
-  throw new Error(`${constName} array close bracket not found`);
+  throw new Error(constName + ' array close bracket not found');
 }
 
 function extractArrayValues(source, constName) {
@@ -38,9 +38,28 @@ function extractArrayValues(source, constName) {
 }
 
 function extractFunctionBody(source, fnName) {
-  const start = source.indexOf(`export function ${fnName}`);
-  assert.notEqual(start, -1, `${fnName} not found`);
+  const start = source.indexOf('export function ' + fnName);
+  assert.notEqual(start, -1, fnName + ' not found');
   return source.slice(start, source.indexOf('\n}', start) + 2);
+}
+
+function assertNoMojibake(file) {
+  const source = read(file);
+  for (const marker of ['Ä', 'Ă', 'Ĺ', 'â€', '�']) {
+    assert.equal(source.includes(marker), false, file + ' contains mojibake marker: ' + marker);
+  }
+}
+
+function assertNoBadLeadOptionTokens(file) {
+  const source = read(file);
+  for (const token of [
+    'LEAD_LEAD_SOURCE_OPTIONS',
+    'LEAD_LEAD_STATUS_OPTIONS',
+    'LEAD_LEAD_LEAD_SOURCE_OPTIONS',
+    'LEAD_LEAD_LEAD_STATUS_OPTIONS',
+  ]) {
+    assert.equal(source.includes(token), false, file + ' contains bad option token: ' + token);
+  }
 }
 
 test('CZ2-002 canonical lead options SOT is wired to domain statuses', () => {
@@ -48,7 +67,7 @@ test('CZ2-002 canonical lead options SOT is wired to domain statuses', () => {
   const sot = read('src/lib/source-of-truth/lead-options.ts');
 
   for (const status of extractArrayValues(domain, 'LEAD_STATUS_VALUES')) {
-    assert.match(sot, new RegExp(`${status}:`), `missing status meta for ${status}`);
+    assert.match(sot, new RegExp(status + ':'), 'missing status meta for ' + status);
   }
   assert.match(sot, /LEAD_STATUS_VALUES\.map/, 'LEAD_STATUS_OPTIONS must derive from LEAD_STATUS_VALUES');
   assert.match(sot, /normalizeLeadStatus/, 'status helpers must use normalizeLeadStatus');
@@ -85,6 +104,7 @@ test('CZ2-002 canonical helpers preserve expected decisions', () => {
 test('CZ2-002 compatibility wrappers keep old exports without local lead arrays', () => {
   const config = read('src/lib/config/lead-status.ts');
   const options = read('src/lib/options.ts');
+  const leadSources = read('src/lib/leadSources.ts');
 
   assert.match(config, /LEAD_STATUS_META_BY_VALUE as LEAD_STATUS_CONFIG/);
   assert.match(config, /getLeadStatusMeta as getLeadStatusConfig/);
@@ -96,4 +116,33 @@ test('CZ2-002 compatibility wrappers keep old exports without local lead arrays'
   assert.match(options, /LEAD_SOURCE_OPTIONS as SOURCE_OPTIONS/);
   assert.match(options, /LEAD_STATUS_OPTIONS as STATUS_OPTIONS/);
   assert.doesNotMatch(options, /export\s+const\s+SOURCE_OPTIONS\s*=\s*\[/);
+
+  assert.match(leadSources, /LEAD_SOURCE_OPTIONS/);
+  assert.doesNotMatch(leadSources, /export\s+const\s+LEAD_SOURCE_OPTIONS\s*=\s*\[/);
+});
+
+test('CZ2-002R1 blocks broken LEAD_LEAD option tokens', () => {
+  for (const file of [
+    'src/pages/Leads.tsx',
+    'src/pages/LeadDetail.tsx',
+    'src/lib/source-of-truth/lead-options.ts',
+    'src/lib/options.ts',
+    'src/lib/config/lead-status.ts',
+    'src/lib/leadSources.ts',
+  ]) {
+    assertNoBadLeadOptionTokens(file);
+  }
+});
+
+test('CZ2-002R1 blocks mojibake in touched option/page files', () => {
+  for (const file of [
+    'src/pages/Leads.tsx',
+    'src/pages/LeadDetail.tsx',
+    'src/lib/source-of-truth/lead-options.ts',
+    'src/lib/options.ts',
+    'src/lib/config/lead-status.ts',
+    'src/lib/leadSources.ts',
+  ]) {
+    assertNoMojibake(file);
+  }
 });

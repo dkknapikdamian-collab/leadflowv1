@@ -57,12 +57,12 @@ LEAD_DETAIL_VISUAL_REBUILD_STAGE14
 Active lead is sales work. Moved lead is acquisition history with a link to Case.
 */
 const A16_V2_VOICE_NOTE_AUTOSAVE_ALLOWED = 'voice-notes-may-autosave-after-dictation-silence';
-const A24_LEAD_TO_CASE_COPY_LOCK = 'Rozpocznij obsÄąâ€šugĂ„â„˘ | Ten temat jest juÄąÄ˝ w obsÄąâ€šudze | OtwÄ‚Ĺ‚rz sprawĂ„â„˘';
+const A24_LEAD_TO_CASE_COPY_LOCK = 'Rozpocznij obsługę | Ten temat jest już w obsłudze | Otwórz sprawę';
 const STAGE84_LEAD_DETAIL_WORK_CENTER = 'Lead Detail pokazuje centrum pracy: ostatni ruch, dni bez ruchu, najblizsza akcja i powod ryzyka';
 const STAGE88_LEAD_DETAIL_ADMIN_FEEDBACK_HOTFIX = 'LeadDetail cleans noisy helper copy and protects right rail readability';
 const STAGE115C_LEAD_INLINE_NOTE_SUBMIT_CONTRACT = 'LeadDetail history note submit stays inline; work-center note action is explicitly modal';
 void STAGE115C_LEAD_INLINE_NOTE_SUBMIT_CONTRACT;
-const STAGE115D_LEAD_OVERDUE_WORK_ITEMS_RED_CONTRACT = 'LeadDetail overdue work items show ZalegÄąâ€še with red danger tone and readable separators';
+const STAGE115D_LEAD_OVERDUE_WORK_ITEMS_RED_CONTRACT = 'LeadDetail overdue work items show Zaległe with red danger tone and readable separators';
 void STAGE115D_LEAD_OVERDUE_WORK_ITEMS_RED_CONTRACT;
 const STAGE115E_LEAD_FINANCE_ACTIONS_DIALOG_CONTRACT = 'LeadDetail finance actions open payment dialog and persist payment records';
 void STAGE115E_LEAD_FINANCE_ACTIONS_DIALOG_CONTRACT;
@@ -93,9 +93,9 @@ const STAGE216J3H_ACTIVITY_HISTORY_RAIL = 'LeadDetail moves full activity histor
 void STAGE216J3H_ACTIVITY_HISTORY_RAIL;
 const STAGE216J3I_ACTIVITY_HISTORY_LEFT_RAIL = 'LeadDetail activity history belongs under lead data in the left rail';
 void STAGE216J3I_ACTIVITY_HISTORY_LEFT_RAIL;
-const STAGE228B_LEAD_WORK_ACTION_CENTER_R5 = 'DziaÄąâ€šania leada visible copy marker for lead work action center guard';
+const STAGE228B_LEAD_WORK_ACTION_CENTER_R5 = 'Działania leada visible copy marker for lead work action center guard';
 void STAGE228B_LEAD_WORK_ACTION_CENTER_R5;
-const STAGE228B_LEAD_WORK_ACTION_CENTER_R6 = 'DziaÄąâ€šania leada visible copy marker for lead work action center guard';
+const STAGE228B_LEAD_WORK_ACTION_CENTER_R6 = 'Działania leada visible copy marker for lead work action center guard';
 void STAGE228B_LEAD_WORK_ACTION_CENTER_R6;
 
 const STAGE228B_LEAD_WORK_ACTION_CENTER_R7 = 'LeadDetail work action center copy is clean UTF-8 and passes Stage98 mojibake gate';
@@ -141,8 +141,8 @@ import { requireWorkspaceId } from '../lib/workspace-context';
 import { startLeadToCaseHandoff } from '../lib/lead-case-handoff';
 import { caseDetailPath, leadsPath } from '../lib/routes';
 import {
-  LEAD_LEAD_LEAD_SOURCE_OPTIONS,
-  LEAD_LEAD_LEAD_STATUS_OPTIONS,
+  LEAD_SOURCE_OPTIONS,
+  LEAD_STATUS_OPTIONS,
   getLeadSourceLabel,
   getLeadStatusLabel,
   getLeadStatusPillClass,
@@ -223,19 +223,14 @@ const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_LEAD = {
   },
 } as const;
 
-
 const SIMPLE_RECURRENCE_OPTIONS = [
   { value: 'none', label: 'Bez powtarzania' },
-  { value: 'daily', label: 'CodzieÄąâ€žnie' },
-  { value: 'weekly', label: 'Co tydzieÄąâ€ž' },
-  { value: 'monthly', label: 'Co miesiĂ„â€¦c' },
+  { value: 'daily', label: 'Codzieńnie' },
+  { value: 'weekly', label: 'Co tydzień' },
+  { value: 'monthly', label: 'Co miesiąc' },
 ];
 
 const modalSelectClass = 'lead-detail-modal-select';
-
-function getLeadDetailSourceLabel(source: unknown) {
-  return getLeadSourceLabel(source);
-}
 
 type TimelineEntry = {
   id: string;
@@ -369,23 +364,23 @@ function statusLabel(status?: string) {
   return getLeadStatusLabel(status);
 }
 function sourceLabel(source?: string) {
-  return LEAD_LEAD_SOURCE_OPTIONS.find((entry) => entry.value === source)?.label || source || 'Brak ÄąĹźrÄ‚Ĺ‚dÄąâ€ša';
+  return getLeadSourceLabel(source);
 }
 function billingStatusLabel(status?: string) {
   switch (String(status || '').toLowerCase()) {
     case 'deposit_paid':
-      return 'Zaliczka wpÄąâ€šacona';
+      return 'Zaliczka wpłacona';
     case 'partially_paid':
-      return 'CzĂ„â„˘Äąâ€şciowo opÄąâ€šacone';
+      return 'Częściowo opłacone';
     case 'fully_paid':
     case 'paid':
-      return 'OpÄąâ€šacone';
+      return 'Opłacone';
     case 'awaiting_payment':
-      return 'Czeka na pÄąâ€šatnoÄąâ€şĂ„â€ˇ';
+      return 'Czeka na płatność';
     case 'source_only':
-      return 'ÄąÄ…rÄ‚Ĺ‚dÄąâ€šowe dane leada';
+      return 'Źródłowe dane leada';
     case 'not_started':
-      return 'Brak wpÄąâ€šaty';
+      return 'Brak wpłaty';
     default:
       return status || 'Brak statusu';
   }
@@ -625,7 +620,7 @@ function buildTimeline(tasks: any[], events: any[]): TimelineEntry[] {
     return {
       id: `task:${String(task.id || '')}`,
       kind: 'task' as const,
-      title: String(task.title || 'Zadanie bez tytuÄąâ€šu'),
+      title: String(task.title || 'Zadanie bez tytułu'),
       status,
       statusLabel: taskStatusLabel(status, dateValue),
       isOverdue,
@@ -642,7 +637,7 @@ function buildTimeline(tasks: any[], events: any[]): TimelineEntry[] {
     return {
       id: `event:${String(event.id || '')}`,
       kind: 'event' as const,
-      title: String(event.title || 'Wydarzenie bez tytuÄąâ€šu'),
+      title: String(event.title || 'Wydarzenie bez tytułu'),
       status,
       statusLabel: eventStatusLabel(status, dateValue),
       isOverdue,
@@ -660,7 +655,7 @@ function buildTimeline(tasks: any[], events: any[]): TimelineEntry[] {
   });
 }
 function LeadActionButton({ children, onClick, disabled }: { children: ReactNode; onClick?: () => void; disabled?: boolean }) {
-  const isStartServiceActionStage14F = children === 'Rozpocznij obsÄąâ€šugĂ„â„˘';
+  const isStartServiceActionStage14F = children === 'Rozpocznij obsługę';
   return (
     <button
       type="button"
@@ -690,9 +685,9 @@ function leadDetailActionDataKind(row: Record<string, unknown> | null | undefine
 function leadDetailActionKindClass(kind: unknown) {
   return getCloseFlowActionKindClass(kind);
 }
-const STAGE227E2_LEAD_DETAIL_TOP_CARDS_POLISH = 'LeadDetail top cards show NastĂ„â„˘pny krok, PotencjaÄąâ€š and Cisza / ryzyko without updatedAt silence';
+const STAGE227E2_LEAD_DETAIL_TOP_CARDS_POLISH = 'LeadDetail top cards show Następny krok, Potencjał and Cisza / ryzyko without updatedAt silence';
 void STAGE227E2_LEAD_DETAIL_TOP_CARDS_POLISH;
-const STAGE227E3_DECISION_CARDS_CLEANUP = 'LeadDetail top decision cards use NastĂ„â„˘pny krok, PotencjaÄąâ€š, Cisza / ryzyko and Blokada without source/status duplication';
+const STAGE227E3_DECISION_CARDS_CLEANUP = 'LeadDetail top decision cards use Następny krok, Potencjał, Cisza / ryzyko and Blokada without source/status duplication';
 void STAGE227E3_DECISION_CARDS_CLEANUP;
 const STAGE231G_LEAD_DETAIL_OPERATIONAL_WIRING_AUDIT_AND_FIX = 'LeadDetail operational cards expose real actions for potential, next step, risk and blockers; work rows use separate content/status/actions layout';
 void STAGE231G_LEAD_DETAIL_OPERATIONAL_WIRING_AUDIT_AND_FIX;
@@ -723,7 +718,7 @@ function getLeadSilenceRisk(lead: any, activities: any[], tasks: any[], events: 
   });
   const isLost = String(lead?.status || '').toLowerCase() === 'lost';
 
-  let label = 'Pod kontrolĂ„â€¦';
+  let label = 'Pod kontrolą';
   let headline = nextMove.label;
   let details = activityTruth.lastContactAt || activityTruth.lastActivityAt
     ? `Ostatni kontakt/ruch: ${formatDateTime(activityTruth.lastContactAt || activityTruth.lastActivityAt)}.`
@@ -731,28 +726,28 @@ function getLeadSilenceRisk(lead: any, activities: any[], tasks: any[], events: 
   let toneClass = 'lead-detail-pill-green';
 
   if (leadInService) {
-    label = 'W obsÄąâ€šudze';
+    label = 'W obsłudze';
     headline = 'Praca jest w sprawie';
-    details = 'Lead jest historiĂ„â€¦ pozyskania. Dalsze dziaÄąâ€šania prowadÄąĹź w sprawie.';
+    details = 'Lead jest historią pozyskania. Dalsze działania prowadź w sprawie.';
     toneClass = 'lead-detail-pill-purple';
   } else if (isLost) {
     label = 'Utracony';
-    headline = 'Lead zamkniĂ„â„˘ty jako utracony';
-    details = 'Nie prowadÄąĹź dalszej sprzedaÄąÄ˝y bez ponownego otwarcia tematu.';
+    headline = 'Lead zamknięty jako utracony';
+    details = 'Nie prowadź dalszej sprzedaży bez ponownego otwarcia tematu.';
     toneClass = 'lead-detail-pill-muted';
   } else if (nextMove.isMissing) {
     label = 'Brak akcji';
     toneClass = 'lead-detail-pill-danger';
-    details = daysSilent === null ? 'Nie ma ani kontaktu/ruchu, ani zaplanowanej akcji.' : `Cisza: ${daysSilent} dni. Brakuje nastĂ„â„˘pnego kroku.`;
+    details = daysSilent === null ? 'Nie ma ani kontaktu/ruchu, ani zaplanowanej akcji.' : `Cisza: ${daysSilent} dni. Brakuje następnego kroku.`;
   } else if (typeof daysSilent === 'number' && daysSilent >= settings.criticalDays) {
     label = 'Alarm';
     headline = `${daysSilent} dni bez ruchu`;
-    details = 'Temat przekroczyÄąâ€š krytyczny prÄ‚Ĺ‚g ciszy. Skontaktuj siĂ„â„˘ albo podejmij decyzjĂ„â„˘ o zamkniĂ„â„˘ciu.';
+    details = 'Temat przekroczył krytyczny próg ciszy. Skontaktuj się albo podejmij decyzję o zamknięciu.';
     toneClass = 'lead-detail-pill-danger';
   } else if (typeof daysSilent === 'number' && daysSilent >= settings.warningDays) {
     label = 'Cisza';
     headline = `${daysSilent} dni bez ruchu`;
-    details = 'Temat przekroczyÄąâ€š prÄ‚Ĺ‚g ostrzegawczy. SprawdÄąĹź, czy zaplanowana akcja jest nadal aktualna.';
+    details = 'Temat przekroczył próg ostrzegawczy. Sprawdź, czy zaplanowana akcja jest nadal aktualna.';
     toneClass = 'lead-detail-pill-amber';
   }
 
@@ -768,7 +763,7 @@ function getLeadSilenceRisk(lead: any, activities: any[], tasks: any[], events: 
 
 const STAGE227E4_LEAD_DETAIL_SALES_SIGNAL_SECTION = 'LeadDetail exposes compact sales context fields: need urgency budget decision blocker';
 void STAGE227E4_LEAD_DETAIL_SALES_SIGNAL_SECTION;
-const STAGE227E4R2_LEAD_DETAIL_DECISION_VIEW_SIMPLIFICATION = 'LeadDetail uses compact Kontekst sprzedaÄąÄ˝owy and does not duplicate source/status as decision fields';
+const STAGE227E4R2_LEAD_DETAIL_DECISION_VIEW_SIMPLIFICATION = 'LeadDetail uses compact Kontekst sprzedażowy and does not duplicate source/status as decision fields';
 void STAGE227E4R2_LEAD_DETAIL_DECISION_VIEW_SIMPLIFICATION;
 const STAGE227E4R3_RUNTIME_COPY_CLEANUP = 'LeadDetail runtime copy keeps only labels and values without helper explanation sentences';
 void STAGE227E4R3_RUNTIME_COPY_CLEANUP;
@@ -838,13 +833,13 @@ function buildLeadSalesSignalStage227E4(input: LeadSalesSignalInputStage227E4): 
     },
     {
       key: 'urgency',
-      label: 'Termin / pilnoÄąâ€şĂ„â€ˇ',
+      label: 'Termin / pilność',
       value: urgency,
       status: urgency ? 'ok' : 'missing',
     },
     {
       key: 'budget',
-      label: 'BudÄąÄ˝et / potencjaÄąâ€š',
+      label: 'Budżet / potencjał',
       value: budget,
       status: budget ? 'ok' : 'missing',
     },
@@ -858,7 +853,7 @@ function buildLeadSalesSignalStage227E4(input: LeadSalesSignalInputStage227E4): 
       key: 'blocker',
       label: 'Blokada',
       value: blocker,
-      status: blocker && input.riskLabel !== 'OgarniĂ„â„˘ty' ? 'warning' : blocker ? 'ok' : 'missing',
+      status: blocker && input.riskLabel !== 'Ogarnięty' ? 'warning' : blocker ? 'ok' : 'missing',
     },
   ];
 }
@@ -961,16 +956,16 @@ export default function LeadDetail() {
       setLeadPayments(Array.isArray(paymentRows) ? paymentRows : []);
       setLinkCaseId(currentCase?.id ? String(currentCase.id) : '');
       setCreateCaseDraft({
-        title: `${String((leadRow as any)?.name || 'Lead').trim() || 'Lead'} - obsÄąâ€šuga`,
+        title: `${String((leadRow as any)?.name || 'Lead').trim() || 'Lead'} - obsługa`,
         clientName: String((leadRow as any)?.name || ''),
         clientEmail: String((leadRow as any)?.email || ''),
         clientPhone: String((leadRow as any)?.phone || ''),
         status: 'ready_to_start',
       });
     } catch (error: any) {
-      const message = error?.message || 'Nie udaÄąâ€šo siĂ„â„˘ pobraĂ„â€ˇ danych leada';
+      const message = error?.message || 'Nie udało się pobrać danych leada';
       setLoadError(message);
-      toast.error(`BÄąâ€šĂ„â€¦d odczytu leada: ${message}`);
+      toast.error(`Błąd odczytu leada: ${message}`);
     } finally {
       if (!silent) setLoading(false);
     }
@@ -1032,7 +1027,7 @@ export default function LeadDetail() {
 
   const leadMovedToService = isLeadMovedToService(lead);
   const serviceCaseId = String(startServiceSuccess?.caseId || associatedCase?.id || lead?.linkedCaseId || lead?.caseId || '');
-  const serviceCaseTitle = String(startServiceSuccess?.title || associatedCase?.title || associatedCase?.clientName || 'PowiĂ„â€¦zana sprawa');
+  const serviceCaseTitle = String(startServiceSuccess?.title || associatedCase?.title || associatedCase?.clientName || 'Powiązana sprawa');
   const serviceCaseStatusLabel = String(associatedCase?.status || createCaseDraft.status || 'ready_to_start').replaceAll('_', ' ');
   const serviceMovedAtLabel = formatDateTime(lead?.movedToServiceAt || lead?.serviceStartedAt || associatedCase?.serviceStartedAt || associatedCase?.createdAt);
   const leadOperationalArchive = Boolean(leadMovedToService || associatedCase || startServiceSuccess);
@@ -1114,8 +1109,8 @@ export default function LeadDetail() {
         return {
           id: String(activity?.id || activity?.eventType || activity?.createdAt || index),
           raw: activity,
-          title: isNoteEvent ? 'Dodano notatkĂ„â„˘' : getActivityTitle(activity),
-          description: isNoteEvent ? 'TreÄąâ€şĂ„â€ˇ notatki jest widoczna w sekcji Notatki.' : getActivityDescription(activity),
+          title: isNoteEvent ? 'Dodano notatkę' : getActivityTitle(activity),
+          description: isNoteEvent ? 'Treść notatki jest widoczna w sekcji Notatki.' : getActivityDescription(activity),
           dateValue,
           dateLabel: formatDateTime(dateValue, 'Brak daty'),
         };
@@ -1131,7 +1126,7 @@ export default function LeadDetail() {
   const hasLeadNotesStage115B = Boolean(leadSourceNoteText || leadNoteActivityItems.length);
 
 
-  const leadServiceLockedMessage = 'Ten temat jest juÄąÄ˝ w obsÄąâ€šudze. DalszĂ„â€¦ pracĂ„â„˘ prowadÄąĹź w sprawie.';
+  const leadServiceLockedMessage = 'Ten temat jest już w obsłudze. Dalszą pracę prowadź w sprawie.';
   const STAGE86_CONTEXT_ACTION_EXPLICIT_TRIGGERS = 'Lead detail uses shared context action dialogs instead of local simplified quick forms';
   const openLeadContextAction = (kind: ContextActionKind) => {
     if (!leadId) return;
@@ -1153,11 +1148,11 @@ export default function LeadDetail() {
   };
 
   const handleAddLeadMissingFromManagerStage232I4R14 = async () => {
-    if (!hasAccess) return toast.error('Trial wygasÄąâ€š.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     const safeLeadId = String(leadId || '').trim();
     const title = leadMissingManagerTitle.trim();
-    if (!safeLeadId) return setLeadMissingManagerError('Brak ID leada. Nie moÄąÄ˝na dodaĂ„â€ˇ braku.');
-    if (!title) return setLeadMissingManagerError('Wpisz nazwĂ„â„˘ braku.');
+    if (!safeLeadId) return setLeadMissingManagerError('Brak ID leada. Nie można dodać braku.');
+    if (!title) return setLeadMissingManagerError('Wpisz nazwę braku.');
     const createdAt = new Date().toISOString();
     const status = leadMissingManagerBlocksProgress ? 'blocking_missing_item' : 'missing_item';
     try {
@@ -1242,18 +1237,18 @@ export default function LeadDetail() {
       toast.success('Dodano brak do leada.');
       await loadLead({ silent: true });
     } catch (error: any) {
-      setLeadMissingManagerError(error?.message || 'Nie udaÄąâ€šo siĂ„â„˘ dodaĂ„â€ˇ braku.');
-      toast.error('Nie udaÄąâ€šo siĂ„â„˘ dodaĂ„â€ˇ braku: ' + (error?.message || 'bÄąâ€šĂ„â€¦d zapisu'));
+      setLeadMissingManagerError(error?.message || 'Nie udało się dodać braku.');
+      toast.error('Nie udało się dodać braku: ' + (error?.message || 'błąd zapisu'));
     } finally {
       setLeadMissingManagerSaving(false);
     }
   };
 
   const handleToggleLeadMissingBlockerStage232I4R14 = async (entry: MissingItemsManagerItem, blocksProgress: boolean) => {
-    if (!hasAccess) return toast.error('Trial wygasÄąâ€š.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     const task = (entry?.raw || entry) as any;
     const taskId = String(task?.id || entry?.id || '').trim();
-    if (!taskId) return toast.error('Brak ID braku. Nie moÄąÄ˝na zmieniĂ„â€ˇ blokady.');
+    if (!taskId) return toast.error('Brak ID braku. Nie można zmienić blokady.');
     const taskTitle = String(task?.title || entry?.title || 'Brak');
     const nextStatus = blocksProgress ? 'blocking_missing_item' : 'missing_item';
     const nextPriorityStage232I4R16ZR8 = blocksProgress ? 'high' : 'medium';
@@ -1285,19 +1280,19 @@ export default function LeadDetail() {
         priority: nextPriorityStage232I4R16ZR8,
         source: 'stage232i4_r16z_r10_lead_missing_checkbox_activity_source_fix',
       });
-      toast.success(blocksProgress ? 'Brak ustawiony jako blokujĂ„â€¦cy' : 'Brak nie blokuje sprawy');
+      toast.success(blocksProgress ? 'Brak ustawiony jako blokujący' : 'Brak nie blokuje sprawy');
       await loadLead({ silent: true });
     } catch (error: any) {
-      toast.error('Nie udaÄąâ€šo siĂ„â„˘ zmieniĂ„â€ˇ blokady: ' + (error?.message || 'bÄąâ€šĂ„â€¦d zapisu'));
+      toast.error('Nie udało się zmienić blokady: ' + (error?.message || 'błąd zapisu'));
     } finally {
       setLinkedEntryActionId(null);
     }
   };
   const handleResolveLeadMissingItemStage228R13 = async (entry: any) => {
-    if (!hasAccess) return toast.error('Trial wygasÄąâ€š.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     const task = entry?.raw || entry || {};
     const taskId = String(task?.id || '').trim();
-    if (!taskId) return toast.error('Brak ID braku. Nie moÄąÄ˝na oznaczyĂ„â€ˇ jako rozwiĂ„â€¦zany.');
+    if (!taskId) return toast.error('Brak ID braku. Nie można oznaczyć jako rozwiązany.');
     const resolvedAt = new Date().toISOString();
 
     try {
@@ -1323,10 +1318,10 @@ export default function LeadDetail() {
         resolvedAt,
         source: 'stage228r13_lead_missing_item_status_resolve',
       });
-      toast.success('Brak oznaczony jako rozwiĂ„â€¦zany');
+      toast.success('Brak oznaczony jako rozwiązany');
       await loadLead({ silent: true });
     } catch (error: any) {
-      toast.error(`Nie udaÄąâ€šo siĂ„â„˘ rozwiĂ„â€¦zaĂ„â€ˇ braku: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się rozwiązać braku: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
     }
@@ -1334,11 +1329,11 @@ export default function LeadDetail() {
 
 
   const handleDeleteLeadMissingItemStage228R15 = async (entry: any) => {
-    if (!hasAccess) return toast.error('Trial wygasÄąâ€š.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     const task = entry?.raw || entry || {};
     const taskId = String(task?.id || '').trim();
-    if (!taskId) return toast.error('Brak ID braku. Nie moÄąÄ˝na usunĂ„â€¦Ă„â€ˇ.');
-    if (!window.confirm('UsunĂ„â€¦Ă„â€ˇ ten brak?')) return;
+    if (!taskId) return toast.error('Brak ID braku. Nie można usunąć.');
+    if (!window.confirm('Usunąć ten brak?')) return;
 
     const deletedAt = new Date().toISOString();
     const taskTitle = String(task?.title || entry?.title || 'Brak');
@@ -1359,18 +1354,18 @@ export default function LeadDetail() {
         source: 'stage228r17_missing_item_delete_contract',
       });
 
-      toast.success('Brak usuniĂ„â„˘ty');
+      toast.success('Brak usunięty');
       await loadLead({ silent: true });
     } catch (error: any) {
       if (optimisticSnapshot) setLinkedTasks(optimisticSnapshot);
-      toast.error(`BÄąâ€šĂ„â€¦d usuwania braku: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd usuwania braku: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
     }
   };
 
   const openLeadPaymentDialog = (type: 'deposit' | 'partial') => {
-    if (!hasAccess) return toast.error('Trial wygasÄąâ€š.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     setLeadPaymentDialogType(type);
     setLeadPaymentAmount('');
     setLeadPaymentNote('');
@@ -1386,11 +1381,11 @@ export default function LeadDetail() {
   const handleSaveLeadPayment = async (event?: FormEvent) => {
     event?.preventDefault();
     if (!leadId || !leadPaymentDialogType) return;
-    if (!hasAccess) return toast.error('Trial wygasÄąâ€š.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
 
     const amount = Number(String(leadPaymentAmount || '').replace(',', '.'));
     if (!Number.isFinite(amount) || amount <= 0) {
-      toast.error('Podaj poprawnĂ„â€¦ kwotĂ„â„˘ pÄąâ€šatnoÄąâ€şci.');
+      toast.error('Podaj poprawną kwotę płatności.');
       return;
     }
 
@@ -1400,7 +1395,7 @@ export default function LeadDetail() {
     const paidAt = new Date().toISOString();
     const currency = leadFinance.currency || 'PLN';
     const paymentType = leadPaymentDialogType;
-    const paymentLabel = paymentType === 'deposit' ? 'Zaliczka' : 'PÄąâ€šatnoÄąâ€şĂ„â€ˇ czĂ„â„˘Äąâ€şciowa';
+    const paymentLabel = paymentType === 'deposit' ? 'Zaliczka' : 'Płatność częściowa';
 
     try {
       setLeadPaymentSaving(true);
@@ -1432,7 +1427,7 @@ export default function LeadDetail() {
       setLeadPaymentNote('');
       await loadLead();
     } catch (error: any) {
-      toast.error(`Nie udaÄąâ€šo siĂ„â„˘ zapisaĂ„â€ˇ pÄąâ€šatnoÄąâ€şci: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się zapisać płatności: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLeadPaymentSaving(false);
     }
@@ -1559,34 +1554,34 @@ useEffect(() => {
     const dealValue = Number(lead?.dealValue || 0);
     const isHighValueCold = Boolean(dealValue >= 5000 && typeof daysWithoutMovement === 'number' && daysWithoutMovement >= 5 && !leadInService);
 
-    let riskLabel = 'OgarniĂ„â„˘ty';
+    let riskLabel = 'Ogarnięty';
     let riskTone = 'good';
     let riskReason = leadInService
-      ? 'Temat jest juÄąÄ˝ w obsÄąâ€šudze. Dalsza praca powinna iÄąâ€şĂ„â€ˇ przez sprawĂ„â„˘.'
+      ? 'Temat jest już w obsłudze. Dalsza praca powinna iść przez sprawę.'
       : 'Lead ma zaplanowany ruch albo nie wymaga pilnej reakcji.';
 
     if (isOverdue) {
       riskLabel = 'Po terminie';
       riskTone = 'danger';
-      riskReason = 'NajbliÄąÄ˝sza zaplanowana akcja ma termin w przeszÄąâ€šoÄąâ€şci.';
+      riskReason = 'Najbliższa zaplanowana akcja ma termin w przeszłości.';
     } else if (hasNoPlannedAction) {
       riskLabel = 'Brak akcji';
       riskTone = 'danger';
-      riskReason = 'Aktywny lead nie ma ÄąÄ˝adnego zaplanowanego zadania ani wydarzenia.';
+      riskReason = 'Aktywny lead nie ma żadnego zaplanowanego zadania ani wydarzenia.';
     } else if (isWaitingTooLong) {
-      riskLabel = 'Czeka za dÄąâ€šugo';
+      riskLabel = 'Czeka za długo';
       riskTone = 'warn';
-      riskReason = 'Lead jest w statusie oczekiwania i nie miaÄąâ€š ruchu od kilku dni.';
+      riskReason = 'Lead jest w statusie oczekiwania i nie miał ruchu od kilku dni.';
     } else if (isHighValueCold) {
-      riskLabel = 'Wysoka wartoÄąâ€şĂ„â€ˇ bez ruchu';
+      riskLabel = 'Wysoka wartość bez ruchu';
       riskTone = 'warn';
-      riskReason = 'Lead ma wysokĂ„â€¦ wartoÄąâ€şĂ„â€ˇ i dÄąâ€šugo nie byÄąâ€šo przy nim aktywnoÄąâ€şci.';
+      riskReason = 'Lead ma wysoką wartość i długo nie było przy nim aktywności.';
     }
 
     return {
       lastTouchLabel: lastTouch ? formatDateTime(lastTouch) : 'Brak zapisanego ruchu',
       daysWithoutMovementLabel: typeof daysWithoutMovement === 'number' ? `${daysWithoutMovement} dni` : 'Brak danych',
-      nextActionLabel: nextTimelineEntry ? `${nextTimelineEntry.title} Ă˘â‚¬Ë ${nextTimelineEntry.statusLabel} Ă˘â‚¬Ë ${nextTimelineEntry.dateLabel}` : '-',
+      nextActionLabel: nextTimelineEntry ? `${nextTimelineEntry.title} • ${nextTimelineEntry.statusLabel} • ${nextTimelineEntry.dateLabel}` : '-',
       isOverdue,
       hasNoPlannedAction,
       riskLabel,
@@ -1607,7 +1602,7 @@ useEffect(() => {
       primaryNote: leadPrimaryNoteText,
       financePotential: leadFinancePanel.potential,
       financeLabel: leadFinance.formatted,
-      nextActionLabel: nextTimelineEntry ? nextTimelineEntry.title + ' Ă˘â‚¬Ë ' + nextTimelineEntry.dateLabel : '',
+      nextActionLabel: nextTimelineEntry ? nextTimelineEntry.title + ' • ' + nextTimelineEntry.dateLabel : '',
       riskLabel: leadSilenceRisk.riskLabel || leadWorkCenter.riskLabel,
       riskReason: leadRiskReasonStage14F || leadSilenceRisk.riskReason || leadWorkCenter.riskReason,
     }),
@@ -1620,7 +1615,7 @@ useEffect(() => {
         <div>
           <span>Centrum pracy leada</span>
           <h2>Co robimy teraz?</h2>
-                    <p className="lead-detail-stage228b-r14-source-copy">NajbliÄąÄ˝sze zadania, wydarzenia i braki przypiĂ„â„˘te do tego leada.</p>
+                    <p className="lead-detail-stage228b-r14-source-copy">Najbliższe zadania, wydarzenia i braki przypięte do tego leada.</p>
 
         </div>
         <span className={`lead-detail-work-risk lead-detail-work-risk-${leadWorkCenter.riskTone}`}>
@@ -1638,19 +1633,19 @@ useEffect(() => {
           <strong>{leadWorkCenter.daysWithoutMovementLabel}</strong>
         </div>
         <div className="lead-detail-work-metric lead-detail-work-metric-wide">
-          <small>NajbliÄąÄ˝sza zaplanowana akcja</small>
+          <small>Najbliższa zaplanowana akcja</small>
           <strong>{leadWorkCenter.nextActionLabel}</strong>
         </div>
       </div>
 
       <div className="lead-detail-work-reason" data-lead-risk-reason="true">
-  <small>PowÄ‚Ĺ‚d ryzyka</small>
+  <small>Powód ryzyka</small>
   {leadRiskReasonStage14F ? (
     <p className="lead-detail-risk-reason" title={leadRiskReasonStage14F}>
-      PowÄ‚Ĺ‚d: {leadRiskReasonStage14F}
+      Powód: {leadRiskReasonStage14F}
     </p>
   ) : (
-    <p className="lead-detail-risk-reason">PowÄ‚Ĺ‚d: -</p>
+    <p className="lead-detail-risk-reason">Powód: -</p>
   )}
 </div>
 
@@ -1666,7 +1661,7 @@ useEffect(() => {
             <CheckCircle2 className="h-4 w-4" /> Kontakt wykonany
           </LeadActionButton>
           <LeadActionButton onClick={() => handleUpdateStatus('proposal_sent')} disabled={!hasAccess}>
-            <Mail className="h-4 w-4" /> Oferta wysÄąâ€šana
+            <Mail className="h-4 w-4" /> Oferta wysłana
           </LeadActionButton>
           <LeadActionButton onClick={() => handleUpdateStatus('waiting_response')} disabled={!hasAccess}>
             <Clock className="h-4 w-4" /> Oznacz waiting
@@ -1675,7 +1670,7 @@ useEffect(() => {
             onClick={() => openContextQuickAction({ kind: 'note', recordType: 'lead', recordId: leadId || '', leadId: leadId || '', recordLabel: getLeadName(lead) })}
             disabled={!hasAccess}
           >
-            <EntityIcon entity="template" className="h-4 w-4" /> OtwÄ‚Ĺ‚rz szybki formularz notatki
+            <EntityIcon entity="template" className="h-4 w-4" /> Otwórz szybki formularz notatki
           </LeadActionButton>
           <LeadActionButton
             onPointerDown={(event) => {
@@ -1697,14 +1692,14 @@ useEffect(() => {
           </LeadActionButton>
           {serviceCaseId ? (
             <LeadActionButton onClick={() => navigate(caseDetailPath(serviceCaseId))}>
-              <EntityIcon entity="case" className="h-4 w-4" /> OtwÄ‚Ĺ‚rz sprawĂ„â„˘
+              <EntityIcon entity="case" className="h-4 w-4" /> Otwórz sprawę
             </LeadActionButton>
           ) : null}
         </div>
       ) : (
         <div className="lead-detail-work-actions lead-detail-work-actions-service">
           <LeadActionButton onClick={() => serviceCaseId && navigate(caseDetailPath(serviceCaseId))} disabled={!serviceCaseId}>
-            <EntityIcon entity="case" className="h-4 w-4" /> OtwÄ‚Ĺ‚rz sprawĂ„â„˘
+            <EntityIcon entity="case" className="h-4 w-4" /> Otwórz sprawę
           </LeadActionButton>
           <span>{leadServiceLockedMessage}</span>
         </div>
@@ -1745,20 +1740,20 @@ useEffect(() => {
       if (successMessage) toast.success(successMessage);
       await loadLead();
     } catch (error: any) {
-      toast.error(`BÄąâ€šĂ„â€¦d zapisu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd zapisu: ${error?.message || 'REQUEST_FAILED'}`);
       throw error;
     }
   };
 
   const handleUpdateStatus = async (status: string) => {
-    if (!hasAccess) return toast.error('Trial wygasÄąâ€š.');
-    if (leadInService) return toast.error('Ten temat jest juÄąÄ˝ w obsÄąâ€šudze. DalszĂ„â€¦ pracĂ„â„˘ prowadÄąĹź w sprawie.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (leadInService) return toast.error('Ten temat jest już w obsłudze. Dalszą pracę prowadź w sprawie.');
     await patchLead({ status }, 'Status zaktualizowany');
     await addActivity('status_changed', { status });
   };
 
   const handleUpdateLead = async () => {
-    if (!hasAccess) return toast.error('Trial wygasÄąâ€š.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     if (!editLead || !leadId) return;
     await patchLead(
       {
@@ -1770,7 +1765,7 @@ useEffect(() => {
         dealValue: Number(editLead.dealValue) || 0,
         note: editLead.note || editLead.notes || '',
       },
-      leadInService ? 'Dane ÄąĹźrÄ‚Ĺ‚dÄąâ€šowe leada zaktualizowane' : 'Dane zaktualizowane',
+      leadInService ? 'Dane źródłowe leada zaktualizowane' : 'Dane zaktualizowane',
     );
     setIsEditing(false);
   };
@@ -1787,7 +1782,7 @@ useEffect(() => {
   };
 
   const handleStartPotentialEditingStage231G = () => {
-    if (!hasAccess) return toast.error('Trial wygasÄąâ€š.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     setPotentialDraftStage231GR7(String(Number(leadFinance.dealValue || 0) || ''));
     setIsPotentialEditingStage231GR7(true);
     window.setTimeout(() => potentialInputRefStage231G.current?.focus(), 80);
@@ -1807,10 +1802,10 @@ useEffect(() => {
 
   const handleSavePotentialStage231GR7 = async (event?: FormEvent) => {
     event?.preventDefault();
-    if (!hasAccess) return toast.error('Trial wygasÄąâ€š.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     if (!leadId || potentialSavingStage231GR7) return;
     const amount = parsePotentialStage231GR7(potentialDraftStage231GR7);
-    if (amount === null) return toast.error('Wpisz poprawnĂ„â€¦ wartoÄąâ€şĂ„â€ˇ potencjaÄąâ€šu.');
+    if (amount === null) return toast.error('Wpisz poprawną wartość potencjału.');
     try {
       setPotentialSavingStage231GR7(true);
       await updateLeadInSupabase({
@@ -1824,11 +1819,11 @@ useEffect(() => {
       setLead((current: any) => current ? { ...current, dealValue: amount, deal_value: amount, value: amount, contractValue: amount, contract_value: amount } : current);
       setEditLead((current: any) => current ? { ...current, dealValue: amount, deal_value: amount, value: amount, contractValue: amount, contract_value: amount } : current);
       await addActivity('lead_potential_updated', { dealValue: amount, currency: leadFinance.currency, source: 'stage231g_r7_potential_only_modal' });
-      toast.success('PotencjaÄąâ€š zaktualizowany');
+      toast.success('Potencjał zaktualizowany');
       setIsPotentialEditingStage231GR7(false);
       await loadLead({ silent: true });
     } catch (error: any) {
-      toast.error(`BÄąâ€šĂ„â€¦d zapisu potencjaÄąâ€šu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd zapisu potencjału: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setPotentialSavingStage231GR7(false);
     }
@@ -1840,25 +1835,25 @@ useEffect(() => {
   };
   const copyValue = async (label: string, value: string) => {
     const cleanValue = String(value || '').trim();
-    if (!cleanValue || cleanValue === '-') return toast.error(`Brak wartoÄąâ€şci: ${label}`);
+    if (!cleanValue || cleanValue === '-') return toast.error(`Brak wartości: ${label}`);
     try {
       await navigator.clipboard.writeText(cleanValue);
       toast.success(`${label} skopiowano`);
     } catch {
-      toast.error('Nie udaÄąâ€šo siĂ„â„˘ skopiowaĂ„â€ˇ.');
+      toast.error('Nie udało się skopiować.');
     }
   };
 
 
   const handleDeleteLead = async () => {
     if (!leadId) return;
-    if (!window.confirm('Czy na pewno chcesz usunĂ„â€¦Ă„â€ˇ tego leada?')) return;
+    if (!window.confirm('Czy na pewno chcesz usunąć tego leada?')) return;
     try {
       await deleteLeadFromSupabase(leadId);
-      toast.success('Lead usuniĂ„â„˘ty');
+      toast.success('Lead usunięty');
       navigate(leadsPath());
     } catch (error: any) {
-      toast.error(`BÄąâ€šĂ„â€¦d usuwania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd usuwania: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -1880,7 +1875,7 @@ useEffect(() => {
   };
 
   const handleToggleNoteSpeech = () => {
-    if (!hasAccess) return toast.error('Trial wygasÄąâ€š.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     if (noteListening) {
       stopNoteSpeech();
       return;
@@ -1888,7 +1883,7 @@ useEffect(() => {
 
     const RecognitionConstructor = getSpeechRecognitionConstructor();
     if (!RecognitionConstructor) {
-      toast.error('Dyktowanie nie jest dostĂ„â„˘pne w tej przeglĂ„â€¦darce.');
+      toast.error('Dyktowanie nie jest dostępne w tej przeglądarce.');
       return;
     }
 
@@ -1916,7 +1911,7 @@ useEffect(() => {
         setNoteInterimText(interimTranscript);
       };
       recognition.onerror = () => {
-        toast.error('Nie udaÄąâ€šo siĂ„â„˘ dokoÄąâ€žczyĂ„â€ˇ dyktowania notatki.');
+        toast.error('Nie udało się dokończyć dyktowania notatki.');
         stopNoteSpeech();
       };
       recognition.onend = () => {
@@ -1927,9 +1922,9 @@ useEffect(() => {
       noteRecognitionRef.current = recognition;
       recognition.start();
       setNoteListening(true);
-      toast.success('Dyktowanie notatki wÄąâ€šĂ„â€¦czone');
+      toast.success('Dyktowanie notatki włączone');
     } catch {
-      toast.error('Nie udaÄąâ€šo siĂ„â„˘ uruchomiĂ„â€ˇ dyktowania.');
+      toast.error('Nie udało się uruchomić dyktowania.');
       stopNoteSpeech();
     }
   };
@@ -1968,9 +1963,9 @@ useEffect(() => {
 
   const handleSaveEditedNote = async () => {
     if (!leadId || !editingNote?.id) return;
-    if (!hasAccess) return toast.error('Trial wygasÄąâ€š.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     const content = editingNoteContent.trim();
-    if (!content) return toast.error('TreÄąâ€şĂ„â€ˇ notatki nie moÄąÄ˝e byĂ„â€ˇ pusta');
+    if (!content) return toast.error('Treść notatki nie może być pusta');
 
     try {
       await updateActivityInSupabase({
@@ -1983,23 +1978,23 @@ useEffect(() => {
       setEditingNoteContent('');
       await loadLead();
     } catch (error: any) {
-      toast.error(`BÄąâ€šĂ„â€¦d edycji notatki: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd edycji notatki: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
   const handleDeleteNote = async (activityId: string) => {
-    if (!hasAccess) return toast.error('Trial wygasÄąâ€š.');
-    if (!window.confirm('UsunĂ„â€¦Ă„â€ˇ tĂ„â„˘ notatkĂ„â„˘?')) return;
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!window.confirm('Usunąć tę notatkę?')) return;
     try {
       await deleteActivityFromSupabase(activityId);
-      toast.success('Notatka usuniĂ„â„˘ta');
+      toast.success('Notatka usunięta');
       if (editingNote?.id && String(editingNote.id) === activityId) {
         setEditingNote(null);
         setEditingNoteContent('');
       }
       await loadLead();
     } catch (error: any) {
-      toast.error(`BÄąâ€šĂ„â€¦d usuwania notatki: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd usuwania notatki: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -2054,10 +2049,10 @@ useEffect(() => {
         caseId: task.caseId ? String(task.caseId) : null,
       });
       await addActivity('task_status_toggled', { title: String(task.title || 'Zadanie'), status: nextStatus, taskId: task.id });
-      toast.success(nextStatus === 'done' ? 'Zadanie oznaczone jako zrobione' : 'Zadanie przywrÄ‚Ĺ‚cone');
+      toast.success(nextStatus === 'done' ? 'Zadanie oznaczone jako zrobione' : 'Zadanie przywrócone');
       await loadLead({ silent: true });
     } catch (error: any) {
-      toast.error(`BÄąâ€šĂ„â€¦d zmiany statusu zadania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd zmiany statusu zadania: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
     }
@@ -2080,19 +2075,19 @@ useEffect(() => {
         caseId: task.caseId ? String(task.caseId) : null,
       });
       await addActivity('task_updated', { title: String(task.title || 'Zadanie'), scheduledAt, label });
-      toast.success(`Zadanie przesuniĂ„â„˘te: ${label}`);
+      toast.success(`Zadanie przesunięte: ${label}`);
       await loadLead({ silent: true });
     } catch (error: any) {
-      toast.error(`BÄąâ€šĂ„â€¦d zmiany terminu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd zmiany terminu: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
     }
   };
 
   const handleDeleteLinkedTask = async (task: any) => {
-    if (!window.confirm('UsunĂ„â€¦Ă„â€ˇ to zadanie?')) return;
+    if (!window.confirm('Usunąć to zadanie?')) return;
     const taskId = String(task?.id || '').trim();
-    if (!taskId) return toast.error('Brak ID zadania. Nie moÄąÄ˝na usunĂ„â€¦Ă„â€ˇ.');
+    if (!taskId) return toast.error('Brak ID zadania. Nie można usunąć.');
     const deletedAt = new Date().toISOString();
     const scheduledAt = String(getTaskDate(task) || task?.scheduledAt || task?.dueAt || task?.date || deletedAt);
     try {
@@ -2134,10 +2129,10 @@ useEffect(() => {
         },
       } as any);
       await addActivity('task_deleted', { title: String(task.title || 'Zadanie'), taskId, status: 'deleted', deletedAt, source: 'stage228r16_lead_linked_task_soft_delete' });
-      toast.success('Zadanie usuniĂ„â„˘te');
+      toast.success('Zadanie usunięte');
       await loadLead({ silent: true });
     } catch (error: any) {
-      toast.error(`BÄąâ€šĂ„â€¦d usuwania zadania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd usuwania zadania: ${error?.message || 'REQUEST_FAILED'}`);
       await loadLead({ silent: true }).catch(() => null);
     } finally {
       setLinkedEntryActionId(null);
@@ -2159,10 +2154,10 @@ useEffect(() => {
         caseId: event.caseId ? String(event.caseId) : null,
       });
       await addActivity('event_status_toggled', { title: String(event.title || 'Wydarzenie'), status: nextStatus, eventId: event.id });
-      toast.success(nextStatus === 'completed' ? 'Wydarzenie oznaczone jako zrobione' : 'Wydarzenie przywrÄ‚Ĺ‚cone');
+      toast.success(nextStatus === 'completed' ? 'Wydarzenie oznaczone jako zrobione' : 'Wydarzenie przywrócone');
       await loadLead({ silent: true });
     } catch (error: any) {
-      toast.error(`BÄąâ€šĂ„â€¦d zmiany statusu wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd zmiany statusu wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
     }
@@ -2187,17 +2182,17 @@ useEffect(() => {
         caseId: event.caseId ? String(event.caseId) : null,
       });
       await addActivity('event_updated', { title: String(event.title || 'Wydarzenie'), startAt, label });
-      toast.success(`Wydarzenie przesuniĂ„â„˘te: ${label}`);
+      toast.success(`Wydarzenie przesunięte: ${label}`);
       await loadLead({ silent: true });
     } catch (error: any) {
-      toast.error(`BÄąâ€šĂ„â€¦d zmiany terminu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd zmiany terminu: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
     }
   };
 
   const handleDeleteLinkedEvent = async (event: any) => {
-    if (!window.confirm('UsunĂ„â€¦Ă„â€ˇ to wydarzenie?')) return;
+    if (!window.confirm('Usunąć to wydarzenie?')) return;
     try {
       setLinkedEntryActionId(`event:${event.id}:delete`);
     const eventId = String(event?.id || '');
@@ -2207,11 +2202,11 @@ useEffect(() => {
     void stage228r50EventDeleteOptimisticSnapshot;
     await deleteEventFromSupabase(eventId);
       await addActivity('event_deleted', { title: String(event.title || 'Wydarzenie'), eventId: event.id });
-      toast.success('Wydarzenie usuniĂ„â„˘te');
+      toast.success('Wydarzenie usunięte');
       await loadLead({ silent: true });
     } catch (error: any) {
       setLinkedEvents(optimisticEventSnapshot);
-      toast.error(`BÄąâ€šĂ„â€¦d usuwania wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd usuwania wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
     }
@@ -2219,8 +2214,8 @@ useEffect(() => {
 
   const handleSaveLinkedTaskEdit = async () => {
     if (!editLinkedTask?.id) return;
-    if (!hasAccess) return toast.error('Trial wygasÄąâ€š.');
-    if (!editLinkedTask.title.trim()) return toast.error('Podaj tytuÄąâ€š zadania');
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!editLinkedTask.title.trim()) return toast.error('Podaj tytuł zadania');
     try {
       setEditLinkedTaskSubmitting(true);
       await updateTaskInSupabase({
@@ -2242,7 +2237,7 @@ useEffect(() => {
       setEditLinkedTask(null);
       await loadLead({ silent: true });
     } catch (error: any) {
-      toast.error(`BÄąâ€šĂ„â€¦d zapisu zadania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd zapisu zadania: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setEditLinkedTaskSubmitting(false);
     }
@@ -2250,8 +2245,8 @@ useEffect(() => {
 
   const handleSaveLinkedEventEdit = async () => {
     if (!editLinkedEvent?.id) return;
-    if (!hasAccess) return toast.error('Trial wygasÄąâ€š.');
-    if (!editLinkedEvent.title.trim()) return toast.error('Podaj tytuÄąâ€š wydarzenia');
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!editLinkedEvent.title.trim()) return toast.error('Podaj tytuł wydarzenia');
     try {
       setEditLinkedEventSubmitting(true);
       await updateEventInSupabase({
@@ -2271,7 +2266,7 @@ useEffect(() => {
       setEditLinkedEvent(null);
       await loadLead({ silent: true });
     } catch (error: any) {
-      toast.error(`BÄąâ€šĂ„â€¦d zapisu wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd zapisu wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setEditLinkedEventSubmitting(false);
     }
@@ -2281,7 +2276,7 @@ useEffect(() => {
     event?.preventDefault?.();
 
     if (!leadId || !lead) return;
-    if (!hasAccess) return toast.error('Trial wygasÄąâ€š.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     if (leadInService && serviceCaseId) {
       navigate(caseDetailPath(serviceCaseId));
       return;
@@ -2318,17 +2313,17 @@ useEffect(() => {
         movedToServiceAt: result.movedToServiceAt,
       }));
       setIsCreateCaseOpen(false);
-      toast.success('Sprawa utworzona. PrzechodzĂ„â„˘ do obsÄąâ€šugi.');
+      toast.success('Sprawa utworzona. Przechodzę do obsługi.');
       await loadLead();
       navigate(caseDetailPath(result.caseId));
     } catch (error: any) {
       const message = String(error?.message || 'REQUEST_FAILED');
       if (message.includes('LEAD_ALREADY_HAS_CASE') && serviceCaseId) {
-        toast.success('Temat jest juÄąÄ˝ w obsÄąâ€šudze. Otwieram sprawĂ„â„˘.');
+        toast.success('Temat jest już w obsłudze. Otwieram sprawę.');
         navigate(caseDetailPath(serviceCaseId));
         return;
       }
-      toast.error(`Nie udaÄąâ€šo siĂ„â„˘ rozpoczĂ„â€¦Ă„â€ˇ obsÄąâ€šugi: ${message}`);
+      toast.error(`Nie udało się rozpocząć obsługi: ${message}`);
     } finally {
       setCreateCasePending(false);
     }
@@ -2336,7 +2331,7 @@ useEffect(() => {
 
   const handleLinkExistingCase = async () => {
     if (!leadId || !linkCaseId) return;
-    if (!hasAccess) return toast.error('Trial wygasÄąâ€š.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     try {
       setLinkingCase(true);
       const selected = allCases.find((entry) => String(entry.id || '') === linkCaseId);
@@ -2346,11 +2341,11 @@ useEffect(() => {
         const { updateCaseInSupabase } = await import('../lib/supabase-fallback');
         await updateCaseInSupabase({ id: linkCaseId, leadId }).catch(() => null);
       }
-      await addActivity('case_linked', { caseId: linkCaseId, title: selected?.title || selected?.clientName || 'PowiĂ„â€¦zana sprawa' });
-      toast.success('Sprawa podpiĂ„â„˘ta do leada');
+      await addActivity('case_linked', { caseId: linkCaseId, title: selected?.title || selected?.clientName || 'Powiązana sprawa' });
+      toast.success('Sprawa podpięta do leada');
       await loadLead();
     } catch (error: any) {
-      toast.error(`Nie udaÄąâ€šo siĂ„â„˘ podpiĂ„â€¦Ă„â€ˇ sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się podpiąć sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkingCase(false);
     }
@@ -2366,7 +2361,7 @@ useEffect(() => {
         <main className="lead-detail-vnext-page" data-stage216m-r14-clean-copy-finance-mojibake-marker="true">
           <section className="lead-detail-loading-card">
             <Loader2 className="h-5 w-5 animate-spin" />
-            <span>ÄąÂadowanie leada...</span>
+            <span>Ładowanie leada...</span>
           </section>
         </main>
       </Layout>
@@ -2380,10 +2375,10 @@ useEffect(() => {
           <section className="lead-detail-empty-card">
             <EntityIcon entity="lead" className="h-8 w-8" />
             <h1>Nie znaleziono leada</h1>
-            <p>{loadError || 'Ten rekord mÄ‚Ĺ‚gÄąâ€š zostaĂ„â€ˇ usuniĂ„â„˘ty albo nie naleÄąÄ˝y do aktualnego workspace.'}</p>
+            <p>{loadError || 'Ten rekord mógł zostać usunięty albo nie należy do aktualnego workspace.'}</p>
             <Button type="button" variant="outline" onClick={() => navigate(leadsPath())}>
               <ArrowLeft className="h-4 w-4" />
-              WrÄ‚Ĺ‚Ă„â€ˇ do leadÄ‚Ĺ‚w
+              Wróć do leadów
             </Button>
           </section>
         </main>
@@ -2412,7 +2407,7 @@ useEffect(() => {
             </div>
             <div className="lead-detail-header-meta lead-detail-header-contact-grid" data-stage227e1-header-phone-visibility="true">
               <span className="lead-detail-header-meta-item" data-stage227e1-header-source="true">
-                <small>ÄąÄ…rÄ‚Ĺ‚dÄąâ€šo</small>
+                <small>Źródło</small>
                 <strong>{sourceLabel(lead.source)}</strong>
               </span>
               <span className="lead-detail-header-meta-item lead-detail-header-phone-item" data-stage227e1-header-phone="true">
@@ -2447,12 +2442,12 @@ useEffect(() => {
             {leadInService ? (
               <Button type="button" onClick={openCase} disabled={!serviceCaseId}>
                 <EntityIcon entity="case" className="h-4 w-4" />
-                OtwÄ‚Ĺ‚rz sprawĂ„â„˘
+                Otwórz sprawę
               </Button>
             ) : (
               <Button type="button" onClick={() => setIsCreateCaseOpen(true)} disabled={!hasAccess}>
                 <EntityIcon entity="case" className="h-4 w-4" />
-                Rozpocznij obsÄąâ€šugĂ„â„˘
+                Rozpocznij obsługę
               </Button>
             )}
           </div>
@@ -2461,17 +2456,17 @@ useEffect(() => {
         {showServiceBanner ? (
           <section className="lead-detail-service-box" data-lead-in-service-box="true">
             <div>
-              <p className="lead-detail-box-kicker">LEAD JUÄąÂ» W OBSÄąÂUDZE</p>
-              <h2>Ten temat jest juÄąÄ˝ w obsÄąâ€šudze</h2>
-              <p>Lead zostaje jako historia pozyskania. DalszĂ„â€¦ pracĂ„â„˘ prowadÄąĹź w powiĂ„â€¦zanej sprawie.</p>
+              <p className="lead-detail-box-kicker">LEAD JUŻ W OBSŁUDZE</p>
+              <h2>Ten temat jest już w obsłudze</h2>
+              <p>Lead zostaje jako historia pozyskania. Dalszą pracę prowadź w powiązanej sprawie.</p>
             </div>
             <div className="lead-detail-service-meta">
               <span><strong>Sprawa</strong>{serviceCaseTitle}</span>
               <span><strong>Status sprawy</strong>{serviceCaseStatusLabel}</span>
-              <span><strong>Data przejÄąâ€şcia</strong>{serviceMovedAtLabel}</span>
+              <span><strong>Data przejścia</strong>{serviceMovedAtLabel}</span>
             </div>
             <Button type="button" onClick={openCase} disabled={!serviceCaseId}>
-              OtwÄ‚Ĺ‚rz sprawĂ„â„˘ <ArrowRight className="h-4 w-4" />
+              Otwórz sprawę <ArrowRight className="h-4 w-4" />
             </Button>
           </section>
         ) : null}
@@ -2503,7 +2498,7 @@ useEffect(() => {
                   <strong>{statusLabel(lead.status)}</strong>
                 </div>
                 <div className="lead-detail-data-panel-row">
-                  <small>ÄąÄ…rÄ‚Ĺ‚dÄąâ€šo</small>
+                  <small>Źródło</small>
                   <strong>{sourceLabel(lead.source)}</strong>
                 </div>
                 <div className="lead-detail-data-panel-row lead-detail-data-panel-row-copy">
@@ -2525,11 +2520,11 @@ useEffect(() => {
                   <strong>{lead.company || 'Brak firmy'}</strong>
                 </div>
                 <div className="lead-detail-data-panel-row">
-                  <small>WartoÄąâ€şĂ„â€ˇ</small>
+                  <small>Wartość</small>
                   <strong>{leadFinance.formatted}</strong>
                 </div>
                 <div className="lead-detail-data-panel-row">
-                  <small>Ostatnia aktywnoÄąâ€şĂ„â€ˇ</small>
+                  <small>Ostatnia aktywność</small>
                   <strong>{formatDate(lead.updatedAt || activities[0]?.createdAt || lead.createdAt)}</strong>
                 </div>
               </div>
@@ -2537,12 +2532,12 @@ useEffect(() => {
 
 
             <section id="lead-activity-history" className="lead-detail-section-card lead-detail-left-activity-history-card" data-stage216j3i-activity-history-left-rail="true" data-stage227f3-left-history-source="true">
-              <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Historia aktywnoÄąâ€şci</h2></div>
+              <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Historia aktywności</h2></div>
 
               <div className="lead-detail-activity-history-rail-list">
                 {leadActivityHistoryItems.length === 0 ? (
                   <div className="lead-detail-light-empty lead-detail-action-empty lead-detail-action-empty-compact">
-                    <strong>Brak historii aktywnoÄąâ€şci.</strong>
+                    <strong>Brak historii aktywności.</strong>
                   </div>
                 ) : (
                   leadActivityHistoryItems.slice(0, 5).map((entry) => (
@@ -2560,7 +2555,7 @@ useEffect(() => {
 
               {leadActivityHistoryItems.length > 5 ? (
                 <details className="lead-detail-activity-history-rail-more" data-stage216j3h-activity-history-more="true">
-                  <summary>PokaÄąÄ˝ starsze wpisy</summary>
+                  <summary>Pokaż starsze wpisy</summary>
                   <div className="lead-detail-activity-history-rail-list">
                     {leadActivityHistoryItems.slice(5).map((entry) => (
                       <article key={`activity-rail-more-${entry.id}`} className="lead-detail-activity-history-rail-row">
@@ -2585,16 +2580,16 @@ useEffect(() => {
                 data-stage115-lead-notes-section="true"
                 data-stage216j3f-source-context-card="true"
                 data-lead-primary-note-text={leadPrimaryNoteText ? 'true' : 'false'}
-                aria-label="ÄąÄ…rÄ‚Ĺ‚dÄąâ€šo leada"
+                aria-label="Źródło leada"
               >
                 <div className="lead-detail-section-head">
                   <div>
-                    <h2>ÄąÄ…rÄ‚Ĺ‚dÄąâ€šo / pierwsza notatka</h2>
+                    <h2>Źródło / pierwsza notatka</h2>
                   </div>
                 </div>
                 <div className="lead-detail-notes-stack" data-lead-notes-stack="true">
                   <article className="lead-detail-note-source-card" data-lead-source-note="true">
-                    <small>Notatka ÄąĹźrÄ‚Ĺ‚dÄąâ€šowa z leada</small>
+                    <small>Notatka źródłowa z leada</small>
                     <strong>{formatDateTime(lead?.noteUpdatedAt || lead?.updatedAt || lead?.createdAt, 'Brak daty')}</strong>
                     <p className="lead-detail-note-text" lang="pl-PL">{leadSourceNoteText}</p>
                   </article>
@@ -2606,11 +2601,11 @@ useEffect(() => {
 {!leadInService ? (
                             <section className="lead-detail-top-grid" data-stage227e2-top-cards="true" data-stage227e3-decision-cards="true" data-stage227f1-decision-dashboard="true">
                 <article className="lead-detail-top-card lead-detail-callout-blue" data-stage227e2-next-step-card="true" data-stage227e3-next-step-card="true">
-                  <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>NastĂ„â„˘pny krok</h2></div>
+                  <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Następny krok</h2></div>
                   {nextTimelineEntry ? (
                     <>
                       <strong>{nextTimelineEntry.title}</strong>
-                      <p>{nextTimelineEntry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} Ă˘â‚¬Ë {nextTimelineEntry.statusLabel} Ă˘â‚¬Ë {nextTimelineEntry.dateLabel}</p>
+                      <p>{nextTimelineEntry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {nextTimelineEntry.statusLabel} • {nextTimelineEntry.dateLabel}</p>
                       <span className={`lead-detail-pill ${statusClass(nextTimelineEntry.status, nextTimelineEntry.dateValue)}`}>{nextTimelineEntry.statusLabel}</span>
                       <div className="lead-detail-card-inline-actions" data-stage231g-next-step-action="true">
                         <button type="button" className="lead-detail-inline-action" onClick={() => (nextTimelineEntry.kind === 'task' ? openLinkedTaskEditor(nextTimelineEntry.raw) : openLinkedEventEditor(nextTimelineEntry.raw))} disabled={!hasAccess}>Edytuj krok</button>
@@ -2619,19 +2614,19 @@ useEffect(() => {
                   ) : (
                     <div className="lead-detail-action-empty lead-detail-action-empty-compact">
                       <strong>Brak zaplanowanej akcji</strong>
-                      <p>Ustal zadanie albo wydarzenie, ÄąÄ˝eby lead nie wisiaÄąâ€š bez decyzji.</p>
+                      <p>Ustal zadanie albo wydarzenie, żeby lead nie wisiał bez decyzji.</p>
                       <div className="lead-detail-card-inline-actions" data-stage231g-next-step-action="true">
-                        <button type="button" className="lead-detail-inline-action" onClick={handleCreateQuickTask} disabled={!hasAccess}>Dodaj nastĂ„â„˘pny krok</button>
+                        <button type="button" className="lead-detail-inline-action" onClick={handleCreateQuickTask} disabled={!hasAccess}>Dodaj następny krok</button>
                       </div>
                     </div>
                   )}
                 </article>
                 <article className="lead-detail-top-card lead-detail-callout-green" data-stage227e2-potential-card="true" data-stage227e3-potential-card="true">
-                  <div className="lead-detail-card-title-row"><DollarSign className="h-4 w-4" /><h2>PotencjaÄąâ€š</h2></div>
+                  <div className="lead-detail-card-title-row"><DollarSign className="h-4 w-4" /><h2>Potencjał</h2></div>
                   <strong>{leadFinance.formatted}</strong>
-                  <p>{Number(lead?.dealValue || 0) > 0 ? 'Zapisana wartoÄąâ€şĂ„â€ˇ leada' : 'Brak wpisanej wartoÄąâ€şci'}</p>
+                  <p>{Number(lead?.dealValue || 0) > 0 ? 'Zapisana wartość leada' : 'Brak wpisanej wartości'}</p>
                   <div className="lead-detail-card-inline-actions" data-stage231g-potential-edit-action="true">
-                    <button type="button" className="lead-detail-inline-action" onClick={handleStartPotentialEditingStage231G} disabled={!hasAccess}>{Number(leadFinance.dealValue || 0) > 0 ? 'Edytuj potencjaÄąâ€š' : 'Ustaw potencjaÄąâ€š'}</button>
+                    <button type="button" className="lead-detail-inline-action" onClick={handleStartPotentialEditingStage231G} disabled={!hasAccess}>{Number(leadFinance.dealValue || 0) > 0 ? 'Edytuj potencjał' : 'Ustaw potencjał'}</button>
                   </div>
                 </article>
                 <article className="lead-detail-top-card lead-detail-callout-amber" data-stage227e2-silence-risk-card="true" data-stage227e3-silence-risk-card="true">
@@ -2641,7 +2636,7 @@ useEffect(() => {
                   <span className={`lead-detail-pill ${leadSilenceRisk.toneClass}`}>{leadSilenceRisk.label}</span>
                   <div className="lead-detail-card-inline-actions" data-stage231g-risk-action="true">
                     <button type="button" className="lead-detail-inline-action" onClick={handleCreateQuickTask} disabled={!hasAccess}>Ustaw follow-up</button>
-                    {leadSilenceRisk.label !== 'Pod kontrolĂ„â€¦' ? (
+                    {leadSilenceRisk.label !== 'Pod kontrolą' ? (
                       <button type="button" className="lead-detail-inline-action" onClick={() => handleUpdateStatus('contacted')} disabled={!hasAccess}>Kontakt wykonany</button>
                     ) : null}
                   </div>
@@ -2651,13 +2646,13 @@ useEffect(() => {
                   {leadBlockerEntries.length > 0 ? (
                     <>
                       <strong>{leadBlockerEntries.length === 1 ? '1 aktywna blokada' : leadBlockerEntries.length + ' aktywne blokady'}</strong>
-                      <p>{activeMissingItemEntriesStage228R19R2.length === leadBlockerEntries.length ? 'Wszystkie aktywne braki blokujĂ„â€¦ dalszy ruch.' : activeMissingItemEntriesStage228R19R2.length + ' aktywne braki i blokady Äąâ€šĂ„â€¦cznie.'}</p>
+                      <p>{activeMissingItemEntriesStage228R19R2.length === leadBlockerEntries.length ? 'Wszystkie aktywne braki blokują dalszy ruch.' : activeMissingItemEntriesStage228R19R2.length + ' aktywne braki i blokady łącznie.'}</p>
                       <span className="lead-detail-pill lead-detail-work-risk-danger">Wymaga ruchu</span>
                     </>
                   ) : (
                     <>
                       <strong>Brak blokad</strong>
-                      <p>{activeMissingItemEntriesStage228R19R2.length > 0 ? activeMissingItemEntriesStage228R19R2.length + ' aktywne braki bez blokady.' : 'Nie ma jawnych brakÄ‚Ĺ‚w blokujĂ„â€¦cych kolejny ruch.'}</p>
+                      <p>{activeMissingItemEntriesStage228R19R2.length > 0 ? activeMissingItemEntriesStage228R19R2.length + ' aktywne braki bez blokady.' : 'Nie ma jawnych braków blokujących kolejny ruch.'}</p>
                       <span className="lead-detail-pill lead-detail-work-risk-good">Czysto</span>
                     </>
                   )}
@@ -2684,14 +2679,14 @@ useEffect(() => {
               <section className="lead-detail-section-card lead-detail-work-summary-section lead-detail-overflow-work-summary" data-stage216j3c-work-summary="true" data-stage216j3e-overflow-work-summary="true">
                 <div className="lead-detail-section-head">
                   <div>
-                    <h2>PozostaÄąâ€še dziaÄąâ€šania</h2>
+                    <h2>Pozostałe działania</h2>
 </div>
                   <div hidden data-lead-detail-stage35-removed-local-create-actions="true" />
                 </div>
                 <div className="lead-detail-work-list">
                   {timeline.length === 0 ? (
                     <div className="lead-detail-light-empty lead-detail-action-empty">
-                      <strong>Brak zaplanowanych dziaÄąâ€šaÄąâ€ž.</strong>
+                      <strong>Brak zaplanowanych działań.</strong>
                       <div className="lead-detail-empty-actions">
                         <Button type="button" size="sm" onClick={handleCreateQuickTask} disabled={!hasAccess}>Dodaj follow-up</Button>
                         <Button type="button" size="sm" variant="outline" onClick={handleCreateQuickEvent} disabled={!hasAccess}>Dodaj wydarzenie</Button>
@@ -2718,14 +2713,14 @@ useEffect(() => {
                           <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 24 * 60 * 60 * 1000, '+1D') : handleRescheduleLinkedEvent(entry.raw, 24 * 60 * 60 * 1000, '+1D'))} disabled={linkedEntryActionId !== null}>+1D</LeadActionButton>
                           <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 7 * 24 * 60 * 60 * 1000, '+1W') : handleRescheduleLinkedEvent(entry.raw, 7 * 24 * 60 * 60 * 1000, '+1W'))} disabled={linkedEntryActionId !== null}>+1W</LeadActionButton>
                           {isMissingItemTimelineEntry(entry) ? (
-                                        <LeadActionButton data-stage228r13-lead-missing-resolve-action="true" onClick={() => handleResolveLeadMissingItemStage228R13(entry)} disabled={linkedEntryActionId !== null}>RozwiĂ„â€¦ÄąÄ˝ brak</LeadActionButton>
+                                        <LeadActionButton data-stage228r13-lead-missing-resolve-action="true" onClick={() => handleResolveLeadMissingItemStage228R13(entry)} disabled={linkedEntryActionId !== null}>Rozwiąż brak</LeadActionButton>
                                       ) : (
                                         <LeadActionButton onClick={() => (entry.kind === 'task' ? handleToggleLinkedTask(entry.raw) : handleToggleLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Zrobione</LeadActionButton>
                                       )}
                                                     {isMissingItemTimelineEntry(entry) ? (
-                            <LeadActionButton data-stage231g-r4-overflow-missing-delete="true" onClick={() => handleDeleteLeadMissingItemStage228R15(entry)} disabled={linkedEntryActionId !== null}>UsuÄąâ€ž brak</LeadActionButton>
+                            <LeadActionButton data-stage231g-r4-overflow-missing-delete="true" onClick={() => handleDeleteLeadMissingItemStage228R15(entry)} disabled={linkedEntryActionId !== null}>Usuń brak</LeadActionButton>
                           ) : (
-                            <LeadActionButton onClick={() => (entry.kind === 'task' ? handleDeleteLinkedTask(entry.raw) : handleDeleteLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>UsuÄąâ€ž</LeadActionButton>
+                            <LeadActionButton onClick={() => (entry.kind === 'task' ? handleDeleteLinkedTask(entry.raw) : handleDeleteLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Usuń</LeadActionButton>
                           )}
                         </div>
                       </article>
@@ -2739,7 +2734,7 @@ useEffect(() => {
               <section data-stage227f3-lead-actions-anchor="true" id="lead-actions" className="lead-detail-section-card lead-detail-stage228b-work-action-center lead-detail-stage228d-action-center" data-stage228b-lead-work-action-center="true" data-stage228b-r14-lead-action-center-vst="true" data-stage228d-lead-action-center-accordion="true" data-stage227e5-work-center-blockers-source="true" data-stage227f1-work-center="true" data-stage227f1-work-center-no-super-heading="true" data-stage227f3-lead-actions-source="true">
                 <div className="lead-detail-section-head">
                   <div>
-                    <h2>DziaÄąâ€šania leada</h2>
+                    <h2>Działania leada</h2>
                   </div>
                   <span className="lead-detail-pill lead-detail-pill-blue">Aktywne {activeLeadWorkEntries.length}</span>
                 </div>
@@ -2749,9 +2744,9 @@ useEffect(() => {
                     {
                       key: 'next' as LeadActionAccordionGroup,
                       tone: 'next',
-                      label: 'NajbliÄąÄ˝sze dziaÄąâ€šania',
+                      label: 'Najbliższe działania',
                       count: leadNextActionEntries.length,
-                      empty: 'Brak aktywnych zadaÄąâ€ž i wydarzeÄąâ€ž. Dodaj nastĂ„â„˘pny krok.',
+                      empty: 'Brak aktywnych zadań i wydarzeń. Dodaj następny krok.',
                       items: displayedLeadWorkEntries,
                       icon: <Clock className="h-4 w-4" />,
                     },
@@ -2760,7 +2755,7 @@ useEffect(() => {
                       tone: 'blockers',
                       label: 'Braki i blokady',
                       count: activeMissingItemEntriesStage228R19R2.length,
-                      empty: 'Brak jawnych brakÄ‚Ĺ‚w i blokad przy tym leadzie.',
+                      empty: 'Brak jawnych braków i blokad przy tym leadzie.',
                       items: activeMissingItemEntriesStage228R19R2.slice(0, 5),
                       icon: <AlertTriangle className="h-4 w-4" />,
                     },
@@ -2769,7 +2764,7 @@ useEffect(() => {
                       tone: 'active',
                       label: 'Wszystkie aktywne',
                       count: activeLeadWorkEntries.length,
-                      empty: 'Brak aktywnych dziaÄąâ€šaÄąâ€ž. Ustal nastĂ„â„˘pny krok.',
+                      empty: 'Brak aktywnych działań. Ustal następny krok.',
                       items: leadActiveWorkPreviewEntries,
                       icon: <CheckCircle2 className="h-4 w-4" />,
                     },
@@ -2789,7 +2784,7 @@ useEffect(() => {
                         >
                           <span className="lead-detail-action-accordion-title"><span aria-hidden="true">{group.icon}</span>{group.label}</span>
                           <strong>{group.count}</strong>
-                          <span className="lead-detail-action-accordion-toggle" aria-hidden="true">{isOpen ? 'Ă˘Ââ€™' : '+'}</span>
+                          <span className="lead-detail-action-accordion-toggle" aria-hidden="true">{isOpen ? '−' : '+'}</span>
                         </button>
 
                         {isOpen ? (
@@ -2802,7 +2797,7 @@ useEffect(() => {
                                   <article key={`stage228d-${String(group.key)}-${entry.id}`} className={`lead-detail-work-row ${entry.isOverdue || group.key === 'blockers' ? 'lead-detail-work-row-overdue' : ''}`} data-stage228d-lead-work-row="true" data-stage231g-work-row-layout="true" data-stage232n-row-kind={getLeadTimelineRowDataKindStage232N(entry)} data-stage232a-r10-r1-group-key={String(group.key)} data-stage232a-r10-r1-missing-tone-row={group.key === 'blockers' ? 'true' : 'false'}>
                                     <span className="lead-detail-work-row__icon lead-detail-work-icon">{isMissingItemTimelineEntry(entry) ? <AlertTriangle className="h-4 w-4" /> : entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
                                     <div className="lead-detail-work-row__content lead-detail-work-content">
-                                      <small>{getLeadTimelineKindLabelStage232N(entry)} Ă˘â‚¬Ë {getLeadTimelineStatusLabelStage232N(entry)}</small>
+                                      <small>{getLeadTimelineKindLabelStage232N(entry)} • {getLeadTimelineStatusLabelStage232N(entry)}</small>
                                       <h3>{entry.title}</h3>
                                       <p>{entry.dateLabel}</p>
                                     </div>
@@ -2810,22 +2805,22 @@ useEffect(() => {
                                     <div className="lead-detail-row-actions lead-detail-work-row__actions lead-detail-work-actions-block" data-stage232a-r9-row-actions={group.key === 'blockers' ? 'missing-only' : 'default'}>
                                       {group.key === 'blockers' ? (
                                         <>
-                                          <LeadActionButton data-stage228r13-lead-missing-resolve-action="true" onClick={() => handleResolveLeadMissingItemStage228R13(entry)} disabled={linkedEntryActionId !== null}>RozwiĂ„â€¦ÄąÄ˝ brak</LeadActionButton>
-                                          <LeadActionButton data-stage228r15-lead-missing-delete-action="true" onClick={() => handleDeleteLeadMissingItemStage228R15(entry)} disabled={linkedEntryActionId !== null}>UsuÄąâ€ž brak</LeadActionButton>
+                                          <LeadActionButton data-stage228r13-lead-missing-resolve-action="true" onClick={() => handleResolveLeadMissingItemStage228R13(entry)} disabled={linkedEntryActionId !== null}>Rozwiąż brak</LeadActionButton>
+                                          <LeadActionButton data-stage228r15-lead-missing-delete-action="true" onClick={() => handleDeleteLeadMissingItemStage228R15(entry)} disabled={linkedEntryActionId !== null}>Usuń brak</LeadActionButton>
                                         </>
                                       ) : (
                                         <>
                                           <LeadActionButton onClick={() => (entry.kind === 'task' ? openLinkedTaskEditor(entry.raw) : openLinkedEventEditor(entry.raw))}>Edytuj</LeadActionButton>
                                           <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 24 * 60 * 60 * 1000, 'Jutro') : handleRescheduleLinkedEvent(entry.raw, 24 * 60 * 60 * 1000, 'Jutro'))} disabled={linkedEntryActionId !== null}>Jutro</LeadActionButton>
                                           {isMissingItemTimelineEntry(entry) ? (
-                                            <LeadActionButton data-stage228r13-lead-missing-resolve-action="true" onClick={() => handleResolveLeadMissingItemStage228R13(entry)} disabled={linkedEntryActionId !== null}>RozwiĂ„â€¦ÄąÄ˝ brak</LeadActionButton>
+                                            <LeadActionButton data-stage228r13-lead-missing-resolve-action="true" onClick={() => handleResolveLeadMissingItemStage228R13(entry)} disabled={linkedEntryActionId !== null}>Rozwiąż brak</LeadActionButton>
                                           ) : (
                                             <LeadActionButton onClick={() => (entry.kind === 'task' ? handleToggleLinkedTask(entry.raw) : handleToggleLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Zrobione</LeadActionButton>
                                           )}
                                           {isMissingItemTimelineEntry(entry) ? (
-                                            <LeadActionButton data-stage228r15-lead-missing-delete-action="true" onClick={() => handleDeleteLeadMissingItemStage228R15(entry)} disabled={linkedEntryActionId !== null}>UsuÄąâ€ž brak</LeadActionButton>
+                                            <LeadActionButton data-stage228r15-lead-missing-delete-action="true" onClick={() => handleDeleteLeadMissingItemStage228R15(entry)} disabled={linkedEntryActionId !== null}>Usuń brak</LeadActionButton>
                                           ) : (
-                                            <LeadActionButton onClick={() => (entry.kind === 'task' ? handleDeleteLinkedTask(entry.raw) : handleDeleteLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>UsuÄąâ€ž</LeadActionButton>
+                                            <LeadActionButton onClick={() => (entry.kind === 'task' ? handleDeleteLinkedTask(entry.raw) : handleDeleteLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Usuń</LeadActionButton>
                                           )}
                                         </>
                                       )}
@@ -2852,7 +2847,7 @@ useEffect(() => {
                 <div className="lead-detail-note-actions-panel" data-stage216j3f-note-actions-only="true">
                   <Button type="button" onClick={() => setIsAddNoteOpen(true)} disabled={!hasAccess}>
                     <Plus className="h-4 w-4" />
-                    Dodaj notatkĂ„â„˘
+                    Dodaj notatkę
                   </Button>
                   <Button
                     type="button"
@@ -2864,7 +2859,7 @@ useEffect(() => {
                     disabled={!hasAccess}
                   >
                     {noteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                    {noteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkĂ„â„˘'}
+                    {noteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkę'}
                   </Button>
                 </div>
               ) : null}
@@ -2881,7 +2876,7 @@ useEffect(() => {
                       </div>
                       <div className="lead-detail-history-actions">
                         <LeadActionButton onClick={() => openEditNote(noteItem.raw)}>Edytuj</LeadActionButton>
-                        <LeadActionButton onClick={() => handleDeleteNote(String(noteItem.raw?.id || noteItem.id))}>UsuÄąâ€ž</LeadActionButton>
+                        <LeadActionButton onClick={() => handleDeleteNote(String(noteItem.raw?.id || noteItem.id))}>Usuń</LeadActionButton>
                       </div>
                     </article>
                   ))
@@ -2951,7 +2946,7 @@ useEffect(() => {
                 },
                 {
                   key: 'service',
-                  label: 'Rozpocznij obsÄąâ€šugĂ„â„˘',
+                  label: 'Rozpocznij obsługę',
                   tone: 'service',
                   icon: <EntityIcon entity="case" className="h-4 w-4" />,
                   onClick: () => setIsCreateCaseOpen(true),
@@ -2963,15 +2958,15 @@ useEffect(() => {
 
             <section className="right-card lead-detail-right-card" data-lead-finance-panel="true" data-stage115e-lead-finance-actions="true">
               <div className="lead-detail-card-title-row"><DollarSign className="h-4 w-4" /><h2>Finanse leada</h2></div>
-              <small>PotencjaÄąâ€š: {Number(leadFinancePanel.potential || 0).toLocaleString('pl-PL')} {leadFinance.currency}</small>
-              <small>WpÄąâ€šacono: {Number(leadFinancePanel.paid || 0).toLocaleString('pl-PL')} {leadFinance.currency}</small>
-              <small>Do zapÄąâ€šaty: {Number(leadFinancePanel.remaining || 0).toLocaleString('pl-PL')} {leadFinance.currency}</small>
-              <small>Status pÄąâ€šatnoÄąâ€şci: {billingStatusLabel(String(leadFinancePanel.billingStatus || lead?.billingStatus || 'not_started'))}</small>
+              <small>Potencjał: {Number(leadFinancePanel.potential || 0).toLocaleString('pl-PL')} {leadFinance.currency}</small>
+              <small>Wpłacono: {Number(leadFinancePanel.paid || 0).toLocaleString('pl-PL')} {leadFinance.currency}</small>
+              <small>Do zapłaty: {Number(leadFinancePanel.remaining || 0).toLocaleString('pl-PL')} {leadFinance.currency}</small>
+              <small>Status płatności: {billingStatusLabel(String(leadFinancePanel.billingStatus || lead?.billingStatus || 'not_started'))}</small>
               {!leadInService ? (
                 <div className="lead-detail-right-actions">
-                  <button type="button" data-stage231g-finance-edit-potential="true" onClick={handleStartPotentialEditingStage231G} disabled={!hasAccess}>Edytuj potencjaÄąâ€š</button>
-                  <button type="button" data-stage115e-open-deposit-payment="true" onClick={() => openLeadPaymentDialog('deposit')} disabled={!hasAccess}>Dodaj zaliczkĂ„â„˘</button>
-                  <button type="button" data-stage115e-open-partial-payment="true" onClick={() => openLeadPaymentDialog('partial')} disabled={!hasAccess}>PÄąâ€šatnoÄąâ€şĂ„â€ˇ czĂ„â„˘Äąâ€şciowa</button>
+                  <button type="button" data-stage231g-finance-edit-potential="true" onClick={handleStartPotentialEditingStage231G} disabled={!hasAccess}>Edytuj potencjał</button>
+                  <button type="button" data-stage115e-open-deposit-payment="true" onClick={() => openLeadPaymentDialog('deposit')} disabled={!hasAccess}>Dodaj zaliczkę</button>
+                  <button type="button" data-stage115e-open-partial-payment="true" onClick={() => openLeadPaymentDialog('partial')} disabled={!hasAccess}>Płatność częściowa</button>
                 </div>
               ) : null}
             </section>
@@ -2988,7 +2983,7 @@ useEffect(() => {
           onOpenChange={setLeadMissingManagerOpen}
           scopeLabel="Lead"
           title="Braki / Blokady"
-          description="Lista aktywnych brakÄ‚Ĺ‚w leada. Dodaj brak, ustaw czy blokuje, oznacz jako uzupeÄąâ€šniony albo usuÄąâ€ž."
+          description="Lista aktywnych braków leada. Dodaj brak, ustaw czy blokuje, oznacz jako uzupełniony albo usuń."
           titleValue={leadMissingManagerTitle}
           blockerValue={leadMissingManagerBlocksProgress}
           error={leadMissingManagerError}
@@ -3007,15 +3002,15 @@ useEffect(() => {
         />
 <Dialog open={isCreateCaseOpen} onOpenChange={setIsCreateCaseOpen}>
           <DialogContent aria-describedby={undefined}>
-            <DialogHeader><DialogTitle>Rozpocznij obsÄąâ€šugĂ„â„˘</DialogTitle>
-<DialogDescription>UzupeÄąâ€šnij dane i zapisz zmiany w kartotece leada.</DialogDescription></DialogHeader>
+            <DialogHeader><DialogTitle>Rozpocznij obsługę</DialogTitle>
+<DialogDescription>Uzupełnij dane i zapisz zmiany w kartotece leada.</DialogDescription></DialogHeader>
             <div className="lead-detail-dialog-grid">
-              <Label>TytuÄąâ€š sprawy<Input value={createCaseDraft.title} onChange={(event) => setCreateCaseDraft((current) => ({ ...current, title: event.target.value }))} /></Label>
+              <Label>Tytuł sprawy<Input value={createCaseDraft.title} onChange={(event) => setCreateCaseDraft((current) => ({ ...current, title: event.target.value }))} /></Label>
               <Label>Klient<Input value={createCaseDraft.clientName} onChange={(event) => setCreateCaseDraft((current) => ({ ...current, clientName: event.target.value }))} /></Label>
               <Label>E-mail<Input value={createCaseDraft.clientEmail} onChange={(event) => setCreateCaseDraft((current) => ({ ...current, clientEmail: event.target.value }))} /></Label>
               <Label>Telefon<Input value={createCaseDraft.clientPhone} onChange={(event) => setCreateCaseDraft((current) => ({ ...current, clientPhone: event.target.value }))} /></Label>
               {availableCasesToLink.length > 0 ? (
-                <Label>PodÄąâ€šĂ„â€¦cz istniejĂ„â€¦cĂ„â€¦ sprawĂ„â„˘
+                <Label>Podłącz istniejącą sprawę
                   <select className={modalSelectClass} value={linkCaseId} onChange={(event) => setLinkCaseId(event.target.value)}>
                     <option value="">Nie podpinaj</option>
                     {availableCasesToLink.map((entry: any) => (
@@ -3027,8 +3022,8 @@ useEffect(() => {
             </div>
             <DialogFooter className={modalFooterClass()}>
               <Button type="button" variant="outline" onClick={() => setIsCreateCaseOpen(false)}>Anuluj</Button>
-              {linkCaseId ? <Button type="button" variant="outline" onClick={handleLinkExistingCase} disabled={linkingCase}>{linkingCase ? 'Podpinam...' : 'Podepnij sprawĂ„â„˘'}</Button> : null}
-              <Button type="button" onClick={handleStartService} disabled={createCasePending}>{createCasePending ? 'TworzĂ„â„˘...' : 'Rozpocznij obsÄąâ€šugĂ„â„˘'}</Button>
+              {linkCaseId ? <Button type="button" variant="outline" onClick={handleLinkExistingCase} disabled={linkingCase}>{linkingCase ? 'Podpinam...' : 'Podepnij sprawę'}</Button> : null}
+              <Button type="button" onClick={handleStartService} disabled={createCasePending}>{createCasePending ? 'Tworzę...' : 'Rozpocznij obsługę'}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -3037,14 +3032,14 @@ useEffect(() => {
         <Dialog open={Boolean(leadPaymentDialogType)} onOpenChange={(open) => !open && closeLeadPaymentDialog()}>
           <DialogContent className="lead-detail-finance-dialog" data-stage115e-lead-payment-dialog="true" aria-describedby={undefined}>
             <DialogHeader>
-              <DialogTitle>{leadPaymentDialogType === 'deposit' ? 'Dodaj zaliczkĂ„â„˘' : 'PÄąâ€šatnoÄąâ€şĂ„â€ˇ czĂ„â„˘Äąâ€şciowa'}</DialogTitle>
-              <DialogDescription>UzupeÄąâ€šnij dane i zapisz zmiany w kartotece leada.</DialogDescription>
+              <DialogTitle>{leadPaymentDialogType === 'deposit' ? 'Dodaj zaliczkę' : 'Płatność częściowa'}</DialogTitle>
+              <DialogDescription>Uzupełnij dane i zapisz zmiany w kartotece leada.</DialogDescription>
             </DialogHeader>
             <form className="lead-detail-dialog-grid lead-detail-finance-dialog-form" onSubmit={handleSaveLeadPayment}>
               <div className="lead-detail-finance-dialog-summary">
-                <span>PotencjaÄąâ€š: <strong>{Number(leadFinancePanel.potential || 0).toLocaleString('pl-PL')} {leadFinance.currency}</strong></span>
-                <span>WpÄąâ€šacono: <strong>{Number(leadFinancePanel.paid || 0).toLocaleString('pl-PL')} {leadFinance.currency}</strong></span>
-                <span>Do zapÄąâ€šaty: <strong>{Number(leadFinancePanel.remaining || 0).toLocaleString('pl-PL')} {leadFinance.currency}</strong></span>
+                <span>Potencjał: <strong>{Number(leadFinancePanel.potential || 0).toLocaleString('pl-PL')} {leadFinance.currency}</strong></span>
+                <span>Wpłacono: <strong>{Number(leadFinancePanel.paid || 0).toLocaleString('pl-PL')} {leadFinance.currency}</strong></span>
+                <span>Do zapłaty: <strong>{Number(leadFinancePanel.remaining || 0).toLocaleString('pl-PL')} {leadFinance.currency}</strong></span>
               </div>
               <Label>Kwota
                 <Input
@@ -3061,13 +3056,13 @@ useEffect(() => {
                 <Textarea
                   value={leadPaymentNote}
                   onChange={(event) => setLeadPaymentNote(event.target.value)}
-                  placeholder="Opcjonalnie: czego dotyczy pÄąâ€šatnoÄąâ€şĂ„â€ˇ"
+                  placeholder="Opcjonalnie: czego dotyczy płatność"
                 />
               </Label>
               <DialogFooter className={modalFooterClass()}>
                 <Button type="button" variant="outline" onClick={closeLeadPaymentDialog} disabled={leadPaymentSaving}>Anuluj</Button>
                 <Button type="submit" disabled={leadPaymentSaving || !leadPaymentAmount.trim()}>
-                  {leadPaymentSaving ? 'ZapisujĂ„â„˘...' : 'Zapisz pÄąâ€šatnoÄąâ€şĂ„â€ˇ'}
+                  {leadPaymentSaving ? 'Zapisuję...' : 'Zapisz płatność'}
                 </Button>
               </DialogFooter>
             </form>
@@ -3077,15 +3072,15 @@ useEffect(() => {
         <Dialog open={isPotentialEditingStage231GR7} onOpenChange={(open) => { if (open) setIsPotentialEditingStage231GR7(true); else handleCancelPotentialEditingStage231GR7(); }}>
           <DialogContent className="lead-detail-potential-dialog" data-stage231g-r7-potential-only-dialog="true" aria-describedby={undefined}>
             <DialogHeader>
-              <DialogTitle>Ustaw potencjaÄąâ€š</DialogTitle>
-              <DialogDescription>Wpisz tylko wartoÄąâ€şĂ„â€ˇ potencjaÄąâ€šu. PozostaÄąâ€še dane leada zostajĂ„â€¦ bez zmian.</DialogDescription>
+              <DialogTitle>Ustaw potencjał</DialogTitle>
+              <DialogDescription>Wpisz tylko wartość potencjału. Pozostałe dane leada zostają bez zmian.</DialogDescription>
             </DialogHeader>
             <form className="lead-detail-dialog-grid lead-detail-potential-dialog-form" onSubmit={handleSavePotentialStage231GR7}>
               <div className="lead-detail-finance-dialog-summary" data-stage231g-r7-potential-summary="true">
                 <span>Aktualnie: <strong>{Number(leadFinance.dealValue || 0).toLocaleString('pl-PL')} {leadFinance.currency}</strong></span>
-                <span>ÄąÄ…rÄ‚Ĺ‚dÄąâ€šo: <strong>wartoÄąâ€şĂ„â€ˇ leada</strong></span>
+                <span>Źródło: <strong>wartość leada</strong></span>
               </div>
-              <Label>PotencjaÄąâ€š / wartoÄąâ€şĂ„â€ˇ
+              <Label>Potencjał / wartość
                 <Input
                   ref={potentialInputRefStage231G}
                   data-stage231g-potential-input="true"
@@ -3102,7 +3097,7 @@ useEffect(() => {
               <DialogFooter className={modalFooterClass()}>
                 <Button type="button" variant="outline" onClick={handleCancelPotentialEditingStage231GR7} disabled={potentialSavingStage231GR7}>Anuluj</Button>
                 <Button type="submit" disabled={potentialSavingStage231GR7 || !potentialDraftStage231GR7.trim()}>
-                  {potentialSavingStage231GR7 ? 'ZapisujĂ„â„˘...' : 'Zapisz potencjaÄąâ€š'}
+                  {potentialSavingStage231GR7 ? 'Zapisuję...' : 'Zapisz potencjał'}
                 </Button>
               </DialogFooter>
             </form>
@@ -3112,14 +3107,14 @@ useEffect(() => {
         <Dialog open={isEditing} onOpenChange={setIsEditing}>
           <DialogContent aria-describedby={undefined}>
             <DialogHeader><DialogTitle>Edytuj leada</DialogTitle>
-<DialogDescription>UzupeÄąâ€šnij dane leada i zapisz zmiany w kartotece.</DialogDescription></DialogHeader>
+<DialogDescription>Uzupełnij dane leada i zapisz zmiany w kartotece.</DialogDescription></DialogHeader>
             <div className="lead-detail-dialog-grid">
               <Label>Nazwa<Input value={editLead?.name || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, name: event.target.value }))} /></Label>
               <Label>Firma<Input value={editLead?.company || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, company: event.target.value }))} /></Label>
               <Label>Telefon<Input value={editLead?.phone || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, phone: event.target.value }))} /></Label>
               <Label>E-mail<Input value={editLead?.email || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, email: event.target.value }))} /></Label>
-              <Label>ÄąÄ…rÄ‚Ĺ‚dÄąâ€šo<select className={modalSelectClass} value={editLead?.source || 'other'} onChange={(event) => setEditLead((current: any) => ({ ...current, source: event.target.value }))}>{LEAD_LEAD_SOURCE_OPTIONS.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></Label>
-              <Label>PotencjaÄąâ€š / wartoÄąâ€şĂ„â€ˇ<Input ref={potentialInputRefStage231G} data-stage231g-potential-input="true" type="number" value={editLead?.dealValue || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, dealValue: event.target.value }))} /></Label>
+              <Label>Źródło<select className={modalSelectClass} value={editLead?.source || 'other'} onChange={(event) => setEditLead((current: any) => ({ ...current, source: event.target.value }))}>{LEAD_SOURCE_OPTIONS.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></Label>
+              <Label>Potencjał / wartość<Input ref={potentialInputRefStage231G} data-stage231g-potential-input="true" type="number" value={editLead?.dealValue || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, dealValue: event.target.value }))} /></Label>
               <Label>Notatka<Textarea value={editLead?.note || editLead?.notes || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, note: event.target.value }))} /></Label>
             </div>
             <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setIsEditing(false)}>Anuluj</Button><Button type="button" onClick={handleUpdateLead}>Zapisz</Button></DialogFooter>
@@ -3129,44 +3124,44 @@ useEffect(() => {
         <Dialog open={Boolean(editLinkedTask)} onOpenChange={(open) => !open && setEditLinkedTask(null)}>
           <DialogContent aria-describedby={undefined}>
             <DialogHeader><DialogTitle>Edytuj zadanie</DialogTitle>
-<DialogDescription>UzupeÄąâ€šnij dane zadania i zapisz, aby zaplanowaĂ„â€ˇ pracĂ„â„˘ przy leadzie.</DialogDescription></DialogHeader>
+<DialogDescription>Uzupełnij dane zadania i zapisz, aby zaplanować pracę przy leadzie.</DialogDescription></DialogHeader>
             {editLinkedTask ? <div className="lead-detail-dialog-grid">
-              <Label>TytuÄąâ€š<Input value={editLinkedTask.title} onChange={(event) => setEditLinkedTask((current: any) => ({ ...current, title: event.target.value }))} /></Label>
+              <Label>Tytuł<Input value={editLinkedTask.title} onChange={(event) => setEditLinkedTask((current: any) => ({ ...current, title: event.target.value }))} /></Label>
               <Label>Typ<select className={modalSelectClass} value={editLinkedTask.type} onChange={(event) => setEditLinkedTask((current: any) => ({ ...current, type: event.target.value }))}>{TASK_TYPES.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></Label>
               <Label>Termin<Input type="datetime-local" value={editLinkedTask.dueAt} onChange={(event) => setEditLinkedTask((current: any) => ({ ...current, dueAt: event.target.value }))} /></Label>
               <Label>Status<select className={modalSelectClass} value={editLinkedTask.status} onChange={(event) => setEditLinkedTask((current: any) => ({ ...current, status: event.target.value }))}><option value="todo">Do zrobienia</option><option value="in_progress">W trakcie</option><option value="done">Zrobione</option></select></Label>
               <Label>Powtarzanie<select className={modalSelectClass} value={editLinkedTask.recurrenceRule} onChange={(event) => setEditLinkedTask((current: any) => ({ ...current, recurrenceRule: event.target.value }))}>{SIMPLE_RECURRENCE_OPTIONS.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></Label>
             </div> : null}
-            <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setEditLinkedTask(null)}>Anuluj</Button><Button type="button" onClick={handleSaveLinkedTaskEdit} disabled={editLinkedTaskSubmitting}>{editLinkedTaskSubmitting ? 'ZapisujĂ„â„˘...' : 'Zapisz'}</Button></DialogFooter>
+            <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setEditLinkedTask(null)}>Anuluj</Button><Button type="button" onClick={handleSaveLinkedTaskEdit} disabled={editLinkedTaskSubmitting}>{editLinkedTaskSubmitting ? 'Zapisuję...' : 'Zapisz'}</Button></DialogFooter>
           </DialogContent>
         </Dialog>
 
         <Dialog open={Boolean(editLinkedEvent)} onOpenChange={(open) => !open && setEditLinkedEvent(null)}>
           <DialogContent aria-describedby={undefined}>
             <DialogHeader><DialogTitle>Edytuj wydarzenie</DialogTitle>
-<DialogDescription>UzupeÄąâ€šnij dane wydarzenia i zapisz, aby zaplanowaĂ„â€ˇ termin przy leadzie.</DialogDescription></DialogHeader>
+<DialogDescription>Uzupełnij dane wydarzenia i zapisz, aby zaplanować termin przy leadzie.</DialogDescription></DialogHeader>
             {editLinkedEvent ? <div className="lead-detail-dialog-grid">
-              <Label>TytuÄąâ€š<Input value={editLinkedEvent.title} onChange={(event) => setEditLinkedEvent((current: any) => ({ ...current, title: event.target.value }))} /></Label>
+              <Label>Tytuł<Input value={editLinkedEvent.title} onChange={(event) => setEditLinkedEvent((current: any) => ({ ...current, title: event.target.value }))} /></Label>
               <Label>Typ<select className={modalSelectClass} value={editLinkedEvent.type} onChange={(event) => setEditLinkedEvent((current: any) => ({ ...current, type: event.target.value }))}>{EVENT_TYPES.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></Label>
               <Label>Start<Input type="datetime-local" value={editLinkedEvent.startAt} onChange={(event) => setEditLinkedEvent((current: any) => ({ ...current, startAt: event.target.value }))} /></Label>
               <Label>Koniec<Input type="datetime-local" value={editLinkedEvent.endAt} onChange={(event) => setEditLinkedEvent((current: any) => ({ ...current, endAt: event.target.value }))} /></Label>
               <Label>Status<select className={modalSelectClass} value={editLinkedEvent.status} onChange={(event) => setEditLinkedEvent((current: any) => ({ ...current, status: event.target.value }))}><option value="scheduled">Zaplanowane</option><option value="completed">Zrobione</option><option value="cancelled">Anulowane</option></select></Label>
             </div> : null}
-            <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setEditLinkedEvent(null)}>Anuluj</Button><Button type="button" onClick={handleSaveLinkedEventEdit} disabled={editLinkedEventSubmitting}>{editLinkedEventSubmitting ? 'ZapisujĂ„â„˘...' : 'Zapisz'}</Button></DialogFooter>
+            <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setEditLinkedEvent(null)}>Anuluj</Button><Button type="button" onClick={handleSaveLinkedEventEdit} disabled={editLinkedEventSubmitting}>{editLinkedEventSubmitting ? 'Zapisuję...' : 'Zapisz'}</Button></DialogFooter>
           </DialogContent>
         </Dialog>
 
                 <Dialog open={isAddNoteOpen} onOpenChange={(open) => { setIsAddNoteOpen(open); if (!open) { stopNoteSpeech(); setNoteInterimText(''); } }}>
           <DialogContent data-stage216j3f-add-note-dialog="true" aria-describedby={undefined}>
             <DialogHeader>
-              <DialogTitle>Dodaj notatkĂ„â„˘</DialogTitle>
-              <DialogDescription>Zapisz notatkĂ„â„˘ po rozmowie, telefonie, spotkaniu albo ustaleniach z leadem.</DialogDescription>
+              <DialogTitle>Dodaj notatkę</DialogTitle>
+              <DialogDescription>Zapisz notatkę po rozmowie, telefonie, spotkaniu albo ustaleniach z leadem.</DialogDescription>
             </DialogHeader>
             <form className="lead-detail-add-note-dialog-form" onSubmit={handleAddNote}>
               <Textarea
                 value={note}
                 onChange={(event) => setNote(event.target.value)}
-                placeholder="Wpisz notatkĂ„â„˘..."
+                placeholder="Wpisz notatkę..."
                 className="lead-detail-note-input"
                 lang="pl-PL"
                 autoFocus
@@ -3179,7 +3174,7 @@ useEffect(() => {
                 </Button>
                 <Button type="button" variant="outline" onClick={() => setIsAddNoteOpen(false)} disabled={addingNote}>Anuluj</Button>
                 <Button type="submit" disabled={!note.trim() || !hasAccess || addingNote}>
-                  {addingNote ? 'Zapisywanie...' : 'Zapisz notatkĂ„â„˘'}
+                  {addingNote ? 'Zapisywanie...' : 'Zapisz notatkę'}
                 </Button>
               </DialogFooter>
             </form>
@@ -3187,8 +3182,8 @@ useEffect(() => {
         </Dialog>
         <Dialog open={Boolean(editingNote)} onOpenChange={(open) => !open && setEditingNote(null)}>
           <DialogContent aria-describedby={undefined}>
-            <DialogHeader><DialogTitle>Edytuj notatkĂ„â„˘</DialogTitle>
-<DialogDescription>UzupeÄąâ€šnij treÄąâ€şĂ„â€ˇ notatki i zapisz jĂ„â€¦ w historii leada.</DialogDescription></DialogHeader>
+            <DialogHeader><DialogTitle>Edytuj notatkę</DialogTitle>
+<DialogDescription>Uzupełnij treść notatki i zapisz ją w historii leada.</DialogDescription></DialogHeader>
             <Textarea value={editingNoteContent} onChange={(event) => setEditingNoteContent(event.target.value)} />
             <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setEditingNote(null)}>Anuluj</Button><Button type="button" onClick={handleSaveEditedNote}>Zapisz</Button></DialogFooter>
           </DialogContent>
