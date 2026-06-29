@@ -9,6 +9,7 @@ const canonical = 'src/lib/source-of-truth/client-options.ts';
 const errors = [];
 const warnings = [];
 const checked = [];
+const mojibakePattern = /[\u00c5\u00c4\u0139\ufffd]/;
 function file(rel) { checked.push(rel); return fs.readFileSync(path.join(root, rel), 'utf8'); }
 function exists(rel) { return fs.existsSync(path.join(root, rel)); }
 function error(msg) { errors.push(msg); }
@@ -88,7 +89,7 @@ const forbiddenChanged = changedFiles.filter((rel) => {
 if (forbiddenChanged.length) error(`forbidden changed files: ${forbiddenChanged.join(', ')}`);
 
 for (const [rel, content] of [[canonical, clientOptions], ['src/lib/clients.ts', clientsLib]]) {
-  if (/[ÅÄĹ�]/.test(content)) error(`${rel} contains mojibake`);
+  if (mojibakePattern.test(content)) error(`${rel} contains mojibake`);
 }
 
 const vaultCandidates = [process.env.OBSIDIAN_VAULT_ROOT, path.resolve(root, '../00_OBSIDIAN_VAULT'), path.resolve(root, '../../00_OBSIDIAN_VAULT')].filter(Boolean);
