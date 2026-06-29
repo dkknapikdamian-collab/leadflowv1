@@ -1,4 +1,10 @@
 import { parseISO, differenceInCalendarDays, isValid } from 'date-fns';
+import {
+  getClientHealthLabel,
+  getClientHealthTone,
+  getPortalStatusLabel,
+  type ClientSourceValue,
+} from './source-of-truth/client-options';
 
 type DateLikeValue =
   | string
@@ -64,7 +70,7 @@ export type ClientViewModel = {
   primaryLeadId?: string | null;
   primaryCaseId?: string | null;
   portalReady: boolean;
-  source: 'client' | 'case' | 'lead';
+  source: ClientSourceValue;
   updatedAt?: DateLikeValue;
   notes?: string;
 };
@@ -102,7 +108,7 @@ export function toJsDate(value?: DateLikeValue) {
 }
 
 export function portalStatusLabel(portalReady?: boolean) {
-  return portalReady ? 'Portal gotowy' : 'Portal jeszcze niegotowy';
+  return getPortalStatusLabel(portalReady);
 }
 
 export function clientHealthLabel(input: {
@@ -111,26 +117,11 @@ export function clientHealthLabel(input: {
   linkedLeadCount: number;
   portalReady: boolean;
 }) {
-  if (input.linkedCaseCount > 0 && input.portalReady) return 'W realizacji';
-  if (input.linkedCaseCount > 0) return 'Onboarding';
-  if (input.daysSinceTouch >= 7) return 'Wymaga ruchu';
-  if (input.linkedLeadCount > 0) return 'W sprzedaży';
-  return 'Do spięcia';
+  return getClientHealthLabel(input);
 }
 
 export function clientHealthTone(label: string) {
-  switch (label) {
-    case 'W realizacji':
-      return 'bg-emerald-500/12 text-emerald-500 border-emerald-500/20';
-    case 'Onboarding':
-      return 'bg-sky-500/12 text-sky-500 border-sky-500/20';
-    case 'W sprzedaży':
-      return 'bg-indigo-500/12 text-indigo-500 border-indigo-500/20';
-    case 'Wymaga ruchu':
-      return 'bg-amber-500/12 text-amber-500 border-amber-500/20';
-    default:
-      return 'bg-slate-500/12 text-slate-500 border-slate-500/20';
-  }
+  return getClientHealthTone(label);
 }
 
 export function getDaysSinceTouch(updatedAt?: DateLikeValue) {
