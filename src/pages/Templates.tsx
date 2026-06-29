@@ -48,79 +48,19 @@ import '../styles/closeflow-template-modal-source-truth-stage181l.css';
 import '../styles/closeflow-template-modal-source-truth-stage181n.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import '../styles/closeflow-canvas-source-truth-stage211e.css';
-type TemplateItemType = 'file' | 'text' | 'decision' | 'access' | 'meeting' | 'payment' | 'materials' | 'other';
-
-type TemplateItemDraft = {
-  title: string;
-  description: string;
-  type: TemplateItemType;
-  customTypeName?: string;
-  isRequired: boolean;
-};
-
-type TemplateRecord = {
-  id: string;
-  name?: string;
-  items?: TemplateItemDraft[];
-};
-
-const ITEM_TYPE_OPTIONS: { value: TemplateItemType; label: string; badgeClassName: string }[] = [
-  { value: 'file', label: 'Plik', badgeClassName: 'border-sky-200 bg-sky-50 text-sky-700' },
-  { value: 'text', label: 'Tekst / brief', badgeClassName: 'border-indigo-200 bg-indigo-50 text-indigo-700' },
-  { value: 'decision', label: 'Decyzja / akceptacja', badgeClassName: 'border-amber-200 bg-amber-50 text-amber-700' },
-  { value: 'access', label: 'Dostęp / login', badgeClassName: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
-  { value: 'meeting', label: 'Spotkanie / telefon', badgeClassName: 'border-blue-200 bg-blue-50 text-blue-700' },
-  { value: 'payment', label: 'Płatność / faktura', badgeClassName: 'border-rose-200 bg-rose-50 text-rose-700' },
-  { value: 'materials', label: 'Materiały / zdjęcia', badgeClassName: 'border-violet-200 bg-violet-50 text-violet-700' },
-  { value: 'other', label: 'Inne', badgeClassName: 'border-slate-200 bg-slate-50 text-slate-700' },
-];
-
-const EMPTY_ITEM: TemplateItemDraft = {
-  title: '',
-  description: '',
-  type: 'file',
-  isRequired: true,
-};
-
-function cloneEmptyItem(): TemplateItemDraft {
-  return { ...EMPTY_ITEM };
-}
-
-function createEmptyDraft() {
-  return {
-    name: '',
-    items: [cloneEmptyItem()],
-  };
-}
-
-function normalizeTemplateItems(items?: TemplateItemDraft[]) {
-  if (!items?.length) return [];
-  return items.map((item) => ({
-    title: item.title?.trim() || '',
-    description: item.description?.trim() || '',
-    type: item.type || 'file',
-    isRequired: item.isRequired !== false,
-  }));
-}
-
-function itemTypeMeta(type?: TemplateItemType) {
-  return ITEM_TYPE_OPTIONS.find((entry) => entry.value === type) || ITEM_TYPE_OPTIONS[0];
-}
-
-function getTemplateItemTypeLabel(item: TemplateItemDraft) {
-  if (item.type === 'other') {
-    return item.customTypeName?.trim() || 'Inne';
-  }
-  return itemTypeMeta(item.type).label;
-}
-
-function getTemplateItemCount(template: TemplateRecord) {
-  return normalizeTemplateItems(template.items).length;
-}
-
-function getRequiredItemCount(template: TemplateRecord) {
-  return normalizeTemplateItems(template.items).filter((item) => item.isRequired).length;
-}
+import {
+  TEMPLATE_ITEM_TYPE_OPTIONS,
+  createEmptyTemplateDraft,
+  createEmptyTemplateItem,
+  getRequiredTemplateItemCount,
+  getTemplateItemCount,
+  getTemplateItemTypeLabel,
+  getTemplateItemTypeMeta,
+  normalizeTemplateItems,
+  type TemplateItemDraft,
+  type TemplateItemTypeValue,
+  type TemplateRecord,
+} from '../lib/source-of-truth/template-options';
 
 function LightMetricCardRow({
   stats,
@@ -150,7 +90,7 @@ export default function Templates() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editingTemplateId, setEditingTemplateId] = useState<string | null>(null);
-  const [draft, setDraft] = useState(createEmptyDraft());
+  const [draft, setDraft] = useState(createEmptyTemplateDraft());
 
   async function loadTemplates() {
     setLoading(true);
@@ -171,7 +111,7 @@ export default function Templates() {
 
   const stats = useMemo(() => {
     const totalItems = templates.reduce((acc, template) => acc + getTemplateItemCount(template), 0);
-    const requiredItems = templates.reduce((acc, template) => acc + getRequiredItemCount(template), 0);
+    const requiredItems = templates.reduce((acc, template) => acc + getRequiredTemplateItemCount(template), 0);
     const decisionItems = templates.reduce(
       (acc, template) => acc + normalizeTemplateItems(template.items).filter((item) => item.type === 'decision').length,
       0,
@@ -209,7 +149,7 @@ export default function Templates() {
     }
 
     setEditingTemplateId(null);
-    setDraft(createEmptyDraft());
+    setDraft(createEmptyTemplateDraft());
     setDialogOpen(true);
   }
 
@@ -222,7 +162,7 @@ export default function Templates() {
     setEditingTemplateId(template.id);
     setDraft({
       name: template.name || '',
-      items: normalizeTemplateItems(template.items).length ? normalizeTemplateItems(template.items) : [cloneEmptyItem()],
+      items: normalizeTemplateItems(template.items).length ? normalizeTemplateItems(template.items) : [createEmptyTemplateItem()],
     });
     setDialogOpen(true);
   }
@@ -235,13 +175,13 @@ export default function Templates() {
   }
 
   function addDraftItem() {
-    setDraft((prev) => ({ ...prev, items: [...prev.items, cloneEmptyItem()] }));
+    setDraft((prev) => ({ ...prev, items: [...prev.items, createEmptyTemplateItem()] }));
   }
 
   function removeDraftItem(index: number) {
     setDraft((prev) => ({
       ...prev,
-      items: prev.items.length === 1 ? [cloneEmptyItem()] : prev.items.filter((_, itemIndex) => itemIndex !== index),
+      items: prev.items.length === 1 ? [createEmptyTemplateItem()] : prev.items.filter((_, itemIndex) => itemIndex !== index),
     }));
   }
 
@@ -276,7 +216,7 @@ export default function Templates() {
 
       setDialogOpen(false);
       setEditingTemplateId(null);
-      setDraft(createEmptyDraft());
+      setDraft(createEmptyTemplateDraft());
       await loadTemplates();
     } catch (error: any) {
       toast.error(`Nie udało się zapisać szablonu: ${error?.message || 'REQUEST_FAILED'}`);
@@ -448,7 +388,7 @@ export default function Templates() {
 
                     <div className="cf-template-card-items grid gap-3 md:grid-cols-2 xl:grid-cols-3" data-cf-template-card-items="true">
                       {items.map((item, index) => {
-                        const meta = itemTypeMeta(item.type);
+                        const meta = getTemplateItemTypeMeta(item.type);
                         return (
                           <div key={`${template.id}-${index}`} className="cf-readable-panel rounded-2xl border border-slate-200 bg-slate-50 p-4">
                             <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -543,14 +483,14 @@ export default function Templates() {
                             className="cf-template-modal-v2-select-native"
                             value={item.type}
                             onChange={(event) => {
-                              const nextType = event.target.value as TemplateItemType;
+                              const nextType = event.target.value as TemplateItemTypeValue;
                               updateDraftItem(index, {
                                 type: nextType,
                                 customTypeName: nextType === 'other' ? item.customTypeName || '' : '',
                               });
                             }}
                           >
-                            {ITEM_TYPE_OPTIONS.map((option) => (
+                            {TEMPLATE_ITEM_TYPE_OPTIONS.map((option) => (
                               <option key={option.value} value={option.value}>{option.label}</option>
                             ))}
                           </select>
