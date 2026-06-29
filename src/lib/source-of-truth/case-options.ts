@@ -3,7 +3,11 @@ import {
   normalizeCaseStatus,
   type CaseStatus,
 } from '../domain-statuses';
-import type { CloseFlowStatusTone } from './ui-tones';
+import {
+  getCaseDetailPillClassForTone as casePillClass,
+  getClientDetailPillClassForTone as clientPillClass,
+  type CloseFlowStatusTone,
+} from './ui-tones';
 
 export type CaseStatusValue = CaseStatus;
 export type CaseItemStatusValue =
@@ -73,26 +77,6 @@ const CASE_STATUS_TONES: Record<CaseStatusValue, CloseFlowStatusTone> = {
   archived: 'neutral',
 };
 
-const CLIENT_PILL_BY_TONE: Record<CloseFlowStatusTone, string> = {
-  blue: 'client-detail-pill-blue',
-  green: 'client-detail-pill-green',
-  amber: 'client-detail-pill-amber',
-  red: 'client-detail-pill-danger',
-  neutral: 'client-detail-pill-muted',
-  purple: 'client-detail-pill-blue',
-  slate: 'client-detail-pill-muted',
-};
-
-const CASE_DETAIL_PILL_BY_TONE: Record<CloseFlowStatusTone, string> = {
-  blue: 'case-detail-pill-blue',
-  green: 'case-detail-pill-green',
-  amber: 'case-detail-pill-amber',
-  red: 'case-detail-pill-red',
-  neutral: 'case-detail-pill-muted',
-  purple: 'case-detail-pill-blue',
-  slate: 'case-detail-pill-muted',
-};
-
 export const CASE_STATUS_META_BY_VALUE: Record<CaseStatusValue, CaseStatusMeta> = Object.fromEntries(
   CASE_STATUS_VALUES.map((value) => {
     const tone = CASE_STATUS_TONES[value];
@@ -101,8 +85,8 @@ export const CASE_STATUS_META_BY_VALUE: Record<CaseStatusValue, CaseStatusMeta> 
       label: CASE_STATUS_LABELS[value],
       hint: CASE_STATUS_HINTS[value],
       tone,
-      clientPillClass: CLIENT_PILL_BY_TONE[tone],
-      caseDetailPillClass: CASE_DETAIL_PILL_BY_TONE[tone],
+      clientPillClass: clientPillClass(tone),
+      caseDetailPillClass: casePillClass(tone),
     }];
   }),
 ) as Record<CaseStatusValue, CaseStatusMeta>;
