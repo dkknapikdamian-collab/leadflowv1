@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 const root = process.cwd();
+const mojibakePattern = /[\u00c5\u00c4\u0139\ufffd]/;
 function read(rel) { return fs.readFileSync(path.join(root, rel), 'utf8'); }
 
 test('CZ2-007 client-options exports canonical client metadata', () => {
@@ -64,5 +65,5 @@ test('CZ2-007 changed source files are UTF-8 clean', () => {
     'src/lib/clients.ts',
     'scripts/guards/verify-lf-ui-sot-cz2-007-client-directory-source-of-truth.cjs',
     'tests/lf-ui-sot-cz2-007-client-directory-source-of-truth.test.cjs',
-  ]) assert.doesNotMatch(read(rel), /[ÅÄĹ�]/, `${rel} contains mojibake`);
+  ]) assert.doesNotMatch(read(rel), mojibakePattern, `${rel} contains mojibake`);
 });
