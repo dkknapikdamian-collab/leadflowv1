@@ -1,4 +1,4 @@
-import { CalendarDays, CircleDot, FileText, type LucideIcon, MessageSquareReply, Phone, UserRound } from 'lucide-react';
+import { resolveEntityIcon } from '../../components/ui-system/icon-registry';
 
 import {
   normalizeEventStatus,
@@ -7,30 +7,36 @@ import {
   type TaskStatus,
 } from '../domain-statuses';
 
+type ScheduleIcon = ReturnType<typeof resolveEntityIcon>;
+
+const TASK_SCHEDULE_ICON = resolveEntityIcon('task');
+const EVENT_SCHEDULE_ICON = resolveEntityIcon('event');
+const LEAD_SCHEDULE_ICON = resolveEntityIcon('lead');
+
 export type ScheduleOption<T extends string | number> = {
   value: T;
   label: string;
 };
 
 export type ScheduleIconOption<T extends string> = ScheduleOption<T> & {
-  icon: LucideIcon;
+  icon: ScheduleIcon;
 };
 
 export const TASK_TYPE_OPTIONS = [
-  { value: 'follow_up', label: 'Follow-up', icon: MessageSquareReply },
-  { value: 'phone', label: 'Telefon', icon: Phone },
-  { value: 'reply', label: 'Odpisać', icon: MessageSquareReply },
-  { value: 'send_offer', label: 'Wyślij ofertę', icon: FileText },
-  { value: 'meeting', label: 'Spotkanie', icon: CalendarDays },
-  { value: 'other', label: 'Inne', icon: CircleDot },
+  { value: 'follow_up', label: 'Follow-up', icon: TASK_SCHEDULE_ICON },
+  { value: 'phone', label: 'Telefon', icon: TASK_SCHEDULE_ICON },
+  { value: 'reply', label: 'Odpisać', icon: TASK_SCHEDULE_ICON },
+  { value: 'send_offer', label: 'Wyślij ofertę', icon: TASK_SCHEDULE_ICON },
+  { value: 'meeting', label: 'Spotkanie', icon: TASK_SCHEDULE_ICON },
+  { value: 'other', label: 'Inne', icon: TASK_SCHEDULE_ICON },
 ] as const satisfies readonly ScheduleIconOption<string>[];
 
 export const EVENT_TYPE_OPTIONS = [
-  { value: 'meeting', label: 'Spotkanie', icon: CalendarDays },
-  { value: 'phone_call', label: 'Rozmowa', icon: Phone },
-  { value: 'follow_up', label: 'Follow-up', icon: MessageSquareReply },
-  { value: 'deadline', label: 'Deadline', icon: FileText },
-  { value: 'custom', label: 'Własne wydarzenie', icon: CircleDot },
+  { value: 'meeting', label: 'Spotkanie', icon: EVENT_SCHEDULE_ICON },
+  { value: 'phone_call', label: 'Rozmowa', icon: EVENT_SCHEDULE_ICON },
+  { value: 'follow_up', label: 'Follow-up', icon: EVENT_SCHEDULE_ICON },
+  { value: 'deadline', label: 'Deadline', icon: EVENT_SCHEDULE_ICON },
+  { value: 'custom', label: 'Własne wydarzenie', icon: EVENT_SCHEDULE_ICON },
 ] as const satisfies readonly ScheduleIconOption<string>[];
 
 export const PRIORITY_OPTIONS = [
@@ -176,8 +182,8 @@ export function isDoneStatus(status: unknown) {
   return (CLOSED_WORK_ITEM_STATUSES as readonly string[]).includes(String(status || '').trim().toLowerCase());
 }
 
-export function getScheduleEntryIcon(kind: 'event' | 'task' | 'lead', type?: string): LucideIcon {
-  if (kind === 'lead') return UserRound;
-  if (kind === 'event') return getEventTypeMeta(type).icon ?? CalendarDays;
-  return getTaskTypeMeta(type).icon ?? CircleDot;
+export function getScheduleEntryIcon(kind: 'event' | 'task' | 'lead', type?: string): ScheduleIcon {
+  if (kind === 'lead') return LEAD_SCHEDULE_ICON;
+  if (kind === 'event') return getEventTypeMeta(type).icon ?? EVENT_SCHEDULE_ICON;
+  return getTaskTypeMeta(type).icon ?? TASK_SCHEDULE_ICON;
 }
