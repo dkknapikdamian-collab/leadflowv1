@@ -1,9 +1,8 @@
-import type { ComponentPropsWithoutRef } from 'react';
-import { Button } from './button';
+import { Button, type ButtonProps } from './button';
 import { AppIcon } from './icon';
 import type { IconName } from '../../lib/source-of-truth/icon-registry';
 
-export type IconButtonProps = Omit<ComponentPropsWithoutRef<typeof Button>, 'children' | 'aria-label' | 'title'> & {
+export type IconButtonProps = Omit<ButtonProps, 'children' | 'aria-label' | 'title'> & {
   icon: IconName;
   label: string;
   title?: string;
