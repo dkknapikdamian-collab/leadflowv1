@@ -1,5 +1,5 @@
-import { Loader2 } from 'lucide-react';
 import { Button } from './ui/button';
+import { AppIcon } from './ui/icon';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
 
 type ConfirmDialogProps = {
@@ -43,7 +43,7 @@ export function ConfirmDialog({
             onClick={() => void onConfirm()}
             disabled={pending}
           >
-            {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            {pending ? <AppIcon name="loading" className="h-4 w-4 animate-spin" decorative /> : null}
             {confirmLabel}
           </Button>
         </DialogFooter>
