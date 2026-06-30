@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 import { OperatorSideCard, type OperatorRailDataAttrs } from './OperatorSideCard';
+import { FilterChipGroup } from '../ui/filter-chip-group';
 import { resolveOperatorRailTone, type OperatorRailTone } from '../../lib/operator-rail-tone';
 
 export type SimpleFilterItem = {
@@ -13,6 +14,7 @@ export type SimpleFilterItem = {
 };
 
 export const CLOSEFLOW_SIMPLE_FILTERS_CARD_SOURCE_TRUTH_STAGE96 = 'SimpleFiltersCard is the shared operator rail filter card for leads/clients';
+export const CLOSEFLOW_CZ2_014_SIMPLE_FILTERS_CHIP_GROUP = 'SimpleFiltersCard scoped migration uses FilterChipGroup source of truth';
 
 export type SimpleFiltersCardProps = {
   title: string;
@@ -39,27 +41,32 @@ export function SimpleFiltersCard({
       dataTestId={dataTestId}
       dataAttrs={{ ...(dataAttrs || {}), 'data-cf-simple-filters-card': true }}
     >
-      <div className="quick-list">
-        {items.map((item) => {
+      <FilterChipGroup
+        value=""
+        onChange={(key) => {
+          const selected = items.find((item) => item.key === key);
+          selected?.onClick?.();
+        }}
+        className="quick-list"
+        chipClassName="cf-rail-filter-row"
+        labelClassName="cf-rail-filter-label"
+        countClassName="cf-rail-filter-count"
+        dataAttrs={{ 'data-cf-simple-filters-chip-group': true }}
+        options={items.map((item) => {
           const tone = resolveOperatorRailTone({ key: item.key, label: item.label, explicitTone: item.tone });
-
-          return (
-            <button
-              key={item.key}
-              type="button"
-              onClick={item.onClick}
-              aria-label={item.ariaLabel || item.label}
-              {...(item.dataAttrs || {})}
-              data-cf-operator-rail-item="true"
-              data-cf-operator-rail-tone={tone}
-            className="cf-rail-filter-row"
-            >
-              <span className="cf-rail-filter-label">{item.label}</span>
-              <strong className="cf-rail-filter-count">{item.value}</strong>
-            </button>
-          );
+          return {
+            value: item.key,
+            label: item.label,
+            count: typeof item.value === 'number' ? item.value : undefined,
+            dataAttrs: {
+              ...(item.dataAttrs || {}),
+              'data-cf-operator-rail-item': true,
+              'data-cf-operator-rail-tone': tone,
+              'aria-label': item.ariaLabel || item.label,
+            },
+          };
         })}
-      </div>
+      />
     </OperatorSideCard>
   );
 }
