@@ -39,6 +39,16 @@ const files = [
   'tests/lf-ui-sot-cz2-012-card-tile-panel-variants.test.cjs',
 ];
 
+const laterScopedStageAllowlist = new Set([
+  'scripts/guards/verify-lf-ui-sot-cz2-013-form-control-variants.cjs',
+  'tests/lf-ui-sot-cz2-013-form-control-variants.test.cjs',
+  'src/components/ui/form-field.tsx',
+  'src/components/ui/form-section.tsx',
+  'src/components/ui/select-field.tsx',
+  'src/components/ui/textarea-field.tsx',
+  'src/components/ClientCreateDialog.tsx',
+]);
+
 for (const file of files) read(file);
 
 for (const file of ['src/components/ui/metric-card.tsx', 'src/components/ui/list-card.tsx', 'src/components/ui/empty-state-card.tsx', 'src/components/ui/detail-panel.tsx']) {
@@ -106,6 +116,7 @@ try {
 }
 
 for (const file of changedFiles) {
+  if (laterScopedStageAllowlist.has(file)) continue;
   if (/\.(css|sql)$/i.test(file)) errors.push(`CZ2-012 must not touch CSS/SQL: ${file}`);
   if (/migrations|supabase|data-provider|form|layout|sidebar/i.test(file) && !files.includes(file)) {
     errors.push(`CZ2-012 must not touch data-provider/form/layout/sidebar scope: ${file}`);
@@ -126,6 +137,7 @@ const result = {
   ],
   scopedMigration: 'src/components/StatShortcutCard.tsx',
   changedFiles,
+  laterScopedStageAllowlist: Array.from(laterScopedStageAllowlist),
   warnings,
   errors,
 };
