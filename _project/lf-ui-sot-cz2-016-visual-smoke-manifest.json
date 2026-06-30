@@ -1,0 +1,31 @@
+{
+  "stage": "LF-UI-SOT-CZ2-016",
+  "type": "visual-smoke",
+  "routes": [
+    "/today",
+    "/leads",
+    "/clients",
+    "/cases",
+    "/tasks",
+    "/calendar",
+    "/billing",
+    "/response-templates"
+  ],
+  "detailRoutes": [
+    "/leads/:id",
+    "/clients/:id",
+    "/cases/:id"
+  ],
+  "checks": [
+    "layout-shell-present",
+    "sidebar-present",
+    "page-header-present",
+    "no-mojibake",
+    "no-runtime-crash-marker",
+    "cards-render",
+    "icons-render-through-sot",
+    "forms-render-through-sot-where-migrated",
+    "filters-render-through-sot-where-migrated",
+    "layout-sot-marker-present-where-migrated"
+  ]
+}
