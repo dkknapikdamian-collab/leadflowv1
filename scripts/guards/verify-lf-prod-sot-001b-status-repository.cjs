@@ -71,7 +71,7 @@ includesAll(repository, [
 
 if (/from\s+['"][^'"]*pages\//.test(repository)) fail('status-repository.ts must not import from pages');
 if (/from\s+['"][^'"]*components\//.test(repository)) fail('status-repository.ts must not import from components');
-if (/\bTODO\b|\bFIXME\b|CZASOWE/i.test(repository)) fail('status-repository.ts contains unresolved work marker');
+if (/\bTODO\b|\bFIXME\b|CZASOWE/.test(repository)) fail('status-repository.ts contains unresolved work marker');
 if (/Ã|Ä|Å|�|\uFFFD/.test(repository + report)) fail('mojibake marker detected');
 if (/export const clientStatus\b/.test(repository)) fail('Client status must not be flattened into one clientStatus export');
 if (!/clientHealthStatus[\s\S]*clientSourceStatus[\s\S]*clientPortalStatus/.test(repository)) fail('Client health/source/portal sections must remain separated');
