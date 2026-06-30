@@ -3,19 +3,20 @@
 ## Status
 
 ```txt
-PREFLIGHT_BLOCKED_BY_GUARD / LOCAL_GUARDS_PENDING / PUSH_NOT_DONE / ZIP_READY_FOR_DAMIAN
+PREFLIGHT_DONE / ROUTER_KNOWN / AUDIT_BASELINE_KNOWN / READY_FOR_MAPPING_001
 ```
 
-Uwaga techniczna: żaden guard nie został oznaczony jako FAIL. Blokada wynika z tego, że wymagane komendy muszą zostać uruchomione w lokalnym checkoutcie Windows `C:\Users\malim\Desktop\biznesy_ai\2.closeflow`. W tym przebiegu wykonano remote scan przez GitHub connector i przygotowano payload/ZIP, bez udawania lokalnych wyników.
+Uwaga techniczna: etap był najpierw zapisany jako remote preflight/payload bez lokalnego PASS. Po lokalnym uruchomieniu wymaganych komend w Windows checkout `C:\Users\malim\Desktop\biznesy_ai\2.closeflow` guardy i `git diff --check` przeszły, raport został zapisany i wypchnięty do repo aplikacji, a payload został zapisany i wypchnięty do Obsidiana.
 
-Nie przechodzić do `LF-PROD-SOT-001A`, dopóki lokalne guardy i `git diff --check` nie przejdą.
+Można przejść do `LF-PROD-SOT-001A` wyłącznie jako mapowania statusów. Nie wolno w 001A robić runtime, CSS, SQL, Supabase, routingu ani redesignu.
 
 ## PROJECT_SCAN
 
 ```txt
 repo: dkknapikdamian-collab/leadflowv1
 branch: dev-rollout-freeze
-HEAD: 479ea77ab086139c281a70eca385c2c3efa1fd9f — docs(closeflow): close c3 001b report consistency
+HEAD at local preflight command: 479ea77a — docs(closeflow): close c3 001b report consistency
+app report push commit: 8aa077e4 — docs(closeflow): add production sot cleanup preflight
 current stage: LF-PROD-SOT-CLEANUP-000 — Preflight i zamrożenie zasad pracy
 active router: src/App.tsx + src/lib/routes.ts; BrowserRouter/Routes in App.tsx; CLOSEFLOW_ROUTES/CLOSEFLOW_ROUTE_MAP in src/lib/routes.ts
 active audit: _project/audits/closeflow-source-of-truth-production-audit.md = FILE_NOT_FOUND
@@ -30,7 +31,7 @@ target Obsidian path: 10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF
 - ryzyko zmiany UI/CSS bez mapy,
 - ryzyko zmiany danych bez status/date/entity SOT,
 - ryzyko zostawienia etapu tylko w czacie bez Obsidiana,
-- ryzyko fałszywego zamknięcia etapu bez lokalnego PASS guardów,
+- ryzyko fałszywego zamknięcia etapu bez lokalnego PASS guardów — RESOLVED_BY_LOCAL_LOG,
 - ryzyko pomieszania starej ścieżki C3 z nową ścieżką LF-PROD-SOT-CLEANUP.
 ```
 
@@ -75,28 +76,64 @@ package.json: READ_ONLY
 
 ```txt
 git status --short --branch:
-NOT_RUN_LOCAL_CHATGPT_NO_ACCESS_TO_C_USERS_PATH
-required local command prepared below
+PASS
+## dev-rollout-freeze...origin/dev-rollout-freeze
 
-git branch --show-current:
-NOT_RUN_LOCAL_CHATGPT_NO_ACCESS_TO_C_USERS_PATH
-remote branch ref used: dev-rollout-freeze
+branch check:
+PASS
+git branch --show-current: dev-rollout-freeze
 
 git log --oneline -1:
-REMOTE_CHECK_BY_GITHUB_CONNECTOR
-479ea77 docs(closeflow): close c3 001b report consistency
+PASS
+479ea77a (HEAD -> dev-rollout-freeze, origin/dev-rollout-freeze) docs(closeflow): close c3 001b report consistency
 
 npm run guard:routes:canonical:
-NOT_RUN_LOCAL / LOCAL_GUARD_PENDING
+PASS
+ok: true
+guard: guard:routes:canonical
+canonicalCaseDetail: /cases/:caseId
+legacyAlias: /case/:caseId -> replace redirect
+screensChecked: 17
 
 npm run guard:ui:patch-layers:
-NOT_RUN_LOCAL / LOCAL_GUARD_PENDING
+PASS
+ok: true
+guard: guard:ui:patch-layers
+knownDebt recorded, no failure
 
 npm run check:polish-mojibake:
-NOT_RUN_LOCAL / LOCAL_GUARD_PENDING
+PASS
+OK: no Polish mojibake detected in runtime UI/source copy.
 
 git diff --check:
-NOT_RUN_LOCAL / LOCAL_DIFF_CHECK_PENDING
+PASS
+no output / no whitespace errors
+
+post-report git status before commit:
+PASS
+## dev-rollout-freeze...origin/dev-rollout-freeze
+?? _project/runs/LF-PROD-SOT-CLEANUP-000_PREFLIGHT_AND_WORK_RULES.md
+
+app commit:
+PASS
+8aa077e4 docs(closeflow): add production sot cleanup preflight
+
+app push:
+PASS
+479ea77a..8aa077e4 dev-rollout-freeze -> dev-rollout-freeze
+
+Obsidian commit:
+PASS
+4283d9ff docs(closeflow): add production sot cleanup preflight
+
+Obsidian push:
+PASS
+e0815ad5..4283d9ff main -> main
+
+Obsidian local sync:
+PASS
+git pull --ff-only origin main: Already up to date.
+final status: ## main...origin/main
 ```
 
 ## Decyzja
@@ -109,12 +146,7 @@ Następny etap po zamknięciu 000:
 LF-PROD-SOT-001A — Mapowanie statusów
 
 Nie wolno przejść do 001B bez zamkniętego 001A.
-Nie wolno przejść do 001A, dopóki 000 nie ma lokalnego PASS:
-- guard:routes:canonical PASS,
-- guard:ui:patch-layers PASS,
-- check:polish-mojibake PASS,
-- git diff --check PASS,
-- raport zapisany i wypchnięty albo ręcznie zastosowany z ZIP.
+001A ma być mapowaniem, bez runtime implementation.
 ```
 
 ## Czego nie ruszano
@@ -135,104 +167,50 @@ data provider: NOT_TOUCHED
 ```txt
 - big-bang refactor zakazany,
 - mapa przed wdrożeniem obowiązkowa,
-- każdy etap musi mieć guard/test/build,
+- każdy etap musi mieć guard/test/build adekwatny do zakresu,
 - każdy etap musi trafić do Obsidiana,
 - push do GitHuba jest domyślnym zamknięciem etapu,
-- ten etap nie jest zamknięty, dopóki lokalne guardy nie przejdą.
+- 001A nie może mapować statusów przez zmianę runtime,
+- 001A nie może zmieniać CSS, SQL, Supabase, routingu, auth ani data provider.
 ```
 
-## Lokalne komendy do wykonania przed commitem
-
-```powershell
-$ErrorActionPreference = "Stop"
-
-cd "C:\Users\malim\Desktop\biznesy_ai\2.closeflow"
-
-git status --short --branch
-git branch --show-current
-git log --oneline -1
-
-npm run guard:routes:canonical
-npm run guard:ui:patch-layers
-npm run check:polish-mojibake
-git diff --check
-
-git status --short --branch
-```
-
-Jeżeli branch nie jest `dev-rollout-freeze`, zatrzymać:
+## Kryterium zamknięcia 000
 
 ```txt
-BLOCKED_WRONG_BRANCH
-```
-
-Jeżeli guard/diff failuje, zatrzymać:
-
-```txt
-PREFLIGHT_BLOCKED_BY_GUARD
-```
-
-## Commit/push po lokalnym PASS
-
-```powershell
-$ErrorActionPreference = "Stop"
-
-cd "C:\Users\malim\Desktop\biznesy_ai\2.closeflow"
-
-git status --short --branch
-git diff --check
-
-git add "_project/runs/LF-PROD-SOT-CLEANUP-000_PREFLIGHT_AND_WORK_RULES.md"
-git commit -m "docs(closeflow): add production sot cleanup preflight"
-git push origin dev-rollout-freeze
-```
-
-## Obsidian apply/commit/push po lokalnym PASS
-
-```powershell
-$ErrorActionPreference = "Stop"
-
-cd "C:\Users\malim\Desktop\biznesy_ai\00_OBSIDIAN_VAULT"
-
-git status --short --branch -- . ":(exclude).tmp.driveupload"
-git diff --check
-
-git add "10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-CLEANUP-000_PREFLIGHT_AND_WORK_RULES.md"
-git commit -m "docs(closeflow): add production sot cleanup preflight"
-git push origin main
-```
-
-## Obsidian local sync po pushu Obsidiana
-
-```powershell
-$ErrorActionPreference = "Stop"
-
-cd "C:\Users\malim\Desktop\biznesy_ai\00_OBSIDIAN_VAULT"
-git status --short --branch -- . ":(exclude).tmp.driveupload"
-git pull --ff-only origin main
-git status --short --branch -- . ":(exclude).tmp.driveupload"
+branch = dev-rollout-freeze: PASS
+lokalny git status sprawdzony: PASS
+npm run guard:routes:canonical: PASS
+npm run guard:ui:patch-layers: PASS
+npm run check:polish-mojibake: PASS
+git diff --check: PASS
+raport repo zaktualizowany: PASS
+raport repo pushed: PASS / 8aa077e4
+Obsidian zaktualizowany: PASS
+Obsidian pushed: PASS / 4283d9ff
+Obsidian local sync: PASS / Already up to date
+runtime/CSS/SQL/Supabase/routing/auth untouched: PASS
 ```
 
 ## Zapis do Obsidiana
 
 ```txt
-data i godzina: 2026-06-30 18:29 Europe/Warsaw
-name/alias: LF-PROD-SOT-CLEANUP-000 preflight and work rules
+data i godzina: 2026-06-30 18:45 Europe/Warsaw
+name/alias: LF-PROD-SOT-CLEANUP-000 preflight and work rules closeout
 canonical_name: CloseFlow / LeadFlow
 repo: dkknapikdamian-collab/leadflowv1
 branch: dev-rollout-freeze
 local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
-Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
+Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY
 target file/path: 10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-CLEANUP-000_PREFLIGHT_AND_WORK_RULES.md
-save status: ZIP_READY_FOR_DAMIAN / APP_REPORT_PAYLOAD_PREPARED / NOT_APPLIED_LOCAL
-Obsidian GitHub sync: NOT_DONE
-Obsidian local sync: LOCAL_SYNC_PENDING
+save status: CLOSED / APP_REPORT_PUSHED / OBSIDIAN_PAYLOAD_PUSHED
+Obsidian GitHub sync: DONE / 4283d9ff
+Obsidian local sync: DONE / Already up to date
 tests:
-- guard:routes:canonical: LOCAL_PENDING
-- guard:ui:patch-layers: LOCAL_PENDING
-- check:polish-mojibake: LOCAL_PENDING
-- git diff --check: LOCAL_PENDING
-risk audit: do not close this stage and do not start LF-PROD-SOT-001A until local guard/diff PASS is pasted back or applied by Damian
+- guard:routes:canonical: PASS
+- guard:ui:patch-layers: PASS
+- check:polish-mojibake: PASS
+- git diff --check: PASS
+risk audit: 000 zamknięty; 001A może być tylko mapowaniem statusów bez runtime/CSS/SQL/Supabase/routingu/auth/data provider
 what was not touched: runtime, CSS, SQL, Supabase, routing, auth, UI redesign, data provider
-next step: apply ZIP locally, run guards, commit/push selectively if PASS
+next step: LF-PROD-SOT-001A — Mapowanie statusów
 ```
