@@ -45,6 +45,13 @@ const laterScopedStageAllowlist = new Set([
   'src/components/ui/empty-state-card.tsx',
   'src/components/ui/detail-panel.tsx',
   'src/components/StatShortcutCard.tsx',
+  'scripts/guards/verify-lf-ui-sot-cz2-013-form-control-variants.cjs',
+  'tests/lf-ui-sot-cz2-013-form-control-variants.test.cjs',
+  'src/components/ui/form-field.tsx',
+  'src/components/ui/form-section.tsx',
+  'src/components/ui/select-field.tsx',
+  'src/components/ui/textarea-field.tsx',
+  'src/components/ClientCreateDialog.tsx',
 ]);
 
 for (const file of files) read(file);
