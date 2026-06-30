@@ -1,4 +1,4 @@
-# LF-PROD-SOT-C3-001B_STATUS_REPOSITORY_DECISION
+﻿# LF-PROD-SOT-C3-001B_STATUS_REPOSITORY_DECISION
 
 Date: 2026-06-30 15:06 Europe/Warsaw
 Repo: dkknapikdamian-collab/leadflowv1
@@ -11,7 +11,7 @@ Status:
 
 ```txt
 LF-PROD-SOT-C3-001B:
-STATUS_DECISION_PREPARED_REMOTE / LOCAL_CLEAN_CHECK_PENDING / NO_RUNTIME_CHANGE / DO_NOT_DESIGN_YET_LOCALLY_UNVERIFIED
+STATUS_DECISION_PREPARED_REMOTE / LOCAL_CLEAN_CHECK_PASS / NO_RUNTIME_CHANGE / READY_FOR_001C_DESIGN_ONLY
 ```
 
 Technical decision prepared:
@@ -95,12 +95,12 @@ api/cases.ts
 api/system.ts
 ```
 
-## 5. Pliki nieistniejące
+## 5. Pliki nieistniejÄ…ce
 
 ```txt
-src/lib/source-of-truth/status-repository.ts — FILE_NOT_FOUND / EXPECTED / DO_NOT_CREATE_IN_001B
-_project/runs/LF-PROD-SOT-C3-001B_STATUS_REPOSITORY_DECISION.md — FILE_NOT_FOUND_BEFORE_THIS_COMMIT / CREATED_BY_THIS_STAGE
-_project/obsidian_updates/2026-06-30_LF-PROD-SOT-C3-001B_STATUS_REPOSITORY_DECISION.md — FILE_NOT_FOUND_BEFORE_THIS_STAGE / CREATED_BY_THIS_STAGE
+src/lib/source-of-truth/status-repository.ts â€” FILE_NOT_FOUND / EXPECTED / DO_NOT_CREATE_IN_001B
+_project/runs/LF-PROD-SOT-C3-001B_STATUS_REPOSITORY_DECISION.md â€” FILE_NOT_FOUND_BEFORE_THIS_COMMIT / CREATED_BY_THIS_STAGE
+_project/obsidian_updates/2026-06-30_LF-PROD-SOT-C3-001B_STATUS_REPOSITORY_DECISION.md â€” FILE_NOT_FOUND_BEFORE_THIS_STAGE / CREATED_BY_THIS_STAGE
 ```
 
 ## 6. STATUS_REPOSITORY_DECISION
@@ -188,49 +188,49 @@ STATUS_REPOSITORY_DECISION:
 
 ## 8. DAMIAN_DECISION_QUEUE
 
-### 1. Czy pierwszy projekt status repository ma obejmować tylko Lead + Case entity status?
+### 1. Czy pierwszy projekt status repository ma obejmowaÄ‡ tylko Lead + Case entity status?
 
 ```txt
 rekomendacja developera: TAK, tylko Lead + Case entity status.
-ryzyko: niskie w porównaniu do Task/Event/Finance, ale nadal wymagany design-only etap.
-co się stanie, jeśli źle zdecydujemy: status repo zacznie mieszać entity status z filtrami i visibility, co popsuje listy i badge.
-sugerowany następny etap: LF-PROD-SOT-C3-001C_STATUS_REPOSITORY_DESIGN_ONLY
+ryzyko: niskie w porĂłwnaniu do Task/Event/Finance, ale nadal wymagany design-only etap.
+co siÄ™ stanie, jeĹ›li Ĺşle zdecydujemy: status repo zacznie mieszaÄ‡ entity status z filtrami i visibility, co popsuje listy i badge.
+sugerowany nastÄ™pny etap: LF-PROD-SOT-C3-001C_STATUS_REPOSITORY_DESIGN_ONLY
 ```
 
-### 2. Czy Task/Event zostawić na później do czasu rozdzielenia blocker/calendar semantics?
+### 2. Czy Task/Event zostawiÄ‡ na pĂłĹşniej do czasu rozdzielenia blocker/calendar semantics?
 
 ```txt
-rekomendacja developera: TAK, zostawić na później.
+rekomendacja developera: TAK, zostawiÄ‡ na pĂłĹşniej.
 ryzyko: wysokie, bo Task miesza UI scopes i missing/blocker, a Event miesza lifecycle z Calendar/Google sync.
-co się stanie, jeśli źle zdecydujemy: można zepsuć work_items status constraints, kalendarz i filtrację zadań.
-sugerowany następny etap: osobny C3 task/event semantics split po Lead+Case design.
+co siÄ™ stanie, jeĹ›li Ĺşle zdecydujemy: moĹĽna zepsuÄ‡ work_items status constraints, kalendarz i filtracjÄ™ zadaĹ„.
+sugerowany nastÄ™pny etap: osobny C3 task/event semantics split po Lead+Case design.
 ```
 
-### 3. Czy finance/billing/commission robić jako osobny etap i osobny owner?
+### 3. Czy finance/billing/commission robiÄ‡ jako osobny etap i osobny owner?
 
 ```txt
 rekomendacja developera: TAK, osobny finance/access owner.
-ryzyko: krytyczne, bo to są pieniądze, dostęp, płatności i prowizje.
-co się stanie, jeśli źle zdecydujemy: błędne liczniki płatności, rozjazd prowizji, zły access status.
-sugerowany następny etap: C3_FINANCE_STATUS_DOMAIN_DECISION po Lead+Case.
+ryzyko: krytyczne, bo to sÄ… pieniÄ…dze, dostÄ™p, pĹ‚atnoĹ›ci i prowizje.
+co siÄ™ stanie, jeĹ›li Ĺşle zdecydujemy: bĹ‚Ä™dne liczniki pĹ‚atnoĹ›ci, rozjazd prowizji, zĹ‚y access status.
+sugerowany nastÄ™pny etap: C3_FINANCE_STATUS_DOMAIN_DECISION po Lead+Case.
 ```
 
-### 4. Czy legacy aliases zostają migration-only czy permanent compatibility layer?
+### 4. Czy legacy aliases zostajÄ… migration-only czy permanent compatibility layer?
 
 ```txt
-rekomendacja developera: zostawić jako compatibility layer do czasu audytu danych.
-ryzyko: krytyczne przy usunięciu bez audytu.
-co się stanie, jeśli źle zdecydujemy: stare rekordy przestaną normalizować się do poprawnych statusów.
-sugerowany następny etap: LEGACY_STATUS_ALIAS_DATA_AUDIT przed jakimkolwiek usuwaniem.
+rekomendacja developera: zostawiÄ‡ jako compatibility layer do czasu audytu danych.
+ryzyko: krytyczne przy usuniÄ™ciu bez audytu.
+co siÄ™ stanie, jeĹ›li Ĺşle zdecydujemy: stare rekordy przestanÄ… normalizowaÄ‡ siÄ™ do poprawnych statusĂłw.
+sugerowany nastÄ™pny etap: LEGACY_STATUS_ALIAS_DATA_AUDIT przed jakimkolwiek usuwaniem.
 ```
 
-### 5. Czy Client health/source/portal mają pozostać derived classification poza status repository?
+### 5. Czy Client health/source/portal majÄ… pozostaÄ‡ derived classification poza status repository?
 
 ```txt
 rekomendacja developera: TAK, poza status repository.
-ryzyko: średnie.
-co się stanie, jeśli źle zdecydujemy: klient dostanie sztuczny DB status, który będzie dublował zdrowie, źródło i portal.
-sugerowany następny etap: brak teraz; zostawić client-options jako derived SOT.
+ryzyko: Ĺ›rednie.
+co siÄ™ stanie, jeĹ›li Ĺşle zdecydujemy: klient dostanie sztuczny DB status, ktĂłry bÄ™dzie dublowaĹ‚ zdrowie, ĹşrĂłdĹ‚o i portal.
+sugerowany nastÄ™pny etap: brak teraz; zostawiÄ‡ client-options jako derived SOT.
 ```
 
 ## 9. Domeny dopuszczone do pierwszego design-only
@@ -269,7 +269,7 @@ ResponseTemplates lifecycle metadata
 Legacy aliases
 ```
 
-## 11. Domeny wymagające osobnego ownera/repository
+## 11. Domeny wymagajÄ…ce osobnego ownera/repository
 
 ```txt
 finance/payment/commission
@@ -280,7 +280,7 @@ activity taxonomy
 template lifecycle/content metadata
 ```
 
-## 12. Domeny wymagające migration/alias audit
+## 12. Domeny wymagajÄ…ce migration/alias audit
 
 ```txt
 Lead legacy aliases
@@ -291,7 +291,7 @@ Payment aliases
 Billing/access mixed values
 ```
 
-## 13. Czego nie wolno centralizować
+## 13. Czego nie wolno centralizowaÄ‡
 
 ```txt
 UI filters
@@ -320,9 +320,9 @@ legacy aliases: NOT_TOUCHED
 status-repository.ts: NOT_CREATED
 ```
 
-## 15. Następny etap
+## 15. NastÄ™pny etap
 
-Because local clean check is pending, do not start design locally yet.
+Local clean check passed. Next stage may be prepared as design-only. Do not implement runtime status repository in 001C.
 
 After local clean check PASS, next stage should be:
 
@@ -365,3 +365,23 @@ risk audit: local clean check still required before 001C
 what was not touched: runtime, CSS, SQL, Supabase, API, auth, routes, Google Calendar, legacy aliases
 next step: local clean check, then 001C design-only or STOP
 ```
+
+---
+
+## LOCAL_CLEAN_CHECK_CONFIRMATION
+
+data i godzina: 2026-06-30 17:59 Europe/Warsaw
+stage_id: LF-PROD-SOT-C3-001B_STATUS_REPOSITORY_DECISION
+local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
+git pull --ff-only origin dev-rollout-freeze: PASS
+git status --short --branch: PASS / CLEAN BEFORE CLOSEOUT
+git diff --check: PASS
+runtime touched: NO
+CSS touched: NO
+SQL/API/auth/routes/Google Calendar touched: NO
+status-repository.ts created: NO
+final verdict:
+LF-PROD-SOT-C3-001B:
+STATUS_REPOSITORY_DECISION_DONE / DOMAIN_SPLIT_APPROVED_FOR_DESIGN / LOCAL_CLEAN_CHECK_PASS / NO_RUNTIME_CHANGE / READY_FOR_001C_DESIGN_ONLY
+next step:
+LF-PROD-SOT-C3-001C_STATUS_REPOSITORY_DESIGN_ONLY
