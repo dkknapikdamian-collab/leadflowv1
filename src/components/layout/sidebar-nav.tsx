@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { AppIcon } from '../ui/icon';
+import { Button } from '../ui/button';
 import type { IconName } from '../../lib/source-of-truth/icon-registry';
 import { cn } from '../../lib/utils';
 
@@ -50,9 +51,9 @@ export function SidebarNav({ items, footer, className, dataAttrs }: SidebarNavPr
         }
 
         return (
-          <button key={item.key} type="button" aria-current={item.active ? 'page' : undefined} data-cf-sidebar-nav-item="true" data-cf-sidebar-nav-active={item.active ? 'true' : undefined} onClick={item.onClick}>
+          <Button key={item.key} type="button" variant="ghost" aria-current={item.active ? 'page' : undefined} data-cf-sidebar-nav-item="true" data-cf-sidebar-nav-active={item.active ? 'true' : undefined} onClick={item.onClick}>
             {content}
-          </button>
+          </Button>
         );
       })}
       {footer ? <div data-cf-sidebar-nav-footer="true">{footer}</div> : null}
