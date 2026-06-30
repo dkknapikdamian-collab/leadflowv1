@@ -1,9 +1,10 @@
-﻿# LF-PROD-SOT-C3-001B_STATUS_REPOSITORY_DECISION
+# LF-PROD-SOT-C3-001B_STATUS_REPOSITORY_DECISION
 
-Date: 2026-06-30 15:06 Europe/Warsaw
+Date: 2026-06-30 18:15 Europe/Warsaw
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
 Stage: LF-PROD-SOT-C3-001B_STATUS_REPOSITORY_DECISION
+Consistency closeout: LF-PROD-SOT-C3-001B-R1_REPORT_CONSISTENCY_CLOSEOUT
 
 ## 1. Werdykt
 
@@ -11,10 +12,10 @@ Status:
 
 ```txt
 LF-PROD-SOT-C3-001B:
-STATUS_DECISION_PREPARED_REMOTE / LOCAL_CLEAN_CHECK_PASS / NO_RUNTIME_CHANGE / READY_FOR_001C_DESIGN_ONLY
+STATUS_REPOSITORY_DECISION_DONE / DOMAIN_SPLIT_APPROVED_FOR_DESIGN / LOCAL_CLEAN_CHECK_PASS / NO_RUNTIME_CHANGE / READY_FOR_001C_DESIGN_ONLY
 ```
 
-Technical decision prepared:
+Technical decision:
 
 ```txt
 First design should include only:
@@ -22,7 +23,7 @@ First design should include only:
 - Case entity status
 ```
 
-But the stage is not fully closed as `LOCAL_CLEAN_CHECK_PASS`, because this run was executed through GitHub connector and cannot run local PowerShell commands in `C:\Users\malim\Desktop\biznesy_ai\2.closeflow`.
+Local clean check was confirmed from the Windows repo on 2026-06-30 17:59 Europe/Warsaw and recorded in commit `d8b79953`.
 
 No runtime status repository was created.
 No runtime imports were rewired.
@@ -30,12 +31,14 @@ No CSS, SQL, Supabase, API, auth, routes or Google Calendar code was changed.
 
 ## 2. PROJECT_SCAN
 
-Read mode: decision pass based on 001A map and required source files.
+Read mode: decision pass based on the 001A map, source files and local clean confirmation.
 
-Previous report read:
+Previous reports read:
 
 ```txt
 _project/runs/LF-PROD-SOT-C3-001A_STATUS_MAP_ONLY.md
+_project/runs/LF-PROD-SOT-C3-LOCAL-CHECK-PASS-CLOSEOUT.md
+_project/runs/LF-PROD-SOT-C3-001B_SUPERSEDED_BY_LOCAL_CHECK_PASS.md
 ```
 
 001A status found:
@@ -44,32 +47,37 @@ _project/runs/LF-PROD-SOT-C3-001A_STATUS_MAP_ONLY.md
 MAP_DELIVERED_REMOTE / NO_RUNTIME_CHANGE / LOCAL_GIT_CHECK_PENDING
 ```
 
+001B local closeout status found:
+
+```txt
+LOCAL_CLEAN_CHECK_PASS / NO_RUNTIME_CHANGE / READY_FOR_001C_DESIGN_ONLY
+```
+
 ## 3. LOCAL_CLEAN_CHECK
 
 ```txt
 LOCAL_CLEAN_CHECK:
+- command: git pull --ff-only origin dev-rollout-freeze
+- result: PASS
 - command: git status --short --branch
-- result: NOT_RUN_REMOTE_GITHUB_CONNECTOR
+- result: PASS / CLEAN BEFORE CLOSEOUT
 - command: git diff --check
-- result: NOT_RUN_REMOTE_GITHUB_CONNECTOR
-- verdict: PENDING_LOCAL_CHECK
+- result: PASS
+- verdict: LOCAL_CLEAN_CHECK_PASS
 ```
 
-Because the local check is pending, this report must not be treated as `LOCAL_CLEAN_CHECK_PASS`.
+Recorded local command output came from the Windows working tree:
 
-Required local commands:
-
-```powershell
-cd "C:\Users\malim\Desktop\biznesy_ai\2.closeflow"
-git pull --ff-only origin dev-rollout-freeze
-git status --short --branch
-git diff --check
+```txt
+C:\Users\malim\Desktop\biznesy_ai\2.closeflow
 ```
 
 ## 4. Pliki przeczytane
 
 ```txt
 _project/runs/LF-PROD-SOT-C3-001A_STATUS_MAP_ONLY.md
+_project/runs/LF-PROD-SOT-C3-LOCAL-CHECK-PASS-CLOSEOUT.md
+_project/runs/LF-PROD-SOT-C3-001B_SUPERSEDED_BY_LOCAL_CHECK_PASS.md
 AGENTS.md
 package.json
 src/App.tsx
@@ -95,20 +103,18 @@ api/cases.ts
 api/system.ts
 ```
 
-## 5. Pliki nieistniejÄ…ce
+## 5. Pliki nieistniejące
 
 ```txt
-src/lib/source-of-truth/status-repository.ts â€” FILE_NOT_FOUND / EXPECTED / DO_NOT_CREATE_IN_001B
-_project/runs/LF-PROD-SOT-C3-001B_STATUS_REPOSITORY_DECISION.md â€” FILE_NOT_FOUND_BEFORE_THIS_COMMIT / CREATED_BY_THIS_STAGE
-_project/obsidian_updates/2026-06-30_LF-PROD-SOT-C3-001B_STATUS_REPOSITORY_DECISION.md â€” FILE_NOT_FOUND_BEFORE_THIS_STAGE / CREATED_BY_THIS_STAGE
+src/lib/source-of-truth/status-repository.ts - FILE_NOT_FOUND / EXPECTED / DO_NOT_CREATE_IN_001B
 ```
 
 ## 6. STATUS_REPOSITORY_DECISION
 
 ```txt
 STATUS_REPOSITORY_DECISION:
-- final verdict: BLOCKED_LOCAL_CHECK_PENDING_FOR_FINAL_CLOSE / CONDITIONAL_DESIGN_ONLY_NEXT
-- local clean check: PENDING_LOCAL_CHECK
+- final verdict: DESIGN_ONLY_NEXT
+- local clean check: PASS
 - domains allowed into first design:
   - Lead entity status
   - Case entity status
@@ -188,49 +194,49 @@ STATUS_REPOSITORY_DECISION:
 
 ## 8. DAMIAN_DECISION_QUEUE
 
-### 1. Czy pierwszy projekt status repository ma obejmowaÄ‡ tylko Lead + Case entity status?
+### 1. Czy pierwszy projekt status repository ma obejmować tylko Lead + Case entity status?
 
 ```txt
 rekomendacja developera: TAK, tylko Lead + Case entity status.
-ryzyko: niskie w porĂłwnaniu do Task/Event/Finance, ale nadal wymagany design-only etap.
-co siÄ™ stanie, jeĹ›li Ĺşle zdecydujemy: status repo zacznie mieszaÄ‡ entity status z filtrami i visibility, co popsuje listy i badge.
-sugerowany nastÄ™pny etap: LF-PROD-SOT-C3-001C_STATUS_REPOSITORY_DESIGN_ONLY
+ryzyko: niskie w porównaniu do Task/Event/Finance, ale nadal wymagany design-only etap.
+co się stanie, jeśli źle zdecydujemy: status repo zacznie mieszać entity status z filtrami i visibility, co popsuje listy i badge.
+sugerowany następny etap: LF-PROD-SOT-C3-001C_STATUS_REPOSITORY_DESIGN_ONLY
 ```
 
-### 2. Czy Task/Event zostawiÄ‡ na pĂłĹşniej do czasu rozdzielenia blocker/calendar semantics?
+### 2. Czy Task/Event zostawić na później do czasu rozdzielenia blocker/calendar semantics?
 
 ```txt
-rekomendacja developera: TAK, zostawiÄ‡ na pĂłĹşniej.
+rekomendacja developera: TAK, zostawić na później.
 ryzyko: wysokie, bo Task miesza UI scopes i missing/blocker, a Event miesza lifecycle z Calendar/Google sync.
-co siÄ™ stanie, jeĹ›li Ĺşle zdecydujemy: moĹĽna zepsuÄ‡ work_items status constraints, kalendarz i filtracjÄ™ zadaĹ„.
-sugerowany nastÄ™pny etap: osobny C3 task/event semantics split po Lead+Case design.
+co się stanie, jeśli źle zdecydujemy: można zepsuć work_items status constraints, kalendarz i filtrację zadań.
+sugerowany następny etap: osobny C3 task/event semantics split po Lead+Case design.
 ```
 
-### 3. Czy finance/billing/commission robiÄ‡ jako osobny etap i osobny owner?
+### 3. Czy finance/billing/commission robić jako osobny etap i osobny owner?
 
 ```txt
 rekomendacja developera: TAK, osobny finance/access owner.
-ryzyko: krytyczne, bo to sÄ… pieniÄ…dze, dostÄ™p, pĹ‚atnoĹ›ci i prowizje.
-co siÄ™ stanie, jeĹ›li Ĺşle zdecydujemy: bĹ‚Ä™dne liczniki pĹ‚atnoĹ›ci, rozjazd prowizji, zĹ‚y access status.
-sugerowany nastÄ™pny etap: C3_FINANCE_STATUS_DOMAIN_DECISION po Lead+Case.
+ryzyko: krytyczne, bo to są pieniądze, dostęp, płatności i prowizje.
+co się stanie, jeśli źle zdecydujemy: błędne liczniki płatności, rozjazd prowizji, zły access status.
+sugerowany następny etap: C3_FINANCE_STATUS_DOMAIN_DECISION po Lead+Case.
 ```
 
-### 4. Czy legacy aliases zostajÄ… migration-only czy permanent compatibility layer?
+### 4. Czy legacy aliases zostają migration-only czy permanent compatibility layer?
 
 ```txt
-rekomendacja developera: zostawiÄ‡ jako compatibility layer do czasu audytu danych.
-ryzyko: krytyczne przy usuniÄ™ciu bez audytu.
-co siÄ™ stanie, jeĹ›li Ĺşle zdecydujemy: stare rekordy przestanÄ… normalizowaÄ‡ siÄ™ do poprawnych statusĂłw.
-sugerowany nastÄ™pny etap: LEGACY_STATUS_ALIAS_DATA_AUDIT przed jakimkolwiek usuwaniem.
+rekomendacja developera: zostawić jako compatibility layer do czasu audytu danych.
+ryzyko: krytyczne przy usunięciu bez audytu.
+co się stanie, jeśli źle zdecydujemy: stare rekordy przestaną normalizować się do poprawnych statusów.
+sugerowany następny etap: LEGACY_STATUS_ALIAS_DATA_AUDIT przed jakimkolwiek usuwaniem.
 ```
 
-### 5. Czy Client health/source/portal majÄ… pozostaÄ‡ derived classification poza status repository?
+### 5. Czy Client health/source/portal mają pozostać derived classification poza status repository?
 
 ```txt
 rekomendacja developera: TAK, poza status repository.
-ryzyko: Ĺ›rednie.
-co siÄ™ stanie, jeĹ›li Ĺşle zdecydujemy: klient dostanie sztuczny DB status, ktĂłry bÄ™dzie dublowaĹ‚ zdrowie, ĹşrĂłdĹ‚o i portal.
-sugerowany nastÄ™pny etap: brak teraz; zostawiÄ‡ client-options jako derived SOT.
+ryzyko: średnie.
+co się stanie, jeśli źle zdecydujemy: klient dostanie sztuczny DB status, który będzie dublował zdrowie, źródło i portal.
+sugerowany następny etap: brak teraz; zostawić client-options jako derived SOT.
 ```
 
 ## 9. Domeny dopuszczone do pierwszego design-only
@@ -269,7 +275,7 @@ ResponseTemplates lifecycle metadata
 Legacy aliases
 ```
 
-## 11. Domeny wymagajÄ…ce osobnego ownera/repository
+## 11. Domeny wymagające osobnego ownera/repository
 
 ```txt
 finance/payment/commission
@@ -280,7 +286,7 @@ activity taxonomy
 template lifecycle/content metadata
 ```
 
-## 12. Domeny wymagajÄ…ce migration/alias audit
+## 12. Domeny wymagające migration/alias audit
 
 ```txt
 Lead legacy aliases
@@ -291,7 +297,7 @@ Payment aliases
 Billing/access mixed values
 ```
 
-## 13. Czego nie wolno centralizowaÄ‡
+## 13. Czego nie wolno centralizować
 
 ```txt
 UI filters
@@ -320,32 +326,22 @@ legacy aliases: NOT_TOUCHED
 status-repository.ts: NOT_CREATED
 ```
 
-## 15. NastÄ™pny etap
-
-Local clean check passed. Next stage may be prepared as design-only. Do not implement runtime status repository in 001C.
-
-After local clean check PASS, next stage should be:
+## 15. Następny etap
 
 ```txt
 LF-PROD-SOT-C3-001C_STATUS_REPOSITORY_DESIGN_ONLY
 ```
 
-If local check fails:
+Guard:
 
 ```txt
-STOP / BLOCKED_BY_LOCAL_CLEAN_CHECK
-```
-
-If Damian rejects Lead+Case-only scope:
-
-```txt
-STOP / DAMIAN_DECISION_REQUIRED
+001C remains design-only. No runtime implementation allowed.
 ```
 
 ## 16. Zapis do Obsidiana
 
 ```txt
-data i godzina: 2026-06-30 15:06 Europe/Warsaw
+data i godzina: 2026-06-30 18:15 Europe/Warsaw
 name/alias: LF-PROD-SOT-C3-001B status repository decision
 stage_id: LF-PROD-SOT-C3-001B_STATUS_REPOSITORY_DECISION
 canonical_name: CloseFlow / LeadFlow
@@ -355,21 +351,21 @@ local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
 Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY
 target app report: _project/runs/LF-PROD-SOT-C3-001B_STATUS_REPOSITORY_DECISION.md
 target obsidian payload: _project/obsidian_updates/2026-06-30_LF-PROD-SOT-C3-001B_STATUS_REPOSITORY_DECISION.md
-save status: APP_REPORT_AND_OBSIDIAN_PAYLOAD_CREATED_REMOTE
-Obsidian GitHub sync: APP_PAYLOAD_ONLY
+save status: APP_REPORT_CORRECTED_BY_R1
+Obsidian GitHub sync: APP_PAYLOAD_UPDATED
 Obsidian local sync: OBSIDIAN_LOCAL_SYNC_PENDING
 tests:
-- git status --short --branch: NOT_RUN_REMOTE_GITHUB_CONNECTOR
-- git diff --check: NOT_RUN_REMOTE_GITHUB_CONNECTOR
-risk audit: local clean check still required before 001C
+- git status --short --branch: PASS / CLEAN BEFORE CLOSEOUT
+- git diff --check: PASS
+- status-repository.ts exists: FALSE / EXPECTED
+risk audit: 001C may start only as design-only; runtime implementation remains forbidden
 what was not touched: runtime, CSS, SQL, Supabase, API, auth, routes, Google Calendar, legacy aliases
-next step: local clean check, then 001C design-only or STOP
+next step: LF-PROD-SOT-C3-001C_STATUS_REPOSITORY_DESIGN_ONLY
 ```
-
----
 
 ## LOCAL_CLEAN_CHECK_CONFIRMATION
 
+```txt
 data i godzina: 2026-06-30 17:59 Europe/Warsaw
 stage_id: LF-PROD-SOT-C3-001B_STATUS_REPOSITORY_DECISION
 local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
@@ -385,3 +381,4 @@ LF-PROD-SOT-C3-001B:
 STATUS_REPOSITORY_DECISION_DONE / DOMAIN_SPLIT_APPROVED_FOR_DESIGN / LOCAL_CLEAN_CHECK_PASS / NO_RUNTIME_CHANGE / READY_FOR_001C_DESIGN_ONLY
 next step:
 LF-PROD-SOT-C3-001C_STATUS_REPOSITORY_DESIGN_ONLY
+```
