@@ -15,14 +15,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from './ui/dialog';
+import { FormField } from './ui/form-field';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
+import { TextareaField } from './ui/textarea-field';
 import { modalFooterClass } from './entity-actions';
 import '../styles/visual-stage20-lead-form-vnext.css';
 import '../styles/closeflow-global-client-create-dialog-stage172.css';
 
 const STAGE228R5R6_ACTIVE_CLIENT_CREATE_DIALOG_FINANCE_REDIRECT = 'active ClientCreateDialog creates empty starter case and opens CaseDetail finance modal';
+const CLOSEFLOW_CZ2_013_CLIENT_CREATE_FORM_VARIANTS = 'ClientCreateDialog scoped migration uses FormField/TextareaField source of truth';
 void STAGE228R5R6_ACTIVE_CLIENT_CREATE_DIALOG_FINANCE_REDIRECT;
+void CLOSEFLOW_CZ2_013_CLIENT_CREATE_FORM_VARIANTS;
 
 type ClientCreateDialogProps = {
   open: boolean;
@@ -226,34 +230,31 @@ export default function ClientCreateDialog({ open, onOpenChange }: ClientCreateD
         <form onSubmit={handleSubmit} className="lead-form-vnext cf-stage172-client-create-form" data-client-create-form-stage172="true">
           <section className="lead-form-section lead-form-primary-section">
             <div className="lead-form-grid">
-              <div className="lead-form-field lead-form-field-wide">
-                <Label>Nazwa / klient</Label>
+              <FormField label="Nazwa / klient" required className="lead-form-field-wide" dataAttrs={{ 'data-cf-form-scoped-migration': 'client-name' }}>
                 <Input
                   value={form.name}
                   onChange={(event) => updateForm({ name: event.target.value })}
                   placeholder="Np. Jan Kowalski albo Firma ABC"
                   required
                 />
-              </div>
+              </FormField>
 
-              <div className="lead-form-field">
-                <Label>Telefon</Label>
+              <FormField label="Telefon" dataAttrs={{ 'data-cf-form-scoped-migration': 'client-phone' }}>
                 <Input
                   value={form.phone}
                   onChange={(event) => updateForm({ phone: event.target.value })}
                   placeholder="np. 516 000 000"
                 />
-              </div>
+              </FormField>
 
-              <div className="lead-form-field">
-                <Label>E-mail</Label>
+              <FormField label="E-mail" dataAttrs={{ 'data-cf-form-scoped-migration': 'client-email' }}>
                 <Input
                   type="email"
                   value={form.email}
                   onChange={(event) => updateForm({ email: event.target.value })}
                   placeholder="kontakt@email.pl"
                 />
-              </div>
+              </FormField>
 
               <div className="lead-form-field lead-form-field-wide">
                 <Label>Firma</Label>
@@ -264,15 +265,14 @@ export default function ClientCreateDialog({ open, onOpenChange }: ClientCreateD
                 />
               </div>
 
-              <div className="lead-form-field lead-form-field-wide">
-                <Label>Notatka</Label>
-                <textarea
-                  className="lead-form-textarea"
-                  value={form.notes}
-                  onChange={(event) => updateForm({ notes: event.target.value })}
-                  placeholder="Krótki kontekst relacji, źródło albo ważna informacja."
-                />
-              </div>
+              <TextareaField
+                label="Notatka"
+                className="lead-form-field-wide"
+                value={form.notes}
+                onChange={(event) => updateForm({ notes: event.target.value })}
+                placeholder="Krótki kontekst relacji, źródło albo ważna informacja."
+                dataAttrs={{ 'data-cf-form-scoped-migration': 'client-notes' }}
+              />
             </div>
           </section>
 
