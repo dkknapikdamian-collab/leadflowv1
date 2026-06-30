@@ -37,6 +37,16 @@ const files = [
   'tests/lf-ui-sot-cz2-011-icon-registry.test.cjs',
 ];
 
+const laterScopedStageAllowlist = new Set([
+  'scripts/guards/verify-lf-ui-sot-cz2-012-card-tile-panel-variants.cjs',
+  'tests/lf-ui-sot-cz2-012-card-tile-panel-variants.test.cjs',
+  'src/components/ui/metric-card.tsx',
+  'src/components/ui/list-card.tsx',
+  'src/components/ui/empty-state-card.tsx',
+  'src/components/ui/detail-panel.tsx',
+  'src/components/StatShortcutCard.tsx',
+]);
+
 for (const file of files) read(file);
 
 requireIncludes('src/lib/source-of-truth/icon-registry.ts', 'export type IconName', 'icon-registry must export IconName');
@@ -78,6 +88,7 @@ try {
 }
 
 for (const file of changedFiles) {
+  if (laterScopedStageAllowlist.has(file)) continue;
   if (/\.(css|sql)$/i.test(file)) errors.push(`CZ2-011 must not touch CSS/SQL: ${file}`);
   if (/supabase|data-provider|card-variants|tile|form|layout/i.test(file) && !files.includes(file)) {
     errors.push(`CZ2-011 must not touch data-provider/card/tile/form/layout scope: ${file}`);
@@ -93,6 +104,7 @@ const result = {
   canonical: 'src/lib/source-of-truth/icon-registry.ts',
   checked: files,
   changedFiles,
+  laterScopedStageAllowlist: Array.from(laterScopedStageAllowlist),
   warnings,
   errors,
 };
