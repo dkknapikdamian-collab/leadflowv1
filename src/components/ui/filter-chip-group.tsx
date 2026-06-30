@@ -8,6 +8,7 @@ export type FilterChipOption = {
   value: string;
   label: ReactNode;
   count?: number;
+  countNode?: ReactNode;
   disabled?: boolean;
   dataAttrs?: DataAttrs;
 };
@@ -47,6 +48,7 @@ export function FilterChipGroup({
       {options.map((option) => {
         const optionAttrs = cleanDataAttrs(option.dataAttrs);
         const active = option.value === value;
+        const countContent = option.countNode ?? (typeof option.count === 'number' ? option.count : null);
         return (
           <Button
             key={option.value}
@@ -60,7 +62,7 @@ export function FilterChipGroup({
             {...optionAttrs}
           >
             <span className={labelClassName}>{option.label}</span>
-            {typeof option.count === 'number' ? <strong className={countClassName}>{option.count}</strong> : null}
+            {countContent !== null ? <strong className={countClassName}>{countContent}</strong> : null}
           </Button>
         );
       })}
