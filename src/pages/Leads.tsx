@@ -96,7 +96,8 @@ import {
 import { getNearestPlannedAction } from '../lib/nearest-action';
 
 import { buildRelationFunnelValue, buildRelationValueEntries, formatRelationValue } from '../lib/relation-value';
-import { LEAD_SOURCE_OPTIONS, LEAD_STATUS_OPTIONS, getLeadSourceLabel, getLeadStatusLabel, getLeadStatusTone } from '../lib/source-of-truth/lead-options';
+import { LEAD_SOURCE_OPTIONS, getLeadSourceLabel } from '../lib/source-of-truth/lead-options';
+import { LEAD_STATUS_OPTIONS, getLeadStatusLabel, getLeadStatusTone } from '../lib/config/lead-status';
 
 import '../styles/visual-stage20-lead-form-vnext.css';
 

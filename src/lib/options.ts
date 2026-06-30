@@ -1,7 +1,10 @@
 export {
   LEAD_SOURCE_OPTIONS as SOURCE_OPTIONS,
-  LEAD_STATUS_OPTIONS as STATUS_OPTIONS,
 } from './source-of-truth/lead-options';
+
+export {
+  LEAD_STATUS_OPTIONS as STATUS_OPTIONS,
+} from './config/lead-status';
 
 export {
   TASK_TYPE_OPTIONS as TASK_TYPES,
