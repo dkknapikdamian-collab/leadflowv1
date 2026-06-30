@@ -1,5 +1,7 @@
 import { ComponentType, type ReactNode } from 'react';
-import { OperatorMetricTile, type OperatorMetricTone } from './ui-system';
+import { type OperatorMetricTone } from './ui-system';
+import { MetricCard } from './ui/metric-card';
+import type { IconName } from '../lib/source-of-truth/icon-registry';
 
 const STAGE16AK_UNIFIED_TOP_METRIC_TILES = 'STAGE16AK_UNIFIED_TOP_METRIC_TILES';
 const STAGE16AL_METRIC_TILE_ICONS_NEXT_TO_VALUE = 'STAGE16AL_METRIC_TILE_ICONS_NEXT_TO_VALUE';
@@ -9,6 +11,7 @@ const ELITEFLOW_METRIC_TILES_COLOR_FONT_PARITY = 'ELITEFLOW_METRIC_TILES_COLOR_F
 const ELITEFLOW_TASKS_TILES_TEXT_CLIP_REPAIR = 'ELITEFLOW_TASKS_TILES_TEXT_CLIP_REPAIR_2026_05_07';
 const CLOSEFLOW_VS2_STAT_SHORTCUT_CARD_METRIC_TILE_ADAPTER = 'StatShortcutCard delegates rendering to ui-system OperatorMetricTile';
 const CLOSEFLOW_METRIC_TILES_FINAL_SYSTEM_VS5X_REPAIR3 = 'StatShortcutCard is a compatibility adapter to OperatorMetricTile';
+const CLOSEFLOW_CZ2_012_STAT_SHORTCUT_CARD_METRIC_VARIANT_ADAPTER = 'StatShortcutCard delegates card/tile shape to MetricCard variant SOT';
 void STAGE16AK_UNIFIED_TOP_METRIC_TILES;
 void STAGE16AL_METRIC_TILE_ICONS_NEXT_TO_VALUE;
 void ELITEFLOW_TODAY_METRIC_TILE_LOCK;
@@ -17,6 +20,7 @@ void ELITEFLOW_METRIC_TILES_COLOR_FONT_PARITY;
 void ELITEFLOW_TASKS_TILES_TEXT_CLIP_REPAIR;
 void CLOSEFLOW_VS2_STAT_SHORTCUT_CARD_METRIC_TILE_ADAPTER;
 void CLOSEFLOW_METRIC_TILES_FINAL_SYSTEM_VS5X_REPAIR3;
+void CLOSEFLOW_CZ2_012_STAT_SHORTCUT_CARD_METRIC_VARIANT_ADAPTER;
 
 export type MetricTone =
   | OperatorMetricTone
@@ -96,6 +100,24 @@ function resolveMetricTone(label: string, valueClassName: string, iconClassName:
   return 'neutral';
 }
 
+function resolveMetricIconName(icon: ComponentType<{ className?: string }>): IconName {
+  const rawName = String((icon as { displayName?: string; name?: string }).displayName || (icon as { name?: string }).name || '').toLowerCase();
+  if (rawName.includes('alert')) return 'alert';
+  if (rawName.includes('calendar')) return 'calendar';
+  if (rawName.includes('check')) return 'check';
+  if (rawName.includes('chevron')) return 'chevronRight';
+  if (rawName.includes('clock')) return 'clock';
+  if (rawName.includes('copy')) return 'copy';
+  if (rawName.includes('external')) return 'externalLink';
+  if (rawName.includes('loader')) return 'loading';
+  if (rawName.includes('mail')) return 'mail';
+  if (rawName.includes('phone')) return 'phone';
+  if (rawName.includes('plus')) return 'add';
+  if (rawName.includes('search')) return 'search';
+  if (rawName.includes('trash')) return 'trash';
+  return 'fileText';
+}
+
 export function StatShortcutCard({
   label,
   value,
@@ -113,21 +135,18 @@ export function StatShortcutCard({
 }: StatShortcutCardProps) {
   const resolvedTone = resolveMetricTone(label, valueClassName, iconClassName, tone);
   return (
-    <OperatorMetricTile
-      item={{
-        id: dataTab || label,
-        label,
-        value,
-        icon,
-        active,
-        onClick,
-        to,
-        tone: resolvedTone,
-        helper,
-        title,
-        ariaLabel,
-      }}
+    <MetricCard
+      label={label}
+      value={value}
+      iconName={resolveMetricIconName(icon)}
+      tone={resolvedTone}
+      meta={helper}
       active={active}
+      onClick={onClick}
+      href={to}
+      title={title}
+      ariaLabel={ariaLabel}
+      dataAttrs={{ 'data-cf-stat-shortcut-card': dataTab || label }}
     />
   );
 }
@@ -140,3 +159,4 @@ export function StatShortcutCard({
 /* ELITEFLOW_TASKS_TILES_TEXT_CLIP_REPAIR_GUARD no-truncate metric-value line-height-safe */
 /* VS2_STAT_SHORTCUT_CARD_ADAPTER_COMPAT OperatorMetricTile data-cf-operator-metric-tile data-cf-metric-source-truth */
 /* CLOSEFLOW_METRIC_TILES_FINAL_MIGRATION_VS5_GUARD StatShortcutCard delegates to OperatorMetricTile and must not render local card markup */
+/* CLOSEFLOW_CZ2_012_CARD_VARIANT_GUARD StatShortcutCard delegates to MetricCard and keeps props compatibility */
