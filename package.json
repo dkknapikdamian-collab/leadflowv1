@@ -92,6 +92,7 @@
                     "guard:routes:canonical":  "node scripts/check-routes-canonical.cjs",
                     "guard:ui:patch-layers":  "node scripts/check-ui-patch-layers.cjs",
                     "guard:config:status-source-of-truth":  "node scripts/check-config-status-source-of-truth.cjs",
+                    "verify:lf-prod-sot-001b-status-repository":  "node scripts/guards/verify-lf-prod-sot-001b-status-repository.cjs",
                     "check:a25-nearest-planned-action":  "node scripts/check-a25-nearest-planned-action.cjs",
                     "check:a28-digest-notifications-pwa":  "node scripts/check-a28-digest-notifications-pwa.cjs",
                     "check:a29-supabase-runtime-shell":  "node scripts/check-a29-supabase-runtime-shell.cjs",
