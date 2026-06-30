@@ -4,6 +4,7 @@ const { execSync } = require('node:child_process');
 
 const ROOT = process.cwd();
 const STAGE = 'LF-UI-SOT-CZ2-015';
+const NEXT_STAGE = `CZ2-${String(16).padStart(3, '0')}`;
 const errors = [];
 const warnings = [];
 const MOJIBAKE_PATTERN = new RegExp(['\\u00c5', '\\u00c4', '\\u0102', '\\u00e2\\u20ac', '\\uFFFD'].join('|'));
@@ -92,6 +93,8 @@ requireIncludes('src/components/layout/sidebar-nav.tsx', 'items: SidebarNavItem[
 requireIncludes('src/components/layout/sidebar-nav.tsx', 'footer?: ReactNode', 'SidebarNav API must include footer');
 requireIncludes('src/components/layout/sidebar-nav.tsx', 'iconName?: IconName', 'SidebarNav items must use IconName');
 requireIncludes('src/components/layout/sidebar-nav.tsx', 'AppIcon', 'SidebarNav must use AppIcon');
+requireIncludes('src/components/layout/sidebar-nav.tsx', "import { Button } from '../ui/button'", 'SidebarNav must use Button primitive for button actions');
+requireIncludes('src/components/layout/sidebar-nav.tsx', '<Button', 'SidebarNav must render Button primitive for non-link items');
 requireIncludes('src/components/layout/sidebar-nav.tsx', 'data-cf-layout-variant="sidebar-nav"', 'SidebarNav must expose variant marker');
 
 const migrated = read('src/pages/ResponseTemplates.tsx');
@@ -117,9 +120,10 @@ try {
   warnings.push('Could not inspect recent changed files with git diff HEAD~12..HEAD.');
 }
 
+const forbiddenNextStagePattern = new RegExp(`migrations|data-provider|${NEXT_STAGE.toLowerCase()}`, 'i');
 for (const file of changedFiles) {
   if (/\.(css|sql)$/i.test(file)) errors.push(`CZ2-015 must not touch CSS/SQL: ${file}`);
-  if (/migrations|data-provider|cz2-016/i.test(file)) errors.push(`CZ2-015 must not touch migrations/data-provider/CZ2-016 scope: ${file}`);
+  if (forbiddenNextStagePattern.test(file)) errors.push(`CZ2-015 must not touch migrations/data-provider/next-stage scope: ${file}`);
   if (file === 'src/lib/routes.ts') errors.push('CZ2-015 must not change src/lib/routes.ts');
 }
 
