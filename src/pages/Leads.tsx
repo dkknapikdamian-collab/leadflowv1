@@ -1,4 +1,4 @@
-const STAGE227G2_LEADS_RUNTIME_COPY_CLEANUP = 'Leads runtime removes helper marketing copy and highest-value helper copy';
+﻿const STAGE227G2_LEADS_RUNTIME_COPY_CLEANUP = 'Leads runtime removes helper marketing copy and highest-value helper copy';
 void STAGE227G2_LEADS_RUNTIME_COPY_CLEANUP;
 // CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
 // CLOSEFLOW_FB2_LEADS_LIST_RIGHT_RAIL_CLEANUP
@@ -96,7 +96,8 @@ import {
 import { getNearestPlannedAction } from '../lib/nearest-action';
 
 import { buildRelationFunnelValue, buildRelationValueEntries, formatRelationValue } from '../lib/relation-value';
-import { LEAD_SOURCE_OPTIONS, LEAD_STATUS_OPTIONS, getLeadSourceLabel, getLeadStatusLabel, getLeadStatusTone } from '../lib/source-of-truth/lead-options';
+import { LEAD_SOURCE_OPTIONS, getLeadSourceLabel } from '../lib/source-of-truth/lead-options';
+import { LEAD_STATUS_OPTIONS, getLeadStatusLabel, getLeadStatusTone } from '../lib/config/lead-status';
 
 import '../styles/visual-stage20-lead-form-vnext.css';
 
@@ -105,13 +106,13 @@ import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-record-list-source-truth.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import '../styles/closeflow-canvas-source-truth-stage211e.css';
-const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadów jest pusty';
-const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'Przywróć leada';
-const STAGE_PANEL_DELETE_LEADS_CONFIRM_GUARD = '\\\\n\\\\nTen lead ma powiązaną sprawę';
-const STAGE31_LEADS_SEARCH_COPY_GUARD_1 = 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...';
-const STAGE31_LEADS_SEARCH_COPY_GUARD_2 = 'Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.';
-const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_1 = 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...';
-const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_2 = 'Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.';
+const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadĂłw jest pusty';
+const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'PrzywrĂłÄ‡ leada';
+const STAGE_PANEL_DELETE_LEADS_CONFIRM_GUARD = '\\\\n\\\\nTen lead ma powiÄ…zanÄ… sprawÄ™';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_1 = 'Szukaj: nazwa, telefon, e-mail, firma, ĹşrĂłdĹ‚o albo sprawa...';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_2 = 'Podpowiedzi pojawiajÄ… siÄ™ pod wyszukiwarkÄ…. UsuĹ„ czÄ™Ĺ›Ä‡ tekstu albo wybierz inny filtr.';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_1 = 'Szukaj: nazwa, telefon, e-mail, firma, ĹşrĂłdĹ‚o albo sprawa...';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_2 = 'Podpowiedzi pojawiajÄ… siÄ™ pod wyszukiwarkÄ…. UsuĹ„ czÄ™Ĺ›Ä‡ tekstu albo wybierz inny filtr.';
 const STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT = 'Leads right rail starts at search height, simple filters first, top value below, no overlap';
 const STAGE222_R4_LEADS_CLIENTS_OPERATIONAL_BADGES = 'lead rows show missing contact, missing next action and 7/14 day silence badges';
 const STAGE223R3_LAST_CONTACT_INTAKE_LEADS = 'lead creation captures explicit lastContactAt for activity truth';
@@ -120,7 +121,7 @@ const STAGE226_LOST_LEAD_RESCUE_LEADS = 'lead list exposes Do odzyskania rescue 
 const STAGE226R10_LEAD_CLIENT_SEPARATION_RUNTIME = 'lead create stays lead-only and never creates or displays a client row';
 const STAGE227F6_LEADS_CONTACT_CADENCE_COMPACT = 'Leads Contact Cadence Grid is a compact filter strip without explanatory runtime copy';
 const STAGE231D0C_LEAD_LIST_CARD_CLIENT_VIEW_FREEZE = 'LeadListCard reuses frozen ClientListCard visual shell: size, axes, ellipsis and action column; lead data semantics stay unchanged';
-const STAGE231G_LEAD_CREATE_POTENTIAL_INPUT = 'Lead create form exposes Potencjał / wartość and persists dealValue';
+const STAGE231G_LEAD_CREATE_POTENTIAL_INPUT = 'Lead create form exposes PotencjaĹ‚ / wartoĹ›Ä‡ and persists dealValue';
 const CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER = 'Szukaj po nazwie, telefonie, e-mailu, firmie albo sprawie...';
 const CLOSEFLOW_STAGE134_TRASH_SEARCH_PLACEHOLDER = 'Szukaj w koszu...';
 void STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT;
@@ -136,7 +137,7 @@ const STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG = 'lead creation duplicate
 void STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG;
 const STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE = 'lead duplicate conflict preflight fails closed and requires explicit add anyway';
 void STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE;
-// Guard marker: \n\nTen lead ma powiązaną sprawę
+// Guard marker: \n\nTen lead ma powiÄ…zanÄ… sprawÄ™
 
 type CaseRecord = {
   id: string;
@@ -198,7 +199,7 @@ function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sou
     sourceLabel,
     company,
     caseLabel,
-  ].filter(Boolean).join(' · ');
+  ].filter(Boolean).join(' Â· ');
 }
 
 function sanitizeNewLeadCreatePayloadA1(input: any) {
@@ -230,7 +231,7 @@ function getNextActionKindLabel(action: { kind?: string } | null | undefined) {
 function buildNextActionMeta(action: { title: string | null; at: string | null; kind?: string | null; status?: string } | null | undefined) {
   if (!action?.at || !action?.title) {
     return {
-      title: 'Brak zaplanowanych działań',
+      title: 'Brak zaplanowanych dziaĹ‚aĹ„',
       subtitle: '',
       overdue: false,
     };
@@ -242,7 +243,7 @@ function buildNextActionMeta(action: { title: string | null; at: string | null; 
 
   return {
     title: action.title,
-    subtitle: `${getNextActionKindLabel(action)} · ${dateLabel} · ${String(action.status || 'todo')}`,
+    subtitle: `${getNextActionKindLabel(action)} Â· ${dateLabel} Â· ${String(action.status || 'todo')}`,
     overdue,
   };
 }
@@ -347,9 +348,9 @@ export default function Leads() {
       setEvents(eventRows as any[]);
       setClients(clientRows as any[]);
     } catch (error: any) {
-      const message = error?.message || 'Nie udało się pobrać leadów';
+      const message = error?.message || 'Nie udaĹ‚o siÄ™ pobraÄ‡ leadĂłw';
       setLoadError(message);
-      toast.error(`Błąd odczytu leadów: ${message}`);
+      toast.error(`BĹ‚Ä…d odczytu leadĂłw: ${message}`);
     } finally {
       setLoading(false);
     }
@@ -439,17 +440,17 @@ export default function Leads() {
 
   const restoreConflictCandidate = async (candidate: EntityConflictCandidate) => {
     if (candidate.entityType === 'client') {
-      toast.info('Znaleziono podobnego klienta. To nie jest ten sam rekord. Otwórz klienta albo utwórz osobnego leada.');
+      toast.info('Znaleziono podobnego klienta. To nie jest ten sam rekord. OtwĂłrz klienta albo utwĂłrz osobnego leada.');
       return;
     }
-    if (!candidate.canRestore) { toast.info('Ten rekord ma historię. Najpierw go otwórz i zdecyduj, co zrobić.'); return; }
+    if (!candidate.canRestore) { toast.info('Ten rekord ma historiÄ™. Najpierw go otwĂłrz i zdecyduj, co zrobiÄ‡.'); return; }
     try {
       setLeadSubmitting(true);
       await updateLeadInSupabase({ id: candidate.id, status: 'new', leadVisibility: 'active', salesOutcome: 'open', closedAt: null });
-      toast.success('Lead przywrócony');
+      toast.success('Lead przywrĂłcony');
       setLeadConflictOpen(false);
       await loadLeads();
-    } catch (error: any) { toast.error('Nie udało się przywrócić rekordu: ' + (error?.message || 'REQUEST_FAILED')); }
+    } catch (error: any) { toast.error('Nie udaĹ‚o siÄ™ przywrĂłciÄ‡ rekordu: ' + (error?.message || 'REQUEST_FAILED')); }
     finally { setLeadSubmitting(false); }
   };
 
@@ -457,12 +458,12 @@ export default function Leads() {
   const handleCreateLead = async (e: FormEvent) => {
     e.preventDefault();
     if (createLeadSubmitLockRef.current) return;
-    if (!hasAccess) return toast.error('Twój trial wygasł.');
+    if (!hasAccess) return toast.error('TwĂłj trial wygasĹ‚.');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     const hasLeadIdentity = Boolean(newLead.name.trim() || newLead.phone.trim() || newLead.email.trim() || newLead.company.trim());
     const hasContactOrNeed = Boolean(newLead.phone.trim() || newLead.email.trim() || newLead.summary.trim() || newLead.notes.trim());
-    if (!hasLeadIdentity) return toast.error('Podaj nazwę albo kontakt.');
+    if (!hasLeadIdentity) return toast.error('Podaj nazwÄ™ albo kontakt.');
     if (!hasContactOrNeed) return toast.error('Podaj telefon, e-mail albo opis potrzeby.');
     const lastContactError = getLastContactDateInputError(newLead.lastContactAt);
     if (lastContactError) return toast.error(lastContactError);
@@ -474,14 +475,14 @@ export default function Leads() {
       try {
         conflicts = await findEntityConflictsInSupabase({ targetType: 'lead', name: preparedLead.name, email: preparedLead.email, phone: preparedLead.phone, company: preparedLead.company, workspaceId });
       } catch (error: any) {
-        toast.error('Nie udało się sprawdzić duplikatów. Zapis leada zatrzymany, żeby nie dodać konfliktu po cichu.');
+        toast.error('Nie udaĹ‚o siÄ™ sprawdziÄ‡ duplikatĂłw. Zapis leada zatrzymany, ĹĽeby nie dodaÄ‡ konfliktu po cichu.');
         return;
       }
       const candidates = Array.isArray(conflicts.candidates)
         ? (conflicts.candidates as EntityConflictCandidate[]).map((candidate) => candidate.entityType === 'client' ? { ...candidate, canRestore: false } : candidate)
         : [];
       if (candidates.length) {
-        toast.info('Znaleziono podobny rekord. Zapis leada wymaga potwierdzenia albo kliknięcia „Dodaj mimo to”.');
+        toast.info('Znaleziono podobny rekord. Zapis leada wymaga potwierdzenia albo klikniÄ™cia â€žDodaj mimo toâ€ť.');
         setLeadConflictCandidates(candidates);
         setLeadConflictPendingInput(preparedLead);
         setIsNewLeadOpen(false);
@@ -489,14 +490,14 @@ export default function Leads() {
         return;
       }
       await createLeadFromPreparedInput(preparedLead);
-    } catch (error: any) { toast.error(`Błąd zapisu leada: ${error.message}`); }
+    } catch (error: any) { toast.error(`BĹ‚Ä…d zapisu leada: ${error.message}`); }
     finally { createLeadSubmitLockRef.current = false; setLeadSubmitting(false); }
   };
 
   const handleCreateLeadAnyway = async () => {
     if (!leadConflictPendingInput || leadSubmitting) return;
     try { setLeadSubmitting(true); await createLeadFromPreparedInput(leadConflictPendingInput, { forceDuplicate: true }); setLeadConflictOpen(false); setLeadConflictPendingInput(null); setLeadConflictCandidates([]); }
-    catch (error: any) { toast.error('Błąd zapisu leada: ' + (error?.message || 'REQUEST_FAILED')); }
+    catch (error: any) { toast.error('BĹ‚Ä…d zapisu leada: ' + (error?.message || 'REQUEST_FAILED')); }
     finally { setLeadSubmitting(false); }
   };
 
@@ -525,7 +526,7 @@ export default function Leads() {
       toast.success('Rekord przeniesiony do kosza');
       await loadLeads();
     } catch (error: any) {
-      toast.error('Nie udało się przenieść rekordu do kosza: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Nie udaĹ‚o siÄ™ przenieĹ›Ä‡ rekordu do kosza: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setLeadSubmitting(false);
     }
@@ -552,7 +553,7 @@ export default function Leads() {
       toast.success('Lead przeniesiony do kosza');
       await loadLeads();
     } catch (error: any) {
-      toast.error('Błąd przenoszenia leada do kosza: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('BĹ‚Ä…d przenoszenia leada do kosza: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setArchivePendingId(null);
     }
@@ -563,7 +564,7 @@ export default function Leads() {
     event.stopPropagation();
 
     if (!hasAccess) {
-      toast.error('Twój trial wygasł.');
+      toast.error('TwĂłj trial wygasĹ‚.');
       return;
     }
 
@@ -581,7 +582,7 @@ export default function Leads() {
     event.stopPropagation();
 
     if (!hasAccess) {
-      toast.error('Twój trial wygasł.');
+      toast.error('TwĂłj trial wygasĹ‚.');
       return;
     }
 
@@ -593,7 +594,7 @@ export default function Leads() {
     const nextVisibility = nextStatus === 'moved_to_service' ? 'archived' : 'active';
     const nextOutcome = nextStatus === 'moved_to_service' ? 'moved_to_service' : 'open';
 
-    if (!window.confirm('Przywrócić leada do listy: ' + (lead.name || 'Lead') + '?')) return;
+    if (!window.confirm('PrzywrĂłciÄ‡ leada do listy: ' + (lead.name || 'Lead') + '?')) return;
 
     try {
       setArchivePendingId(leadId);
@@ -604,10 +605,10 @@ export default function Leads() {
         salesOutcome: nextOutcome,
         closedAt: null,
       });
-      toast.success('Lead przywrócony');
+      toast.success('Lead przywrĂłcony');
       await loadLeads();
     } catch (error: any) {
-      toast.error('Błąd przywracania leada: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('BĹ‚Ä…d przywracania leada: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setArchivePendingId(null);
     }
@@ -635,7 +636,7 @@ export default function Leads() {
     [activeLeads, clients, cases],
   );
 
-  // CLOSEFLOW_FB2_RIGHT_RAIL_LEADS_ONLY: right rail pokazuje tylko aktywne leady, bez klientów i spraw.
+  // CLOSEFLOW_FB2_RIGHT_RAIL_LEADS_ONLY: right rail pokazuje tylko aktywne leady, bez klientĂłw i spraw.
   const mostValuableRelations = useMemo(
     () => buildRelationValueEntries({ leads: activeLeads, clients: [], cases: [] }).slice(0, 5),
     [activeLeads],
@@ -781,7 +782,7 @@ export default function Leads() {
                             onClick={toggleTrashView}
                           >
                             {showTrash ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
-                            {showTrash ? 'Pokaż aktywne' : 'Kosz'}
+                            {showTrash ? 'PokaĹĽ aktywne' : 'Kosz'}
                             <span className="pill">{showTrash ? stats.total : stats.trash}</span>
                           </button>
 
@@ -837,11 +838,11 @@ export default function Leads() {
                                         max={getTodayDateInputValue()}
                                         onChange={(event) => setNewLead({ ...newLead, lastContactAt: event.target.value })}
                                       />
-                                      <small className="sub">Jeśli dodajesz starszy kontakt, wpisz dzień ostatniej rozmowy. To wpływa na oznaczenia ciszy 7/14 dni.</small>
+                                      <small className="sub">JeĹ›li dodajesz starszy kontakt, wpisz dzieĹ„ ostatniej rozmowy. To wpĹ‚ywa na oznaczenia ciszy 7/14 dni.</small>
                                     </div>
 
                                     <div className="lead-form-field">
-                                      <Label>Źródło</Label>
+                                      <Label>ĹąrĂłdĹ‚o</Label>
                                       <select
                                         className="lead-form-select"
                                         value={newLead.source}
@@ -854,7 +855,7 @@ export default function Leads() {
                                     </div>
 
                                     <div className="lead-form-field" data-stage231g-lead-create-potential-field="true">
-                                      <Label>Potencjał / wartość</Label>
+                                      <Label>PotencjaĹ‚ / wartoĹ›Ä‡</Label>
                                       <Input
                                         data-stage231g-lead-create-potential-input="true"
                                         type="number"
@@ -864,7 +865,7 @@ export default function Leads() {
                                         onChange={(event) => setNewLead({ ...newLead, dealValue: event.target.value })}
                                         placeholder="np. 12000"
                                       />
-                                      <small className="sub">Kwota trafia do potencjału leada i finansów na karcie leada.</small>
+                                      <small className="sub">Kwota trafia do potencjaĹ‚u leada i finansĂłw na karcie leada.</small>
                                     </div>
 
                                     <div className="lead-form-field lead-form-field-wide">
@@ -872,7 +873,7 @@ export default function Leads() {
                                       <Input
                                         value={newLead.summary}
                                         onChange={(event) => setNewLead({ ...newLead, summary: event.target.value })}
-                                        placeholder="Np. strona www, kampania, nieruchomość, dokumenty..."
+                                        placeholder="Np. strona www, kampania, nieruchomoĹ›Ä‡, dokumenty..."
                                       />
                                     </div>
 
@@ -882,7 +883,7 @@ export default function Leads() {
                                         className="lead-form-textarea"
                                         value={newLead.notes}
                                         onChange={(event) => setNewLead({ ...newLead, notes: event.target.value })}
-                                        placeholder="Krótki kontekst rozmowy. Bez długiej odprawy."
+                                        placeholder="KrĂłtki kontekst rozmowy. Bez dĹ‚ugiej odprawy."
                                       />
                                     </div>
                                   </div>
@@ -921,7 +922,7 @@ export default function Leads() {
                                       />
                                       <span>
                                         <strong>Wysoki priorytet</strong>
-                                        <small>Oznacz, jeśli lead wymaga szybkiej reakcji.</small>
+                                        <small>Oznacz, jeĹ›li lead wymaga szybkiej reakcji.</small>
                                       </span>
                                     </label>
                                   </div>
@@ -950,8 +951,8 @@ export default function Leads() {
             icon={LeadEntityIcon}
             active={quickFilter === 'all' && !valueSortEnabled && !showTrash}
             onClick={() => { setShowTrash(false); setQuickFilter('all'); setValueSortEnabled(false); }}
-            title="Pokaż wszystkie leady"
-            ariaLabel="Pokaż wszystkie leady"
+            title="PokaĹĽ wszystkie leady"
+            ariaLabel="PokaĹĽ wszystkie leady"
           />
 
           <StatShortcutCard
@@ -960,31 +961,31 @@ export default function Leads() {
             icon={TrendingUp}
             active={quickFilter === 'active' && !showTrash}
             onClick={() => toggleQuickFilter('active')}
-            title="Pokaż aktywne leady"
-            ariaLabel="Pokaż aktywne leady"
+            title="PokaĹĽ aktywne leady"
+            ariaLabel="PokaĹĽ aktywne leady"
             valueClassName="text-slate-900"
             iconClassName="bg-blue-50 text-blue-500"
           />
 
           <StatShortcutCard
-            label="Wartość"
+            label="WartoĹ›Ä‡"
             value={`${stats.value.toLocaleString('pl-PL')} PLN`}
             icon={TrendingUp}
             active={valueSortEnabled && !showTrash}
             onClick={toggleValueSorting}
-            title="Sortuj leady po wartości"
-            ariaLabel="Sortuj leady po wartości"
-            helper={valueSortEnabled ? 'sortowanie aktywne' : 'kliknij, aby sortować!'}
+            title="Sortuj leady po wartoĹ›ci"
+            ariaLabel="Sortuj leady po wartoĹ›ci"
+            helper={valueSortEnabled ? 'sortowanie aktywne' : 'kliknij, aby sortowaÄ‡!'}
           />
 
           <StatShortcutCard
-            label="Zagrożone"
+            label="ZagroĹĽone"
             value={stats.atRisk}
             icon={AlertTriangle}
             active={quickFilter === 'at-risk' && !showTrash}
             onClick={() => toggleQuickFilter('at-risk')}
-            title="Pokaż zagrożone leady"
-            ariaLabel="Pokaż zagrożone leady"
+            title="PokaĹĽ zagroĹĽone leady"
+            ariaLabel="PokaĹĽ zagroĹĽone leady"
             tone="risk"
           />
 
@@ -994,10 +995,10 @@ export default function Leads() {
             icon={AlertTriangle}
             active={quickFilter === 'rescue' && !showTrash}
             onClick={() => toggleQuickFilter('rescue')}
-            title="Pokaż leady do odzyskania"
-            ariaLabel="Pokaż leady do odzyskania"
+            title="PokaĹĽ leady do odzyskania"
+            ariaLabel="PokaĹĽ leady do odzyskania"
             tone="risk"
-            helper={lostLeadRescueSummary.critical ? `${lostLeadRescueSummary.critical} krytyczne` : 'sprawdź ciszę'}
+            helper={lostLeadRescueSummary.critical ? `${lostLeadRescueSummary.critical} krytyczne` : 'sprawdĹş ciszÄ™'}
           />
 
         </div>
@@ -1045,7 +1046,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 </div>
               ) : (
                 <div className="suggestions lead-search-suggestions-stage31 cf-main-search" data-stage31-lead-search-suggestions="true" data-stage117-leads-search-suggestions="true" data-cf-main-search-source="stage173">
-                  <span className="sub">Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.</span>
+                  <span className="sub">Podpowiedzi pojawiajÄ… siÄ™ pod wyszukiwarkÄ…. UsuĹ„ czÄ™Ĺ›Ä‡ tekstu albo wybierz inny filtr.</span>
                 </div>
               )
             ) : null}
@@ -1088,13 +1089,13 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   <span className="index"><AlertTriangle className="h-4 w-4" /></span>
                   <span>
                     <span className="title">Do odzyskania</span>
-                    <span className="sub">Lista priorytetowa dla właściciela: najpierw leady krytyczne, potem wysokie i średnie ryzyko.</span>
+                    <span className="sub">Lista priorytetowa dla wĹ‚aĹ›ciciela: najpierw leady krytyczne, potem wysokie i Ĺ›rednie ryzyko.</span>
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-2 p-3 pt-0" data-stage226r7-rescue-summary="true">
                   <span className="cf-status-pill" data-cf-status-tone="red">Krytyczne: {lostLeadRescueSummary.critical}</span>
                   <span className="cf-status-pill" data-cf-status-tone="amber">Wysokie: {lostLeadRescueSummary.high}</span>
-                  <span className="cf-status-pill" data-cf-status-tone="blue">Średnie: {lostLeadRescueSummary.medium}</span>
+                  <span className="cf-status-pill" data-cf-status-tone="blue">Ĺšrednie: {lostLeadRescueSummary.medium}</span>
                   {lostLeadRescueSummary.total > 8 ? <span className="pill">Pokazano 8 z {lostLeadRescueSummary.total}</span> : null}
                 </div>
                 {lostLeadRescueSummary.rows.length ? (
@@ -1112,14 +1113,14 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                         <span className="sub">{row.reasonDetail}</span>
                       </span>
                       <span className="lead-action-cell" title={nextActionMeta.title}>
-                        <span className="mini">Następny ruch</span>
+                        <span className="mini">NastÄ™pny ruch</span>
                         <strong>{row.nextMoveTitle || 'Brak zaplanowanej akcji'}</strong>
-                        <span className="sub">{row.nextMoveAt || 'Ustaw zadanie ręcznie po otwarciu leada.'}</span>
+                        <span className="sub">{row.nextMoveAt || 'Ustaw zadanie rÄ™cznie po otwarciu leada.'}</span>
                       </span>
                       <span className="lead-actions">
-                        <Link to={row.href} className="btn ghost">Otwórz</Link>
+                        <Link to={row.href} className="btn ghost">OtwĂłrz</Link>
                         <button type="button" className="btn ghost" disabled title="Do potwierdzenia: bezpieczne tworzenie zadania z rescue">Ustaw zadanie</button>
-                        <button type="button" className="btn ghost" disabled title="Do potwierdzenia: trwały snooze rescue">Odłóż</button>
+                        <button type="button" className="btn ghost" disabled title="Do potwierdzenia: trwaĹ‚y snooze rescue">OdĹ‚ĂłĹĽ</button>
                         <button type="button" className="btn ghost danger" disabled title="Do potwierdzenia: bezpieczne oznaczanie jako martwy">Oznacz jako martwy</button>
                       </span>
                     </div>
@@ -1128,8 +1129,8 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   <div className="row row-empty">
                     <span className="index">0</span>
                     <span>
-                      <span className="title">Brak leadów do odzyskania</span>
-                      <span className="sub">Brak leadów wymagających odzyskania według aktualnych reguł.</span>
+                      <span className="title">Brak leadĂłw do odzyskania</span>
+                      <span className="sub">Brak leadĂłw wymagajÄ…cych odzyskania wedĹ‚ug aktualnych reguĹ‚.</span>
                     </span>
                   </div>
                 )}
@@ -1141,7 +1142,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 <div className="row row-empty">
                   <span className="index"><Loader2 className="h-4 w-4 animate-spin" /></span>
                   <span>
-                    <span className="title">Ładowanie leadów</span>
+                    <span className="title">Ĺadowanie leadĂłw</span>
                     <span className="sub">Pobieram dane z aplikacji.</span>
                   </span>
                 </div>
@@ -1149,7 +1150,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 <div className="row row-empty">
                   <span className="index">!</span>
                   <span>
-                    <span className="title">Nie udało się pobrać leadów</span>
+                    <span className="title">Nie udaĹ‚o siÄ™ pobraÄ‡ leadĂłw</span>
                     <span className="sub">{loadError}</span>
                   </span>
                 </div>
@@ -1205,13 +1206,13 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                           </span>
                         </span>
 
-                        <span className="lead-value-cell" title={'Wartość: ' + leadValueLabel}>
-                          <span className="mini">Wartość</span>
+                        <span className="lead-value-cell" title={'WartoĹ›Ä‡: ' + leadValueLabel}>
+                          <span className="mini">WartoĹ›Ä‡</span>
                           <strong className="cf-list-row-value lead-card-value-pill" data-lead-value-pill="true">{leadValueLabel}</strong>
                         </span>
 
                         <span className="lead-action-cell">
-                          <span className="mini">Najbliższa zaplanowana akcja</span>
+                          <span className="mini">NajbliĹĽsza zaplanowana akcja</span>
                           <strong className={nextActionMeta.overdue ? 'danger cf-lead-next-action-title' : 'cf-lead-next-action-title'} title={nextActionMeta.title}>{nextActionMeta.title}</strong>
                           {nextActionMeta.subtitle ? <span className="sub">{nextActionMeta.subtitle}</span> : null}
                         </span>
@@ -1225,8 +1226,8 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                             className={actionIconClass('danger', 'btn ghost lead-icon-btn')}
                             disabled={pending}
                             onClick={(event) => (showTrash ? handleRestoreLead(event, lead) : handleArchiveLead(event, lead))}
-                            aria-label={showTrash ? 'Przywróć leada' : 'Przenieś leada do kosza'}
-                            title={showTrash ? 'Przywróć leada' : 'Przenieś leada do kosza'}
+                            aria-label={showTrash ? 'PrzywrĂłÄ‡ leada' : 'PrzenieĹ› leada do kosza'}
+                            title={showTrash ? 'PrzywrĂłÄ‡ leada' : 'PrzenieĹ› leada do kosza'}
                           >
                             {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : showTrash ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
                           </button>
@@ -1240,8 +1241,8 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 <div className="row row-empty">
                   <span className="index">0</span>
                   <span>
-                    <span className="title">{showTrash ? 'Kosz leadów jest pusty.' : 'Brak leadów w tym widoku'}</span>
-                    <span className="sub">{showTrash ? 'Nie ma rekordów do przywrócenia.' : 'Zmień filtr albo dodaj pierwszego leada.'}</span>
+                    <span className="title">{showTrash ? 'Kosz leadĂłw jest pusty.' : 'Brak leadĂłw w tym widoku'}</span>
+                    <span className="sub">{showTrash ? 'Nie ma rekordĂłw do przywrĂłcenia.' : 'ZmieĹ„ filtr albo dodaj pierwszego leada.'}</span>
                   </span>
                 </div>
               )}
@@ -1269,7 +1270,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 },
                 {
                   key: 'at-risk',
-                  label: 'Zagrożone',
+                  label: 'ZagroĹĽone',
                   value: stats.atRisk,
                   onClick: () => {
                     setShowTrash(false);
@@ -1318,7 +1319,7 @@ items={mostValuableRelations.map((entry) => ({
                   'data-stage32-valuable-relation-row': true,
                 },
               }))}
-              emptyLabel="Brak relacji z wyliczoną wartością."
+              emptyLabel="Brak relacji z wyliczonÄ… wartoĹ›ciÄ…."
             />
 
             <div hidden data-leads-stage35-removed-ai-side-card="true" />
@@ -1332,13 +1333,13 @@ items={mostValuableRelations.map((entry) => ({
           onOpenChange={(open) => {
             if (!open && !archivePendingId) setLeadArchiveConfirmStage220A29(null);
           }}
-          title="Przenieść leada do kosza?"
+          title="PrzenieĹ›Ä‡ leada do kosza?"
           description={
             leadArchiveConfirmStage220A29?.linkedCase
-              ? 'Lead ' + (leadArchiveConfirmStage220A29?.lead?.name || 'Lead') + ' ma powiązaną sprawę: ' + (leadArchiveConfirmStage220A29.linkedCase.title || leadArchiveConfirmStage220A29.linkedCase.id) + '. Rekord zniknie z aktywnej listy, ale nie zostanie trwale skasowany.'
-              : 'Lead ' + (leadArchiveConfirmStage220A29?.lead?.name || 'Lead') + ' zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.'
+              ? 'Lead ' + (leadArchiveConfirmStage220A29?.lead?.name || 'Lead') + ' ma powiÄ…zanÄ… sprawÄ™: ' + (leadArchiveConfirmStage220A29.linkedCase.title || leadArchiveConfirmStage220A29.linkedCase.id) + '. Rekord zniknie z aktywnej listy, ale nie zostanie trwale skasowany.'
+              : 'Lead ' + (leadArchiveConfirmStage220A29?.lead?.name || 'Lead') + ' zniknie z aktywnej listy, ale bÄ™dzie moĹĽna go przywrĂłciÄ‡ z kosza.'
           }
-          confirmLabel="Przenieś do kosza"
+          confirmLabel="PrzenieĹ› do kosza"
           cancelLabel="Anuluj"
           confirmTone="destructive"
           pending={Boolean(archivePendingId)}
@@ -1352,9 +1353,9 @@ items={mostValuableRelations.map((entry) => ({
           onOpenChange={(open) => {
             if (!open && !leadSubmitting) setConflictArchiveConfirmStage220A29(null);
           }}
-          title="Przenieść rekord do kosza?"
-          description={'Rekord ' + (conflictArchiveConfirmStage220A29?.label || 'bez nazwy') + ' zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.'}
-          confirmLabel="Przenieś do kosza"
+          title="PrzenieĹ›Ä‡ rekord do kosza?"
+          description={'Rekord ' + (conflictArchiveConfirmStage220A29?.label || 'bez nazwy') + ' zniknie z aktywnej listy, ale bÄ™dzie moĹĽna go przywrĂłciÄ‡ z kosza.'}
+          confirmLabel="PrzenieĹ› do kosza"
           cancelLabel="Anuluj"
           confirmTone="destructive"
           pending={leadSubmitting}
@@ -1401,3 +1402,4 @@ relationValueEntries.slice(0, 5)
 Najcenniejsze relacje
 data-relation-value-board="true"
 */
+
