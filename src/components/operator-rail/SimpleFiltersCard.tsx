@@ -58,6 +58,7 @@ export function SimpleFiltersCard({
             value: item.key,
             label: item.label,
             count: typeof item.value === 'number' ? item.value : undefined,
+            countNode: typeof item.value === 'number' ? undefined : item.value,
             dataAttrs: {
               ...(item.dataAttrs || {}),
               'data-cf-operator-rail-item': true,
