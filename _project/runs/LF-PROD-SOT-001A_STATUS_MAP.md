@@ -1,6 +1,6 @@
 # LF-PROD-SOT-001A — Mapowanie statusów
 
-Date: 2026-06-30 19:18 Europe/Warsaw
+Date: 2026-06-30 19:32 Europe/Warsaw
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
 Local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
@@ -9,10 +9,15 @@ Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY
 ## Status
 
 ```txt
-STATUS_MAP_DONE_REMOTE / APP_REPORT_PUSHED / OBSIDIAN_REPORT_PUSHED / LOCAL_GUARDS_PENDING / DO_NOT_START_001B_BEFORE_LOCAL_PASS
+STATUS_MAP_DONE / READY_FOR_001B_STATUS_REPOSITORY / LOCAL_GUARDS_PASS / OBSIDIAN_LOCAL_SYNC_DONE
 ```
 
-001A is audit/map-only. It does not close 001B and does not implement a status repository.
+001A is closed as audit/map-only.
+
+No runtime implementation was created.
+No `src/lib/source-of-truth/status-repository.ts` was created.
+No imports were rewired.
+No UI, CSS, SQL, Supabase, routing, auth or data-provider changes were made.
 
 ## Wejście
 
@@ -21,8 +26,24 @@ Previous stage: LF-PROD-SOT-CLEANUP-000 = CLOSED / READY_FOR_MAPPING_001
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
 Remote HEAD before 001A map: 578b4276835bae56a791ca3225f9a930edeb4958
-App report initial commit: 84c69294a7569c15017d38c14fc0d0d24954923b
-Obsidian report initial commit: 4cf098b4edd259bfe98da19a1a6c0929ae0bd31d
+Map report remote commit: ed0a02890ea37f04b6c440958fce0a19d3efad90
+Local verified HEAD: ed0a0289 — docs(closeflow): complete production status source map
+```
+
+## Local verification pasted by Damian
+
+```txt
+git pull --ff-only origin dev-rollout-freeze: PASS / fast-forward 578b4276..ed0a0289
+git status --short --branch: PASS / ## dev-rollout-freeze...origin/dev-rollout-freeze
+git branch --show-current: PASS / dev-rollout-freeze
+git log --oneline -1: PASS / ed0a0289 docs(closeflow): complete production status source map
+npm run guard:routes:canonical: PASS / ok true / screensChecked 17
+npm run guard:ui:patch-layers: PASS / ok true / knownDebt recorded, no failure
+npm run check:polish-mojibake: PASS / OK no Polish mojibake detected
+git diff --check: PASS / no output
+git status --short --branch after guards: PASS / ## dev-rollout-freeze...origin/dev-rollout-freeze
+Obsidian git pull --ff-only origin main: PASS / fast-forward 9229d72e..42e423ca
+Obsidian git status --short --branch -- . ":(exclude).tmp.driveupload": PASS / ## main...origin/main
 ```
 
 ## Zakres
@@ -105,7 +126,7 @@ Mapowane encje: Lead, Client, Case, Task, Event, Payment, Missing item / blocker
 
 - statusy/warstwy: severity `critical`, `warning`, `normal`; closed set; client service set; missing severity; note-without-followup gap.
 - helper: `src/lib/owner-control/owner-control-baseline.ts`, `owner-control-missing-blockers.ts`, `next-move-contract.ts`, `activity-truth.ts`.
-- duplikaty: `CLOSED_RECORD_STATUSES` miesza lead/case/task closed values; `ACTIVE_CLIENT_SERVICE_STATUSES` jest lokalną mapą client service.
+- duplikaty: `CLOSED_RECORD_STATUSES` zawiera statusy lead/case/task razem; `ACTIVE_CLIENT_SERVICE_STATUSES` jest lokalną mapą client service.
 - kategoria: `DERIVED_STATUS / LOCAL_STATUS_MAP / DUPLICATE_STATUS_LOGIC`.
 - rekomendowane SOT 001B: Owner Control ma być konsumentem repozytorium statusów, nie źródłem.
 
@@ -181,19 +202,7 @@ data provider: NOT_TOUCHED
 status repository: NOT_CREATED
 ```
 
-## Guard/test/build
-
-```txt
-git status --short --branch: NOT_RUN_LOCAL_REMOTE_GITHUB_CONNECTOR
-git branch --show-current: NOT_RUN_LOCAL_REMOTE_GITHUB_CONNECTOR / target branch dev-rollout-freeze
-git log --oneline -1: REMOTE_HEAD 578b4276835bae56a791ca3225f9a930edeb4958
-npm run guard:routes:canonical: NOT_RUN_LOCAL_REMOTE_GITHUB_CONNECTOR / REQUIRED_LOCAL_REVERIFY
-npm run guard:ui:patch-layers: NOT_RUN_LOCAL_REMOTE_GITHUB_CONNECTOR / REQUIRED_LOCAL_REVERIFY
-npm run check:polish-mojibake: NOT_RUN_LOCAL_REMOTE_GITHUB_CONNECTOR / REQUIRED_LOCAL_REVERIFY
-git diff --check: NOT_RUN_LOCAL_REMOTE_GITHUB_CONNECTOR / REQUIRED_LOCAL_REVERIFY
-```
-
-## Ryzyka
+## Ryzyka po zamknięciu
 
 ```txt
 - 001B nie może być big-bang refactorem,
@@ -209,45 +218,19 @@ git diff --check: NOT_RUN_LOCAL_REMOTE_GITHUB_CONNECTOR / REQUIRED_LOCAL_REVERIF
 
 ```txt
 LF-PROD-SOT-001A:
-STATUS_MAP_DONE_REMOTE / READY_FOR_LOCAL_REVERIFY
+STATUS_MAP_DONE / READY_FOR_001B_STATUS_REPOSITORY
 
-Następny etap po lokalnym PASS:
+Następny etap:
 LF-PROD-SOT-001B — Status repository
 
-Nie wdrażano 001B w tym etapie.
-Nie wolno startować 001B przed lokalnym PASS guardów po tej mapie.
-```
-
-## Lokalne komendy do domknięcia 001A
-
-```powershell
-$ErrorActionPreference = "Stop"
-cd "C:\Users\malim\Desktop\biznesy_ai\2.closeflow"
-
-git pull --ff-only origin dev-rollout-freeze
-git status --short --branch
-git branch --show-current
-git log --oneline -1
-
-npm run guard:routes:canonical
-npm run guard:ui:patch-layers
-npm run check:polish-mojibake
-git diff --check
-
-git status --short --branch
-```
-
-Jeżeli wszystko przejdzie i raport ma zostać formalnie zamknięty, zaktualizować status na:
-
-```txt
-STATUS_MAP_DONE / READY_FOR_001B_STATUS_REPOSITORY
+001B musi być osobnym etapem.
 ```
 
 ## Zapis do Obsidiana
 
 ```txt
-data i godzina: 2026-06-30 19:18 Europe/Warsaw
-name/alias: LF-PROD-SOT-001A status map
+data i godzina: 2026-06-30 19:32 Europe/Warsaw
+name/alias: LF-PROD-SOT-001A status map closeout
 canonical_name: CloseFlow / LeadFlow
 repo: dkknapikdamian-collab/leadflowv1
 branch: dev-rollout-freeze
@@ -255,11 +238,15 @@ local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
 Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY
 target app report: _project/runs/LF-PROD-SOT-001A_STATUS_MAP.md
 target obsidian path: 10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-001A_STATUS_MAP.md
-save status: APP_REPORT_PUSHED_REMOTE / OBSIDIAN_REPORT_PUSHED_REMOTE
-Obsidian GitHub sync: DONE_REMOTE / local pull required
-Obsidian local sync: LOCAL_SYNC_PENDING
-tests: local guard reverify pending after remote documentation push
-risk audit: map complete, but no 001B until local PASS and Obsidian sync
+save status: APP_REPORT_PUSHED_REMOTE / OBSIDIAN_REPORT_PUSHED_REMOTE / LOCAL_PASS_CONFIRMED
+Obsidian GitHub sync: DONE_REMOTE
+Obsidian local sync: DONE / ## main...origin/main
+tests:
+- guard:routes:canonical: PASS
+- guard:ui:patch-layers: PASS
+- check:polish-mojibake: PASS
+- git diff --check: PASS
+risk audit: 001A closed; 001B allowed only as status repository stage, no big-bang runtime refactor
 what was not touched: runtime, CSS, SQL, Supabase, routing, auth, UI redesign, data provider
-next step: local reverify; after PASS, close 001A and only then design 001B
+next step: LF-PROD-SOT-001B — Status repository
 ```
