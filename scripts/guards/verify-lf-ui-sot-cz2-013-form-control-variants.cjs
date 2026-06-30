@@ -47,6 +47,14 @@ const laterScopedStageAllowlist = new Set([
   'src/components/operator-rail/SimpleFiltersCard.tsx',
   'scripts/guards/verify-lf-ui-sot-cz2-014-filter-search-sort-controls.cjs',
   'tests/lf-ui-sot-cz2-014-filter-search-sort-controls.test.cjs',
+  'src/components/layout/app-shell.tsx',
+  'src/components/layout/page-shell.tsx',
+  'src/components/layout/page-header.tsx',
+  'src/components/layout/content-rail-layout.tsx',
+  'src/components/layout/sidebar-nav.tsx',
+  'src/pages/ResponseTemplates.tsx',
+  'scripts/guards/verify-lf-ui-sot-cz2-015-layout-sidebar.cjs',
+  'tests/lf-ui-sot-cz2-015-layout-sidebar.test.cjs',
 ]);
 
 for (const file of files) read(file);
