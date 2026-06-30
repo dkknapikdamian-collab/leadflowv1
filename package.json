@@ -1042,7 +1042,8 @@
                     "verify:lf-ui-sot-cz2-011-icon-registry":  "node scripts/guards/verify-lf-ui-sot-cz2-011-icon-registry.cjs",
                     "verify:lf-ui-sot-cz2-012-card-tile-panel-variants":  "node scripts/guards/verify-lf-ui-sot-cz2-012-card-tile-panel-variants.cjs",
                     "verify:lf-ui-sot-cz2-013-form-control-variants":  "node scripts/guards/verify-lf-ui-sot-cz2-013-form-control-variants.cjs",
-                    "verify:lf-ui-sot-cz2-014-filter-search-sort-controls":  "node scripts/guards/verify-lf-ui-sot-cz2-014-filter-search-sort-controls.cjs"
+                    "verify:lf-ui-sot-cz2-014-filter-search-sort-controls":  "node scripts/guards/verify-lf-ui-sot-cz2-014-filter-search-sort-controls.cjs",
+                    "verify:lf-ui-sot-cz2-015-layout-sidebar":  "node scripts/guards/verify-lf-ui-sot-cz2-015-layout-sidebar.cjs"
                 },
     "dependencies":  {
                          "@base-ui/react":  "^1.3.0",
