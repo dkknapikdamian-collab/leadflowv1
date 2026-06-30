@@ -23,6 +23,7 @@ import {
   updateResponseTemplateInSupabase,
 } from '../lib/supabase-fallback';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+import { PageShell } from '../components/layout/page-shell';
 import '../styles/closeflow-page-header-v2.css';
 import '../styles/visual-stage22-event-form-vnext.css';
 import '../styles/closeflow-response-template-modal-source-truth-stage181r.css';
@@ -191,9 +192,14 @@ export default function ResponseTemplates() {
 
   return (
     <Layout>
-      <div className="cf-html-view cf-route-work-root flex w-full flex-col gap-6 px-4 py-4 md:px-8 md:py-8" data-a13-template-style="response-templates-v2">
-        <CloseFlowPageHeaderV2 pageKey="responseTemplates" />
-
+      <PageShell
+        header={<CloseFlowPageHeaderV2 pageKey="responseTemplates" />}
+        className="cf-html-view cf-route-work-root flex w-full flex-col gap-6 px-4 py-4 md:px-8 md:py-8"
+        dataAttrs={{
+          'data-a13-template-style': 'response-templates-v2',
+          'data-cf-layout-scoped-migration': 'response-templates',
+        }}
+      >
         <section className="grid-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <StatShortcutCard label="Szablony" value={stats.total} icon={AiEntityIcon} iconClassName="app-primary-chip" valueClassName="app-text" />
           <StatShortcutCard label="Kategorie" value={stats.categories} icon={MessageSquareText} iconClassName="bg-indigo-500/12 text-indigo-600" valueClassName="app-text" />
@@ -337,7 +343,7 @@ export default function ResponseTemplates() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </div>
+      </PageShell>
     </Layout>
   );
 }
