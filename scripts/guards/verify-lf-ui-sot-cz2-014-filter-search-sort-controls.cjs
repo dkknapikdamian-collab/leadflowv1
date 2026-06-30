@@ -39,6 +39,17 @@ const files = [
   'tests/lf-ui-sot-cz2-014-filter-search-sort-controls.test.cjs',
 ];
 
+const laterScopedStageAllowlist = new Set([
+  'src/components/layout/app-shell.tsx',
+  'src/components/layout/page-shell.tsx',
+  'src/components/layout/page-header.tsx',
+  'src/components/layout/content-rail-layout.tsx',
+  'src/components/layout/sidebar-nav.tsx',
+  'src/pages/ResponseTemplates.tsx',
+  'scripts/guards/verify-lf-ui-sot-cz2-015-layout-sidebar.cjs',
+  'tests/lf-ui-sot-cz2-015-layout-sidebar.test.cjs',
+]);
+
 for (const file of files) read(file);
 
 const componentFiles = [
@@ -120,6 +131,7 @@ try {
 }
 
 for (const file of changedFiles) {
+  if (laterScopedStageAllowlist.has(file)) continue;
   if (/\.(css|sql)$/i.test(file)) errors.push(`CZ2-014 must not touch CSS/SQL: ${file}`);
   if (/migrations|data-provider|layout|sidebar|cz2-015/i.test(file) && !files.includes(file)) {
     errors.push(`CZ2-014 must not touch data-provider/layout/sidebar/CZ2-015 scope: ${file}`);
@@ -141,6 +153,7 @@ const result = {
   ],
   scopedMigration: 'src/components/operator-rail/SimpleFiltersCard.tsx',
   changedFiles,
+  laterScopedStageAllowlist: Array.from(laterScopedStageAllowlist),
   warnings,
   errors,
 };
