@@ -1044,7 +1044,8 @@
                     "verify:lf-ui-sot-cz2-013-form-control-variants":  "node scripts/guards/verify-lf-ui-sot-cz2-013-form-control-variants.cjs",
                     "verify:lf-ui-sot-cz2-014-filter-search-sort-controls":  "node scripts/guards/verify-lf-ui-sot-cz2-014-filter-search-sort-controls.cjs",
                     "verify:lf-ui-sot-cz2-015-layout-sidebar":  "node scripts/guards/verify-lf-ui-sot-cz2-015-layout-sidebar.cjs",
-                    "verify:lf-ui-sot-cz2-016-visual-smoke":  "node scripts/guards/verify-lf-ui-sot-cz2-016-visual-smoke.cjs"
+                    "verify:lf-ui-sot-cz2-016-visual-smoke":  "node scripts/guards/verify-lf-ui-sot-cz2-016-visual-smoke.cjs",
+                    "verify:lf-ui-sot-cz2-017-final-closeout":  "node scripts/guards/verify-lf-ui-sot-cz2-017-final-closeout.cjs"
                 },
     "dependencies":  {
                          "@base-ui/react":  "^1.3.0",
