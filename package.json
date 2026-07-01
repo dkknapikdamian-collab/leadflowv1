@@ -95,6 +95,7 @@
                     "verify:lf-prod-sot-001b-status-repository":  "node scripts/guards/verify-lf-prod-sot-001b-status-repository.cjs",
                     "verify:lf-prod-sot-002b-date-time-repository":  "node scripts/guards/verify-lf-prod-sot-002b-date-time-repository.cjs",
                     "verify:lf-prod-sot-003b-visual-repository":  "node scripts/guards/verify-lf-prod-sot-003b-visual-repository.cjs",
+                    "verify:lf-prod-sot-004b-readonly-runtime-adoption":  "node scripts/guards/verify-lf-prod-sot-004b-readonly-runtime-adoption.cjs",
                     "check:a25-nearest-planned-action":  "node scripts/check-a25-nearest-planned-action.cjs",
                     "check:a28-digest-notifications-pwa":  "node scripts/check-a28-digest-notifications-pwa.cjs",
                     "check:a29-supabase-runtime-shell":  "node scripts/check-a29-supabase-runtime-shell.cjs",
