@@ -1,8 +1,16 @@
-# LF-PROD-SOT-004B — Safe read-only runtime adoption stage 1
+# LF-PROD-SOT-004B - Safe read-only runtime adoption stage 1
 
 ## Status
 
-SAFE_READ_ONLY_RUNTIME_ADOPTION_STAGE_1_ADDED / LOCAL_GUARDS_EXPECTED_PASS / READY_FOR_PUSH_IF_SCRIPT_COMPLETED
+SAFE_READ_ONLY_RUNTIME_ADOPTION_STAGE_1_ADDED / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / READY_FOR_004C_TODAY_STATUS_DATE_VISUAL_READ_ONLY_BRIDGE
+
+## Closeout
+
+- closeout id: LF-PROD-SOT-004B_SAFE_RUNTIME_ADOPTION_STAGE_1_FINAL_CLOSEOUT
+- closeout time: 2026-07-01 21:41 Europe/Warsaw
+- final result: PASS
+- next allowed stage: LF-PROD-SOT-004C_TODAY_STATUS_DATE_VISUAL_READ_ONLY_BRIDGE
+- 004C status in this stage: NOT_STARTED
 
 ## Linki SOT / mapa wejściowa
 
@@ -14,11 +22,11 @@ SAFE_READ_ONLY_RUNTIME_ADOPTION_STAGE_1_ADDED / LOCAL_GUARDS_EXPECTED_PASS / REA
 
 ## Zakres
 
-Etap dodaje wyłącznie bezpieczny kontrakt read-only dla przyszłej adopcji runtime.
+Etap dodal wylacznie bezpieczny kontrakt read-only dla przyszlej adopcji runtime.
 
-Runtime adoption realnych widoków: NOT_STARTED.
+Runtime adoption realnych widokow: NOT_STARTED.
 
-## Dodane pliki
+## Dodane pliki 004B
 
 - `src/lib/source-of-truth/runtime-adoption-readonly.ts`
 - `scripts/guards/verify-lf-prod-sot-004b-readonly-runtime-adoption.cjs`
@@ -26,7 +34,7 @@ Runtime adoption realnych widoków: NOT_STARTED.
 - `_project/runs/LF-PROD-SOT-004B_SAFE_RUNTIME_ADOPTION_STAGE_1.md`
 - `package.json` alias: `verify:lf-prod-sot-004b-readonly-runtime-adoption`
 
-## Twarde reguły
+## Twarde reguly
 
 - runtimeBehaviorChange: FORBIDDEN
 - uiChange: FORBIDDEN
@@ -38,39 +46,40 @@ Runtime adoption realnych widoków: NOT_STARTED.
 - dateTimeRepositoryRuntimeAdoption: NOT_STARTED
 - visualRepositoryRuntimeAdoption: NOT_STARTED
 
+## Wyniki wykonanych komend
+
+- `npm run verify:lf-prod-sot-004b-readonly-runtime-adoption`: PASS
+- `node --test tests/lf-prod-sot-004b-readonly-runtime-adoption.test.cjs`: PASS
+- `npm run guard:routes:canonical`: PASS
+- `npm run guard:ui:patch-layers`: PASS
+- `npm run check:polish-mojibake`: PASS
+- `npm run build`: PASS
+- `git diff --check`: PASS
+
 ## Czego nie ruszano
 
-runtime: NOT_TOUCHED
-CSS: NOT_TOUCHED
-Tailwind config: NOT_TOUCHED
-UI components: NOT_TOUCHED
-status repository: NOT_TOUCHED
-date-time repository: NOT_TOUCHED
-visual repository: NOT_TOUCHED
-SQL: NOT_TOUCHED
-Supabase/API: NOT_TOUCHED
-Google Calendar sync: NOT_TOUCHED
-routing/auth: NOT_TOUCHED
-Finance: NOT_TOUCHED
-CaseDetail runtime: NOT_TOUCHED
-LF-PROD-SOT-004C: NOT_STARTED
+- runtime: NOT_TOUCHED
+- CSS: NOT_TOUCHED
+- Tailwind config: NOT_TOUCHED
+- UI components: NOT_TOUCHED
+- status repository: NOT_TOUCHED
+- date-time repository: NOT_TOUCHED
+- visual repository: NOT_TOUCHED
+- SQL: NOT_TOUCHED
+- Supabase/API: NOT_TOUCHED
+- Google Calendar sync: NOT_TOUCHED
+- routing/auth: NOT_TOUCHED
+- Finance: NOT_TOUCHED
+- CaseDetail runtime: NOT_TOUCHED
+- LF-PROD-SOT-004C: NOT_STARTED
 
-## Testy / guardy
+## Risk audit
 
-- `npm run verify:lf-prod-sot-004b-readonly-runtime-adoption`
-- `node --test tests/lf-prod-sot-004b-readonly-runtime-adoption.test.cjs`
-- `npm run guard:routes:canonical`
-- `npm run guard:ui:patch-layers`
-- `npm run check:polish-mojibake`
-- `npm run build`
-- `git diff --check`
-
-## Ryzyka
-
-- Etap nie przepina runtime i nie zmienia widocznego outputu.
-- Następny realny most do widoków musi być osobnym etapem.
-- CaseDetail, Calendar/Google Calendar boundary i Finance pozostają zablokowane do osobnych etapów.
+- Etap nie przepial runtime i nie zmienil widocznego outputu.
+- Guard 004B potwierdza blokade runtime/UI/CSS/data/output drift.
+- Nastepny realny most do widokow musi byc osobnym etapem 004C.
+- CaseDetail, Calendar/Google Calendar boundary i Finance pozostaja zablokowane do osobnych etapow.
 
 ## Wynik
 
-LF-PROD-SOT-004B closes only after the script prints `KONIEC ETAPU LF-PROD-SOT-004B.`
+KONIEC ETAPU LF-PROD-SOT-004B.
