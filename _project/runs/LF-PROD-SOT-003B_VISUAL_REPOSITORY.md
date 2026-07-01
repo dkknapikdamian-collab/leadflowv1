@@ -167,3 +167,24 @@ tests: PASS_AFTER_LOCAL_RUN
 risk audit: read-only repository only; no runtime/CSS/UI adoption
 what was not touched: runtime, CSS, Tailwind config, UI components, status repository, date-time repository, SQL/migrations, Supabase/API, routing, auth, data provider
 next step: run local apply/check/push script and paste output
+
+## 003B-R1 BOM/package.json hotfix validation
+
+data i godzina: 2026-07-01 16:39 Europe/Warsaw
+
+Problem:
+- pierwotny commit 003B dodal wymagane pliki, ale package.json zostal zapisany z UTF-8 BOM przez PowerShell.
+- npm run verify:lf-prod-sot-003b-visual-repository oraz npm run build zatrzymaly sie na JSON.parse package.json.
+
+Fix:
+- package.json przepisany jako UTF-8 bez BOM.
+- nie zmieniano UI, CSS, runtime, pages/components, SQL, Supabase/API, routingu ani auth.
+
+Recheck po fixie:
+- npm run verify:lf-prod-sot-003b-visual-repository: PASS
+- node --test tests/lf-prod-sot-003b-visual-repository.test.cjs: PASS
+- npm run guard:routes:canonical: PASS
+- npm run guard:ui:patch-layers: PASS
+- npm run check:polish-mojibake: PASS
+- npm run build: PASS
+- git diff --check: PASS
