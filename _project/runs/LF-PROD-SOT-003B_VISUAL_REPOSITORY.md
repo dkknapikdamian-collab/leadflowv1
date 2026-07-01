@@ -188,3 +188,25 @@ Recheck po fixie:
 - npm run check:polish-mojibake: PASS
 - npm run build: PASS
 - git diff --check: PASS
+
+## 003B-R2 real npm.cmd validation
+
+data i godzina: 2026-07-01 17:14 Europe/Warsaw
+
+Powod R2:
+- 003B-R1 zostal dodany po BOM fixie, ale poprzedni wrapper PowerShell wywolal samo npm bez argumentow.
+- R2 jest kontrolna walidacja przez jawne npm.cmd run.
+
+Recheck R2:
+- package.json JSON parse: PASS
+- npm.cmd run verify:lf-prod-sot-003b-visual-repository: PASS
+- node --test tests/lf-prod-sot-003b-visual-repository.test.cjs: PASS
+- npm.cmd run guard:routes:canonical: PASS
+- npm.cmd run guard:ui:patch-layers: PASS
+- npm.cmd run check:polish-mojibake: PASS
+- npm.cmd run build: PASS
+- git diff --check: PASS
+
+Wniosek:
+- LF-PROD-SOT-003B moze byc oceniany dopiero po tej sekcji R2.
+- Nie zmieniano UI, CSS, runtime, pages/components, SQL, Supabase/API, routingu ani auth.
