@@ -2,7 +2,13 @@
 // Shared lightweight runtime contract for Calendar/Today operational entries.
 // This file is intentionally pure: no React, no Supabase, no Google sync, no SQL.
 
+import { calendarDateTimeBoundaryReadonlyRuntimeAdapterContract } from './source-of-truth/calendar-date-time-boundary-readonly-runtime'
+
 export const STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT = 'STAGE232G_R1A_CALENDAR_TODAY_OPERATIONAL_ENTRY_CONTRACT';
+const calendarDateTimeBoundaryReadonlyRuntimeImportBoundary =
+  calendarDateTimeBoundaryReadonlyRuntimeAdapterContract
+
+void calendarDateTimeBoundaryReadonlyRuntimeImportBoundary
 
 export type OperationalEntryKind = 'event' | 'task' | 'lead';
 export type OperationalEntryAction = 'edit' | 'shift' | 'complete' | 'restore' | 'delete' | 'open-related';
