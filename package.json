@@ -99,6 +99,7 @@
                     "verify:lf-prod-sot-004c-today-readonly-bridge":  "node scripts/guards/verify-lf-prod-sot-004c-today-readonly-bridge.cjs",
                     "verify:lf-prod-sot-004d-lists-cards-readonly-bridge":  "node scripts/guards/verify-lf-prod-sot-004d-lists-cards-readonly-bridge.cjs",
                     "verify:lf-prod-sot-004e-forms-modals-action-visual-bridge":  "node scripts/guards/verify-lf-prod-sot-004e-forms-modals-action-visual-bridge.cjs",
+                    "verify:lf-prod-sot-004f-casedetail-isolated-adoption-plan":  "node scripts/guards/verify-lf-prod-sot-004f-casedetail-isolated-adoption-plan.cjs",
                     "check:a25-nearest-planned-action":  "node scripts/check-a25-nearest-planned-action.cjs",
                     "check:a28-digest-notifications-pwa":  "node scripts/check-a28-digest-notifications-pwa.cjs",
                     "check:a29-supabase-runtime-shell":  "node scripts/check-a29-supabase-runtime-shell.cjs",

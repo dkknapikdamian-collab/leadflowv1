@@ -2,7 +2,7 @@
 
 ## Status
 
-CASEDETAIL_ISOLATED_ADOPTION_PLAN_REMOTE_ADDED / 004E_FORMAL_CLEANUP_DONE / LOCAL_PACKAGE_ALIAS_AND_VERIFICATION_PENDING / NOT_CLOSED
+CASEDETAIL_ISOLATED_ADOPTION_PLAN_ADDED / 004E_FORMAL_CLEANUP_DONE / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / READY_FOR_004G_CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN
 
 Target closeout status after local PASS:
 CASEDETAIL_ISOLATED_ADOPTION_PLAN_ADDED / 004E_FORMAL_CLEANUP_DONE / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / READY_FOR_004G_CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN
@@ -25,9 +25,9 @@ Remote GitHub connector created the plan, guard, test and report. Local package 
 - 004E app report main status corrected: DONE
 - 004E Obsidian report main status corrected: DONE
 - 004E bridge status corrected from pending to final: DONE
-- 004E guard after cleanup: LOCAL_VERIFICATION_PENDING
-- 004E node test after cleanup: LOCAL_VERIFICATION_PENDING
-- 004E build after cleanup: LOCAL_VERIFICATION_PENDING
+- 004E guard after cleanup: PASS
+- 004E node test after cleanup: PASS
+- 004E build after cleanup: PASS
 
 ## Zakres
 
@@ -169,3 +169,25 @@ Remote GitHub connector does not run local npm/build commands.
 LF-PROD-SOT-004F remote implementation files added. Local package alias and verification are required before final closeout.
 
 KONIEC CZESCI REMOTE LF-PROD-SOT-004F - NOT FULL STAGE CLOSEOUT.
+## R2 local verification closeout PASS - 2026-07-02 15:16 Europe/Warsaw
+
+Status:
+- 004E formal cleanup: DONE.
+- package.json alias added.
+- 004B guard PASS.
+- 004C guard PASS.
+- 004D guard PASS.
+- 004E guard PASS.
+- 004F guard PASS.
+- 004F node test PASS.
+- routes guard PASS.
+- UI patch guard PASS.
+- Polish mojibake PASS.
+- npm run build PASS.
+- git diff --check PASS.
+- CaseDetail runtime NOT_TOUCHED.
+- UI/CSS/layout NOT_TOUCHED.
+- Finance/Calendar/Supabase/API/SQL NOT_TOUCHED.
+- READY_FOR_004G_CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN.
+
+KONIEC ETAPU LF-PROD-SOT-004F.
