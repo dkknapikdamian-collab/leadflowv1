@@ -127,12 +127,21 @@ Etap nie dotyka CaseDetail.
 
 KONIEC ETAPU LF-PROD-SOT-004D.
 
-## R2 BOM/build closeout — 2026-07-02 09:00 Europe/Warsaw
+## R2 BOM/build closeout - 2026-07-02 09:00 Europe/Warsaw
 
 Status korekty:
-- R1 code/guard/test zosta³ wypchniêty jako commit 87a696fd.
-- R1 build by³ RED przed commitem z powodu UTF-8 BOM na pocz¹tku package.json.
+- R1 code/guard/test zosta- wypchni-ty jako commit 87a696fd.
+- R1 build by- RED przed commitem z powodu UTF-8 BOM na pocz-tku package.json.
 - R2 usuwa BOM z package.json.
 - Po R2 wymagane: 004D guard PASS, node test PASS, routes guard PASS, UI patch guard PASS, mojibake PASS, build PASS, git diff --check PASS.
 - To nie zmienia runtime, UI, CSS, SQL, Supabase/API, Google Calendar ani CaseDetail.
 
+## R3 real BOM/build fix - 2026-07-02 09:02 Europe/Warsaw
+
+Status:
+- Previous R2 attempt did not remove package.json BOM because relative file IO resolved to C:\WINDOWS\System32.
+- This R3 fix uses absolute paths.
+- package.json BOM removed.
+- report replacement character sanitized.
+- Required closeout: 004D guard PASS, node test PASS, routes guard PASS, UI patch guard PASS, mojibake PASS, build PASS, git diff --check PASS.
+- No runtime, UI, CSS, SQL, Supabase/API, Google Calendar or CaseDetail change.
