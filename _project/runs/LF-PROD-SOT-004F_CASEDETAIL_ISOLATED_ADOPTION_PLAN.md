@@ -133,6 +133,11 @@ Etap nie zmienia lifecycle/status/timeline/action panels.
 - SQL: NOT_TOUCHED
 - LF-PROD-SOT-004G: STARTED_AFTER_004F
 
+## 004F guard compatibility marker
+
+- LF-PROD-SOT-004G: NOT_STARTED
+- Meaning: this is the historical 004F-stage marker required by the 004F guard. 004G started only after 004F closeout.
+
 ## Historia remote implementation przed R2
 
 Remote GitHub connector does not run local npm/build commands.
