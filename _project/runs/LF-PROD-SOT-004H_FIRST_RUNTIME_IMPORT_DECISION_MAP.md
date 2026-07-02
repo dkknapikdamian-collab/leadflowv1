@@ -2,7 +2,7 @@
 
 ## Status
 
-FIRST_RUNTIME_IMPORT_DECISION_MAP_ADDED / NO_RUNTIME_CHANGE / NO_UI_CHANGE / NO_CSS_CHANGE / NO_SQL_CHANGE / FIRST_RUNTIME_IMPORT_DECISION_SELECTED
+FIRST_RUNTIME_IMPORT_DECISION_MAP_ADDED / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / NO_RUNTIME_CHANGE / NO_UI_CHANGE / NO_CSS_CHANGE / NO_SQL_CHANGE / FIRST_RUNTIME_IMPORT_DECISION_SELECTED / READY_FOR_004I_CALENDAR_DATE_TIME_BOUNDARY_READONLY_RUNTIME_IMPORT
 
 ## Input status
 
@@ -194,7 +194,7 @@ LF-PROD-SOT-004I_CALENDAR_DATE_TIME_BOUNDARY_READONLY_RUNTIME_IMPORT
 - npm run build: REQUIRED
 - git diff --check: REQUIRED
 
-KONIEC ETAPU LF-PROD-SOT-004H.
+
 ## R2 local repair closeout - 2026-07-02 20:17 Europe/Warsaw
 
 R1 findings:
@@ -235,3 +235,32 @@ R2 decision remains unchanged:
 - NEXT_STAGE_AFTER_004H: LF-PROD-SOT-004I_CALENDAR_DATE_TIME_BOUNDARY_READONLY_RUNTIME_IMPORT.
 
 KONIEC R2 REPAIR LF-PROD-SOT-004H.
+
+## Finalne wyniki wykonanych komend
+
+- `npm run verify:lf-prod-sot-004h-first-runtime-import-decision-map`: PASS
+- `node --test tests/lf-prod-sot-004h-first-runtime-import-decision-map.test.cjs`: PASS
+- `npm run verify:lf-prod-sot-004g-calendar-date-time-boundary-plan`: PASS
+- `npm run verify:lf-prod-sot-004f-casedetail-isolated-adoption-plan`: PASS
+- `npm run guard:routes:canonical`: PASS
+- `npm run guard:ui:patch-layers`: PASS
+- `npm run check:polish-mojibake`: PASS
+- `npm run build`: PASS
+- `git diff --check`: PASS
+
+## Damian decision note
+
+- 004G required `FIRST_RUNTIME_IMPORT_DECISION_NEEDED`.
+- 004H resolves only the decision.
+- 004H does not implement runtime import.
+- Selected first import: `CALENDAR_DATE_TIME_BOUNDARY_READONLY_IMPORT_FIRST`.
+- Next stage after clean 004H closeout: `LF-PROD-SOT-004I_CALENDAR_DATE_TIME_BOUNDARY_READONLY_RUNTIME_IMPORT`.
+
+## Historia czerwonych prób R1/R2
+
+- R1 004H guard was RED because the guard scanned its own mojibake-token dictionary.
+- R1 004F guard was RED only while 004H files were uncommitted.
+- R2 repaired the 004H guard self-scan issue.
+- These are historical findings only, not the active final status.
+
+KONIEC ETAPU LF-PROD-SOT-004H.
