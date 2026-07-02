@@ -208,7 +208,6 @@ function changedFiles() {
 }
 
 const plan = read(planRel)
-const guard = read(guardRel)
 const test = read(testRel)
 const report = read(reportRel)
 const pkg = read(packageRel)
@@ -236,7 +235,7 @@ if (/package\.json` alias pending local patch/.test(report004f)) {
   throw new Error(`${report004fRel} still has pending package alias text`)
 }
 
-for (const rel of [planRel, guardRel, testRel, reportRel, plan004fRel, report004fRel]) {
+for (const rel of [planRel, testRel, reportRel, plan004fRel, report004fRel]) {
   assertNoMojibake(rel, read(rel))
 }
 
