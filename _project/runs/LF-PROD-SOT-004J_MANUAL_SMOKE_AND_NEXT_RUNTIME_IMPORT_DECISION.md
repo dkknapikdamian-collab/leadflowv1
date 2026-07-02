@@ -80,7 +80,7 @@ MANUAL_SMOKE_REQUIRED_BEFORE_NEXT_RUNTIME_IMPORT
 
 ## Zapis do Obsidiana
 
-- data/time: 2026-07-02 23:12 Europe/Warsaw
+- data/time: 2026-07-02 23:14 Europe/Warsaw
 - name/alias: LF-PROD-SOT-004J_MANUAL_SMOKE_AND_NEXT_RUNTIME_IMPORT_DECISION
 - canonical_name: CloseFlow / LeadFlow
 - Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY
