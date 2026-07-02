@@ -250,7 +250,7 @@ export const formsModalsActionVisualBridgeNextStages = [
 export const formsModalsActionVisualBridgeReport = {
   appReport: '_project/runs/LF-PROD-SOT-004E_FORMS_MODALS_ACTION_VISUAL_BRIDGE.md',
   obsidianReport: '10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-004E_FORMS_MODALS_ACTION_VISUAL_BRIDGE.md',
-  status: 'FORMS_MODALS_ACTION_VISUAL_BRIDGE_REMOTE_ADDED_LOCAL_VERIFICATION_PENDING',
+  status: 'FORMS_MODALS_ACTION_VISUAL_BRIDGE_ADDED',
 } as const
 
 export const formsModalsActionVisualBridge = {
