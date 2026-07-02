@@ -12,7 +12,7 @@ import { visualTokenSourceMap, globalVisualContract } from './visual-repository'
 import { runtimeAdoptionReadonly, runtimeAdoptionHardRules } from './runtime-adoption-readonly'
 import { todayReadonlyBridge } from './today-readonly-bridge'
 import { formsModalsActionVisualBridge } from './forms-modals-action-visual-readonly-bridge'
-import { caseDetailIsolatedAdoptionPlan } from './casedetail-isolated-adoption-plan'
+import { caseDetailIsolatedAdoptionPlanReport } from './casedetail-isolated-adoption-plan'
 
 export const calendarDateTimeBoundaryPlanStage = 'LF-PROD-SOT-004G' as const
 
@@ -56,7 +56,7 @@ export const calendarDateTimeBoundaryPlanRepositories = {
   runtimeAdoptionHardRules,
   todayReadonlyBridge,
   formsModalsActionVisualBridge,
-  caseDetailIsolatedAdoptionPlan,
+  caseDetailIsolatedAdoptionPlan: caseDetailIsolatedAdoptionPlanReport,
 } as const
 
 export const calendarDateTimeBoundaryPlanLocalDatePolicyMap = {
@@ -211,7 +211,7 @@ export const calendarDateTimeBoundaryPlanNextDecision = {
 export const calendarDateTimeBoundaryPlanReport = {
   appReport: '_project/runs/LF-PROD-SOT-004G_CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN.md',
   obsidianReport: '10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-004G_CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN.md',
-  status: 'CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN_REMOTE_ADDED_LOCAL_VERIFICATION_PENDING',
+  status: 'CALENDAR_DATE_TIME_BOUNDARY_PLAN_R3_REMOTE_REPAIR_ADDED_LOCAL_VERIFICATION_PENDING',
 } as const
 
 export const calendarDateTimeBoundaryPlan = {
