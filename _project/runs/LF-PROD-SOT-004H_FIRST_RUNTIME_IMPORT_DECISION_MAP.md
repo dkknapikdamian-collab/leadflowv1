@@ -195,3 +195,43 @@ LF-PROD-SOT-004I_CALENDAR_DATE_TIME_BOUNDARY_READONLY_RUNTIME_IMPORT
 - git diff --check: REQUIRED
 
 KONIEC ETAPU LF-PROD-SOT-004H.
+## R2 local repair closeout - 2026-07-02 20:17 Europe/Warsaw
+
+R1 findings:
+- 004H guard: RED because the guard scanned its own mojibake-token dictionary.
+- 004H node test: PASS.
+- 004G guard regression: PASS.
+- 004F guard regression: RED only while 004H files were uncommitted.
+- routes guard: PASS.
+- UI patch guard: PASS.
+- Polish mojibake: PASS.
+- build: PASS.
+- diff check: PASS.
+- app R1 commit/push: DONE, commit 370dd3b7.
+
+R2 repair:
+- 004H guard self-scan fixed: DONE.
+- 004H report updated with honest R1 findings: DONE.
+- runtime touched: NO.
+- UI touched: NO.
+- CSS touched: NO.
+- SQL touched: NO.
+- Supabase/API touched: NO.
+- Google Calendar sync touched: NO.
+
+R2 required result before closeout:
+- 004H guard: REQUIRED_PASS.
+- 004H node test: REQUIRED_PASS.
+- 004G guard regression: REQUIRED_PASS.
+- 004F guard regression after clean commit: REQUIRED_PASS.
+- routes guard: REQUIRED_PASS.
+- UI patch guard: REQUIRED_PASS.
+- Polish mojibake: REQUIRED_PASS.
+- build: REQUIRED_PASS.
+- git diff --check: REQUIRED_PASS.
+
+R2 decision remains unchanged:
+- FIRST_RUNTIME_IMPORT_DECISION: CALENDAR_DATE_TIME_BOUNDARY_READONLY_IMPORT_FIRST.
+- NEXT_STAGE_AFTER_004H: LF-PROD-SOT-004I_CALENDAR_DATE_TIME_BOUNDARY_READONLY_RUNTIME_IMPORT.
+
+KONIEC R2 REPAIR LF-PROD-SOT-004H.

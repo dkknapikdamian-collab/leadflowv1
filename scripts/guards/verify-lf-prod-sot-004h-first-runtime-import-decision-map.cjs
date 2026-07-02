@@ -118,7 +118,7 @@ if (!/candidateId:\s*FINANCE_RUNTIME_IMPORT[\s\S]*recommendation:\s*BLOCKED_FOR_
   throw new Error(`${reportRel} must block Finance as BLOCKED_FOR_LATER`)
 }
 
-for (const rel of [reportRel, report004gRel, guardRel, testRel]) {
+for (const rel of [reportRel, report004gRel, testRel]) {
   assertNoMojibake(rel, read(rel))
 }
 
