@@ -4,11 +4,6 @@
 
 CASEDETAIL_ISOLATED_ADOPTION_PLAN_ADDED / 004E_FORMAL_CLEANUP_DONE / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / READY_FOR_004G_CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN
 
-Target closeout status after local PASS:
-CASEDETAIL_ISOLATED_ADOPTION_PLAN_ADDED / 004E_FORMAL_CLEANUP_DONE / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / READY_FOR_004G_CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN
-
-Remote GitHub connector created the plan, guard, test and report. Local package alias, guard execution, node test, build and diff check must still be run before final closure.
-
 ## Linki SOT / mapa wejściowa
 
 - Centralny indeks map SOT: `10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/00_MAPY_I_ZALEZNOSCI_SOT.md`
@@ -53,7 +48,7 @@ Etap nie zmienia lifecycle/status/timeline/action panels.
 - `scripts/guards/verify-lf-prod-sot-004f-casedetail-isolated-adoption-plan.cjs`
 - `tests/lf-prod-sot-004f-casedetail-isolated-adoption-plan.test.cjs`
 - `_project/runs/LF-PROD-SOT-004F_CASEDETAIL_ISOLATED_ADOPTION_PLAN.md`
-- `package.json` alias pending local patch: `verify:lf-prod-sot-004f-casedetail-isolated-adoption-plan`
+- `package.json` alias: `verify:lf-prod-sot-004f-casedetail-isolated-adoption-plan`
 
 ## Twarde reguły
 
@@ -136,7 +131,7 @@ Etap nie zmienia lifecycle/status/timeline/action panels.
 - Calendar runtime: NOT_TOUCHED / FORBIDDEN_UNTIL_004G
 - Supabase/API: NOT_TOUCHED
 - SQL: NOT_TOUCHED
-- LF-PROD-SOT-004G: NOT_STARTED
+- LF-PROD-SOT-004G: STARTED_AFTER_004F
 
 ## Historia remote implementation przed R2
 
@@ -154,21 +149,6 @@ Remote GitHub connector does not run local npm/build commands.
 - `npm run build`: NOT_RUN_REMOTE_GITHUB_CONNECTOR
 - `git diff --check`: NOT_RUN_REMOTE_GITHUB_CONNECTOR
 
-## Risk audit
-
-- CaseDetail jest VERY_HIGH risk.
-- CaseDetail contains many layers: header, lifecycle, status, service workspace, notes, checklists, history, actions, right rail and settlement surfaces.
-- This stage does not change runtime or UI.
-- This stage only blocks future uncontrolled changes and creates an anchor map.
-- Real runtime import to CaseDetail requires a separate stage after Damian manual smoke.
-- Calendar/Google Calendar boundary remains blocked until 004G.
-- Finance runtime remains outside 004F.
-
-## Wynik
-
-LF-PROD-SOT-004F remote implementation files added. Local package alias and verification are required before final closeout.
-
-KONIEC CZESCI REMOTE LF-PROD-SOT-004F - NOT FULL STAGE CLOSEOUT.
 ## R2 local verification closeout PASS - 2026-07-02 15:16 Europe/Warsaw
 
 Status:
@@ -190,27 +170,30 @@ Status:
 - Finance/Calendar/Supabase/API/SQL NOT_TOUCHED.
 - READY_FOR_004G_CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN.
 
-KONIEC ETAPU LF-PROD-SOT-004F.
 ## Finalne wyniki wykonanych komend
 
-- 
-pm run verify:lf-prod-sot-004b-readonly-runtime-adoption: PASS
-- 
-pm run verify:lf-prod-sot-004c-today-readonly-bridge: PASS
-- 
-pm run verify:lf-prod-sot-004d-lists-cards-readonly-bridge: PASS
-- 
-pm run verify:lf-prod-sot-004e-forms-modals-action-visual-bridge: PASS
-- 
-pm run verify:lf-prod-sot-004f-casedetail-isolated-adoption-plan: PASS
-- 
-ode --test tests/lf-prod-sot-004f-casedetail-isolated-adoption-plan.test.cjs: PASS
-- 
-pm run guard:routes:canonical: PASS
-- 
-pm run guard:ui:patch-layers: PASS
-- 
-pm run check:polish-mojibake: PASS
-- 
-pm run build: PASS
-- git diff --check: PASS
+- `npm run verify:lf-prod-sot-004b-readonly-runtime-adoption`: PASS
+- `npm run verify:lf-prod-sot-004c-today-readonly-bridge`: PASS
+- `npm run verify:lf-prod-sot-004d-lists-cards-readonly-bridge`: PASS
+- `npm run verify:lf-prod-sot-004e-forms-modals-action-visual-bridge`: PASS
+- `npm run verify:lf-prod-sot-004f-casedetail-isolated-adoption-plan`: PASS
+- `node --test tests/lf-prod-sot-004f-casedetail-isolated-adoption-plan.test.cjs`: PASS
+- `npm run guard:routes:canonical`: PASS
+- `npm run guard:ui:patch-layers`: PASS
+- `npm run check:polish-mojibake`: PASS
+- `npm run build`: PASS
+- `git diff --check`: PASS
+
+## Risk audit
+
+- CaseDetail jest VERY_HIGH risk.
+- CaseDetail contains many layers: header, lifecycle, status, service workspace, notes, checklists, history, actions, right rail and settlement surfaces.
+- This stage does not change runtime or UI.
+- This stage only blocks future uncontrolled changes and creates an anchor map.
+- Real runtime import to CaseDetail requires a separate stage after Damian manual smoke.
+- Calendar/Google Calendar boundary remains blocked until 004G.
+- Finance runtime remains outside 004F.
+
+## Wynik
+
+KONIEC ETAPU LF-PROD-SOT-004F.
