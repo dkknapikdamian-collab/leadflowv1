@@ -240,5 +240,5 @@ export const caseDetailIsolatedAdoptionPlanNextStages = [
 export const caseDetailIsolatedAdoptionPlanReport = {
   appReport: '_project/runs/LF-PROD-SOT-004F_CASEDETAIL_ISOLATED_ADOPTION_PLAN.md',
   obsidianReport: '10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-004F_CASEDETAIL_ISOLATED_ADOPTION_PLAN.md',
-  status: 'CASEDETAIL_ISOLATED_ADOPTION_PLAN_REMOTE_ADDED_LOCAL_VERIFICATION_PENDING',
+  status: 'CASEDETAIL_ISOLATED_ADOPTION_PLAN_ADDED',
 } as const

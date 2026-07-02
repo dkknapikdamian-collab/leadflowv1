@@ -138,7 +138,7 @@ Etap nie zmienia lifecycle/status/timeline/action panels.
 - SQL: NOT_TOUCHED
 - LF-PROD-SOT-004G: NOT_STARTED
 
-## Wyniki wykonanych komend
+## Historia remote implementation przed R2
 
 Remote GitHub connector does not run local npm/build commands.
 
@@ -191,3 +191,26 @@ Status:
 - READY_FOR_004G_CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN.
 
 KONIEC ETAPU LF-PROD-SOT-004F.
+## Finalne wyniki wykonanych komend
+
+- 
+pm run verify:lf-prod-sot-004b-readonly-runtime-adoption: PASS
+- 
+pm run verify:lf-prod-sot-004c-today-readonly-bridge: PASS
+- 
+pm run verify:lf-prod-sot-004d-lists-cards-readonly-bridge: PASS
+- 
+pm run verify:lf-prod-sot-004e-forms-modals-action-visual-bridge: PASS
+- 
+pm run verify:lf-prod-sot-004f-casedetail-isolated-adoption-plan: PASS
+- 
+ode --test tests/lf-prod-sot-004f-casedetail-isolated-adoption-plan.test.cjs: PASS
+- 
+pm run guard:routes:canonical: PASS
+- 
+pm run guard:ui:patch-layers: PASS
+- 
+pm run check:polish-mojibake: PASS
+- 
+pm run build: PASS
+- git diff --check: PASS

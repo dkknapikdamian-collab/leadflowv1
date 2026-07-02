@@ -2,7 +2,7 @@
 
 ## Status
 
-CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN_REMOTE_ADDED / LOCAL_004F_CLEANUP_PACKAGE_ALIAS_AND_VERIFICATION_PENDING / NOT_CLOSED
+CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN_ADDED / 004F_FORMAL_CLEANUP_DONE / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / FIRST_RUNTIME_IMPORT_DECISION_NEEDED
 
 Target closeout status after local PASS:
 CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN_ADDED / 004F_FORMAL_CLEANUP_DONE / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / FIRST_RUNTIME_IMPORT_DECISION_NEEDED
@@ -22,12 +22,12 @@ Remote GitHub connector created the plan, guard, test and report. Local package 
 ## 004F formal cleanup
 
 Remote status before local closeout:
-- 004F app report alias text corrected: LOCAL_PATCH_PENDING
-- 004F Obsidian report alias text corrected: LOCAL_PATCH_PENDING
-- 004F plan status corrected from pending to final: LOCAL_PATCH_PENDING
-- 004F guard after cleanup: LOCAL_VERIFICATION_PENDING
-- 004F node test after cleanup: LOCAL_VERIFICATION_PENDING
-- 004F build after cleanup: LOCAL_VERIFICATION_PENDING
+- 004F app report alias text corrected: DONE
+- 004F Obsidian report alias text corrected: DONE
+- 004F plan status corrected from pending to final: DONE
+- 004F guard after cleanup: PASS
+- 004F node test after cleanup: PASS
+- 004F build after cleanup: PASS
 
 Target final markers after local cleanup:
 - 004F formal cleanup: DONE
@@ -197,3 +197,28 @@ Target final command results after local closeout:
 LF-PROD-SOT-004G remote implementation files added. Local 004F cleanup, package alias and verification are required before final closeout.
 
 KONIEC CZESCI REMOTE LF-PROD-SOT-004G - NOT FULL STAGE CLOSEOUT.
+## R2 local verification closeout PASS - 2026-07-02 15:50 Europe/Warsaw
+
+Status:
+- 004F formal cleanup: DONE.
+- package.json alias added.
+- 004B guard PASS.
+- 004C guard PASS.
+- 004D guard PASS.
+- 004E guard PASS.
+- 004F guard PASS.
+- 004G guard PASS.
+- 004G node test PASS.
+- routes guard PASS.
+- UI patch guard PASS.
+- Polish mojibake PASS.
+- npm run build PASS.
+- git diff --check PASS.
+- Calendar runtime NOT_TOUCHED.
+- Tasks runtime NOT_TOUCHED.
+- Today runtime NOT_TOUCHED.
+- Google Calendar sync NOT_TOUCHED.
+- UI/CSS/SQL/Supabase/API NOT_TOUCHED.
+- FIRST_RUNTIME_IMPORT_DECISION_NEEDED.
+
+KONIEC ETAPU LF-PROD-SOT-004G.
