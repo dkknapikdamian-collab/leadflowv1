@@ -2,9 +2,9 @@
 
 ## Status
 
-REMOTE_IMPLEMENTED_BY_GITHUB_CONNECTOR / LOCAL_VERIFICATION_REQUIRED / NOT_CLOSED
+FORMS_MODALS_ACTION_VISUAL_BRIDGE_ADDED / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / READY_FOR_004F_CASEDETAIL_ISOLATED_ADOPTION_PLAN
 
-This report was created by remote GitHub connector implementation. Local commands were not run by this chat. Do not mark the stage as closed until package alias, guard, test, build and diff check pass on the local app tree.
+This report was initially created by remote GitHub connector implementation and then closed by local R2 verification on 2026-07-02 09:23 Europe/Warsaw.
 
 ## Linki SOT / mapa wejściowa
 
@@ -43,7 +43,7 @@ Etap nie dotyka CaseDetail ani Calendar.
 - `scripts/guards/verify-lf-prod-sot-004e-forms-modals-action-visual-bridge.cjs`
 - `tests/lf-prod-sot-004e-forms-modals-action-visual-bridge.test.cjs`
 - `_project/runs/LF-PROD-SOT-004E_FORMS_MODALS_ACTION_VISUAL_BRIDGE.md`
-- `package.json` alias pending local patch: `verify:lf-prod-sot-004e-forms-modals-action-visual-bridge`
+- `package.json` alias: `verify:lf-prod-sot-004e-forms-modals-action-visual-bridge`
 
 ## Twarde reguły
 
@@ -109,9 +109,9 @@ Etap nie dotyka CaseDetail ani Calendar.
 - SQL: NOT_TOUCHED
 - LF-PROD-SOT-004F: NOT_STARTED
 
-## Wyniki wykonanych komend
+## Historia remote implementation przed R2
 
-Remote GitHub connector does not run local npm/build commands.
+Remote GitHub connector did not run local npm/build commands before R2.
 
 - `npm run verify:lf-prod-sot-004b-readonly-runtime-adoption`: NOT_RUN_REMOTE_GITHUB_CONNECTOR
 - `npm run verify:lf-prod-sot-004c-today-readonly-bridge`: NOT_RUN_REMOTE_GITHUB_CONNECTOR
@@ -123,23 +123,6 @@ Remote GitHub connector does not run local npm/build commands.
 - `npm run check:polish-mojibake`: NOT_RUN_REMOTE_GITHUB_CONNECTOR
 - `npm run build`: NOT_RUN_REMOTE_GITHUB_CONNECTOR
 - `git diff --check`: NOT_RUN_REMOTE_GITHUB_CONNECTOR
-
-## Risk audit
-
-- Forms/modals/action controls are MEDIUM/HIGH risk because they affect data entry and action consistency.
-- This stage does not replace runtime components.
-- This stage does not create CSS or patch layer.
-- AI drafts may contain review state that must not merge with business status.
-- CaseDetail remains blocked until 004F.
-- Calendar/Google Calendar boundary remains blocked until 004G.
-- Finance/Billing remain outside this stage.
-- GitHub connector could not safely patch package.json without full-file local verification; package alias must be added locally before closure.
-
-## Wynik
-
-LF-PROD-SOT-004E remote implementation files added. Local verification and package alias are required before final closeout.
-
-KONIEC CZESCI REMOTE LF-PROD-SOT-004E - NOT FULL STAGE CLOSEOUT.
 
 ## R2 local verification closeout PASS - 2026-07-02 09:23 Europe/Warsaw
 
@@ -158,5 +141,30 @@ Status:
 - git diff --check PASS.
 - Runtime/UI/CSS/SQL/Supabase/API/Google Calendar/CaseDetail/Calendar/Finance not touched.
 - READY_FOR_004F_CASEDETAIL_ISOLATED_ADOPTION_PLAN.
+
+## Finalne wyniki wykonanych komend
+
+- `npm run verify:lf-prod-sot-004b-readonly-runtime-adoption`: PASS
+- `npm run verify:lf-prod-sot-004c-today-readonly-bridge`: PASS
+- `npm run verify:lf-prod-sot-004d-lists-cards-readonly-bridge`: PASS
+- `npm run verify:lf-prod-sot-004e-forms-modals-action-visual-bridge`: PASS
+- `node --test tests/lf-prod-sot-004e-forms-modals-action-visual-bridge.test.cjs`: PASS
+- `npm run guard:routes:canonical`: PASS
+- `npm run guard:ui:patch-layers`: PASS
+- `npm run check:polish-mojibake`: PASS
+- `npm run build`: PASS
+- `git diff --check`: PASS
+
+## Risk audit
+
+- Forms/modals/action controls are MEDIUM/HIGH risk because they affect data entry and action consistency.
+- This stage does not replace runtime components.
+- This stage does not create CSS or patch layer.
+- AI drafts may contain review state that must not merge with business status.
+- CaseDetail remains blocked until 004F.
+- Calendar/Google Calendar boundary remains blocked until 004G.
+- Finance/Billing remain outside this stage.
+
+## Wynik
 
 KONIEC ETAPU LF-PROD-SOT-004E.
