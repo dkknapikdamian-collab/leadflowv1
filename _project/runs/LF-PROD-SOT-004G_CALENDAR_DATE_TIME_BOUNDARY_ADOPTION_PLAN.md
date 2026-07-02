@@ -2,9 +2,9 @@
 
 ## Status
 
-CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN_ADDED / 004F_FORMAL_CLEANUP_DONE / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / FIRST_RUNTIME_IMPORT_DECISION_NEEDED
+CALENDAR_DATE_TIME_BOUNDARY_PLAN_R4_REMOTE_REPAIR_ADDED / LOCAL_VERIFY_PENDING / NOT_CLOSED
 
-Target closeout status after R3 local PASS:
+Target closeout status after R4 local PASS:
 CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN_ADDED / 004F_FORMAL_CLEANUP_DONE / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / FIRST_RUNTIME_IMPORT_DECISION_NEEDED
 
 ## Linki SOT / mapa wejściowa
@@ -22,9 +22,10 @@ CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN_ADDED / 004F_FORMAL_CLEANUP_DONE / GUA
 - 004F app report alias text corrected: DONE
 - 004F Obsidian report alias text corrected: DONE
 - 004F plan status corrected from pending to final: DONE
-- 004F guard after cleanup: PASS
-- 004F node test after cleanup: PASS
-- 004F build after cleanup: PASS
+- 004F historical guard marker restored: DONE
+- 004F guard after cleanup: R4_LOCAL_VERIFY_PENDING
+- 004F node test after cleanup: R4_LOCAL_VERIFY_PENDING
+- 004F build after cleanup: R4_LOCAL_VERIFY_PENDING
 
 ## Zakres
 
@@ -159,25 +160,45 @@ Findings from the uploaded terminal log:
 - App push: DONE, but with findings.
 - Obsidian push: DONE, but report needed correction.
 
-## R3 remote repair
+## R3 local closeout attempt - WITH_FINDINGS - 2026-07-02 15:59 Europe/Warsaw
 
-R3 remote repair fixes:
-- 004F app report package alias wording.
-- 004F app report final command block corrupted by PowerShell backtick escaping.
-- 004G report false PASS wording from R2.
-- 004G plan import of a non-exported 004F aggregate symbol.
+R3 local attempt was pushed as app commit `189f6462be30024f6515a99c078fe075bdee7aee`, but it is not accepted as clean closeout because red checks happened before commit.
 
-R3 still requires local verification before closeout.
+Findings from Damian terminal log:
+- `npm run verify:lf-prod-sot-004b-readonly-runtime-adoption`: PASS.
+- `npm run verify:lf-prod-sot-004c-today-readonly-bridge`: PASS.
+- `npm run verify:lf-prod-sot-004d-lists-cards-readonly-bridge`: PASS.
+- `npm run verify:lf-prod-sot-004e-forms-modals-action-visual-bridge`: PASS.
+- `npm run verify:lf-prod-sot-004f-casedetail-isolated-adoption-plan`: RED, missing token `LF-PROD-SOT-004G: NOT_STARTED`.
+- `npm run verify:lf-prod-sot-004g-calendar-date-time-boundary-plan`: RED, guard scanned its own mojibake-token dictionary.
+- `node --test tests/lf-prod-sot-004g-calendar-date-time-boundary-plan.test.cjs`: PASS.
+- `npm run guard:routes:canonical`: PASS.
+- `npm run guard:ui:patch-layers`: PASS.
+- `npm run check:polish-mojibake`: PASS.
+- `npm run build`: PASS.
+- `git diff --check`: PASS.
+- App push: DONE, but with findings.
+- Obsidian push: DONE, but report needed correction.
 
-## Wyniki wykonanych komend - R3 target
+## R4 remote repair
 
-- `npm run verify:lf-prod-sot-004g-calendar-date-time-boundary-plan`: PASS
-- `node --test tests/lf-prod-sot-004g-calendar-date-time-boundary-plan.test.cjs`: PASS
-- `npm run guard:routes:canonical`: PASS
-- `npm run guard:ui:patch-layers`: PASS
-- `npm run check:polish-mojibake`: PASS
-- `npm run build`: PASS
-- `git diff --check`: PASS
+R4 remote repair fixes:
+- 004F app report historical guard marker restored: `LF-PROD-SOT-004G: NOT_STARTED`.
+- 004G guard no longer scans its own mojibake-token dictionary.
+- 004G report false PASS wording from R3 was reverted to R4 pending.
+
+R4 still requires local verification before closeout.
+
+## Wyniki wykonanych komend - R4 target
+
+- `npm run verify:lf-prod-sot-004f-casedetail-isolated-adoption-plan`: LOCAL_VERIFY_PENDING
+- `npm run verify:lf-prod-sot-004g-calendar-date-time-boundary-plan`: LOCAL_VERIFY_PENDING
+- `node --test tests/lf-prod-sot-004g-calendar-date-time-boundary-plan.test.cjs`: LOCAL_VERIFY_PENDING
+- `npm run guard:routes:canonical`: LOCAL_VERIFY_PENDING
+- `npm run guard:ui:patch-layers`: LOCAL_VERIFY_PENDING
+- `npm run check:polish-mojibake`: LOCAL_VERIFY_PENDING
+- `npm run build`: LOCAL_VERIFY_PENDING
+- `git diff --check`: LOCAL_VERIFY_PENDING
 
 ## Risk audit
 
@@ -191,29 +212,6 @@ R3 still requires local verification before closeout.
 
 ## Wynik
 
-LF-PROD-SOT-004G requires R3 local verification. Do not move to runtime import yet.
+LF-PROD-SOT-004G requires R4 local verification. Do not move to runtime import yet.
 
-KONIEC CZESCI R3 REMOTE REPAIR LF-PROD-SOT-004G - NOT FULL STAGE CLOSEOUT.
-## R3 local verification closeout PASS - 2026-07-02 15:59 Europe/Warsaw
-
-Status:
-- 004B guard clean tree: PASS.
-- 004C guard clean tree: PASS.
-- 004D guard clean tree: PASS.
-- 004E guard clean tree: PASS.
-- 004F guard clean tree: PASS.
-- 004G guard clean tree: PASS.
-- 004G node test clean tree: PASS.
-- routes guard: PASS.
-- UI patch guard: PASS.
-- Polish mojibake: PASS.
-- npm run build: PASS.
-- git diff --check: PASS.
-- Calendar runtime NOT_TOUCHED.
-- Tasks runtime NOT_TOUCHED.
-- Today runtime NOT_TOUCHED.
-- Google Calendar sync NOT_TOUCHED.
-- UI/CSS/SQL/Supabase/API NOT_TOUCHED.
-- FIRST_RUNTIME_IMPORT_DECISION_NEEDED.
-
-KONIEC ETAPU LF-PROD-SOT-004G.
+KONIEC CZESCI R4 REMOTE REPAIR LF-PROD-SOT-004G - NOT FULL STAGE CLOSEOUT.
