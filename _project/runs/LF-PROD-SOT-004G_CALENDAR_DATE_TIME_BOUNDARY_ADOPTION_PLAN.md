@@ -2,7 +2,7 @@
 
 ## Status
 
-CALENDAR_DATE_TIME_BOUNDARY_PLAN_R4_REMOTE_REPAIR_ADDED / LOCAL_VERIFY_PENDING / NOT_CLOSED
+CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN_ADDED / 004F_FORMAL_CLEANUP_DONE / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / FIRST_RUNTIME_IMPORT_DECISION_NEEDED
 
 Target closeout status after R4 local PASS:
 CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN_ADDED / 004F_FORMAL_CLEANUP_DONE / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / FIRST_RUNTIME_IMPORT_DECISION_NEEDED
@@ -23,9 +23,9 @@ CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN_ADDED / 004F_FORMAL_CLEANUP_DONE / GUA
 - 004F Obsidian report alias text corrected: DONE
 - 004F plan status corrected from pending to final: DONE
 - 004F historical guard marker restored: DONE
-- 004F guard after cleanup: R4_LOCAL_VERIFY_PENDING
-- 004F node test after cleanup: R4_LOCAL_VERIFY_PENDING
-- 004F build after cleanup: R4_LOCAL_VERIFY_PENDING
+- 004F guard after cleanup: PASS
+- 004F node test after cleanup: PASS
+- 004F build after cleanup: PASS
 
 ## Zakres
 
@@ -191,14 +191,14 @@ R4 still requires local verification before closeout.
 
 ## Wyniki wykonanych komend - R4 target
 
-- `npm run verify:lf-prod-sot-004f-casedetail-isolated-adoption-plan`: LOCAL_VERIFY_PENDING
-- `npm run verify:lf-prod-sot-004g-calendar-date-time-boundary-plan`: LOCAL_VERIFY_PENDING
-- `node --test tests/lf-prod-sot-004g-calendar-date-time-boundary-plan.test.cjs`: LOCAL_VERIFY_PENDING
-- `npm run guard:routes:canonical`: LOCAL_VERIFY_PENDING
-- `npm run guard:ui:patch-layers`: LOCAL_VERIFY_PENDING
-- `npm run check:polish-mojibake`: LOCAL_VERIFY_PENDING
-- `npm run build`: LOCAL_VERIFY_PENDING
-- `git diff --check`: LOCAL_VERIFY_PENDING
+- `npm run verify:lf-prod-sot-004f-casedetail-isolated-adoption-plan`: PASS
+- `npm run verify:lf-prod-sot-004g-calendar-date-time-boundary-plan`: PASS
+- `node --test tests/lf-prod-sot-004g-calendar-date-time-boundary-plan.test.cjs`: PASS
+- `npm run guard:routes:canonical`: PASS
+- `npm run guard:ui:patch-layers`: PASS
+- `npm run check:polish-mojibake`: PASS
+- `npm run build`: PASS
+- `git diff --check`: PASS
 
 ## Risk audit
 
@@ -215,3 +215,26 @@ R4 still requires local verification before closeout.
 LF-PROD-SOT-004G requires R4 local verification. Do not move to runtime import yet.
 
 KONIEC CZESCI R4 REMOTE REPAIR LF-PROD-SOT-004G - NOT FULL STAGE CLOSEOUT.
+## R4 local verification closeout PASS - 2026-07-02 16:12 Europe/Warsaw
+
+Status:
+- 004B guard: PASS.
+- 004C guard: PASS.
+- 004D guard: PASS.
+- 004E guard: PASS.
+- 004F guard: PASS.
+- 004G guard: PASS.
+- 004G node test: PASS.
+- routes guard: PASS.
+- UI patch guard: PASS.
+- Polish mojibake: PASS.
+- npm run build: PASS.
+- git diff --check: PASS.
+- Calendar runtime NOT_TOUCHED.
+- Tasks runtime NOT_TOUCHED.
+- Today runtime NOT_TOUCHED.
+- Google Calendar sync NOT_TOUCHED.
+- UI/CSS/SQL/Supabase/API NOT_TOUCHED.
+- FIRST_RUNTIME_IMPORT_DECISION_NEEDED.
+
+KONIEC ETAPU LF-PROD-SOT-004G.
