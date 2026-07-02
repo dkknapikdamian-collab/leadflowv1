@@ -2,12 +2,10 @@
 
 ## Status
 
-CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN_ADDED / 004F_FORMAL_CLEANUP_DONE / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / FIRST_RUNTIME_IMPORT_DECISION_NEEDED
+CALENDAR_DATE_TIME_BOUNDARY_PLAN_R3_REMOTE_REPAIR_ADDED / LOCAL_VERIFY_PENDING / NOT_CLOSED
 
-Target closeout status after local PASS:
+Target closeout status after R3 local PASS:
 CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN_ADDED / 004F_FORMAL_CLEANUP_DONE / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / FIRST_RUNTIME_IMPORT_DECISION_NEEDED
-
-Remote GitHub connector created the plan, guard, test and report. Local package alias, 004F cleanup patch, guard execution, node test, build and diff check must still be run before final closure.
 
 ## Linki SOT / mapa wejściowa
 
@@ -21,22 +19,12 @@ Remote GitHub connector created the plan, guard, test and report. Local package 
 
 ## 004F formal cleanup
 
-Remote status before local closeout:
 - 004F app report alias text corrected: DONE
 - 004F Obsidian report alias text corrected: DONE
 - 004F plan status corrected from pending to final: DONE
-- 004F guard after cleanup: PASS
-- 004F node test after cleanup: PASS
-- 004F build after cleanup: PASS
-
-Target final markers after local cleanup:
-- 004F formal cleanup: DONE
-- 004F app report alias text corrected: DONE
-- 004F Obsidian report alias text corrected: DONE
-- 004F plan status corrected from pending to final: DONE
-- 004F guard after cleanup: PASS
-- 004F node test after cleanup: PASS
-- 004F build after cleanup: PASS
+- 004F guard after cleanup: R3_LOCAL_VERIFY_PENDING
+- 004F node test after cleanup: R3_LOCAL_VERIFY_PENDING
+- 004F build after cleanup: R3_LOCAL_VERIFY_PENDING
 
 ## Zakres
 
@@ -62,7 +50,7 @@ Etap nie zmienia sortowania, bucketów ani dat.
 - `scripts/guards/verify-lf-prod-sot-004g-calendar-date-time-boundary-plan.cjs`
 - `tests/lf-prod-sot-004g-calendar-date-time-boundary-plan.test.cjs`
 - `_project/runs/LF-PROD-SOT-004G_CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN.md`
-- `package.json` alias pending local patch: `verify:lf-prod-sot-004g-calendar-date-time-boundary-plan`
+- `package.json` alias: `verify:lf-prod-sot-004g-calendar-date-time-boundary-plan`
 
 ## Twarde reguły
 
@@ -124,6 +112,7 @@ Etap nie zmienia sortowania, bucketów ani dat.
 
 ## Czego nie ruszano
 
+- 004F formal cleanup: DONE
 - Calendar runtime: NOT_TOUCHED
 - Tasks runtime: NOT_TOUCHED
 - Today runtime: NOT_TOUCHED
@@ -150,37 +139,45 @@ Etap nie zmienia sortowania, bucketów ani dat.
 - SQL: NOT_TOUCHED
 - next step: FIRST_RUNTIME_IMPORT_DECISION_NEEDED
 
-## Wyniki wykonanych komend
+## R2 local closeout attempt - WITH_FINDINGS - 2026-07-02 15:50 Europe/Warsaw
 
-Remote GitHub connector does not run local npm/build commands.
+R2 local attempt was pushed as app commit `2a36c2a875cb594c9970c7f3f63a155a8f712319`, but it is not accepted as clean closeout because red checks happened before commit.
 
-- `npm run verify:lf-prod-sot-004b-readonly-runtime-adoption`: NOT_RUN_REMOTE_GITHUB_CONNECTOR
-- `npm run verify:lf-prod-sot-004c-today-readonly-bridge`: NOT_RUN_REMOTE_GITHUB_CONNECTOR
-- `npm run verify:lf-prod-sot-004d-lists-cards-readonly-bridge`: NOT_RUN_REMOTE_GITHUB_CONNECTOR
-- `npm run verify:lf-prod-sot-004e-forms-modals-action-visual-bridge`: NOT_RUN_REMOTE_GITHUB_CONNECTOR
-- `npm run verify:lf-prod-sot-004f-casedetail-isolated-adoption-plan`: NOT_RUN_REMOTE_GITHUB_CONNECTOR
-- `npm run verify:lf-prod-sot-004g-calendar-date-time-boundary-plan`: NOT_RUN_REMOTE_GITHUB_CONNECTOR
-- `node --test tests/lf-prod-sot-004g-calendar-date-time-boundary-plan.test.cjs`: NOT_RUN_REMOTE_GITHUB_CONNECTOR
-- `npm run guard:routes:canonical`: NOT_RUN_REMOTE_GITHUB_CONNECTOR
-- `npm run guard:ui:patch-layers`: NOT_RUN_REMOTE_GITHUB_CONNECTOR
-- `npm run check:polish-mojibake`: NOT_RUN_REMOTE_GITHUB_CONNECTOR
-- `npm run build`: NOT_RUN_REMOTE_GITHUB_CONNECTOR
-- `git diff --check`: NOT_RUN_REMOTE_GITHUB_CONNECTOR
+Findings from the uploaded terminal log:
+- `npm run verify:lf-prod-sot-004b-readonly-runtime-adoption`: RED, changed-file allowlist blocked `_project/runs/LF-PROD-SOT-004F_CASEDETAIL_ISOLATED_ADOPTION_PLAN.md`.
+- `npm run verify:lf-prod-sot-004c-today-readonly-bridge`: RED, changed-file allowlist blocked `_project/runs/LF-PROD-SOT-004F_CASEDETAIL_ISOLATED_ADOPTION_PLAN.md`.
+- `npm run verify:lf-prod-sot-004d-lists-cards-readonly-bridge`: RED, changed-file allowlist blocked `_project/runs/LF-PROD-SOT-004F_CASEDETAIL_ISOLATED_ADOPTION_PLAN.md`.
+- `npm run verify:lf-prod-sot-004e-forms-modals-action-visual-bridge`: PASS.
+- `npm run verify:lf-prod-sot-004f-casedetail-isolated-adoption-plan`: RED, changed-file allowlist blocked `_project/runs/LF-PROD-SOT-004G_CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN.md`.
+- `npm run verify:lf-prod-sot-004g-calendar-date-time-boundary-plan`: RED, 004F app report still contained pending package alias text.
+- `node --test tests/lf-prod-sot-004g-calendar-date-time-boundary-plan.test.cjs`: PASS.
+- `npm run guard:routes:canonical`: PASS.
+- `npm run guard:ui:patch-layers`: PASS.
+- `npm run check:polish-mojibake`: PASS.
+- `npm run build`: PASS.
+- `git diff --check`: RED, trailing whitespace in 004F report.
+- App push: DONE, but with findings.
+- Obsidian push: DONE, but report needed correction.
 
-Target final command results after local closeout:
+## R3 remote repair
 
-- `npm run verify:lf-prod-sot-004b-readonly-runtime-adoption`: PASS
-- `npm run verify:lf-prod-sot-004c-today-readonly-bridge`: PASS
-- `npm run verify:lf-prod-sot-004d-lists-cards-readonly-bridge`: PASS
-- `npm run verify:lf-prod-sot-004e-forms-modals-action-visual-bridge`: PASS
-- `npm run verify:lf-prod-sot-004f-casedetail-isolated-adoption-plan`: PASS
-- `npm run verify:lf-prod-sot-004g-calendar-date-time-boundary-plan`: PASS
-- `node --test tests/lf-prod-sot-004g-calendar-date-time-boundary-plan.test.cjs`: PASS
-- `npm run guard:routes:canonical`: PASS
-- `npm run guard:ui:patch-layers`: PASS
-- `npm run check:polish-mojibake`: PASS
-- `npm run build`: PASS
-- `git diff --check`: PASS
+R3 remote repair fixes:
+- 004F app report package alias wording.
+- 004F app report final command block corrupted by PowerShell backtick escaping.
+- 004G report false PASS wording from R2.
+- 004G plan import of a non-exported 004F aggregate symbol.
+
+R3 still requires local verification before closeout.
+
+## Wyniki wykonanych komend - R3 target
+
+- `npm run verify:lf-prod-sot-004g-calendar-date-time-boundary-plan`: LOCAL_VERIFY_PENDING
+- `node --test tests/lf-prod-sot-004g-calendar-date-time-boundary-plan.test.cjs`: LOCAL_VERIFY_PENDING
+- `npm run guard:routes:canonical`: LOCAL_VERIFY_PENDING
+- `npm run guard:ui:patch-layers`: LOCAL_VERIFY_PENDING
+- `npm run check:polish-mojibake`: LOCAL_VERIFY_PENDING
+- `npm run build`: LOCAL_VERIFY_PENDING
+- `git diff --check`: LOCAL_VERIFY_PENDING
 
 ## Risk audit
 
@@ -194,31 +191,6 @@ Target final command results after local closeout:
 
 ## Wynik
 
-LF-PROD-SOT-004G remote implementation files added. Local 004F cleanup, package alias and verification are required before final closeout.
+LF-PROD-SOT-004G requires R3 local verification. Do not move to runtime import yet.
 
-KONIEC CZESCI REMOTE LF-PROD-SOT-004G - NOT FULL STAGE CLOSEOUT.
-## R2 local verification closeout PASS - 2026-07-02 15:50 Europe/Warsaw
-
-Status:
-- 004F formal cleanup: DONE.
-- package.json alias added.
-- 004B guard PASS.
-- 004C guard PASS.
-- 004D guard PASS.
-- 004E guard PASS.
-- 004F guard PASS.
-- 004G guard PASS.
-- 004G node test PASS.
-- routes guard PASS.
-- UI patch guard PASS.
-- Polish mojibake PASS.
-- npm run build PASS.
-- git diff --check PASS.
-- Calendar runtime NOT_TOUCHED.
-- Tasks runtime NOT_TOUCHED.
-- Today runtime NOT_TOUCHED.
-- Google Calendar sync NOT_TOUCHED.
-- UI/CSS/SQL/Supabase/API NOT_TOUCHED.
-- FIRST_RUNTIME_IMPORT_DECISION_NEEDED.
-
-KONIEC ETAPU LF-PROD-SOT-004G.
+KONIEC CZESCI R3 REMOTE REPAIR LF-PROD-SOT-004G - NOT FULL STAGE CLOSEOUT.
