@@ -6,18 +6,18 @@ LF-PROD-SOT-004I_CALENDAR_DATE_TIME_BOUNDARY_READONLY_RUNTIME_IMPORT
 
 ## Status
 
-CALENDAR_DATE_TIME_BOUNDARY_READONLY_RUNTIME_IMPORT_ADDED / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / NO_OUTPUT_DRIFT / MANUAL_SMOKE_REQUIRED_BEFORE_NEXT_RUNTIME_IMPORT
+CALENDAR_DATE_TIME_BOUNDARY_READONLY_RUNTIME_IMPORT_ADDED / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / NO_OUTPUT_DRIFT / MANUAL_SMOKE_REQUIRED_BEFORE_NEXT_RUNTIME_IMPORT / DOC_CLEANUP_DONE
 
-## Linki SOT / mapa wejĹ›ciowa
+## Linki SOT / mapa wejsciowa
 
-- Centralny indeks map SOT: 10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/00_MAPY_I_ZALEZNOSCI_SOT.md
-- Decyzja wejĹ›ciowa 004H: 10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-004H_FIRST_RUNTIME_IMPORT_DECISION_MAP.md
-- Plan boundary 004G: 10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-004G_CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN.md
-- App run 004H: _project/runs/LF-PROD-SOT-004H_FIRST_RUNTIME_IMPORT_DECISION_MAP.md
-- Ten etap realizuje decyzjÄ™: CALENDAR_DATE_TIME_BOUNDARY_READONLY_IMPORT_FIRST
+- Centralny indeks map SOT: `10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/00_MAPY_I_ZALEZNOSCI_SOT.md`
+- Decyzja wejsciowa 004H: `10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-004H_FIRST_RUNTIME_IMPORT_DECISION_MAP.md`
+- Plan boundary 004G: `10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-004G_CALENDAR_DATE_TIME_BOUNDARY_ADOPTION_PLAN.md`
+- App run 004H: `_project/runs/LF-PROD-SOT-004H_FIRST_RUNTIME_IMPORT_DECISION_MAP.md`
+- Ten etap realizuje decyzje: `CALENDAR_DATE_TIME_BOUNDARY_READONLY_IMPORT_FIRST`
 - Ten etap jest pierwszym runtime importem po 004H.
 - Ten etap nie rusza Google Calendar sync.
-- Runtime SOT policy: READONLY_RUNTIME_IMPORT_NO_OUTPUT_DRIFT
+- Runtime SOT policy: `READONLY_RUNTIME_IMPORT_NO_OUTPUT_DRIFT`
 
 ## Zakres
 
@@ -26,11 +26,12 @@ CALENDAR_DATE_TIME_BOUNDARY_READONLY_RUNTIME_IMPORT_ADDED / GUARD_PASS / TEST_PA
 - no-output-drift fixture,
 - guard,
 - test,
-- report.
+- report,
+- documentation cleanup after R7.
 
 ## Runtime helper touched
 
-- touched helper: src/lib/calendar-operational-entry-contract.ts
+- touched helper: `src/lib/calendar-operational-entry-contract.ts`
 - reason: read-only boundary import
 - output drift: NO_DRIFT
 - visible output drift: NO_DRIFT
@@ -61,23 +62,24 @@ CALENDAR_DATE_TIME_BOUNDARY_READONLY_RUNTIME_IMPORT_ADDED / GUARD_PASS / TEST_PA
 
 ## Wyniki wykonanych komend
 
-- 
-pm run verify:lf-prod-sot-004h-first-runtime-import-decision-map: PASS
-- 
-pm run verify:lf-prod-sot-004g-calendar-date-time-boundary-plan: PASS
-- 
-pm run verify:lf-prod-sot-004i-calendar-date-time-boundary-readonly-runtime-import: PASS
-- 
-ode --test tests/lf-prod-sot-004i-calendar-date-time-boundary-readonly-runtime-import.test.cjs: PASS
-- 
-pm run guard:routes:canonical: PASS
-- 
-pm run guard:ui:patch-layers: PASS
-- 
-pm run check:polish-mojibake: PASS
-- 
-pm run build: PASS
-- git diff --check: PASS
+- `npm run verify:lf-prod-sot-004i-calendar-date-time-boundary-readonly-runtime-import`: PASS
+- `node --test tests/lf-prod-sot-004i-calendar-date-time-boundary-readonly-runtime-import.test.cjs`: PASS
+- `npm run guard:routes:canonical`: PASS
+- `npm run guard:ui:patch-layers`: PASS
+- `npm run check:polish-mojibake`: PASS
+- `npm run build`: PASS
+- `git diff --check`: PASS
+- `npm run verify:lf-prod-sot-004h-first-runtime-import-decision-map`: PASS after clean app commit
+- `npm run verify:lf-prod-sot-004g-calendar-date-time-boundary-plan`: PASS after clean app commit
+- `npm run verify:lf-prod-sot-004f-casedetail-isolated-adoption-plan`: PASS after clean app commit
+
+## Commit / sync
+
+- App commit: `ed81ced89e42a93bdd03a2a464382762503e79ce`
+- App push: DONE
+- Obsidian report: `10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-004I_CALENDAR_DATE_TIME_BOUNDARY_READONLY_RUNTIME_IMPORT.md`
+- Obsidian sync after original closeout: DONE in R7 log
+- Documentation cleanup: DONE_BY_GITHUB_CONNECTOR_AFTER_R7
 
 ## Risk audit
 
@@ -89,6 +91,7 @@ pm run build: PASS
 - No UI/CSS mutation.
 - No visible output drift allowed.
 - Manual smoke is required before any next runtime import.
+- Do not create 004J without Damian decision and manual smoke.
 
 ## Wynik
 
