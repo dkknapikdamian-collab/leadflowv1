@@ -7,7 +7,7 @@ Branch: dev-rollout-freeze
 
 ## Status
 
-TASKS_STATUS_DATE_READONLY_RUNTIME_IMPORT_ADDED / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / READONLY_METADATA_IMPORT_ONLY / NO_OUTPUT_DRIFT / SMOKE_DEFERRED_DEBT_FROM_004M / MANUAL_SMOKE_DEFERRED_BY_OWNER_NOT_PASS / FULL_MANUAL_SMOKE_REQUIRED_BEFORE_FINAL_ACCEPTANCE / NO_UI_CHANGE / NO_CSS_CHANGE / NO_SQL_CHANGE / NO_SUPABASE_API_CHANGE / NO_GCAL_CHANGE
+TASKS_STATUS_DATE_READONLY_RUNTIME_IMPORT_ADDED / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / LOCAL_RERUN_PASS_AFTER_R2 / REPO_CLEAN / READONLY_METADATA_IMPORT_ONLY / NO_OUTPUT_DRIFT / SMOKE_DEFERRED_DEBT_FROM_004M / MANUAL_SMOKE_DEFERRED_BY_OWNER_NOT_PASS / FULL_MANUAL_SMOKE_REQUIRED_BEFORE_FINAL_ACCEPTANCE / NO_UI_CHANGE / NO_CSS_CHANGE / NO_SQL_CHANGE / NO_SUPABASE_API_CHANGE / NO_GCAL_CHANGE
 
 ## Linki SOT / mapa wejsciowa
 
@@ -58,9 +58,26 @@ TASKS_STATUS_DATE_READONLY_RUNTIME_IMPORT_ADDED / GUARD_PASS / TEST_PASS / BUILD
 - UI/CSS/SQL/Supabase/API/GCal/CaseDetail/Finance changes in R2: NO.
 - 004O created in R2: NO.
 
+## R3 local rerun confirmation - 2026-07-03 19:40 Europe/Warsaw
+
+Local rerun after R2: PASS.
+
+Confirmed by Damian's local log:
+- git pull --ff-only origin dev-rollout-freeze: PASS / fast-forward 122af46a..538709f8.
+- npm run verify:lf-prod-sot-004m-today-runtime-import-smoke-and-decision: PASS.
+- npm run verify:lf-prod-sot-004n-tasks-status-date-readonly-runtime-import: PASS.
+- node --test tests/lf-prod-sot-004n-tasks-status-date-readonly-runtime-import.test.cjs: PASS / 2 tests passed.
+- npm run guard:routes:canonical: PASS.
+- npm run guard:ui:patch-layers: PASS.
+- npm run check:polish-mojibake: PASS.
+- npm run build: PASS_WITH_EXISTING_VITE_CHUNK_WARNINGS.
+- git diff --check: PASS.
+- final git status --short --branch: clean / dev-rollout-freeze equals origin/dev-rollout-freeze.
+
 ## Wynik
 
 KONIEC ETAPU LF-PROD-SOT-004N.
+LOCAL_RERUN_PASS_AFTER_R2.
 SMOKE_DEFERRED_DEBT_FROM_004M_ACTIVE.
 FULL_MANUAL_SMOKE_REQUIRED_BEFORE_FINAL_ACCEPTANCE.
 READY_FOR_NEXT_READONLY_NO_DRIFT_STAGE_OR_FINAL_SMOKE_GATE.
