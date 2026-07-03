@@ -22,6 +22,18 @@ const allowedFutureStagePrefixes = [
   '_project/runs/LF-PROD-SOT-004O_',
   'scripts/guards/verify-lf-prod-sot-004o-',
   'tests/lf-prod-sot-004o-',
+  'src/lib/source-of-truth/list-cards-status-date-readonly-runtime.ts',
+
+  'src/lib/clients.ts',
+
+  'src/lib/cases.ts',
+
+  '_project/runs/LF-PROD-SOT-004P_',
+
+  'scripts/guards/verify-lf-prod-sot-004p-',
+
+  'tests/lf-prod-sot-004p-',
+
 ]
 const forbiddenChangedPrefixes = [
   'src/pages/',

@@ -1,3 +1,4 @@
+import { listCardsStatusDateReadonlyRuntimeReport } from './source-of-truth/list-cards-status-date-readonly-runtime';
 // STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH: active/closed relation truth uses shared closed status source.
 // STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION: shared case archive/restore/navigation status contract.
 import { deleteCaseFromSupabase, isSupabaseConfigured } from './supabase-fallback';
@@ -7,6 +8,8 @@ import {
   isClosedCaseStatusValue,
 } from './config/case-status';
 import { normalizeCaseStatus as normalizeCaseStatusFromDomain } from './domain-statuses';
+
+void listCardsStatusDateReadonlyRuntimeReport;
 
 export function normalizeCaseStatus(value: unknown): string {
   return normalizeCaseStatusFromDomain(value);

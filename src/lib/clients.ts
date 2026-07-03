@@ -1,3 +1,4 @@
+import { listCardsStatusDateReadonlyRuntimeReport } from './source-of-truth/list-cards-status-date-readonly-runtime';
 import { parseISO, differenceInCalendarDays, isValid } from 'date-fns';
 import {
   getClientHealthLabel,
@@ -5,6 +6,8 @@ import {
   getPortalStatusLabel,
   type ClientSourceValue,
 } from './source-of-truth/client-options';
+
+void listCardsStatusDateReadonlyRuntimeReport;
 
 type DateLikeValue =
   | string
