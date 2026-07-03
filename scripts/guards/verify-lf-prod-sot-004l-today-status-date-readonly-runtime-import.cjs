@@ -80,9 +80,11 @@ for (const exportName of [
   'todayStatusDateReadonlyRuntimeReport',
 ]) mustHave(adapter, `export const ${exportName}`, adapterRel)
 
-for (const token of ["from 'react'", 'from "react"', 'document.', 'window.', 'src/pages/', 'src/components/', 'src/styles/', '.css', 'supabase', 'google-calendar', 'CaseDetail', 'Finance']) {
-  if (adapter.includes(token)) throw new Error(`${adapterRel} contains forbidden token: ${token}`)
+const forbiddenRuntimeSnippets = ["from 'react'", 'from "react"', 'document.', 'window.', 'src/pages/', 'src/components/', 'src/styles/', '.css', 'supabase', 'google-calendar']
+for (const token of forbiddenRuntimeSnippets) {
+  if (adapter.includes(token)) throw new Error(`${adapterRel} contains forbidden runtime/import token: ${token}`)
 }
+// CaseDetailChange and FinanceChange are required no-drift metadata markers, not runtime imports.
 
 mustHave(pkg, 'verify:lf-prod-sot-004l-today-status-date-readonly-runtime-import', packageRel)
 mustHave(pkg, guardRel, packageRel)

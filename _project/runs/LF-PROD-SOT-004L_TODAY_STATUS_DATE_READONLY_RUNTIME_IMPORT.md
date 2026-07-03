@@ -101,3 +101,18 @@ TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT_ADDED / GUARD_PASS / TEST_PASS / BUILD
 KONIEC ETAPU LF-PROD-SOT-004L.
 MANUAL_SMOKE_REQUIRED_AFTER_004L.
 READY_FOR_LF-PROD-SOT-004M_TODAY_RUNTIME_IMPORT_SMOKE_AND_DECISION.
+## R2 guard-test false-positive repair - 2026-07-03 14:50 Europe/Warsaw
+
+- Previous local run result before R2: GUARD_RED / TEST_RED.
+- Root cause: the 004L guard/test required CaseDetailChange and FinanceChange metadata markers, but also incorrectly forbade the raw words CaseDetail and Finance.
+- Repair: guard/test now forbid runtime/import snippets only and explicitly keep CaseDetailChange / FinanceChange as required no-drift markers.
+- npm run verify:lf-prod-sot-004k-today-status-date-readonly-runtime-import-plan: PASS.
+- npm run verify:lf-prod-sot-004l-today-status-date-readonly-runtime-import: PASS_AFTER_R2.
+- node --test tests/lf-prod-sot-004l-today-status-date-readonly-runtime-import.test.cjs: PASS_AFTER_R2.
+- npm run guard:routes:canonical: PASS.
+- npm run guard:ui:patch-layers: PASS.
+- npm run check:polish-mojibake: PASS.
+- npm run build: PASS_WITH_EXISTING_VITE_CHUNK_WARNINGS.
+- git diff --check: PASS.
+- Runtime/UI/CSS/SQL/Supabase/API/GCal/CaseDetail/Finance behavior: NOT_TOUCHED.
+- 004M created: NO.

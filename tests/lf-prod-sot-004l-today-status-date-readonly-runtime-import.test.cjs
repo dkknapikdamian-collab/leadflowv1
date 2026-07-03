@@ -40,9 +40,11 @@ test('004L adapter has required metadata-only markers', () => {
 
 test('004L adapter does not import forbidden runtime/UI areas', () => {
   const adapter = read(adapterRel)
-  for (const token of ["from 'react'", 'from "react"', 'document.', 'window.', 'src/pages/', 'src/components/', 'src/styles/', '.css', 'supabase', 'google-calendar', 'CaseDetail', 'Finance']) {
-    assert.equal(adapter.includes(token), false, `forbidden token ${token}`)
+  for (const token of ["from 'react'", 'from "react"', 'document.', 'window.', 'src/pages/', 'src/components/', 'src/styles/', '.css', 'supabase', 'google-calendar']) {
+    assert.equal(adapter.includes(token), false, `forbidden runtime/import token ${token}`)
   }
+  assert.equal(adapter.includes('CaseDetailChange'), true, 'CaseDetailChange marker must remain')
+  assert.equal(adapter.includes('FinanceChange'), true, 'FinanceChange marker must remain')
 })
 
 test('004L import host is metadata-only void import', () => {
