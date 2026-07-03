@@ -4,8 +4,16 @@ test('004N static no-drift contract', () => {
   for (const f of ['src/lib/source-of-truth/tasks-status-date-readonly-runtime.ts','_project/runs/LF-PROD-SOT-004N_TASKS_STATUS_DATE_READONLY_RUNTIME_IMPORT.md','_project/runs/LF-PROD-SOT-004M-R2_OWNER_DECISION_SMOKE_DEFERRED.md']) assert.equal(exists(f), true, f);
   const a = read('src/lib/source-of-truth/tasks-status-date-readonly-runtime.ts'); const rep = read('_project/runs/LF-PROD-SOT-004N_TASKS_STATUS_DATE_READONLY_RUNTIME_IMPORT.md');
   for (const m of ['LF-PROD-SOT-004N','TASKS_STATUS_DATE_READONLY_RUNTIME_IMPORT','READONLY_METADATA_IMPORT_ONLY','SMOKE_DEFERRED_DEBT_FROM_004M','DEFERRED_BY_OWNER_NOT_PASS','FORBIDDEN']) assert.match(a, new RegExp(m));
-  for (const m of ['TASKS_STATUS_DATE_READONLY_RUNTIME_IMPORT_ADDED','NO_OUTPUT_DRIFT','MANUAL_SMOKE_DEFERRED_BY_OWNER_NOT_PASS','FULL_MANUAL_SMOKE_REQUIRED_BEFORE_FINAL_ACCEPTANCE']) assert.match(rep, new RegExp(m));
+  for (const m of ['TASKS_STATUS_DATE_READONLY_RUNTIME_IMPORT_ADDED','NO_OUTPUT_DRIFT','MANUAL_SMOKE_DEFERRED_BY_OWNER_NOT_PASS','FULL_MANUAL_SMOKE_REQUIRED_BEFORE_FINAL_ACCEPTANCE','LOCAL_RERUN_PASS_AFTER_R2']) assert.match(rep, new RegExp(m));
   const hosts = ['src/lib/work-items/normalize.ts','src/pages/Tasks.tsx','src/pages/TasksStable.tsx'].filter(f => exists(f) && read(f).includes('tasksStatusDateReadonlyRuntimeReport'));
   assert.ok(hosts.length >= 1 && hosts.length <= 2); for (const h of hosts) assert.match(read(h), /void tasksStatusDateReadonlyRuntimeReport/);
 });
-test('004N did not create 004O', () => assert.equal(fs.readdirSync(r('_project/runs')).some(n => n.includes('LF-PROD-SOT-004O')), false));
+test('004O is allowed only as read-only no-drift continuation', () => {
+  const has004o = fs.readdirSync(r('_project/runs')).some(n => n.includes('LF-PROD-SOT-004O'));
+  if (!has004o) return;
+  for (const f of ['_project/runs/LF-PROD-SOT-004O_CALENDAR_STATUS_DATE_READONLY_RUNTIME_IMPORT.md','src/lib/source-of-truth/calendar-status-date-readonly-runtime.ts','src/lib/calendar-items.ts']) assert.equal(exists(f), true, f);
+  const rep = read('_project/runs/LF-PROD-SOT-004O_CALENDAR_STATUS_DATE_READONLY_RUNTIME_IMPORT.md'); const adapter = read('src/lib/source-of-truth/calendar-status-date-readonly-runtime.ts'); const host = read('src/lib/calendar-items.ts');
+  for (const m of ['CALENDAR_STATUS_DATE_READONLY_RUNTIME_IMPORT_ADDED','READONLY_METADATA_IMPORT_ONLY','NO_OUTPUT_DRIFT','SMOKE_DEFERRED_DEBT_FROM_004M','SMOKE_DEFERRED_DEBT_FROM_004M_ACTIVE','MANUAL_SMOKE_DEFERRED_BY_OWNER_NOT_PASS','FULL_MANUAL_SMOKE_REQUIRED_BEFORE_FINAL_ACCEPTANCE','NO_GCAL_CHANGE']) assert.match(rep, new RegExp(m));
+  for (const m of ['LF-PROD-SOT-004O','READONLY_METADATA_IMPORT_ONLY','NO_OUTPUT_DRIFT','NO_GCAL_CHANGE','GoogleCalendarSyncChange','GoogleCalendarMapperChange','remoteProviderChange']) assert.match(adapter, new RegExp(m));
+  assert.match(host, /calendar-status-date-readonly-runtime/); assert.match(host, /void calendarStatusDateReadonlyRuntimeReport/);
+});

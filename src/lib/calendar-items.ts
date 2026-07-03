@@ -12,6 +12,9 @@ import {
   isSupabaseConfigured,
 } from './supabase-fallback';
 import { normalizeEventV1, normalizeTaskV1 } from './work-items/normalize';
+import { calendarStatusDateReadonlyRuntimeReport } from './source-of-truth/calendar-status-date-readonly-runtime';
+
+void calendarStatusDateReadonlyRuntimeReport;
 
 export type CalendarTaskItem = {
   id: string;
