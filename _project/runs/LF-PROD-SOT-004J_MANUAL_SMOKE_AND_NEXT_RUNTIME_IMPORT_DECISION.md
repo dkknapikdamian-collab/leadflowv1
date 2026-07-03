@@ -2,7 +2,7 @@
 
 ## Status
 
-MANUAL_SMOKE_PENDING / NEXT_RUNTIME_IMPORT_BLOCKED / NO_RUNTIME_CHANGE / NO_UI_CHANGE / NO_CSS_CHANGE / NO_SQL_CHANGE / R2_FORMAL_CLEANUP_DONE
+MANUAL_SMOKE_PASS / NEXT_RUNTIME_IMPORT_DECISION_SELECTED / READY_FOR_004K_TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT_PLAN / NO_RUNTIME_CHANGE / NO_UI_CHANGE / NO_CSS_CHANGE / NO_SQL_CHANGE / R2_FORMAL_CLEANUP_DONE
 
 ## Linki SOT / mapa wejsciowa
 
@@ -14,32 +14,32 @@ MANUAL_SMOKE_PENDING / NEXT_RUNTIME_IMPORT_BLOCKED / NO_RUNTIME_CHANGE / NO_UI_C
 
 ## Manual smoke checklist
 
-- Calendar page checked: NOT_DONE
-- Today page checked: NOT_DONE
-- Tasks page checked: NOT_DONE
-- TasksStable page checked: NOT_DONE
-- Calendar day counts checked: NOT_DONE
-- Today task/event counts checked: NOT_DONE
-- task/event status labels checked: NOT_DONE
-- date precedence checked: NOT_DONE
-- date-only defaults checked: NOT_DONE
+- Calendar page checked: PASS
+- Today page checked: PASS
+- Tasks page checked: PASS
+- TasksStable page checked: PASS
+- Calendar day counts checked: PASS
+- Today task/event counts checked: PASS
+- task/event status labels checked: PASS
+- date precedence checked: PASS
+- date-only defaults checked: PASS
 - Google Calendar sync untouched checked: PASS
-- console errors checked: NOT_DONE
+- console errors checked: PASS
 
 ## Smoke result
 
-MANUAL_SMOKE_PENDING
+MANUAL_SMOKE_PASS
 
 ## Next runtime import decision
 
 NEXT_RUNTIME_IMPORT_DECISION:
-BLOCKED_UNTIL_MANUAL_SMOKE_PASS
+TODAY_STATUS_DATE_READONLY_IMPORT_NEXT
 
 Decision reason:
-Manual smoke was not confirmed as PASS, so the next runtime import must stay blocked.
+Manual smoke was marked PASS by the operator. Today is closest to the Calendar/date-time boundary and remains a read-only planning candidate.
 
 Next proposed stage:
-MANUAL_SMOKE_REQUIRED_BEFORE_NEXT_RUNTIME_IMPORT
+LF-PROD-SOT-004K_TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT_PLAN
 
 Nie tworzono 004K.
 Nie wdrazano kolejnego runtime importu.
@@ -76,14 +76,14 @@ Nie wdrazano kolejnego runtime importu.
 - git diff --check: PASS
 - App commit: 86ed4abd5c2b527b7ad1165904e5d2096b360001
 
-## R2 manual smoke closeout - 2026-07-03 07:22 Europe/Warsaw
+## R2 manual smoke closeout - 2026-07-03 07:56 Europe/Warsaw
 
-- manual smoke result: MANUAL_SMOKE_PENDING
+- manual smoke result: MANUAL_SMOKE_PASS
 - runtime changes in 004J-R2: NONE
 - UI/CSS/SQL/Supabase/API changes in 004J-R2: NONE
 - Google Calendar sync changes in 004J-R2: NONE
 - CaseDetail/Finance changes in 004J-R2: NONE
-- decision: BLOCKED_UNTIL_MANUAL_SMOKE_PASS
+- decision: TODAY_STATUS_DATE_READONLY_IMPORT_NEXT
 
 ## Risk audit
 
@@ -96,7 +96,7 @@ Nie wdrazano kolejnego runtime importu.
 
 ## Zapis do Obsidiana
 
-- data/time: 2026-07-03 07:22 Europe/Warsaw
+- data/time: 2026-07-03 07:56 Europe/Warsaw
 - name/alias: LF-PROD-SOT-004J-R2_MANUAL_SMOKE_RESULT_AND_FORMAL_CLOSEOUT
 - canonical_name: CloseFlow / LeadFlow
 - Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY
@@ -107,14 +107,14 @@ Nie wdrazano kolejnego runtime importu.
 - repo: dkknapikdamian-collab/leadflowv1
 - branch: dev-rollout-freeze
 - local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
-- manual smoke result: MANUAL_SMOKE_PENDING
-- next runtime import decision: BLOCKED_UNTIL_MANUAL_SMOKE_PASS
+- manual smoke result: MANUAL_SMOKE_PASS
+- next runtime import decision: TODAY_STATUS_DATE_READONLY_IMPORT_NEXT
 - tests: 004I guard PASS; 004J-R2 guard PASS; 004J-R2 node test PASS; routes guard PASS; UI patch guard PASS; mojibake PASS; build PASS; diff check PASS
 - risk audit: do not create 004K until manual smoke PASS
 - what was not touched: runtime, UI/CSS, SQL, Supabase/API, Google Calendar, CaseDetail, Finance
-- next step: MANUAL_SMOKE_REQUIRED_BEFORE_NEXT_RUNTIME_IMPORT
+- next step: LF-PROD-SOT-004K_TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT_PLAN
 
 ## Wynik
 
 KONIEC ETAPU LF-PROD-SOT-004J-R2 APP-SIDE.
-NEXT_RUNTIME_IMPORT_BLOCKED_UNTIL_MANUAL_SMOKE_PASS.
+READY_FOR_LF-PROD-SOT-004K_TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT_PLAN.
