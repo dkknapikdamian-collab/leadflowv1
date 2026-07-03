@@ -5,11 +5,19 @@ const childProcess = require('child_process')
 const ROOT = process.cwd()
 const reportRel = '_project/runs/LF-PROD-SOT-004M_TODAY_RUNTIME_IMPORT_SMOKE_AND_DECISION.md'
 const previousReportRel = '_project/runs/LF-PROD-SOT-004L_TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT.md'
+const ownerDecisionRel = '_project/runs/LF-PROD-SOT-004M-R2_OWNER_DECISION_SMOKE_DEFERRED.md'
 const guardRel = 'scripts/guards/verify-lf-prod-sot-004m-today-runtime-import-smoke-and-decision.cjs'
 const testRel = 'tests/lf-prod-sot-004m-today-runtime-import-smoke-and-decision.test.cjs'
 const packageRel = 'package.json'
 
-const allowedChanged = new Set([reportRel, guardRel, testRel, packageRel])
+const allowedChanged = new Set([reportRel, ownerDecisionRel, guardRel, testRel, packageRel])
+const allowedFutureStagePrefixes = [
+  '_project/runs/LF-PROD-SOT-004N_',
+  'scripts/guards/verify-lf-prod-sot-004n-',
+  'tests/lf-prod-sot-004n-',
+  'src/lib/source-of-truth/tasks-status-date-readonly-runtime.ts',
+  'src/lib/work-items/normalize.ts',
+]
 const forbiddenChangedPrefixes = [
   'src/pages/',
   'src/components/',
@@ -22,16 +30,19 @@ const forbiddenChangedPrefixes = [
 ]
 const forbiddenExact = new Set([
   'src/lib/source-of-truth/today-status-date-readonly-runtime.ts',
-  'src/lib/work-items/normalize.ts',
 ])
-const mojibakePattern = /[\u0102\u201e\uFFFD]/
+const mojibakePattern = /[\u0102\u201e\uFFFD\u0000\u0139\u203a]/
 
 function full(rel) {
   return path.join(ROOT, rel)
 }
 
+function exists(rel) {
+  return fs.existsSync(full(rel))
+}
+
 function read(rel) {
-  if (!fs.existsSync(full(rel))) throw new Error(`Missing required file: ${rel}`)
+  if (!exists(rel)) throw new Error(`Missing required file: ${rel}`)
   return fs.readFileSync(full(rel), 'utf8')
 }
 
@@ -53,6 +64,9 @@ const report = read(reportRel)
 const previousReport = read(previousReportRel)
 const test = read(testRel)
 const pkg = read(packageRel)
+const ownerDecisionExists = exists(ownerDecisionRel)
+const ownerDecision = ownerDecisionExists ? read(ownerDecisionRel) : ''
+const ownerAllowsNextReadOnlyStage = ownerDecision.includes('SMOKE_DEFERRED_DEBT_FROM_004M_ACTIVE') && ownerDecision.includes('NEXT_READONLY_NO_DRIFT_STAGE_ALLOWED')
 
 for (const token of [
   'LF-PROD-SOT-004L_TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT',
@@ -76,6 +90,14 @@ for (const token of [
   'MANUAL_SMOKE_REQUIRED_AFTER_004L',
 ]) mustHave(previousReport, token, previousReportRel)
 
+if (ownerDecisionExists) {
+  for (const token of [
+    'OWNER_DECISION_RECORDED',
+    'MANUAL_SMOKE_DEFERRED_BY_OWNER_NOT_PASS',
+    'SMOKE_DEFERRED_DEBT_FROM_004M_ACTIVE',
+  ]) mustHave(ownerDecision, token, ownerDecisionRel)
+}
+
 mustHave(pkg, 'verify:lf-prod-sot-004m-today-runtime-import-smoke-and-decision', packageRel)
 mustHave(pkg, guardRel, packageRel)
 
@@ -94,10 +116,12 @@ for (const token of [
 
 const files = walk(ROOT)
 const created004N = files.filter((file) => /004N|004n/.test(file))
-if (created004N.length > 0) throw new Error(`004N files exist, forbidden in 004M: ${created004N.join(', ')}`)
+if (created004N.length > 0 && !ownerAllowsNextReadOnlyStage) {
+  throw new Error(`004N files exist before owner deferral decision, forbidden in 004M: ${created004N.join(', ')}`)
+}
 
 for (const forbiddenRuntimeFile of forbiddenExact) {
-  if (!fs.existsSync(full(forbiddenRuntimeFile))) throw new Error(`Expected runtime boundary file is missing: ${forbiddenRuntimeFile}`)
+  if (!exists(forbiddenRuntimeFile)) throw new Error(`Expected runtime boundary file is missing: ${forbiddenRuntimeFile}`)
 }
 
 let changed = []
@@ -107,22 +131,24 @@ try {
   changed = []
 }
 for (const file of changed) {
-  if (!allowedChanged.has(file)) throw new Error(`Unexpected changed file in 004M: ${file}`)
+  const allowedFuture = ownerAllowsNextReadOnlyStage && allowedFutureStagePrefixes.some((prefix) => file.startsWith(prefix) || file === prefix)
+  if (!allowedChanged.has(file) && !allowedFuture) throw new Error(`Unexpected changed file in 004M: ${file}`)
   if (forbiddenExact.has(file)) throw new Error(`Forbidden runtime boundary file changed in 004M: ${file}`)
-  if (forbiddenChangedPrefixes.some((prefix) => file === prefix || file.startsWith(prefix))) throw new Error(`Forbidden runtime/UI/CSS/SQL/API path changed in 004M: ${file}`)
+  if (!allowedFuture && forbiddenChangedPrefixes.some((prefix) => file === prefix || file.startsWith(prefix))) throw new Error(`Forbidden runtime/UI/CSS/SQL/API path changed in 004M: ${file}`)
 }
 
-for (const [label, text] of Object.entries({ report, previousReport, pkg })) {
-  if (mojibakePattern.test(text)) throw new Error(`Possible mojibake in ${label}`)
+for (const [label, text] of Object.entries({ report, previousReport, pkg, ownerDecision })) {
+  if (text && mojibakePattern.test(text)) throw new Error(`Possible mojibake in ${label}`)
 }
 
 console.log(JSON.stringify({
   ok: true,
   stage: 'LF-PROD-SOT-004M',
   smokeResult: 'MANUAL_SMOKE_PENDING',
-  nextRuntimeImport: 'BLOCKED',
+  ownerDecision: ownerDecisionExists ? 'RECORDED' : 'NOT_RECORDED',
+  nextReadOnlyNoDriftAllowed: ownerAllowsNextReadOnlyStage,
   runtimeTouched: 'NO',
-  created004N: false,
+  created004NAllowedAfterR2: created004N.length > 0 && ownerAllowsNextReadOnlyStage,
   packageJsonBom: false,
-  mojibakeScope: 'reports-and-package-only'
+  mojibakeScope: 'reports-package-owner-decision'
 }, null, 2))
