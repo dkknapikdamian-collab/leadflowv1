@@ -2,7 +2,7 @@
 
 ## Status
 
-MANUAL_SMOKE_PENDING / NEXT_RUNTIME_IMPORT_BLOCKED / NO_RUNTIME_CHANGE / NO_UI_CHANGE / NO_CSS_CHANGE / NO_SQL_CHANGE
+MANUAL_SMOKE_PENDING / NEXT_RUNTIME_IMPORT_BLOCKED / NO_RUNTIME_CHANGE / NO_UI_CHANGE / NO_CSS_CHANGE / NO_SQL_CHANGE / R2_FORMAL_CLEANUP_DONE
 
 ## Linki SOT / mapa wejsciowa
 
@@ -23,7 +23,7 @@ MANUAL_SMOKE_PENDING / NEXT_RUNTIME_IMPORT_BLOCKED / NO_RUNTIME_CHANGE / NO_UI_C
 - task/event status labels checked: NOT_DONE
 - date precedence checked: NOT_DONE
 - date-only defaults checked: NOT_DONE
-- Google Calendar sync untouched checked: NOT_DONE
+- Google Calendar sync untouched checked: PASS
 - console errors checked: NOT_DONE
 
 ## Smoke result
@@ -41,9 +41,13 @@ Manual smoke was not confirmed as PASS, so the next runtime import must stay blo
 Next proposed stage:
 MANUAL_SMOKE_REQUIRED_BEFORE_NEXT_RUNTIME_IMPORT
 
+Nie tworzono 004K.
+Nie wdrazano kolejnego runtime importu.
+
 ## Czego nie ruszano
 
 - runtime changes in 004J: NONE
+- runtime changes in 004J-R2: NONE
 - Calendar runtime: NOT_TOUCHED
 - Tasks runtime: NOT_TOUCHED
 - Today runtime: NOT_TOUCHED
@@ -55,8 +59,10 @@ MANUAL_SMOKE_REQUIRED_BEFORE_NEXT_RUNTIME_IMPORT
 - SQL: NOT_TOUCHED
 - Supabase/API: NOT_TOUCHED
 - UI/CSS/SQL/Supabase/API: NOT_TOUCHED
+- Google Calendar sync changes in 004J-R2: NONE
 - CaseDetail runtime: NOT_TOUCHED
 - Finance runtime: NOT_TOUCHED
+- CaseDetail/Finance changes in 004J-R2: NONE
 
 ## Wyniki wykonanych komend
 
@@ -68,24 +74,34 @@ MANUAL_SMOKE_REQUIRED_BEFORE_NEXT_RUNTIME_IMPORT
 - npm run check:polish-mojibake: PASS
 - npm run build: PASS
 - git diff --check: PASS
-- App commit: TO_BE_CREATED_AFTER_COMMIT
+- App commit: 86ed4abd5c2b527b7ad1165904e5d2096b360001
+
+## R2 manual smoke closeout - 2026-07-03 07:22 Europe/Warsaw
+
+- manual smoke result: MANUAL_SMOKE_PENDING
+- runtime changes in 004J-R2: NONE
+- UI/CSS/SQL/Supabase/API changes in 004J-R2: NONE
+- Google Calendar sync changes in 004J-R2: NONE
+- CaseDetail/Finance changes in 004J-R2: NONE
+- decision: BLOCKED_UNTIL_MANUAL_SMOKE_PASS
 
 ## Risk audit
 
 - 004I was first runtime import.
 - Manual smoke is mandatory before next runtime import.
-- 004J does not change runtime.
+- 004J-R2 does not change runtime.
 - Today is recommended as next candidate only if smoke is PASS.
 - CaseDetail and Finance remain blocked for later.
+- Do not create or implement 004K inside 004J-R2.
 
 ## Zapis do Obsidiana
 
-- data/time: 2026-07-02 23:14 Europe/Warsaw
-- name/alias: LF-PROD-SOT-004J_MANUAL_SMOKE_AND_NEXT_RUNTIME_IMPORT_DECISION
+- data/time: 2026-07-03 07:22 Europe/Warsaw
+- name/alias: LF-PROD-SOT-004J-R2_MANUAL_SMOKE_RESULT_AND_FORMAL_CLOSEOUT
 - canonical_name: CloseFlow / LeadFlow
 - Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY
 - target file/path: 10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-004J_MANUAL_SMOKE_AND_NEXT_RUNTIME_IMPORT_DECISION.md
-- save status: PREPARED_BY_LOCAL_SCRIPT
+- save status: APP_R2_RECORDED_PENDING_OBSIDIAN_SYNC
 - Obsidian GitHub sync: TO_RUN_AFTER_APP_PASS
 - Obsidian local sync: TO_RUN_AFTER_OBSIDIAN_PUSH
 - repo: dkknapikdamian-collab/leadflowv1
@@ -93,11 +109,12 @@ MANUAL_SMOKE_REQUIRED_BEFORE_NEXT_RUNTIME_IMPORT
 - local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
 - manual smoke result: MANUAL_SMOKE_PENDING
 - next runtime import decision: BLOCKED_UNTIL_MANUAL_SMOKE_PASS
-- tests: PASS
-- risk audit: 004J is a gate stage; no runtime import in 004J.
-- what was not touched: Calendar/Tasks/Today runtime, Google Calendar sync/mapper/provider, UI/CSS, SQL, Supabase/API, CaseDetail, Finance.
-- next step: Run manual smoke before any next runtime import.
+- tests: 004I guard PASS; 004J-R2 guard PASS; 004J-R2 node test PASS; routes guard PASS; UI patch guard PASS; mojibake PASS; build PASS; diff check PASS
+- risk audit: do not create 004K until manual smoke PASS
+- what was not touched: runtime, UI/CSS, SQL, Supabase/API, Google Calendar, CaseDetail, Finance
+- next step: MANUAL_SMOKE_REQUIRED_BEFORE_NEXT_RUNTIME_IMPORT
 
 ## Wynik
 
-KONIEC ETAPU LF-PROD-SOT-004J.
+KONIEC ETAPU LF-PROD-SOT-004J-R2 APP-SIDE.
+NEXT_RUNTIME_IMPORT_BLOCKED_UNTIL_MANUAL_SMOKE_PASS.
