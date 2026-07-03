@@ -107,6 +107,7 @@
                     "verify:lf-prod-sot-004k-today-status-date-readonly-runtime-import-plan":  "node scripts/guards/verify-lf-prod-sot-004k-today-status-date-readonly-runtime-import-plan.cjs",
                     "verify:lf-prod-sot-004l-today-status-date-readonly-runtime-import":  "node scripts/guards/verify-lf-prod-sot-004l-today-status-date-readonly-runtime-import.cjs",
                     "verify:lf-prod-sot-004m-today-runtime-import-smoke-and-decision":  "node scripts/guards/verify-lf-prod-sot-004m-today-runtime-import-smoke-and-decision.cjs",
+                    "verify:lf-prod-sot-004n-tasks-status-date-readonly-runtime-import":  "node scripts/guards/verify-lf-prod-sot-004n-tasks-status-date-readonly-runtime-import.cjs",
                     "check:a25-nearest-planned-action":  "node scripts/check-a25-nearest-planned-action.cjs",
                     "check:a28-digest-notifications-pwa":  "node scripts/check-a28-digest-notifications-pwa.cjs",
                     "check:a29-supabase-runtime-shell":  "node scripts/check-a29-supabase-runtime-shell.cjs",

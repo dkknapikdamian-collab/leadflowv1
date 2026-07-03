@@ -1,6 +1,9 @@
 import { todayStatusDateReadonlyRuntimeReport } from '../source-of-truth/today-status-date-readonly-runtime';
+import { tasksStatusDateReadonlyRuntimeReport } from '../source-of-truth/tasks-status-date-readonly-runtime';
 
 void todayStatusDateReadonlyRuntimeReport;
+
+void tasksStatusDateReadonlyRuntimeReport;
 
 export type WorkItemType = 'task' | 'event' | 'follow_up' | 'meeting' | 'deadline' | 'note';
 
