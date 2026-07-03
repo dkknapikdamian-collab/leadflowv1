@@ -1,13 +1,13 @@
 # LF-PROD-SOT-004M - Today runtime import smoke and decision
 
-Date: 2026-07-03 15:22 Europe/Warsaw
+Date: 2026-07-03 18:31 Europe/Warsaw
 Project: CloseFlow / LeadFlow
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
 
 ## Status
 
-MANUAL_SMOKE_PENDING / NEXT_RUNTIME_IMPORT_BLOCKED / NO_RUNTIME_CHANGE / NO_UI_CHANGE / NO_CSS_CHANGE / NO_SQL_CHANGE / NO_GCAL_CHANGE
+TECHNICAL_VERIFY_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / REPO_CLEAN / MANUAL_SMOKE_PENDING / NEXT_RUNTIME_IMPORT_BLOCKED / NO_RUNTIME_CHANGE / NO_UI_CHANGE / NO_CSS_CHANGE / NO_SQL_CHANGE / NO_GCAL_CHANGE
 
 ## Linki SOT / mapa wejsciowa
 
@@ -42,7 +42,7 @@ MANUAL_SMOKE_PENDING
 NEXT_RUNTIME_IMPORT_DECISION:
 DECISION_REQUIRED_BEFORE_004N
 
-Candidate next planning stages:
+Candidate next planning stages after smoke/decision only:
 - LF-PROD-SOT-004N_LISTS_CARDS_STATUS_DATE_READONLY_RUNTIME_IMPORT_PLAN
 - LF-PROD-SOT-004N_TASKS_STATUS_DATE_READONLY_RUNTIME_IMPORT_PLAN
 - LF-PROD-SOT-004N_CALENDAR_FOLLOWUP_BOUNDARY_SMOKE_EXTENSION
@@ -70,46 +70,50 @@ Nie wdrazano kolejnego runtime importu.
 
 ## Wyniki wykonanych komend
 
-- npm run verify:lf-prod-sot-004l-today-status-date-readonly-runtime-import: NOT_RUN_BY_GITHUB_CONNECTOR
-- npm run verify:lf-prod-sot-004m-today-runtime-import-smoke-and-decision: BLOCKED_UNTIL_PACKAGE_ALIAS_ADDED_LOCALLY_OR_BY_FULL_FILE_UPDATE
-- node --test tests/lf-prod-sot-004m-today-runtime-import-smoke-and-decision.test.cjs: NOT_RUN_BY_GITHUB_CONNECTOR
-- npm run guard:routes:canonical: NOT_RUN_BY_GITHUB_CONNECTOR
-- npm run guard:ui:patch-layers: NOT_RUN_BY_GITHUB_CONNECTOR
-- npm run check:polish-mojibake: NOT_RUN_BY_GITHUB_CONNECTOR
-- npm run build: NOT_RUN_BY_GITHUB_CONNECTOR
-- git diff --check: NOT_RUN_BY_GITHUB_CONNECTOR
+From local run after BOM fix and guard-scope repair:
+
+- git pull --ff-only origin dev-rollout-freeze: PASS / ALREADY_SYNCED_TO_D7F9C3E5
+- git status --short --branch: CLEAN
+- package.json BOM check: PASS / package.json no BOM
+- npm run verify:lf-prod-sot-004m-today-runtime-import-smoke-and-decision: PASS
+- node --test tests/lf-prod-sot-004m-today-runtime-import-smoke-and-decision.test.cjs: PASS 6/6
+- npm run guard:routes:canonical: PASS
+- npm run guard:ui:patch-layers: PASS
+- npm run check:polish-mojibake: PASS
+- npm run build: PASS_WITH_EXISTING_VITE_CHUNK_WARNINGS
+- git diff --check: PASS
+- final git status --short --branch: CLEAN
 
 ## Risk audit
 
-- 004L was a real runtime import boundary.
+- 004M is technical green but still smoke/decision only.
 - 004M does not change runtime.
-- Manual smoke is mandatory before any next runtime import.
-- Smoke is currently pending, so next runtime import is blocked.
+- Manual production smoke is mandatory before any next runtime import.
 - 004N is blocked until smoke result and Damian decision are recorded.
 - GCal, CaseDetail and Finance remain blocked.
-- This report was created through GitHub connector, which cannot run local npm/build commands.
+- Vite chunk warnings are existing warnings and not a build failure.
 
 ## Zapis do Obsidiana
 
-- data/time: 2026-07-03 15:22 Europe/Warsaw
+- data/time: 2026-07-03 18:31 Europe/Warsaw
 - name/alias: LF-PROD-SOT-004M_TODAY_RUNTIME_IMPORT_SMOKE_AND_DECISION
 - canonical_name: CloseFlow / LeadFlow
 - Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY
 - target file/path: 10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-004M_TODAY_RUNTIME_IMPORT_SMOKE_AND_DECISION.md
-- save status: APP_REPORT_SAVED_BY_GITHUB_CONNECTOR
-- Obsidian GitHub sync: PENDING
+- save status: APP_REPORT_UPDATED_BY_GITHUB_CONNECTOR
+- Obsidian GitHub sync: PENDING_SEPARATE_OBSIDIAN_UPDATE
 - Obsidian local sync: LOCAL_SYNC_PENDING
 - repo: dkknapikdamian-collab/leadflowv1
 - branch: dev-rollout-freeze
 - local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
-- smoke result: MANUAL_SMOKE_PENDING
-- next runtime import decision: DECISION_REQUIRED_BEFORE_004N
-- tests: NOT_RUN_BY_GITHUB_CONNECTOR
-- risk audit: NEXT_RUNTIME_IMPORT_BLOCKED
+- tests: TECHNICAL_VERIFY_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / REPO_CLEAN
+- risk audit: NEXT_RUNTIME_IMPORT_BLOCKED_UNTIL_MANUAL_SMOKE_AND_DECISION
 - what was not touched: runtime, UI, CSS, SQL, Supabase/API, GCal, CaseDetail, Finance
-- next step: run local/package verification and production smoke
+- next step: production manual smoke and decision before 004N
 
 ## Wynik
 
-KONIEC ETAPU LF-PROD-SOT-004M.
+KONIEC TECHNICZNEJ WERYFIKACJI LF-PROD-SOT-004M.
+MANUAL_SMOKE_PENDING.
 NEXT_RUNTIME_IMPORT_BLOCKED.
+004N_NOT_CREATED.
