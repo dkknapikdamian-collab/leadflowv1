@@ -60,5 +60,14 @@ export const todayStatusDateReadonlyRuntimeImportPlanNextDecision = {
 
 export const todayStatusDateReadonlyRuntimeImportPlanReport = {
   appReport: '_project/runs/LF-PROD-SOT-004K_TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT_PLAN.md',
-  status: 'PLAN_ONLY_GITHUB_APPLIED_LOCAL_VERIFICATION_REQUIRED',
+  status: 'TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT_PLAN_CLOSED',
+  localVerification: 'PASS',
+  guard: 'PASS',
+  test: 'PASS',
+  build: 'PASS_WITH_EXISTING_VITE_CHUNK_WARNINGS',
+  diffCheck: 'PASS',
+  runtimeImport: 'NOT_STARTED_IN_004K_PLAN_ONLY',
+  runtimeTouched: 'NO',
+  nextStage: 'LF-PROD-SOT-004L_TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT',
+  readyFor004L: true,
 } as const
