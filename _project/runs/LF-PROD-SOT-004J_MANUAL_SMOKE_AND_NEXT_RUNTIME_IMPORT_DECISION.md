@@ -85,6 +85,17 @@ Nie wdrazano kolejnego runtime importu.
 - CaseDetail/Finance changes in 004J-R2: NONE
 - decision: TODAY_STATUS_DATE_READONLY_IMPORT_NEXT
 
+## R3 router/index sync - 2026-07-03 08:12 Europe/Warsaw
+
+- App report status: MANUAL_SMOKE_PASS / READY_FOR_004K confirmed.
+- Obsidian report status: MANUAL_SMOKE_PASS / READY_FOR_004K confirmed.
+- Central SOT index stale pending marker: FIXED.
+- Runtime changes in 004J-R3: NONE.
+- UI/CSS/SQL/Supabase/API changes in 004J-R3: NONE.
+- Google Calendar sync changes in 004J-R3: NONE.
+- 004K created in this stage: NO.
+- Next stage: LF-PROD-SOT-004K_TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT_PLAN.
+
 ## Risk audit
 
 - 004I was first runtime import.
