@@ -50,7 +50,6 @@ function walk(dir, out = []) {
 
 const report = read(reportRel)
 const previousReport = read(previousReportRel)
-const guard = read(guardRel)
 const test = read(testRel)
 const pkg = read(packageRel)
 
@@ -79,17 +78,19 @@ for (const token of [
 mustHave(pkg, 'verify:lf-prod-sot-004m-today-runtime-import-smoke-and-decision', packageRel)
 mustHave(pkg, guardRel, packageRel)
 
+if (pkg.charCodeAt(0) === 0xfeff) throw new Error('package.json has UTF-8 BOM; remove BOM before build/verify')
+
 for (const token of ['Smoke result', 'Manual smoke checklist', 'Decision', 'Czego nie ruszano', 'Risk audit']) {
   mustHave(report, token, reportRel)
-}
-
-for (const token of ['LF-PROD-SOT-004N_', '004N_TODAY', '004N_RUNTIME']) {
-  if (guard.includes(token) || test.includes(token)) throw new Error(`004M guard/test must not define 004N work: ${token}`)
 }
 
 const files = walk(ROOT)
 const created004N = files.filter((file) => /004N|004n/.test(file))
 if (created004N.length > 0) throw new Error(`004N files exist, forbidden in 004M: ${created004N.join(', ')}`)
+
+for (const forbiddenRuntimeFile of forbiddenExact) {
+  if (!fs.existsSync(full(forbiddenRuntimeFile))) throw new Error(`Expected runtime boundary file is missing: ${forbiddenRuntimeFile}`)
+}
 
 let changed = []
 try {
@@ -103,7 +104,7 @@ for (const file of changed) {
   if (forbiddenChangedPrefixes.some((prefix) => file === prefix || file.startsWith(prefix))) throw new Error(`Forbidden runtime/UI/CSS/SQL/API path changed in 004M: ${file}`)
 }
 
-for (const [label, text] of Object.entries({ report, previousReport, guard, test, pkg })) {
+for (const [label, text] of Object.entries({ report, previousReport, test, pkg })) {
   if (/[Ă…Ă„ĂĂ‚ďż˝]/.test(text)) throw new Error(`Possible mojibake in ${label}`)
 }
 
@@ -113,5 +114,6 @@ console.log(JSON.stringify({
   smokeResult: 'MANUAL_SMOKE_PENDING',
   nextRuntimeImport: 'BLOCKED',
   runtimeTouched: 'NO',
-  created004N: false
+  created004N: false,
+  packageJsonBom: false
 }, null, 2))
