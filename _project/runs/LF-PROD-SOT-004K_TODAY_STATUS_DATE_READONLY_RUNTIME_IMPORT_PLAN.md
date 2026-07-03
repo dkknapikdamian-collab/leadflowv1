@@ -7,7 +7,7 @@ Branch: dev-rollout-freeze
 
 ## Status
 
-PLAN_ONLY / GITHUB_APPLIED_LOCAL_VERIFICATION_REQUIRED / NO_RUNTIME_CHANGE / NO_UI_CHANGE / NO_CSS_CHANGE / NO_SQL_CHANGE
+HONEST_BLOCKED_PROOF / LOCAL_VERIFICATION_RED_ON_004J_RERUN / 004K_GUARD_PASS / 004K_TEST_PASS / BUILD_PASS / DIFF_CHECK_WARNING_ONLY / PLAN_ONLY_NO_RUNTIME_IMPORT / 004L_BLOCKED
 
 ## Input decision
 
@@ -45,3 +45,24 @@ visibleOutputDrift: FORBIDDEN
 ## Verification required locally
 
 Local npm, tests, build and git diff checks must be green before closing 004K.
+
+## R2 local verification closeout - 2026-07-03 09:20 Europe/Warsaw
+
+- local verification: RED
+- failing command: npm run verify:lf-prod-sot-004j-manual-smoke-and-next-runtime-import-decision
+- failing output summary: 004J guard rejected dirty working tree containing 004K-R2 test change: tests/lf-prod-sot-004k-today-status-date-readonly-runtime-import-plan.test.cjs outside 004J-R2 allowlist.
+- npm run verify:lf-prod-sot-004k-today-status-date-readonly-runtime-import-plan: PASS
+- node --test tests/lf-prod-sot-004k-today-status-date-readonly-runtime-import-plan.test.cjs: PASS
+- npm run guard:routes:canonical: PASS
+- npm run guard:ui:patch-layers: PASS
+- npm run check:polish-mojibake: PASS
+- npm run build: PASS
+- git diff --check: PASS_WITH_LINE_ENDING_WARNINGS
+- app commit pushed after alias/test finalization: cbf49e3ab247f1edf5bc67c5e45f0b67a1bdc7c4
+- app repo final status after push: CLEAN / dev-rollout-freeze aligned with origin/dev-rollout-freeze
+- runtime changes in 004K-R2: NONE
+- UI/CSS/SQL/Supabase/API changes in 004K-R2: NONE
+- Google Calendar sync changes in 004K-R2: NONE
+- CaseDetail/Finance changes in 004K-R2: NONE
+- 004L created in this stage: NO
+- next step: rerun 004J guard on clean app working tree, then close 004K if PASS
