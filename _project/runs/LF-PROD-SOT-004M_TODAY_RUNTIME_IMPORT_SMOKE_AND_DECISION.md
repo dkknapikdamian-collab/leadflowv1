@@ -88,7 +88,7 @@ From local run after BOM fix and guard-scope repair:
 
 - 004M is technical green but still smoke/decision only.
 - 004M does not change runtime.
-- Manual production smoke is mandatory before any next runtime import.
+- Manual production smoke is mandatory before any next runtime import unless owner explicitly defers it.
 - 004N is blocked until smoke result and Damian decision are recorded.
 - GCal, CaseDetail and Finance remain blocked.
 - Vite chunk warnings are existing warnings and not a build failure.
@@ -117,3 +117,17 @@ KONIEC TECHNICZNEJ WERYFIKACJI LF-PROD-SOT-004M.
 MANUAL_SMOKE_PENDING.
 NEXT_RUNTIME_IMPORT_BLOCKED.
 004N_NOT_CREATED.
+
+## R2 owner decision - manual smoke deferred until full rewire - 2026-07-03 18:55 Europe/Warsaw
+
+- Owner decision: Damian will not run manual smoke now.
+- Owner reason: manual smoke will be easier after the full read-only rewire is finished.
+- Manual smoke status: DEFERRED_BY_OWNER / NOT_PASS.
+- This is not a smoke PASS and must not be reported as PASS.
+- Queue policy change: continue only with read-only / no-output-drift stages.
+- Runtime behavior changes remain forbidden until explicit stage scope allows them.
+- UI/CSS/SQL/Supabase/API/GCal/CaseDetail/Finance remain blocked.
+- Every next stage must record SMOKE_DEFERRED_DEBT_FROM_004M.
+- Full manual smoke remains required before final acceptance / production closeout.
+- 004N created in this stage: NO.
+- Next allowed step: plan-only or read-only no-drift runtime migration stage, with deferred-smoke debt explicitly recorded.
