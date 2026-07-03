@@ -77,3 +77,24 @@ Local npm, tests, build and git diff checks must be green before closing 004K. T
 - CaseDetail/Finance changes in 004K-R3: NONE
 - 004L created in this stage: NO
 - next step: LF-PROD-SOT-004L_TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT
+
+## R4 final rerun and local Obsidian sync gate - 2026-07-03 10:00 Europe/Warsaw
+
+- final local rerun after R3 source status sync: PASS
+- source plan status: TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT_PLAN_CLOSED
+- source plan readyFor004L: true
+- npm run verify:lf-prod-sot-004j-manual-smoke-and-next-runtime-import-decision: PASS
+- npm run verify:lf-prod-sot-004k-today-status-date-readonly-runtime-import-plan: PASS
+- node --test tests/lf-prod-sot-004k-today-status-date-readonly-runtime-import-plan.test.cjs: PASS
+- npm run guard:routes:canonical: PASS
+- npm run guard:ui:patch-layers: PASS
+- npm run check:polish-mojibake: PASS
+- npm run build: PASS_WITH_EXISTING_VITE_CHUNK_WARNINGS
+- git diff --check: PASS
+- app repo final status after verification: CLEAN / dev-rollout-freeze aligned with origin/dev-rollout-freeze
+- runtime changes in 004K-R4: NONE
+- UI/CSS/SQL/Supabase/API changes in 004K-R4: NONE
+- Google Calendar sync changes in 004K-R4: NONE
+- CaseDetail/Finance changes in 004K-R4: NONE
+- 004L created in this stage: NO
+- next step: LF-PROD-SOT-004L_TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT
