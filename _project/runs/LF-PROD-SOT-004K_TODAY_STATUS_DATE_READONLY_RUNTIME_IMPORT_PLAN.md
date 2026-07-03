@@ -64,3 +64,16 @@ Local npm, tests, build and git diff checks must be green before closing 004K. T
 - CaseDetail/Finance changes in 004K-R2: NONE
 - 004L created in this stage: NO
 - next step: LF-PROD-SOT-004L_TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT
+
+## R3 source plan status sync - 2026-07-03 09:45 Europe/Warsaw
+
+- source plan stale status: FIXED
+- old source plan status: PLAN_ONLY_GITHUB_APPLIED_LOCAL_VERIFICATION_REQUIRED
+- new source plan status: TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT_PLAN_CLOSED
+- local verification: PASS
+- runtime changes in 004K-R3: NONE
+- UI/CSS/SQL/Supabase/API changes in 004K-R3: NONE
+- Google Calendar sync changes in 004K-R3: NONE
+- CaseDetail/Finance changes in 004K-R3: NONE
+- 004L created in this stage: NO
+- next step: LF-PROD-SOT-004L_TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT
