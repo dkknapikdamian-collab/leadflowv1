@@ -1,0 +1,56 @@
+# LF-PROD-SOT-004Q - Read-only rewire closure gate and smoke debt ledger
+
+Date: 2026-07-03 22:51 Europe/Warsaw
+Project: CloseFlow / LeadFlow
+Repo: dkknapikdamian-collab/leadflowv1
+Branch: dev-rollout-freeze
+
+## Status
+
+READONLY_REWIRE_CLOSURE_GATE_ADDED / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / READONLY_CLOSURE_GATE_ONLY / NO_RUNTIME_CHANGE / NO_OUTPUT_DRIFT / SMOKE_DEFERRED_DEBT_FROM_004M_ACTIVE / MANUAL_SMOKE_DEFERRED_BY_OWNER_NOT_PASS / FULL_MANUAL_SMOKE_REQUIRED_BEFORE_FINAL_ACCEPTANCE / FINAL_MANUAL_SMOKE_GATE_REQUIRED / NEXT_DECISION_REQUIRED / NO_UI_CHANGE / NO_CSS_CHANGE / NO_SQL_CHANGE / NO_SUPABASE_API_CHANGE / NO_GCAL_CHANGE / NO_CASEDETAIL_CHANGE / NO_FINANCE_CHANGE
+
+## Covered read-only boundaries
+
+- 004L Today boundary: DONE
+- 004N Tasks boundary: DONE / LOCAL_RERUN_PASS_AFTER_R2
+- 004O Calendar boundary: DONE / NO_GCAL_CHANGE
+- 004P Lists/cards boundary: DONE / LISTS_CARDS_OUTPUT_UNCHANGED
+
+## Closure gate
+
+- stage type: READONLY_CLOSURE_GATE_ONLY
+- runtime behavior touched: NO
+- output drift: NO
+- UI changed: NO
+- CSS changed: NO
+- SQL changed: NO
+- Supabase/API changed: NO
+- GCal sync/mapper/provider changed: NO
+- CaseDetail changed: NO
+- Finance changed: NO
+- 004R created: NO
+- 004R_CREATED: NO
+
+## Smoke debt ledger
+
+- Smoke debt: SMOKE_DEFERRED_DEBT_FROM_004M_ACTIVE
+- Manual smoke status: MANUAL_SMOKE_DEFERRED_BY_OWNER_NOT_PASS
+- Does this stage claim smoke PASS: NO
+- Full manual smoke required before final acceptance: YES
+- FULL_MANUAL_SMOKE_REQUIRED_BEFORE_FINAL_ACCEPTANCE
+- FINAL_MANUAL_SMOKE_GATE_REQUIRED
+
+## Next decision
+
+FINAL_MANUAL_SMOKE_GATE_OR_EXPLICIT_NEXT_READONLY_STAGE
+NEXT_DECISION_REQUIRED
+
+## Wynik
+
+KONIEC ETAPU LF-PROD-SOT-004Q.
+READONLY_CLOSURE_GATE_ONLY.
+NO_RUNTIME_CHANGE.
+NO_OUTPUT_DRIFT.
+SMOKE_DEFERRED_DEBT_FROM_004M_ACTIVE.
+FULL_MANUAL_SMOKE_REQUIRED_BEFORE_FINAL_ACCEPTANCE.
+NEXT_DECISION_REQUIRED.

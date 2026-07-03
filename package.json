@@ -110,6 +110,7 @@
                     "verify:lf-prod-sot-004n-tasks-status-date-readonly-runtime-import":  "node scripts/guards/verify-lf-prod-sot-004n-tasks-status-date-readonly-runtime-import.cjs",
                     "verify:lf-prod-sot-004o-calendar-status-date-readonly-runtime-import":  "node scripts/guards/verify-lf-prod-sot-004o-calendar-status-date-readonly-runtime-import.cjs",
                     "verify:lf-prod-sot-004p-list-cards-status-date-readonly-runtime-import":  "node scripts/guards/verify-lf-prod-sot-004p-list-cards-status-date-readonly-runtime-import.cjs",
+                    "verify:lf-prod-sot-004q-readonly-rewire-closure-gate":  "node scripts/guards/verify-lf-prod-sot-004q-readonly-rewire-closure-gate.cjs",
                     "check:a25-nearest-planned-action":  "node scripts/check-a25-nearest-planned-action.cjs",
                     "check:a28-digest-notifications-pwa":  "node scripts/check-a28-digest-notifications-pwa.cjs",
                     "check:a29-supabase-runtime-shell":  "node scripts/check-a29-supabase-runtime-shell.cjs",
