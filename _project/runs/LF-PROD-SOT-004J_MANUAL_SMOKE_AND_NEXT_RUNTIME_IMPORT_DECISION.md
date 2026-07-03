@@ -85,7 +85,7 @@ Nie wdrazano kolejnego runtime importu.
 - CaseDetail/Finance changes in 004J-R2: NONE
 - decision: TODAY_STATUS_DATE_READONLY_IMPORT_NEXT
 
-## R3 router/index sync - 2026-07-03 08:12 Europe/Warsaw
+## R3 router/index sync - 2026-07-03 08:23 Europe/Warsaw
 
 - App report status: MANUAL_SMOKE_PASS / READY_FOR_004K confirmed.
 - Obsidian report status: MANUAL_SMOKE_PASS / READY_FOR_004K confirmed.
