@@ -1,3 +1,7 @@
+import { todayStatusDateReadonlyRuntimeReport } from '../source-of-truth/today-status-date-readonly-runtime';
+
+void todayStatusDateReadonlyRuntimeReport;
+
 export type WorkItemType = 'task' | 'event' | 'follow_up' | 'meeting' | 'deadline' | 'note';
 
 export type CalendarReminderRule =
