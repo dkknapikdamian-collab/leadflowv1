@@ -24,6 +24,7 @@ const forbiddenExact = new Set([
   'src/lib/source-of-truth/today-status-date-readonly-runtime.ts',
   'src/lib/work-items/normalize.ts',
 ])
+const mojibakePattern = /[\u0102\u201e\uFFFD]/
 
 function full(rel) {
   return path.join(ROOT, rel)
@@ -84,6 +85,13 @@ for (const token of ['Smoke result', 'Manual smoke checklist', 'Decision', 'Czeg
   mustHave(report, token, reportRel)
 }
 
+for (const token of [
+  '004M report exists and links 004L metadata-only boundary',
+  '004M report records pending smoke and blocks next runtime import',
+  '004M does not create 004N',
+  '004M package alias exists',
+]) mustHave(test, token, testRel)
+
 const files = walk(ROOT)
 const created004N = files.filter((file) => /004N|004n/.test(file))
 if (created004N.length > 0) throw new Error(`004N files exist, forbidden in 004M: ${created004N.join(', ')}`)
@@ -104,8 +112,8 @@ for (const file of changed) {
   if (forbiddenChangedPrefixes.some((prefix) => file === prefix || file.startsWith(prefix))) throw new Error(`Forbidden runtime/UI/CSS/SQL/API path changed in 004M: ${file}`)
 }
 
-for (const [label, text] of Object.entries({ report, previousReport, test, pkg })) {
-  if (/[Ă…Ă„ĂĂ‚ďż˝]/.test(text)) throw new Error(`Possible mojibake in ${label}`)
+for (const [label, text] of Object.entries({ report, previousReport, pkg })) {
+  if (mojibakePattern.test(text)) throw new Error(`Possible mojibake in ${label}`)
 }
 
 console.log(JSON.stringify({
@@ -115,5 +123,6 @@ console.log(JSON.stringify({
   nextRuntimeImport: 'BLOCKED',
   runtimeTouched: 'NO',
   created004N: false,
-  packageJsonBom: false
+  packageJsonBom: false,
+  mojibakeScope: 'reports-and-package-only'
 }, null, 2))
