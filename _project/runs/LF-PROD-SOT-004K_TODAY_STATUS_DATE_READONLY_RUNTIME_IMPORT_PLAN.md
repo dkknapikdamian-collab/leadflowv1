@@ -7,7 +7,7 @@ Branch: dev-rollout-freeze
 
 ## Status
 
-HONEST_BLOCKED_PROOF / LOCAL_VERIFICATION_REQUIRED / LOCAL_VERIFICATION_RED_ON_004J_RERUN / 004K_GUARD_PASS / 004K_TEST_PASS / BUILD_PASS / DIFF_CHECK_WARNING_ONLY / PLAN_ONLY / PLAN_ONLY_NO_RUNTIME_IMPORT / NO_RUNTIME_CHANGE / NO_UI_CHANGE / NO_CSS_CHANGE / NO_SQL_CHANGE / 004L_BLOCKED
+TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT_PLAN_CLOSED / GUARD_PASS / TEST_PASS / BUILD_PASS / DIFF_CHECK_PASS / PLAN_ONLY / PLAN_ONLY_NO_RUNTIME_IMPORT / NO_RUNTIME_CHANGE / NO_UI_CHANGE / NO_CSS_CHANGE / NO_SQL_CHANGE / LOCAL_VERIFICATION_REQUIRED_SATISFIED / READY_FOR_004L_TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT
 
 ## Input decision
 
@@ -44,25 +44,23 @@ visibleOutputDrift: FORBIDDEN
 
 ## Verification required locally
 
-Local npm, tests, build and git diff checks must be green before closing 004K.
+Local npm, tests, build and git diff checks must be green before closing 004K. This requirement was satisfied by the clean rerun on 2026-07-03.
 
-## R2 local verification closeout - 2026-07-03 09:20 Europe/Warsaw
+## R2 local verification closeout - 2026-07-03 09:32 Europe/Warsaw
 
-- local verification: RED
-- failing command: npm run verify:lf-prod-sot-004j-manual-smoke-and-next-runtime-import-decision
-- failing output summary: 004J guard rejected dirty working tree containing 004K-R2 test change: tests/lf-prod-sot-004k-today-status-date-readonly-runtime-import-plan.test.cjs outside 004J-R2 allowlist.
+- local verification: PASS
+- npm run verify:lf-prod-sot-004j-manual-smoke-and-next-runtime-import-decision: PASS
 - npm run verify:lf-prod-sot-004k-today-status-date-readonly-runtime-import-plan: PASS
 - node --test tests/lf-prod-sot-004k-today-status-date-readonly-runtime-import-plan.test.cjs: PASS
 - npm run guard:routes:canonical: PASS
 - npm run guard:ui:patch-layers: PASS
 - npm run check:polish-mojibake: PASS
-- npm run build: PASS
-- git diff --check: PASS_WITH_LINE_ENDING_WARNINGS
-- app commit pushed after alias/test finalization: cbf49e3ab247f1edf5bc67c5e45f0b67a1bdc7c4
-- app repo final status after push: CLEAN / dev-rollout-freeze aligned with origin/dev-rollout-freeze
+- npm run build: PASS_WITH_EXISTING_VITE_CHUNK_WARNINGS
+- git diff --check: PASS
+- app repo final status after verification: CLEAN / dev-rollout-freeze aligned with origin/dev-rollout-freeze
 - runtime changes in 004K-R2: NONE
 - UI/CSS/SQL/Supabase/API changes in 004K-R2: NONE
 - Google Calendar sync changes in 004K-R2: NONE
 - CaseDetail/Finance changes in 004K-R2: NONE
 - 004L created in this stage: NO
-- next step: rerun 004J guard on clean app working tree, then close 004K if PASS
+- next step: LF-PROD-SOT-004L_TODAY_STATUS_DATE_READONLY_RUNTIME_IMPORT
