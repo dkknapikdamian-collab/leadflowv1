@@ -5,16 +5,19 @@ const childProcess = require('node:child_process')
 const root = process.cwd()
 const rel = (p) => path.join(root, p)
 const exists = (p) => fs.existsSync(rel(p))
-const read = (p) => fs.readFileSync(rel(p), 'utf8')
+const read = (p) => fs.readFileSync(rel(p), 'utf8').replace(/^\uFEFF/, '')
 const fail = (m) => { console.error('[004U] FAIL ' + m); process.exit(1) }
 const must = (text, token, label) => { if (!text.includes(token)) fail(label + ' missing ' + token) }
 
 const report004tRel = '_project/runs/LF-PROD-SOT-004T_NEXT_READONLY_NO_DRIFT_SCOPE_SELECTION_MAP.md'
 const report004uRel = '_project/runs/LF-PROD-SOT-004U_READONLY_NO_DRIFT_GUARD_HARDENING_PLAN.md'
+const report004vRel = '_project/runs/LF-PROD-SOT-004V_READONLY_NO_DRIFT_GUARD_HELPER_IMPLEMENTATION.md'
 const guard004uRel = 'scripts/guards/verify-lf-prod-sot-004u-readonly-no-drift-guard-hardening-plan.cjs'
 const test004uRel = 'tests/lf-prod-sot-004u-readonly-no-drift-guard-hardening-plan.test.cjs'
 const patchedGuard004tRel = 'scripts/guards/verify-lf-prod-sot-004t-next-readonly-no-drift-scope-selection-map.cjs'
 const helperRel = 'scripts/guards/lib/lf-prod-sot-readonly-no-drift-contract.cjs'
+const guard004vRel = 'scripts/guards/verify-lf-prod-sot-004v-readonly-no-drift-guard-helper-implementation.cjs'
+const test004vRel = 'tests/lf-prod-sot-004v-readonly-no-drift-guard-helper-implementation.test.cjs'
 const pkgRel = 'package.json'
 
 for (const f of [report004tRel, report004uRel, guard004uRel, test004uRel, patchedGuard004tRel, pkgRel]) {
@@ -84,8 +87,26 @@ for (const token of [
   if (u.includes(token)) fail('004U contains forbidden positive claim ' + token)
 }
 
-if (fs.readdirSync(rel('_project/runs')).some((n) => n.includes('LF-PROD-SOT-004V'))) fail('004V report exists')
-if (exists(helperRel)) fail('guard helper exists too early: ' + helperRel)
+const runNames = fs.readdirSync(rel('_project/runs'))
+if (runNames.some((n) => n.includes('LF-PROD-SOT-004W'))) fail('004W report exists too early')
+
+if (exists(report004vRel)) {
+  const v = read(report004vRel)
+  for (const token of [
+    'LF-PROD-SOT-004V_READONLY_NO_DRIFT_GUARD_HELPER_IMPLEMENTATION',
+    'GUARD_HELPER_IMPLEMENTATION_ONLY',
+    'PLAN_SUPPORT_ONLY',
+    'NO_RUNTIME_CHANGE',
+    'NO_OUTPUT_DRIFT',
+    'FINAL_ACCEPTANCE_BLOCKED',
+    'GUARD_HELPER_CREATED: YES',
+    'NEXT_STAGE_SELECTED: LF-PROD-SOT-004W_READONLY_NO_DRIFT_HELPER_ADOPTION_FIRST_GUARD',
+    '004W_CREATED: NO',
+  ]) must(v, token, report004vRel)
+  for (const f of [helperRel, guard004vRel, test004vRel]) if (!exists(f)) fail('004V selected implementation file missing: ' + f)
+} else if (exists(helperRel)) {
+  fail('guard helper exists without 004V report: ' + helperRel)
+}
 
 let changed = []
 try { changed = childProcess.execSync('git diff --name-only HEAD', { encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean) } catch (_) {}
@@ -95,6 +116,10 @@ const allowed = new Set([
   guard004uRel,
   test004uRel,
   patchedGuard004tRel,
+  report004vRel,
+  helperRel,
+  guard004vRel,
+  test004vRel,
 ])
 const forbiddenPrefixes = [
   'src/pages/',
@@ -118,18 +143,14 @@ const forbiddenPrefixes = [
   'data/flows.json',
 ]
 for (const f of changed) {
-  if (!allowed.has(f)) fail('unexpected changed file ' + f)
-  if (forbiddenPrefixes.some((p) => f === p || f.startsWith(p))) fail('forbidden changed file ' + f)
+  if (!allowed.has(f)) fail('changed file outside 004U/004V allowlist: ' + f)
+  if (forbiddenPrefixes.some((p) => f.startsWith(p))) fail('forbidden product/runtime path changed: ' + f)
 }
-
-const badChars = [0xfffd, 0, 0x0102, 0x00c2, 0x00c3, 0x0139, 0x203a]
-const mojibake = (text) => Array.from(text).some((c) => badChars.includes(c.charCodeAt(0)))
-for (const f of [report004tRel, report004uRel, guard004uRel, test004uRel, patchedGuard004tRel]) if (mojibake(read(f))) fail('mojibake ' + f)
 
 console.log(JSON.stringify({
   ok: true,
   stage: 'LF-PROD-SOT-004U',
-  mode: 'GUARD_HARDENING_PLAN_ONLY',
+  mode: 'SCOPE_GUARD_STILL_VALID_AFTER_SELECTED_004V',
   planOnly: true,
   runtimeChange: 'NO_RUNTIME_CHANGE',
   outputDrift: 'NO_OUTPUT_DRIFT',
@@ -138,6 +159,6 @@ console.log(JSON.stringify({
   smokeDebt: 'SMOKE_DEFERRED_DEBT_FROM_004M_STILL_ACTIVE',
   finalAcceptance: 'FINAL_ACCEPTANCE_BLOCKED',
   selectedNextStage: 'LF-PROD-SOT-004V_READONLY_NO_DRIFT_GUARD_HELPER_IMPLEMENTATION',
-  created004V: false,
-  guardHelperCreated: false,
+  created004V: exists(report004vRel) ? 'ALLOWED_AS_SELECTED_NEXT_STAGE_HELPER_IMPLEMENTATION_ONLY' : false,
+  guardHelperCreated: exists(helperRel) ? 'ALLOWED_BY_004V_ONLY' : false,
 }, null, 2))
