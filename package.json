@@ -115,6 +115,7 @@
     "verify:lf-prod-sot-004s-explicit-readonly-no-drift-continuation-decision": "node scripts/guards/verify-lf-prod-sot-004s-explicit-readonly-no-drift-continuation-decision.cjs",
     "verify:lf-prod-sot-004t-next-readonly-no-drift-scope-selection-map": "node scripts/guards/verify-lf-prod-sot-004t-next-readonly-no-drift-scope-selection-map.cjs",
     "verify:lf-prod-sot-004u-readonly-no-drift-guard-hardening-plan": "node scripts/guards/verify-lf-prod-sot-004u-readonly-no-drift-guard-hardening-plan.cjs",
+    "verify:lf-prod-sot-004v-readonly-no-drift-guard-helper-implementation": "node scripts/guards/verify-lf-prod-sot-004v-readonly-no-drift-guard-helper-implementation.cjs",
     "check:a25-nearest-planned-action": "node scripts/check-a25-nearest-planned-action.cjs",
     "check:a28-digest-notifications-pwa": "node scripts/check-a28-digest-notifications-pwa.cjs",
     "check:a29-supabase-runtime-shell": "node scripts/check-a29-supabase-runtime-shell.cjs",
@@ -1068,8 +1069,7 @@
     "verify:lf-ui-sot-cz2-014-filter-search-sort-controls": "node scripts/guards/verify-lf-ui-sot-cz2-014-filter-search-sort-controls.cjs",
     "verify:lf-ui-sot-cz2-015-layout-sidebar": "node scripts/guards/verify-lf-ui-sot-cz2-015-layout-sidebar.cjs",
     "verify:lf-ui-sot-cz2-016-visual-smoke": "node scripts/guards/verify-lf-ui-sot-cz2-016-visual-smoke.cjs",
-    "verify:lf-ui-sot-cz2-017-final-closeout": "node scripts/guards/verify-lf-ui-sot-cz2-017-final-closeout.cjs",
-    "verify:lf-prod-sot-004v-readonly-no-drift-guard-helper-implementation": "node scripts/guards/verify-lf-prod-sot-004v-readonly-no-drift-guard-helper-implementation.cjs"
+    "verify:lf-ui-sot-cz2-017-final-closeout": "node scripts/guards/verify-lf-ui-sot-cz2-017-final-closeout.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
