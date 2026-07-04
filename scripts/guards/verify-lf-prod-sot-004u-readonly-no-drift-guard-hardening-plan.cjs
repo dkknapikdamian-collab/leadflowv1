@@ -12,6 +12,7 @@ const must = (text, token, label) => { if (!text.includes(token)) fail(label + '
 const report004tRel = '_project/runs/LF-PROD-SOT-004T_NEXT_READONLY_NO_DRIFT_SCOPE_SELECTION_MAP.md'
 const report004uRel = '_project/runs/LF-PROD-SOT-004U_READONLY_NO_DRIFT_GUARD_HARDENING_PLAN.md'
 const report004vRel = '_project/runs/LF-PROD-SOT-004V_READONLY_NO_DRIFT_GUARD_HELPER_IMPLEMENTATION.md'
+const report004vR2Rel = '_project/runs/LF-PROD-SOT-004V-R2_PACKAGE_ALIAS_CLOSEOUT_FIX.md'
 const guard004uRel = 'scripts/guards/verify-lf-prod-sot-004u-readonly-no-drift-guard-hardening-plan.cjs'
 const test004uRel = 'tests/lf-prod-sot-004u-readonly-no-drift-guard-hardening-plan.test.cjs'
 const patchedGuard004tRel = 'scripts/guards/verify-lf-prod-sot-004t-next-readonly-no-drift-scope-selection-map.cjs'
@@ -108,6 +109,20 @@ if (exists(report004vRel)) {
   fail('guard helper exists without 004V report: ' + helperRel)
 }
 
+if (exists(report004vR2Rel)) {
+  const v2 = read(report004vR2Rel)
+  for (const token of [
+    'LF-PROD-SOT-004V-R2_PACKAGE_ALIAS_CLOSEOUT_FIX',
+    'PACKAGE_ALIAS_REPAIRED',
+    '004V_CLOSEOUT_REPAIRED',
+    'NO_RUNTIME_CHANGE',
+    'NO_OUTPUT_DRIFT',
+    'FINAL_ACCEPTANCE_BLOCKED',
+    'NEXT_STAGE_SELECTED: LF-PROD-SOT-004W_READONLY_NO_DRIFT_HELPER_ADOPTION_FIRST_GUARD',
+    '004W_CREATED: NO',
+  ]) must(v2, token, report004vR2Rel)
+}
+
 let changed = []
 try { changed = childProcess.execSync('git diff --name-only HEAD', { encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean) } catch (_) {}
 const allowed = new Set([
@@ -117,6 +132,7 @@ const allowed = new Set([
   test004uRel,
   patchedGuard004tRel,
   report004vRel,
+  report004vR2Rel,
   helperRel,
   guard004vRel,
   test004vRel,
@@ -150,7 +166,7 @@ for (const f of changed) {
 console.log(JSON.stringify({
   ok: true,
   stage: 'LF-PROD-SOT-004U',
-  mode: 'SCOPE_GUARD_STILL_VALID_AFTER_SELECTED_004V',
+  mode: exists(report004vR2Rel) ? 'SCOPE_GUARD_STILL_VALID_AFTER_SELECTED_004V_R2' : 'SCOPE_GUARD_STILL_VALID_AFTER_SELECTED_004V',
   planOnly: true,
   runtimeChange: 'NO_RUNTIME_CHANGE',
   outputDrift: 'NO_OUTPUT_DRIFT',
@@ -161,4 +177,5 @@ console.log(JSON.stringify({
   selectedNextStage: 'LF-PROD-SOT-004V_READONLY_NO_DRIFT_GUARD_HELPER_IMPLEMENTATION',
   created004V: exists(report004vRel) ? 'ALLOWED_AS_SELECTED_NEXT_STAGE_HELPER_IMPLEMENTATION_ONLY' : false,
   guardHelperCreated: exists(helperRel) ? 'ALLOWED_BY_004V_ONLY' : false,
+  aliasRepair: exists(report004vR2Rel) ? '004V_R2_ALLOWED_ALIAS_CLOSEOUT_FIX' : false,
 }, null, 2))
