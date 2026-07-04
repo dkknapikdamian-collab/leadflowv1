@@ -19,15 +19,27 @@ function fail(message) {
   process.exit(1)
 }
 
+function exists(filePath) {
+  try {
+    assertFileExists(filePath)
+    return true
+  } catch (_) {
+    return false
+  }
+}
+
 function assertPackageAliasOrder(pkg, pkgRel) {
   const aliasU = '"verify:lf-prod-sot-004u-readonly-no-drift-guard-hardening-plan"'
   const aliasV = '"verify:lf-prod-sot-004v-readonly-no-drift-guard-helper-implementation"'
+  const aliasW = '"verify:lf-prod-sot-004w-readonly-no-drift-helper-adoption-first-guard"'
   const posU = pkg.indexOf(aliasU)
   const posV = pkg.indexOf(aliasV)
+  const posW = pkg.indexOf(aliasW)
 
   if (posU === -1) fail(pkgRel + ' missing 004U alias')
   if (posV === -1) fail(pkgRel + ' missing 004V alias')
   if (posV <= posU) fail(pkgRel + ' 004V alias is not after 004U alias')
+  if (posW !== -1 && posW <= posV) fail(pkgRel + ' 004W alias is not after 004V alias')
 
   const between = pkg.slice(posU, posV)
   if (between.includes('"check:a25-nearest-planned-action"')) {
@@ -40,9 +52,12 @@ function main() {
   const report004vRel = '_project/runs/LF-PROD-SOT-004V_READONLY_NO_DRIFT_GUARD_HELPER_IMPLEMENTATION.md'
   const report004vR2Rel = '_project/runs/LF-PROD-SOT-004V-R2_PACKAGE_ALIAS_CLOSEOUT_FIX.md'
   const report004vR3Rel = '_project/runs/LF-PROD-SOT-004V-R3_ACTUAL_PACKAGE_ALIAS_REPAIR.md'
+  const report004wRel = '_project/runs/LF-PROD-SOT-004W_READONLY_NO_DRIFT_HELPER_ADOPTION_FIRST_GUARD.md'
   const guard004vRel = 'scripts/guards/verify-lf-prod-sot-004v-readonly-no-drift-guard-helper-implementation.cjs'
   const test004vRel = 'tests/lf-prod-sot-004v-readonly-no-drift-guard-helper-implementation.test.cjs'
   const guard004uRel = 'scripts/guards/verify-lf-prod-sot-004u-readonly-no-drift-guard-hardening-plan.cjs'
+  const guard004wRel = 'scripts/guards/verify-lf-prod-sot-004w-readonly-no-drift-helper-adoption-first-guard.cjs'
+  const test004wRel = 'tests/lf-prod-sot-004w-readonly-no-drift-helper-adoption-first-guard.test.cjs'
   const pkgRel = 'package.json'
 
   for (const f of [report004uRel, report004vRel, report004vR2Rel, report004vR3Rel, helperRel, guard004vRel, test004vRel, pkgRel]) assertFileExists(f)
@@ -155,7 +170,26 @@ function main() {
   assertForbiddenTokensAbsent(report004v, DEFAULT_FORBIDDEN_POSITIVE_CLAIM_TOKENS, report004vRel)
   assertForbiddenTokensAbsent(report004vR2, DEFAULT_FORBIDDEN_POSITIVE_CLAIM_TOKENS, report004vR2Rel)
   assertForbiddenTokensAbsent(report004vR3, DEFAULT_FORBIDDEN_POSITIVE_CLAIM_TOKENS, report004vR3Rel)
-  assertNoFutureStageCreated('LF-PROD-SOT-004W')
+
+  if (exists(report004wRel)) {
+    const report004w = readText(report004wRel)
+    assertRequiredTokens(report004w, [
+      'LF-PROD-SOT-004W_READONLY_NO_DRIFT_HELPER_ADOPTION_FIRST_GUARD',
+      'HELPER_ADOPTION_FIRST_GUARD_ONLY',
+      'GUARD_ONLY',
+      'NO_RUNTIME_CHANGE',
+      'NO_OUTPUT_DRIFT',
+      'FINAL_ACCEPTANCE_BLOCKED',
+      'HELPER_ADOPTED_IN: scripts/guards/verify-lf-prod-sot-004u-readonly-no-drift-guard-hardening-plan.cjs',
+      'NEXT_STAGE_SELECTED: LF-PROD-SOT-004X_READONLY_NO_DRIFT_HELPER_ADOPTION_SCOPE_GUARDS',
+      '004X_CREATED: NO',
+    ], report004wRel)
+    assertForbiddenTokensAbsent(report004w, DEFAULT_FORBIDDEN_POSITIVE_CLAIM_TOKENS, report004wRel)
+    for (const f of [guard004wRel, test004wRel]) assertFileExists(f)
+    assertRequiredTokens(pkg, ['verify:lf-prod-sot-004w-readonly-no-drift-helper-adoption-first-guard'], pkgRel)
+  }
+
+  assertNoFutureStageCreated('LF-PROD-SOT-004X')
 
   assertNoForbiddenChangedFiles({
     allowedChangedFiles: [
@@ -167,32 +201,31 @@ function main() {
       guard004vRel,
       test004vRel,
       guard004uRel,
+      report004wRel,
+      guard004wRel,
+      test004wRel,
     ],
     forbiddenPrefixes: DEFAULT_FORBIDDEN_READONLY_NO_DRIFT_PREFIXES,
   })
 
   const mojibakeMarkers = [0xfffd, 0x00c5, 0x00c4, 0x00c3].map((code) => String.fromCharCode(code))
-  for (const f of [report004vRel, report004vR2Rel, report004vR3Rel, helperRel, guard004vRel, test004vRel]) {
+  for (const f of [report004vRel, report004vR2Rel, report004vR3Rel, helperRel, guard004vRel, test004vRel, ...(exists(report004wRel) ? [report004wRel, guard004wRel, test004wRel] : [])]) {
     const txt = readText(f)
     if (mojibakeMarkers.some((marker) => txt.includes(marker))) throw new Error('possible mojibake in ' + f)
   }
 
   console.log(JSON.stringify({
     ok: true,
-    stage: 'LF-PROD-SOT-004V-R3',
-    mode: 'ACTUAL_PACKAGE_ALIAS_REPAIR',
-    actualAliasRepair: 'ACTUAL_PACKAGE_ALIAS_REPAIRED',
-    r2FalseCloseoutRepair: 'R2_FALSE_CLOSEOUT_REPAIRED',
-    closeoutRepair: '004V_CLOSEOUT_REPAIRED',
-    packageJsonHas004vAlias: true,
+    stage: exists(report004wRel) ? 'LF-PROD-SOT-004W-R1_COMPAT_FROM_004V' : 'LF-PROD-SOT-004V-R3',
+    mode: exists(report004wRel) ? 'ACTUAL_004W_SELECTED_NEXT_STAGE_ALLOWED' : 'ACTUAL_PACKAGE_ALIAS_REPAIR',
     runtimeChange: 'NO_RUNTIME_CHANGE',
     outputDrift: 'NO_OUTPUT_DRIFT',
     productionHostSmoke: 'PRODUCTION_HOST_SMOKE_NOT_EXECUTED',
     manualSmoke: 'MANUAL_SMOKE_STILL_NOT_PASS',
     smokeDebt: 'SMOKE_DEFERRED_DEBT_FROM_004M_STILL_ACTIVE',
     finalAcceptance: 'FINAL_ACCEPTANCE_BLOCKED',
-    selectedNextStage: 'LF-PROD-SOT-004W_READONLY_NO_DRIFT_HELPER_ADOPTION_FIRST_GUARD',
-    created004W: false,
+    selectedNextStage: exists(report004wRel) ? 'LF-PROD-SOT-004W_READONLY_NO_DRIFT_HELPER_ADOPTION_FIRST_GUARD' : 'LF-PROD-SOT-004W_READONLY_NO_DRIFT_HELPER_ADOPTION_FIRST_GUARD',
+    created004W: exists(report004wRel) ? 'ALLOWED_SELECTED_NEXT_STAGE_EXISTS' : false,
   }, null, 2))
 }
 

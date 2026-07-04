@@ -116,6 +116,7 @@
     "verify:lf-prod-sot-004t-next-readonly-no-drift-scope-selection-map": "node scripts/guards/verify-lf-prod-sot-004t-next-readonly-no-drift-scope-selection-map.cjs",
     "verify:lf-prod-sot-004u-readonly-no-drift-guard-hardening-plan": "node scripts/guards/verify-lf-prod-sot-004u-readonly-no-drift-guard-hardening-plan.cjs",
     "verify:lf-prod-sot-004v-readonly-no-drift-guard-helper-implementation": "node scripts/guards/verify-lf-prod-sot-004v-readonly-no-drift-guard-helper-implementation.cjs",
+    "verify:lf-prod-sot-004w-readonly-no-drift-helper-adoption-first-guard": "node scripts/guards/verify-lf-prod-sot-004w-readonly-no-drift-helper-adoption-first-guard.cjs",
     "check:a25-nearest-planned-action": "node scripts/check-a25-nearest-planned-action.cjs",
     "check:a28-digest-notifications-pwa": "node scripts/check-a28-digest-notifications-pwa.cjs",
     "check:a29-supabase-runtime-shell": "node scripts/check-a29-supabase-runtime-shell.cjs",
