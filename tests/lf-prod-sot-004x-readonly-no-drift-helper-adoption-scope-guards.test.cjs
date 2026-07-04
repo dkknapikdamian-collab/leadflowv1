@@ -1,4 +1,4 @@
-const assert = require('node:assert/strict')
+﻿const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const path = require('node:path')
 const childProcess = require('node:child_process')
@@ -15,6 +15,9 @@ const guard004wRel = 'scripts/guards/verify-lf-prod-sot-004w-readonly-no-drift-h
 const guard004xRel = 'scripts/guards/verify-lf-prod-sot-004x-readonly-no-drift-helper-adoption-scope-guards.cjs'
 const test004xRel = 'tests/lf-prod-sot-004x-readonly-no-drift-helper-adoption-scope-guards.test.cjs'
 const report004xRel = '_project/runs/LF-PROD-SOT-004X_READONLY_NO_DRIFT_HELPER_ADOPTION_SCOPE_GUARDS.md'
+const report004yRel = '_project/runs/LF-PROD-SOT-004Y_READONLY_NO_DRIFT_HELPER_ADOPTION_CLOSEOUT_GATE.md'
+const guard004yRel = 'scripts/guards/verify-lf-prod-sot-004y-readonly-no-drift-helper-adoption-closeout-gate.cjs'
+const test004yRel = 'tests/lf-prod-sot-004y-readonly-no-drift-helper-adoption-closeout-gate.test.cjs'
 const pkgRel = 'package.json'
 
 const requiredHelperTokens = [
@@ -61,12 +64,24 @@ test('004X report guard test and package alias exist', () => {
   assert.ok(read(pkgRel).includes('verify:lf-prod-sot-004x-readonly-no-drift-helper-adoption-scope-guards'), '004X package alias missing')
 })
 
-test('004X does not create 004Y and selects 004Y only as next stage', () => {
+test('004X does not create 004Y and allows selected 004Y closeout gate when present', () => {
   const runNames = fs.readdirSync(rel('_project/runs'))
-  assert.equal(runNames.some((name) => name.includes('LF-PROD-SOT-004Y')), false, '004Y report exists too early')
   const report = read(report004xRel)
   assert.ok(report.includes('NEXT_STAGE_SELECTED: LF-PROD-SOT-004Y_READONLY_NO_DRIFT_HELPER_ADOPTION_CLOSEOUT_GATE'), '004X does not select 004Y')
   assert.ok(report.includes('004Y_CREATED: NO'), '004X does not mark 004Y as not created')
+
+  const has004Y = runNames.some((name) => name.includes('LF-PROD-SOT-004Y'))
+  if (has004Y) {
+    assert.ok(exists(report004yRel), '004Y report missing')
+    assert.ok(exists(guard004yRel), '004Y guard missing')
+    assert.ok(exists(test004yRel), '004Y test missing')
+    const report004y = read(report004yRel)
+    assert.ok(report004y.includes('LF-PROD-SOT-004Y_READONLY_NO_DRIFT_HELPER_ADOPTION_CLOSEOUT_GATE'), '004Y report has wrong stage')
+    assert.ok(report004y.includes('004Z_CREATED: NO'), '004Y report must not create 004Z')
+    assert.equal(runNames.some((name) => name.includes('LF-PROD-SOT-004Z')), false, '004Z report exists too early')
+  } else {
+    assert.equal(has004Y, false, '004Y report exists too early')
+  }
 })
 
 test('004X does not claim smoke pass or final acceptance', () => {
@@ -122,3 +137,4 @@ test('004X does not touch runtime UI CSS SQL Supabase GCal CaseDetail Finance ru
     assert.equal(forbiddenPrefixes.some((prefix) => file.startsWith(prefix)), false, `forbidden changed file: ${file}`)
   }
 })
+

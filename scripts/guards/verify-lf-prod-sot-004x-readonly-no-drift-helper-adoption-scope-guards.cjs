@@ -19,6 +19,15 @@ function fail(message) {
   process.exit(1)
 }
 
+function exists(filePath) {
+  try {
+    assertFileExists(filePath)
+    return true
+  } catch (_) {
+    return false
+  }
+}
+
 function assertHelperContract() {
   for (const name of [
     'assertRequiredTokens',
@@ -70,6 +79,9 @@ function main() {
   const guard004wRel = 'scripts/guards/verify-lf-prod-sot-004w-readonly-no-drift-helper-adoption-first-guard.cjs'
   const guard004xRel = 'scripts/guards/verify-lf-prod-sot-004x-readonly-no-drift-helper-adoption-scope-guards.cjs'
   const test004xRel = 'tests/lf-prod-sot-004x-readonly-no-drift-helper-adoption-scope-guards.test.cjs'
+  const report004yRel = '_project/runs/LF-PROD-SOT-004Y_READONLY_NO_DRIFT_HELPER_ADOPTION_CLOSEOUT_GATE.md'
+  const guard004yRel = 'scripts/guards/verify-lf-prod-sot-004y-readonly-no-drift-helper-adoption-closeout-gate.cjs'
+  const test004yRel = 'tests/lf-prod-sot-004y-readonly-no-drift-helper-adoption-closeout-gate.test.cjs'
 
   for (const f of [helperRel, pkgRel, report004wRel, report004xRel, guard004vRel, guard004wRel, guard004xRel, test004xRel]) {
     assertFileExists(f)
@@ -133,7 +145,40 @@ function main() {
   ], test004xRel)
 
   assertForbiddenTokensAbsent(report004x, DEFAULT_FORBIDDEN_POSITIVE_CLAIM_TOKENS, report004xRel)
-  assertNoFutureStageCreated('LF-PROD-SOT-004Y')
+  if (exists(report004yRel)) {
+    assertFileExists(guard004yRel)
+    assertFileExists(test004yRel)
+    const report004y = readText(report004yRel)
+    assertRequiredTokens(report004y, [
+      'LF-PROD-SOT-004Y_READONLY_NO_DRIFT_HELPER_ADOPTION_CLOSEOUT_GATE',
+      'HELPER_ADOPTION_CLOSEOUT_GATE_ONLY',
+      'GUARD_ONLY',
+      'NO_RUNTIME_CHANGE',
+      'NO_OUTPUT_DRIFT',
+      'NO_UI_CHANGE',
+      'NO_CSS_CHANGE',
+      'NO_SQL_CHANGE',
+      'NO_SUPABASE_API_CHANGE',
+      'NO_GCAL_CHANGE',
+      'NO_CASEDETAIL_CHANGE',
+      'NO_FINANCE_CHANGE',
+      'NO_RUNTIME_DATA_CHANGE',
+      'NO_DATA_FLOWS_CHANGE',
+      'PRODUCTION_HOST_SMOKE_NOT_EXECUTED',
+      'MANUAL_SMOKE_STILL_NOT_PASS',
+      'SMOKE_DEFERRED_DEBT_FROM_004M_STILL_ACTIVE',
+      'FINAL_ACCEPTANCE_BLOCKED',
+      'HELPER_ADOPTION_SERIES_REVIEWED: YES',
+      'HELPER_ADOPTION_SERIES_APP_GUARDS_PRESENT: YES',
+      'HELPER_ADOPTION_SERIES_OBSIDIAN_STATUS_PRESENT: YES',
+      'NEXT_DECISION_REQUIRED: FINAL_MANUAL_SMOKE_GATE_OR_EXPLICIT_NEXT_READONLY_NO_DRIFT_STAGE',
+      '004Z_CREATED: NO',
+    ], report004yRel)
+    assertForbiddenTokensAbsent(report004y, DEFAULT_FORBIDDEN_POSITIVE_CLAIM_TOKENS, report004yRel)
+  } else {
+    assertNoFutureStageCreated('LF-PROD-SOT-004Y')
+  }
+  assertNoFutureStageCreated('LF-PROD-SOT-004Z')
 
   assertNoForbiddenChangedFiles({
     allowedChangedFiles: [
@@ -143,6 +188,9 @@ function main() {
       guard004xRel,
       test004xRel,
       report004xRel,
+      report004yRel,
+      guard004yRel,
+      test004yRel,
     ],
     forbiddenPrefixes: DEFAULT_FORBIDDEN_READONLY_NO_DRIFT_PREFIXES,
   })
