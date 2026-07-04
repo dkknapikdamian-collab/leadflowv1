@@ -113,6 +113,8 @@
                     "verify:lf-prod-sot-004q-readonly-rewire-closure-gate":  "node scripts/guards/verify-lf-prod-sot-004q-readonly-rewire-closure-gate.cjs",
                     "verify:lf-prod-sot-004r-final-manual-smoke-gate-production-proof":  "node scripts/guards/verify-lf-prod-sot-004r-final-manual-smoke-gate-production-proof.cjs",
                     "verify:lf-prod-sot-004s-explicit-readonly-no-drift-continuation-decision":  "node scripts/guards/verify-lf-prod-sot-004s-explicit-readonly-no-drift-continuation-decision.cjs",
+
+                    "verify:lf-prod-sot-004t-next-readonly-no-drift-scope-selection-map":  "node scripts/guards/verify-lf-prod-sot-004t-next-readonly-no-drift-scope-selection-map.cjs",
                     "check:a25-nearest-planned-action":  "node scripts/check-a25-nearest-planned-action.cjs",
                     "check:a28-digest-notifications-pwa":  "node scripts/check-a28-digest-notifications-pwa.cjs",
                     "check:a29-supabase-runtime-shell":  "node scripts/check-a29-supabase-runtime-shell.cjs",
