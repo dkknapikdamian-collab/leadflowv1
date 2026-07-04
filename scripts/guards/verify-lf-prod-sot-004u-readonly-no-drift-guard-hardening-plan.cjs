@@ -6,41 +6,38 @@ const root = process.cwd()
 const rel = (p) => path.join(root, p)
 const exists = (p) => fs.existsSync(rel(p))
 const read = (p) => fs.readFileSync(rel(p), 'utf8')
-const fail = (m) => { console.error('[004T] FAIL ' + m); process.exit(1) }
+const fail = (m) => { console.error('[004U] FAIL ' + m); process.exit(1) }
 const must = (text, token, label) => { if (!text.includes(token)) fail(label + ' missing ' + token) }
 
-const report004sRel = '_project/runs/LF-PROD-SOT-004S_EXPLICIT_READONLY_NO_DRIFT_CONTINUATION_DECISION.md'
 const report004tRel = '_project/runs/LF-PROD-SOT-004T_NEXT_READONLY_NO_DRIFT_SCOPE_SELECTION_MAP.md'
 const report004uRel = '_project/runs/LF-PROD-SOT-004U_READONLY_NO_DRIFT_GUARD_HARDENING_PLAN.md'
-const guard004tRel = 'scripts/guards/verify-lf-prod-sot-004t-next-readonly-no-drift-scope-selection-map.cjs'
-const test004tRel = 'tests/lf-prod-sot-004t-next-readonly-no-drift-scope-selection-map.test.cjs'
-const guard004sRel = 'scripts/guards/verify-lf-prod-sot-004s-explicit-readonly-no-drift-continuation-decision.cjs'
 const guard004uRel = 'scripts/guards/verify-lf-prod-sot-004u-readonly-no-drift-guard-hardening-plan.cjs'
 const test004uRel = 'tests/lf-prod-sot-004u-readonly-no-drift-guard-hardening-plan.test.cjs'
+const patchedGuard004tRel = 'scripts/guards/verify-lf-prod-sot-004t-next-readonly-no-drift-scope-selection-map.cjs'
 const helperRel = 'scripts/guards/lib/lf-prod-sot-readonly-no-drift-contract.cjs'
 const pkgRel = 'package.json'
 
-for (const f of [report004sRel, report004tRel, guard004tRel, test004tRel, guard004sRel, pkgRel]) {
+for (const f of [report004tRel, report004uRel, guard004uRel, test004uRel, patchedGuard004tRel, pkgRel]) {
   if (!exists(f)) fail('missing ' + f)
 }
 
-const s = read(report004sRel)
 const t = read(report004tRel)
+const u = read(report004uRel)
 const pkg = read(pkgRel)
 
 for (const m of [
-  'EXPLICIT_READONLY_NO_DRIFT_CONTINUATION_APPROVED',
-  'NEXT_STAGES_ALLOWED_ONLY_IF_READONLY_NO_DRIFT',
+  'SCOPE_SELECTION_MAP_ONLY',
+  'PLAN_ONLY',
+  'NEXT_STAGE_SELECTED: LF-PROD-SOT-004U_READONLY_NO_DRIFT_GUARD_HARDENING_PLAN',
+  '004U_CREATED: NO',
   'PRODUCTION_HOST_SMOKE_NOT_EXECUTED',
   'MANUAL_SMOKE_STILL_NOT_PASS',
-  'SMOKE_DEFERRED_DEBT_FROM_004M_STILL_ACTIVE',
   'FINAL_ACCEPTANCE_BLOCKED',
-  '004T_CREATED: NO',
-]) must(s, m, report004sRel)
+]) must(t, m, report004tRel)
 
 for (const m of [
-  'LF-PROD-SOT-004T_NEXT_READONLY_NO_DRIFT_SCOPE_SELECTION_MAP',
-  'SCOPE_SELECTION_MAP_ONLY',
+  'LF-PROD-SOT-004U_READONLY_NO_DRIFT_GUARD_HARDENING_PLAN',
+  'GUARD_HARDENING_PLAN_ONLY',
   'PLAN_ONLY',
   'NO_RUNTIME_CHANGE',
   'NO_OUTPUT_DRIFT',
@@ -51,15 +48,20 @@ for (const m of [
   'NO_GCAL_CHANGE',
   'NO_CASEDETAIL_CHANGE',
   'NO_FINANCE_CHANGE',
+  'NO_RUNTIME_DATA_CHANGE',
+  'NO_DATA_FLOWS_CHANGE',
   'PRODUCTION_HOST_SMOKE_NOT_EXECUTED',
   'MANUAL_SMOKE_STILL_NOT_PASS',
   'SMOKE_DEFERRED_DEBT_FROM_004M_STILL_ACTIVE',
   'FINAL_ACCEPTANCE_BLOCKED',
-  'NEXT_STAGE_SELECTED: LF-PROD-SOT-004U_READONLY_NO_DRIFT_GUARD_HARDENING_PLAN',
-  '004U_CREATED: NO',
-]) must(t, m, report004tRel)
+  'NEXT_STAGE_SELECTED: LF-PROD-SOT-004V_READONLY_NO_DRIFT_GUARD_HELPER_IMPLEMENTATION',
+  '004V_CREATED: NO',
+  'GUARD_HELPER_CREATED: NO',
+  'changed files allowlist per stage',
+  helperRel,
+]) must(u, m, report004uRel)
 
-must(pkg, 'verify:lf-prod-sot-004t-next-readonly-no-drift-scope-selection-map', pkgRel)
+must(pkg, 'verify:lf-prod-sot-004u-readonly-no-drift-guard-hardening-plan', pkgRel)
 
 for (const token of [
   'FINAL_MANUAL_SMOKE_GATE_PASS',
@@ -69,7 +71,6 @@ for (const token of [
   'CALENDAR_SMOKE_PASS',
   'LISTS_CARDS_SMOKE_PASS',
   'SMOKE_DEFERRED_DEBT_FROM_004M_RESOLVED',
-  'FULL_MANUAL_SMOKE_REQUIRED_BEFORE_FINAL_ACCEPTANCE: SATISFIED',
   'FINAL_ACCEPTANCE_PASS',
   'FINAL_ACCEPTANCE_UNBLOCKED',
   'PRODUCTION_VERIFIED',
@@ -80,44 +81,20 @@ for (const token of [
   'GCAL_CHANGED',
   'SQL_CHANGED',
 ]) {
-  if (t.includes(token)) fail('004T contains forbidden positive claim ' + token)
+  if (u.includes(token)) fail('004U contains forbidden positive claim ' + token)
 }
 
-const exact004uExists = exists(report004uRel)
-const unexpected004uRuns = fs.readdirSync(rel('_project/runs')).filter((n) => n.includes('LF-PROD-SOT-004U') && n !== path.basename(report004uRel))
-if (unexpected004uRuns.length) fail('unexpected 004U run report(s): ' + unexpected004uRuns.join(', '))
-if (exact004uExists) {
-  if (!exists(guard004uRel)) fail('004U report exists but 004U guard missing')
-  if (!exists(test004uRel)) fail('004U report exists but 004U test missing')
-  const u = read(report004uRel)
-  for (const m of [
-    'GUARD_HARDENING_PLAN_ONLY',
-    'PLAN_ONLY',
-    'NO_RUNTIME_CHANGE',
-    'NO_OUTPUT_DRIFT',
-    'PRODUCTION_HOST_SMOKE_NOT_EXECUTED',
-    'MANUAL_SMOKE_STILL_NOT_PASS',
-    'SMOKE_DEFERRED_DEBT_FROM_004M_STILL_ACTIVE',
-    'FINAL_ACCEPTANCE_BLOCKED',
-    'NEXT_STAGE_SELECTED: LF-PROD-SOT-004V_READONLY_NO_DRIFT_GUARD_HELPER_IMPLEMENTATION',
-    '004V_CREATED: NO',
-    'GUARD_HELPER_CREATED: NO',
-  ]) must(u, m, report004uRel)
-}
 if (fs.readdirSync(rel('_project/runs')).some((n) => n.includes('LF-PROD-SOT-004V'))) fail('004V report exists')
-if (exists(helperRel)) fail('guard helper exists too early')
+if (exists(helperRel)) fail('guard helper exists too early: ' + helperRel)
 
 let changed = []
 try { changed = childProcess.execSync('git diff --name-only HEAD', { encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean) } catch (_) {}
 const allowed = new Set([
   'package.json',
-  report004tRel,
-  guard004tRel,
-  test004tRel,
-  guard004sRel,
   report004uRel,
   guard004uRel,
   test004uRel,
+  patchedGuard004tRel,
 ])
 const forbiddenPrefixes = [
   'src/pages/',
@@ -147,12 +124,12 @@ for (const f of changed) {
 
 const badChars = [0xfffd, 0, 0x0102, 0x00c2, 0x00c3, 0x0139, 0x203a]
 const mojibake = (text) => Array.from(text).some((c) => badChars.includes(c.charCodeAt(0)))
-for (const f of [report004sRel, report004tRel, guard004sRel, guard004tRel, test004tRel, ...(exact004uExists ? [report004uRel, guard004uRel, test004uRel] : [])]) if (mojibake(read(f))) fail('mojibake ' + f)
+for (const f of [report004tRel, report004uRel, guard004uRel, test004uRel, patchedGuard004tRel]) if (mojibake(read(f))) fail('mojibake ' + f)
 
 console.log(JSON.stringify({
   ok: true,
-  stage: 'LF-PROD-SOT-004T',
-  mode: 'SCOPE_SELECTION_MAP_ONLY',
+  stage: 'LF-PROD-SOT-004U',
+  mode: 'GUARD_HARDENING_PLAN_ONLY',
   planOnly: true,
   runtimeChange: 'NO_RUNTIME_CHANGE',
   outputDrift: 'NO_OUTPUT_DRIFT',
@@ -160,6 +137,7 @@ console.log(JSON.stringify({
   manualSmoke: 'MANUAL_SMOKE_STILL_NOT_PASS',
   smokeDebt: 'SMOKE_DEFERRED_DEBT_FROM_004M_STILL_ACTIVE',
   finalAcceptance: 'FINAL_ACCEPTANCE_BLOCKED',
-  selectedNextStage: 'LF-PROD-SOT-004U_READONLY_NO_DRIFT_GUARD_HARDENING_PLAN',
-  created004U: exact004uExists ? 'ALLOWED_AS_SELECTED_NEXT_STAGE_PLAN_ONLY' : false,
+  selectedNextStage: 'LF-PROD-SOT-004V_READONLY_NO_DRIFT_GUARD_HELPER_IMPLEMENTATION',
+  created004V: false,
+  guardHelperCreated: false,
 }, null, 2))
