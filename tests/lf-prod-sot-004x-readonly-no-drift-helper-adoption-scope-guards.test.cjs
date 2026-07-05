@@ -1,4 +1,4 @@
-﻿const assert = require('node:assert/strict')
+const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const path = require('node:path')
 const childProcess = require('node:child_process')
@@ -137,4 +137,3 @@ test('004X does not touch runtime UI CSS SQL Supabase GCal CaseDetail Finance ru
     assert.equal(forbiddenPrefixes.some((prefix) => file.startsWith(prefix)), false, `forbidden changed file: ${file}`)
   }
 })
-
