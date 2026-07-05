@@ -36,7 +36,7 @@ import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { getCaseOwnerRiskBadges, ownerRiskTone } from '../lib/owner-control/owner-risk-rules';
 import { readOwnerRiskSettings } from '../lib/owner-control/owner-risk-settings';
-import { getCaseStatusLabel } from '../lib/config/case-status';
+import { getCaseStatusLabel, getCaseStatusTone } from '../lib/config/case-status';
 import { getOwnerRiskLabel } from '../lib/config/funnel-stages';
 import { caseDetailPath } from '../lib/routes';
 import { requireWorkspaceId } from '../lib/workspace-context';
@@ -805,7 +805,7 @@ const attention = isCaseClosedStage231B0R13 ? false : caseNeedsAttention(record)
                   const updatedAt = toUpdatedDate(record.updatedAt);
                   const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
                   const statusLabel = getCaseStatusLabel(record.status);
-                  const statusTone = isCaseClosedStage231B0R13 ? 'green' : record.status === 'blocked' ? 'red' : record.status === 'waiting_on_client' ? 'amber' : 'blue';
+                  const statusTone = isCaseClosedStage231B0R13 ? 'green' : getCaseStatusTone(record.status);
                   const compactLifecycleLabel = lifecycleCompactLabel(record, lifecycle);
                   const compactLifecyclePill = isCaseClosedStage231B0R13 ? null : (compactLifecycleLabel === statusLabel ? null : compactLifecycleLabel);
                   const progressTone = attention ? 'red' : percent >= 75 ? 'green' : percent >= 35 ? 'blue' : 'amber';
