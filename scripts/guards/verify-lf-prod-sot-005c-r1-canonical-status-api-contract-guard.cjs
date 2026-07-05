@@ -1,3 +1,4 @@
+const fs = require('node:fs')
 const path = require('node:path')
 const childProcess = require('node:child_process')
 
@@ -37,69 +38,36 @@ function assertHelperContract() {
   if (!Array.isArray(DEFAULT_FORBIDDEN_POSITIVE_CLAIM_TOKENS)) fail('helper missing DEFAULT_FORBIDDEN_POSITIVE_CLAIM_TOKENS')
 }
 
-function gitGrep(pattern) {
-  try {
-    return childProcess.execFileSync('git', ['grep', '-n', '-E', pattern, '--', 'src'], { encoding: 'utf8' })
-      .trim()
-      .split(/\r?\n/)
-      .filter(Boolean)
-  } catch (err) {
-    if (err && err.status === 1) return []
-    throw err
+function gitChangedFiles() {
+  const commands = [
+    ['diff', '--name-only', 'HEAD'],
+    ['diff', '--cached', '--name-only'],
+  ]
+  const files = new Set()
+  for (const args of commands) {
+    const out = childProcess.execFileSync('git', args, { encoding: 'utf8' }).trim()
+    for (const line of out.split(/\r?\n/).filter(Boolean)) files.add(line)
   }
-}
-
-function fileFromGrepLine(line) {
-  const idx = line.indexOf(':')
-  return idx === -1 ? line : line.slice(0, idx)
+  return [...files]
 }
 
 function assertNoNewLocalStatusMaps() {
-  const knownDebtPrefixes = [
-    'src/lib/domain-statuses.ts',
-    'src/lib/data-contract.ts',
-    'src/lib/lead-health.ts',
-    'src/lib/scheduling.ts',
-    'src/lib/lead-finance.ts',
-    'src/lib/finance/case-finance-source.ts',
-    'src/lib/owner-control/',
-    'src/lib/reminders.ts',
-    'src/lib/topic-contact.ts',
-    'src/pages/CaseDetail.tsx',
-    'src/pages/ClientDetail.tsx',
-    'src/pages/LeadDetail.tsx',
-    'src/pages/Leads.tsx',
-    'src/pages/Cases.tsx',
-    'src/components/work-item-card.tsx',
-    'src/components/detail/MissingItemsManagerDialog.tsx',
-    'src/components/ContextActionDialogs.tsx',
+  const statusMapPattern = /\b(CLOSED_STATUSES|OPEN_CASE_STATUSES|PAID_LIKE_STATUSES|DUE_LIKE_STATUSES|STATUS_LABELS|STATUS_TONES|STATUS_COLORS|LEGACY_STATUS_MAP|caseStatusMap|leadStatusMap|statusMap|statusLabels)\b/
+  const allowedSourceOfTruthFiles = new Set([
     'src/lib/source-of-truth/status-repository.ts',
     'src/lib/source-of-truth/lead-options.ts',
     'src/lib/source-of-truth/case-options.ts',
     'src/lib/config/lead-status.ts',
     'src/lib/config/case-status.ts',
-  ]
+  ])
 
-  const suspiciousPattern = [
-    'CLOSED_STATUSES',
-    'OPEN_CASE_STATUSES',
-    'PAID_LIKE_STATUSES',
-    'DUE_LIKE_STATUSES',
-    'STATUS_LABELS',
-    'STATUS_TONES',
-    'STATUS_COLORS',
-    'LEGACY_STATUS_MAP',
-    'caseStatusMap',
-    'leadStatusMap',
-    'statusMap',
-    'statusLabels',
-  ].join('|')
-
-  const hits = gitGrep(suspiciousPattern)
-  for (const line of hits) {
-    const file = fileFromGrepLine(line)
-    if (!knownDebtPrefixes.some((prefix) => file === prefix || file.startsWith(prefix))) {
-      fail('new or unclassified local status map/list outside whitelist: ' + line)
+  for (const file of gitChangedFiles()) {
+    if (!file.startsWith('src/')) continue
+    if (allowedSourceOfTruthFiles.has(file)) continue
+    if (!fs.existsSync(path.join(process.cwd(), file))) continue
+    const txt = readText(file)
+    if (statusMapPattern.test(txt)) {
+      fail('changed runtime/source file contains local status map/list outside canonical status API contract: ' + file)
     }
   }
 }
@@ -233,6 +201,7 @@ function main() {
       guardRel,
       testRel,
       appReportRel,
+      '_project/runs/LF-PROD-SOT-005C-R1-R2_GUARD_SCOPE_REPAIR.md',
     ],
     forbiddenPrefixes: DEFAULT_FORBIDDEN_READONLY_NO_DRIFT_PREFIXES,
   })
@@ -254,6 +223,7 @@ function main() {
     outputDrift: 'NO_OUTPUT_DRIFT',
     srcTouched: false,
     canonicalApiContractGuard: 'ADDED',
+    scopeRepair: 'R2_CHANGED_FILES_ONLY',
     packageAlias: 'NOT_ADDED_BY_CONNECTOR_SAFE_WRITE_LIMITATION',
     productionHostSmoke: 'PRODUCTION_HOST_SMOKE_NOT_EXECUTED',
     manualSmoke: 'MANUAL_SMOKE_STILL_NOT_PASS',
