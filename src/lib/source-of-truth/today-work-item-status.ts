@@ -34,8 +34,8 @@ export function getTodayWorkItemStatusLabel(
   todayKey: string,
 ): string {
   if (isTodayWorkItemClosed(status)) return 'Zrobione';
-  if (isTodayWorkItemOverdue(momentRaw, status, todayKey)) return 'Zalegle';
-  if (getTodayWorkItemDateKey(momentRaw) === todayKey) return 'Dzis';
+  if (isTodayWorkItemOverdue(momentRaw, status, todayKey)) return 'Zaległe';
+  if (getTodayWorkItemDateKey(momentRaw) === todayKey) return 'Dziś';
   return kind === 'task' ? 'Zaplanowane zadanie' : 'Zaplanowane wydarzenie';
 }
 
