@@ -11,7 +11,7 @@ TODAYSTABLE_CHANGE: NO
 WORKITEMCARD_CHANGE: NO
 CONTRACT_CHANGE: YES
 GUARD_CREATED: YES
-TEST_CREATED: YES_PLACEHOLDER_ONLY_CONNECTOR_LIMITATION
+TEST_CREATED: YES
 PACKAGE_ALIAS_ADDED: NO_CONNECTOR_LIMITATION
 LOCAL_NPM_VERIFY: NOT_EXECUTED
 LOCAL_BUILD: NOT_EXECUTED
@@ -24,6 +24,13 @@ NEXT_STAGE_SELECTED: LF-PROD-SOT-005C-R12_TODAYSTABLE_STATUS_TONE_HELPER_FACADE_
 ## Change
 
 Changed src/lib/source-of-truth/today-work-item-status.ts to preserve closed-status parity for the legacy TodayStable helper before runtime adoption.
+
+## App files changed
+
+- src/lib/source-of-truth/today-work-item-status.ts
+- scripts/guards/verify-lf-prod-sot-005c-r12a-today-work-item-contract-parity-repair.cjs
+- tests/lf-prod-sot-005c-r12a-today-work-item-contract-parity-repair.test.cjs
+- _project/runs/LF-PROD-SOT-005C-R12A_TODAY_WORK_ITEM_CONTRACT_PARITY_REPAIR_DO_POTWIERDZENIA.md
 
 ## Scope preserved
 
