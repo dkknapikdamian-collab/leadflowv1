@@ -119,6 +119,7 @@
     "verify:lf-prod-sot-004w-readonly-no-drift-helper-adoption-first-guard": "node scripts/guards/verify-lf-prod-sot-004w-readonly-no-drift-helper-adoption-first-guard.cjs",
     "verify:lf-prod-sot-004x-readonly-no-drift-helper-adoption-scope-guards": "node scripts/guards/verify-lf-prod-sot-004x-readonly-no-drift-helper-adoption-scope-guards.cjs",
     "verify:lf-prod-sot-004y-readonly-no-drift-helper-adoption-closeout-gate": "node scripts/guards/verify-lf-prod-sot-004y-readonly-no-drift-helper-adoption-closeout-gate.cjs",
+    "verify:lf-prod-sot-005c-r7": "node scripts/guards/verify-lf-prod-sot-005c-r7-leads-list-lead-status-label-tone-facade-runtime-rewire.cjs",
     "check:a25-nearest-planned-action": "node scripts/check-a25-nearest-planned-action.cjs",
     "check:a28-digest-notifications-pwa": "node scripts/check-a28-digest-notifications-pwa.cjs",
     "check:a29-supabase-runtime-shell": "node scripts/check-a29-supabase-runtime-shell.cjs",

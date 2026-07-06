@@ -1159,8 +1159,8 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   const leadId = String(lead.id || '');
                   const linkedCase = resolveLinkedCaseForLead(lead);
                   const sourceLabel = getLeadSourceLabel(lead.source);
-                  const statusOption = LEAD_STATUS_OPTIONS.find((option) => option.value === String(lead.status || 'new'));
-                  const statusLabel = statusOption?.label || 'Nowy';
+                  const leadStatusLabel = getLeadStatusLabel(lead.status);
+                  const leadStatusTone = getLeadStatusTone(lead.status);
                   const leadValueLabel = (Number(lead.dealValue) || 0).toLocaleString() + ' PLN';
                   const contactLabel = getLeadPrimaryContact(lead);
                   const meta = buildLeadCompactMeta(lead, linkedCase, sourceLabel, leadValueLabel);
@@ -1189,7 +1189,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                             {meta ? <span className="sub">{meta}</span> : null}
                           </span>
                           <span className="statusline">
-                            <span className="cf-status-pill" data-cf-status-tone="blue">{statusLabel}</span>
+                            <span className="cf-status-pill" data-cf-status-tone={leadStatusTone}>{leadStatusLabel}</span>
                             <span className="pill">{sourceLabel}</span>
                             {linkedCase ? <span className="cf-status-pill" data-cf-status-tone="green">Sprawa</span> : null}
                             {operationalBadges.map((badge) => (
