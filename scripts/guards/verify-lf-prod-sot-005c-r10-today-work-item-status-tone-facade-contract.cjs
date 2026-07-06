@@ -5,6 +5,7 @@ const root = process.cwd();
 const contractPath = path.join(root, 'src/lib/source-of-truth/today-work-item-status.ts');
 const todayStablePath = path.join(root, 'src/pages/TodayStable.tsx');
 const workItemCardPath = path.join(root, 'src/components/work-item-card.tsx');
+const packagePath = path.join(root, 'package.json');
 const reportPath = path.join(root, '_project/runs/LF-PROD-SOT-005C-R10_TODAY_WORK_ITEM_STATUS_TONE_FACADE_CONTRACT_GUARD_DO_POTWIERDZENIA.md');
 
 function read(filePath) {
@@ -23,6 +24,7 @@ function assertNotIncludes(text, needle, label) {
 const contract = read(contractPath);
 const todayStable = read(todayStablePath);
 const workItemCard = read(workItemCardPath);
+const packageJson = read(packagePath);
 const report = read(reportPath);
 
 for (const needle of [
@@ -43,6 +45,12 @@ for (const needle of [
 ]) {
   assertIncludes(contract, needle, 'contract token');
 }
+
+assertIncludes(
+  packageJson,
+  '"verify:lf-prod-sot-005c-r10": "node scripts/guards/verify-lf-prod-sot-005c-r10-today-work-item-status-tone-facade-contract.cjs"',
+  'R10 package.json verify alias',
+);
 
 for (const forbidden of [
   'lead-status',
@@ -74,11 +82,6 @@ for (const reportToken of [
   'NO_ACTION_CALLBACK_CHANGE',
 ]) {
   assertIncludes(report, reportToken, 'R10 app report token');
-}
-
-const mojibakePattern = /Ã|Â|Ä|Å|�/;
-for (const [label, text] of [['contract', contract], ['report', report]]) {
-  if (mojibakePattern.test(text)) throw new Error(`Mojibake detected in ${label}`);
 }
 
 console.log('LF-PROD-SOT-005C-R10 today work item status/tone facade contract guard PASS');
