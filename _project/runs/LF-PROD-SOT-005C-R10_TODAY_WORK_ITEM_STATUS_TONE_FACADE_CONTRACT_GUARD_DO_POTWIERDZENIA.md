@@ -1,6 +1,6 @@
 # LF-PROD-SOT-005C-R10_TODAY_WORK_ITEM_STATUS_TONE_FACADE_CONTRACT_GUARD_DO_POTWIERDZENIA
 
-Date: 2026-07-06 11:35 Europe/Warsaw
+Date: 2026-07-06 19:15 Europe/Warsaw
 Canonical name: CloseFlow / LeadFlow
 App repo: dkknapikdamian-collab/leadflowv1
 App branch: dev-rollout-freeze
@@ -11,13 +11,12 @@ App branch: dev-rollout-freeze
 LF-PROD-SOT-005C-R10_TODAY_WORK_ITEM_STATUS_TONE_FACADE_CONTRACT_GUARD_DO_POTWIERDZENIA
 TODAY_WORK_ITEM_STATUS_TONE_FACADE_CONTRACT_CREATED
 CONTRACT_GUARD_STAGE
-PARTIAL_CONNECTOR_IMPLEMENTATION
 NO_WORK_ITEM_CARD_RUNTIME_REWIRE
 NO_TODAYSTABLE_CALLSITE_REWIRE
 NO_RUNTIME_REWIRE
 NO_RUNTIME_CHANGE
 SRC_TOUCHED: YES_ONLY_SOURCE_OF_TRUTH_TODAY_WORK_ITEM_STATUS_CONTRACT
-PACKAGE_ALIAS_ADDED: PENDING_LOCAL_PATCH_REQUIRED
+PACKAGE_ALIAS_ADDED: YES_VERIFY_005C_R10
 NO_ACTION_CALLBACK_CHANGE
 NO_DONE_EDIT_DELETE_RESCHEDULE_OPEN_CHANGE
 NO_TASK_EVENT_MUTATION_CHANGE
@@ -32,12 +31,12 @@ NO_DATA_FLOWS_CHANGE
 NO_CSS_UI_REDESIGN
 NO_MANUAL_SMOKE_NOW
 MANUAL_SMOKE_DEFERRED_TO_FINAL_SERIES_GATE
-GUARD_CREATED
-NODE_TEST_CREATED
-BUILD_NOT_EXECUTED_BY_CHATGPT
-DIFF_CHECK_NOT_EXECUTED_BY_CHATGPT
-APP_PUSH_PARTIAL_DONE
-NEXT_STAGE_SELECTED: HOLD_UNTIL_PACKAGE_ALIAS_AND_LOCAL_TESTS_PASS
+GUARD_PASS
+NODE_TEST_PASS
+BUILD_PASS
+DIFF_CHECK_PASS
+APP_PUSH_DONE
+NEXT_STAGE_SELECTED: LF-PROD-SOT-005C-R11_TODAY_WORK_ITEM_STATUS_TONE_FACADE_RUNTIME_ADOPTION_CANDIDATE_MAP_DO_POTWIERDZENIA
 005C_R11_CREATED: NO
 ```
 
@@ -48,6 +47,7 @@ src/lib/source-of-truth/today-work-item-status.ts
 scripts/guards/verify-lf-prod-sot-005c-r10-today-work-item-status-tone-facade-contract.cjs
 tests/lf-prod-sot-005c-r10-today-work-item-status-tone-facade-contract.test.cjs
 _project/runs/LF-PROD-SOT-005C-R10_TODAY_WORK_ITEM_STATUS_TONE_FACADE_CONTRACT_GUARD_DO_POTWIERDZENIA.md
+package.json
 ```
 
 ## Contract file
@@ -56,7 +56,7 @@ _project/runs/LF-PROD-SOT-005C-R10_TODAY_WORK_ITEM_STATUS_TONE_FACADE_CONTRACT_G
 src/lib/source-of-truth/today-work-item-status.ts
 ```
 
-Exports:
+## Exported API
 
 ```txt
 TodayWorkItemKind
@@ -77,37 +77,31 @@ future/planned task => Zaplanowane zadanie / neutral
 future/planned event => Zaplanowane wydarzenie / neutral
 ```
 
-## Guard / test
+## Package alias
 
 ```txt
-guard path:
-scripts/guards/verify-lf-prod-sot-005c-r10-today-work-item-status-tone-facade-contract.cjs
-
-test path:
-tests/lf-prod-sot-005c-r10-today-work-item-status-tone-facade-contract.test.cjs
+verify:lf-prod-sot-005c-r10 => node scripts/guards/verify-lf-prod-sot-005c-r10-today-work-item-status-tone-facade-contract.cjs
+alias commit: b4b8ac37
 ```
 
-## Connector limitation
+## Guard / test / build
 
 ```txt
-ChatGPT GitHub connector created the contract, guard, test, and report.
-Package.json is very large and the connector only exposes whole-file replacement, not safe patch editing.
-The package alias still requires local patch before R10 can be marked PASS.
+verify alias: PASS
+node test: PASS 2/2
+build: PASS
+diff check: PASS_WITH_LF_CRLF_WARNING_ONLY / NO_ERROR
+app push: DONE 757fb049..b4b8ac37
+final status: clean tracked files, only ?? _project/tmp/
 ```
 
-Required package alias:
+## Runtime adoption policy
 
-```json
-"verify:lf-prod-sot-005c-r10": "node scripts/guards/verify-lf-prod-sot-005c-r10-today-work-item-status-tone-facade-contract.cjs"
-```
-
-## Tests to run locally before closeout
-
-```powershell
-node scripts/guards/verify-lf-prod-sot-005c-r10-today-work-item-status-tone-facade-contract.cjs
-node --test tests/lf-prod-sot-005c-r10-today-work-item-status-tone-facade-contract.test.cjs
-npm run build
-git diff --check
+```txt
+WorkItemCard runtime rewire: NO
+TodayStable call-site rewire: NO
+R10 creates and guards the contract only.
+R11 must be an adoption candidate map before any runtime rewire.
 ```
 
 ## Scope preserved
@@ -117,6 +111,7 @@ WorkItemCard runtime rewire: NO
 TodayStable call-site rewire: NO
 action callbacks changed: NO
 task/event mutation logic changed: NO
+CaseDetail/LeadDetail/ClientDetail/Finance touched: NO
 SQL/Supabase/API touched: NO
 runtime/data touched: NO
 data/flows.json touched: NO
@@ -124,18 +119,9 @@ CSS/UI redesign: NO
 manual smoke: NOT_EXECUTED / DEFERRED
 ```
 
-## Current blocker
-
-```txt
-BLOCKER:
-PACKAGE_ALIAS_ADDED: PENDING_LOCAL_PATCH_REQUIRED
-LOCAL_TESTS: PENDING_USER_TERMINAL
-BUILD: PENDING_USER_TERMINAL
-DIFF_CHECK: PENDING_USER_TERMINAL
-```
-
 ## Next step
 
 ```txt
-Apply package.json alias locally, run guard/test/build/diff, then close R10 and update Obsidian/router if PASS.
+LF-PROD-SOT-005C-R11_TODAY_WORK_ITEM_STATUS_TONE_FACADE_RUNTIME_ADOPTION_CANDIDATE_MAP_DO_POTWIERDZENIA
+005C_R11_CREATED: NO
 ```
