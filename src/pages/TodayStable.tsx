@@ -48,7 +48,13 @@ import { buildOwnerControlBaseline } from '../lib/owner-control/owner-control-ba
 import { readOwnerRiskSettings } from '../lib/owner-control/owner-risk-settings';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
-import WorkItemCard, { getWorkItemCardStatusTone } from '../components/work-item-card';
+import WorkItemCard from '../components/work-item-card';
+import {
+  getTodayWorkItemStatusLabel as getSotTodayWorkItemStatusLabel,
+  getTodayWorkItemStatusTone as getSotTodayWorkItemStatusTone,
+  isTodayWorkItemClosed as isSotTodayWorkItemClosed,
+  isTodayWorkItemOverdue as isSotTodayWorkItemOverdue,
+} from '../lib/source-of-truth/today-work-item-status';
 import { EVENT_TYPES, PRIORITY_OPTIONS, TASK_TYPES } from '../lib/options';
 import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
@@ -243,15 +249,7 @@ const emptyData: DashboardData = {
 };
 
 function isClosedStatus(value: unknown) {
-  const status = String(value || '').trim().toLowerCase();
-  return status === 'done'
-    || status === 'completed'
-    || status === 'closed'
-    || status === 'cancelled'
-    || status === 'canceled'
-    || status === 'deleted'
-    || status === 'archived'
-    || status === 'removed';
+  return isSotTodayWorkItemClosed(value);
 }
 
 function isClosedLead(value: any) {
@@ -583,23 +581,15 @@ function semanticBadgeTone(label: string): 'red' | 'amber' | 'blue' | 'green' | 
 
 
 function isTodayWorkItemOverdue(momentRaw: string, status: unknown, todayKey: string) {
-  const dateKey = getDateKey(momentRaw);
-  return Boolean(dateKey) && dateKey < todayKey && !isClosedStatus(status);
+  return isSotTodayWorkItemOverdue(momentRaw, status, todayKey);
 }
 
 function getTodayWorkItemStatusLabel(kind: 'task' | 'event', status: unknown, momentRaw: string, todayKey: string) {
-  if (isClosedStatus(status)) return 'Zrobione';
-  if (isTodayWorkItemOverdue(momentRaw, status, todayKey)) return 'Zaległe';
-  const dateKey = getDateKey(momentRaw);
-  if (dateKey === todayKey) return 'Dziś';
-  return kind === 'task' ? 'Zaplanowane zadanie' : 'Zaplanowane wydarzenie';
+  return getSotTodayWorkItemStatusLabel(kind, status, momentRaw, todayKey);
 }
 
 function getTodayWorkItemTone(status: unknown, momentRaw: string, todayKey: string) {
-  return getWorkItemCardStatusTone(getTodayWorkItemStatusLabel('task', status, momentRaw, todayKey), {
-    completed: isClosedStatus(status),
-    overdue: isTodayWorkItemOverdue(momentRaw, status, todayKey),
-  });
+  return getSotTodayWorkItemStatusTone('task', status, momentRaw, todayKey);
 }
 
 
