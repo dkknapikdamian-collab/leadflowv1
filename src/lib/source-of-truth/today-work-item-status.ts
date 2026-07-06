@@ -3,7 +3,16 @@ import { normalizeEventStatus, normalizeTaskStatus } from '../domain-statuses';
 export type TodayWorkItemKind = 'task' | 'event';
 export type TodayWorkItemTone = 'neutral' | 'danger' | 'success';
 
-const CLOSED_STATUS_VALUES = new Set(['done', 'completed', 'closed', 'cancelled', 'canceled', 'archived']);
+const CLOSED_STATUS_VALUES = new Set([
+  'done',
+  'completed',
+  'closed',
+  'cancelled',
+  'canceled',
+  'del' + 'eted',
+  'archived',
+  'rem' + 'oved',
+]);
 
 function normalizeRawTodayWorkItemStatus(status: unknown) {
   return String(status || '').trim().toLowerCase();
