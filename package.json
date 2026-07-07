@@ -1076,7 +1076,8 @@
     "verify:lf-ui-sot-cz2-017-final-closeout": "node scripts/guards/verify-lf-ui-sot-cz2-017-final-closeout.cjs",
     "verify:lf-prod-sot-005c-r4": "node scripts/guards/verify-lf-prod-sot-005c-r4-cases-list-status-tone-facade-runtime-rewire.cjs",
     "verify:lf-prod-sot-005c-r10": "node scripts/guards/verify-lf-prod-sot-005c-r10-today-work-item-status-tone-facade-contract.cjs",
-    "verify:lf-prod-sot-005c-r12": "node scripts/guards/verify-lf-prod-sot-005c-r12-todaystable-status-tone-helper-facade-runtime-adoption.cjs && node --test tests/lf-prod-sot-005c-r12-todaystable-status-tone-helper-facade-runtime-adoption.test.cjs"
+    "verify:lf-prod-sot-005c-r12": "node scripts/guards/verify-lf-prod-sot-005c-r12-todaystable-status-tone-helper-facade-runtime-adoption.cjs && node --test tests/lf-prod-sot-005c-r12-todaystable-status-tone-helper-facade-runtime-adoption.test.cjs",
+    "verify:lf-prod-sot-005c-r15": "node scripts/guards/verify-lf-prod-sot-005c-r15-tasks-stable-task-display-status-contract.cjs && node --test tests/lf-prod-sot-005c-r15-tasks-stable-task-display-status-contract.test.cjs"
 },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
