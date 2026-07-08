@@ -170,3 +170,32 @@ Ryzyko:
 Następny krok:
 - CF-RUNTIME-01 LeadDetail missing/blocker/handoff wiring albo CF-RUNTIME-03 CaseDetail wiring.
 <!-- CF_RUNTIME_00_SHARED_SOURCE_TRUTH_2026_06_15_END -->
+
+<!-- LF_PROD_SOT_005C_PATH_R2_LOCAL_WINDOWS_REAL_PATH_REPAIR_START -->
+## 2026-07-08 Europe/Warsaw - LF-PROD-SOT-005C-PATH-R2 local Windows real path repair
+
+Status: DO_POTWIERDZENIA.
+Typ: dokumentacyjna naprawa sciezek przed R18.
+
+Aktualne sciezki PATH-R2:
+- Repo local path real: `C:\Users\malim\Desktop\biznesy_ai\2.closeflow`
+- Obsidian vault local path real: `C:\Users\malim\Desktop\biznesy_ai\00_OBSIDIAN_VAULT`
+- Obsidian folder: `10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY`
+
+Base po R17:
+- Stage: `LF-PROD-SOT-005C-R17`
+- Status: `PASS_AFTER_R17_R1`
+- Commit before PATH-R2: `d13f7aac5a4844cac075e4933e3b35f7ea0349b8`
+- Branch: `dev-rollout-freeze`
+
+Zapis:
+- `_project/09_CONTEXT_FOR_OBSIDIAN.md` wskazuje teraz PATH-R2 i oznacza stary `10_PROJEKTY\CloseFlow_LeadFlow` jako stale marker.
+- Dodano note: `10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-005C-PATH-R2_LOCAL_WINDOWS_REAL_PATH_REPAIR_DO_POTWIERDZENIA.md`.
+- Dashboard Obsidian `04_NAPRAWA_ZRODLA_PRAWDY - CloseFlow Lead App.md` ma wpis PATH-R2.
+
+Czego nie ruszano:
+- runtime, UI, SQL, env, guards i R18.
+
+Nastepny krok:
+- potwierdzic PATH-R2, potem dopiero R18.
+<!-- LF_PROD_SOT_005C_PATH_R2_LOCAL_WINDOWS_REAL_PATH_REPAIR_END -->
