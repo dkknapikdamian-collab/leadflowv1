@@ -36,6 +36,7 @@ import {
 import { useWorkspace } from '../hooks/useWorkspace';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import { toDateTimeLocalValue } from '../lib/scheduling';
+import { getTaskDisplayStatusLabel, getTaskDisplayStatusTone } from '../lib/source-of-truth/task-display-status';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import { ConfirmDialog } from '../components/confirm-dialog';
 import '../styles/closeflow-page-header-v2.css';
@@ -208,17 +209,19 @@ function getCaseTitle(caseRecord: any) {
 }
 
 function getStatusBadge(task: any) {
-  if (isTaskDone(task)) return 'Zrobione';
-  if (isTaskOverdue(task)) return 'Zaległe';
-  if (isTaskToday(task)) return 'Dziś';
-  return 'Aktywne';
+  return getTaskDisplayStatusLabel({
+    status: task?.status,
+    momentRaw: getTaskMomentRaw(task),
+    todayKey: localDateKey(),
+  });
 }
 
 function getTaskStatusTone(task: any) {
-  if (isTaskDone(task)) return 'green';
-  if (isTaskOverdue(task)) return 'red';
-  if (isTaskToday(task)) return 'blue';
-  return 'neutral';
+  return getTaskDisplayStatusTone({
+    status: task?.status,
+    momentRaw: getTaskMomentRaw(task),
+    todayKey: localDateKey(),
+  });
 }
 
 function getTaskRelationIds(task: any) {
