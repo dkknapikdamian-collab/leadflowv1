@@ -5,35 +5,46 @@ const test = require('node:test');
 const { execFileSync } = require('node:child_process');
 
 const root = process.cwd();
-const contractPath = path.join(root, 'src/lib/source-of-truth/task-display-status.ts');
-const tasksStablePath = path.join(root, 'src/pages/TasksStable.tsx');
-const guardPath = path.join(root, 'scripts/guards/verify-lf-prod-sot-005c-r15-tasks-stable-task-display-status-contract.cjs');
 
-function read(filePath) {
-  return fs.readFileSync(filePath, 'utf8');
+function read(rel) {
+  return fs.readFileSync(path.join(root, rel), 'utf8');
 }
 
-test('R15 guard passes', () => {
-  execFileSync(process.execPath, [guardPath], { cwd: root, stdio: 'pipe' });
+test('R15 guard passes in post-R17 current state', () => {
+  execFileSync(process.execPath, ['scripts/guards/verify-lf-prod-sot-005c-r15-tasks-stable-task-display-status-contract.cjs'], {
+    cwd: root,
+    stdio: 'pipe',
+  });
 });
 
-test('R15 contract defines expected task display labels and tones', () => {
-  const source = read(contractPath);
-  for (const label of ['Zrobione', 'Zalegle', 'Dzis', 'Bez terminu', 'Nadchodzace']) {
-    assert.match(source, new RegExp(label), 'missing label token: ' + label);
-  }
-  for (const tone of ["'green'", "'red'", "'blue'", "'neutral'"]) {
-    assert.ok(source.includes(tone), 'missing tone token: ' + tone);
-  }
-  for (const kind of ["'done'", "'overdue'", "'today'", "'no_due'", "'upcoming'"]) {
-    assert.ok(source.includes(kind), 'missing kind token: ' + kind);
+test('R15 contract keeps expected task display labels and tones', () => {
+  const facade = read('src/lib/source-of-truth/task-display-status.ts');
+
+  for (const token of [
+    "label: 'Zrobione'",
+    "label: 'Zalegle'",
+    "label: 'Dzis'",
+    "label: 'Bez terminu'",
+    "label: 'Nadchodzace'",
+    "tone: 'green'",
+    "tone: 'red'",
+    "tone: 'blue'",
+    "tone: 'neutral'",
+  ]) {
+    assert.ok(facade.includes(token), token);
   }
 });
 
-test('R15 does not rewire TasksStable runtime call-sites', () => {
-  const tasksStable = read(tasksStablePath);
-  assert.equal(tasksStable.includes("from '../lib/source-of-truth/task-display-status'"), false);
-  assert.equal(tasksStable.includes('getTaskDisplayStatus('), false);
-  assert.ok(tasksStable.includes('function getStatusBadge(task: any)'));
-  assert.ok(tasksStable.includes('function getTaskStatusTone(task: any)'));
+test('R15 contract now coexists with R17 TasksStable runtime adoption', () => {
+  const tasks = read('src/pages/TasksStable.tsx');
+  const today = read('src/pages/TodayStable.tsx');
+  const card = read('src/components/work-item-card.tsx');
+
+  assert.ok(tasks.includes("from '../lib/source-of-truth/task-display-status'"));
+  assert.equal((tasks.match(/getTaskDisplayStatusLabel\(/g) || []).length, 1);
+  assert.equal((tasks.match(/getTaskDisplayStatusTone\(/g) || []).length, 1);
+  assert.ok(tasks.includes('function getTaskGroupId(task: any): TaskGroupId'));
+  assert.ok(tasks.includes('function buildTaskGroups(tasksToGroup: any[])'));
+  assert.ok(!today.includes('task-display-status'));
+  assert.ok(!card.includes('task-display-status'));
 });
