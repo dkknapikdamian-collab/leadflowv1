@@ -113,3 +113,20 @@ R22 must decide whether these differences are intentional and acceptable:
 LF-PROD-SOT-005C-R22_TASKS_STABLE_GROUP_STATUS_DATE_HELPERS_CONTRACT_DECISION_DO_POTWIERDZENIA
 
 R22_CREATED: NO
+---
+
+## R21-R1 repair - 2026-07-09 21:45 Europe/Warsaw
+
+Initial R21 app commit contained a guard/test regex escaping bug.
+
+Correction:
+- broken regex model used literal \\d
+- repaired regex model uses digit matcher \d
+- R21-R1 reruns R15/R17/R21/build/diff-check
+
+Status after R21-R1:
+- R21_VERIFY: PASS
+- TASKSSTABLE_REWIRED: NO
+- RUNTIME_CHANGED: NO
+- R22_CREATED: NO
+
