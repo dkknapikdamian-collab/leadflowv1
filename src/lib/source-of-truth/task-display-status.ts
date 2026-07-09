@@ -76,6 +76,49 @@ export function getTaskDisplayStatus(input: TaskDisplayStatusInput): TaskDisplay
   return { kind: 'upcoming', label: 'Nadchodzace', tone: 'neutral', isClosed, isOverdue: false, hasDueDate };
 }
 
+export type TaskStableGroupIdCompat = 'overdue' | 'today' | 'upcoming' | 'no_due' | 'done';
+
+export type TaskStableGroupCompatInput = {
+  status: unknown;
+  momentRaw: unknown;
+  todayKey: string;
+};
+
+const TASK_STABLE_GROUP_CLOSED_COMPAT_VALUES = new Set([
+  'done',
+  'completed',
+  'closed',
+  'cancelled',
+  'canceled',
+]);
+
+export function getTaskStableGroupDateKeyCompat(momentRaw: unknown): string {
+  return String(momentRaw || '').slice(0, 10);
+}
+
+export function isTaskStableGroupClosedCompat(status: unknown): boolean {
+  return TASK_STABLE_GROUP_CLOSED_COMPAT_VALUES.has(normalizeRawTaskDisplayStatus(status));
+}
+
+export function isTaskStableGroupOverdueCompat(momentRaw: unknown, status: unknown, todayKey: string): boolean {
+  const dateKey = getTaskStableGroupDateKeyCompat(momentRaw);
+  return Boolean(dateKey) && dateKey < todayKey && !isTaskStableGroupClosedCompat(status);
+}
+
+export function getTaskStableGroupIdCompat(input: TaskStableGroupCompatInput): TaskStableGroupIdCompat {
+  const { status, momentRaw, todayKey } = input;
+  if (isTaskStableGroupClosedCompat(status)) return 'done';
+  if (isTaskStableGroupOverdueCompat(momentRaw, status, todayKey)) return 'overdue';
+
+  const dateKey = getTaskStableGroupDateKeyCompat(momentRaw);
+  if (dateKey === todayKey) return 'today';
+
+  const raw = String(momentRaw || '');
+  if (!raw) return 'no_due';
+
+  return 'upcoming';
+}
+
 export function getTaskDisplayStatusLabel(input: TaskDisplayStatusInput): string {
   return getTaskDisplayStatus(input).label;
 }
