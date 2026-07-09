@@ -129,4 +129,22 @@ Status after R21-R1:
 - TASKSSTABLE_REWIRED: NO
 - RUNTIME_CHANGED: NO
 - R22_CREATED: NO
+---
 
+## R21-R2 repair - 2026-07-09 22:05 Europe/Warsaw
+
+R21-R1 made the guard pass but still had a red diff-check because the app report ended with an extra blank line at EOF.
+
+Repair:
+- normalized app report EOF
+- reran R15/R17/R21/build/diff-check
+- no runtime change
+- no TasksStable rewire
+
+Status after R21-R2:
+- R21_VERIFY: PASS
+- BUILD: PASS
+- GIT_DIFF_CHECK: PASS
+- TASKSSTABLE_REWIRED: NO
+- RUNTIME_CHANGED: NO
+- R22_CREATED: NO
