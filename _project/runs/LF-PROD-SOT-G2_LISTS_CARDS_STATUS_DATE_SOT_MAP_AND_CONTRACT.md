@@ -1,4 +1,4 @@
-# LF-PROD-SOT-G2 â€” Lists/Cards Status/Date SOT Map and Contract
+# LF-PROD-SOT-G2 — Lists/Cards Status/Date SOT Map and Contract
 
 DATA_I_CZAS: 2026-07-10 16:11 Europe/Warsaw
 STAGE: LF-PROD-SOT-G2_LISTS_CARDS_STATUS_DATE_SOT_MAP_AND_CONTRACT
@@ -30,7 +30,7 @@ GIT_DIFF_CHECK_OBSIDIAN: PASS
 
 ## Wynik mapowania
 
-Zmapowano realne callsiteâ€™y statusĂłw, labeli, tonĂłw, badgeâ€™y i dat na:
+Zmapowano realne callsite’y statusów, labeli, tonów, badge’y i dat na:
 - Leads,
 - Cases,
 - TasksStable,
@@ -47,11 +47,11 @@ Jawnie rozdzielono:
 
 ## Decyzja
 
-Pierwszym bezpiecznym kandydatem mapowym jest readonly fallback tonu badgeâ€™a w `TodayStable.RowLink`.
+Pierwszym bezpiecznym kandydatem mapowym jest readonly fallback tonu badge’a w `TodayStable.RowLink`.
 
-Kandydat nie zostaĹ‚ wdroĹĽony.
+Kandydat nie został wdrożony.
 Nie zmieniono runtime, src, UI, CSS, SQL, API ani Supabase.
-Nie zmieniono lokalnych wyjÄ…tkĂłw groupingowych R28.
+Nie zmieniono lokalnych wyjątków groupingowych R28.
 Nie utworzono G3.
 
 ## Findings
@@ -77,3 +77,15 @@ App:
 Obsidian:
 - `10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-G2_LISTS_CARDS_STATUS_DATE_SOT_MAP_AND_CONTRACT_MAP.md`
 - `10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/00_MAPY_I_ZALEZNOSCI_SOT.md`
+
+## G2-R1 — UTF-8 human text repair
+
+G2_R1_STATUS: PASS_UTF8_REPAIR_AND_GUARD
+G2_R1_REPAIR_AT: 2026-07-10 16:22 Europe/Warsaw
+MOJIBAKE_REMOVED: YES
+G2_R1_GUARD_ADDED: YES
+RUNTIME_CHANGED_IN_G2_R1: NO
+SRC_CHANGED_IN_G2_R1: NO
+G3_CREATED_IN_G2_R1: NO
+
+Naprawiono wyłącznie tekst dokumentacji i dodano osobny guard kodowania. Macierz callsite’ów, decyzja G2 i zakres runtime pozostały bez zmian.
