@@ -3,7 +3,7 @@
 Date/time: 2026-07-09 22:30 Europe/Warsaw
 Canonical name: CloseFlow / LeadFlow
 Stage: LF-PROD-SOT-005C-R22_R21_RESULT_DECISION_AND_SAFE_RUNTIME_CANDIDATE_MAP
-Status: CONNECTOR_CODE_SCAN_DONE / DECISION_MAP_DONE / NO_RUNTIME_REWIRE / LOCAL_VERIFY_PENDING
+Status: PASS_BY_LOCAL_VERIFY / DECISION_MAP_DONE / NO_RUNTIME_REWIRE / NO_TASKSSTABLE_REWIRE
 Branch used: dev-rollout-freeze
 
 ## Why branch dev-rollout-freeze was used
@@ -117,15 +117,17 @@ Rejected:
 - mutation/callback/form changes
 - data/flows.json changes
 
-## Verification required locally
+## Local verification closeout
 
-Connector cannot run npm/build. Damian local verification required:
+R22 was locally closed after the connector-created report.
 
-- npm.cmd run verify:lf-prod-sot-005c-r15
-- npm.cmd run verify:lf-prod-sot-005c-r17
-- npm.cmd run verify:lf-prod-sot-005c-r21
-- npm.cmd run build
-- git diff --check
+- R15 verify: PASS.
+- R17 verify: PASS.
+- R21 verify: PASS.
+- Build: PASS.
+- git diff --check: PASS.
+- TasksStable rewired: NO.
+- Runtime changed: NO.
 
 ## Status
 
@@ -134,4 +136,14 @@ RUNTIME_CHANGED: NO
 TASKSSTABLE_REWIRED: NO
 SELECTED_R23: LF-PROD-SOT-005C-R23_TASKS_STABLE_COMPAT_GROUP_STATUS_DATE_HELPERS_FACADE_CONTRACT_DO_POTWIERDZENIA
 R23_CREATED: NO
-LOCAL_VERIFY: PENDING
+LOCAL_VERIFY: PASS
+
+## Reconciliation note - 2026-07-10 Europe/Warsaw
+
+This app report was reconciled with the already-updated Obsidian router/current-state entries.
+
+- Canonical rollout branch for this SOT chain: dev-rollout-freeze.
+- The pasted R22 brief branch value main is treated as an outdated brief error for this chain.
+- R22 decision remains unchanged: direct existing facade helper adoption is unsafe.
+- Exactly one R23 candidate remains selected: facade-side compat helper/export contract.
+- No runtime, UI, CSS, SQL, API, Supabase, TasksStable rewire, callbacks, mutations, forms, data/flows.json or runtime/data changes were made by this reconciliation.
