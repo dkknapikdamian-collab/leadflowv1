@@ -1087,7 +1087,8 @@
     "verify:lf-prod-sot-005c-r27": "node scripts/guards/verify-lf-prod-sot-005c-r27-build-task-groups-final-decision.cjs && node --test tests/lf-prod-sot-005c-r27-build-task-groups-final-decision.test.cjs",
     "verify:lf-prod-sot-005c-r28": "node scripts/guards/verify-lf-prod-sot-005c-r28-final-closeout-gate.cjs && node --test tests/lf-prod-sot-005c-r28-final-closeout-gate.test.cjs",
     "verify:lf-prod-sot-g2": "node scripts/guards/verify-lf-prod-sot-g2-lists-cards-status-date-map-contract.cjs && node --test tests/lf-prod-sot-g2-lists-cards-status-date-map-contract.test.cjs",
-    "verify:lf-prod-sot-g2-r1": "node scripts/guards/verify-lf-prod-sot-g2-r1-utf8-human-text-repair.cjs && node --test tests/lf-prod-sot-g2-r1-utf8-human-text-repair.test.cjs"
+    "verify:lf-prod-sot-g2-r1": "node scripts/guards/verify-lf-prod-sot-g2-r1-utf8-human-text-repair.cjs && node --test tests/lf-prod-sot-g2-r1-utf8-human-text-repair.test.cjs",
+    "verify:lf-prod-sot-g3": "node scripts/guards/verify-lf-prod-sot-g3-casedetail-sot-gap-map.cjs && node --test tests/lf-prod-sot-g3-casedetail-sot-gap-map.test.cjs"
 },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
