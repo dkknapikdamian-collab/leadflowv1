@@ -37,6 +37,7 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import { toDateTimeLocalValue } from '../lib/scheduling';
 import { getTaskDisplayStatusLabel, getTaskDisplayStatusTone } from '../lib/source-of-truth/task-display-status';
+import { getTaskStableGroupDateKeyCompat } from '../lib/source-of-truth/task-display-status';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import { ConfirmDialog } from '../components/confirm-dialog';
 import '../styles/closeflow-page-header-v2.css';
@@ -116,7 +117,7 @@ function getTaskMomentRaw(task: any) {
 }
 
 function getTaskDateKey(task: any) {
-  return getTaskMomentRaw(task).slice(0, 10);
+  return getTaskStableGroupDateKeyCompat(getTaskMomentRaw(task));
 }
 
 function parseTaskTime(task: any) {

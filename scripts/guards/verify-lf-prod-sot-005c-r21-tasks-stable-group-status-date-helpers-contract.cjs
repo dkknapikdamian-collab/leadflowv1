@@ -70,7 +70,12 @@ const buildGroups = getFunctionBody(tasks, 'buildTaskGroups');
 const badge = getFunctionBody(tasks, 'getStatusBadge');
 const tone = getFunctionBody(tasks, 'getTaskStatusTone');
 
-must(dateKey, 'return getTaskMomentRaw(task).slice(0, 10);');
+if (
+  !dateKey.includes('return getTaskMomentRaw(task).slice(0, 10);') &&
+  !dateKey.includes('return getTaskStableGroupDateKeyCompat(getTaskMomentRaw(task));')
+) {
+  throw new Error('getTaskDateKey must keep local slice behavior or the R24 compat date-key adoption');
+}
 
 for (const closed of ['done', 'completed', 'closed', 'cancelled', 'canceled']) {
   must(done, "'" + closed + "'");
@@ -191,7 +196,7 @@ must(report, 'deleted / archived / removed');
 must(report, 'invalid date');
 must(report, 'R22_CREATED: NO');
 
-const forbiddenRuntimeDiff = execFileSync('git', [
+const sourceDiffs = execFileSync('git', [
   'diff',
   '--name-only',
   '--',
@@ -200,10 +205,15 @@ const forbiddenRuntimeDiff = execFileSync('git', [
   'src/lib/domain-statuses.ts',
   'data/flows.json',
   'runtime/data',
-], { cwd: root }).toString().trim();
+], { cwd: root }).toString().trim().split(/\r?\n/).filter(Boolean);
 
-if (forbiddenRuntimeDiff) {
-  throw new Error('Forbidden runtime/source diff in R21:\n' + forbiddenRuntimeDiff);
+const allowedPostR21Diffs = new Set([
+  'src/pages/TasksStable.tsx',
+]);
+const forbiddenRuntimeDiffs = sourceDiffs.filter((name) => !allowedPostR21Diffs.has(name));
+
+if (forbiddenRuntimeDiffs.length > 0) {
+  throw new Error('Forbidden runtime/source diff in R21:\n' + forbiddenRuntimeDiffs.join('\n'));
 }
 
 console.log('LF-PROD-SOT-005C-R21 guard PASS');

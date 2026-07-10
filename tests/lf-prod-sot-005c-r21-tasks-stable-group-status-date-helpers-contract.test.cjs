@@ -73,7 +73,7 @@ test('R21 date matrix captures invalid-date difference before runtime adoption',
   }
 });
 
-test('R21 is contract guard only and does not rewire TasksStable grouping/date helpers', () => {
+test('R21 contract guard coexists with the later R24 date-key helper adoption', () => {
   const tasks = read('src/pages/TasksStable.tsx');
 
   assert.ok(tasks.includes('function isTaskDone(task: any)'));
@@ -81,12 +81,16 @@ test('R21 is contract guard only and does not rewire TasksStable grouping/date h
   assert.ok(tasks.includes('function isTaskOverdue(task: any)'));
   assert.ok(tasks.includes('function getTaskGroupId(task: any): TaskGroupId'));
   assert.ok(tasks.includes('function buildTaskGroups(tasksToGroup: any[])'));
+  assert.ok(tasks.includes('getTaskStableGroupDateKeyCompat'));
 
   const forbiddenRuntimeHelpers = [
     'getTaskDisplayDateKey',
     'isTaskDisplayClosed',
     'isTaskDisplayOverdue',
     'getTaskDisplayStatus(',
+    'isTaskStableGroupClosedCompat',
+    'isTaskStableGroupOverdueCompat',
+    'getTaskStableGroupIdCompat',
   ];
 
   for (const token of forbiddenRuntimeHelpers) {

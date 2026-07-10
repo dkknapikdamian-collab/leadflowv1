@@ -81,7 +81,7 @@ mustNot(helperSection, 'new Date(');
 must(tasks, 'function getTaskDateKey(task: any)');
 must(tasks, 'function isTaskDone(task: any)');
 must(tasks, 'function getTaskGroupId(task: any): TaskGroupId');
-mustNot(tasks, 'getTaskStableGroupDateKeyCompat');
+must(tasks, 'return getTaskStableGroupDateKeyCompat(getTaskMomentRaw(task));');
 mustNot(tasks, 'isTaskStableGroupClosedCompat');
 mustNot(tasks, 'isTaskStableGroupOverdueCompat');
 mustNot(tasks, 'getTaskStableGroupIdCompat');
@@ -124,7 +124,7 @@ for (const item of cases) {
   if (actual !== item.expected) throw new Error(item.name + ': ' + actual + ' !== ' + item.expected);
 }
 
-const forbiddenRuntimeDiff = execFileSync('git', [
+const runtimeDiffs = execFileSync('git', [
   'diff',
   '--name-only',
   '--',
@@ -133,10 +133,15 @@ const forbiddenRuntimeDiff = execFileSync('git', [
   'runtime/data',
   'src/App.tsx',
   'src/**/*.css',
-], { cwd: root }).toString().trim();
+], { cwd: root }).toString().trim().split(/\r?\n/).filter(Boolean);
 
-if (forbiddenRuntimeDiff) {
-  throw new Error('Forbidden runtime/UI diff in R23:\n' + forbiddenRuntimeDiff);
+const allowedPostR23Diffs = new Set([
+  'src/pages/TasksStable.tsx',
+]);
+const forbiddenRuntimeDiffs = runtimeDiffs.filter((name) => !allowedPostR23Diffs.has(name));
+
+if (forbiddenRuntimeDiffs.length > 0) {
+  throw new Error('Forbidden runtime/UI diff in R23:\n' + forbiddenRuntimeDiffs.join('\n'));
 }
 
 console.log('LF-PROD-SOT-005C-R23 guard PASS');

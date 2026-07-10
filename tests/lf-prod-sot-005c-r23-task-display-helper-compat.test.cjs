@@ -91,7 +91,7 @@ test('R23 compat date and group matrix preserves current TasksStable grouping be
   }
 });
 
-test('R23 does not rewire TasksStable runtime yet', () => {
+test('R23 compat contract now coexists with the later R24 date-key adoption only', () => {
   const tasks = read('src/pages/TasksStable.tsx');
 
   assert.ok(tasks.includes('function getTaskDateKey(task: any)'));
@@ -99,7 +99,8 @@ test('R23 does not rewire TasksStable runtime yet', () => {
   assert.ok(tasks.includes('function isTaskOverdue(task: any)'));
   assert.ok(tasks.includes('function getTaskGroupId(task: any): TaskGroupId'));
 
-  assert.equal(tasks.includes('getTaskStableGroupDateKeyCompat'), false);
+  assert.equal(tasks.includes('getTaskStableGroupDateKeyCompat'), true);
+  assert.equal((tasks.match(/getTaskStableGroupDateKeyCompat\(/g) || []).length, 1);
   assert.equal(tasks.includes('isTaskStableGroupClosedCompat'), false);
   assert.equal(tasks.includes('isTaskStableGroupOverdueCompat'), false);
   assert.equal(tasks.includes('getTaskStableGroupIdCompat'), false);
