@@ -1,0 +1,19 @@
+{
+    "extends":  "./tsconfig.json",
+    "compilerOptions":  {
+                            "allowJs":  false,
+                            "noEmit":  true
+                        },
+    "include":  [
+                    "src/lib/google-calendar-mutation-sync-state-decision.ts"
+                ],
+    "exclude":  [
+                    "node_modules",
+                    "dist",
+                    "_project",
+                    "_local_backups",
+                    "2.closeflow_bisect",
+                    "scripts",
+                    "tools"
+                ]
+}
