@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowJs": false,
+    "noEmit": true
+  },
+  "include": [
+    "src/server/google-calendar-mutation-snapshot.ts",
+    "src/server/_supabase.ts",
+    "src/lib/google-calendar-mutation-sync-state-decision.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "_project",
+    "_local_backups",
+    "backups",
+    "bisect",
+    "scripts",
+    "tools"
+  ]
+}
