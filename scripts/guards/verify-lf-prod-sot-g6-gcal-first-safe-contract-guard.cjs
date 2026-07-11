@@ -9,6 +9,7 @@ const vault = process.env.OBSIDIAN_VAULT_PATH
 
 const APP_INPUT_HEAD_G6 = 'a5578df347aa195c2d7a47647b7899d86305e7c1';
 const OBSIDIAN_INPUT_HEAD_G6 = '95d3b47e7c073b3592b36f91587a9665ef427ed1';
+const OBSIDIAN_SCOPE_BASE_HEAD_G6 = '23150ba15ecf6e7848586ac1106dde13f8dda903';
 const exactAlias = 'node scripts/guards/verify-lf-prod-sot-g6-gcal-first-safe-contract-guard.cjs && node --test tests/lf-prod-sot-g6-gcal-first-safe-contract-guard.test.cjs';
 
 const rel = {
@@ -156,6 +157,7 @@ const vaultBranch = sh(vault, ['branch', '--show-current']);
 if (vaultBranch !== 'main') throw new Error(`STOP_OBSIDIAN_BRANCH_MISMATCH: ${vaultBranch}`);
 assertAncestor(root, APP_INPUT_HEAD_G6, 'APP_INPUT_HEAD_G6');
 assertAncestor(vault, OBSIDIAN_INPUT_HEAD_G6, 'OBSIDIAN_INPUT_HEAD_G6');
+assertAncestor(vault, OBSIDIAN_SCOPE_BASE_HEAD_G6, 'OBSIDIAN_SCOPE_BASE_HEAD_G6');
 
 const pkg = JSON.parse(readAt(root, rel.package));
 if (pkg.scripts?.['verify:lf-prod-sot-g6'] !== exactAlias) throw new Error('G6_PACKAGE_ALIAS_MISMATCH');
@@ -186,6 +188,7 @@ must(g5Map, 'G5_FINAL_STATUS: PASS_GCAL_CALENDAR_BOUNDARY_GAP_MAP');
 must(g5r1Map, 'G5_R1_FINAL_STATUS: PASS_GCAL_CONTRACT_DECISION');
 must(g5r1r1Map, 'G5_R1_R1_FINAL_STATUS: PASS_UTF8_ROUTER_HEADING_REPAIR_AND_GUARD_HARDENING');
 
+// Local mutation routes must remain local-first and own no remote Google call or sync-state transition.
 for (const [name, source] of [['task', taskRoute], ['event', eventRoute]]) {
   for (const call of forbiddenRouteCalls) mustNot(source, call, `${name}:${call}`);
   mustNot(source, 'google_calendar_sync_status', `${name}:sync_status_transition`);
@@ -197,6 +200,7 @@ must(eventRoute, "record_type: 'event'");
 must(taskRoute, ': null;', 'task_nullable_calendar_time');
 must(eventRoute, 'const startAt = body.startAt ? normalizeCloseFlowDateTimeToUtcIso(body.startAt) || nowIso : nowIso');
 
+// Existing outbound/inbound capabilities and exact-user boundary.
 must(outbound, "type GoogleCalendarOutboundMode = 'pending' | 'failed' | 'all'");
 must(outbound, "modeRaw === 'failed' || modeRaw === 'all'");
 must(outbound, "googleSyncStatusFrom(row) === 'pending_delete'");
@@ -210,6 +214,7 @@ must(inbound, 'source_external_id');
 must(inbound, 'Duplicate titles are allowed');
 must(inbound, 'isLocalDeletedGoogleCalendarWorkItemStage232GR6');
 
+// Provenance collision: both outbound success and inbound import write source_provider=google_calendar.
 must(outbound, "source_provider: googleEventId ? 'google_calendar' : null");
 must(outbound, 'source_external_id: googleEventId');
 must(inbound, "source_provider: 'google_calendar'");
@@ -217,6 +222,7 @@ must(inbound, "'external_google_event'");
 must(outbound, "type === 'external_google_event' || sourceProvider === 'google_calendar'");
 must(inbound, "type === 'external_google_event' || sourceProvider === 'google_calendar'");
 
+// Snapshot reality: task PATCH reads a partial row; event PATCH reads none; DELETE snapshots lack GCAL ownership fields.
 const taskPatch = section(taskRoute, "if (req.method === 'PATCH')", "if (req.method === 'DELETE')");
 const eventPatch = section(eventRoute, "if (req.method === 'PATCH')", "if (req.method === 'DELETE')");
 const taskDelete = section(taskRoute, "if (req.method === 'DELETE')", "if (req.method !== 'POST')");
@@ -231,6 +237,7 @@ for (const [label, text] of [['TASK_DELETE', taskDelete], ['EVENT_DELETE', event
   must(text, 'selectFirstAvailable([selectPathStage228R23])', `${label}:unscoped_fallback_current_reality`);
 }
 
+// Reminder and timezone source files are read-only invariants in G6.
 must(reminder, "'default' | 'popup' | 'email' | 'popup_email'");
 must(reminder, 'Math.max(0, Math.min(40320');
 must(timezone, "CLOSEFLOW_DEFAULT_TIMEZONE = 'Europe/Warsaw'");
@@ -240,6 +247,7 @@ must(inbound, 'googleDateTimeToUtcIso');
 const requiredDecisionTokens = [
   `APP_INPUT_HEAD_G6: ${APP_INPUT_HEAD_G6}`,
   `OBSIDIAN_INPUT_HEAD_G6: ${OBSIDIAN_INPUT_HEAD_G6}`,
+  `OBSIDIAN_SCOPE_BASE_HEAD_G6: ${OBSIDIAN_SCOPE_BASE_HEAD_G6}`,
   'G6_GATE_ORDER: G5_R1_PRECHECK_BEFORE_G6_ARTIFACTS_ONLY',
   'POST_G6_OLD_G5_R1_GUARD: NOT_RERUN_BY_DESIGN',
   'G6_FINAL_STATUS: PASS_FIRST_SAFE_CONTRACT_GUARD_WITH_PROVENANCE_CLARIFICATION',
@@ -311,12 +319,13 @@ for (const token of [
 ]) must(g6Router, token, `router:${token}`);
 
 assertAllowed(changedFilesSince(root, APP_INPUT_HEAD_G6), allowedApp, 'app');
-assertAllowed(changedFilesSince(vault, OBSIDIAN_INPUT_HEAD_G6), allowedVault, 'vault');
+assertAllowed(changedFilesSince(vault, OBSIDIAN_SCOPE_BASE_HEAD_G6), allowedVault, 'vault');
 assertG7Absent();
 
 console.log('G6_FINAL_STATUS: PASS_FIRST_SAFE_CONTRACT_GUARD_WITH_PROVENANCE_CLARIFICATION');
 console.log(`APP_INPUT_HEAD_G6: ${APP_INPUT_HEAD_G6}`);
 console.log(`OBSIDIAN_INPUT_HEAD_G6: ${OBSIDIAN_INPUT_HEAD_G6}`);
+console.log(`OBSIDIAN_SCOPE_BASE_HEAD_G6: ${OBSIDIAN_SCOPE_BASE_HEAD_G6}`);
 console.log('GCAL_PROVENANCE_COLLISION_FOUND: YES');
 console.log('SOURCE_PROVIDER_ROLE: REMOTE_ASSOCIATION_NOT_ORIGIN');
 console.log('IMPORTED_GOOGLE_EVENT_RUNTIME_PREDICATE: type === external_google_event');
