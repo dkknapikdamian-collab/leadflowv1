@@ -1,0 +1,69 @@
+name: LF PROD SOT G6 Bootstrap
+
+on:
+  push:
+    branches:
+      - dev-rollout-freeze
+    paths:
+      - .github/workflows/lf-prod-sot-g6-bootstrap.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lf-prod-sot-g6-bootstrap
+  cancel-in-progress: false
+
+jobs:
+  finalize-g6:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v4
+        with:
+          ref: dev-rollout-freeze
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Register exact G6 alias
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const file = 'package.json';
+          const exact = 'node scripts/guards/verify-lf-prod-sot-g6-gcal-first-safe-contract-guard.cjs && node --test tests/lf-prod-sot-g6-gcal-first-safe-contract-guard.test.cjs';
+          const pkg = JSON.parse(fs.readFileSync(file, 'utf8'));
+          if (!pkg.scripts || typeof pkg.scripts !== 'object') {
+            throw new Error('package.json scripts object is missing');
+          }
+          if (pkg.scripts['verify:lf-prod-sot-g6'] && pkg.scripts['verify:lf-prod-sot-g6'] !== exact) {
+            throw new Error('existing G6 alias differs from the required contract');
+          }
+          pkg.scripts['verify:lf-prod-sot-g6'] = exact;
+          fs.writeFileSync(file, `${JSON.stringify(pkg, null, 2)}\n`, 'utf8');
+          NODE
+
+      - name: Validate syntax and build
+        shell: bash
+        run: |
+          node --check scripts/guards/verify-lf-prod-sot-g6-gcal-first-safe-contract-guard.cjs
+          node --check tests/lf-prod-sot-g6-gcal-first-safe-contract-guard.test.cjs
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run build
+          git diff --check
+
+      - name: Commit final G6 app state
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -- .github/workflows/lf-prod-sot-g6-bootstrap.yml
+          git add -- package.json
+          git diff --cached --check
+          git commit -m "test(sot): guard Google Calendar mutation sync-state contract"
+          git push origin HEAD:dev-rollout-freeze
