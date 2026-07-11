@@ -289,7 +289,8 @@ for (const text of [report, map]) {
 
 must(router, '<!-- LF-PROD-SOT-G9 START -->');
 must(router, '<!-- LF-PROD-SOT-G9 END -->');
-must(router, 'G9_CONTRACT_REPAIR: PASS');
+must(router, 'LF-PROD-SOT-G9_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_CONTRACT');
+must(map, 'G9_CONTRACT_REPAIR: PASS');
 assertG10Absent();
 
 console.log('G9_FINAL_STATUS: PASS_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_CONTRACT');
