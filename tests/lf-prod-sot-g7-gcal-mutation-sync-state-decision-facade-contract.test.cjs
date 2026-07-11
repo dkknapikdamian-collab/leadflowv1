@@ -7,7 +7,15 @@ const ts = require('typescript');
 
 const root = path.resolve(__dirname, '..');
 const facadePath = path.join(root, 'src/lib/google-calendar-mutation-sync-state-decision.ts');
+const guardPath = path.join(root, 'scripts/guards/verify-lf-prod-sot-g7-gcal-mutation-sync-state-decision-facade-contract.cjs');
+const reportPath = path.join(root, '_project/runs/LF-PROD-SOT-G7_GCAL_MUTATION_SYNC_STATE_DECISION_FACADE_CONTRACT.md');
+const vaultRoot = process.env.OBSIDIAN_VAULT_PATH
+  ? path.resolve(process.env.OBSIDIAN_VAULT_PATH)
+  : path.resolve(root, '..', '00_OBSIDIAN_VAULT');
+const routerPath = path.join(vaultRoot, '10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/00_MAPY_I_ZALEZNOSCI_SOT.md');
+const mapPath = path.join(vaultRoot, '10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-G7_GCAL_MUTATION_SYNC_STATE_DECISION_FACADE_CONTRACT_MAP.md');
 const source = fs.readFileSync(facadePath, 'utf8');
+const guardSource = fs.readFileSync(guardPath, 'utf8');
 
 function loadFacade() {
   const compiled = ts.transpileModule(source, {
@@ -213,4 +221,43 @@ test('facade contains no imports or I/O tokens', () => {
   ]) {
     assert.equal(source.includes(token), false, token);
   }
+});
+
+
+test('G7 canonical evidence is protected by an executable mojibake guard', () => {
+  const forbiddenMojibakeTokens = [
+    '\u00e2\u20ac\u201d',
+    '\u00e2\u20ac\u201c',
+    '\u00c3',
+    '\u00c2',
+  ];
+  const report = fs.readFileSync(reportPath, 'utf8');
+  const map = fs.readFileSync(mapPath, 'utf8');
+  const router = fs.readFileSync(routerPath, 'utf8');
+  const start = router.indexOf('<!-- LF-PROD-SOT-G7 START -->');
+  const endMarker = '<!-- LF-PROD-SOT-G7-R2-R3 END -->';
+  const end = router.indexOf(endMarker);
+  assert.notEqual(start, -1);
+  assert.notEqual(end, -1);
+  const region = router.slice(start, end + endMarker.length);
+
+  for (const [label, text] of [['report', report], ['map', map], ['router', region]]) {
+    for (const token of forbiddenMojibakeTokens) {
+      assert.equal(text.includes(token), false, `${label}:${JSON.stringify(token)}`);
+    }
+  }
+
+  assert.match(guardSource, /const forbiddenMojibakeTokens = \[/);
+  assert.match(guardSource, /assertNoForbiddenMojibake\(report, 'app_report'\)/);
+  assert.match(guardSource, /assertNoForbiddenMojibake\(map, 'vault_map'\)/);
+  assert.match(guardSource, /assertNoForbiddenMojibake\(routerG7CloseoutRegion, 'vault_router_g7_closeout_region'\)/);
+});
+
+test('package.json acceptance uses semantic JSON truth and never raw text diff', () => {
+  assert.match(guardSource, /const pkg = JSON\.parse\(readAt\(root, rel\.package\)\)/);
+  assert.match(guardSource, /const basePkg = JSON\.parse\(sh\(root, \['show'/);
+  assert.match(guardSource, /JSON\.stringify\(stable\(pkgWithoutG7\)\)/);
+  assert.match(guardSource, /const packageJsonRawTextDiffUsedAsAcceptance = false/);
+  assert.doesNotMatch(guardSource, /--numstat/);
+  assert.match(guardSource, /PACKAGE_JSON_RAW_TEXT_DIFF_USED_AS_ACCEPTANCE: NO/);
 });

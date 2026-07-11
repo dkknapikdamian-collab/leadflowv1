@@ -50,6 +50,15 @@ const forbiddenIoTokens = [
   'document',
 ];
 
+const forbiddenMojibakeTokens = [
+  '\u00e2\u20ac\u201d',
+  '\u00e2\u20ac\u201c',
+  '\u00c3',
+  '\u00c2',
+];
+
+const packageJsonRawTextDiffUsedAsAcceptance = false;
+
 function sh(cwd, args) {
   return execFileSync('git', args, {
     cwd,
@@ -70,6 +79,23 @@ function must(text, token, label = token) {
 
 function mustNot(text, token, label = token) {
   if (text.includes(token)) throw new Error(`FORBIDDEN_TOKEN: ${label}`);
+}
+
+function assertNoForbiddenMojibake(text, label) {
+  for (const token of forbiddenMojibakeTokens) {
+    if (text.includes(token)) {
+      throw new Error(`FORBIDDEN_MOJIBAKE_TOKEN: ${label}:${JSON.stringify(token)}`);
+    }
+  }
+}
+
+function extractRouterG7CloseoutRegion(text) {
+  const startMarker = '<!-- LF-PROD-SOT-G7 START -->';
+  const endMarker = '<!-- LF-PROD-SOT-G7-R2-R3 END -->';
+  const start = text.indexOf(startMarker);
+  const end = text.indexOf(endMarker);
+  if (start < 0 || end < start) throw new Error('G7_ROUTER_CLOSEOUT_REGION_MISSING');
+  return text.slice(start, end + endMarker.length);
 }
 
 function listLines(value) {
@@ -211,10 +237,26 @@ for (const requiredExclude of ['node_modules', 'dist', '_project', '_local_backu
   }
 }
 const facade = readAt(root, rel.facade);
+const guardSource = readAt(root, rel.guard);
 const testSource = readAt(root, rel.test);
 const report = readAt(root, rel.report);
 const map = readAt(vault, rel.map);
 const router = readAt(vault, rel.router);
+const routerG7CloseoutRegion = extractRouterG7CloseoutRegion(router);
+
+assertNoForbiddenMojibake(report, 'app_report');
+assertNoForbiddenMojibake(map, 'vault_map');
+assertNoForbiddenMojibake(routerG7CloseoutRegion, 'vault_router_g7_closeout_region');
+
+if (packageJsonRawTextDiffUsedAsAcceptance !== false) {
+  throw new Error('PACKAGE_JSON_RAW_TEXT_DIFF_ACCEPTANCE_FORBIDDEN');
+}
+for (const token of [
+  '--' + 'numstat',
+  'PACKAGE_JSON_RAW_TEXT_DIFF_USED_AS_ACCEPTANCE:' + ' YES',
+]) {
+  mustNot(guardSource, token, `package_raw_diff_acceptance:${token}`);
+}
 
 must(facade, 'export type GoogleCalendarMutationKind');
 must(facade, 'export type GoogleCalendarMutationSyncStateOutcome');
@@ -298,6 +340,10 @@ for (const text of [report, map]) {
   must(text, 'GOOGLE_REMOTE_CALL_CHANGED: NO');
   must(text, 'RUNTIME_BEHAVIOR_CHANGED: NO');
   must(text, 'G8_CREATED: NO');
+  must(text, 'REPAIR_STAGE: LF-PROD-SOT-G7-R2-R3_MOJIBAKE_GUARD_AND_PACKAGE_DIFF_TRUTH_CLOSEOUT');
+  must(text, 'MOJIBAKE_EXECUTABLE_GUARD: PASS');
+  must(text, 'PACKAGE_JSON_RAW_TEXT_DIFF_USED_AS_ACCEPTANCE: NO');
+  must(text, 'PASS_G7_EXECUTABLE_MOJIBAKE_GUARD_AND_PACKAGE_DIFF_TRUTH');
 }
 
 must(router, '<!-- LF-PROD-SOT-G7 START -->');
@@ -312,6 +358,11 @@ must(router, 'SOURCE_PROVIDER_USED_AS_ORIGIN:');
 must(router, 'G8_CREATED:');
 must(router, 'NEXT_STAGE_DECISION:');
 must(router, 'DO_POTWIERDZENIA_AFTER_G7_VERIFICATION');
+must(routerG7CloseoutRegion, '<!-- LF-PROD-SOT-G7-R2-R3 START -->');
+must(routerG7CloseoutRegion, 'LF-PROD-SOT-G7-R2-R3_MOJIBAKE_GUARD_AND_PACKAGE_DIFF_TRUTH_CLOSEOUT');
+must(routerG7CloseoutRegion, 'MOJIBAKE_EXECUTABLE_GUARD:');
+must(routerG7CloseoutRegion, 'PACKAGE_JSON_RAW_TEXT_DIFF_USED_AS_ACCEPTANCE:');
+must(routerG7CloseoutRegion, 'PASS_G7_EXECUTABLE_MOJIBAKE_GUARD_AND_PACKAGE_DIFF_TRUTH');
 
 assertG8Absent();
 
@@ -329,3 +380,7 @@ console.log('SQL_API_SUPABASE_CHANGED: NO');
 console.log('GOOGLE_REMOTE_CALL_CHANGED: NO');
 console.log('RUNTIME_BEHAVIOR_CHANGED: NO');
 console.log('G8_CREATED: NO');
+console.log('MOJIBAKE_EXECUTABLE_GUARD: PASS');
+console.log('PACKAGE_JSON_RAW_TEXT_DIFF_USED_AS_ACCEPTANCE: NO');
+console.log('G7_R2_R3_FINAL_STATUS: PASS_G7_EXECUTABLE_MOJIBAKE_GUARD_AND_PACKAGE_DIFF_TRUTH');
+console.log('PASS_G7_EXECUTABLE_MOJIBAKE_GUARD_AND_PACKAGE_DIFF_TRUTH');
