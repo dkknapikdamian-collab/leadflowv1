@@ -34,6 +34,15 @@ const inbound = read(root, 'src/server/google-calendar-inbound.ts');
 const map = read(vault, '10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-G6_GCAL_FIRST_SAFE_CONTRACT_GUARD_MAP.md');
 const router = read(vault, '10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/00_MAPY_I_ZALEZNOSCI_SOT.md');
 
+test('concurrent unrelated Obsidian main advance has a dedicated scope baseline', () => {
+  for (const text of [report, map]) {
+    assert.match(text, /OBSIDIAN_INPUT_HEAD_G6: 95d3b47e7c073b3592b36f91587a9665ef427ed1/);
+    assert.match(text, /OBSIDIAN_SCOPE_BASE_HEAD_G6: 23150ba15ecf6e7848586ac1106dde13f8dda903/);
+    assert.match(text, /OBSIDIAN_SCOPE_BASE_REASON: CONCURRENT_UNRELATED_MAIN_ADVANCE_PRESERVED/);
+  }
+  assert.match(guard, /changedFilesSince\(vault, OBSIDIAN_SCOPE_BASE_HEAD_G6\)/);
+});
+
 function changedFilesSince(cwd, head) {
   return git(['diff', '--name-only', `${head}..HEAD`], cwd).split(/\r?\n/).filter(Boolean).map((file) => file.replaceAll('\\', '/'));
 }
