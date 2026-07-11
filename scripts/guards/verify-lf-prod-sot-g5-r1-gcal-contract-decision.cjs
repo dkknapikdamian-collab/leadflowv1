@@ -11,6 +11,7 @@ const rel = {
   package: 'package.json',
   g5Report: '_project/runs/LF-PROD-SOT-G5_GCAL_CALENDAR_BOUNDARY_GAP_MAP.md',
   report: '_project/runs/LF-PROD-SOT-G5-R1_GCAL_OUTBOUND_TRIGGER_REMINDER_AND_DELETE_CONTRACT_DECISION.md',
+  repairReport: '_project/runs/LF-PROD-SOT-G5-R1-R1_UTF8_ROUTER_HEADING_REPAIR_AND_GUARD_HARDENING.md',
   guard: 'scripts/guards/verify-lf-prod-sot-g5-r1-gcal-contract-decision.cjs',
   test: 'tests/lf-prod-sot-g5-r1-gcal-contract-decision.test.cjs',
   taskRoute: 'src/server/task-route-stage124f.ts',
@@ -21,12 +22,13 @@ const rel = {
   reminder: 'src/lib/google-calendar-reminder-preferences.ts',
   timezone: 'src/lib/calendar-timezone-contract.ts',
   map: '10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-G5-R1_GCAL_OUTBOUND_TRIGGER_REMINDER_AND_DELETE_CONTRACT_DECISION_MAP.md',
+  repairMap: '10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-G5-R1-R1_UTF8_ROUTER_HEADING_REPAIR_AND_GUARD_HARDENING_MAP.md',
   router: '10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/00_MAPY_I_ZALEZNOSCI_SOT.md',
 };
 
 const exactAlias = 'node scripts/guards/verify-lf-prod-sot-g5-r1-gcal-contract-decision.cjs && node --test tests/lf-prod-sot-g5-r1-gcal-contract-decision.test.cjs';
-const allowedApp = new Set([rel.package, rel.guard, rel.test, rel.report]);
-const allowedVault = new Set([rel.map, rel.router]);
+const allowedApp = new Set([rel.package, rel.guard, rel.test, rel.report, rel.repairReport]);
+const allowedVault = new Set([rel.map, rel.repairMap, rel.router]);
 
 function sh(cwd, args, options = {}) {
   return execFileSync('git', args, {
@@ -49,6 +51,14 @@ function must(text, token, label = token) {
 
 function mustNot(text, token, label = token) {
   if (text.includes(token)) throw new Error(`FORBIDDEN_RUNTIME_TOKEN: ${label}`);
+}
+
+const mojibakeTokens = ['â€”', 'â€“', 'â€™', 'â€œ', 'â€', 'Ã', 'Â', '�'];
+
+function assertNoMojibake(text, label) {
+  for (const token of mojibakeTokens) {
+    if (text.includes(token)) throw new Error(`UTF8_MOJIBAKE_DETECTED: ${label}: ${token}`);
+  }
 }
 
 function lines(value) {
@@ -128,7 +138,9 @@ must(g5Report, 'AUTOMATIC_OUTBOUND_AFTER_EVENT_MUTATION: NO');
 must(g5Report, 'TASK_EVENT_MUTATIONS_MARK_GCAL_PENDING: NO');
 
 const report = readAt(root, rel.report);
+const repairReport = readAt(root, rel.repairReport);
 const map = readAt(vault, rel.map);
+const repairMap = readAt(vault, rel.repairMap);
 const router = readAt(vault, rel.router);
 const taskRoute = readAt(root, rel.taskRoute);
 const eventRoute = readAt(root, rel.eventRoute);
@@ -263,6 +275,44 @@ for (const token of [
   must(router, token, `router:${token}`);
 }
 
+const g5r1RouterStart = '<!-- LF-PROD-SOT-G5-R1 START -->';
+const g5r1RouterEnd = '<!-- LF-PROD-SOT-G5-R1 END -->';
+const routerStartIndex = router.indexOf(g5r1RouterStart);
+const routerEndIndex = router.indexOf(g5r1RouterEnd);
+if (routerStartIndex < 0 || routerEndIndex < routerStartIndex) {
+  throw new Error('MISSING_G5_R1_ROUTER_BLOCK');
+}
+const g5r1RouterBlock = router.slice(routerStartIndex, routerEndIndex + g5r1RouterEnd.length);
+
+must(
+  g5r1RouterBlock,
+  '## LF-PROD-SOT-G5-R1 — GCal Outbound Trigger, Reminder and Delete Contract Decision',
+  'router:utf8_heading',
+);
+
+for (const [label, text] of [
+  ['g5-r1-report', report],
+  ['g5-r1-map', map],
+  ['g5-r1-router-block', g5r1RouterBlock],
+  ['g5-r1-r1-report', repairReport],
+  ['g5-r1-r1-map', repairMap],
+]) {
+  assertNoMojibake(text, label);
+}
+
+for (const token of [
+  'G5_R1_R1_FINAL_STATUS: PASS_UTF8_ROUTER_HEADING_REPAIR_AND_GUARD_HARDENING',
+  'UTF8_ROUTER_HEADING: CLEAN_EM_DASH',
+  'MOJIBAKE_GUARD_HARDENED: YES',
+  'NEXT_STAGE_SELECTED: LF-PROD-SOT-G6_GCAL_FIRST_SAFE_CONTRACT_GUARD',
+  'G6_CREATED: NO',
+  'RUNTIME_CHANGED: NO',
+  'SRC_CHANGED: NO',
+]) {
+  must(repairReport, token, `repairReport:${token}`);
+  must(repairMap, token, `repairMap:${token}`);
+}
+
 assertAllowed(changedFiles(root), allowedApp, 'app');
 assertAllowed(changedFiles(vault), allowedVault, 'vault');
 
@@ -279,3 +329,6 @@ console.log('OUTBOUND_TRIGGER_ARCHITECTURE: DURABLE_WORK_ITEM_SYNC_STATE');
 console.log('CONNECTION_SCOPE: EXACT_WORKSPACE_ID_PLUS_USER_ID');
 console.log('DONE_COMPLETED_REMOTE_POLICY: REMOTE_DELETE');
 console.log('G6_CREATED: NO');
+console.log('UTF8_ROUTER_HEADING: CLEAN_EM_DASH');
+console.log('MOJIBAKE_GUARD_HARDENED: YES');
+console.log('G5_R1_R1_FINAL_STATUS: PASS_UTF8_ROUTER_HEADING_REPAIR_AND_GUARD_HARDENING');

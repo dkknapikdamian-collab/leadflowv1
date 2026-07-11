@@ -17,6 +17,10 @@ const outbound = read(root, 'src/server/google-calendar-outbound.ts');
 const handler = read(root, 'src/server/google-calendar-handler.ts');
 const report = read(root, '_project/runs/LF-PROD-SOT-G5-R1_GCAL_OUTBOUND_TRIGGER_REMINDER_AND_DELETE_CONTRACT_DECISION.md');
 const map = read(vault, '10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-G5-R1_GCAL_OUTBOUND_TRIGGER_REMINDER_AND_DELETE_CONTRACT_DECISION_MAP.md');
+const repairReport = read(root, '_project/runs/LF-PROD-SOT-G5-R1-R1_UTF8_ROUTER_HEADING_REPAIR_AND_GUARD_HARDENING.md');
+const repairMap = read(vault, '10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-G5-R1-R1_UTF8_ROUTER_HEADING_REPAIR_AND_GUARD_HARDENING_MAP.md');
+const router = read(vault, '10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/00_MAPY_I_ZALEZNOSCI_SOT.md');
+const mojibakeTokens = ['â€”', 'â€“', 'â€™', 'â€œ', 'â€', 'Ã', 'Â', '�'];
 
 function git(args, cwd = root) {
   return execFileSync('git', args, { cwd, encoding: 'utf8' }).trim();
@@ -101,6 +105,36 @@ test('contract report and Obsidian map carry the selected architecture', () => {
     assert.match(text, /CONNECTION_SCOPE: EXACT_WORKSPACE_ID_PLUS_USER_ID/);
     assert.match(text, /REMINDER_PERSISTENCE_OWNER: TASK_AND_EVENT_SERVER_ROUTES/);
     assert.match(text, /DONE_COMPLETED_REMOTE_POLICY: REMOTE_DELETE/);
+    assert.match(text, /G6_CREATED: NO/);
+  }
+});
+
+test('G5-R1 router heading and stage documentation are UTF-8 clean', () => {
+  const start = router.indexOf('<!-- LF-PROD-SOT-G5-R1 START -->');
+  const end = router.indexOf('<!-- LF-PROD-SOT-G5-R1 END -->');
+  assert.ok(start >= 0 && end > start, 'missing G5-R1 router block');
+  const block = router.slice(start, end + '<!-- LF-PROD-SOT-G5-R1 END -->'.length);
+
+  assert.match(
+    block,
+    /## LF-PROD-SOT-G5-R1 — GCal Outbound Trigger, Reminder and Delete Contract Decision/,
+  );
+
+  for (const [label, text] of [
+    ['report', report],
+    ['map', map],
+    ['router-block', block],
+    ['repair-report', repairReport],
+    ['repair-map', repairMap],
+  ]) {
+    for (const token of mojibakeTokens) {
+      assert.equal(text.includes(token), false, `${label}: ${token}`);
+    }
+  }
+
+  for (const text of [repairReport, repairMap]) {
+    assert.match(text, /G5_R1_R1_FINAL_STATUS: PASS_UTF8_ROUTER_HEADING_REPAIR_AND_GUARD_HARDENING/);
+    assert.match(text, /NEXT_STAGE_SELECTED: LF-PROD-SOT-G6_GCAL_FIRST_SAFE_CONTRACT_GUARD/);
     assert.match(text, /G6_CREATED: NO/);
   }
 });
