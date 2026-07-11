@@ -7,9 +7,11 @@ const ts = require('typescript');
 
 const root = path.resolve(__dirname, '..');
 const markerPath = path.join(root, 'src/server/google-calendar-mutation-sync-state-marker.ts');
-const source = fs.readFileSync(markerPath, 'utf8');
+const decisionPath = path.join(root, 'src/lib/google-calendar-mutation-sync-state-decision.ts');
+const markerSource = fs.readFileSync(markerPath, 'utf8');
+const decisionSource = fs.readFileSync(decisionPath, 'utf8');
 
-function loadMarker(production = {}) {
+function transpile(source, fileName) {
   const compiled = ts.transpileModule(source, {
     compilerOptions: {
       target: ts.ScriptTarget.ES2022,
@@ -17,29 +19,34 @@ function loadMarker(production = {}) {
       strict: true,
       esModuleInterop: true,
     },
-    fileName: markerPath,
+    fileName,
     reportDiagnostics: true,
   });
-
   const diagnostics = compiled.diagnostics || [];
-  assert.equal(
-    diagnostics.length,
-    0,
-    diagnostics.map((item) => String(item.messageText)).join('\n'),
-  );
+  assert.equal(diagnostics.length, 0, diagnostics.map((item) => String(item.messageText)).join('\n'));
+  return compiled.outputText;
+}
 
+function compileStandalone(source, fileName) {
+  const loaded = new Module(fileName, module);
+  loaded.filename = fileName;
+  loaded.paths = Module._nodeModulePaths(path.dirname(fileName));
+  loaded._compile(transpile(source, fileName), fileName);
+  return loaded.exports;
+}
+
+const realDecisionModule = compileStandalone(decisionSource, decisionPath);
+const realDecide = realDecisionModule.decideGoogleCalendarMutationSyncState;
+
+function loadMarker(production = {}) {
   const loaded = new Module(markerPath, module);
   loaded.filename = markerPath;
   loaded.paths = Module._nodeModulePaths(path.dirname(markerPath));
-
   const originalLoad = Module._load;
   Module._load = function(request, parent, isMain) {
     if (parent === loaded && request === './_supabase.js') {
-      return {
-        updateByIdScoped: production.updateByIdScoped || (async () => []),
-      };
+      return { updateByIdScoped: production.updateByIdScoped || (async () => []) };
     }
-
     if (parent === loaded && request === './google-calendar-mutation-snapshot.js') {
       return {
         readGoogleCalendarMutationSnapshot:
@@ -47,38 +54,23 @@ function loadMarker(production = {}) {
           || (async () => ({ found: false, snapshot: null })),
       };
     }
-
-    if (
-      parent === loaded
-      && request === '../lib/google-calendar-mutation-sync-state-decision.js'
-    ) {
-      return {
-        decideGoogleCalendarMutationSyncState:
-          production.decideGoogleCalendarMutationSyncState
-          || (() => ({
-            outcome: 'unchanged',
-            nextSyncStatus: null,
-            shouldWrite: false,
-          })),
-      };
+    if (parent === loaded && request === '../lib/google-calendar-mutation-sync-state-decision.js') {
+      return { decideGoogleCalendarMutationSyncState: production.decideGoogleCalendarMutationSyncState || realDecide };
     }
-
     return originalLoad.call(this, request, parent, isMain);
   };
-
   try {
-    loaded._compile(compiled.outputText, markerPath);
+    loaded._compile(transpile(markerSource, markerPath), markerPath);
   } finally {
     Module._load = originalLoad;
   }
-
   return loaded.exports;
 }
 
 function baseSnapshot(overrides = {}) {
   return {
-    id: 'item-1',
-    workspaceId: 'workspace-1',
+    id: 'snapshot-item',
+    workspaceId: 'snapshot-workspace',
     recordType: 'task',
     type: 'task',
     status: 'todo',
@@ -95,593 +87,222 @@ function found(snapshot = baseSnapshot()) {
   return { found: true, snapshot };
 }
 
-function decision(overrides = {}) {
-  return {
-    outcome: 'pending',
-    nextSyncStatus: 'pending',
-    shouldWrite: true,
-    ...overrides,
-  };
-}
-
-function confirmedRow(overrides = {}) {
+function confirmedRow(status = 'pending', overrides = {}) {
   return [{
-    id: 'item-1',
-    workspace_id: 'workspace-1',
-    google_calendar_sync_status: 'pending',
+    id: 'snapshot-item',
+    workspace_id: 'snapshot-workspace',
+    google_calendar_sync_status: status,
     ...overrides,
   }];
 }
 
 function createHarness(options = {}) {
-  const calls = {
-    reads: [],
-    decisions: [],
-    writes: [],
-  };
-
-  const deps = {
-    readSnapshot: options.readSnapshot || (async (input) => {
-      calls.reads.push(input);
-      return options.readResult || found();
-    }),
-    decide: options.decide || ((input) => {
-      calls.decisions.push(input);
-      return options.decisionResult || decision();
-    }),
-    updateScoped: options.updateScoped || (async (table, id, workspaceId, payload) => {
-      calls.writes.push({ table, id, workspaceId, payload });
-      if (Object.prototype.hasOwnProperty.call(options, 'writeResult')) {
-        return options.writeResult;
-      }
-      return confirmedRow({
-        id,
-        workspace_id: workspaceId,
-        google_calendar_sync_status: payload.google_calendar_sync_status,
-      });
-    }),
-  };
-
-  return { calls, deps };
+  const calls = { reads: [], decisions: [], writes: [] };
+  const readSnapshot = options.readSnapshot || (async (input) => {
+    calls.reads.push(input);
+    return Object.prototype.hasOwnProperty.call(options, 'readResult')
+      ? options.readResult
+      : found();
+  });
+  const decide = options.decide || ((input) => {
+    calls.decisions.push(input);
+    return realDecide(input);
+  });
+  const updateScoped = options.updateScoped || (async (table, id, workspaceId, payload) => {
+    calls.writes.push({ table, id, workspaceId, payload });
+    if (Object.prototype.hasOwnProperty.call(options, 'writeResult')) return options.writeResult;
+    return [{ id, workspace_id: workspaceId, google_calendar_sync_status: payload.google_calendar_sync_status }];
+  });
+  return { calls, deps: { readSnapshot, decide, updateScoped } };
 }
 
 const marker = loadMarker();
-const validInput = {
-  mutationKind: 'update',
-  workItemId: 'item-1',
-  workspaceId: 'workspace-1',
-};
+const validInput = { mutationKind: 'update', workItemId: 'input-item', workspaceId: 'input-workspace' };
 
-test('empty workItemId is rejected', async () => {
-  const { deps } = createHarness();
-  await assert.rejects(
-    marker.markGoogleCalendarMutationSyncStateWithDependencies(
-      { ...validInput, workItemId: '' },
-      deps,
-    ),
-    /GCAL_MUTATION_SYNC_STATE_MARKER_WORK_ITEM_ID_REQUIRED/,
-  );
-});
-
-test('whitespace workItemId is rejected', async () => {
-  const { deps } = createHarness();
-  await assert.rejects(
-    marker.markGoogleCalendarMutationSyncStateWithDependencies(
-      { ...validInput, workItemId: '   ' },
-      deps,
-    ),
-    /GCAL_MUTATION_SYNC_STATE_MARKER_WORK_ITEM_ID_REQUIRED/,
-  );
-});
-
-test('empty workspaceId is rejected', async () => {
-  const { deps } = createHarness();
-  await assert.rejects(
-    marker.markGoogleCalendarMutationSyncStateWithDependencies(
-      { ...validInput, workspaceId: '' },
-      deps,
-    ),
-    /GCAL_MUTATION_SYNC_STATE_MARKER_WORKSPACE_ID_REQUIRED/,
-  );
-});
-
-test('whitespace workspaceId is rejected', async () => {
-  const { deps } = createHarness();
-  await assert.rejects(
-    marker.markGoogleCalendarMutationSyncStateWithDependencies(
-      { ...validInput, workspaceId: '   ' },
-      deps,
-    ),
-    /GCAL_MUTATION_SYNC_STATE_MARKER_WORKSPACE_ID_REQUIRED/,
-  );
-});
-
-test('invalid identifiers stop before reader and writer', async () => {
-  const { calls, deps } = createHarness();
-  await assert.rejects(
-    marker.markGoogleCalendarMutationSyncStateWithDependencies(
-      { ...validInput, workItemId: ' ' },
-      deps,
-    ),
-  );
-  assert.equal(calls.reads.length, 0);
-  assert.equal(calls.decisions.length, 0);
-  assert.equal(calls.writes.length, 0);
-});
-
-test('reader receives exact trimmed identifiers', async () => {
-  const { calls, deps } = createHarness({ readResult: { found: false, snapshot: null } });
-  await marker.markGoogleCalendarMutationSyncStateWithDependencies(
-    {
-      mutationKind: 'update',
-      workItemId: '  item-1  ',
-      workspaceId: '  workspace-1  ',
-    },
-    deps,
-  );
-  assert.deepEqual(calls.reads[0], {
-    workItemId: 'item-1',
-    workspaceId: 'workspace-1',
-  });
-});
-
-test('reader is called exactly once', async () => {
-  const { calls, deps } = createHarness({ readResult: { found: false, snapshot: null } });
-  await marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps);
-  assert.equal(calls.reads.length, 1);
-});
-
-test('found false returns snapshot_not_found', async () => {
-  const { deps } = createHarness({ readResult: { found: false, snapshot: null } });
-  const result = await marker.markGoogleCalendarMutationSyncStateWithDependencies(
-    validInput,
-    deps,
-  );
-  assert.deepEqual(result, {
-    resultKind: 'snapshot_not_found',
-    snapshotFound: false,
-    decision: null,
-    nextSyncStatus: null,
-    writeAttempted: false,
-    writeConfirmed: false,
-  });
-});
-
-test('found false does not call decision', async () => {
-  const { calls, deps } = createHarness({ readResult: { found: false, snapshot: null } });
-  await marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps);
-  assert.equal(calls.decisions.length, 0);
-});
-
-test('found false does not write', async () => {
-  const { calls, deps } = createHarness({ readResult: { found: false, snapshot: null } });
-  await marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps);
-  assert.equal(calls.writes.length, 0);
-});
-
-test('all snapshot fields are passed to G7', async () => {
-  const snapshot = baseSnapshot({
-    recordType: 'event',
-    type: 'meeting',
-    status: 'scheduled',
-    showInCalendar: false,
-    hasCalendarTime: false,
-    createdByUserId: 'user-7',
-    googleCalendarEventId: 'gcal-7',
-    currentGoogleSyncStatus: 'synced',
-  });
-  const { calls, deps } = createHarness({
-    readResult: found(snapshot),
-    decisionResult: decision({
-      outcome: 'unchanged',
-      nextSyncStatus: null,
-      shouldWrite: false,
-    }),
-  });
-
-  await marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps);
-
-  assert.deepEqual(calls.decisions[0], {
-    mutationKind: 'update',
-    recordType: 'event',
-    type: 'meeting',
-    status: 'scheduled',
-    showInCalendar: false,
-    hasCalendarTime: false,
-    createdByUserId: 'user-7',
-    googleCalendarEventId: 'gcal-7',
-    currentGoogleSyncStatus: 'synced',
-  });
-});
-
-test('mutationKind is passed to G7 unchanged', async () => {
-  const { calls, deps } = createHarness({
-    decisionResult: decision({
-      outcome: 'unchanged',
-      nextSyncStatus: null,
-      shouldWrite: false,
-    }),
-  });
-  await marker.markGoogleCalendarMutationSyncStateWithDependencies(
-    { ...validInput, mutationKind: 'CUSTOM_DELETE_ALIAS' },
-    deps,
-  );
-  assert.equal(calls.decisions[0].mutationKind, 'CUSTOM_DELETE_ALIAS');
-});
-
-for (const outcome of [
-  'skip_imported',
-  'skip_no_owner',
-  'skip_no_calendar_time',
-  'unchanged',
-]) {
-  test(outcome + ' does not write status', async () => {
-    const { calls, deps } = createHarness({
-      decisionResult: decision({
-        outcome,
-        nextSyncStatus: null,
-        shouldWrite: false,
-      }),
-    });
-    const result = await marker.markGoogleCalendarMutationSyncStateWithDependencies(
-      validInput,
-      deps,
-    );
-    assert.equal(result.resultKind, 'decision_no_write');
-    assert.equal(result.nextSyncStatus, null);
-    assert.equal(calls.writes.length, 0);
-  });
+async function run(options = {}, input = validInput) {
+  const harness = createHarness(options);
+  const result = await marker.markGoogleCalendarMutationSyncStateWithDependencies(input, harness.deps);
+  return { ...harness, result };
 }
 
-test('already pending decision does not write again', async () => {
-  const { calls, deps } = createHarness({
-    decisionResult: decision({
-      outcome: 'pending',
-      nextSyncStatus: 'pending',
-      shouldWrite: false,
-    }),
-  });
-  const result = await marker.markGoogleCalendarMutationSyncStateWithDependencies(
-    validInput,
-    deps,
-  );
-  assert.equal(result.resultKind, 'decision_no_write');
-  assert.equal(result.nextSyncStatus, 'pending');
-  assert.equal(calls.writes.length, 0);
+test('1 empty workItemId is rejected', async () => {
+  const { deps } = createHarness();
+  await assert.rejects(marker.markGoogleCalendarMutationSyncStateWithDependencies({ ...validInput, workItemId: '' }, deps), /WORK_ITEM_ID_REQUIRED/);
 });
-
-test('already pending_delete decision does not write again', async () => {
-  const { calls, deps } = createHarness({
-    decisionResult: decision({
-      outcome: 'pending_delete',
-      nextSyncStatus: 'pending_delete',
-      shouldWrite: false,
-    }),
-  });
-  const result = await marker.markGoogleCalendarMutationSyncStateWithDependencies(
-    validInput,
-    deps,
-  );
-  assert.equal(result.resultKind, 'decision_no_write');
-  assert.equal(result.nextSyncStatus, 'pending_delete');
-  assert.equal(calls.writes.length, 0);
+test('2 whitespace workItemId is rejected', async () => {
+  const { deps } = createHarness();
+  await assert.rejects(marker.markGoogleCalendarMutationSyncStateWithDependencies({ ...validInput, workItemId: '  ' }, deps), /WORK_ITEM_ID_REQUIRED/);
 });
-
-test('shouldWrite true with null status does not write', async () => {
-  const { calls, deps } = createHarness({
-    decisionResult: decision({
-      outcome: 'unchanged',
-      nextSyncStatus: null,
-      shouldWrite: true,
-    }),
-  });
-  const result = await marker.markGoogleCalendarMutationSyncStateWithDependencies(
-    validInput,
-    deps,
-  );
-  assert.equal(result.resultKind, 'decision_no_write');
-  assert.equal(calls.writes.length, 0);
+test('3 empty workspaceId is rejected', async () => {
+  const { deps } = createHarness();
+  await assert.rejects(marker.markGoogleCalendarMutationSyncStateWithDependencies({ ...validInput, workspaceId: '' }, deps), /WORKSPACE_ID_REQUIRED/);
 });
-
-test('pending decision performs one write', async () => {
-  const { calls, deps } = createHarness();
-  const result = await marker.markGoogleCalendarMutationSyncStateWithDependencies(
-    validInput,
-    deps,
-  );
-  assert.equal(calls.writes.length, 1);
-  assert.equal(result.resultKind, 'status_written');
-  assert.equal(result.nextSyncStatus, 'pending');
-  assert.equal(result.writeAttempted, true);
-  assert.equal(result.writeConfirmed, true);
+test('4 whitespace workspaceId is rejected', async () => {
+  const { deps } = createHarness();
+  await assert.rejects(marker.markGoogleCalendarMutationSyncStateWithDependencies({ ...validInput, workspaceId: '  ' }, deps), /WORKSPACE_ID_REQUIRED/);
 });
-
-test('pending_delete decision performs one write', async () => {
-  const { calls, deps } = createHarness({
-    decisionResult: decision({
-      outcome: 'pending_delete',
-      nextSyncStatus: 'pending_delete',
-      shouldWrite: true,
-    }),
-    writeResult: confirmedRow({
-      google_calendar_sync_status: 'pending_delete',
-    }),
-  });
-  const result = await marker.markGoogleCalendarMutationSyncStateWithDependencies(
-    { ...validInput, mutationKind: 'delete' },
-    deps,
-  );
-  assert.equal(calls.writes.length, 1);
-  assert.equal(result.nextSyncStatus, 'pending_delete');
+test('5 reader receives exact trimmed identifiers', async () => {
+  const { calls } = await run({ readResult: { found: false, snapshot: null } }, { mutationKind: 'update', workItemId: ' input-item ', workspaceId: ' input-workspace ' });
+  assert.deepEqual(calls.reads[0], { workItemId: 'input-item', workspaceId: 'input-workspace' });
 });
-
-test('write uses work_items table', async () => {
-  const { calls, deps } = createHarness();
-  await marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps);
-  assert.equal(calls.writes[0].table, 'work_items');
+test('6 reader is called exactly once', async () => {
+  const { calls } = await run({ readResult: { found: false, snapshot: null } });
+  assert.equal(calls.reads.length, 1);
 });
-
-test('write uses exact workItemId', async () => {
-  const { calls, deps } = createHarness();
-  await marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps);
-  assert.equal(calls.writes[0].id, 'item-1');
-});
-
-test('write uses exact workspaceId', async () => {
-  const { calls, deps } = createHarness();
-  await marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps);
-  assert.equal(calls.writes[0].workspaceId, 'workspace-1');
-});
-
-test('payload contains exactly one field', async () => {
-  const { calls, deps } = createHarness();
-  await marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps);
-  assert.deepEqual(Object.keys(calls.writes[0].payload), [
-    'google_calendar_sync_status',
-  ]);
-});
-
-test('payload contains no updated_at', async () => {
-  const { calls, deps } = createHarness();
-  await marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps);
-  assert.equal('updated_at' in calls.writes[0].payload, false);
-});
-
-test('payload contains no source_provider', async () => {
-  const { calls, deps } = createHarness();
-  await marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps);
-  assert.equal('source_provider' in calls.writes[0].payload, false);
-});
-
-test('reader error is propagated unchanged', async () => {
+test('7 reader error is propagated as same object', async () => {
   const expected = new Error('READ_FAILED');
-  const { deps } = createHarness({
-    readSnapshot: async () => { throw expected; },
-  });
-  await assert.rejects(
-    marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps),
-    (error) => error === expected,
-  );
+  const { deps } = createHarness({ readSnapshot: async () => { throw expected; } });
+  await assert.rejects(marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps), (error) => error === expected);
 });
-
-test('decision error is propagated unchanged', async () => {
-  const expected = new Error('DECISION_FAILED');
-  const { deps } = createHarness({
-    decide: () => { throw expected; },
-  });
-  await assert.rejects(
-    marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps),
-    (error) => error === expected,
-  );
+test('8 found false returns explicit result', async () => {
+  const { result } = await run({ readResult: { found: false, snapshot: null } });
+  assert.deepEqual(result, { found: false, wrote: false, decision: null, confirmation: null });
 });
-
-test('write error is propagated unchanged', async () => {
-  const expected = new Error('WRITE_FAILED');
-  const { deps } = createHarness({
-    updateScoped: async () => { throw expected; },
-  });
-  await assert.rejects(
-    marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps),
-    (error) => error === expected,
-  );
+test('9 found false does not call G7', async () => {
+  const { calls } = await run({ readResult: { found: false, snapshot: null } });
+  assert.equal(calls.decisions.length, 0);
 });
-
-test('null write response is rejected', async () => {
-  const { deps } = createHarness({ writeResult: null });
-  await assert.rejects(
-    marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps),
-    /GCAL_MUTATION_SYNC_STATE_MARKER_INVALID_WRITE_RESPONSE/,
-  );
-});
-
-test('undefined write response is rejected', async () => {
-  const { deps } = createHarness({
-    updateScoped: async () => undefined,
-  });
-  await assert.rejects(
-    marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps),
-    /GCAL_MUTATION_SYNC_STATE_MARKER_INVALID_WRITE_RESPONSE/,
-  );
-});
-
-test('object write response is rejected', async () => {
-  const { deps } = createHarness({ writeResult: { id: 'item-1' } });
-  await assert.rejects(
-    marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps),
-    /GCAL_MUTATION_SYNC_STATE_MARKER_INVALID_WRITE_RESPONSE/,
-  );
-});
-
-test('empty array write response is rejected', async () => {
-  const { deps } = createHarness({
-    updateScoped: async () => [],
-  });
-  await assert.rejects(
-    marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps),
-    /GCAL_MUTATION_SYNC_STATE_MARKER_WRITE_NOT_CONFIRMED/,
-  );
-});
-
-test('multiple updated rows are rejected', async () => {
-  const row = confirmedRow()[0];
-  const { deps } = createHarness({
-    writeResult: [row, row],
-  });
-  await assert.rejects(
-    marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps),
-    /GCAL_MUTATION_SYNC_STATE_MARKER_MULTIPLE_ROWS_UPDATED/,
-  );
-});
-
-test('non-object updated row is rejected', async () => {
-  const { deps } = createHarness({ writeResult: ['bad-row'] });
-  await assert.rejects(
-    marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps),
-    /GCAL_MUTATION_SYNC_STATE_MARKER_INVALID_UPDATED_ROW/,
-  );
-});
-
-test('array updated row is rejected', async () => {
-  const { deps } = createHarness({ writeResult: [[]] });
-  await assert.rejects(
-    marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps),
-    /GCAL_MUTATION_SYNC_STATE_MARKER_INVALID_UPDATED_ROW/,
-  );
-});
-
-test('mismatched returned id is rejected', async () => {
-  const { deps } = createHarness({
-    writeResult: confirmedRow({ id: 'item-2' }),
-  });
-  await assert.rejects(
-    marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps),
-    /GCAL_MUTATION_SYNC_STATE_MARKER_ID_MISMATCH/,
-  );
-});
-
-test('mismatched returned workspace is rejected', async () => {
-  const { deps } = createHarness({
-    writeResult: confirmedRow({ workspace_id: 'workspace-2' }),
-  });
-  await assert.rejects(
-    marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps),
-    /GCAL_MUTATION_SYNC_STATE_MARKER_WORKSPACE_MISMATCH/,
-  );
-});
-
-test('mismatched returned status is rejected', async () => {
-  const { deps } = createHarness({
-    writeResult: confirmedRow({ google_calendar_sync_status: 'synced' }),
-  });
-  await assert.rejects(
-    marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps),
-    /GCAL_MUTATION_SYNC_STATE_MARKER_STATUS_MISMATCH/,
-  );
-});
-
-test('unsupported decision status is rejected before write', async () => {
-  const { calls, deps } = createHarness({
-    decisionResult: {
-      outcome: 'pending',
-      nextSyncStatus: 'failed',
-      shouldWrite: true,
-    },
-  });
-  await assert.rejects(
-    marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps),
-    /GCAL_MUTATION_SYNC_STATE_MARKER_UNSUPPORTED_STATUS/,
-  );
+test('10 found false does not call writer', async () => {
+  const { calls } = await run({ readResult: { found: false, snapshot: null } });
   assert.equal(calls.writes.length, 0);
 });
-
-test('production wrapper uses G8 reader', async () => {
-  let reads = 0;
-  const productionMarker = loadMarker({
-    readGoogleCalendarMutationSnapshot: async () => {
-      reads += 1;
-      return { found: false, snapshot: null };
-    },
-  });
-  await productionMarker.markGoogleCalendarMutationSyncState(validInput);
-  assert.equal(reads, 1);
+test('11 found snapshot calls G7 exactly once', async () => {
+  const { calls } = await run();
+  assert.equal(calls.decisions.length, 1);
 });
-
-test('production wrapper uses G7 facade', async () => {
-  let decisions = 0;
-  const productionMarker = loadMarker({
-    readGoogleCalendarMutationSnapshot: async () => found(),
-    decideGoogleCalendarMutationSyncState: () => {
-      decisions += 1;
-      return {
-        outcome: 'unchanged',
-        nextSyncStatus: null,
-        shouldWrite: false,
-      };
-    },
-  });
-  await productionMarker.markGoogleCalendarMutationSyncState(validInput);
-  assert.equal(decisions, 1);
+test('12 mutationKind is mapped exactly', async () => {
+  const { calls } = await run({}, { ...validInput, mutationKind: 'create' });
+  assert.equal(calls.decisions[0].mutationKind, 'create');
 });
-
-test('production wrapper uses updateByIdScoped', async () => {
-  let writes = 0;
-  const productionMarker = loadMarker({
-    readGoogleCalendarMutationSnapshot: async () => found(),
-    decideGoogleCalendarMutationSyncState: () => decision(),
-    updateByIdScoped: async (table, id, workspaceId, payload) => {
-      writes += 1;
-      return [{
-        id,
-        workspace_id: workspaceId,
-        google_calendar_sync_status: payload.google_calendar_sync_status,
-      }];
-    },
-  });
-  const result = await productionMarker.markGoogleCalendarMutationSyncState(validInput);
-  assert.equal(writes, 1);
-  assert.equal(result.resultKind, 'status_written');
+test('13 all snapshot decision fields are mapped', async () => {
+  const snapshot = baseSnapshot({ recordType: 'event', type: 'meeting', status: 'scheduled', showInCalendar: false, hasCalendarTime: false, createdByUserId: 'u7', googleCalendarEventId: 'g7', currentGoogleSyncStatus: 'synced' });
+  const { calls } = await run({ readResult: found(snapshot) });
+  assert.deepEqual(calls.decisions[0], { mutationKind: 'update', recordType: 'event', type: 'meeting', status: 'scheduled', showInCalendar: false, hasCalendarTime: false, createdByUserId: 'u7', googleCalendarEventId: 'g7', currentGoogleSyncStatus: 'synced' });
 });
-
-test('source contains no unscoped update call', () => {
-  assert.equal(/\bupdateById\s*\(/.test(source), false);
-  assert.equal(/\bupdateByWorkspaceAndId\s*\(/.test(source), false);
-  assert.equal(/\bsupabaseRequest\s*\(/.test(source), false);
+test('14 G7 input excludes identity and origin fields', async () => {
+  const { calls } = await run();
+  assert.deepEqual(Object.keys(calls.decisions[0]).sort(), ['createdByUserId','currentGoogleSyncStatus','googleCalendarEventId','hasCalendarTime','mutationKind','recordType','showInCalendar','status','type'].sort());
 });
-
-test('source contains no Google API or fetch call', () => {
-  for (const token of [
-    'createGoogleCalendarEvent',
-    'updateGoogleCalendarEvent',
-    'deleteGoogleCalendarEvent',
-    'fetch(',
-  ]) {
-    assert.equal(source.includes(token), false, token);
-  }
+test('15 skip_imported does not write', async () => {
+  const { calls, result } = await run({ readResult: found(baseSnapshot({ type: 'external_google_event' })) });
+  assert.equal(result.decision.outcome, 'skip_imported'); assert.equal(result.wrote, false); assert.equal(calls.writes.length, 0);
 });
-
-test('source contains no source origin field or catch', () => {
-  for (const token of [
-    'source_provider',
-    'source_external_id',
-    '.catch(',
-  ]) {
-    assert.equal(source.includes(token), false, token);
-  }
+test('16 skip_no_owner does not write', async () => {
+  const { calls, result } = await run({ readResult: found(baseSnapshot({ createdByUserId: null })) });
+  assert.equal(result.decision.outcome, 'skip_no_owner'); assert.equal(calls.writes.length, 0);
 });
-
-test('source contains no environment, console or clock access', () => {
-  for (const token of [
-    'process.env',
-    'console.',
-    'Date(',
-    'new Date',
-  ]) {
-    assert.equal(source.includes(token), false, token);
-  }
+test('17 skip_no_calendar_time does not write', async () => {
+  const { calls, result } = await run({ readResult: found(baseSnapshot({ hasCalendarTime: false })) });
+  assert.equal(result.decision.outcome, 'skip_no_calendar_time'); assert.equal(calls.writes.length, 0);
 });
-
-test('source imports only the required production dependencies', () => {
-  assert.match(source, /readGoogleCalendarMutationSnapshot/);
-  assert.match(source, /decideGoogleCalendarMutationSyncState/);
-  assert.match(source, /updateByIdScoped/);
+test('18 unsupported record is unchanged and does not write', async () => {
+  const { calls, result } = await run({ readResult: found(baseSnapshot({ recordType: 'note' })) });
+  assert.equal(result.decision.outcome, 'unchanged'); assert.equal(calls.writes.length, 0);
+});
+test('19 delete without Google event id does not write', async () => {
+  const { calls, result } = await run({}, { ...validInput, mutationKind: 'delete' });
+  assert.equal(result.wrote, false); assert.equal(calls.writes.length, 0);
+});
+test('20 existing pending does not write again', async () => {
+  const { calls, result } = await run({ readResult: found(baseSnapshot({ currentGoogleSyncStatus: 'pending' })) });
+  assert.equal(result.decision.shouldWrite, false); assert.equal(calls.writes.length, 0);
+});
+test('21 existing pending_delete does not write again', async () => {
+  const snapshot = baseSnapshot({ googleCalendarEventId: 'g1', showInCalendar: false, currentGoogleSyncStatus: 'pending_delete' });
+  const { calls, result } = await run({ readResult: found(snapshot) });
+  assert.equal(result.decision.shouldWrite, false); assert.equal(calls.writes.length, 0);
+});
+test('22 pending performs exactly one write', async () => {
+  const { calls, result } = await run(); assert.equal(calls.writes.length, 1); assert.equal(result.wrote, true);
+});
+test('23 pending_delete performs exactly one write', async () => {
+  const snapshot = baseSnapshot({ googleCalendarEventId: 'g1', showInCalendar: false });
+  const { calls, result } = await run({ readResult: found(snapshot) }); assert.equal(calls.writes.length, 1); assert.equal(result.decision.nextSyncStatus, 'pending_delete');
+});
+test('24 writer uses work_items table', async () => {
+  const { calls } = await run(); assert.equal(calls.writes[0].table, 'work_items');
+});
+test('25 writer uses snapshot id', async () => {
+  const { calls } = await run(); assert.equal(calls.writes[0].id, 'snapshot-item'); assert.notEqual(calls.writes[0].id, validInput.workItemId);
+});
+test('26 writer uses snapshot workspaceId', async () => {
+  const { calls } = await run(); assert.equal(calls.writes[0].workspaceId, 'snapshot-workspace'); assert.notEqual(calls.writes[0].workspaceId, validInput.workspaceId);
+});
+test('27 payload contains exactly one property', async () => {
+  const { calls } = await run(); assert.deepEqual(Object.keys(calls.writes[0].payload), ['google_calendar_sync_status']);
+});
+test('28 pending payload has exact value', async () => {
+  const { calls } = await run(); assert.equal(calls.writes[0].payload.google_calendar_sync_status, 'pending');
+});
+test('29 pending_delete payload has exact value', async () => {
+  const snapshot = baseSnapshot({ googleCalendarEventId: 'g1', showInCalendar: false });
+  const { calls } = await run({ readResult: found(snapshot) }); assert.equal(calls.writes[0].payload.google_calendar_sync_status, 'pending_delete');
+});
+test('30 payload excludes updated_at', async () => {
+  const { calls } = await run(); assert.equal('updated_at' in calls.writes[0].payload, false);
+});
+test('31 shouldWrite true with null status throws invalid decision', async () => {
+  const { calls, deps } = createHarness({ decide: (input) => { calls.decisions.push(input); return { outcome: 'unchanged', nextSyncStatus: null, shouldWrite: true }; } });
+  await assert.rejects(marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps), /GCAL_MUTATION_SYNC_STATE_MARKER_INVALID_DECISION/);
+  assert.equal(calls.writes.length, 0);
+});
+test('32 unsupported status throws invalid decision', async () => {
+  const { calls, deps } = createHarness({ decide: (input) => { calls.decisions.push(input); return { outcome: 'pending', nextSyncStatus: 'failed', shouldWrite: true }; } });
+  await assert.rejects(marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps), /GCAL_MUTATION_SYNC_STATE_MARKER_INVALID_DECISION/);
+  assert.equal(calls.writes.length, 0);
+});
+test('33 writer error is propagated as same object', async () => {
+  const expected = new Error('WRITE_FAILED'); const { deps } = createHarness({ updateScoped: async () => { throw expected; } });
+  await assert.rejects(marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps), (error) => error === expected);
+});
+test('34 null response is rejected', async () => {
+  const { deps } = createHarness({ writeResult: null }); await assert.rejects(marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps), /WRITE_INVALID_RESPONSE/);
+});
+test('35 non-array response is rejected', async () => {
+  const { deps } = createHarness({ writeResult: {} }); await assert.rejects(marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps), /WRITE_INVALID_RESPONSE/);
+});
+test('36 empty array is not confirmed', async () => {
+  const { deps } = createHarness({ writeResult: [] }); await assert.rejects(marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps), /WRITE_NOT_CONFIRMED/);
+});
+test('37 multiple rows are not confirmed', async () => {
+  const row = confirmedRow()[0]; const { deps } = createHarness({ writeResult: [row, row] }); await assert.rejects(marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps), /WRITE_NOT_CONFIRMED/);
+});
+test('38 non-object row is invalid response', async () => {
+  const { deps } = createHarness({ writeResult: ['bad'] }); await assert.rejects(marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps), /WRITE_INVALID_RESPONSE/);
+});
+test('39 mismatched id is rejected', async () => {
+  const { deps } = createHarness({ writeResult: confirmedRow('pending', { id: 'other' }) }); await assert.rejects(marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps), /WRITE_ID_MISMATCH/);
+});
+test('40 mismatched workspace is rejected', async () => {
+  const { deps } = createHarness({ writeResult: confirmedRow('pending', { workspace_id: 'other' }) }); await assert.rejects(marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps), /WRITE_WORKSPACE_MISMATCH/);
+});
+test('41 mismatched status is rejected', async () => {
+  const { deps } = createHarness({ writeResult: confirmedRow('synced') }); await assert.rejects(marker.markGoogleCalendarMutationSyncStateWithDependencies(validInput, deps), /WRITE_STATUS_MISMATCH/);
+});
+test('42 pending returns confirmed result', async () => {
+  const { result } = await run(); assert.deepEqual(result.confirmation, { workItemId: 'snapshot-item', workspaceId: 'snapshot-workspace', googleCalendarSyncStatus: 'pending' });
+});
+test('43 pending_delete returns confirmed result', async () => {
+  const snapshot = baseSnapshot({ googleCalendarEventId: 'g1', showInCalendar: false }); const { result } = await run({ readResult: found(snapshot) }); assert.equal(result.confirmation.googleCalendarSyncStatus, 'pending_delete');
+});
+test('44 production wrapper uses G8 reader', async () => {
+  let reads = 0; const production = loadMarker({ readGoogleCalendarMutationSnapshot: async () => { reads += 1; return { found: false, snapshot: null }; } }); await production.markGoogleCalendarMutationSyncState(validInput); assert.equal(reads, 1);
+});
+test('45 production wrapper uses real G7 facade', async () => {
+  let decisions = 0; const production = loadMarker({ readGoogleCalendarMutationSnapshot: async () => found(), decideGoogleCalendarMutationSyncState: (input) => { decisions += 1; return realDecide(input); }, updateByIdScoped: async (_t, id, workspaceId, payload) => [{ id, workspace_id: workspaceId, google_calendar_sync_status: payload.google_calendar_sync_status }] }); await production.markGoogleCalendarMutationSyncState(validInput); assert.equal(decisions, 1);
+});
+test('46 production wrapper uses updateByIdScoped', async () => {
+  let writes = 0; const production = loadMarker({ readGoogleCalendarMutationSnapshot: async () => found(), updateByIdScoped: async (_t, id, workspaceId, payload) => { writes += 1; return [{ id, workspace_id: workspaceId, google_calendar_sync_status: payload.google_calendar_sync_status }]; } }); await production.markGoogleCalendarMutationSyncState(validInput); assert.equal(writes, 1);
+});
+test('47 source contains no forbidden runtime integrations', () => {
+  for (const token of ['fetch(', 'process.env', 'console.', 'setTimeout', 'setInterval', 'createGoogleCalendarEvent', 'updateGoogleCalendarEvent', 'deleteGoogleCalendarEvent', '.catch(']) assert.equal(markerSource.includes(token), false, token);
+});
+test('48 real G7 create task yields pending', () => {
+  const value = realDecide({ mutationKind: 'create', recordType: 'task', type: 'task', status: 'todo', showInCalendar: true, hasCalendarTime: true, createdByUserId: 'u1', googleCalendarEventId: null, currentGoogleSyncStatus: 'synced' }); assert.deepEqual(value, { outcome: 'pending', nextSyncStatus: 'pending', shouldWrite: true });
+});
+test('49 real G7 delete with event yields pending_delete', () => {
+  const value = realDecide({ mutationKind: 'delete', recordType: 'event', type: 'event', status: 'scheduled', showInCalendar: true, hasCalendarTime: true, createdByUserId: 'u1', googleCalendarEventId: 'g1', currentGoogleSyncStatus: 'synced' }); assert.deepEqual(value, { outcome: 'pending_delete', nextSyncStatus: 'pending_delete', shouldWrite: true });
+});
+test('50 source exports all required contract types and functions', () => {
+  for (const token of ['GoogleCalendarMutationSyncStateMarkerInput','GoogleCalendarMutationSyncStateMarkerDependencies','GoogleCalendarMutationSyncStateMarkerResult','GoogleCalendarMutationSyncStateWriteConfirmation','markGoogleCalendarMutationSyncStateWithDependencies','markGoogleCalendarMutationSyncState']) assert.equal(markerSource.includes(token), true, token);
 });

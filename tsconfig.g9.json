@@ -7,8 +7,8 @@
   "include": [
     "src/server/google-calendar-mutation-sync-state-marker.ts",
     "src/server/google-calendar-mutation-snapshot.ts",
-    "src/server/_supabase.ts",
-    "src/lib/google-calendar-mutation-sync-state-decision.ts"
+    "src/lib/google-calendar-mutation-sync-state-decision.ts",
+    "src/server/_supabase.ts"
   ],
   "exclude": [
     "node_modules",
