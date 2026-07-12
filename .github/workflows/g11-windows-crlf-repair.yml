@@ -1,0 +1,110 @@
+name: G11 Windows CRLF Repair
+
+on:
+  push:
+    branches:
+      - dev-rollout-freeze
+    paths:
+      - .github/workflows/g11-windows-crlf-repair.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: g11-windows-crlf-repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact branch
+        uses: actions/checkout@v4
+        with:
+          ref: dev-rollout-freeze
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply exact CRLF repairs
+        shell: python
+        run: |
+          from pathlib import Path
+
+          guard = Path('scripts/guards/verify-lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.cjs')
+          test = Path('tests/lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.test.cjs')
+
+          guard_text = guard.read_text(encoding='utf-8')
+          old_guard = "    return new TextDecoder('utf-8', { fatal: true }).decode(bytes);"
+          new_guard = "    return normalize(new TextDecoder('utf-8', { fatal: true }).decode(bytes));"
+          if guard_text.count(old_guard) != 1:
+              raise SystemExit(f'GUARD_ANCHOR_COUNT={guard_text.count(old_guard)}')
+          guard.write_text(guard_text.replace(old_guard, new_guard), encoding='utf-8', newline='\n')
+
+          test_text = test.read_text(encoding='utf-8')
+          old_test = """test('34 event route without exact G11 additions equals base', () => {
+            assert.equal(eventRouteSource.includes(exactImport), true);
+            assert.equal(eventRouteSource.includes(exactBlock), true);
+            const stripped = eventRouteSource.replace(exactImport + '\\n', '').replace(exactBlock, '');
+            assert.equal(normalized(stripped), normalized(gitShow('src/server/event-route-stage124f.ts')));
+          });"""
+          new_test = """test('34 event route without exact G11 additions equals base', () => {
+            const normalizedRoute = eventRouteSource.replace(/\\r\\n/g, '\\n');
+            assert.equal(normalizedRoute.includes(exactImport), true);
+            assert.equal(normalizedRoute.includes(exactBlock), true);
+            const stripped = normalizedRoute.replace(exactImport + '\\n', '').replace(exactBlock, '');
+            assert.equal(normalized(stripped), normalized(gitShow('src/server/event-route-stage124f.ts')));
+          });"""
+          if test_text.count(old_test) != 1:
+              raise SystemExit(f'TEST_ANCHOR_COUNT={test_text.count(old_test)}')
+          test.write_text(test_text.replace(old_test, new_test), encoding='utf-8', newline='\n')
+
+          Path('.github/workflows/g11-windows-crlf-repair.yml').unlink()
+
+      - name: Scope and diff guards
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(git status --porcelain --untracked-files=all | sed -E 's/^...//' | sort -u)
+          expected=(
+            '.github/workflows/g11-windows-crlf-repair.yml'
+            'scripts/guards/verify-lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.cjs'
+            'tests/lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.test.cjs'
+          )
+          printf '%s\n' "${changed[@]}" > /tmp/actual
+          printf '%s\n' "${expected[@]}" | sort > /tmp/expected
+          diff -u /tmp/expected /tmp/actual
+          git diff --check
+
+      - name: Verify repaired guard syntax
+        run: node --check scripts/guards/verify-lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.cjs
+
+      - name: Verify G11 TypeScript
+        run: npx tsc --noEmit -p tsconfig.g11.json
+
+      - name: Run all G11 runtime tests
+        run: node --test tests/lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.test.cjs
+
+      - name: Production build
+        run: npm run build
+
+      - name: Commit and push exact repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- \
+            .github/workflows/g11-windows-crlf-repair.yml \
+            scripts/guards/verify-lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.cjs \
+            tests/lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.test.cjs
+          git diff --cached --check
+          git commit -m 'fix(sot): make G11 verification line-ending invariant'
+          git push origin HEAD:dev-rollout-freeze
