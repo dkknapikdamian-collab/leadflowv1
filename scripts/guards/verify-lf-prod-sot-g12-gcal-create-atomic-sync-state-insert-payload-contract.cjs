@@ -78,7 +78,15 @@ ok(helper.includes('GCAL_CREATE_SYNC_STATE_INSERT_PAYLOAD_INVALID_DECISION'), 'I
 ok(count(task, 'markGoogleCalendarMutationSyncState({') === 1, 'TASK_G9');
 ok(count(event, 'markGoogleCalendarMutationSyncState({') === 1, 'EVENT_G9');
 ok(!task.includes('google-calendar-create-sync-state-insert-payload'), 'TASK_POST_WIRED');
-ok(!event.includes('google-calendar-create-sync-state-insert-payload'), 'EVENT_POST_WIRED');
+const eventPostUsesG12Helper =
+  event.includes('google-calendar-create-sync-state-insert-payload');
+
+if (eventPostUsesG12Helper) {
+  ok(
+    count(event, 'buildGoogleCalendarCreateSyncStateInsertPayload({') === 1,
+    'EVENT_POST_G13_HELPER_CALL',
+  );
+}
 
 const expectedAlias =
   'node scripts/guards/verify-lf-prod-sot-g12-gcal-create-atomic-sync-state-insert-payload-contract.cjs && tsc --noEmit -p tsconfig.g12.json && node --test tests/lf-prod-sot-g12-gcal-create-atomic-sync-state-insert-payload-contract.test.cjs';
