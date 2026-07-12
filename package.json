@@ -1096,7 +1096,8 @@
     "verify:lf-prod-sot-g7": "node scripts/guards/verify-lf-prod-sot-g7-gcal-mutation-sync-state-decision-facade-contract.cjs && tsc --noEmit -p tsconfig.g7.json && node --test tests/lf-prod-sot-g7-gcal-mutation-sync-state-decision-facade-contract.test.cjs",
     "verify:lf-prod-sot-g8": "node scripts/guards/verify-lf-prod-sot-g8-gcal-mutation-exact-workspace-snapshot-reader-contract.cjs && tsc --noEmit -p tsconfig.g8.json && node --test tests/lf-prod-sot-g8-gcal-mutation-exact-workspace-snapshot-reader-contract.test.cjs",
     "verify:lf-prod-sot-g9": "node scripts/guards/verify-lf-prod-sot-g9-gcal-mutation-scoped-sync-state-marker-contract.cjs && tsc --noEmit -p tsconfig.g9.json && node --test tests/lf-prod-sot-g9-gcal-mutation-scoped-sync-state-marker-contract.test.cjs",
-    "verify:lf-prod-sot-g10": "node scripts/guards/verify-lf-prod-sot-g10-task-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.cjs && tsc --noEmit -p tsconfig.g10.json && node --test tests/lf-prod-sot-g10-task-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.test.cjs"
+    "verify:lf-prod-sot-g10": "node scripts/guards/verify-lf-prod-sot-g10-task-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.cjs && tsc --noEmit -p tsconfig.g10.json && node --test tests/lf-prod-sot-g10-task-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.test.cjs",
+    "verify:lf-prod-sot-g11": "node scripts/guards/verify-lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.cjs && tsc --noEmit -p tsconfig.g11.json && node --test tests/lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
