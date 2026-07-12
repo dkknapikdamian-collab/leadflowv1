@@ -4,6 +4,7 @@ import { deleteByIdScoped, insertWithVariants, selectFirstAvailable, updateByIdS
 import { requireRequestIdentity, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
 import { normalizeTaskListContract } from '../lib/data-contract.js';
 import { normalizeCloseFlowDateTimeToUtcIso } from '../lib/calendar-timezone-contract.js';
+import { markGoogleCalendarMutationSyncState } from './google-calendar-mutation-sync-state-marker.js';
 
 const STAGE228R17_MISSING_ITEM_DELETE_CONTRACT = 'Task route does not promote deleted/done/missing_item records to lead next action and clears matching deleted next_action_item_id';
 const STAGE232A_R8_TASK_ROUTE_MISSING_ITEM_STATUS_BRIDGE = 'Task route preserves missing_item/blocking_missing_item status and description bridge for LeadDetail Braki UI';
@@ -324,6 +325,18 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
             scheduledAt: body.scheduledAt ?? payload.scheduled_at ?? body.date,
           });
         }
+      }
+      const googleCalendarSyncStateStageG10 =
+        await markGoogleCalendarMutationSyncState({
+          workItemId: String(body.id),
+          workspaceId,
+          mutationKind: 'update',
+        });
+
+      if (googleCalendarSyncStateStageG10.found === false) {
+        throw new Error(
+          'TASK_PATCH_GCAL_MUTATION_SNAPSHOT_NOT_FOUND',
+        );
       }
       res.status(200).json(normalizeTask(updated as Record<string, unknown>));
       return;
