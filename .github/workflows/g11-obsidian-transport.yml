@@ -1,0 +1,77 @@
+name: G11 Obsidian Exact Transport
+
+on:
+  pull_request:
+    branches:
+      - dev-rollout-freeze
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent-g11-obsidian-transport
+          fetch-depth: 0
+
+      - name: Stop after transport exists
+        id: existing
+        shell: bash
+        run: |
+          if test -f _project/g11-transport/MANIFEST.json; then
+            echo "exists=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=no" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate exact compressed transport
+        if: steps.existing.outputs.exists == 'no'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --quiet https://github.com/dkknapikdamian-collab/obsidian-vault.git /tmp/g11-vault
+          git -C /tmp/g11-vault checkout --quiet 8c65f9e74c9e03ca1f4858c814ae4903759c9feb
+          python - <<'PY'
+          import base64, gzip, hashlib, json
+          from pathlib import Path
+
+          scope = Path('/tmp/g11-vault/10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY')
+          router_path = scope / '00_MAPY_I_ZALEZNOSCI_SOT.md'
+          map_name = 'LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION_MAP.md'
+          map_path = scope / map_name
+          base = router_path.read_bytes()
+          assert hashlib.sha1(b'blob ' + str(len(base)).encode() + b'\0' + base).hexdigest() == '5f65da3b41ac35bd86a2b948460317e1124007e1'
+          block = b'''\n\n<!-- LF-PROD-SOT-G11 START -->\n\n## LF-PROD-SOT-G11\n\nSTAGE:\nLF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION\n\nMAPA:\n10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION_MAP.md\n\nDEPENDENCY_CHAIN:\nG7 -> G8 -> G9 -> G10 task PATCH -> G11 event PATCH\n\nSTATUS:\nPASS_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION\n\nTASK_PATCH_WIRED: YES\nEVENT_PATCH_WIRED: YES\nTASK_POST_WIRED: NO\nTASK_DELETE_WIRED: NO\nEVENT_POST_WIRED: NO\nEVENT_DELETE_WIRED: NO\nNEXT_STAGE: DO_POTWIERDZENIA_AFTER_G11_VERIFICATION\nG12_CREATED: NO\n\n<!-- LF-PROD-SOT-G11 END -->\n'''
+          final_router = base.rstrip(b'\n') + block
+          router_path.write_bytes(final_router)
+          map_text = '''# LF-PROD-SOT-G11 — Event PATCH Google Calendar Mutation Scoped Sync-State Marker Runtime Adoption Map\n\nDATA_I_CZAS: 2026-07-12 13:46 Europe/Warsaw\n\nSTAGE:\nLF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION\n\nSTATUS:\nPASS_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION\n\nCANONICAL_NAME: CloseFlow / LeadFlow\nPROJECT_ID: closeflow_lead_app\nAPP_REPO: dkknapikdamian-collab/leadflowv1\nAPP_BRANCH: dev-rollout-freeze\nAPP_INPUT_HEAD_G11: 1036e10e6c2ca734d9a9b61c9eaa1315fcef1ad9\nAPP_COMMIT: 4804b532f143918d9f714e8ea61a12f8c70b2f91\nAPP_PUSH: PASS\nOBSIDIAN_REPO: dkknapikdamian-collab/obsidian-vault\nOBSIDIAN_BRANCH: main\nOBSIDIAN_INPUT_HEAD_G11: 04042c0a2222c6f6d88d9c62f7fc1d2b4becd178\nOBSIDIAN_REBASE_BASE_FOR_COMMIT: 8c65f9e74c9e03ca1f4858c814ae4903759c9feb\nREQUIRED_G10_OBSIDIAN_ANCESTOR: 2b9f4dad19a4ce9bafca1b6475db8d07e33c3170\n\nCALL_ORDER:\nEVENT_SCOPED_UPDATE -> EXISTING_LEAD_SIDE_EFFECT -> G9_MARKER -> HTTP_200\n\nMARKER_INPUT:\nworkItemId=String(body.id) / workspaceId / mutationKind=update\n\nMARKER_OUTPUT:\nNie jest zwracany klientowi.\n\nNO_WRITE_BEHAVIOR:\nunchanged, skip_imported, skip_no_owner, skip_no_calendar_time oraz istniejące pending / pending_delete pozwalają PATCH zwrócić 200.\n\nHARD_ERROR_BEHAVIOR:\nfound=false -> EVENT_PATCH_GCAL_MUTATION_SNAPSHOT_NOT_FOUND; błędy G8/G9 przechodzą do istniejącego sendError.\n\nSNAPSHOT_NOT_FOUND_IS_HARD_ERROR: YES\nSUCCESS_RESPONSE_SHAPE_CHANGED: NO\nTASK_PATCH_WIRED: YES\nEVENT_PATCH_WIRED: YES\nTASK_POST_WIRED: NO\nTASK_DELETE_WIRED: NO\nEVENT_POST_WIRED: NO\nEVENT_DELETE_WIRED: NO\nGOOGLE_REMOTE_CALL_CHANGED: NO\nSQL_CHANGED: NO\nUI_CSS_CHANGED: NO\nG10_PRECHECK: PASS\nG10_PRECHECK_TESTS: 31 PASS / 0 FAIL\nPRE_G11_BUILD: PASS\nG11_GUARD: PASS\nG11_TESTS: 36 PASS / 0 FAIL\nG11_SCOPED_TSC: PASS\nBUILD: PASS\nGIT_DIFF_CHECK: PASS\nRECOVERY_ZIP: LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION_V1.zip\n\nRISK_AUDIT:\n- Event PATCH pozostaje operacją wieloetapową bez transakcji DB.\n- Główny zapis i side effect leada mogą zostać utrwalone przed błędem markera.\n- Retry PATCH jest mechanizmem naprawczym.\n- Event POST/DELETE i task POST/DELETE pozostają poza G11.\n\nWHAT_WAS_NOT_TOUCHED:\n- task route\n- event GET/POST/DELETE\n- G7/G8/G9/G10\n- outbound/inbound\n- SQL/migrations\n- UI/CSS\n\nNEXT_STEP: INDEPENDENT_G11_VERIFICATION_BEFORE_ANY_G12_DECISION\nG12_CREATED: NO\n\nKONIEC ETAPU G11\n'''
+          map_bytes = map_text.encode('utf-8')
+          map_path.write_bytes(map_bytes)
+
+          out = Path('_project/g11-transport')
+          out.mkdir(parents=True, exist_ok=True)
+          manifest = {}
+          for name, data in [('router', final_router), ('map', map_bytes)]:
+              packed = gzip.compress(data, compresslevel=9, mtime=0)
+              encoded = base64.b64encode(packed).decode('ascii')
+              parts = [encoded[i:i+3000] for i in range(0, len(encoded), 3000)]
+              for idx, part in enumerate(parts):
+                  (out / f'{name}.gz.b64.part{idx:02d}').write_text(part, encoding='ascii')
+              manifest[name] = {
+                  'parts': len(parts),
+                  'sha256': hashlib.sha256(data).hexdigest(),
+                  'git_blob_sha1': hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest(),
+                  'bytes': len(data),
+              }
+          (out / 'MANIFEST.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
+          PY
+          git config user.name "OpenAI G11 Transport"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- _project/g11-transport
+          git commit -m "chore(g11): generate exact Obsidian transport"
+          git push origin HEAD:agent-g11-obsidian-transport
