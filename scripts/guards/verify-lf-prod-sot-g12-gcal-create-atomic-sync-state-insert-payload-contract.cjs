@@ -1,0 +1,107 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const cp = require('node:child_process');
+
+const root = path.resolve(__dirname, '../..');
+const allowed = new Set([
+  'src/lib/google-calendar-create-sync-state-insert-payload.ts',
+  'scripts/guards/verify-lf-prod-sot-g12-gcal-create-atomic-sync-state-insert-payload-contract.cjs',
+  'tests/lf-prod-sot-g12-gcal-create-atomic-sync-state-insert-payload-contract.test.cjs',
+  '_project/runs/LF-PROD-SOT-G12_GCAL_CREATE_ATOMIC_SYNC_STATE_INSERT_PAYLOAD_CONTRACT.md',
+  'tsconfig.g12.json',
+  'package.json',
+]);
+
+function run(command) {
+  return cp.execSync(command, { cwd: root, encoding: 'utf8' }).trim();
+}
+
+function runRaw(command) {
+  return cp.execSync(command, { cwd: root, encoding: 'utf8' });
+}
+
+function read(file) {
+  const full = path.join(root, file);
+  if (!fs.existsSync(full)) throw new Error(`MISSING_REQUIRED_FILE:${file}`);
+  const decoded = new TextDecoder('utf-8', { fatal: true }).decode(fs.readFileSync(full));
+  return decoded.replace(/\r\n/g, '\n');
+}
+
+function count(text, token) {
+  return text.split(token).length - 1;
+}
+
+function ok(value, message) {
+  if (!value) throw new Error(message);
+}
+
+ok(run('git branch --show-current') === 'dev-rollout-freeze', 'WRONG_BRANCH');
+
+const statusLines = runRaw('git status --porcelain=v1 --untracked-files=all')
+  .split(/\r?\n/)
+  .filter(Boolean);
+
+for (const line of statusLines) {
+  const file = line.slice(3).replace(/^"|"$/g, '');
+  ok(allowed.has(file), `OUT_OF_SCOPE:${file}`);
+}
+
+const helper = read('src/lib/google-calendar-create-sync-state-insert-payload.ts');
+const task = read('src/server/task-route-stage124f.ts');
+const event = read('src/server/event-route-stage124f.ts');
+const tests = read('tests/lf-prod-sot-g12-gcal-create-atomic-sync-state-insert-payload-contract.test.cjs');
+const report = read('_project/runs/LF-PROD-SOT-G12_GCAL_CREATE_ATOMIC_SYNC_STATE_INSERT_PAYLOAD_CONTRACT.md');
+const tsconfig = JSON.parse(read('tsconfig.g12.json'));
+const pkg = JSON.parse(read('package.json'));
+
+ok(helper.includes("from './google-calendar-mutation-sync-state-decision.js'"), 'G7_IMPORT');
+ok(helper.includes("mutationKind: 'create'"), 'CREATE_NOT_HARDCODED');
+
+for (const field of [
+  'recordType',
+  'type',
+  'status',
+  'showInCalendar',
+  'hasCalendarTime',
+  'createdByUserId',
+  'googleCalendarEventId',
+  'currentGoogleSyncStatus',
+]) {
+  ok(helper.includes(`${field}: input.${field}`), `FIELD:${field}`);
+}
+
+for (const token of [
+  'fetch(',
+  'supabaseRequest',
+  'insertWithVariants',
+  'selectFirstAvailable',
+  'updateByIdScoped',
+  'mutation-snapshot',
+  'sync-state-marker',
+  '/server/',
+]) {
+  ok(!helper.includes(token), `FORBIDDEN:${token}`);
+}
+
+ok(helper.includes("google_calendar_sync_status: 'pending'"), 'PENDING_PAYLOAD');
+ok(!helper.includes("google_calendar_sync_status: 'pending_delete'"), 'PENDING_DELETE_OUTPUT');
+ok(helper.includes('GCAL_CREATE_SYNC_STATE_INSERT_PAYLOAD_INVALID_DECISION'), 'INVALID_DECISION_ERROR');
+
+ok(count(task, 'markGoogleCalendarMutationSyncState({') === 1, 'TASK_G9');
+ok(count(event, 'markGoogleCalendarMutationSyncState({') === 1, 'EVENT_G9');
+ok(!task.includes('google-calendar-create-sync-state-insert-payload'), 'TASK_POST_WIRED');
+ok(!event.includes('google-calendar-create-sync-state-insert-payload'), 'EVENT_POST_WIRED');
+
+const expectedAlias =
+  'node scripts/guards/verify-lf-prod-sot-g12-gcal-create-atomic-sync-state-insert-payload-contract.cjs && tsc --noEmit -p tsconfig.g12.json && node --test tests/lf-prod-sot-g12-gcal-create-atomic-sync-state-insert-payload-contract.test.cjs';
+
+ok(pkg.scripts['verify:lf-prod-sot-g12'] === expectedAlias, 'PACKAGE_ALIAS');
+ok(Array.isArray(tsconfig.include) && tsconfig.include.length === 2, 'TSCONFIG');
+ok((tests.match(/\btest\(/g) || []).length >= 28, 'TEST_COUNT');
+ok(report.includes('G13_CREATED: NO'), 'REPORT_G13');
+
+console.log('TASK_PATCH_G9_CALL_COUNT: 1');
+console.log('EVENT_PATCH_G9_CALL_COUNT: 1');
+console.log('TASK_POST_G12_IMPORT_COUNT: 0');
+console.log('EVENT_POST_G12_IMPORT_COUNT: 0');
+console.log('G12_FINAL_STATUS: PASS_GCAL_CREATE_ATOMIC_SYNC_STATE_INSERT_PAYLOAD_CONTRACT');
