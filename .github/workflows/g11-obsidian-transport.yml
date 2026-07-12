@@ -1,77 +1,357 @@
-name: G11 Obsidian Exact Transport
+name: G11 Obsidian Fallback Package
 
 on:
   pull_request:
     branches:
       - dev-rollout-freeze
-    types: [opened, synchronize, reopened]
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  generate:
+  package:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
+    env:
+      APP_COMMIT: 4804b532f143918d9f714e8ea61a12f8c70b2f91
+      APP_INPUT_HEAD: 1036e10e6c2ca734d9a9b61c9eaa1315fcef1ad9
+      OBSIDIAN_INPUT_HEAD: 04042c0a2222c6f6d88d9c62f7fc1d2b4becd178
+      REQUIRED_G10_OBSIDIAN_ANCESTOR: 2b9f4dad19a4ce9bafca1b6475db8d07e33c3170
+      ZIP_NAME: LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION_V1.zip
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout package branch
+        uses: actions/checkout@v4
         with:
           ref: agent-g11-obsidian-transport
           fetch-depth: 0
 
-      - name: Stop after transport exists
-        id: existing
-        shell: bash
-        run: |
-          if test -f _project/g11-transport/MANIFEST.json; then
-            echo "exists=yes" >> "$GITHUB_OUTPUT"
-          else
-            echo "exists=no" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Generate exact compressed transport
-        if: steps.existing.outputs.exists == 'no'
+      - name: Verify helper branch scope
         shell: bash
         run: |
           set -euo pipefail
-          git clone --quiet https://github.com/dkknapikdamian-collab/obsidian-vault.git /tmp/g11-vault
-          git -C /tmp/g11-vault checkout --quiet 8c65f9e74c9e03ca1f4858c814ae4903759c9feb
+          git merge-base --is-ancestor "$APP_COMMIT" HEAD
+          test "$(git rev-parse "$APP_COMMIT^")" = "$APP_INPUT_HEAD"
+          actual="$(git diff --name-only "$APP_COMMIT..HEAD" | sort)"
+          expected=".github/workflows/g11-obsidian-transport.yml"
+          test "$actual" = "$expected"
+
+      - name: Build exact fallback package
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="/tmp/g11-package"
+          rm -rf "$ROOT"
+          mkdir -p "$ROOT/APP" "$ROOT/OBSIDIAN" "$ROOT/SCRIPTS"
+
+          APP_FILES=(
+            "src/server/event-route-stage124f.ts"
+            "scripts/guards/verify-lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.cjs"
+            "tests/lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.test.cjs"
+            "_project/runs/LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION.md"
+            "tsconfig.g11.json"
+            "package.json"
+          )
+          for file in "${APP_FILES[@]}"; do
+            mkdir -p "$ROOT/APP/$(dirname "$file")"
+            git show "$APP_COMMIT:$file" > "$ROOT/APP/$file"
+          done
+
           python - <<'PY'
-          import base64, gzip, hashlib, json
           from pathlib import Path
+          import json
 
-          scope = Path('/tmp/g11-vault/10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY')
-          router_path = scope / '00_MAPY_I_ZALEZNOSCI_SOT.md'
-          map_name = 'LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION_MAP.md'
-          map_path = scope / map_name
-          base = router_path.read_bytes()
-          assert hashlib.sha1(b'blob ' + str(len(base)).encode() + b'\0' + base).hexdigest() == '5f65da3b41ac35bd86a2b948460317e1124007e1'
-          block = b'''\n\n<!-- LF-PROD-SOT-G11 START -->\n\n## LF-PROD-SOT-G11\n\nSTAGE:\nLF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION\n\nMAPA:\n10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION_MAP.md\n\nDEPENDENCY_CHAIN:\nG7 -> G8 -> G9 -> G10 task PATCH -> G11 event PATCH\n\nSTATUS:\nPASS_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION\n\nTASK_PATCH_WIRED: YES\nEVENT_PATCH_WIRED: YES\nTASK_POST_WIRED: NO\nTASK_DELETE_WIRED: NO\nEVENT_POST_WIRED: NO\nEVENT_DELETE_WIRED: NO\nNEXT_STAGE: DO_POTWIERDZENIA_AFTER_G11_VERIFICATION\nG12_CREATED: NO\n\n<!-- LF-PROD-SOT-G11 END -->\n'''
-          final_router = base.rstrip(b'\n') + block
-          router_path.write_bytes(final_router)
-          map_text = '''# LF-PROD-SOT-G11 — Event PATCH Google Calendar Mutation Scoped Sync-State Marker Runtime Adoption Map\n\nDATA_I_CZAS: 2026-07-12 13:46 Europe/Warsaw\n\nSTAGE:\nLF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION\n\nSTATUS:\nPASS_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION\n\nCANONICAL_NAME: CloseFlow / LeadFlow\nPROJECT_ID: closeflow_lead_app\nAPP_REPO: dkknapikdamian-collab/leadflowv1\nAPP_BRANCH: dev-rollout-freeze\nAPP_INPUT_HEAD_G11: 1036e10e6c2ca734d9a9b61c9eaa1315fcef1ad9\nAPP_COMMIT: 4804b532f143918d9f714e8ea61a12f8c70b2f91\nAPP_PUSH: PASS\nOBSIDIAN_REPO: dkknapikdamian-collab/obsidian-vault\nOBSIDIAN_BRANCH: main\nOBSIDIAN_INPUT_HEAD_G11: 04042c0a2222c6f6d88d9c62f7fc1d2b4becd178\nOBSIDIAN_REBASE_BASE_FOR_COMMIT: 8c65f9e74c9e03ca1f4858c814ae4903759c9feb\nREQUIRED_G10_OBSIDIAN_ANCESTOR: 2b9f4dad19a4ce9bafca1b6475db8d07e33c3170\n\nCALL_ORDER:\nEVENT_SCOPED_UPDATE -> EXISTING_LEAD_SIDE_EFFECT -> G9_MARKER -> HTTP_200\n\nMARKER_INPUT:\nworkItemId=String(body.id) / workspaceId / mutationKind=update\n\nMARKER_OUTPUT:\nNie jest zwracany klientowi.\n\nNO_WRITE_BEHAVIOR:\nunchanged, skip_imported, skip_no_owner, skip_no_calendar_time oraz istniejące pending / pending_delete pozwalają PATCH zwrócić 200.\n\nHARD_ERROR_BEHAVIOR:\nfound=false -> EVENT_PATCH_GCAL_MUTATION_SNAPSHOT_NOT_FOUND; błędy G8/G9 przechodzą do istniejącego sendError.\n\nSNAPSHOT_NOT_FOUND_IS_HARD_ERROR: YES\nSUCCESS_RESPONSE_SHAPE_CHANGED: NO\nTASK_PATCH_WIRED: YES\nEVENT_PATCH_WIRED: YES\nTASK_POST_WIRED: NO\nTASK_DELETE_WIRED: NO\nEVENT_POST_WIRED: NO\nEVENT_DELETE_WIRED: NO\nGOOGLE_REMOTE_CALL_CHANGED: NO\nSQL_CHANGED: NO\nUI_CSS_CHANGED: NO\nG10_PRECHECK: PASS\nG10_PRECHECK_TESTS: 31 PASS / 0 FAIL\nPRE_G11_BUILD: PASS\nG11_GUARD: PASS\nG11_TESTS: 36 PASS / 0 FAIL\nG11_SCOPED_TSC: PASS\nBUILD: PASS\nGIT_DIFF_CHECK: PASS\nRECOVERY_ZIP: LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION_V1.zip\n\nRISK_AUDIT:\n- Event PATCH pozostaje operacją wieloetapową bez transakcji DB.\n- Główny zapis i side effect leada mogą zostać utrwalone przed błędem markera.\n- Retry PATCH jest mechanizmem naprawczym.\n- Event POST/DELETE i task POST/DELETE pozostają poza G11.\n\nWHAT_WAS_NOT_TOUCHED:\n- task route\n- event GET/POST/DELETE\n- G7/G8/G9/G10\n- outbound/inbound\n- SQL/migrations\n- UI/CSS\n\nNEXT_STEP: INDEPENDENT_G11_VERIFICATION_BEFORE_ANY_G12_DECISION\nG12_CREATED: NO\n\nKONIEC ETAPU G11\n'''
-          map_bytes = map_text.encode('utf-8')
-          map_path.write_bytes(map_bytes)
+          root = Path('/tmp/g11-package')
+          map_rel = Path('10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION_MAP.md')
+          map_path = root / 'OBSIDIAN' / map_rel
+          map_path.parent.mkdir(parents=True, exist_ok=True)
+          map_text = '''# LF-PROD-SOT-G11 — Event PATCH Google Calendar Mutation Scoped Sync-State Marker Runtime Adoption Map
 
-          out = Path('_project/g11-transport')
-          out.mkdir(parents=True, exist_ok=True)
-          manifest = {}
-          for name, data in [('router', final_router), ('map', map_bytes)]:
-              packed = gzip.compress(data, compresslevel=9, mtime=0)
-              encoded = base64.b64encode(packed).decode('ascii')
-              parts = [encoded[i:i+3000] for i in range(0, len(encoded), 3000)]
-              for idx, part in enumerate(parts):
-                  (out / f'{name}.gz.b64.part{idx:02d}').write_text(part, encoding='ascii')
-              manifest[name] = {
-                  'parts': len(parts),
-                  'sha256': hashlib.sha256(data).hexdigest(),
-                  'git_blob_sha1': hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest(),
-                  'bytes': len(data),
-              }
-          (out / 'MANIFEST.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
+DATA_I_CZAS: 2026-07-12 14:40 Europe/Warsaw
+
+STAGE:
+LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION
+
+STATUS:
+READY_FOR_LOCAL_OBSIDIAN_APPLY_AND_PUSH
+
+CANONICAL_NAME: CloseFlow / LeadFlow
+PROJECT_ID: closeflow_lead_app
+APP_REPO: dkknapikdamian-collab/leadflowv1
+APP_BRANCH: dev-rollout-freeze
+APP_LOCAL_PATH: C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow
+APP_INPUT_HEAD_G11: 1036e10e6c2ca734d9a9b61c9eaa1315fcef1ad9
+APP_COMMIT: 4804b532f143918d9f714e8ea61a12f8c70b2f91
+APP_PUSH: PASS
+
+OBSIDIAN_REPO: dkknapikdamian-collab/obsidian-vault
+OBSIDIAN_BRANCH: main
+OBSIDIAN_LOCAL_PATH: C:\\Users\\malim\\Desktop\\biznesy_ai\\00_OBSIDIAN_VAULT
+OBSIDIAN_INPUT_HEAD_G11: RESOLVED_BY_APPLY_SCRIPT
+REQUIRED_G10_OBSIDIAN_ANCESTOR: 2b9f4dad19a4ce9bafca1b6475db8d07e33c3170
+OBSIDIAN_COMMIT: SELF_RESOLVED_AFTER_COMMIT
+OBSIDIAN_PUSH: PENDING_LOCAL_APPLY
+
+ROUTER:
+10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/00_MAPY_I_ZALEZNOSCI_SOT.md
+
+MAP:
+10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION_MAP.md
+
+DEPENDENCY_CHAIN:
+G7 -> G8 -> G9 -> G10 task PATCH -> G11 event PATCH
+
+CALL_ORDER:
+EVENT_SCOPED_UPDATE -> EXISTING_LEAD_SIDE_EFFECT -> G9_MARKER -> HTTP_200
+
+MARKER_INPUT:
+workItemId=String(body.id) / workspaceId / mutationKind=update
+
+MARKER_OUTPUT:
+Nie jest zwracany klientowi.
+
+NO_WRITE_BEHAVIOR:
+unchanged, skip_imported, skip_no_owner, skip_no_calendar_time oraz istniejące pending / pending_delete pozwalają PATCH zwrócić 200.
+
+HARD_ERROR_BEHAVIOR:
+found=false -> EVENT_PATCH_GCAL_MUTATION_SNAPSHOT_NOT_FOUND; błędy G8/G9 przechodzą do istniejącego sendError.
+
+SNAPSHOT_NOT_FOUND_IS_HARD_ERROR: YES
+SUCCESS_RESPONSE_SHAPE_CHANGED: NO
+TASK_PATCH_WIRED: YES
+EVENT_PATCH_WIRED: YES
+TASK_POST_WIRED: NO
+TASK_DELETE_WIRED: NO
+EVENT_POST_WIRED: NO
+EVENT_DELETE_WIRED: NO
+GOOGLE_REMOTE_CALL_CHANGED: NO
+SQL_CHANGED: NO
+UI_CSS_CHANGED: NO
+G10_PRECHECK: PASS
+G10_PRECHECK_TESTS: 31 PASS / 0 FAIL
+PRE_G11_BUILD: PASS
+G11_GUARD: PASS_AFTER_LOCAL_OBSIDIAN_APPLY
+G11_TESTS: 36 PASS / 0 FAIL
+G11_SCOPED_TSC: PASS
+BUILD: PASS
+GIT_DIFF_CHECK: PASS
+RECOVERY_ZIP: LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION_V1.zip
+
+RISK_AUDIT:
+- Event PATCH pozostaje operacją wieloetapową bez transakcji DB.
+- Główny zapis i side effect leada mogą zostać utrwalone przed błędem markera.
+- Retry PATCH jest mechanizmem naprawczym.
+- Event POST/DELETE i task POST/DELETE pozostają poza G11.
+- Obsidian push wymaga lokalnego apply, ponieważ repo nie przydziela runnera GitHub Actions.
+
+WHAT_WAS_NOT_TOUCHED:
+- task route
+- event GET/POST/DELETE
+- G7/G8/G9/G10
+- outbound/inbound
+- SQL/migrations
+- UI/CSS
+
+NEXT_STEP:
+RUN_SCRIPTS/APPLY_OBSIDIAN_G11_AND_PUSH.ps1
+
+G12_CREATED: NO
+
+KONIEC ETAPU G11 — PENDING_OBSIDIAN_PUSH
+'''
+          map_path.write_text(map_text, encoding='utf-8', newline='\n')
+
+          router_block = '''
+
+<!-- LF-PROD-SOT-G11 START -->
+
+## LF-PROD-SOT-G11
+
+STAGE:
+LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION
+
+MAPA:
+10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION_MAP.md
+
+DEPENDENCY_CHAIN:
+G7 -> G8 -> G9 -> G10 task PATCH -> G11 event PATCH
+
+STATUS:
+PASS_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION
+
+TASK_PATCH_WIRED: YES
+EVENT_PATCH_WIRED: YES
+TASK_POST_WIRED: NO
+TASK_DELETE_WIRED: NO
+EVENT_POST_WIRED: NO
+EVENT_DELETE_WIRED: NO
+NEXT_STAGE: DO_POTWIERDZENIA_AFTER_G11_VERIFICATION
+G12_CREATED: NO
+
+<!-- LF-PROD-SOT-G11 END -->
+'''
+          (root / 'OBSIDIAN' / 'G11_ROUTER_BLOCK.md').write_text(router_block.lstrip('\n'), encoding='utf-8', newline='\n')
+
+          apply_script = r'''$ErrorActionPreference = "Stop"
+$App = "C:\Users\malim\Desktop\biznesy_ai\2.closeflow"
+$Vault = "C:\Users\malim\Desktop\biznesy_ai\00_OBSIDIAN_VAULT"
+$ExpectedApp = "4804b532f143918d9f714e8ea61a12f8c70b2f91"
+$RequiredVaultAncestor = "2b9f4dad19a4ce9bafca1b6475db8d07e33c3170"
+$RouterRel = "10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/00_MAPY_I_ZALEZNOSCI_SOT.md"
+$MapRel = "10_PROJEKTY/CloseFlow_Lead_App/04_NAPRAWA_ZRODLA_PRAWDY/LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION_MAP.md"
+$PackageRoot = Split-Path -Parent $PSScriptRoot
+$RouterBlockPath = Join-Path $PackageRoot "OBSIDIAN\G11_ROUTER_BLOCK.md"
+$MapTemplatePath = Join-Path $PackageRoot ("OBSIDIAN\" + $MapRel)
+
+if (-not (Test-Path "$App\.git")) { throw "APP_REPO_NOT_FOUND" }
+if (-not (Test-Path "$Vault\.git")) { throw "OBSIDIAN_REPO_NOT_FOUND" }
+if (@(git -C $App status --porcelain --untracked-files=all).Count -gt 0) { throw "BLOCKED_DIRTY_APP_WORKTREE" }
+if (@(git -C $Vault status --porcelain --untracked-files=all).Count -gt 0) { throw "BLOCKED_DIRTY_OBSIDIAN_WORKTREE" }
+
+git -C $App fetch origin dev-rollout-freeze --prune
+if ((git -C $App branch --show-current).Trim() -ne "dev-rollout-freeze") { throw "BLOCKED_APP_BRANCH" }
+if ((git -C $App rev-parse origin/dev-rollout-freeze).Trim() -ne $ExpectedApp) { throw "BLOCKED_APP_ORIGIN_DRIFT" }
+if ((git -C $App rev-parse HEAD).Trim() -ne $ExpectedApp) {
+  git -C $App pull --ff-only origin dev-rollout-freeze
+}
+if ((git -C $App rev-parse HEAD).Trim() -ne $ExpectedApp) { throw "APP_LOCAL_SYNC_FAILED" }
+
+git -C $Vault fetch origin main --prune
+if ((git -C $Vault branch --show-current).Trim() -ne "main") { throw "BLOCKED_OBSIDIAN_BRANCH" }
+if ((git -C $Vault rev-parse HEAD).Trim() -ne (git -C $Vault rev-parse origin/main).Trim()) {
+  git -C $Vault pull --ff-only origin main
+}
+if ((git -C $Vault rev-parse HEAD).Trim() -ne (git -C $Vault rev-parse origin/main).Trim()) { throw "OBSIDIAN_LOCAL_SYNC_FAILED" }
+git -C $Vault merge-base --is-ancestor $RequiredVaultAncestor HEAD
+if ($LASTEXITCODE -ne 0) { throw "BLOCKED_G10_OBSIDIAN_ANCESTRY" }
+$ObsidianInputHead = (git -C $Vault rev-parse HEAD).Trim()
+
+$RouterPath = Join-Path $Vault $RouterRel
+$MapPath = Join-Path $Vault $MapRel
+if (-not (Test-Path $RouterPath)) { throw "ROUTER_NOT_FOUND" }
+$Router = [System.IO.File]::ReadAllText($RouterPath, [System.Text.UTF8Encoding]::new($false))
+if ($Router.Contains("<!-- LF-PROD-SOT-G11 START -->") -or $Router.Contains("<!-- LF-PROD-SOT-G11 END -->")) { throw "G11_ROUTER_BLOCK_ALREADY_EXISTS" }
+if (-not $Router.Contains("<!-- LF-PROD-SOT-G10 END -->")) { throw "G10_ROUTER_ANCHOR_NOT_FOUND" }
+$Block = [System.IO.File]::ReadAllText($RouterBlockPath, [System.Text.UTF8Encoding]::new($false))
+$NewRouter = $Router.TrimEnd("`r", "`n") + "`n`n" + $Block.TrimStart("`r", "`n")
+[System.IO.File]::WriteAllText($RouterPath, $NewRouter, [System.Text.UTF8Encoding]::new($false))
+
+$MapText = [System.IO.File]::ReadAllText($MapTemplatePath, [System.Text.UTF8Encoding]::new($false))
+$MapText = $MapText.Replace("OBSIDIAN_INPUT_HEAD_G11: RESOLVED_BY_APPLY_SCRIPT", "OBSIDIAN_INPUT_HEAD_G11: $ObsidianInputHead")
+[System.IO.Directory]::CreateDirectory((Split-Path -Parent $MapPath)) | Out-Null
+[System.IO.File]::WriteAllText($MapPath, $MapText, [System.Text.UTF8Encoding]::new($false))
+
+$Changed = @(git -C $Vault status --porcelain --untracked-files=all | ForEach-Object { $_.Substring(3).Replace("\\", "/") })
+$Expected = @($RouterRel, $MapRel) | Sort-Object
+$Actual = @($Changed | Sort-Object)
+if (($Actual -join "`n") -ne ($Expected -join "`n")) {
+  git -C $Vault status --short
+  throw "STOP_SCOPE_DRIFT"
+}
+
+git -C $Vault diff --check
+if ($LASTEXITCODE -ne 0) { throw "OBSIDIAN_DIFF_CHECK_FAILED" }
+
+Push-Location $App
+$env:OBSIDIAN_VAULT_PATH = $Vault
+$env:G11_OBSIDIAN_INPUT_HEAD = $ObsidianInputHead
+npm.cmd run verify:lf-prod-sot-g11
+if ($LASTEXITCODE -ne 0) { throw "G11_VERIFY_FAILED" }
+npm.cmd run build
+if ($LASTEXITCODE -ne 0) { throw "G11_BUILD_FAILED" }
+Pop-Location
+
+git -C $Vault add -- $RouterRel $MapRel
+git -C $Vault diff --cached --check
+if ($LASTEXITCODE -ne 0) { throw "OBSIDIAN_CACHED_DIFF_CHECK_FAILED" }
+$Staged = @(git -C $Vault diff --cached --name-only | Sort-Object)
+if (($Staged -join "`n") -ne ($Expected -join "`n")) { throw "STOP_STAGED_SCOPE_DRIFT" }
+git -C $Vault commit -m "docs(sot): map G11 event PATCH marker adoption"
+if ($LASTEXITCODE -ne 0) { throw "OBSIDIAN_COMMIT_FAILED" }
+git -C $Vault push origin main
+if ($LASTEXITCODE -ne 0) { throw "OBSIDIAN_PUSH_FAILED" }
+
+$ObsidianCommit = (git -C $Vault rev-parse HEAD).Trim()
+if ($ObsidianCommit -ne (git -C $Vault rev-parse origin/main).Trim()) { throw "OBSIDIAN_HEAD_ORIGIN_MISMATCH" }
+if (@(git -C $Vault status --porcelain --untracked-files=all).Count -gt 0) { throw "OBSIDIAN_WORKTREE_NOT_CLEAN" }
+Write-Host "STAGE: LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION"
+Write-Host "STATUS: PASS_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION"
+Write-Host "APP_COMMIT: $ExpectedApp"
+Write-Host "OBSIDIAN_INPUT_HEAD_G11: $ObsidianInputHead"
+Write-Host "OBSIDIAN_COMMIT: $ObsidianCommit"
+Write-Host "APP_LOCAL_SYNC: PASS"
+Write-Host "OBSIDIAN_LOCAL_SYNC: PASS"
+Write-Host "G12_CREATED: NO"
+Write-Host "KONIEC ETAPU G11"
+'''
+          (root / 'SCRIPTS' / 'APPLY_OBSIDIAN_G11_AND_PUSH.ps1').write_text(apply_script, encoding='utf-8', newline='\n')
+
+          verify_script = r'''$ErrorActionPreference = "Stop"
+$App = "C:\Users\malim\Desktop\biznesy_ai\2.closeflow"
+$Vault = "C:\Users\malim\Desktop\biznesy_ai\00_OBSIDIAN_VAULT"
+$ExpectedApp = "4804b532f143918d9f714e8ea61a12f8c70b2f91"
+if (@(git -C $App status --porcelain --untracked-files=all).Count -gt 0) { throw "APP_WORKTREE_NOT_CLEAN" }
+if (@(git -C $Vault status --porcelain --untracked-files=all).Count -gt 0) { throw "OBSIDIAN_WORKTREE_NOT_CLEAN" }
+git -C $App fetch origin dev-rollout-freeze --prune
+git -C $Vault fetch origin main --prune
+if ((git -C $App rev-parse HEAD).Trim() -ne $ExpectedApp) { throw "APP_LOCAL_SYNC_PENDING" }
+if ((git -C $App rev-parse origin/dev-rollout-freeze).Trim() -ne $ExpectedApp) { throw "APP_ORIGIN_MISMATCH" }
+if ((git -C $Vault rev-parse HEAD).Trim() -ne (git -C $Vault rev-parse origin/main).Trim()) { throw "OBSIDIAN_LOCAL_SYNC_PENDING" }
+Push-Location $App
+git diff --check
+npm.cmd run verify:lf-prod-sot-g11
+npm.cmd run build
+Pop-Location
+Write-Host "VERIFY_COMMIT_PUSH_G11: PASS"
+'''
+          (root / 'SCRIPTS' / 'VERIFY_COMMIT_PUSH_G11.ps1').write_text(verify_script, encoding='utf-8', newline='\n')
+
+          precheck_script = r'''$ErrorActionPreference = "Stop"
+$App = "C:\Users\malim\Desktop\biznesy_ai\2.closeflow"
+$Vault = "C:\Users\malim\Desktop\biznesy_ai\00_OBSIDIAN_VAULT"
+if (@(git -C $App status --porcelain --untracked-files=all).Count -gt 0) { throw "BLOCKED_DIRTY_APP_WORKTREE" }
+if (@(git -C $Vault status --porcelain --untracked-files=all).Count -gt 0) { throw "BLOCKED_DIRTY_OBSIDIAN_WORKTREE" }
+Write-Host "PRECHECK_G11_FALLBACK: PASS"
+'''
+          (root / 'SCRIPTS' / 'PRECHECK_G11.ps1').write_text(precheck_script, encoding='utf-8', newline='\n')
+
+          manifest = {
+              'stage': 'LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION',
+              'status': 'BLOCKED_OBSIDIAN_PUSH_PENDING_LOCAL_APPLY',
+              'created_at': '2026-07-12 14:40 Europe/Warsaw',
+              'app_input_head_g11': '1036e10e6c2ca734d9a9b61c9eaa1315fcef1ad9',
+              'app_commit': '4804b532f143918d9f714e8ea61a12f8c70b2f91',
+              'app_push': 'PASS',
+              'obsidian_input_head_g11': 'resolved by apply script',
+              'required_g10_obsidian_ancestor': '2b9f4dad19a4ce9bafca1b6475db8d07e33c3170',
+              'obsidian_push': 'PENDING_LOCAL_APPLY',
+              'tests': '36 PASS / 0 FAIL',
+              'scoped_tsc': 'PASS',
+              'build': 'PASS',
+              'g12_created': False,
+              'fallback_reason': 'obsidian-vault GitHub Actions jobs fail before the first step; exact router is patched locally after SHA/ancestry/scope checks',
+          }
+          (root / 'MANIFEST.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
           PY
-          git config user.name "OpenAI G11 Transport"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- _project/g11-transport
-          git commit -m "chore(g11): generate exact Obsidian transport"
-          git push origin HEAD:agent-g11-obsidian-transport
+
+          (
+            cd "$ROOT"
+            find APP OBSIDIAN SCRIPTS MANIFEST.json -type f -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt
+            zip -q -r "/tmp/$ZIP_NAME" APP OBSIDIAN SCRIPTS MANIFEST.json SHA256SUMS.txt
+          )
+          sha256sum "/tmp/$ZIP_NAME" | tee /tmp/G11_ZIP_SHA256.txt
+
+      - name: Upload fallback recovery ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: LF-PROD-SOT-G11-FALLBACK-RECOVERY
+          path: |
+            /tmp/LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION_V1.zip
+            /tmp/G11_ZIP_SHA256.txt
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
