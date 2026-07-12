@@ -1,0 +1,43 @@
+name: G11 Fallback Recovery Package
+
+on:
+  pull_request:
+    branches:
+      - agent-g11-fallback-base
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout reviewed package builder
+        uses: actions/checkout@v4
+        with:
+          ref: agent-g11-obsidian-transport
+          fetch-depth: 0
+
+      - name: Verify app commit and build package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse 4804b532f143918d9f714e8ea61a12f8c70b2f91^)" = "1036e10e6c2ca734d9a9b61c9eaa1315fcef1ad9"
+          python tools/g11_build_fallback_package.py
+          cat /tmp/G11_ZIP_SHA256.txt
+
+      - name: Upload G11 fallback recovery
+        uses: actions/upload-artifact@v4
+        with:
+          name: LF-PROD-SOT-G11-FALLBACK-RECOVERY
+          path: |
+            /tmp/LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION_V1.zip
+            /tmp/G11_ZIP_SHA256.txt
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
