@@ -101,7 +101,7 @@ function readUtf8(base, file) {
   if (!fs.existsSync(full)) throw new Error(`MISSING_REQUIRED_FILE: ${file}`);
   const bytes = fs.readFileSync(full);
   try {
-    return new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+    return normalize(new TextDecoder('utf-8', { fatal: true }).decode(bytes));
   } catch {
     throw new Error(`INVALID_UTF8: ${file}`);
   }

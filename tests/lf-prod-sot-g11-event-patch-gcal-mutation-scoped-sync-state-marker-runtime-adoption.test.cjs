@@ -407,9 +407,10 @@ test('33 inbound source is unchanged', () => {
 });
 
 test('34 event route without exact G11 additions equals base', () => {
-  assert.equal(eventRouteSource.includes(exactImport), true);
-  assert.equal(eventRouteSource.includes(exactBlock), true);
-  const stripped = eventRouteSource.replace(exactImport + '\n', '').replace(exactBlock, '');
+  const normalizedRoute = eventRouteSource.replace(/\r\n/g, '\n');
+  assert.equal(normalizedRoute.includes(exactImport), true);
+  assert.equal(normalizedRoute.includes(exactBlock), true);
+  const stripped = normalizedRoute.replace(exactImport + '\n', '').replace(exactBlock, '');
   assert.equal(normalized(stripped), normalized(gitShow('src/server/event-route-stage124f.ts')));
 });
 
