@@ -4,6 +4,7 @@ import { deleteByIdScoped, insertWithVariants, selectFirstAvailable, updateByIdS
 import { requireRequestIdentity, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
 import { normalizeEventListContract } from '../lib/data-contract.js';
 import { normalizeCloseFlowDateTimeToUtcIso } from '../lib/calendar-timezone-contract.js';
+import { markGoogleCalendarMutationSyncState } from './google-calendar-mutation-sync-state-marker.js';
 
 const EVENT_LIST_SELECT_STAGE124D = [
   'id',
@@ -221,6 +222,18 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
           title: body.title ?? payload.title,
           startAt: body.startAt ?? payload.start_at,
         });
+      }
+      const googleCalendarSyncStateStageG11 =
+        await markGoogleCalendarMutationSyncState({
+          workItemId: String(body.id),
+          workspaceId,
+          mutationKind: 'update',
+        });
+
+      if (googleCalendarSyncStateStageG11.found === false) {
+        throw new Error(
+          'EVENT_PATCH_GCAL_MUTATION_SNAPSHOT_NOT_FOUND',
+        );
       }
       res.status(200).json(normalizeEvent(updated as Record<string, unknown>));
       return;
