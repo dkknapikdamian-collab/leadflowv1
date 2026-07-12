@@ -25,6 +25,13 @@ export interface GoogleCalendarCreateSyncStateInsertPayloadDependencies {
 const INVALID_DECISION =
   'GCAL_CREATE_SYNC_STATE_INSERT_PAYLOAD_INVALID_DECISION';
 
+const CREATE_NO_WRITE_OUTCOMES = new Set([
+  'unchanged',
+  'skip_imported',
+  'skip_no_owner',
+  'skip_no_calendar_time',
+]);
+
 function invalidDecision(): never {
   throw new Error(INVALID_DECISION);
 }
@@ -37,7 +44,7 @@ function normalizeText(value: unknown): string {
   return '';
 }
 
-function isDecision(
+function isDecisionShape(
   value: unknown,
 ): value is GoogleCalendarMutationSyncStateDecision {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
@@ -47,6 +54,32 @@ function isDecision(
       || decision.nextSyncStatus === 'pending_delete'
       || decision.nextSyncStatus === null)
     && typeof decision.shouldWrite === 'boolean';
+}
+
+function isExactPendingWriteDecision(
+  decision: GoogleCalendarMutationSyncStateDecision,
+): boolean {
+  return decision.outcome === 'pending'
+    && decision.nextSyncStatus === 'pending'
+    && decision.shouldWrite === true;
+}
+
+function isExactAlreadyPendingNoWriteDecision(
+  decision: GoogleCalendarMutationSyncStateDecision,
+  currentGoogleSyncStatus: unknown,
+): boolean {
+  return decision.outcome === 'pending'
+    && decision.nextSyncStatus === 'pending'
+    && decision.shouldWrite === false
+    && normalizeText(currentGoogleSyncStatus) === 'pending';
+}
+
+function isValidCreateNoWriteDecision(
+  decision: GoogleCalendarMutationSyncStateDecision,
+): boolean {
+  return CREATE_NO_WRITE_OUTCOMES.has(decision.outcome)
+    && decision.nextSyncStatus === null
+    && decision.shouldWrite === false;
 }
 
 export function buildGoogleCalendarCreateSyncStateInsertPayloadWithDependencies(
@@ -65,18 +98,11 @@ export function buildGoogleCalendarCreateSyncStateInsertPayloadWithDependencies(
     currentGoogleSyncStatus: input.currentGoogleSyncStatus,
   });
 
-  if (!isDecision(decision) || decision.outcome === 'pending_delete') {
+  if (!isDecisionShape(decision) || decision.outcome === 'pending_delete') {
     return invalidDecision();
   }
 
-  if (decision.shouldWrite === true) {
-    if (
-      decision.outcome !== 'pending'
-      || decision.nextSyncStatus !== 'pending'
-    ) {
-      return invalidDecision();
-    }
-
+  if (isExactPendingWriteDecision(decision)) {
     return {
       decision,
       insertPayload: {
@@ -85,19 +111,20 @@ export function buildGoogleCalendarCreateSyncStateInsertPayloadWithDependencies(
     };
   }
 
-  const isAlreadyPendingNoWrite =
-    decision.outcome === 'pending'
-    && decision.nextSyncStatus === 'pending'
-    && normalizeText(input.currentGoogleSyncStatus) === 'pending';
-
-  if (decision.nextSyncStatus !== null && !isAlreadyPendingNoWrite) {
-    return invalidDecision();
+  if (
+    isExactAlreadyPendingNoWriteDecision(
+      decision,
+      input.currentGoogleSyncStatus,
+    )
+    || isValidCreateNoWriteDecision(decision)
+  ) {
+    return {
+      decision,
+      insertPayload: {},
+    };
   }
 
-  return {
-    decision,
-    insertPayload: {},
-  };
+  return invalidDecision();
 }
 
 export function buildGoogleCalendarCreateSyncStateInsertPayload(
