@@ -1,0 +1,131 @@
+name: G11 App Applier
+
+on:
+  push:
+    branches:
+      - agent-g11-app-applier
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  apply-g11:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout helper payload
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.x'
+          cache: npm
+
+      - name: Preserve payload and checkout exact target
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/g11-payload
+          cp --parents \
+            src/server/event-route-stage124f.ts \
+            scripts/guards/verify-lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.cjs \
+            tests/lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.test.cjs \
+            _project/runs/LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION.md \
+            tsconfig.g11.json \
+            /tmp/g11-payload/
+          git fetch origin dev-rollout-freeze --prune
+          test "$(git rev-parse origin/dev-rollout-freeze)" = "1036e10e6c2ca734d9a9b61c9eaa1315fcef1ad9"
+          git checkout -B dev-rollout-freeze origin/dev-rollout-freeze
+          test "$(git rev-parse HEAD)" = "1036e10e6c2ca734d9a9b61c9eaa1315fcef1ad9"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          cp -R /tmp/g11-payload/* .
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('package.json')
+          package = json.loads(path.read_text(encoding='utf-8'))
+          scripts = package.get('scripts')
+          if not isinstance(scripts, dict):
+              raise SystemExit('PACKAGE_SCRIPTS_INVALID')
+          if 'verify:lf-prod-sot-g11' in scripts:
+              raise SystemExit('G11_ALIAS_ALREADY_EXISTS')
+          for key in ['verify:lf-prod-sot-g7', 'verify:lf-prod-sot-g8', 'verify:lf-prod-sot-g9', 'verify:lf-prod-sot-g10']:
+              if key not in scripts:
+                  raise SystemExit('MISSING_REQUIRED_ALIAS:' + key)
+          scripts['verify:lf-prod-sot-g11'] = 'node scripts/guards/verify-lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.cjs && tsc --noEmit -p tsconfig.g11.json && node --test tests/lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.test.cjs'
+          path.write_text(json.dumps(package, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
+          PY
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate exact app scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="$(printf '%s\n' \
+            _project/runs/LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION.md \
+            package.json \
+            scripts/guards/verify-lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.cjs \
+            src/server/event-route-stage124f.ts \
+            tests/lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.test.cjs \
+            tsconfig.g11.json)"
+          actual="$(git diff --name-only | sort)"
+          test "$actual" = "$expected"
+          test -z "$(git diff --cached --name-only)"
+          git diff --check
+          node --check scripts/guards/verify-lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.cjs
+          node --check tests/lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.test.cjs
+
+      - name: G11 scoped TypeScript
+        run: npx tsc --noEmit -p tsconfig.g11.json
+
+      - name: G11 runtime tests
+        run: node --test tests/lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.test.cjs
+
+      - name: Production build
+        run: npm run build
+
+      - name: Commit and push exact G11 app scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "OpenAI G11 Operator"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- \
+            src/server/event-route-stage124f.ts \
+            scripts/guards/verify-lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.cjs \
+            tests/lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.test.cjs \
+            _project/runs/LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION.md \
+            tsconfig.g11.json \
+            package.json
+          git diff --cached --check
+          expected="$(printf '%s\n' \
+            _project/runs/LF-PROD-SOT-G11_EVENT_PATCH_GCAL_MUTATION_SCOPED_SYNC_STATE_MARKER_RUNTIME_ADOPTION.md \
+            package.json \
+            scripts/guards/verify-lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.cjs \
+            src/server/event-route-stage124f.ts \
+            tests/lf-prod-sot-g11-event-patch-gcal-mutation-scoped-sync-state-marker-runtime-adoption.test.cjs \
+            tsconfig.g11.json)"
+          test "$(git diff --cached --name-only | sort)" = "$expected"
+          git commit -m "feat(sot): wire G9 marker to event PATCH"
+          git push origin HEAD:dev-rollout-freeze
+
+      - name: Remove helper branch
+        if: success()
+        shell: bash
+        run: git push origin --delete agent-g11-app-applier
+
+      - name: Record failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh issue create --repo "${{ github.repository }}" \
+            --title "G11_APP_WORKFLOW_FAILED_${{ github.run_id }}" \
+            --body "G11 app applier failed. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
