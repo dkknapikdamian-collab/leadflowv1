@@ -5,6 +5,9 @@ import { requireRequestIdentity, resolveRequestWorkspaceId, withWorkspaceFilter 
 import { normalizeEventListContract } from '../lib/data-contract.js';
 import { normalizeCloseFlowDateTimeToUtcIso } from '../lib/calendar-timezone-contract.js';
 import { markGoogleCalendarMutationSyncState } from './google-calendar-mutation-sync-state-marker.js';
+import {
+  buildGoogleCalendarCreateSyncStateInsertPayload,
+} from '../lib/google-calendar-create-sync-state-insert-payload.js';
 
 const EVENT_LIST_SELECT_STAGE124D = [
   'id',
@@ -314,7 +317,7 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
 
     const nowIso = new Date().toISOString();
     const startAt = body.startAt ? normalizeCloseFlowDateTimeToUtcIso(body.startAt) || nowIso : nowIso;
-    const payload = {
+    const eventInsertBaseStageG13 = {
       workspace_id: workspaceId,
       // STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_AND_OWNER_STAMP
       // Outbound Google Calendar sync is user-scoped and checks created_by_user_id.
@@ -338,6 +341,26 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
       show_in_calendar: true,
       created_at: nowIso,
       updated_at: nowIso,
+    };
+
+    const googleCalendarCreateSyncStateStageG13 =
+      buildGoogleCalendarCreateSyncStateInsertPayload({
+        recordType: eventInsertBaseStageG13.record_type,
+        type: eventInsertBaseStageG13.type,
+        status: eventInsertBaseStageG13.status,
+        showInCalendar: eventInsertBaseStageG13.show_in_calendar,
+        hasCalendarTime: Boolean(
+          eventInsertBaseStageG13.start_at
+          || eventInsertBaseStageG13.scheduled_at
+        ),
+        createdByUserId: eventInsertBaseStageG13.created_by_user_id,
+        googleCalendarEventId: null,
+        currentGoogleSyncStatus: null,
+      });
+
+    const payload = {
+      ...eventInsertBaseStageG13,
+      ...googleCalendarCreateSyncStateStageG13.insertPayload,
     };
 
     const result = await insertWithVariants(['work_items'], [payload]);

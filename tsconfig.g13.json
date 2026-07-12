@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "src/server/event-route-stage124f.ts",
+    "src/server/_supabase.ts",
+    "src/server/_request-scope.ts",
+    "src/server/google-calendar-mutation-sync-state-marker.ts",
+    "src/lib/data-contract.ts",
+    "src/lib/calendar-timezone-contract.ts",
+    "src/lib/google-calendar-create-sync-state-insert-payload.ts",
+    "src/lib/google-calendar-mutation-sync-state-decision.ts"
+  ]
+}
