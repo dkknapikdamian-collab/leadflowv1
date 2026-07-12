@@ -1,0 +1,28 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowJs": false,
+    "noEmit": true
+  },
+  "include": [
+    "src/server/event-route-stage124f.ts",
+    "src/server/task-route-stage124f.ts",
+    "src/server/google-calendar-mutation-sync-state-marker.ts",
+    "src/server/google-calendar-mutation-snapshot.ts",
+    "src/lib/google-calendar-mutation-sync-state-decision.ts",
+    "src/server/_supabase.ts",
+    "src/server/_request-scope.ts",
+    "src/lib/data-contract.ts",
+    "src/lib/calendar-timezone-contract.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "_project",
+    "_local_backups",
+    "backups",
+    "bisect",
+    "scripts",
+    "tools"
+  ]
+}
