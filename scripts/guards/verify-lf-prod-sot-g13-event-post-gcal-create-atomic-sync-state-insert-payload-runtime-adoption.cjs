@@ -11,6 +11,15 @@ const allowed = new Set([
   'tsconfig.g13.json',
   'package.json',
   '_project/runs/LF-PROD-SOT-G13_EVENT_POST_GCAL_CREATE_ATOMIC_SYNC_STATE_INSERT_PAYLOAD_RUNTIME_ADOPTION.md',
+  'src/server/task-route-stage124f.ts',
+  'scripts/guards/verify-lf-prod-sot-g12-gcal-create-atomic-sync-state-insert-payload-contract.cjs',
+  'scripts/guards/verify-lf-prod-sot-g13-event-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.cjs',
+  'tests/lf-prod-sot-g13-event-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.test.cjs',
+  'scripts/guards/verify-lf-prod-sot-g14-task-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.cjs',
+  'tests/lf-prod-sot-g14-task-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.test.cjs',
+  'tsconfig.g14.json',
+  'package.json',
+  '_project/runs/LF-PROD-SOT-G14_TASK_POST_GCAL_CREATE_ATOMIC_SYNC_STATE_INSERT_PAYLOAD_RUNTIME_ADOPTION.md',
 ]);
 
 function run(command) {
@@ -63,9 +72,14 @@ for (const field of [
 ok(!postRegion.includes('markGoogleCalendarMutationSyncState({'), 'POST_G9_MARKER_FORBIDDEN');
 ok(!/google_calendar_sync_status\s*:\s*body\./.test(postRegion), 'CLIENT_SYNC_STATUS_FORBIDDEN');
 ok(count(event.slice(0, postGate), /markGoogleCalendarMutationSyncState\(\{/g) === 1, 'EVENT_PATCH_G9_COUNT');
-ok(!task.includes('google-calendar-create-sync-state-insert-payload'), 'TASK_POST_WIRED');
-ok(!task.includes('buildGoogleCalendarCreateSyncStateInsertPayload('), 'TASK_HELPER_CALL');
-ok(!event.includes('LF-PROD-SOT-G14'), 'G14_CREATED');
+const taskImportPattern = /import\s*\{\s*buildGoogleCalendarCreateSyncStateInsertPayload,\s*\}\s*from\s*'\.\.\/lib\/google-calendar-create-sync-state-insert-payload\.js';/g;
+ok(count(task, taskImportPattern) === 1, 'TASK_G12_IMPORT_COUNT');
+ok(count(task, /\bbuildGoogleCalendarCreateSyncStateInsertPayload\s*\(/g) === 1, 'TASK_G12_CALL_COUNT');
+const taskPostGate = task.indexOf("if (req.method !== 'POST')");
+const taskDeleteStart = task.indexOf("if (req.method === 'DELETE')");
+const taskDeleteRegion = task.slice(taskDeleteStart, taskPostGate);
+ok(!taskDeleteRegion.includes('buildGoogleCalendarCreateSyncStateInsertPayload'), 'TASK_DELETE_HELPER_FORBIDDEN');
+ok(!event.includes('LF-PROD-SOT-G15'), 'G15_CREATED');
 ok(report.includes('PASS_EVENT_POST_GCAL_CREATE_ATOMIC_SYNC_STATE_INSERT_PAYLOAD_RUNTIME_ADOPTION'), 'REPORT_STATUS');
 
 for (const [name, text] of [
@@ -80,6 +94,6 @@ console.log('EVENT_POST_G12_IMPORT_COUNT: 1');
 console.log('EVENT_POST_G12_CALL_COUNT: 1');
 console.log('EVENT_POST_WORK_ITEMS_INSERT_COUNT: 1');
 console.log('EVENT_PATCH_G9_CALL_COUNT: 1');
-console.log('TASK_POST_WIRED: NO');
+console.log('TASK_POST_WIRED: YES');
 console.log('DELETE_WIRED: NO');
-console.log('G14_CREATED: NO');
+console.log('G15_CREATED: NO');

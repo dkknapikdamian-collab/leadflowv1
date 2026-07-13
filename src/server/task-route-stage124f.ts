@@ -5,6 +5,9 @@ import { requireRequestIdentity, resolveRequestWorkspaceId, withWorkspaceFilter 
 import { normalizeTaskListContract } from '../lib/data-contract.js';
 import { normalizeCloseFlowDateTimeToUtcIso } from '../lib/calendar-timezone-contract.js';
 import { markGoogleCalendarMutationSyncState } from './google-calendar-mutation-sync-state-marker.js';
+import {
+  buildGoogleCalendarCreateSyncStateInsertPayload,
+} from '../lib/google-calendar-create-sync-state-insert-payload.js';
 
 const STAGE228R17_MISSING_ITEM_DELETE_CONTRACT = 'Task route does not promote deleted/done/missing_item records to lead next action and clears matching deleted next_action_item_id';
 const STAGE232A_R8_TASK_ROUTE_MISSING_ITEM_STATUS_BRIDGE = 'Task route preserves missing_item/blocking_missing_item status and description bridge for LeadDetail Braki UI';
@@ -423,7 +426,7 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
         ? normalizeCloseFlowDateTimeToUtcIso(String(body.date) + 'T09:00')
         : null;
 
-    const payload = {
+    const taskInsertBaseStageG14 = {
       workspace_id: workspaceId,
       // STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_AND_OWNER_STAMP
       // Outbound Google Calendar sync is user-scoped and checks created_by_user_id.
@@ -435,7 +438,14 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
       record_type: 'task',
       type: body.type || 'task',
       title: body.title,
-      description: body.description || (body.payload && typeof body.payload === 'object' ? String(body.payload.note || '') : '') || '',
+      description:
+        body.description
+        || (
+          body.payload && typeof body.payload === 'object'
+            ? String(body.payload.note || '')
+            : ''
+        )
+        || '',
       status: body.status || 'todo',
       priority: body.priority || 'medium',
       scheduled_at: scheduledAt,
@@ -447,6 +457,26 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
       show_in_calendar: true,
       created_at: nowIso,
       updated_at: nowIso,
+    };
+
+    const googleCalendarCreateSyncStateStageG14 =
+      buildGoogleCalendarCreateSyncStateInsertPayload({
+        recordType: taskInsertBaseStageG14.record_type,
+        type: taskInsertBaseStageG14.type,
+        status: taskInsertBaseStageG14.status,
+        showInCalendar: taskInsertBaseStageG14.show_in_calendar,
+        hasCalendarTime: Boolean(
+          taskInsertBaseStageG14.scheduled_at
+          || taskInsertBaseStageG14.start_at
+        ),
+        createdByUserId: taskInsertBaseStageG14.created_by_user_id,
+        googleCalendarEventId: null,
+        currentGoogleSyncStatus: null,
+      });
+
+    const payload = {
+      ...taskInsertBaseStageG14,
+      ...googleCalendarCreateSyncStateStageG14.insertPayload,
     };
 
     const result = await insertWithVariants(['work_items'], [payload]);

@@ -8,6 +8,15 @@ const allowed = new Set([
   'scripts/guards/verify-lf-prod-sot-g12-gcal-create-atomic-sync-state-insert-payload-contract.cjs',
   'tests/lf-prod-sot-g12-gcal-create-atomic-sync-state-insert-payload-contract.test.cjs',
   '_project/runs/LF-PROD-SOT-G12_GCAL_CREATE_ATOMIC_SYNC_STATE_INSERT_PAYLOAD_CONTRACT.md',
+  'src/server/task-route-stage124f.ts',
+  'scripts/guards/verify-lf-prod-sot-g12-gcal-create-atomic-sync-state-insert-payload-contract.cjs',
+  'scripts/guards/verify-lf-prod-sot-g13-event-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.cjs',
+  'tests/lf-prod-sot-g13-event-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.test.cjs',
+  'scripts/guards/verify-lf-prod-sot-g14-task-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.cjs',
+  'tests/lf-prod-sot-g14-task-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.test.cjs',
+  'tsconfig.g14.json',
+  'package.json',
+  '_project/runs/LF-PROD-SOT-G14_TASK_POST_GCAL_CREATE_ATOMIC_SYNC_STATE_INSERT_PAYLOAD_RUNTIME_ADOPTION.md',
 ]);
 
 function run(command) {
@@ -77,7 +86,11 @@ ok(helper.includes('GCAL_CREATE_SYNC_STATE_INSERT_PAYLOAD_INVALID_DECISION'), 'I
 
 ok(count(task, 'markGoogleCalendarMutationSyncState({') === 1, 'TASK_G9');
 ok(count(event, 'markGoogleCalendarMutationSyncState({') === 1, 'EVENT_G9');
-ok(!task.includes('google-calendar-create-sync-state-insert-payload'), 'TASK_POST_WIRED');
+const taskPostUsesG12Helper = task.includes('google-calendar-create-sync-state-insert-payload');
+if (taskPostUsesG12Helper) {
+  ok(count(task, "from '../lib/google-calendar-create-sync-state-insert-payload.js';") === 1, 'TASK_POST_G12_IMPORT_COUNT');
+  ok(count(task, 'buildGoogleCalendarCreateSyncStateInsertPayload({') === 1, 'TASK_POST_G12_CALL_COUNT');
+}
 const eventPostUsesG12Helper =
   event.includes('google-calendar-create-sync-state-insert-payload');
 
@@ -113,7 +126,9 @@ ok(report.includes('G13_CREATED: NO'), 'REPORT_G13');
 
 console.log('TASK_PATCH_G9_CALL_COUNT: 1');
 console.log('EVENT_PATCH_G9_CALL_COUNT: 1');
-console.log('TASK_POST_G12_IMPORT_COUNT: 0');
-console.log('EVENT_POST_G12_IMPORT_COUNT: 0');
+console.log('TASK_POST_G12_IMPORT_COUNT: ' + count(task, "from '../lib/google-calendar-create-sync-state-insert-payload.js';"));
+console.log('TASK_POST_G12_CALL_COUNT: ' + count(task, 'buildGoogleCalendarCreateSyncStateInsertPayload({'));
+console.log('EVENT_POST_G12_IMPORT_COUNT: ' + count(event, "from '../lib/google-calendar-create-sync-state-insert-payload.js';"));
+console.log('EVENT_POST_G12_CALL_COUNT: ' + count(event, 'buildGoogleCalendarCreateSyncStateInsertPayload({'));
 console.log('G12_R2_TEST_COUNT: 52');
 console.log('G12_FINAL_STATUS: PASS_G12_STRICT_CREATE_DECISION_TUPLE_VALIDATION_REPAIR');

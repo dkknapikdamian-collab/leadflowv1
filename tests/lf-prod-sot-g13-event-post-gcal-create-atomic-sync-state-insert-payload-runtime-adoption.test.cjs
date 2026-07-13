@@ -157,9 +157,9 @@ test('19 no Event POST G9 marker call exists', async () => {
 });
 test('20 existing syncLeadNextAction behavior remains present', () => assert.match(eventSource, /await syncLeadNextAction\(/));
 test('21 Event PATCH G9 marker remains exactly once', () => assert.equal((eventSource.match(/markGoogleCalendarMutationSyncState\(\{/g) || []).length, 1));
-test('22 Task POST remains unwired', () => assert.doesNotMatch(taskSource, /google-calendar-create-sync-state-insert-payload/));
+test('22 Task POST has exactly one G12 helper call', () => assert.equal((taskSource.match(/\bbuildGoogleCalendarCreateSyncStateInsertPayload\s*\(/g) || []).length, 1));
 test('23 Event DELETE remains unwired', () => assert.doesNotMatch(eventSource.slice(eventSource.indexOf("if (req.method === 'DELETE')"), eventSource.indexOf("if (req.method !== 'POST')")), /buildGoogleCalendarCreateSyncStateInsertPayload/));
-test('24 Task DELETE remains unwired', () => assert.doesNotMatch(taskSource, /buildGoogleCalendarCreateSyncStateInsertPayload/));
+test('24 Task DELETE remains unwired', () => assert.doesNotMatch(taskSource.slice(taskSource.indexOf("if (req.method === 'DELETE')"), taskSource.indexOf("if (req.method !== 'POST')")), /buildGoogleCalendarCreateSyncStateInsertPayload/));
 test('25 G12 helper source is unchanged in stage diff', () => assert.match(helperSource, /GCAL_CREATE_SYNC_STATE_INSERT_PAYLOAD_INVALID_DECISION/));
 test('26 G7 facade source is unchanged in stage diff', () => assert.match(facadeSource, /mutationKind/));
 test('27 input body cannot overwrite server owner stamp', async () => {
@@ -175,7 +175,7 @@ test('29 response normalization remains unchanged', async () => {
   assert.equal(statusCode, 200);
   assert.equal(responseBody.id, 'event-1');
 });
-test('30 no G14 artifact exists', () => {
+test('30 no G15 artifact exists', () => {
   const files = fs.readdirSync(path.join(root, '_project/runs'));
-  assert.equal(files.some(x => x.includes('G14')), false);
+  assert.equal(files.some(x => x.includes('G15')), false);
 });
