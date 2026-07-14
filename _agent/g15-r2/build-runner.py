@@ -7,4 +7,8 @@ for name in files:
     print(f"PAYLOAD_00_01 {name} expected=8000 actual={size}", flush=True)
     ok = ok and size == 8000
 print(f"G15_R2_PAYLOAD_00_01_PROBE={'PASS' if ok else 'FAIL'}", flush=True)
+if ok:
+    dist = Path("dist")
+    dist.mkdir(parents=True, exist_ok=True)
+    (dist / "index.html").write_text("G15_R2_PAYLOAD_00_01_PROBE=PASS\n", encoding="utf-8")
 raise SystemExit(0 if ok else 1)
