@@ -1,0 +1,116 @@
+name: G15-R2 Agent Adoption
+
+on:
+  push:
+    branches:
+      - agent/g15-r2-event-delete-runtime
+    paths:
+      - .github/workflows/g15-r2-agent.yml
+
+permissions:
+  contents: write
+
+jobs:
+  implement-test-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout application branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/g15-r2-event-delete-runtime
+          fetch-depth: 0
+          path: leadflowv1
+
+      - name: Checkout Obsidian baseline
+        uses: actions/checkout@v4
+        with:
+          repository: dkknapikdamian-collab/obsidian-vault
+          ref: main
+          fetch-depth: 0
+          path: 00_OBSIDIAN_VAULT
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: leadflowv1/package-lock.json
+
+      - name: Reconstruct and apply exact patch
+        working-directory: leadflowv1
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat \
+            _agent/g15-r2/upload_00.b64 \
+            _agent/g15-r2/upload_01.b64 \
+            _agent/g15-r2/upload_02.b64 \
+            _agent/g15-r2/upload_03.b64 \
+            _agent/g15-r2/upload_04.b64 \
+            _agent/g15-r2/upload_05.b64 \
+            _agent/g15-r2/upload_06.b64 \
+            _agent/g15-r2/upload_07_0.b64part \
+            _agent/g15-r2/upload_07_1.b64part \
+            _agent/g15-r2/upload_07_2.b64part \
+            _agent/g15-r2/upload_07_3.b64part \
+            _agent/g15-r2/upload_08_0.b64part \
+            _agent/g15-r2/upload_08_1.b64part \
+            _agent/g15-r2/upload_08_2.b64part \
+            _agent/g15-r2/upload_08_3.b64part \
+            > /tmp/g15-r2-apply.b64
+          base64 --decode /tmp/g15-r2-apply.b64 > /tmp/g15-r2-apply.py
+          python /tmp/g15-r2-apply.py
+          rm -rf _agent .github/workflows/g15-r2-agent.yml
+
+      - name: Install dependencies
+        working-directory: leadflowv1
+        run: npm ci
+
+      - name: Create selective stage commit locally
+        working-directory: leadflowv1
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "openai-g15-r2-agent"
+          git config user.email "openai-g15-r2-agent@users.noreply.github.com"
+          git add -- \
+            src/server/event-route-stage124f.ts \
+            package.json \
+            tsconfig.g15-r2.json \
+            scripts/guards/verify-lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.cjs \
+            tests/lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.test.cjs \
+            _project/runs/LF-PROD-SOT-G15-R2_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_ADOPTION.md \
+            scripts/guards/verify-lf-prod-sot-g15-r1-gcal-delete-legacy-workspace-null-owner-evidence-decision-contract.cjs \
+            tests/lf-prod-sot-g15-r1-gcal-delete-legacy-workspace-null-owner-evidence-decision-contract.test.cjs \
+            scripts/guards/verify-lf-prod-sot-g15-gcal-delete-legacy-workspace-tombstone-and-retry-contract-map.cjs \
+            tests/lf-prod-sot-g15-gcal-delete-legacy-workspace-tombstone-and-retry-contract-map.test.cjs \
+            scripts/guards/verify-lf-prod-sot-g14-task-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.cjs \
+            tests/lf-prod-sot-g15-r1-gcal-delete-legacy-workspace-null-owner-evidence-decision-contract.test.cjs \
+            tests/lf-prod-sot-g14-task-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.test.cjs
+          git add -u -- _agent .github/workflows/g15-r2-agent.yml
+          git diff --cached --check
+          git commit -m "feat(closeflow): adopt G15-R2 event delete owner evidence"
+          git branch -m dev-rollout-freeze
+
+      - name: Verify G15-R2 and regressions
+        working-directory: leadflowv1
+        env:
+          OBSIDIAN_VAULT_PATH: ${{ github.workspace }}/00_OBSIDIAN_VAULT
+          G15_R1_OBSIDIAN_INPUT_HEAD: 5312cc3b575da0d76dc51c8406a10f52ef6b841b
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run verify:lf-prod-sot-g15-r2
+          npm run verify:lf-prod-sot-g15-r1
+          npm run verify:lf-prod-sot-g15
+          npm run verify:lf-prod-sot-g14
+          npm run build
+          git diff --check 6acc65b22f6fd467019da5973682aa03cc9cbe65..HEAD
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+
+      - name: Push tested commit to technical branch
+        working-directory: leadflowv1
+        shell: bash
+        run: |
+          set -euo pipefail
+          git push origin HEAD:agent/g15-r2-event-delete-runtime
