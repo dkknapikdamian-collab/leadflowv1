@@ -1,4 +1,5 @@
 name: G15-R2 Agent Adoption
+# synchronize-trigger: 2026-07-14T19:12:00+02:00
 
 on:
   pull_request:
