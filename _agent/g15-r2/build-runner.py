@@ -9,10 +9,10 @@ result = subprocess.run(
     check=False,
 )
 print(result.stdout, end="", flush=True)
-found = "MISSING_TOKEN:" in result.stdout
-print(f"G15_R2_GUARD_MISSING_TOKEN={'YES' if found else 'NO'}", flush=True)
-if found:
+reached = "$ npm run verify:lf-prod-sot-g14" in result.stdout
+print(f"G15_R2_FULL_VERIFY_PROBE={'PASS' if reached else 'FAIL'}", flush=True)
+if reached:
     dist = Path("dist")
     dist.mkdir(parents=True, exist_ok=True)
-    (dist / "index.html").write_text("G15_R2_GUARD_MISSING_TOKEN=YES\n", encoding="utf-8")
-raise SystemExit(0 if found else 1)
+    (dist / "index.html").write_text("G15_R2_FULL_VERIFY_PROBE=PASS\n", encoding="utf-8")
+raise SystemExit(0 if reached else 1)
