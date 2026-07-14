@@ -43,6 +43,8 @@ const allowedApp = new Set([
   "_project/runs/LF-PROD-SOT-G15_GCAL_DELETE_LEGACY_WORKSPACE_TOMBSTONE_AND_RETRY_CONTRACT_MAP.md",
   "scripts/guards/verify-lf-prod-sot-g15-gcal-delete-legacy-workspace-tombstone-and-retry-contract-map.cjs",
   "tests/lf-prod-sot-g15-gcal-delete-legacy-workspace-tombstone-and-retry-contract-map.test.cjs",
+  "scripts/guards/verify-lf-prod-sot-g14-task-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.cjs",
+  "tests/lf-prod-sot-g14-task-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.test.cjs",
   "package.json"
 ]);
 const allowedVault = new Set([

@@ -63,4 +63,9 @@ test('28 lead next action remains',()=>assert.match(taskSource,/await syncLeadNe
 test('29 missing_item does not promote',()=>assert.match(taskSource,/!isMissingItemTypeForLeadNextActionStage228R17/));
 test('30 HTTP 200 remains',async()=>assert.equal((await post({title:'T'})).statusCode,200));
 test('31 response keeps inserted id',async()=>assert.equal((await post({title:'T'})).responseBody.id,'task-1'));
-test('32 no G15 artifact',()=>assert.equal(fs.readdirSync(path.join(root,'_project/runs')).some(x=>x.includes('G15')),false));
+test('32 later G15 documentation does not alter the G14 runtime contract',()=>{
+ const g15Run=path.join(root,'_project/runs','LF-PROD-SOT-G15_GCAL_DELETE_LEGACY_WORKSPACE_TOMBSTONE_AND_RETRY_CONTRACT_MAP.md');
+ assert.equal(fs.existsSync(g15Run),true);
+ assert.doesNotMatch(taskSource,/LF-PROD-SOT-G15/);
+ assert.doesNotMatch(eventSource,/LF-PROD-SOT-G15/);
+});

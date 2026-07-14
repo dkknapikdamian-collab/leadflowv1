@@ -10,6 +10,7 @@ const allowed = new Set([
   'tests/lf-prod-sot-g13-event-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.test.cjs',
   'scripts/guards/verify-lf-prod-sot-g14-task-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.cjs',
   'tests/lf-prod-sot-g14-task-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.test.cjs',
+  'scripts/guards/verify-lf-prod-sot-g15-gcal-delete-legacy-workspace-tombstone-and-retry-contract-map.cjs',
   'tsconfig.g14.json',
   'package.json',
   '_project/runs/LF-PROD-SOT-G14_TASK_POST_GCAL_CREATE_ATOMIC_SYNC_STATE_INSERT_PAYLOAD_RUNTIME_ADOPTION.md',
@@ -58,7 +59,7 @@ ok(!deleteRegion.includes('buildGoogleCalendarCreateSyncStateInsertPayload'),'TA
 ok(count(event,/\bbuildGoogleCalendarCreateSyncStateInsertPayload\s*\(/g)===1,'EVENT_POST_HELPER');
 ok(count(event,/markGoogleCalendarMutationSyncState\(\{/g)===1,'EVENT_PATCH_G9');
 ok(!/google_calendar_sync_status\s*:\s*body\./.test(post),'CLIENT_SYNC_STATUS');
-ok(!post.includes('LF-PROD-SOT-G15'),'NEXT_STAGE_CREATED');
+ok(!post.includes('LF-PROD-SOT-G15'),'G15_TASK_POST_RUNTIME_WIRING');
 console.log('G14_GUARD: PASS');
 console.log('TASK_POST_G12_IMPORT_COUNT: 1');
 console.log('TASK_POST_G12_CALL_COUNT: 1');
@@ -67,4 +68,4 @@ console.log('TASK_POST_POST_INSERT_G9_CALL_COUNT: 0');
 console.log('TASK_PATCH_G9_CALL_COUNT: 1');
 console.log('EVENT_POST_G12_CALL_COUNT: 1');
 console.log('EVENT_PATCH_G9_CALL_COUNT: 1');
-console.log('G15_CREATED: NO');
+console.log('G15_TASK_POST_RUNTIME_WIRING: NO');
