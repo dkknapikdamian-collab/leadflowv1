@@ -1,5 +1,5 @@
 {
-  "buildCommand": "python3 _agent/g15-r2/build-runner.py",
+  "buildCommand": "python3 ./_agent/g15-r2/build-runner.py",
   "crons": [
     {
       "path": "/api/daily-digest",
