@@ -10,19 +10,15 @@ result = subprocess.run(
 )
 print(result.stdout, end="", flush=True)
 tokens = [
-    "WRONG_APP_BRANCH",
-    "APP_INPUT_HEAD_NOT_ANCESTOR",
-    "APP_OUT_OF_SCOPE",
-    "RUNTIME_SCOPE_MISMATCH",
-    "PACKAGE_ALIAS_MISMATCH",
-    "TSCONFIG_MISSING",
-    "MISSING_REQUIRED_FILE",
-    "MISSING_SECTION",
+    "MISSING_TOKEN:",
+    "FORBIDDEN_TOKEN:",
+    "EVENT_DELETE_MARKER_CALL_COUNT",
+    "TASK_DELETE_WIRED",
 ]
 found = [token for token in tokens if token in result.stdout]
-print(f"G15_R2_GUARD_GROUP_A={','.join(found) if found else 'NONE'}", flush=True)
+print(f"G15_R2_GUARD_GROUP_B={','.join(found) if found else 'NONE'}", flush=True)
 if found:
     dist = Path("dist")
     dist.mkdir(parents=True, exist_ok=True)
-    (dist / "index.html").write_text("G15_R2_GUARD_GROUP_A=FOUND\n", encoding="utf-8")
+    (dist / "index.html").write_text("G15_R2_GUARD_GROUP_B=FOUND\n", encoding="utf-8")
 raise SystemExit(0 if found else 1)
