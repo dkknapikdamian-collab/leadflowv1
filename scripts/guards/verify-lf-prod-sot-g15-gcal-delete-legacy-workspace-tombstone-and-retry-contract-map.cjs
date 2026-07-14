@@ -8,7 +8,7 @@ const vault = process.env.OBSIDIAN_VAULT_PATH
   : path.resolve(root, '..', '00_OBSIDIAN_VAULT');
 
 const APP_INPUT_HEAD = 'ca7a1f0924f7e0d7995cc2cf52a6927c13f758e1';
-const OBSIDIAN_BASE_ANCESTOR = '266cc8418f5b687c74f750d9af2221c055599e0d';
+const OBSIDIAN_BASE_ANCESTOR = process.env.G15_R1_OBSIDIAN_INPUT_HEAD || '266cc8418f5b687c74f750d9af2221c055599e0d';
 const NEXT_STAGE = 'LF-PROD-SOT-G15-R1_GCAL_DELETE_LEGACY_WORKSPACE_NULL_OWNER_EVIDENCE_DECISION_CONTRACT';
 const PASS_TOKEN = 'PASS_GCAL_DELETE_LEGACY_WORKSPACE_TOMBSTONE_AND_RETRY_CONTRACT_MAP';
 const PROJECT_ROOT = '10_PROJEKTY/CloseFlow_Lead_App';
@@ -45,7 +45,10 @@ const allowedApp = new Set([
   "tests/lf-prod-sot-g15-gcal-delete-legacy-workspace-tombstone-and-retry-contract-map.test.cjs",
   "scripts/guards/verify-lf-prod-sot-g14-task-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.cjs",
   "tests/lf-prod-sot-g14-task-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.test.cjs",
-  "package.json"
+  "package.json",
+  "_project/runs/LF-PROD-SOT-G15-R1_GCAL_DELETE_LEGACY_WORKSPACE_NULL_OWNER_EVIDENCE_DECISION_CONTRACT.md",
+  "scripts/guards/verify-lf-prod-sot-g15-r1-gcal-delete-legacy-workspace-null-owner-evidence-decision-contract.cjs",
+  "tests/lf-prod-sot-g15-r1-gcal-delete-legacy-workspace-null-owner-evidence-decision-contract.test.cjs"
 ]);
 const allowedVault = new Set([
   "10_PROJEKTY/CloseFlow_Lead_App/02_AKTUALNY_STAN - DO_POTWIERDZENIA - CloseFlow LeadFlow.md",
@@ -58,7 +61,9 @@ const allowedVault = new Set([
   "10_PROJEKTY/CloseFlow_Lead_App/11_RYZYKA_BUGI_I_DLUG_TECHNICZNY - DO_POTWIERDZENIA - CloseFlow LeadFlow.md",
   "10_PROJEKTY/CloseFlow_Lead_App/STAGES/README.md",
   "10_PROJEKTY/CloseFlow_Lead_App/STAGES/LF-PROD-SOT-G15_GCAL_DELETE_LEGACY_WORKSPACE_TOMBSTONE_AND_RETRY_CONTRACT_MAP.md",
-  "10_PROJEKTY/CloseFlow_Lead_App/90_RAPORTY/LF-PROD-SOT-G15_GCAL_DELETE_LEGACY_WORKSPACE_TOMBSTONE_AND_RETRY_CONTRACT_MAP_REPORT.md"
+  "10_PROJEKTY/CloseFlow_Lead_App/90_RAPORTY/LF-PROD-SOT-G15_GCAL_DELETE_LEGACY_WORKSPACE_TOMBSTONE_AND_RETRY_CONTRACT_MAP_REPORT.md",
+  "10_PROJEKTY/CloseFlow_Lead_App/STAGES/LF-PROD-SOT-G15-R1_GCAL_DELETE_LEGACY_WORKSPACE_NULL_OWNER_EVIDENCE_DECISION_CONTRACT.md",
+  "10_PROJEKTY/CloseFlow_Lead_App/90_RAPORTY/LF-PROD-SOT-G15-R1_GCAL_DELETE_LEGACY_WORKSPACE_NULL_OWNER_EVIDENCE_DECISION_CONTRACT_REPORT.md"
 ]);
 
 function sh(cwd, args) {
@@ -136,6 +141,13 @@ function section(text, start, end) {
 }
 
 function assertNoFutureArtifact() {
+  const allowedR1 = new Set([
+    "_project/runs/LF-PROD-SOT-G15-R1_GCAL_DELETE_LEGACY_WORKSPACE_NULL_OWNER_EVIDENCE_DECISION_CONTRACT.md",
+    "scripts/guards/verify-lf-prod-sot-g15-r1-gcal-delete-legacy-workspace-null-owner-evidence-decision-contract.cjs",
+    "tests/lf-prod-sot-g15-r1-gcal-delete-legacy-workspace-null-owner-evidence-decision-contract.test.cjs",
+    `${PROJECT_ROOT}/STAGES/LF-PROD-SOT-G15-R1_GCAL_DELETE_LEGACY_WORKSPACE_NULL_OWNER_EVIDENCE_DECISION_CONTRACT.md`,
+    `${PROJECT_ROOT}/90_RAPORTY/LF-PROD-SOT-G15-R1_GCAL_DELETE_LEGACY_WORKSPACE_NULL_OWNER_EVIDENCE_DECISION_CONTRACT_REPORT.md`,
+  ]);
   const roots = [
     [root, '_project/runs'],
     [root, 'scripts/guards'],
@@ -148,8 +160,12 @@ function assertNoFutureArtifact() {
     if (!fs.existsSync(dir)) continue;
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       if (!entry.isFile()) continue;
-      if (/LF-PROD-SOT-G15-R1_|lf-prod-sot-g15-r1_|LF-PROD-SOT-G16_|lf-prod-sot-g16_/i.test(entry.name)) {
-        throw new Error(`FUTURE_ARTIFACT_CREATED:${path.join(relDir, entry.name)}`);
+      const candidate = `${relDir}/${entry.name}`.replaceAll('\\', '/');
+      if (/LF-PROD-SOT-G15-R1_|lf-prod-sot-g15-r1_/i.test(entry.name) && !allowedR1.has(candidate)) {
+        throw new Error(`UNKNOWN_G15_R1_ARTIFACT:${candidate}`);
+      }
+      if (/LF-PROD-SOT-G15-R2_|lf-prod-sot-g15-r2_|LF-PROD-SOT-G16_|lf-prod-sot-g16_/i.test(entry.name)) {
+        throw new Error(`FUTURE_ARTIFACT_CREATED:${candidate}`);
       }
     }
   }
