@@ -4,7 +4,8 @@
     "version":  "0.0.0",
     "type":  "module",
     "scripts":  {
-                        "verify:lf-prod-sot-g14": "node scripts/guards/verify-lf-prod-sot-g14-task-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.cjs && tsc --noEmit -p tsconfig.g14.json && node --test tests/lf-prod-sot-g14-task-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.test.cjs",
+                                                "verify:lf-prod-sot-g15": "node scripts/guards/verify-lf-prod-sot-g15-gcal-delete-legacy-workspace-tombstone-and-retry-contract-map.cjs && node --test tests/lf-prod-sot-g15-gcal-delete-legacy-workspace-tombstone-and-retry-contract-map.test.cjs",
+"verify:lf-prod-sot-g14": "node scripts/guards/verify-lf-prod-sot-g14-task-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.cjs && tsc --noEmit -p tsconfig.g14.json && node --test tests/lf-prod-sot-g14-task-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.test.cjs",
 "check:closeflow-case-finance-ui-repair":  "node scripts/check-closeflow-case-finance-ui-repair.cjs",
                     "test:closeflow-case-finance-ui-repair":  "node --test tests/closeflow-case-finance-ui-repair.test.cjs",
                     "check:closeflow-client-case-urgent-regressions":  "node scripts/check-closeflow-client-case-urgent-regressions.cjs",
