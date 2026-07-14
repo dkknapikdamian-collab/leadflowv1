@@ -9,10 +9,10 @@ result = subprocess.run(
     check=False,
 )
 print(result.stdout, end="", flush=True)
-reached = "$ npm run verify:lf-prod-sot-g14" in result.stdout
-print(f"G15_R2_FULL_VERIFY_PROBE={'PASS' if reached else 'FAIL'}", flush=True)
+reached = "$ npm run build" in result.stdout
+print(f"G15_R2_G14_REGRESSION_PROBE={'PASS' if reached else 'FAIL'}", flush=True)
 if reached:
     dist = Path("dist")
     dist.mkdir(parents=True, exist_ok=True)
-    (dist / "index.html").write_text("G15_R2_FULL_VERIFY_PROBE=PASS\n", encoding="utf-8")
+    (dist / "index.html").write_text("G15_R2_G14_REGRESSION_PROBE=PASS\n", encoding="utf-8")
 raise SystemExit(0 if reached else 1)
