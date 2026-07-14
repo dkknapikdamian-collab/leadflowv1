@@ -9,16 +9,10 @@ result = subprocess.run(
     check=False,
 )
 print(result.stdout, end="", flush=True)
-tokens = [
-    "MISSING_TOKEN:",
-    "FORBIDDEN_TOKEN:",
-    "EVENT_DELETE_MARKER_CALL_COUNT",
-    "TASK_DELETE_WIRED",
-]
-found = [token for token in tokens if token in result.stdout]
-print(f"G15_R2_GUARD_GROUP_B={','.join(found) if found else 'NONE'}", flush=True)
+found = "MISSING_TOKEN:" in result.stdout
+print(f"G15_R2_GUARD_MISSING_TOKEN={'YES' if found else 'NO'}", flush=True)
 if found:
     dist = Path("dist")
     dist.mkdir(parents=True, exist_ok=True)
-    (dist / "index.html").write_text("G15_R2_GUARD_GROUP_B=FOUND\n", encoding="utf-8")
+    (dist / "index.html").write_text("G15_R2_GUARD_MISSING_TOKEN=YES\n", encoding="utf-8")
 raise SystemExit(0 if found else 1)
