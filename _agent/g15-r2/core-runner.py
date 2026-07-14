@@ -81,9 +81,29 @@ def make_artifact(final_bytes: dict[str, bytes], evidence: dict[str, object]) ->
 
 
 combined = "".join((ROOT / rel).read_text(encoding="utf-8").strip() for rel in PARTS)
-patch_bytes = base64.b64decode(combined, validate=True)
-if hashlib.sha256(patch_bytes).hexdigest() != "bfdbb4c1d6ae6737056f522d66b6c80632ab57c7a70d96e0c491df081a406e2b":
+transport_bytes = base64.b64decode(combined, validate=True)
+transport_sha = hashlib.sha256(transport_bytes).hexdigest()
+if transport_sha != "bfdbb4c1d6ae6737056f522d66b6c80632ab57c7a70d96e0c491df081a406e2b":
     raise SystemExit("PATCH_SHA256_MISMATCH")
+
+# The first generated guard used one-line report tokens, while the required report
+# contract stores the field and value on adjacent lines. Apply an equal-length,
+# guard-only correction after authenticating the original payload transport.
+patch_text = transport_bytes.decode("utf-8")
+old_task = "must(report, \\'TASK_DELETE: UNWIRED\\');"
+new_task = "must(report,\\'TASK_DELETE:\\\\nUNWIRED\\')"
+old_sql = "must(report, \\'SQL_CHANGED: NO\\');"
+new_sql = "must(report,\\'SQL_CHANGED:\\\\nNO\\')"
+if patch_text.count(old_task) != 1 or patch_text.count(old_sql) != 1:
+    raise SystemExit("GUARD_REPORT_TOKEN_PATCH_PRECONDITION_FAILED")
+if len(old_task) != len(new_task) or len(old_sql) != len(new_sql):
+    raise SystemExit("GUARD_REPORT_TOKEN_PATCH_LENGTH_DRIFT")
+patch_text = patch_text.replace(old_task, new_task).replace(old_sql, new_sql)
+patch_bytes = patch_text.encode("utf-8")
+fixed_patch_sha = hashlib.sha256(patch_bytes).hexdigest()
+if fixed_patch_sha != "a4a0a098792565639adf4f0f82cf8f498566a0cc1437741c17b2c8cc8d0c07b1":
+    raise SystemExit("FIXED_PATCH_SHA256_MISMATCH")
+
 apply_path = Path("/tmp/g15-r2-apply.py")
 apply_path.write_bytes(patch_bytes)
 run(["python3", "-m", "py_compile", str(apply_path)])
@@ -135,7 +155,8 @@ results: dict[str, object] = {
     "synthetic_input_head": synthetic_input_head,
     "changed_files": changed,
     "src_changed": src_changed,
-    "patch_sha256": hashlib.sha256(patch_bytes).hexdigest(),
+    "transport_patch_sha256": transport_sha,
+    "fixed_patch_sha256": fixed_patch_sha,
 }
 results["g15_r2"] = run(["npm", "run", "verify:lf-prod-sot-g15-r2"])
 results["g14"] = run(["npm", "run", "verify:lf-prod-sot-g14"])
