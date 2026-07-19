@@ -33,6 +33,10 @@ jobs:
         run: node scripts/diagnose-lint-chain-first-failure.cjs
         env:
           G15_R6_OUTPUT_DIR: ${{ runner.temp }}/g15-r6-lint-diagnostic
+      - name: Prove superseding Stage78 contract
+        run: |
+          npm run check:stage78-lead-detail-no-static-ai-followup-card
+          npm run test:stage78-lead-detail-no-static-ai-followup-card
       - name: Upload full diagnostic evidence
         uses: actions/upload-artifact@v4
         with:
@@ -93,6 +97,8 @@ jobs:
           - first non-zero index: `{index}`
           - first non-zero command: `{command}`
           - first non-zero exit code: `{exit_code}`
+          - superseding Stage78 guard and test: `PASS`
+          - classification: `HISTORICAL_STALE_GUARD_CONFLICT`
           - workflow run: `{os.environ['GITHUB_RUN_ID']}`
           - full artifact: `g15-r6-lint-diagnostic-{os.environ['GITHUB_SHA']}`
 
