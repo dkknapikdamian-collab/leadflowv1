@@ -1,0 +1,37 @@
+name: G15-R6 identify first lint failure
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify diagnostic runner
+        run: node --test tests/lf-prod-sot-g15-r6-identify-next-real-lint-chain-failure.test.cjs
+      - name: Identify first non-zero lint command
+        run: node scripts/diagnose-lint-chain-first-failure.cjs
+        env:
+          G15_R6_OUTPUT_DIR: ${{ runner.temp }}/g15-r6-lint-diagnostic
+      - name: Prove superseding Stage78 contract
+        run: |
+          npm run check:stage78-lead-detail-no-static-ai-followup-card
+          npm run test:stage78-lead-detail-no-static-ai-followup-card
+      - name: Upload full diagnostic evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: g15-r6-lint-diagnostic-${{ github.sha }}
+          path: ${{ runner.temp }}/g15-r6-lint-diagnostic
+          if-no-files-found: error
+          retention-days: 30
