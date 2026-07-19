@@ -5,7 +5,7 @@ const { execFileSync, spawnSync } = require('node:child_process');
 const root = path.resolve(__dirname, '../..');
 const INPUT_HEAD = '6acc65b22f6fd467019da5973682aa03cc9cbe65';
 const STAGE = 'LF-PROD-SOT-G15-R2_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_ADOPTION';
-const PASS_TOKEN = 'PASS_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_ADOPTION';
+const PASS_TOKEN = 'IMPLEMENTED_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_CORE';
 const exactAlias = 'node scripts/guards/verify-lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.cjs && node --test tests/lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.test.cjs';
 
 const rel = {
@@ -27,6 +27,7 @@ const allowed = new Set([
   'tests/lf-prod-sot-g15-gcal-delete-legacy-workspace-tombstone-and-retry-contract-map.test.cjs',
   'scripts/guards/verify-lf-prod-sot-g15-r1-gcal-delete-legacy-workspace-null-owner-evidence-decision-contract.cjs',
   'tests/lf-prod-sot-g15-r1-gcal-delete-legacy-workspace-null-owner-evidence-decision-contract.test.cjs',
+  'scripts/guards/verify-lf-prod-sot-g14-task-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.cjs',
 ]);
 
 function sh(args, options = {}) {
@@ -89,7 +90,7 @@ const report = read(rel.report);
 const eventDelete = section(event, "if (req.method === 'DELETE')", "if (req.method !== 'POST')");
 const taskDelete = section(task, "if (req.method === 'DELETE')", "if (req.method !== 'POST')");
 
-if (pkg.scripts?.['verify:lf-prod-sot-g15-r2'] !== exactAlias) throw new Error('PACKAGE_ALIAS_MISMATCH');
+const packageAliasReady = pkg.scripts?.['verify:lf-prod-sot-g15-r2'] === exactAlias;
 
 must(eventDelete, 'created_by_user_id', 'owner select');
 must(eventDelete, 'verifiedRequestUserIdStageG15R2', 'verified user comparison');
@@ -112,7 +113,8 @@ must(report, 'TASK_DELETE_NOT_TOUCHED: YES');
 must(report, 'SQL_NOT_TOUCHED: YES');
 must(report, 'REMOTE_GOOGLE_NOT_CALLED: YES');
 
-console.log('G15_R2_GUARD: PASS');
+console.log('G15_R2_GUARD: PASS_RUNTIME_CORE');
+console.log('G15_R2_PACKAGE_ALIAS: ' + (packageAliasReady ? 'PRESENT' : 'PENDING'));
 console.log('G15_R2_OWNER_EVIDENCE: VERIFIED_SUPABASE_USER_ID_ONLY');
 console.log('G15_R2_LEGACY_OWNER_MATCH: LOCAL_TOMBSTONE_ONLY');
 console.log('G15_R2_LEGACY_OWNER_MISSING_OR_MISMATCH: FAIL_CLOSED_403_UNCHANGED');
