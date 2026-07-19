@@ -6,8 +6,8 @@ const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 const ts = require('typescript');
 
-const root = __dirname;
-const taskPath = path.join(root, 'task-route-stage124f.ts');
+const root = path.resolve(__dirname, '..');
+const taskPath = path.join(root, 'src/server/task-route-stage124f.ts');
 const taskSource = fs.readFileSync(taskPath, 'utf8');
 let tmp;
 let handler;

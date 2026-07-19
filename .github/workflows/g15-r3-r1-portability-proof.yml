@@ -1,0 +1,26 @@
+name: G15-R3-R1 portability proof
+
+on:
+  push:
+    branches:
+      - g15-r3-r1-test-portability-repair
+  pull_request:
+    branches:
+      - dev-rollout-freeze
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: node scripts/guards/verify-lf-prod-sot-g15-r3-r1-task-delete-test-clean-checkout-portability-repair.cjs
