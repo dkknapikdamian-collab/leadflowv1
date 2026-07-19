@@ -1,6 +1,6 @@
 // STAGE124F_VERCEL_HOBBY_CONSOLIDATED_EVENT_ROUTE
 // STAGE124D_SUPABASE_EGRESS_LIGHT_EVENT_ROUTE
-import { deleteByIdScoped, insertWithVariants, selectFirstAvailable, updateByIdScoped, updateById } from './_supabase.js';
+import { deleteByIdScoped, insertWithVariants, selectFirstAvailable, updateByIdScoped, updateWhere } from './_supabase.js';
 import { requireRequestIdentity, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
 import { normalizeEventListContract } from '../lib/data-contract.js';
 import { normalizeCloseFlowDateTimeToUtcIso } from '../lib/calendar-timezone-contract.js';
@@ -256,7 +256,12 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
         return;
       }
 
-      const selectPathStage228R23 = 'work_items?select=id,workspace_id,lead_id,client_id,case_id,record_type,type,status,title,show_in_tasks,show_in_calendar&id=eq.' + encodeURIComponent(id) + '&limit=1';
+      if (!requestUserIdStage232GR3) {
+        res.status(401).json({ error: 'EVENT_DELETE_VERIFIED_USER_ID_REQUIRED' });
+        return;
+      }
+
+      const selectPathStage228R23 = 'work_items?select=id,workspace_id,created_by_user_id,lead_id,client_id,case_id,record_type,type,status,title,show_in_tasks,show_in_calendar&id=eq.' + encodeURIComponent(id) + '&limit=1';
       const scopedBeforeStage228R23 = await selectFirstAvailable([withWorkspaceFilter(selectPathStage228R23, workspaceId)]).catch(() => ({ data: [] }));
       let beforeRowsStage228R23 = Array.isArray((scopedBeforeStage228R23 as any)?.data) ? (scopedBeforeStage228R23 as any).data as Record<string, unknown>[] : [];
 
@@ -272,6 +277,9 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
 
       const rowStage228R23 = beforeRowsStage228R23[0] || {};
       const rowWorkspaceIdStage228R23 = asText((rowStage228R23 as any).workspace_id);
+      const rowOwnerUserIdStageG15R2 = asText((rowStage228R23 as any).created_by_user_id);
+      const normalizedRowOwnerUserIdStageG15R2 = rowOwnerUserIdStageG15R2.toLowerCase();
+      const verifiedRequestUserIdStageG15R2 = requestUserIdStage232GR3.toLowerCase();
       const payloadStage228R23 = {
         status: 'deleted',
         show_in_tasks: false,
@@ -292,7 +300,14 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
       if (rowWorkspaceIdStage228R23) {
         await updateByIdScoped('work_items', id, workspaceId, payloadStage228R23);
       } else {
-        await updateById('work_items', id, payloadStage228R23);
+        if (!normalizedRowOwnerUserIdStageG15R2 || normalizedRowOwnerUserIdStageG15R2 !== verifiedRequestUserIdStageG15R2) {
+          res.status(403).json({ error: 'EVENT_DELETE_LEGACY_OWNER_EVIDENCE_REQUIRED' });
+          return;
+        }
+
+        const legacyOwnerScopedUpdatePathStageG15R2 = 'work_items?id=eq.' + encodeURIComponent(id)
+          + '&workspace_id=is.null&created_by_user_id=eq.' + encodeURIComponent(rowOwnerUserIdStageG15R2);
+        await updateWhere(legacyOwnerScopedUpdatePathStageG15R2, payloadStage228R23);
       }
 
       const afterStage228R23 = await selectFirstAvailable([selectPathStage228R23]).catch(() => ({ data: [] }));
