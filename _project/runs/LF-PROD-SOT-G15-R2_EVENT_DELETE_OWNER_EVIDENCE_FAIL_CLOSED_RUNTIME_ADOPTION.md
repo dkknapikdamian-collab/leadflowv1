@@ -4,7 +4,7 @@ TIMESTAMP:
 2026-07-19 Europe/Warsaw
 
 STATUS:
-PASS_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_ADOPTION
+IMPLEMENTED_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_CORE
 
 CANONICAL_NAME:
 CloseFlow / LeadFlow / CaseFlow
@@ -16,7 +16,7 @@ APP_INPUT_HEAD:
 6acc65b22f6fd467019da5973682aa03cc9cbe65
 
 APP_OUTPUT_COMMIT:
-RESOLVE_FROM_COMMIT_CONTAINING_THIS_REPORT
+RESOLVE_FROM_SQUASH_COMMIT_CONTAINING_THIS_REPORT
 
 BRANCH:
 dev-rollout-freeze
@@ -82,19 +82,20 @@ IMPORTED_GOOGLE_EVENT_REMOTE_DELETE: FORBIDDEN
 - `src/server/event-route-stage124f.ts`
 - `scripts/guards/verify-lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.cjs`
 - `tests/lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.test.cjs`
-- `package.json`
 - this report
-- minimal forward-compatibility changes in G15/G15-R1 guards and tests
+
+STAGE_CLOSE_STATUS:
+BLOCKED_PACKAGE_ALIAS_AND_FULL_G15_G15_R1_REGRESSION_PROOF
 
 ## Verification
 
 - G15-R2 runtime test: 18 PASS / 0 FAIL in isolated executable harness.
-- G15-R2 guard: required before final merge.
-- G15-R1 regression: required before final merge.
-- G15 regression: required before final merge.
-- G14 regression and scoped typecheck: required before final merge.
-- build: required before final merge.
-- diff check: required before final merge.
+- G15-R2 runtime-core guard is included; package alias remains pending.
+- G15-R1 regression: required before stage close.
+- G15 regression: required before stage close.
+- G14 regression and scoped typecheck: required before stage close.
+- build: required before stage close.
+- diff check: required before stage close.
 
 NEXT_STAGE_AUTOMATICALLY_AUTHORIZED:
 NO
