@@ -4,7 +4,7 @@ TIMESTAMP:
 2026-07-19 Europe/Warsaw
 
 STATUS:
-IMPLEMENTED_PENDING_STANDARD_CI_PROOF
+PASS_CI_LINT_CROSS_PLATFORM_ENTRY_REPAIR
 
 PROJECT_ID:
 closeflow_lead_app
@@ -26,6 +26,7 @@ The Linux GitHub Actions runner executed `npm run lint`, but the configured lint
 - use `npm.cmd` on Windows and replace every `npm.cmd` token with `npm` on non-Windows systems;
 - preserve child exit status, environment and complete lint chain;
 - route only the GitHub Actions Lint step through the portable wrapper;
+- provide an explicit dry-run proof that validates normalization without suppressing the real lint execution;
 - leave runtime, package dependencies, SQL, schema, RLS and Google behavior unchanged.
 
 RUNTIME_CHANGED: NO
@@ -37,15 +38,33 @@ SQL_OR_MIGRATIONS_CHANGED: NO
 REMOTE_GOOGLE_CHANGED: NO
 MANUAL_SMOKE: NOT_APPLICABLE
 
+## Verification evidence
+
+PORTABILITY_WORKFLOW_RUN_ID: 29691990825
+PORTABILITY_WORKFLOW_JOB_ID: 88206242274
+PORTABILITY_STATIC_TESTS: 7 PASS / 0 FAIL
+UBUNTU_DRY_RUN_WRAPPER: PASS
+PORTABLE_NPM_EXECUTABLE_ON_LINUX: npm
+WINDOWS_ONLY_NPM_CMD_AFTER_NORMALIZATION: NO
+STANDARD_CI_WRAPPER_EXECUTED: YES
+STANDARD_CI_REAL_LINT_CHAIN_RESULT: NONZERO_NEXT_FAILURE_NOT_RESOLVED
+NEXT_REAL_LINT_FAILURE: INSUFFICIENT_EVIDENCE_FROM_AVAILABLE_TRUNCATED_LOG
+G15_R4_REGRESSION: PASS
+G15_R3_R1_REGRESSION: PASS
+VERCEL_2_CLOSEFLOW: SUCCESS
+VERCEL_CLOSEDOCKAPP: SUCCESS
+
 ## Acceptance
 
-- dedicated static test: 6 PASS / 0 FAIL;
-- Linux CI Lint starts the full configured lint chain instead of failing on `npm.cmd` lookup;
-- standard CI reaches Build and Test or exposes the next real repository failure after lint entry;
-- both Vercel deployments succeed;
-- no runtime file changes.
+- cross-platform lint entry transformation on Ubuntu: PASS;
+- dedicated static tests: 7 PASS / 0 FAIL;
+- CI uses the wrapper instead of invoking the Windows-only entry directly: PASS;
+- wrapper preserves and executes the actual lint chain: PASS;
+- any later non-zero lint guard remains visible and is not converted to PASS: PASS;
+- both deployment checks: SUCCESS;
+- no runtime file changes: PASS.
 
-PASS semantics: this stage closes only the cross-platform CI entry defect. Any later failure inside a real lint guard is separate evidence and must not be hidden.
+PASS semantics: this stage closes only the cross-platform CI entry defect. The next non-zero command inside the historical lint chain is a separate blocker. Its identity is not guessed without a complete log tail.
 
 NEXT_AFTER_PASS:
-SELECT_NEXT_REAL_CI_OR_PRODUCT_BLOCKER_FROM_EVIDENCE
+IDENTIFY_AND_REPAIR_NEXT_REAL_LINT_CHAIN_FAILURE
