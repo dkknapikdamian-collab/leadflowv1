@@ -64,7 +64,7 @@ test('04 G15 app report exists', () => {
   assert.equal(fs.existsSync(path.join(root, rel.report)), true);
 });
 
-test('05 G15 changes no runtime src file', () => {
+test('05 later runtime adoption changes only Event route', () => {
   const files = new Set();
   for (const args of [
     ['diff', '--name-only', `${baseHead}..HEAD`],
@@ -73,7 +73,7 @@ test('05 G15 changes no runtime src file', () => {
   ]) {
     for (const file of sh(args).split(/\r?\n/).filter(Boolean)) files.add(file);
   }
-  assert.deepEqual([...files].filter((file) => file.startsWith('src/')), []);
+  assert.deepEqual([...files].filter((file) => file.startsWith('src/')), ['src/server/event-route-stage124f.ts']);
 });
 
 test('06 Task DELETE has exact-workspace read', () => {

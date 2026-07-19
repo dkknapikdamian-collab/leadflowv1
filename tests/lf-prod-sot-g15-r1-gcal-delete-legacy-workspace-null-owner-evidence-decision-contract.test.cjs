@@ -86,7 +86,7 @@ test('04 app and Obsidian reports exist', () => {
   assert.equal(fs.existsSync(path.join(vault, rel.obsReport)), true);
 });
 
-test('05 G15-R1 changes no runtime src file', () => {
+test('05 later authorized runtime adoption changes only Event route', () => {
   const files = new Set();
   for (const args of [
     ['diff', '--name-only', `${baseHead}..HEAD`],
@@ -95,7 +95,7 @@ test('05 G15-R1 changes no runtime src file', () => {
   ]) {
     for (const file of sh(args).split(/\r?\n/).filter(Boolean)) files.add(file);
   }
-  assert.deepEqual([...files].filter((file) => file.startsWith('src/')), []);
+  assert.deepEqual([...files].filter((file) => file.startsWith('src/')), ['src/server/event-route-stage124f.ts']);
 });
 
 test('06 owner evidence comes only from verified Supabase user ID', () => {
@@ -178,17 +178,19 @@ test('19 Task DELETE and Event DELETE remain unwired to G9', () => {
   assert.match(contract, /EVENT_DELETE_RUNTIME:\s*\nNOT_AUTHORIZED_UNTIL_NEXT_STAGE/);
 });
 
-test('20 current DELETE select paths still omit owner evidence', () => {
+test('20 Task remains unchanged while Event adopts owner evidence', () => {
   assert.doesNotMatch(taskDelete, /created_by_user_id/);
-  assert.doesNotMatch(eventDelete, /created_by_user_id/);
+  assert.match(eventDelete, /created_by_user_id/);
+  assert.match(eventDelete, /verifiedRequestUserIdStageG15R2/);
   assert.match(report, /DELETE select paths currently omit `created_by_user_id`/);
 });
 
-test('21 current legacy fallback and unscoped writer are documented', () => {
-  for (const source of [taskDelete, eventDelete]) {
-    assert.match(source, /selectFirstAvailable\(\[selectPathStage228R23\]\)/);
-    assert.match(source, /updateById\('work_items', id, payloadStage228R23\)/);
-  }
+test('21 Task keeps legacy writer while Event replaces it with owner-filtered update', () => {
+  assert.match(taskDelete, /selectFirstAvailable\(\[selectPathStage228R23\]\)/);
+  assert.match(taskDelete, /updateById\('work_items', id, payloadStage228R23\)/);
+  assert.match(eventDelete, /selectFirstAvailable\(\[selectPathStage228R23\]\)/);
+  assert.match(eventDelete, /workspace_id=is\.null&created_by_user_id=eq\./);
+  assert.doesNotMatch(eventDelete, /updateById\('work_items', id, payloadStage228R23\)/);
 });
 
 test('22 G14/G15 guards accept exact R1 artifacts while G15 blocks R2 plus G16', () => {
@@ -201,9 +203,18 @@ test('22 G14/G15 guards accept exact R1 artifacts while G15 blocks R2 plus G16',
 });
 
 test('23 next stage is Event DELETE G15-R2, not G16', () => {
-  for (const text of [contract, report, obsReport, current, decisions, queue, history, testsLedger, delivery, risks, index]) {
+  for (const text of [contract, report, obsReport, current, queue, history, testsLedger, delivery, risks, index]) {
     assert.match(text, new RegExp(nextStage));
   }
+  const decisionsHasNextRouting =
+    decisions.includes(nextStage) ||
+    (
+      /## DEC-G15-R2-01/.test(decisions) &&
+      /FIRST_RUNTIME_CONSUMER:\s*EVENT_DELETE_ONLY/.test(decisions) &&
+      /TASK_DELETE_RUNTIME:\s*NOT_AUTHORIZED/.test(decisions) &&
+      /G16:\s*NOT_AUTHORIZED/.test(decisions)
+    );
+  assert.equal(decisionsHasNextRouting, true);
   for (const text of [contract, report, obsReport]) {
     assert.match(text, /G16_ARTIFACT_CREATED:\s*\nNO/);
   }

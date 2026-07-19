@@ -4,7 +4,7 @@ TIMESTAMP:
 2026-07-19 Europe/Warsaw
 
 STATUS:
-IMPLEMENTED_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_CORE
+PASS_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_ADOPTION
 
 CANONICAL_NAME:
 CloseFlow / LeadFlow / CaseFlow
@@ -15,8 +15,11 @@ closeflow_lead_app
 APP_INPUT_HEAD:
 6acc65b22f6fd467019da5973682aa03cc9cbe65
 
-APP_OUTPUT_COMMIT:
-RESOLVE_FROM_SQUASH_COMMIT_CONTAINING_THIS_REPORT
+RUNTIME_CORE_COMMIT:
+8de42509c797fbe5fbb6dbd083e06388d7f607ea
+
+VERIFICATION_GATE_COMMIT:
+COMMIT_CONTAINING_THIS_REPORT
 
 BRANCH:
 dev-rollout-freeze
@@ -85,17 +88,17 @@ IMPORTED_GOOGLE_EVENT_REMOTE_DELETE: FORBIDDEN
 - this report
 
 STAGE_CLOSE_STATUS:
-BLOCKED_PACKAGE_ALIAS_AND_FULL_G15_G15_R1_REGRESSION_PROOF
+PASS_TECHNICAL_VERIFICATION_COMPLETE
 
 ## Verification
 
-- G15-R2 runtime test: 18 PASS / 0 FAIL in isolated executable harness.
-- G15-R2 runtime-core guard is included; package alias remains pending.
-- G15-R1 regression: required before stage close.
-- G15 regression: required before stage close.
-- G14 regression and scoped typecheck: required before stage close.
-- build: required before stage close.
-- diff check: required before stage close.
+- G15-R2 guard and runtime test: PASS.
+- G15-R2 runtime matrix: 18 PASS / 0 FAIL.
+- G15-R1 regression: PASS.
+- G15 regression: PASS.
+- G14 regression and scoped typecheck: PASS.
+- build: PASS.
+- git diff --check: PASS.
 
 NEXT_STAGE_AUTOMATICALLY_AUTHORIZED:
 NO

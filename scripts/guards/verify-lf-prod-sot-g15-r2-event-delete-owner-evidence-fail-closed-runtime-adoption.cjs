@@ -5,7 +5,7 @@ const { execFileSync, spawnSync } = require('node:child_process');
 const root = path.resolve(__dirname, '../..');
 const INPUT_HEAD = '6acc65b22f6fd467019da5973682aa03cc9cbe65';
 const STAGE = 'LF-PROD-SOT-G15-R2_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_ADOPTION';
-const PASS_TOKEN = 'IMPLEMENTED_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_CORE';
+const PASS_TOKEN = 'PASS_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_ADOPTION';
 const exactAlias = 'node scripts/guards/verify-lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.cjs && node --test tests/lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.test.cjs';
 
 const rel = {
@@ -91,6 +91,7 @@ const eventDelete = section(event, "if (req.method === 'DELETE')", "if (req.meth
 const taskDelete = section(task, "if (req.method === 'DELETE')", "if (req.method !== 'POST')");
 
 const packageAliasReady = pkg.scripts?.['verify:lf-prod-sot-g15-r2'] === exactAlias;
+if (!packageAliasReady) throw new Error('PACKAGE_ALIAS_MISMATCH');
 
 must(eventDelete, 'created_by_user_id', 'owner select');
 must(eventDelete, 'verifiedRequestUserIdStageG15R2', 'verified user comparison');
@@ -113,7 +114,7 @@ must(report, 'TASK_DELETE_NOT_TOUCHED: YES');
 must(report, 'SQL_NOT_TOUCHED: YES');
 must(report, 'REMOTE_GOOGLE_NOT_CALLED: YES');
 
-console.log('G15_R2_GUARD: PASS_RUNTIME_CORE');
+console.log('G15_R2_GUARD: PASS');
 console.log('G15_R2_PACKAGE_ALIAS: ' + (packageAliasReady ? 'PRESENT' : 'PENDING'));
 console.log('G15_R2_OWNER_EVIDENCE: VERIFIED_SUPABASE_USER_ID_ONLY');
 console.log('G15_R2_LEGACY_OWNER_MATCH: LOCAL_TOMBSTONE_ONLY');

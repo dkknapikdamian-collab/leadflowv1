@@ -53,6 +53,11 @@ const allowedApp = new Set([
   rel.guard,
   rel.test,
   rel.appReport,
+  rel.event,
+  'tests/lf-prod-sot-g15-gcal-delete-legacy-workspace-tombstone-and-retry-contract-map.test.cjs',
+  '_project/runs/LF-PROD-SOT-G15-R2_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_ADOPTION.md',
+  'scripts/guards/verify-lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.cjs',
+  'tests/lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.test.cjs',
 ]);
 
 const allowedVault = new Set([
@@ -114,8 +119,8 @@ function changedFiles(repo, inputHead, scopePrefix = '') {
 
 function assertAllowed(files, allowed, label) {
   for (const file of files) {
-    if (file.startsWith('src/')) throw new Error(`${label}_SRC_CHANGE:${file}`);
     if (!allowed.has(file)) throw new Error(`${label}_OUT_OF_SCOPE:${file}`);
+    if (file.startsWith('src/') && file !== rel.event) throw new Error(`${label}_SRC_CHANGE:${file}`);
   }
 }
 
@@ -143,6 +148,12 @@ function section(text, start, end) {
 }
 
 function assertNoFutureArtifact() {
+  const allowedR2 = new Set([
+    '_project/runs/LF-PROD-SOT-G15-R2_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_ADOPTION.md',
+    'scripts/guards/verify-lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.cjs',
+    'tests/lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.test.cjs',
+    `${PROJECT_ROOT}/STAGES/LF-PROD-SOT-G15-R2_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_ADOPTION.md`,
+  ]);
   const roots = [
     [root, '_project/runs'],
     [root, 'scripts/guards'],
@@ -155,8 +166,12 @@ function assertNoFutureArtifact() {
     if (!fs.existsSync(dir)) continue;
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       if (!entry.isFile()) continue;
-      if (/LF-PROD-SOT-G15-R2_|lf-prod-sot-g15-r2_|LF-PROD-SOT-G16_|lf-prod-sot-g16_/i.test(entry.name)) {
-        throw new Error(`FUTURE_ARTIFACT_CREATED:${path.join(relDir, entry.name)}`);
+      const candidate = `${relDir}/${entry.name}`.replaceAll('\\', '/');
+      if (/LF-PROD-SOT-G15-R2_|lf-prod-sot-g15-r2_/i.test(entry.name) && !allowedR2.has(candidate)) {
+        throw new Error(`UNKNOWN_G15_R2_ARTIFACT:${candidate}`);
+      }
+      if (/LF-PROD-SOT-G16_|lf-prod-sot-g16_/i.test(entry.name)) {
+        throw new Error(`FUTURE_ARTIFACT_CREATED:${candidate}`);
       }
     }
   }
@@ -233,7 +248,6 @@ must(contract, 'NOT_AUTHORIZED');
 
 for (const [label, text] of [
   ['current', current],
-  ['decisions', decisions],
   ['queue', queue],
   ['history', history],
   ['tests ledger', testsLedger],
@@ -244,6 +258,13 @@ for (const [label, text] of [
   must(text, STAGE, `${label} stage routing`);
   must(text, NEXT_STAGE, `${label} next routing`);
 }
+must(decisions, STAGE, 'decisions stage routing');
+if (!decisions.includes(NEXT_STAGE)) {
+  must(decisions, '## DEC-G15-R2-01', 'decisions G15-R2 semantic routing');
+  must(decisions, 'FIRST_RUNTIME_CONSUMER: EVENT_DELETE_ONLY', 'decisions Event DELETE consumer');
+  must(decisions, 'TASK_DELETE_RUNTIME: NOT_AUTHORIZED', 'decisions Task DELETE exclusion');
+  must(decisions, 'G16: NOT_AUTHORIZED', 'decisions G16 exclusion');
+}
 must(stageIndex, `[[${STAGE}]]`, 'stage index link');
 must(testsLedger, 'G15_R1_TESTS:');
 must(testsLedger, '24 PASS / 0 FAIL');
@@ -252,13 +273,18 @@ must(risks, 'LEGACY_NULL_OWNER_EVIDENCE_RUNTIME_NOT_WIRED');
 
 const taskDelete = section(task, "if (req.method === 'DELETE')", "if (req.method !== 'POST')");
 const eventDelete = section(event, "if (req.method === 'DELETE')", "if (req.method !== 'POST')");
-for (const [name, text] of [['task', taskDelete], ['event', eventDelete]]) {
-  must(text, 'withWorkspaceFilter(selectPathStage228R23, workspaceId)', `${name} exact workspace read`);
-  must(text, 'selectFirstAvailable([selectPathStage228R23])', `${name} id-only fallback`);
-  must(text, "updateById('work_items', id, payloadStage228R23)", `${name} legacy unscoped write`);
-  mustNot(text, 'created_by_user_id', `${name} owner evidence absent`);
-  mustNot(text, 'markGoogleCalendarMutationSyncState({', `${name} G9 unwired`);
-}
+must(taskDelete, 'withWorkspaceFilter(selectPathStage228R23, workspaceId)', 'task exact workspace read');
+must(taskDelete, 'selectFirstAvailable([selectPathStage228R23])', 'task id-only fallback');
+must(taskDelete, "updateById('work_items', id, payloadStage228R23)", 'task legacy unscoped write');
+mustNot(taskDelete, 'created_by_user_id', 'task owner evidence absent');
+mustNot(taskDelete, 'markGoogleCalendarMutationSyncState({', 'task G9 unwired');
+must(eventDelete, 'withWorkspaceFilter(selectPathStage228R23, workspaceId)', 'event exact workspace read');
+must(eventDelete, 'selectFirstAvailable([selectPathStage228R23])', 'event id-only discovery fallback');
+must(eventDelete, 'created_by_user_id', 'event owner evidence adopted');
+must(eventDelete, 'verifiedRequestUserIdStageG15R2', 'event verified user comparison');
+must(eventDelete, 'workspace_id=is.null&created_by_user_id=eq.', 'event owner-filtered legacy write');
+mustNot(eventDelete, "updateById('work_items'", 'event unscoped write removed');
+mustNot(eventDelete, 'markGoogleCalendarMutationSyncState({', 'event G9 unwired');
 must(requestScope, 'const context = await requireSupabaseRequestContext(req)');
 must(requestScope, 'userId: asText(context.userId) || null');
 must(requestScope, "throw new RequestAuthError(401, 'REQUEST_IDENTITY_REQUIRED')");

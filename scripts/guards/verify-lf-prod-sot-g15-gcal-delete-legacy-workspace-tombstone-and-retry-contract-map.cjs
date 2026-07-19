@@ -48,7 +48,11 @@ const allowedApp = new Set([
   "package.json",
   "_project/runs/LF-PROD-SOT-G15-R1_GCAL_DELETE_LEGACY_WORKSPACE_NULL_OWNER_EVIDENCE_DECISION_CONTRACT.md",
   "scripts/guards/verify-lf-prod-sot-g15-r1-gcal-delete-legacy-workspace-null-owner-evidence-decision-contract.cjs",
-  "tests/lf-prod-sot-g15-r1-gcal-delete-legacy-workspace-null-owner-evidence-decision-contract.test.cjs"
+  "tests/lf-prod-sot-g15-r1-gcal-delete-legacy-workspace-null-owner-evidence-decision-contract.test.cjs",
+  "src/server/event-route-stage124f.ts",
+  "_project/runs/LF-PROD-SOT-G15-R2_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_ADOPTION.md",
+  "scripts/guards/verify-lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.cjs",
+  "tests/lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.test.cjs"
 ]);
 const allowedVault = new Set([
   "10_PROJEKTY/CloseFlow_Lead_App/02_AKTUALNY_STAN - DO_POTWIERDZENIA - CloseFlow LeadFlow.md",
@@ -112,8 +116,8 @@ function changedFiles(repo, inputHead, scopePrefix = '') {
 
 function assertAllowed(files, allowed, label) {
   for (const file of files) {
-    if (file.startsWith('src/')) throw new Error(`${label}_SRC_CHANGE:${file}`);
     if (!allowed.has(file)) throw new Error(`${label}_OUT_OF_SCOPE:${file}`);
+    if (file.startsWith('src/') && file !== rel.event) throw new Error(`${label}_SRC_CHANGE:${file}`);
   }
 }
 
@@ -141,6 +145,12 @@ function section(text, start, end) {
 }
 
 function assertNoFutureArtifact() {
+  const allowedR2 = new Set([
+    '_project/runs/LF-PROD-SOT-G15-R2_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_ADOPTION.md',
+    'scripts/guards/verify-lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.cjs',
+    'tests/lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.test.cjs',
+    `${PROJECT_ROOT}/STAGES/LF-PROD-SOT-G15-R2_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_ADOPTION.md`,
+  ]);
   const allowedR1 = new Set([
     "_project/runs/LF-PROD-SOT-G15-R1_GCAL_DELETE_LEGACY_WORKSPACE_NULL_OWNER_EVIDENCE_DECISION_CONTRACT.md",
     "scripts/guards/verify-lf-prod-sot-g15-r1-gcal-delete-legacy-workspace-null-owner-evidence-decision-contract.cjs",
@@ -164,7 +174,10 @@ function assertNoFutureArtifact() {
       if (/LF-PROD-SOT-G15-R1_|lf-prod-sot-g15-r1_/i.test(entry.name) && !allowedR1.has(candidate)) {
         throw new Error(`UNKNOWN_G15_R1_ARTIFACT:${candidate}`);
       }
-      if (/LF-PROD-SOT-G15-R2_|lf-prod-sot-g15-r2_|LF-PROD-SOT-G16_|lf-prod-sot-g16_/i.test(entry.name)) {
+      if (/LF-PROD-SOT-G15-R2_|lf-prod-sot-g15-r2_/i.test(entry.name) && !allowedR2.has(candidate)) {
+        throw new Error(`UNKNOWN_G15_R2_ARTIFACT:${candidate}`);
+      }
+      if (/LF-PROD-SOT-G16_|lf-prod-sot-g16_/i.test(entry.name)) {
         throw new Error(`FUTURE_ARTIFACT_CREATED:${candidate}`);
       }
     }
@@ -232,14 +245,21 @@ must(risks, 'WORKSPACE_NULL_OWNER_EVIDENCE_MISSING');
 
 const taskDelete = section(task, "if (req.method === 'DELETE')", "if (req.method !== 'POST')");
 const eventDelete = section(event, "if (req.method === 'DELETE')", "if (req.method !== 'POST')");
+must(taskDelete, 'withWorkspaceFilter(selectPathStage228R23, workspaceId)', 'task scoped read');
+must(taskDelete, 'selectFirstAvailable([selectPathStage228R23])', 'task unscoped fallback');
+must(taskDelete, "updateById('work_items', id, payloadStage228R23)", 'task legacy writer unchanged');
+mustNot(taskDelete, 'created_by_user_id', 'task owner adoption not authorized');
 for (const [name, text] of [['task', taskDelete], ['event', eventDelete]]) {
-  must(text, 'withWorkspaceFilter(selectPathStage228R23, workspaceId)', `${name} scoped read`);
-  must(text, 'selectFirstAvailable([selectPathStage228R23])', `${name} unscoped fallback`);
   must(text, "status: 'deleted'", `${name} soft delete`);
   must(text, 'show_in_tasks: false', `${name} hidden tasks`);
   must(text, 'show_in_calendar: false', `${name} hidden calendar`);
   mustNot(text, 'markGoogleCalendarMutationSyncState({', `${name} G9 wiring`);
 }
+must(eventDelete, 'withWorkspaceFilter(selectPathStage228R23, workspaceId)', 'event scoped read');
+must(eventDelete, 'selectFirstAvailable([selectPathStage228R23])', 'event id-only discovery fallback');
+must(eventDelete, 'created_by_user_id', 'event owner evidence');
+must(eventDelete, 'workspace_id=is.null&created_by_user_id=eq.', 'event legacy owner filter');
+mustNot(eventDelete, "updateById('work_items'", 'event unscoped writer removed');
 must(taskDelete, 'TASK_DELETE_WORKSPACE_MISMATCH');
 must(eventDelete, 'EVENT_DELETE_WORKSPACE_MISMATCH');
 must(decision, "nextSyncStatus: 'pending_delete'");
