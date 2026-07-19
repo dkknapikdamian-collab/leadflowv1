@@ -1,0 +1,27 @@
+name: G15-R5 CI lint entry portability proof
+
+on:
+  push:
+    branches:
+      - g15-r5-ci-lint-cross-platform-entry
+  pull_request:
+    branches:
+      - dev-rollout-freeze
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test tests/lf-prod-sot-g15-r5-ci-lint-cross-platform-entry-repair.test.cjs
+      - run: node scripts/run-lint-cross-platform.cjs
+        env:
+          CI_LINT_DRY_RUN: "1"
