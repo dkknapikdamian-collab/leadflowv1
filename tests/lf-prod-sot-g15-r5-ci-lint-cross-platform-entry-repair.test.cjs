@@ -37,7 +37,13 @@ test('05 wrapper preserves child exit status and inherited environment', () => {
   assert.match(wrapper, /process\.exit\(typeof result\.status === 'number' \? result\.status : 1\)/);
 });
 
-test('06 repair is CI-only and does not reference runtime modules', () => {
+test('06 explicit dry-run proves normalization without hiding real CI failures', () => {
+  assert.match(wrapper, /process\.env\.CI_LINT_DRY_RUN === '1'/);
+  assert.match(wrapper, /CI_LINT_PORTABLE_ENTRY: PASS/);
+  assert.match(wrapper, /CI_LINT_DRY_RUN: NO_CHILD_PROCESS_EXECUTED/);
+});
+
+test('07 repair is CI-only and does not reference runtime modules', () => {
   assert.doesNotMatch(wrapper, /src\/|supabase|google-calendar|work_items|event-route|task-route/);
   assert.doesNotMatch(workflow, /src\/server|supabase\/migrations/);
 });
