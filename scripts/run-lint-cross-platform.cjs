@@ -23,6 +23,12 @@ if (process.platform !== 'win32' && /\bnpm\.cmd\b/.test(portableLint)) {
 console.log(`CI_LINT_PLATFORM=${process.platform}`);
 console.log(`CI_LINT_NPM_EXECUTABLE=${npmExecutable}`);
 
+if (process.env.CI_LINT_DRY_RUN === '1') {
+  console.log('CI_LINT_PORTABLE_ENTRY: PASS');
+  console.log('CI_LINT_DRY_RUN: NO_CHILD_PROCESS_EXECUTED');
+  process.exit(0);
+}
+
 const result = spawnSync(portableLint, {
   cwd: root,
   env: process.env,
