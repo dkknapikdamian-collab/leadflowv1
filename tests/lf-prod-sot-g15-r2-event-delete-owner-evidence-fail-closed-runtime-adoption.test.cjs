@@ -186,7 +186,7 @@ test('12 legacy-null exact owner match gets only owner-filtered local tombstone'
   assert.equal(result.statusCode, 200);
   assert.equal(result.capture.scopedUpdates.length, 0);
   assert.equal(result.capture.whereUpdates.length, 1);
-  assert.match(result.capture.whereUpdates[0].path, /^work_items\?id=eq\.event-1&workspace_id=is\.null&created_by_user_id=eq\.user-1$/);
+  assert.match(result.capture.whereUpdates[0].path, /^work_items\?id=eq\.event-1&workspace_id=is\.null&created_by_user_id=eq\.USER-1$/);
   assert.equal(result.capture.whereUpdates[0].payload.status, 'deleted');
   assert.equal(result.capture.markerCalls, 0);
 });
