@@ -1,0 +1,89 @@
+name: G15-R2 Finalize
+
+on:
+  push:
+    branches: [agent/g15-r2-event-delete-owner-evidence]
+    paths: [.github/workflows/g15-r2-finalize.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev-rollout-freeze
+          fetch-depth: 0
+
+      - name: Verify immutable input and import artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected=6acc65b22f6fd467019da5973682aa03cc9cbe65
+          test "$(git rev-parse HEAD)" = "$expected" || { echo TARGET_HEAD_MOVED; exit 1; }
+          git fetch origin agent/g15-r2-event-delete-owner-evidence
+          git checkout origin/agent/g15-r2-event-delete-owner-evidence -- \
+            src/server/event-route-stage124f.ts \
+            scripts/guards/verify-lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.cjs \
+            tests/lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.test.cjs \
+            _project/runs/LF-PROD-SOT-G15-R2_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_ADOPTION.md
+          for script in patch-package-g14.py patch-g15.py patch-g15-r1.py; do
+            git show "origin/agent/g15-r2-event-delete-owner-evidence:.github/g15-r2-patches/$script" > "/tmp/$script"
+            python "/tmp/$script"
+          done
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify executable contract
+        run: npm run verify:lf-prod-sot-g15-r2
+
+      - name: Verify G14 regression
+        run: npm run verify:lf-prod-sot-g14
+
+      - name: Build
+        run: npm run build
+
+      - name: Verify diff and exact scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          git diff --name-only | sort > /tmp/actual
+          cat > /tmp/expected <<'LIST'
+          _project/runs/LF-PROD-SOT-G15-R2_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_ADOPTION.md
+          package.json
+          scripts/guards/verify-lf-prod-sot-g14-task-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.cjs
+          scripts/guards/verify-lf-prod-sot-g15-gcal-delete-legacy-workspace-tombstone-and-retry-contract-map.cjs
+          scripts/guards/verify-lf-prod-sot-g15-r1-gcal-delete-legacy-workspace-null-owner-evidence-decision-contract.cjs
+          scripts/guards/verify-lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.cjs
+          src/server/event-route-stage124f.ts
+          tests/lf-prod-sot-g15-gcal-delete-legacy-workspace-tombstone-and-retry-contract-map.test.cjs
+          tests/lf-prod-sot-g15-r1-gcal-delete-legacy-workspace-null-owner-evidence-decision-contract.test.cjs
+          tests/lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.test.cjs
+          LIST
+          sort -o /tmp/expected /tmp/expected
+          diff -u /tmp/expected /tmp/actual
+
+      - name: Commit and push one target commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            _project/runs/LF-PROD-SOT-G15-R2_EVENT_DELETE_OWNER_EVIDENCE_FAIL_CLOSED_RUNTIME_ADOPTION.md \
+            package.json \
+            scripts/guards/verify-lf-prod-sot-g14-task-post-gcal-create-atomic-sync-state-insert-payload-runtime-adoption.cjs \
+            scripts/guards/verify-lf-prod-sot-g15-gcal-delete-legacy-workspace-tombstone-and-retry-contract-map.cjs \
+            scripts/guards/verify-lf-prod-sot-g15-r1-gcal-delete-legacy-workspace-null-owner-evidence-decision-contract.cjs \
+            scripts/guards/verify-lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.cjs \
+            src/server/event-route-stage124f.ts \
+            tests/lf-prod-sot-g15-gcal-delete-legacy-workspace-tombstone-and-retry-contract-map.test.cjs \
+            tests/lf-prod-sot-g15-r1-gcal-delete-legacy-workspace-null-owner-evidence-decision-contract.test.cjs \
+            tests/lf-prod-sot-g15-r2-event-delete-owner-evidence-fail-closed-runtime-adoption.test.cjs
+          git commit -m "feat(closeflow): adopt G15-R2 event delete owner evidence"
+          git push origin HEAD:dev-rollout-freeze
+          echo "TARGET_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
