@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   diagnose:
@@ -18,6 +18,8 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -37,3 +39,22 @@ jobs:
           path: ${{ runner.temp }}/g15-r6-lint-diagnostic
           if-no-files-found: error
           retention-days: 30
+      - name: Persist bounded diagnostic summary
+        if: github.event_name == 'push' && github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          destination='_project/runs/artifacts/LF-PROD-SOT-G15-R6'
+          mkdir -p "$destination"
+          cp '${{ runner.temp }}/g15-r6-lint-diagnostic/diagnostic.json' "$destination/diagnostic.json"
+          cp '${{ runner.temp }}/g15-r6-lint-diagnostic/diagnostic.txt' "$destination/diagnostic.txt"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$destination/diagnostic.json" "$destination/diagnostic.txt"
+          git diff --cached --check
+          if git diff --cached --quiet; then
+            echo 'G15_R6_DIAGNOSTIC_SUMMARY_ALREADY_CURRENT=YES'
+            exit 0
+          fi
+          git commit -m 'test(closeflow): persist G15-R6 lint diagnostic evidence'
+          git push origin HEAD:g15-r6-identify-first-lint-failure
