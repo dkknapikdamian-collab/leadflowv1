@@ -277,7 +277,8 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
 
       const rowStage228R23 = beforeRowsStage228R23[0] || {};
       const rowWorkspaceIdStage228R23 = asText((rowStage228R23 as any).workspace_id);
-      const rowOwnerUserIdStageG15R2 = asText((rowStage228R23 as any).created_by_user_id).toLowerCase();
+      const rowOwnerUserIdStageG15R2 = asText((rowStage228R23 as any).created_by_user_id);
+      const normalizedRowOwnerUserIdStageG15R2 = rowOwnerUserIdStageG15R2.toLowerCase();
       const verifiedRequestUserIdStageG15R2 = requestUserIdStage232GR3.toLowerCase();
       const payloadStage228R23 = {
         status: 'deleted',
@@ -299,13 +300,13 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
       if (rowWorkspaceIdStage228R23) {
         await updateByIdScoped('work_items', id, workspaceId, payloadStage228R23);
       } else {
-        if (!rowOwnerUserIdStageG15R2 || rowOwnerUserIdStageG15R2 !== verifiedRequestUserIdStageG15R2) {
+        if (!normalizedRowOwnerUserIdStageG15R2 || normalizedRowOwnerUserIdStageG15R2 !== verifiedRequestUserIdStageG15R2) {
           res.status(403).json({ error: 'EVENT_DELETE_LEGACY_OWNER_EVIDENCE_REQUIRED' });
           return;
         }
 
         const legacyOwnerScopedUpdatePathStageG15R2 = 'work_items?id=eq.' + encodeURIComponent(id)
-          + '&workspace_id=is.null&created_by_user_id=eq.' + encodeURIComponent(requestUserIdStage232GR3);
+          + '&workspace_id=is.null&created_by_user_id=eq.' + encodeURIComponent(rowOwnerUserIdStageG15R2);
         await updateWhere(legacyOwnerScopedUpdatePathStageG15R2, payloadStage228R23);
       }
 
