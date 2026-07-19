@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - g15-r3-r1-test-portability-repair
+  pull_request:
+    branches:
+      - dev-rollout-freeze
   workflow_dispatch:
 
 permissions:
