@@ -26,15 +26,15 @@ function paymentCurrencyMatches(payment: NormalizedFinancePayment, currency: Fin
   return normalizeCurrency(payment.currency) === currency;
 }
 
-function resolveCommissionStatus(cases: any[], commissionAmount: number, paidCommissionAmount: number): 'not_started' | 'partially_paid' | 'paid' | 'overdue' | 'not_applicable' {
-  if (commissionAmount <= 0) return 'not_applicable';
+function resolveCommissionStatus(cases: any[], commissionAmount: number, paidCommissionAmount: number): FinanceSummary['commissionStatus'] {
+  if (commissionAmount <= 0) return 'not_set';
   if (paidCommissionAmount >= commissionAmount) return 'paid';
   if (paidCommissionAmount > 0) return 'partially_paid';
   const hasOverdueCommission = cases.some((caseRecord) => {
     const status = String(caseRecord?.commissionStatus || caseRecord?.commission_status || '').toLowerCase();
     return status === 'overdue';
   });
-  return hasOverdueCommission ? 'overdue' : 'not_started';
+  return hasOverdueCommission ? 'overdue' : 'expected';
 }
 
 export function buildFinanceClientSummary(client: any, cases: any[], payments: any[]): FinanceSummary {
