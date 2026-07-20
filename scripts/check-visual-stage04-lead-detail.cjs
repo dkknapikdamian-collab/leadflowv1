@@ -2,15 +2,24 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const root = process.cwd();
+
 function read(file) {
   return fs.readFileSync(path.join(root, file), 'utf8').replace(/^\uFEFF/, '');
 }
+
 function expect(file, text, label = text) {
   const body = read(file);
   if (!body.includes(text)) throw new Error(`${file}: missing ${label}`);
   console.log(`OK: ${file} contains ${label}`);
 }
-expect('src/components/Layout.tsx', 'VISUAL_STAGE_04_LEAD_DETAIL_ROUTE_SCOPE', 'Stage 04 route marker');
+
+function reject(file, text, label = text) {
+  const body = read(file);
+  if (body.includes(text)) throw new Error(`${file}: forbidden ${label}`);
+  console.log(`OK: ${file} excludes ${label}`);
+}
+
+expect('src/components/Layout.tsx', 'VISUAL_STAGE_04_LEAD_DETAIL_ROUTE_SCOPE', 'Stage04 route marker');
 {
   const layout = read('src/components/Layout.tsx');
   if (layout.includes("const isLeadDetailRoute = location.pathname.startsWith('/leads/')") || layout.includes("const isLeadDetailRoute = /^\\/leads\\/[^/]+$/.test(location.pathname);")) {
@@ -20,9 +29,18 @@ expect('src/components/Layout.tsx', 'VISUAL_STAGE_04_LEAD_DETAIL_ROUTE_SCOPE', '
   }
 }
 expect('src/components/Layout.tsx', 'main-lead-detail', 'main-lead-detail class');
-expect('src/components/Layout.tsx', "data-visual-stage-lead-detail={isLeadDetailRoute ? '04-lead-detail' : undefined}", 'Stage 04 data marker');
-expect('src/pages/LeadDetail.tsx', 'LeadAiFollowupDraft', 'AI follow-up component remains');
-expect('src/pages/LeadDetail.tsx', 'LeadAiNextAction', 'AI next action component remains');
+expect('src/components/Layout.tsx', "data-visual-stage-lead-detail={isLeadDetailRoute ? '04-lead-detail' : undefined}", 'Stage04 data marker');
+
+reject('src/index.css', 'visual-stage04-lead-detail.css', 'inactive Stage04 LeadDetail CSS import');
+expect('src/pages/LeadDetail.tsx', "../styles/visual-stage14-lead-detail-vnext.css", 'current Stage14 LeadDetail visual import');
+expect('src/pages/LeadDetail.tsx', "../styles/closeflow-unified-page-canvas-stage211c.css", 'current Stage211C canvas import');
+expect('src/pages/LeadDetail.tsx', "../styles/closeflow-shared-quick-actions-bar-stage227e3.css", 'current shared quick actions visual import');
+expect('src/pages/LeadDetail.tsx', "../styles/closeflow-lead-detail-sales-signal-stage227e4.css", 'current sales signal visual import');
+expect('src/pages/LeadDetail.tsx', 'STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD', 'current no-static-AI-card source marker');
+expect('src/pages/LeadDetail.tsx', 'STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_RAIL', 'current no-static-AI-rail source marker');
+reject('src/pages/LeadDetail.tsx', 'LeadAiFollowupDraft', 'obsolete static AI follow-up component');
+reject('src/pages/LeadDetail.tsx', 'LeadAiNextAction', 'obsolete static AI next-action component');
+
 expect('src/pages/LeadDetail.tsx', 'startLeadServiceInSupabase', 'lead to case service flow remains');
 expect('src/pages/LeadDetail.tsx', 'associatedCase', 'associated case state remains');
 expect('src/pages/LeadDetail.tsx', 'showServiceBanner', 'service banner remains');
@@ -35,11 +53,11 @@ expect('src/pages/LeadDetail.tsx', 'handleUpdateLead', 'lead edit flow remains')
 expect('src/pages/LeadDetail.tsx', 'handleDeleteLead', 'lead delete flow remains');
 expect('src/pages/LeadDetail.tsx', 'getLeadFinance', 'lead finance remains');
 expect('src/pages/LeadDetail.tsx', 'TabsTrigger', 'tabs remain');
-expect('src/styles/visual-stage04-lead-detail.css', 'VISUAL_STAGE_04_LEAD_DETAIL_UI_SYSTEM', 'Stage 04 CSS marker');
-expect('src/styles/visual-stage04-lead-detail.css', '.main-lead-detail', 'scoped CSS');
-expect('src/styles/visual-stage04-lead-detail.css', 'layout-detail', 'layout-detail styling');
-expect('src/styles/visual-stage04-lead-detail.css', 'person-card', 'person-card styling');
-expect('src/styles/visual-stage04-lead-detail.css', 'hero.light', 'hero light styling');
-expect('src/styles/visual-stage04-lead-detail.css', '@media (max-width: 760px)', 'mobile polish');
-expect('src/index.css', '@import "./styles/visual-stage04-lead-detail.css";', 'Stage 04 CSS import');
-console.log('OK: Visual Stage 04 LeadDetail guard passed.');
+
+expect('src/styles/visual-stage04-lead-detail.css', 'VISUAL_STAGE_04_LEAD_DETAIL_UI_SYSTEM', 'Stage04 reference CSS marker');
+expect('src/styles/visual-stage04-lead-detail.css', '.main-lead-detail', 'historical scoped CSS');
+expect('src/styles/visual-stage04-lead-detail.css', 'layout-detail', 'historical layout-detail styling');
+expect('src/styles/visual-stage04-lead-detail.css', 'person-card', 'historical person-card styling');
+expect('src/styles/visual-stage04-lead-detail.css', 'hero.light', 'historical hero light styling');
+expect('src/styles/visual-stage04-lead-detail.css', '@media (max-width: 760px)', 'historical mobile polish');
+console.log('OK: Visual Stage04 LeadDetail guard reconciled with current LeadDetail source truth.');
