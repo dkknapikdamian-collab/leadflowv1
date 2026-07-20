@@ -33,7 +33,7 @@ const badPatterns = [
   String.fromCharCode(0x00c3, 0x00b3),
 ];
 
-expect('src/components/Layout.tsx', 'VISUAL_STAGE_01_SHELL_SIDEBAR', 'Stage01 shell marker');
+expect('src/components/Layout.tsx', 'VISUAL_STAGE_01_SHELL_SIDEBAR', 'Stage01 shell trace marker');
 expect('src/components/Layout.tsx', 'className="app closeflow-visual-stage01 cf-html-shell"', 'current root shell classes');
 expect('src/components/Layout.tsx', 'data-visual-stage="01-shell-sidebar"', 'Stage01 data attribute');
 expect('src/components/Layout.tsx', "caption: 'Start pracy'", 'Start pracy group');
@@ -50,9 +50,10 @@ expect('src/components/Layout.tsx', "label: 'Inbox szkiców'", 'plan-gated Inbox
 expect('src/components/Layout.tsx', "label: 'Zgłoszenia'", 'current support navigation');
 expect('src/components/Layout.tsx', 'canUseAiDraftsByPlan', 'AI drafts plan gate');
 expect('src/components/Layout.tsx', "...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkiców', path: '/ai-drafts' }] : [])", 'plan-gated AI inbox item');
-reject('src/components/Layout.tsx', "label: 'Szkice AI'", 'obsolete Szkice AI navigation');
-reject('src/components/Layout.tsx', "label: 'Pomoc'", 'obsolete Pomoc navigation label');
+reject('src/components/Layout.tsx', "label: 'Szkice AI'", 'obsolete Szkice AI navigation item');
+reject('src/components/Layout.tsx', "label: 'Pomoc'", 'obsolete Pomoc navigation item');
 
+reject('src/index.css', 'visual-stage01-shell.css', 'inactive Stage01 shell CSS import');
 expect('src/components/Layout.tsx', "../styles/closeflow-compact-top-shell-source-truth.css", 'current compact top shell source');
 expect('src/components/Layout.tsx', "../styles/closeflow-operator-top-trim-source-truth.css", 'current operator top trim source');
 expect('src/components/Layout.tsx', "../styles/closeflow-unified-page-canvas-stage211c.css", 'current Stage211C canvas source');
@@ -76,13 +77,12 @@ expect('src/components/GlobalQuickActions.tsx', 'ClientCreateDialog', 'client cr
 expect('src/components/GlobalQuickActions.tsx', 'TaskCreateDialog', 'task create dialog host');
 expect('src/components/GlobalQuickActions.tsx', "../styles/closeflow-command-actions-source-truth.css", 'current command actions visual source');
 
-expect('src/styles/visual-stage01-shell.css', 'VISUAL_STAGE_01_SHELL_CSS', 'Stage01 CSS marker');
-expect('src/styles/visual-stage01-shell.css', '.closeflow-visual-stage01.app', 'scoped app class');
-expect('src/styles/visual-stage01-shell.css', '.closeflow-visual-stage01 .sidebar', 'scoped sidebar class');
-expect('src/styles/visual-stage01-shell.css', '.closeflow-visual-stage01 .global-bar', 'scoped global-bar class');
-expect('src/styles/visual-stage01-shell.css', '.closeflow-visual-stage01 .mobile-nav', 'scoped mobile-nav class');
-expect('src/styles/visual-stage01-shell.css', '@media (max-width: 760px)', 'mobile breakpoint');
-expect('src/index.css', '@import "./styles/visual-stage01-shell.css";', 'active Stage01 CSS import');
+expect('src/styles/visual-stage01-shell.css', 'VISUAL_STAGE_01_SHELL_CSS', 'Stage01 reference CSS marker');
+expect('src/styles/visual-stage01-shell.css', '.closeflow-visual-stage01.app', 'historical scoped app class');
+expect('src/styles/visual-stage01-shell.css', '.closeflow-visual-stage01 .sidebar', 'historical scoped sidebar class');
+expect('src/styles/visual-stage01-shell.css', '.closeflow-visual-stage01 .global-bar', 'historical scoped global-bar class');
+expect('src/styles/visual-stage01-shell.css', '.closeflow-visual-stage01 .mobile-nav', 'historical scoped mobile-nav class');
+expect('src/styles/visual-stage01-shell.css', '@media (max-width: 760px)', 'historical mobile breakpoint');
 
 for (const file of ['src/components/Layout.tsx', 'src/components/GlobalQuickActions.tsx', 'src/styles/visual-stage01-shell.css', 'src/index.css']) {
   const content = read(file);
@@ -91,4 +91,4 @@ for (const file of ['src/components/Layout.tsx', 'src/components/GlobalQuickActi
   }
 }
 
-console.log('OK: Visual Stage01 shell guard reconciled with current navigation and global-action source truth.');
+console.log('OK: Visual Stage01 shell guard reconciled with current navigation, shell and global-action source truth.');
