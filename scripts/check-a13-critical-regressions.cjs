@@ -170,8 +170,8 @@ check('Gemini secret not in client bundle', () => {
   );
 });
 
-check('templates UI matches light app shell', () => {
-  grep('src/pages/Templates.tsx', /data-a16-template-light-ui="true"/);
+check('templates UI matches current light record-list source truth', () => {
+  grep('src/pages/Templates.tsx', /data-cf-templates-page-source="record-list-source-truth"/);
   grep('src/pages/Templates.tsx', /bg-white/);
   grep('src/pages/Templates.tsx', /border-slate-200/);
   grep('src/pages/Templates.tsx', /text-slate-900/);
@@ -179,6 +179,7 @@ check('templates UI matches light app shell', () => {
   grep('src/pages/ResponseTemplates.tsx', /app-surface-strong/);
   grep('src/pages/ResponseTemplates.tsx', /app-text/);
   grep('src/pages/ResponseTemplates.tsx', /app-muted/);
+  reject('src/pages/Templates.tsx', /data-a16-template-light-ui=/, 'Templates.tsx must not depend on the inactive Stage36 light-page marker');
   reject('src/pages/Templates.tsx', /app-surface-strong|app-text|app-muted/, 'Templates.tsx must not use dark app shell tokens for the light templates page');
   reject('src/pages/Templates.tsx', /Dost\u00c4|\u0139|\u0102/, 'Templates.tsx contains mojibake');
   reject('src/pages/ResponseTemplates.tsx', /Dost\u00c4|\u0139|\u0102/, 'ResponseTemplates.tsx contains mojibake');
