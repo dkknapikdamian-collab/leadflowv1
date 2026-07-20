@@ -1,0 +1,35 @@
+name: G15-R12 V14 visual theme guard reconciliation
+
+on:
+  pull_request:
+    branches:
+      - dev-rollout-freeze
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-g15-r12:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Focused G15-R12 tests
+        run: node --test tests/lf-prod-sot-g15-r12-visual-html-theme-v14-guard.test.cjs
+
+      - name: Reconciled V14 visual theme guard
+        run: node scripts/check-visual-html-theme-v14.cjs
+
+      - name: Production build
+        run: npm run build
