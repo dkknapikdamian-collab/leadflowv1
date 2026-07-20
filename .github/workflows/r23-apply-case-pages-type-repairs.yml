@@ -1,4 +1,4 @@
-name: R23 apply case pages type repairs
+name: R23 apply CaseDetail type repairs
 
 on:
   pull_request:
@@ -20,89 +20,55 @@ jobs:
         with:
           ref: g15-r23-scope-tsc-to-active-product
           fetch-depth: 0
-      - name: Apply exact case page repairs
+      - name: Remove dead loading-state delete dialog
         shell: python
         run: |
           from pathlib import Path
-
-          def replace_once(path, old, new):
-              file = Path(path)
-              text = file.read_text(encoding='utf-8-sig')
-              count = text.count(old)
-              print(f'{path}: matches={count}: {old[:100]!r}')
-              if count != 1:
-                  raise SystemExit(f'{path}: expected one match, found {count}')
-              file.write_text(text.replace(old, new, 1), encoding='utf-8')
-
-          replace_once(
-              'src/pages/CaseDetail.tsx',
-              '''      <ConfirmDialog
-                data-case-detail-delete-confirm="true"
-                open={deleteCaseOpen}
-                onOpenChange={(open) => {
-                  if (!open && !deleteCasePending) setDeleteCaseOpen(false);
-                }}
-                title="Awaryjnie usunąć sprawę?"
-                description={`Czy na pewno chcesz usunąć sprawę "${caseData?.title || caseData?.clientName || 'bez tytułu'}"? Tej operacji nie można cofnąć.`}
-                confirmLabel={deleteCasePending ? 'Usuwanie...' : 'Tak, usuń'}
-                cancelLabel="Nie"
-                confirmTone="destructive"
-                pending={deleteCasePending}
-                onConfirm={handleConfirmDeleteCaseRecord}
-              />
-          ''',
-              '',
-          )
-          replace_once(
-              'src/pages/CaseDetail.tsx',
-              'getTaskNoteFollowUpPreviewStage231H_R1D2_R11(taskWithMissingBridgeStage232O)',
-              'getTaskNoteFollowUpPreviewStage231H_R1D2_R11(task)',
-          )
-          replace_once(
-              'src/lib/supabase-fallback.ts',
-              '  approvedAt?: string | null;\n};',
-              '  approvedAt?: string | null;\n  payload?: Record<string, unknown>;\n};',
-          )
-          replace_once(
-              'src/pages/Cases.tsx',
-              'const isClosedCase = isClosedCaseStatus((typeof caseRecord !== "undefined" ? caseRecord : null)?.status);',
-              'const isClosedCase = isClosedCaseStatus(record.status);',
-          )
-          replace_once(
-              'src/pages/Cases.tsx',
-              '''        const riskBadges = getCaseOwnerRiskBadges(record, {
-                  settings: ownerRiskSettings,
-                  lifecycle,
-                  activityTruth,
-                  nextMove,
-                  nearestAction: nearestCaseAction,
-                  nearestActionAt: nearestCaseAction?.at || nearestCaseAction?.startAt || nearestCaseAction?.dueAt || null,
-                  nextActionAt: nearestCaseAction?.at || nearestCaseAction?.startAt || nearestCaseAction?.dueAt || null,
-                  lastActivityAt: lastActivity?.happenedAt || lastActivity?.createdAt || lastActivity?.updatedAt || null,
-                  lastContactAt: lastContactActivity?.happenedAt || lastContactActivity?.createdAt || lastContactActivity?.updatedAt || null,
-                  updatedAt,
-                });''',
-              '        const riskBadges = getCaseOwnerRiskBadges(record, { settings: ownerRiskSettings });',
-          )
-          replace_once(
-              'src/pages/Leads.tsx',
-              '<span className="lead-action-cell" title={nextActionMeta.title}>',
-              '<span className="lead-action-cell" title={row.nextMoveTitle || \'Brak zaplanowanej akcji\'}>',
-          )
-          Path('.github/workflows/r23-apply-case-pages-type-repairs.yml').unlink()
-      - name: Validate case page repairs
+          import re
+          path = Path('src/pages/CaseDetail.tsx')
+          text = path.read_text(encoding='utf-8-sig')
+          pattern = r'(</main>)\s*<ConfirmDialog[\s\S]*?data-case-detail-delete-confirm="true"[\s\S]*?/>\s*(</Layout>)'
+          next_text, count = re.subn(pattern, r'\1\n    \2', text, count=1)
+          print('matches', count)
+          if count != 1: raise SystemExit(f'expected 1 loading dialog match, found {count}')
+          path.write_text(next_text, encoding='utf-8')
+      - name: Repair CaseDetail task preview identifier
+        shell: python
+        run: |
+          from pathlib import Path
+          path = Path('src/pages/CaseDetail.tsx')
+          text = path.read_text(encoding='utf-8-sig')
+          old = 'getTaskNoteFollowUpPreviewStage231H_R1D2_R11(taskWithMissingBridgeStage232O)'
+          count = text.count(old)
+          print('matches', count)
+          if count != 1: raise SystemExit(f'expected 1 task preview match, found {count}')
+          path.write_text(text.replace(old, 'getTaskNoteFollowUpPreviewStage231H_R1D2_R11(task)', 1), encoding='utf-8')
+      - name: Extend CaseItemInput payload contract
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          path = Path('src/lib/supabase-fallback.ts')
+          text = path.read_text(encoding='utf-8-sig')
+          pattern = r'(type CaseItemInput = \{[\s\S]*?approvedAt\?: string \| null;)(\s*\};)'
+          next_text, count = re.subn(pattern, r'\1\n  payload?: Record<string, unknown>;\2', text, count=1)
+          print('matches', count)
+          if count != 1: raise SystemExit(f'expected 1 CaseItemInput match, found {count}')
+          path.write_text(next_text, encoding='utf-8')
+      - name: Validate CaseDetail repairs
         run: |
           git diff --check
           npm ci
           npm install --no-save --package-lock=false @types/react@19.2.17 @types/react-dom@19.2.3
           node scripts/check-g15-r23-tsc-active-product-scope.cjs
-          npx tsc --noEmit --pretty false > r23-case-pages-tsc.log 2>&1 || true
+          npx tsc --noEmit --pretty false > r23-case-detail-tsc.log 2>&1 || true
           npm run build
-          cat r23-case-pages-tsc.log
+          cat r23-case-detail-tsc.log
       - name: Commit and self-remove workflow
         run: |
+          rm .github/workflows/r23-apply-case-pages-type-repairs.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/pages/CaseDetail.tsx src/lib/supabase-fallback.ts src/pages/Cases.tsx src/pages/Leads.tsx .github/workflows/r23-apply-case-pages-type-repairs.yml
-          git commit -m "fix(closeflow): repair case page TypeScript adapters"
+          git add src/pages/CaseDetail.tsx src/lib/supabase-fallback.ts .github/workflows/r23-apply-case-pages-type-repairs.yml
+          git commit -m "fix(closeflow): repair CaseDetail TypeScript adapters"
           git push origin HEAD:g15-r23-scope-tsc-to-active-product
