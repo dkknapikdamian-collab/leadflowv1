@@ -1,0 +1,35 @@
+name: G15-R11 Stage16 Today guard reconciliation
+
+on:
+  pull_request:
+    branches:
+      - dev-rollout-freeze
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-g15-r11:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Focused G15-R11 tests
+        run: node --test tests/lf-prod-sot-g15-r11-stage16-today-guard.test.cjs
+
+      - name: Reconciled Stage16 Today guard
+        run: node scripts/check-visual-stage16-today-html-reset.cjs
+
+      - name: Production build
+        run: npm run build
