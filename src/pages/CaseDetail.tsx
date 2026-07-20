@@ -1616,20 +1616,6 @@ function CaseDetailLoadingState() {
           </div>
         </section>
       </main>
-      <ConfirmDialog
-        data-case-detail-delete-confirm="true"
-        open={deleteCaseOpen}
-        onOpenChange={(open) => {
-          if (!open && !deleteCasePending) setDeleteCaseOpen(false);
-        }}
-        title="Awaryjnie usunąć sprawę?"
-        description={`Czy na pewno chcesz usunąć sprawę "${caseData?.title || caseData?.clientName || 'bez tytułu'}"? Tej operacji nie można cofnąć.`}
-        confirmLabel={deleteCasePending ? 'Usuwanie...' : 'Tak, usuń'}
-        cancelLabel="Nie"
-        confirmTone="destructive"
-        pending={deleteCasePending}
-        onConfirm={handleConfirmDeleteCaseRecord}
-      />
     </Layout>
   );
 }
@@ -3049,7 +3035,7 @@ export default function CaseDetail() {
 
     let noteIdStage231H_R1D2_R15C = String(payloadStage231H_R1D2_R15C.sourceNoteId || payloadStage231H_R1D2_R15C.noteId || (task as any).sourceNoteId || (task as any).noteId || '').trim();
     let notePreviewStage231H_R1D2_R15C = normalizeCaseNotePreviewStage231H_R1D2_R11(
-      getTaskNoteFollowUpPreviewStage231H_R1D2_R11(taskWithMissingBridgeStage232O) ||
+      getTaskNoteFollowUpPreviewStage231H_R1D2_R11(task) ||
       payloadStage231H_R1D2_R15C.notePreview ||
       payloadStage231H_R1D2_R15C.note ||
       payloadStage231H_R1D2_R15C.content ||
