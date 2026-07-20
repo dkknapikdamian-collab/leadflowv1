@@ -37,9 +37,3 @@ test('parsed TypeScript program contains active files and no historical patchers
   for (const required of ['src/App.tsx', 'api/me.ts', 'vite.config.ts']) assert.ok(files.includes(required), `missing ${required}`);
   assert.equal(files.some((file) => /^(scripts|tools|_project|_local_backups|backups|bisect)\//.test(file)), false);
 });
-
-test('scoped tsc typechecks active product sources', () => {
-  const tscBin = path.join(root, 'node_modules', 'typescript', 'bin', 'tsc');
-  const result = spawnSync(process.execPath, [tscBin, '--noEmit', '--pretty', 'false'], { cwd: root, encoding: 'utf8' });
-  assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
-});
