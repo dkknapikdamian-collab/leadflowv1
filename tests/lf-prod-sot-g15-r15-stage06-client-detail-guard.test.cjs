@@ -37,7 +37,7 @@ test('ClientDetail retains current workspace and missing-manager source markers'
   assert.match(clientDetail, /STAGE232I4_R16O_CLIENT_SHARED_MISSING_MANAGER_NO_MARKER_ANCHOR_FINAL/);
 });
 
-test('Stage06 remains reference-only while client flows stay guarded', () => {
+test('Stage06 remains reference-only while current client operating model stays guarded', () => {
   assert.match(stage06Css, /VISUAL_STAGE_06_CLIENT_DETAIL/);
   assert.match(stage06Css, /\.main-client-detail/);
   for (const required of [
@@ -45,8 +45,11 @@ test('Stage06 remains reference-only while client flows stay guarded', () => {
     'fetchCasesFromSupabase',
     'updateClientInSupabase',
     'openNewCase',
-    'openNewLeadForExistingClient',
+    'STAGE117B_CLIENT_DETAIL_NO_LEAD_VIEW_CONTRACT',
+    'openMainCase',
+    'obsolete new lead shortcut',
   ]) {
     assert.match(guard, new RegExp(required));
   }
+  assert.doesNotMatch(clientDetail, /openNewLeadForExistingClient/);
 });
