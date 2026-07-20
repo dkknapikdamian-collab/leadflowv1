@@ -31,16 +31,17 @@ test('LeadDetail uses current Stage14, canvas and shared action sources', () => 
   ]) assert.match(leadDetail, new RegExp(required.replace(/\./g, '\\.')));
 });
 
-test('static AI rail cards remain removed by current source truth', () => {
+test('static AI follow-up rail is removed while next-action engine remains', () => {
   assert.match(leadDetail, /STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD/);
   assert.match(leadDetail, /STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_RAIL/);
-  assert.doesNotMatch(leadDetail, /LeadAiFollowupDraft|LeadAiNextAction/);
+  assert.doesNotMatch(leadDetail, /LeadAiFollowupDraft/);
+  assert.match(leadDetail, /LeadAiNextAction/);
 });
 
 test('Stage04 remains reference-only while lead flows stay guarded', () => {
   assert.match(stage04Css, /VISUAL_STAGE_04_LEAD_DETAIL_UI_SYSTEM/);
   assert.match(stage04Css, /\.main-lead-detail/);
-  for (const required of ['startLeadServiceInSupabase', 'handleAddNote', 'handleUpdateLead', 'handleDeleteLead', 'getLeadFinance']) {
+  for (const required of ['startLeadServiceInSupabase', 'handleAddNote', 'handleUpdateLead', 'handleDeleteLead', 'getLeadFinance', 'LeadAiNextAction']) {
     assert.match(guard, new RegExp(required));
   }
 });
