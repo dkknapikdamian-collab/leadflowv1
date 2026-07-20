@@ -654,15 +654,18 @@ function buildTimeline(tasks: any[], events: any[]): TimelineEntry[] {
     return (asDate(left.dateValue)?.getTime() ?? Number.MAX_SAFE_INTEGER) - (asDate(right.dateValue)?.getTime() ?? Number.MAX_SAFE_INTEGER);
   });
 }
-function LeadActionButton({ children, onClick, disabled }: { children: ReactNode; onClick?: () => void; disabled?: boolean }) {
+function LeadActionButton({ children, className = '', ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const isStartServiceActionStage14F = children === 'Rozpocznij obsługę';
+  const resolvedClassName = [
+    isStartServiceActionStage14F ? 'lead-detail-chip-button cf-action-button cf-action-button-primary' : 'lead-detail-chip-button cf-action-button',
+    className,
+  ].filter(Boolean).join(' ');
   return (
     <button
       type="button"
-      className={isStartServiceActionStage14F ? "lead-detail-chip-button cf-action-button cf-action-button-primary" : "lead-detail-chip-button cf-action-button"}
+      className={resolvedClassName}
       data-lead-start-service={isStartServiceActionStage14F ? "true" : undefined}
-      onClick={onClick}
-      disabled={disabled}
+      {...props}
     >
       {children}
     </button>
@@ -1603,8 +1606,8 @@ useEffect(() => {
       financePotential: leadFinancePanel.potential,
       financeLabel: leadFinance.formatted,
       nextActionLabel: nextTimelineEntry ? nextTimelineEntry.title + ' • ' + nextTimelineEntry.dateLabel : '',
-      riskLabel: leadSilenceRisk.riskLabel || leadWorkCenter.riskLabel,
-      riskReason: leadRiskReasonStage14F || leadSilenceRisk.riskReason || leadWorkCenter.riskReason,
+      riskLabel: leadSilenceRisk.label || leadWorkCenter.riskLabel,
+      riskReason: leadRiskReasonStage14F || leadSilenceRisk.details || leadWorkCenter.riskReason,
     }),
     [lead, leadFinance.formatted, leadFinancePanel.potential, leadPrimaryNoteText, leadRiskReasonStage14F, leadSilenceRisk, leadWorkCenter.riskLabel, leadWorkCenter.riskReason, nextTimelineEntry],
   );
@@ -2193,10 +2196,10 @@ useEffect(() => {
 
   const handleDeleteLinkedEvent = async (event: any) => {
     if (!window.confirm('Usunąć to wydarzenie?')) return;
+    const optimisticEventSnapshot = linkedEvents;
     try {
       setLinkedEntryActionId(`event:${event.id}:delete`);
     const eventId = String(event?.id || '');
-    const optimisticEventSnapshot = linkedEvents;
     setLinkedEvents((previous) => previous.filter((item: any) => String(item?.id || '') !== eventId));
     const stage228r50EventDeleteOptimisticSnapshot = 'stage228r50_lead_detail_event_delete_optimistic_snapshot';
     void stage228r50EventDeleteOptimisticSnapshot;
