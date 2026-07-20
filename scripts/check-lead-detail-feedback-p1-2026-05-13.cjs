@@ -4,6 +4,7 @@ const path = require('path');
 const root = process.cwd();
 const leadDetailPath = path.join(root, 'src/pages/LeadDetail.tsx');
 const helperPath = path.join(root, 'src/lib/activity-timeline.ts');
+const followupDraftPath = path.join(root, 'src/components/LeadAiFollowupDraft.tsx');
 
 function fail(message) {
   console.error('FAIL check:lead-detail-feedback-p1:', message);
@@ -44,11 +45,13 @@ function sections(source) {
 
 const leadDetail = read(leadDetailPath);
 const helper = read(helperPath);
+const followupDraft = read(followupDraftPath);
 
-if (!leadDetail.includes("../lib/activity-timeline")) fail('LeadDetail nie importuje wsp\u00F3lnego formattera activity-timeline.');
-if (!leadDetail.includes('getActivityTimelineTitle') || !leadDetail.includes('getActivityTimelineDescription')) fail('LeadDetail nie u\u017Cywa wsp\u00F3lnego formattera historii.');
+if (!leadDetail.includes('../lib/activity-timeline')) fail('LeadDetail nie importuje wspólnego formattera activity-timeline.');
+if (!leadDetail.includes('getActivityTimelineTitle') || !leadDetail.includes('getActivityTimelineDescription')) fail('LeadDetail nie używa wspólnego formattera historii.');
 if (leadDetail.includes('<LeadAiNextAction')) fail('LeadDetail nadal renderuje kafelek LeadAiNextAction / centrum pracy AI w JSX.');
-if (!leadDetail.includes('<LeadAiFollowupDraft')) fail('LeadDetail nie renderuje bezpiecznego szkicu follow-up draft-only.');
+if (!leadDetail.includes('STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD')) fail('LeadDetail nie zawiera aktualnego kontraktu Stage78 usuwającego statyczny kafelek AI follow-up.');
+if (leadDetail.includes('LeadAiFollowupDraft')) fail('LeadDetail ponownie importuje lub renderuje usunięty statyczny kafelek AI follow-up.');
 
 const badRightCards = sections(leadDetail)
   .filter((section) => section.includes('right-card') || section.includes('lead-detail-right-card'))
@@ -60,12 +63,21 @@ for (const required of [
   'getActivityTimelineDescription',
   'normalizeActivityTimelineItem',
   'Zmieniono status',
-  'Dodano notatk\u0119',
-  'Wp\u0142ata',
+  'Dodano notatkę',
+  'Wpłata',
   'Zadanie',
   'Wydarzenie',
 ]) {
   if (!helper.includes(required)) fail('activity-timeline.ts nie zawiera wymaganego fragmentu: ' + required);
+}
+
+for (const required of [
+  'createLeadFollowupDraft',
+  'AI niczego nie wysyła automatycznie.',
+  'Szkic do potwierdzenia',
+  'Kopiuj treść',
+]) {
+  if (!followupDraft.includes(required)) fail('LeadAiFollowupDraft.tsx nie zachowuje bezpiecznego draft-only kontraktu: ' + required);
 }
 
 console.log('OK check:lead-detail-feedback-p1');
