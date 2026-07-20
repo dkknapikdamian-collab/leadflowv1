@@ -15,7 +15,7 @@ function readRequired(file) {
     fail(file, `Brak wymaganego pliku: ${file}`);
     return '';
   }
-  return fs.readFileSync(target, 'utf8');
+  return fs.readFileSync(target, 'utf8').replace(/^\uFEFF/, '');
 }
 
 function pass(scope, message) {
@@ -54,6 +54,7 @@ const requiredFiles = {
   access: 'src/lib/access.ts',
   useWorkspace: 'src/hooks/useWorkspace.ts',
   billing: 'src/pages/Billing.tsx',
+  billingOptions: 'src/lib/source-of-truth/billing-options.ts',
   me: 'api/me.ts',
   fallback: 'src/lib/supabase-fallback.ts',
 };
@@ -74,11 +75,13 @@ const accessStatuses = [
 ];
 
 section('Plan/access model');
-assertRegex('plans', files.plans, /TRIAL_DAYS\s*=\s*21\b/, 'Trial ma jedno \u017Ar\u00F3d\u0142o prawdy i trwa 21 dni');
-assertIncludes('plans', files.plans, 'FREE_LIMITS', 'Free limity s\u0105 w src/lib/plans.ts');
+assertRegex('plans', files.plans, /export\s+const\s+TRIAL_DAYS\s*=\s*14\s*;/, 'Trial ma jedno źródło prawdy i trwa 14 dni');
+assertIncludes('plans', files.plans, "trial: 'trial_14d'", 'Identyfikator triala jest zgodny z kontraktem 14 dni');
+assertNotRegex('plans', files.plans, /\bTRIAL_DAYS\s*=\s*21\b/, 'Nie ma starego 21-dniowego triala w planach');
+assertIncludes('plans', files.plans, 'FREE_LIMITS', 'Free limity są w src/lib/plans.ts');
 assertIncludes('plans', files.plans, 'buildPlanAccessModel', 'Plan access model istnieje');
 for (const status of accessStatuses) {
-  assertIncludes('plans', files.plans, `'${status}'`, `Status ${status} istnieje w modelu plan\u00F3w`);
+  assertIncludes('plans', files.plans, `'${status}'`, `Status ${status} istnieje w modelu planów`);
 }
 assertIncludes('plans', files.plans, 'activeLeads: 5', 'Free ogranicza aktywne leady do 5');
 assertIncludes('plans', files.plans, 'activeTasks: 5', 'Free ogranicza aktywne zadania do 5');
@@ -89,44 +92,50 @@ section('src/lib/access.ts');
 assertIncludes('access', files.access, 'export function getAccessSummary', 'UI access summary ma centralny helper');
 assertIncludes('access', files.access, 'buildTrialExpiredSummary', 'Trial expired ma osobny, czytelny stan');
 assertRegex('access', files.access, /status:\s*'trial_expired'[\s\S]*?hasAccess:\s*false/, 'Trial expired blokuje tworzenie nowych danych');
-assertRegex('access', files.access, /rawStatus\s*===\s*'paid_active'[\s\S]*?isBillingDateExpired/, 'paid_active sprawdza wyga\u015Bni\u0119cie okresu billingowego');
-assertRegex('access', files.access, /rawStatus\s*===\s*'free_active'[\s\S]*?hasAccess:\s*true/, 'Free ma jawny stan dost\u0119pu');
+assertRegex('access', files.access, /rawStatus\s*===\s*'paid_active'[\s\S]*?isBillingDateExpired/, 'paid_active sprawdza wygaśnięcie okresu billingowego');
+assertRegex('access', files.access, /rawStatus\s*===\s*'free_active'[\s\S]*?hasAccess:\s*true/, 'Free ma jawny stan dostępu');
 for (const status of accessStatuses) {
-  assertIncludes('access', files.access, `'${status}'`, `Status ${status} jest obs\u0142ugiwany w access.ts`);
+  assertIncludes('access', files.access, `'${status}'`, `Status ${status} jest obsługiwany w access.ts`);
 }
 
 section('api/me.ts');
-assertIncludes('api/me', files.me, 'PLAN_TRIAL_DAYS', '/api/me u\u017Cywa TRIAL_DAYS z src/lib/plans');
+assertIncludes('api/me', files.me, 'TRIAL_DAYS as PLAN_TRIAL_DAYS', '/api/me importuje trial duration z src/lib/plans');
+assertIncludes('api/me', files.me, 'const TRIAL_DAYS = PLAN_TRIAL_DAYS;', '/api/me używa aliasu centralnego TRIAL_DAYS');
+assertIncludes('api/me', files.me, 'STAGE231E2_R2_TRIAL_14D_LOCK', '/api/me ma jawny lock 14-dniowego kontraktu');
 assertIncludes('api/me', files.me, 'buildAccess', '/api/me buduje backendowy access state');
 assertIncludes('api/me', files.me, 'enrichAccessModel', '/api/me wzbogaca access o limity i features');
-assertIncludes('api/me', files.me, 'buildPlanAccessModel', '/api/me u\u017Cywa tego samego modelu plan\u00F3w co frontend');
-assertIncludes('api/me', files.me, 'trial_expired', '/api/me potrafi zwr\u00F3ci\u0107 trial_expired');
-assertIncludes('api/me', files.me, 'payment_failed', '/api/me potrafi zwr\u00F3ci\u0107 payment_failed');
-assertIncludes('api/me', files.me, 'free_active', '/api/me potrafi zwr\u00F3ci\u0107 free_active');
-assertNotRegex('api/me', files.me, /TRIAL_DAYS\s*=\s*14\b/, 'Nie ma starego 14-dniowego triala w api/me');
+assertIncludes('api/me', files.me, 'buildPlanAccessModel', '/api/me używa tego samego modelu planów co frontend');
+assertIncludes('api/me', files.me, 'trial_expired', '/api/me potrafi zwrócić trial_expired');
+assertIncludes('api/me', files.me, 'payment_failed', '/api/me potrafi zwrócić payment_failed');
+assertIncludes('api/me', files.me, 'free_active', '/api/me potrafi zwrócić free_active');
+assertNotRegex('api/me', files.me, /\bconst\s+TRIAL_DAYS\s*=\s*14\b/, 'api/me nie definiuje lokalnej liczby 14 zamiast centralnego aliasu');
+assertNotRegex('api/me', files.me, /\bconst\s+TRIAL_DAYS\s*=\s*21\b/, 'api/me nie zawiera starej lokalnej liczby 21');
 
 section('useWorkspace');
 assertIncludes('useWorkspace', files.useWorkspace, 'fetchMeFromSupabase', 'useWorkspace pobiera /api/me przez fallback');
 assertIncludes('useWorkspace', files.useWorkspace, 'setAccessOverride(me.access)', 'useWorkspace ufa backendowemu me.access');
-assertIncludes('useWorkspace', files.useWorkspace, 'buildPlanAccessModel', 'useWorkspace nie zgaduje plan\u00F3w r\u0119cznie');
-assertIncludes('useWorkspace', files.useWorkspace, 'accessOverridePlanAccess', 'useWorkspace normalizuje accessOverride do modelu plan\u00F3w');
-assertRegex('useWorkspace', files.useWorkspace, /hasAccess:\s*finalAccess\.hasAccess\s*\|\|\s*isAppOwner/, 'hasAccess z UI pochodzi z finalAccess, z wyj\u0105tkiem w\u0142a\u015Bciciela aplikacji');
+assertIncludes('useWorkspace', files.useWorkspace, 'buildPlanAccessModel', 'useWorkspace nie zgaduje planów ręcznie');
+assertIncludes('useWorkspace', files.useWorkspace, 'accessOverridePlanAccess', 'useWorkspace normalizuje accessOverride do modelu planów');
+assertRegex('useWorkspace', files.useWorkspace, /hasAccess:\s*finalAccess\.hasAccess\s*\|\|\s*isAppOwner/, 'hasAccess z UI pochodzi z finalAccess, z wyjątkiem właściciela aplikacji');
 assertIncludes('useWorkspace', files.useWorkspace, 'const refresh = () => setRefreshToken', 'useWorkspace ma refresh po zmianach billing/workspace');
-assertIncludes('useWorkspace', files.useWorkspace, 'WORKSPACE_BOOTSTRAP_FAILED', 'B\u0142\u0105d bootstrapu workspace jest jawny');
+assertIncludes('useWorkspace', files.useWorkspace, 'WORKSPACE_BOOTSTRAP_FAILED', 'Błąd bootstrapu workspace jest jawny');
 assertIncludes('useWorkspace', files.useWorkspace, 'WORKSPACE_CONTEXT_REQUIRED', 'Brak workspace jest jawny');
 
 section('Billing UI truth');
-assertIncludes('Billing', files.billing, 'ACCESS_COPY', 'Billing ma map\u0119 prawdy status\u00F3w');
+assertIncludes('Billing', files.billing, 'getBillingAccessCopy', 'Billing importuje centralny helper copy statusów');
+assertIncludes('Billing', files.billing, 'getBillingAccessCopy(access?.status)', 'Billing wylicza copy z aktualnego access status');
+assertIncludes('Billing source truth', files.billingOptions, 'BILLING_ACCESS_COPY_BY_STATUS', 'Centralna mapa copy statusów istnieje');
 for (const status of accessStatuses) {
-  assertIncludes('Billing', files.billing, `${status}:`, `Billing copy obs\u0142uguje status ${status}`);
+  assertIncludes('Billing source truth', files.billingOptions, `${status}:`, `Centralne billing copy obsługuje status ${status}`);
 }
-assertIncludes('Billing', files.billing, 'createBillingCheckoutSessionInSupabase', 'Billing u\u017Cywa realnego endpointu checkout');
-assertIncludes('Billing', files.billing, 'billingActionInSupabase', 'Billing u\u017Cywa backendowej akcji cancel/resume');
-assertIncludes('Billing', files.billing, "checkoutState === 'success'", 'Billing obs\u0142uguje powr\u00F3t po checkout success');
-assertIncludes('Billing', files.billing, 'void refresh()', 'Billing od\u015Bwie\u017Ca workspace po checkout/cancel');
-assertRegex('Billing', files.billing, /handleBillingAction[\s\S]*?await refresh\(\)/, 'Cancel/resume od\u015Bwie\u017Ca access bez r\u0119cznego reloadu');
-assertNotRegex('Billing', files.billing, /Symulacj|symulacj/i, 'Billing nie pokazuje ju\u017C flow jako symulacji');
-assertNotRegex('Billing', files.billing, /SOC\s*2\s*Type\s*II\s*certified/i, 'Billing nie zawiera fa\u0142szywego claimu SOC 2 certified');
+assertRegex('Billing source truth', files.billingOptions, /getBillingAccessCopy\([\s\S]*?BILLING_ACCESS_COPY_BY_STATUS\.inactive/, 'Billing copy ma bezpieczny fallback inactive');
+assertIncludes('Billing', files.billing, 'createBillingCheckoutSessionInSupabase', 'Billing używa realnego endpointu checkout');
+assertIncludes('Billing', files.billing, 'billingActionInSupabase', 'Billing używa backendowej akcji cancel/resume');
+assertIncludes('Billing', files.billing, "checkoutState === 'success'", 'Billing obsługuje powrót po checkout success');
+assertIncludes('Billing', files.billing, 'void refresh()', 'Billing odświeża workspace po checkout/cancel');
+assertRegex('Billing', files.billing, /handleBillingAction[\s\S]*?await refresh\(\)/, 'Cancel/resume odświeża access bez ręcznego reloadu');
+assertNotRegex('Billing', files.billing, /Symulacj|symulacj/i, 'Billing nie pokazuje już flow jako symulacji');
+assertNotRegex('Billing', files.billing, /SOC\s*2\s*Type\s*II\s*certified/i, 'Billing nie zawiera fałszywego claimu SOC 2 certified');
 
 section('Write access gate surface');
 const screens = [
@@ -140,8 +149,8 @@ const screens = [
 for (const screen of screens) {
   const content = readRequired(screen);
   const hasWorkspaceHook = /useWorkspace\s*\(/.test(content) || /hasAccess/.test(content) || /Access/.test(content);
-  if (hasWorkspaceHook) pass(screen, 'Ekran ma \u015Blad access/workspace gate');
-  else warn(screen, 'Nie znaleziono jawnego \u015Bladu access gate. Sprawd\u017A r\u0119cznie, czy tworzenie nowych rekord\u00F3w jest blokowane po trial_expired.');
+  if (hasWorkspaceHook) pass(screen, 'Ekran ma ślad access/workspace gate');
+  else warn(screen, 'Nie znaleziono jawnego śladu access gate. Sprawdź ręcznie, czy tworzenie nowych rekordów jest blokowane po trial_expired.');
 }
 
 section('Report');
@@ -155,8 +164,8 @@ const warned = results.filter((item) => item.level === 'WARN');
 console.log(`\nSummary: ${results.length - failed.length - warned.length} pass, ${warned.length} warn, ${failed.length} fail.`);
 
 if (failed.length) {
-  console.error('\nFAIL Access/Billing Stage02A guard failed. Najpierw napraw powy\u017Csze punkty, potem uruchom ponownie.');
+  console.error('\nFAIL Access/Billing Stage02A guard failed. Najpierw napraw powyższe punkty, potem uruchom ponownie.');
   process.exit(1);
 }
 
-console.log('\nPASS Access/Billing Stage02A source-of-truth guard');
+console.log('\nPASS Access/Billing Stage02A guard reconciled with current 14-day trial and centralized billing copy source truth.');
