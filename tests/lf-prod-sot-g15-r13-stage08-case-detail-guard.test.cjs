@@ -44,13 +44,15 @@ test('CaseDetail retains current operation and rail source markers', () => {
   assert.match(caseDetail, /STAGE217_CASE_DETAIL_OPERATION_WORKSPACE_UX/);
 });
 
-test('Stage08 remains reference-only while business-flow checks stay in guard', () => {
+test('Stage08 remains reference-only while current business flows stay guarded', () => {
   assert.match(stage08Css, /VISUAL_STAGE_08_CASE_DETAIL_CSS/);
   assert.match(stage08Css, /\.main-case-detail/);
   for (const required of [
     'fetchCaseByIdFromSupabase',
-    'insertTaskToSupabase',
-    'insertEventToSupabase',
+    "openCaseContextAction\\('task'\\)",
+    "openCaseContextAction\\('event'\\)",
+    "openCaseContextAction\\('note'\\)",
+    'openContextQuickAction',
     'createClientPortalTokenInSupabase',
     'resolveCaseLifecycleV1',
   ]) {
