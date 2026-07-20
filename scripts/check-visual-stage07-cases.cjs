@@ -11,19 +11,33 @@ function expectIncludes(file, text, label) {
   console.log(`OK: ${file} contains ${label || text}`);
 }
 
-expectIncludes('src/components/Layout.tsx', 'VISUAL_STAGE_07_CASES_ROUTE_SCOPE', 'Stage 07 route scope marker');
+function rejectIncludes(file, text, label) {
+  const content = read(file);
+  if (content.includes(text)) throw new Error(`${file}: forbidden ${label || text}`);
+  console.log(`OK: ${file} excludes ${label || text}`);
+}
+
+expectIncludes('src/components/Layout.tsx', 'VISUAL_STAGE_07_CASES_ROUTE_SCOPE', 'Stage07 route scope marker');
 expectIncludes('src/components/Layout.tsx', "const isCasesRoute = location.pathname === '/cases';", 'cases route detection');
 expectIncludes('src/components/Layout.tsx', 'main-cases', 'main-cases scoped class');
 expectIncludes('src/components/Layout.tsx', "data-visual-stage-cases={isCasesRoute ? '07-cases' : undefined}", 'cases visual data marker');
 
-expectIncludes('src/styles/visual-stage07-cases.css', 'VISUAL_STAGE_07_CASES', 'Stage 07 CSS marker');
-expectIncludes('src/styles/visual-stage07-cases.css', '.main-cases', 'scoped Cases selector');
-expectIncludes('src/styles/visual-stage07-cases.css', 'grid-4', 'grid-4 pattern');
-expectIncludes('src/styles/visual-stage07-cases.css', 'table-card', 'table-card pattern');
-expectIncludes('src/styles/visual-stage07-cases.css', 'right-card', 'right-card pattern');
-expectIncludes('src/styles/visual-stage07-cases.css', 'statusline', 'statusline pattern');
-expectIncludes('src/styles/visual-stage07-cases.css', '@media (max-width: 760px)', 'mobile polish');
-expectIncludes('src/index.css', '@import "./styles/visual-stage07-cases.css";', 'Stage 07 CSS import');
+rejectIncludes('src/index.css', 'visual-stage07-cases.css', 'inactive Stage07 Cases CSS import');
+expectIncludes('src/pages/Cases.tsx', "../styles/closeflow-page-header-v2.css", 'current Cases page header CSS import');
+expectIncludes('src/pages/Cases.tsx', "../styles/closeflow-record-list-source-truth.css", 'current Cases record-list CSS import');
+expectIncludes('src/pages/Cases.tsx', "../styles/closeflow-unified-page-canvas-stage211c.css", 'current Stage211C canvas import');
+expectIncludes('src/pages/Cases.tsx', "../styles/closeflow-canvas-source-truth-stage211e.css", 'current Stage211E canvas source import');
+expectIncludes('src/pages/Cases.tsx', 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES', 'current Cases rebuild marker');
+expectIncludes('src/pages/Cases.tsx', 'STAGE228G_OPERATOR_RAIL_SOURCE_TRUTH', 'current Cases operator rail marker');
+expectIncludes('src/pages/Cases.tsx', 'STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION', 'current open/closed Cases navigation marker');
+
+expectIncludes('src/styles/visual-stage07-cases.css', 'VISUAL_STAGE_07_CASES', 'Stage07 reference CSS marker');
+expectIncludes('src/styles/visual-stage07-cases.css', '.main-cases', 'historical scoped Cases selector');
+expectIncludes('src/styles/visual-stage07-cases.css', 'grid-4', 'historical grid-4 pattern');
+expectIncludes('src/styles/visual-stage07-cases.css', 'table-card', 'historical table-card pattern');
+expectIncludes('src/styles/visual-stage07-cases.css', 'right-card', 'historical right-card pattern');
+expectIncludes('src/styles/visual-stage07-cases.css', 'statusline', 'historical statusline pattern');
+expectIncludes('src/styles/visual-stage07-cases.css', '@media (max-width: 760px)', 'historical mobile polish');
 
 expectIncludes('src/pages/Cases.tsx', 'fetchCasesFromSupabase', 'case read flow remains present');
 expectIncludes('src/pages/Cases.tsx', 'fetchLeadsFromSupabase', 'lead context remains present');
@@ -34,20 +48,15 @@ expectIncludes('src/pages/Cases.tsx', 'deleteCaseWithRelations', 'delete case wi
 expectIncludes('src/pages/Cases.tsx', 'ConfirmDialog', 'delete confirmation remains present');
 expectIncludes('src/pages/Cases.tsx', 'resolveCaseLifecycleV1', 'case lifecycle remains present');
 expectIncludes('src/pages/Cases.tsx', 'StatShortcutCard', 'case metric filters remain present');
-expectIncludes('src/pages/Cases.tsx', "type CaseView = 'all' | 'waiting' | 'blocked' | 'approval' | 'ready' | 'needs_next_step' | 'linked';", 'case filters contract remains present');
+for (const view of ["'open'", "'closed'", "'all'", "'waiting'", "'blocked'", "'approval'", "'ready'", "'needs_next_step'", "'linked'"]) {
+  expectIncludes('src/pages/Cases.tsx', view, `current CaseView token ${view}`);
+}
+expectIncludes('src/pages/Cases.tsx', "route: '/cases?view=closed'", 'closed Cases route contract');
+expectIncludes('src/pages/Cases.tsx', "caseView === 'linked' && Boolean(record.leadId)", 'source lead relation filter remains present');
+expectIncludes('src/pages/Cases.tsx', "import { caseDetailPath } from '../lib/routes';", 'shared CaseDetail route helper import');
+expectIncludes('src/pages/Cases.tsx', 'to={caseDetailPath(record.id)}', 'CaseDetail links use shared route helper');
 expectIncludes('src/pages/Cases.tsx', 'searchQuery', 'case search remains present');
 expectIncludes('src/pages/Cases.tsx', 'isCreateCaseOpen', 'create modal remains present');
 expectIncludes('src/pages/Cases.tsx', 'handleSelectClientSuggestion', 'client suggestions remain present');
-const casesContent = read('src/pages/Cases.tsx');
-if (casesContent.includes("to={`/cases/${record.id}`}") || casesContent.includes("to={`/case/${record.id}`}")) {
-  console.log('OK: src/pages/Cases.tsx contains CaseDetail link remains present');
-} else {
-  throw new Error('src/pages/Cases.tsx: missing CaseDetail link remains present');
-}
-if (casesContent.includes("to={`/leads/${record.leadId}`}") || casesContent.includes("to={`/leads/${String(record.leadId)}`}") || casesContent.includes('Otw\u00F3rz histori\u0119 pozyskania')) {
-  console.log('OK: src/pages/Cases.tsx contains source lead link remains present');
-} else {
-  throw new Error('src/pages/Cases.tsx: missing source lead link remains present');
-}
 
-console.log('OK: Visual Stage 07 Cases guard passed.');
+console.log('OK: Visual Stage07 Cases guard reconciled with current Cases source truth.');
