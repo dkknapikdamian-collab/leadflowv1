@@ -31,17 +31,28 @@ test('LeadDetail uses current Stage14, canvas and shared action sources', () => 
   ]) assert.match(leadDetail, new RegExp(required.replace(/\./g, '\\.')));
 });
 
-test('static AI follow-up rail is removed while next-action engine remains', () => {
+test('static AI follow-up and next-action rail components remain removed', () => {
   assert.match(leadDetail, /STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD/);
   assert.match(leadDetail, /STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_RAIL/);
   assert.doesNotMatch(leadDetail, /LeadAiFollowupDraft/);
-  assert.match(leadDetail, /LeadAiNextAction/);
+  assert.doesNotMatch(leadDetail, /LeadAiNextAction/);
 });
 
-test('Stage04 remains reference-only while lead flows stay guarded', () => {
+test('Stage04 remains reference-only while current shared flows stay guarded', () => {
   assert.match(stage04Css, /VISUAL_STAGE_04_LEAD_DETAIL_UI_SYSTEM/);
   assert.match(stage04Css, /\.main-lead-detail/);
-  for (const required of ['startLeadServiceInSupabase', 'handleAddNote', 'handleUpdateLead', 'handleDeleteLead', 'getLeadFinance', 'LeadAiNextAction']) {
+  for (const required of [
+    'startLeadServiceInSupabase',
+    'startLeadToCaseHandoff',
+    'openLeadContextAction',
+    'insertTaskToSupabase',
+    'insertEventToSupabase',
+    'insertActivityToSupabase',
+    'updateLeadInSupabase',
+    'deleteLeadFromSupabase',
+    'createPaymentInSupabase',
+    'getActivityTimelineTitle',
+  ]) {
     assert.match(guard, new RegExp(required));
   }
 });
