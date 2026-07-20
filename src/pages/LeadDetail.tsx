@@ -1151,11 +1151,11 @@ export default function LeadDetail() {
   };
 
   const handleAddLeadMissingFromManagerStage232I4R14 = async () => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) { toast.error('Trial wygasł.'); return; }
     const safeLeadId = String(leadId || '').trim();
     const title = leadMissingManagerTitle.trim();
-    if (!safeLeadId) return setLeadMissingManagerError('Brak ID leada. Nie można dodać braku.');
-    if (!title) return setLeadMissingManagerError('Wpisz nazwę braku.');
+    if (!safeLeadId) { setLeadMissingManagerError('Brak ID leada. Nie można dodać braku.'); return; }
+    if (!title) { setLeadMissingManagerError('Wpisz nazwę braku.'); return; }
     const createdAt = new Date().toISOString();
     const status = leadMissingManagerBlocksProgress ? 'blocking_missing_item' : 'missing_item';
     try {
@@ -1248,10 +1248,10 @@ export default function LeadDetail() {
   };
 
   const handleToggleLeadMissingBlockerStage232I4R14 = async (entry: MissingItemsManagerItem, blocksProgress: boolean) => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) { toast.error('Trial wygasł.'); return; }
     const task = (entry?.raw || entry) as any;
     const taskId = String(task?.id || entry?.id || '').trim();
-    if (!taskId) return toast.error('Brak ID braku. Nie można zmienić blokady.');
+    if (!taskId) { toast.error('Brak ID braku. Nie można zmienić blokady.'); return; }
     const taskTitle = String(task?.title || entry?.title || 'Brak');
     const nextStatus = blocksProgress ? 'blocking_missing_item' : 'missing_item';
     const nextPriorityStage232I4R16ZR8 = blocksProgress ? 'high' : 'medium';
@@ -1292,10 +1292,10 @@ export default function LeadDetail() {
     }
   };
   const handleResolveLeadMissingItemStage228R13 = async (entry: any) => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) { toast.error('Trial wygasł.'); return; }
     const task = entry?.raw || entry || {};
     const taskId = String(task?.id || '').trim();
-    if (!taskId) return toast.error('Brak ID braku. Nie można oznaczyć jako rozwiązany.');
+    if (!taskId) { toast.error('Brak ID braku. Nie można oznaczyć jako rozwiązany.'); return; }
     const resolvedAt = new Date().toISOString();
 
     try {
@@ -1332,16 +1332,16 @@ export default function LeadDetail() {
 
 
   const handleDeleteLeadMissingItemStage228R15 = async (entry: any) => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) { toast.error('Trial wygasł.'); return; }
     const task = entry?.raw || entry || {};
     const taskId = String(task?.id || '').trim();
-    if (!taskId) return toast.error('Brak ID braku. Nie można usunąć.');
+    if (!taskId) { toast.error('Brak ID braku. Nie można usunąć.'); return; }
     if (!window.confirm('Usunąć ten brak?')) return;
 
     const deletedAt = new Date().toISOString();
     const taskTitle = String(task?.title || entry?.title || 'Brak');
     const scheduledAt = String(task?.scheduledAt || task?.dueAt || task?.date || deletedAt);
-    let optimisticSnapshot: any[] | null = null;
+    const optimisticSnapshot = linkedTasks;
 
     try {
       setLinkedEntryActionId(`missing:${taskId}:delete`);
@@ -1368,7 +1368,7 @@ export default function LeadDetail() {
   };
 
   const openLeadPaymentDialog = (type: 'deposit' | 'partial') => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) { toast.error('Trial wygasł.'); return; }
     setLeadPaymentDialogType(type);
     setLeadPaymentAmount('');
     setLeadPaymentNote('');
@@ -1384,7 +1384,7 @@ export default function LeadDetail() {
   const handleSaveLeadPayment = async (event?: FormEvent) => {
     event?.preventDefault();
     if (!leadId || !leadPaymentDialogType) return;
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) { toast.error('Trial wygasł.'); return; }
 
     const amount = Number(String(leadPaymentAmount || '').replace(',', '.'));
     if (!Number.isFinite(amount) || amount <= 0) {
@@ -1749,14 +1749,14 @@ useEffect(() => {
   };
 
   const handleUpdateStatus = async (status: string) => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) { toast.error('Trial wygasł.'); return; }
     if (leadInService) return toast.error('Ten temat jest już w obsłudze. Dalszą pracę prowadź w sprawie.');
     await patchLead({ status }, 'Status zaktualizowany');
     await addActivity('status_changed', { status });
   };
 
   const handleUpdateLead = async () => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) { toast.error('Trial wygasł.'); return; }
     if (!editLead || !leadId) return;
     await patchLead(
       {
@@ -1785,7 +1785,7 @@ useEffect(() => {
   };
 
   const handleStartPotentialEditingStage231G = () => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) { toast.error('Trial wygasł.'); return; }
     setPotentialDraftStage231GR7(String(Number(leadFinance.dealValue || 0) || ''));
     setIsPotentialEditingStage231GR7(true);
     window.setTimeout(() => potentialInputRefStage231G.current?.focus(), 80);
@@ -1805,7 +1805,7 @@ useEffect(() => {
 
   const handleSavePotentialStage231GR7 = async (event?: FormEvent) => {
     event?.preventDefault();
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) { toast.error('Trial wygasł.'); return; }
     if (!leadId || potentialSavingStage231GR7) return;
     const amount = parsePotentialStage231GR7(potentialDraftStage231GR7);
     if (amount === null) return toast.error('Wpisz poprawną wartość potencjału.');
@@ -1878,7 +1878,7 @@ useEffect(() => {
   };
 
   const handleToggleNoteSpeech = () => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) { toast.error('Trial wygasł.'); return; }
     if (noteListening) {
       stopNoteSpeech();
       return;
@@ -1966,7 +1966,7 @@ useEffect(() => {
 
   const handleSaveEditedNote = async () => {
     if (!leadId || !editingNote?.id) return;
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) { toast.error('Trial wygasł.'); return; }
     const content = editingNoteContent.trim();
     if (!content) return toast.error('Treść notatki nie może być pusta');
 
@@ -1986,7 +1986,7 @@ useEffect(() => {
   };
 
   const handleDeleteNote = async (activityId: string) => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) { toast.error('Trial wygasł.'); return; }
     if (!window.confirm('Usunąć tę notatkę?')) return;
     try {
       await deleteActivityFromSupabase(activityId);
@@ -2217,8 +2217,8 @@ useEffect(() => {
 
   const handleSaveLinkedTaskEdit = async () => {
     if (!editLinkedTask?.id) return;
-    if (!hasAccess) return toast.error('Trial wygasł.');
-    if (!editLinkedTask.title.trim()) return toast.error('Podaj tytuł zadania');
+    if (!hasAccess) { toast.error('Trial wygasł.'); return; }
+    if (!editLinkedTask.title.trim()) { toast.error('Podaj tytuł zadania'); return; }
     try {
       setEditLinkedTaskSubmitting(true);
       await updateTaskInSupabase({
@@ -2248,8 +2248,8 @@ useEffect(() => {
 
   const handleSaveLinkedEventEdit = async () => {
     if (!editLinkedEvent?.id) return;
-    if (!hasAccess) return toast.error('Trial wygasł.');
-    if (!editLinkedEvent.title.trim()) return toast.error('Podaj tytuł wydarzenia');
+    if (!hasAccess) { toast.error('Trial wygasł.'); return; }
+    if (!editLinkedEvent.title.trim()) { toast.error('Podaj tytuł wydarzenia'); return; }
     try {
       setEditLinkedEventSubmitting(true);
       await updateEventInSupabase({
@@ -2279,7 +2279,7 @@ useEffect(() => {
     event?.preventDefault?.();
 
     if (!leadId || !lead) return;
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) { toast.error('Trial wygasł.'); return; }
     if (leadInService && serviceCaseId) {
       navigate(caseDetailPath(serviceCaseId));
       return;
@@ -2334,7 +2334,7 @@ useEffect(() => {
 
   const handleLinkExistingCase = async () => {
     if (!leadId || !linkCaseId) return;
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) { toast.error('Trial wygasł.'); return; }
     try {
       setLinkingCase(true);
       const selected = allCases.find((entry) => String(entry.id || '') === linkCaseId);
