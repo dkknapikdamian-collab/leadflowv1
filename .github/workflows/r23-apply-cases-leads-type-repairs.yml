@@ -1,0 +1,75 @@
+name: R23 apply Cases and Leads type repairs
+
+on:
+  pull_request:
+    branches:
+      - dev-rollout-freeze
+    paths:
+      - .github/workflows/r23-apply-cases-leads-type-repairs.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.event.pull_request.head.ref == 'g15-r23-scope-tsc-to-active-product'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout R23 branch
+        uses: actions/checkout@v4
+        with:
+          ref: g15-r23-scope-tsc-to-active-product
+          fetch-depth: 0
+      - name: Repair Cases record status source
+        shell: python
+        run: |
+          from pathlib import Path
+          path = Path('src/pages/Cases.tsx')
+          text = path.read_text(encoding='utf-8-sig')
+          old = 'const isClosedCase = isClosedCaseStatus((typeof caseRecord !== "undefined" ? caseRecord : null)?.status);'
+          count = text.count(old)
+          print('matches', count)
+          if count != 1: raise SystemExit(f'expected 1 closed-case source match, found {count}')
+          path.write_text(text.replace(old, 'const isClosedCase = isClosedCaseStatus(record.status);', 1), encoding='utf-8')
+      - name: Repair Cases risk context adapter
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          path = Path('src/pages/Cases.tsx')
+          text = path.read_text(encoding='utf-8-sig')
+          pattern = r"const riskBadges = getCaseOwnerRiskBadges\(record, \{\s*settings: ownerRiskSettings,[\s\S]*?\n\s*\}\);"
+          replacement = "const riskBadges = getCaseOwnerRiskBadges(record, { settings: ownerRiskSettings });"
+          next_text, count = re.subn(pattern, replacement, text, count=1)
+          print('matches', count)
+          if count != 1: raise SystemExit(f'expected 1 Cases risk-context match, found {count}')
+          path.write_text(next_text, encoding='utf-8')
+      - name: Repair Leads rescue tooltip source
+        shell: python
+        run: |
+          from pathlib import Path
+          path = Path('src/pages/Leads.tsx')
+          text = path.read_text(encoding='utf-8-sig')
+          old = '<span className="lead-action-cell" title={nextActionMeta.title}>'
+          new = '<span className="lead-action-cell" title={row.nextMoveTitle || \'Brak zaplanowanej akcji\'}>'
+          count = text.count(old)
+          print('matches', count)
+          if count != 1: raise SystemExit(f'expected 1 Leads tooltip match, found {count}')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+      - name: Validate Cases and Leads repairs
+        run: |
+          git diff --check
+          npm ci
+          npm install --no-save --package-lock=false @types/react@19.2.17 @types/react-dom@19.2.3
+          node scripts/check-g15-r23-tsc-active-product-scope.cjs
+          npx tsc --noEmit --pretty false > r23-cases-leads-tsc.log 2>&1 || true
+          npm run build
+          cat r23-cases-leads-tsc.log
+      - name: Commit and self-remove workflow
+        run: |
+          rm .github/workflows/r23-apply-cases-leads-type-repairs.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/pages/Cases.tsx src/pages/Leads.tsx .github/workflows/r23-apply-cases-leads-type-repairs.yml
+          git commit -m "fix(closeflow): repair Cases and Leads TypeScript adapters"
+          git push origin HEAD:g15-r23-scope-tsc-to-active-product
