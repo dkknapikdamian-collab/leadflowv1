@@ -46,18 +46,32 @@ Validated and committed on the PR branch:
 - finance compatibility aliases and relation/payment fields;
 - client finance currency contract;
 - icon registry cast through `unknown`;
-- runtime access input JSDoc typing;
+- runtime access input typing;
 - payment query `includeArchived` option;
 - no-flicker mutation compatibility fields;
 - existing Firebase, PWA and no-flicker import/type repairs.
 
-Batch validation:
+## Active repair batch two
+
+Validated and committed on the PR branch:
+
+- TypeScript annotation for runtime access-plan input;
+- finance summary `dueAmount` / `refundedAmount` compatibility;
+- numeric reduce accumulators in case finance;
+- client finance summary currency source;
+- explicit discriminated-union narrowing for missing-item title validation;
+- missing `clientId` in the reset task form;
+- native DOM `MouseEvent` handlers for legacy Today and active TodayStable.
+
+## Batch validation
+
+For both batches:
 
 - exact replacement counters: PASS;
 - `git diff --check`: PASS;
 - TypeScript scope guard: PASS;
 - production build: PASS;
-- one-shot patch workflow: self-removed after commit.
+- one-shot patch workflows: self-removed after commit.
 
 ## Quality boundary
 
