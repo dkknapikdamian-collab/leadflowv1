@@ -134,7 +134,8 @@ export function registerChunkAssetReloadGuard() {
 
   window.addEventListener('vite:preloadError', (event) => {
     event.preventDefault();
-    reloadOnceForChunkAssetFailure((event as CustomEvent).payload || event, 'vite-preload-error');
+    const preloadError = (event as unknown as { payload?: unknown }).payload ?? event;
+    reloadOnceForChunkAssetFailure(preloadError, 'vite-preload-error');
   });
 
   window.addEventListener('unhandledrejection', (event) => {
@@ -146,11 +147,13 @@ export function registerChunkAssetReloadGuard() {
   window.addEventListener(
     'error',
     (event) => {
-      const target = event.target as HTMLElement | null;
+      const target = event.target;
       const assetUrl =
-        target && ('src' in target || 'href' in target)
-          ? String((target as HTMLScriptElement | HTMLLinkElement).src || (target as HTMLLinkElement).href || '')
-          : '';
+        target instanceof HTMLScriptElement
+          ? String(target.src || '')
+          : target instanceof HTMLLinkElement
+            ? String(target.href || '')
+            : '';
 
       if (assetUrl.includes('/assets/') && /\.(js|css)(\?|$)/i.test(assetUrl)) {
         reloadOnceForChunkAssetFailure(new Error(`Failed to load runtime asset: ${assetUrl}`), 'asset-error-event');
