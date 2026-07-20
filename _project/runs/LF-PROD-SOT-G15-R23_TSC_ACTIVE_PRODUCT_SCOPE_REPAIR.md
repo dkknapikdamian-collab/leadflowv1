@@ -4,13 +4,16 @@ TIMESTAMP:
 2026-07-20 Europe/Warsaw
 
 STATUS:
-IN_PROGRESS_ACTIVE_TSC_DEBT_REPAIR
+FINAL_HEAD_VERIFICATION_RUNNING
 
 PROJECT_ID:
 closeflow_lead_app
 
 APP_INPUT_HEAD:
 8480a77d76a4777c2b9ea9d069c632bfd14f5099
+
+APP_VERIFICATION_HEAD:
+a196ab5a2ee699d6ce79f630053ab5202b1501bd
 
 PR:
 #37
@@ -20,92 +23,74 @@ PR:
 FAILURE_CLASSIFICATION:
 MAIN_TSC_PROGRAM_ACCIDENTALLY_INCLUDED_HISTORICAL_PATCHERS_THEN_EXPOSED_REAL_ACTIVE_TYPE_DEBT
 
-The root `tsconfig.json` had `allowJs: true` and no `include`, so `tsc --noEmit` parsed the whole repository. Historical malformed `.cjs` patchers were removed from the main TypeScript program by explicitly scoping it to `src/**/*`, `api/**/*` and `vite.config.ts`.
+The root `tsconfig.json` had `allowJs: true` and no `include`, so `tsc --noEmit` parsed the whole repository. R23 scopes the main TypeScript program to active `src/**/*`, `api/**/*` and `vite.config.ts`, while excluding historical patchers, project evidence and backup roots.
 
-After installing the official React 19 type foundation diagnostically, the scoped program exposed a finite set of real active-code type errors. R23 does not hide them through further exclusions. It repairs them in narrow batches while preserving production behavior.
+The corrected scope exposed real active-code type debt. It was repaired rather than hidden through additional exclusions.
 
-## Scope repair
+## Implemented repairs
 
-- preserve compiler options, including `allowJs` and `noEmit`;
-- include active application, API and Vite config sources;
-- exclude dependencies, build output, project evidence, backups, bisect, scripts and tools;
-- inspect the actual TypeScript program through the TypeScript API;
-- require representative active files and reject historical-root leakage.
-
-## Active repair batch one
-
-Validated and committed on the PR branch:
-
-- API schema-fallback nullability guards;
-- profile identity optional-field normalization;
-- overdue task date narrowing;
-- missing page-header kicker contract;
-- DOM `MouseEvent` type separation in context actions;
-- current Event/Task creation callback result typing;
-- commission-status import compatibility;
-- finance compatibility aliases and relation/payment fields;
-- client finance currency contract;
-- icon registry cast through `unknown`;
+- TypeScript program scope guard using the TypeScript API;
+- API missing-column fallback and identity nullability;
+- Firebase session type collision;
+- PWA asset-event narrowing;
+- work-item no-flicker compatibility contract;
 - runtime access input typing;
-- payment query `includeArchived` option;
-- no-flicker mutation compatibility fields;
-- existing Firebase, PWA and no-flicker import/type repairs.
+- page-header contract completion;
+- Event/Task dialog callback result typing;
+- complete finance summary and compatibility types;
+- finance numeric accumulator and currency contracts;
+- task reset client relation;
+- native DOM event handlers in Today and context actions;
+- CaseDetail loading-state cleanup, task preview identifier and case-item payload contract;
+- Cases risk adapter and record status source;
+- Leads next-action tooltip source;
+- ClientDetail full missing-item modal contract, persistence and supported button props;
+- LeadDetail risk fields, button attribute adapter, optimistic rollback snapshots and async `void` handlers.
 
-## Active repair batch two
-
-Validated and committed on the PR branch:
-
-- TypeScript annotation for runtime access-plan input;
-- finance summary `dueAmount` / `refundedAmount` compatibility;
-- numeric reduce accumulators in case finance;
-- client finance summary currency source;
-- explicit discriminated-union narrowing for missing-item title validation;
-- missing `clientId` in the reset task form;
-- native DOM `MouseEvent` handlers for legacy Today and active TodayStable.
-
-## Batch validation
-
-For both batches:
+## Validation already completed per repair batch
 
 - exact replacement counters: PASS;
 - `git diff --check`: PASS;
 - TypeScript scope guard: PASS;
-- production build: PASS;
-- one-shot patch workflows: self-removed after commit.
+- diagnostic active-source `tsc`: executed after each batch;
+- production build: PASS after each batch;
+- one-shot repair workflows: self-removed after successful commit.
 
 ## Quality boundary
 
 - active `src`, `api` and `vite.config.ts` remain checked;
 - no active directory is excluded to obtain a false PASS;
-- historical scripts are not deleted or rewritten in bulk;
-- no SQL, migrations, Event DELETE, Task DELETE or remote Google behavior changes;
+- no bulk deletion or rewrite of historical scripts;
+- no SQL or migrations;
+- Event DELETE and Task DELETE contract unchanged;
+- remote Google Calendar behavior unchanged;
 - manual smoke remains `NOT_EXECUTED_DEFERRED_BY_OWNER`.
 
 ## Dependency policy
 
-Official React types are currently installed only diagnostically in CI:
+The final verification installs exact official React type packages diagnostically:
 
 - `@types/react@19.2.17`;
 - `@types/react-dom@19.2.3`.
 
-`package.json` and `package-lock.json` remain unchanged. The repository rule requires reviewing lockfile status before any dependency commit.
+`package.json` and `package-lock.json` remain unchanged because the established project rule forbids staging `package-lock.json` without an explicit exception. R23 cannot be declared fully closed until final source verification is green and the persistent dependency path is decided without silently violating that rule.
 
-## Verification pending
+## Final verification
 
 FOCUSED_G15_R23_TESTS:
-PENDING_FINAL_HEAD_CI
+RUNNING_FINAL_HEAD
 
 TSC_SCOPE_GUARD:
-PENDING_FINAL_HEAD_CI
+RUNNING_FINAL_HEAD
 
-ACTIVE_PRODUCT_TSC:
-IN_PROGRESS_REPAIR
+ACTIVE_PRODUCT_TSC_WITH_PINNED_REACT_TYPES:
+RUNNING_FINAL_HEAD
 
 PRODUCTION_BUILD:
-PENDING_FINAL_HEAD_CI
+RUNNING_FINAL_HEAD
 
 VERCEL_EXACT_SHA:
 BLOCKED_BUILD_RATE_LIMIT_NOT_PASS
 
 RESULT:
-IN_PROGRESS_ACTIVE_TSC_DEBT_REPAIR
+FINAL_HEAD_VERIFICATION_RUNNING
