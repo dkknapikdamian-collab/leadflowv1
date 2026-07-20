@@ -992,7 +992,7 @@ function TodayStable() {
     const root = document.querySelector('[data-p0-today-stable-rebuild="true"]') as HTMLElement | null;
     if (!root) return undefined;
 
-    const handleMetricTileClick = (event: MouseEvent) => {
+    const handleMetricTileClick = (event: globalThis.MouseEvent) => {
 
 
       const target = event.target instanceof HTMLElement ? event.target : null;

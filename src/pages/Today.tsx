@@ -1578,7 +1578,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
   };
 
   useEffect(() => {
-    const handleTodayPipelineShortcutClick = (event: MouseEvent) => {
+    const handleTodayPipelineShortcutClick = (event: globalThis.MouseEvent) => {
       const shortcutElement = findTodayPipelineShortcutElement(event.target);
       if (!shortcutElement) return;
 
@@ -1606,7 +1606,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
 
 
   useEffect(() => {
-    const handleTodayWeekCalendarShortcutClick = (event: MouseEvent) => {
+    const handleTodayWeekCalendarShortcutClick = (event: globalThis.MouseEvent) => {
       const shortcutElement = findTodayCalendarShortcutElement(event.target);
       if (!shortcutElement) return;
 

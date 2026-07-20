@@ -234,8 +234,7 @@ export function isBlockerLike(input) {
   return collectInputTokens(input).some((token) => BLOCKER_TOKENS.has(token));
 }
 
-/** @param {{ planId?: unknown, subscriptionStatus?: unknown }} input */
-export function buildRuntimeAccessPlanTruth(input = {}) {
+export function buildRuntimeAccessPlanTruth(input: { planId?: unknown; subscriptionStatus?: unknown } = {}) {
   const rawPlanId = normalizePlanToken(input.planId);
   const rawSubscriptionStatus = normalizeRuntimeStatus(input.subscriptionStatus || 'inactive');
   const subscriptionStatus = normalizeAccessStatus(rawSubscriptionStatus);

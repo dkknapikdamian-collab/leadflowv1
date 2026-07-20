@@ -127,6 +127,8 @@ export type FinanceSnapshot = {
 /** Backward-compatible summary shape used by existing FIN-5 components. */
 export type FinanceSummary = FinanceSnapshot & {
   plannedAmount?: number;
+  dueAmount?: number;
+  refundedAmount?: number;
   paidCommissionAmount: number;
   remainingCommissionAmount: number;
   paidClientAmount: number;

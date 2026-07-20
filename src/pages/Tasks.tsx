@@ -474,6 +474,7 @@ export default function Tasks() {
       priority: 'medium',
       leadId: '',
       caseId: '',
+      clientId: '',
       relationQuery: '',
       recurrence: createDefaultRecurrence(),
       reminder: createDefaultReminder(),
