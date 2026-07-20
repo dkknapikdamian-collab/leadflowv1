@@ -1,9 +1,9 @@
-name: R23 apply active type patches
+name: R23 apply active type batch one
 
 on:
-  push:
+  pull_request:
     branches:
-      - g15-r23-scope-tsc-to-active-product
+      - dev-rollout-freeze
     paths:
       - .github/workflows/r23-apply-active-type-patches.yml
 
@@ -12,62 +12,70 @@ permissions:
 
 jobs:
   apply:
-    if: github.event.head_commit.message == 'ci(closeflow): run R23 active type patcher'
+    if: github.event.pull_request.head.ref == 'g15-r23-scope-tsc-to-active-product'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout branch
+      - name: Checkout R23 branch
         uses: actions/checkout@v4
         with:
           ref: g15-r23-scope-tsc-to-active-product
           fetch-depth: 0
-      - name: Apply narrow type repairs
+      - name: Apply exact type repairs
         shell: python
         run: |
           from pathlib import Path
 
+          def read(path):
+              return Path(path).read_text(encoding='utf-8-sig')
+
+          def write(path, text):
+              Path(path).write_text(text, encoding='utf-8')
+
           def replace_once(path, old, new):
-              file = Path(path)
-              text = file.read_text(encoding='utf-8-sig')
+              text = read(path)
               count = text.count(old)
               if count != 1:
-                  raise SystemExit(f'{path}: expected one match, found {count}')
-              file.write_text(text.replace(old, new, 1), encoding='utf-8')
+                  raise SystemExit(f'{path}: expected one match, found {count}: {old[:120]!r}')
+              write(path, text.replace(old, new, 1))
 
-          leads = Path('api/leads.ts')
-          text = leads.read_text(encoding='utf-8-sig')
-          replacements = [
-              ("if (!shouldDropMissingColumnForLeadFallback('leads', missingColumn, currentPayload)) throw error;", "if (!missingColumn || !shouldDropMissingColumnForLeadFallback('leads', missingColumn, currentPayload)) throw error;"),
-              ("if (!shouldDropMissingColumnForLeadFallback('cases', missingColumn, currentPayload)) throw error;", "if (!missingColumn || !shouldDropMissingColumnForLeadFallback('cases', missingColumn, currentPayload)) throw error;"),
-              ("if (!shouldDropMissingColumnForLeadFallback('activities', missingColumn, currentPayload)) throw error;", "if (!missingColumn || !shouldDropMissingColumnForLeadFallback('activities', missingColumn, currentPayload)) throw error;"),
-          ]
-          for old, new in replacements:
+          def replace_count(path, old, new, expected):
+              text = read(path)
               count = text.count(old)
-              if old.startswith("if (!shouldDropMissingColumnForLeadFallback('leads'"):
-                  if count != 2:
-                      raise SystemExit(f'api/leads.ts: expected two leads fallback matches, found {count}')
-                  text = text.replace(old, new)
-              else:
-                  if count != 1:
-                      raise SystemExit(f'api/leads.ts: expected one fallback match, found {count}: {old}')
-                  text = text.replace(old, new, 1)
-          leads.write_text(text, encoding='utf-8')
+              if count != expected:
+                  raise SystemExit(f'{path}: expected {expected} matches, found {count}: {old[:120]!r}')
+              write(path, text.replace(old, new))
 
+          replace_count(
+              'api/leads.ts',
+              "if (!shouldDropMissingColumnForLeadFallback('leads', missingColumn, currentPayload)) throw error;",
+              "if (!missingColumn || !shouldDropMissingColumnForLeadFallback('leads', missingColumn, currentPayload)) throw error;",
+              2,
+          )
+          replace_once(
+              'api/leads.ts',
+              "if (!shouldDropMissingColumnForLeadFallback('cases', missingColumn, currentPayload)) throw error;",
+              "if (!missingColumn || !shouldDropMissingColumnForLeadFallback('cases', missingColumn, currentPayload)) throw error;",
+          )
+          replace_once(
+              'api/leads.ts',
+              "if (!shouldDropMissingColumnForLeadFallback('activities', missingColumn, currentPayload)) throw error;",
+              "if (!missingColumn || !shouldDropMissingColumnForLeadFallback('activities', missingColumn, currentPayload)) throw error;",
+          )
           replace_once(
               'api/system.ts',
               """    const row = await ensureProfileRow({
-              userId: identity.userId,
-              email: identity.email,
-              fullName: identity.fullName,
-              workspaceId,
-            });""",
+                userId: identity.userId,
+                email: identity.email,
+                fullName: identity.fullName,
+                workspaceId,
+              });""",
               """    const row = await ensureProfileRow({
-              userId: identity.userId || undefined,
-              email: identity.email || undefined,
-              fullName: identity.fullName || undefined,
-              workspaceId,
-            });""",
+                userId: identity.userId || undefined,
+                email: identity.email || undefined,
+                fullName: identity.fullName || undefined,
+                workspaceId,
+              });""",
           )
-
           replace_once(
               'src/server/ai-next-action.ts',
               """  const overdueTask = openTasks.find((task) => task.dueAt && task.dueAt.getTime() < now.getTime());
@@ -83,14 +91,161 @@ jobs:
               "reason: `Zadanie miało termin ${formatMoment(overdueTask.dueAt.toISOString())}.`,",
               "reason: `Zadanie miało termin ${formatMoment(overdueDueAt.toISOString())}.`,",
           )
-      - name: Verify patch diff
+
+          for path in ['src/lib/page-header-content.ts', 'src/components/CloseFlowPageHeaderV2.tsx']:
+              replace_once(
+                  path,
+                  """  leads: {
+                title: 'Leady',""",
+                  """  leads: {
+                kicker: 'SPRZEDAŻ',
+                title: 'Leady',""",
+              )
+
+          replace_once(
+              'src/components/ContextActionDialogs.tsx',
+              "import { type MouseEvent, useEffect, useMemo, useState } from 'react';",
+              "import { useEffect, useMemo, useState } from 'react';",
+          )
+          replace_once(
+              'src/components/ContextActionDialogs.tsx',
+              "const capture = (event: MouseEvent) => {",
+              "const capture = (event: globalThis.MouseEvent) => {",
+          )
+          replace_once(
+              'src/components/ContextActionDialogs.tsx',
+              "source: request.recordType === 'client' ? 'STAGE232I2_CONTEXT_ACTION_CLIENT_MISSING_ITEM_SOURCE' : 'context_action_dialogs_blocker',",
+              "source: 'context_action_dialogs_blocker',",
+          )
+
+          replace_once(
+              'src/components/EventCreateDialog.tsx',
+              "onSaved?: () => void | Promise<void>;",
+              "onSaved?: (createdEvent?: unknown) => void | Promise<void>;",
+          )
+          replace_once(
+              'src/components/TaskCreateDialog.tsx',
+              "onSaved?: () => void | Promise<void>;",
+              "onSaved?: (createdTask?: unknown) => void | Promise<void>;",
+          )
+          replace_once(
+              'src/components/finance/CaseFinanceEditorDialog.tsx',
+              "import { normalizeCommissionMode, normalizeCurrency } from '../../lib/finance/finance-normalize';",
+              "import { normalizeCommissionMode, normalizeCommissionStatus, normalizeCurrency } from '../../lib/finance/finance-normalize';",
+          )
+          replace_once(
+              'src/components/ui-system/icon-registry.ts',
+              "const RemoveIcon = (Lucide as Record<string, LucideIcon>)[removeIconKey] || X;",
+              "const RemoveIcon = (Lucide as unknown as Record<string, LucideIcon>)[removeIconKey] || X;",
+          )
+          replace_once(
+              'src/lib/client-finance.ts',
+              """  commissionRemainingAmount?: number;
+            };""",
+              """  commissionRemainingAmount?: number;
+              currency: string;
+            };""",
+          )
+          replace_once(
+              'src/lib/supabase-fallback.ts',
+              "export async function fetchPaymentsFromSupabase(params?: { leadId?: string; caseId?: string; clientId?: string; status?: string }) {",
+              "export async function fetchPaymentsFromSupabase(params?: { leadId?: string; caseId?: string; clientId?: string; status?: string; includeArchived?: boolean }) {",
+          )
+          replace_once(
+              'src/lib/closeflow-runtime-source-truth.ts',
+              "export function buildRuntimeAccessPlanTruth(input = {}) {",
+              "/** @param {{ planId?: unknown, subscriptionStatus?: unknown }} input */\nexport function buildRuntimeAccessPlanTruth(input = {}) {",
+          )
+
+          finance_types = read('src/lib/finance/finance-types.ts')
+          finance_types = finance_types.replace(
+              """export type NormalizedFinancePayment = {
+              id?: string;""",
+              """export type NormalizedFinancePayment = {
+              id?: string;
+              workspaceId?: string;
+              leadId?: string | null;
+              clientId?: string | null;
+              caseId?: string | null;
+              createdAt?: string | null;
+              updatedAt?: string | null;""",
+              1,
+          )
+          finance_types = finance_types.replace(
+              """export type FinanceCommissionConfig = {""",
+              """export type FinanceRelationRef = {
+              workspaceId?: string;
+              leadId?: string | null;
+              clientId?: string | null;
+              caseId?: string | null;
+            };
+
+            export type FinanceCommissionConfig = {""",
+              1,
+          )
+          finance_types = finance_types.replace(
+              """export type FinanceSnapshotInput = {
+              contractValue?: number | string | null;
+              paidAmount?: number | string | null;""",
+              """export type FinanceSnapshotInput = {
+              contractValue?: number | string | null;
+              paidAmount?: number | string | null;
+              remainingAmount?: number | string | null;""",
+              1,
+          )
+          finance_types = finance_types.replace(
+              """export type FinanceSummary = FinanceSnapshot & {
+              paidCommissionAmount: number;""",
+              """export type FinanceSummary = FinanceSnapshot & {
+              plannedAmount?: number;
+              paidCommissionAmount: number;""",
+              1,
+          )
+          finance_types = finance_types.replace(
+              """export const CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_NOTE = {""",
+              """export type CommissionConfig = FinanceCommissionConfig;
+
+            export const CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_NOTE = {""",
+              1,
+          )
+          write('src/lib/finance/finance-types.ts', finance_types)
+
+          mutation = read('src/lib/work-items/no-flicker-mutation.ts')
+          replace_target = """  record?: unknown;
+              source?: string;
+              occurredAt?: string;
+            };"""
+          replacement = """  record?: unknown;
+              item?: unknown;
+              recordType?: string | null;
+              recordId?: string | null;
+              leadId?: string | null;
+              clientId?: string | null;
+              caseId?: string | null;
+              displayKind?: string;
+              businessKind?: string;
+              source?: string;
+              occurredAt?: string;
+            };"""
+          if mutation.count(replace_target) != 1:
+              raise SystemExit('no-flicker mutation base shape not found exactly once')
+          write('src/lib/work-items/no-flicker-mutation.ts', mutation.replace(replace_target, replacement, 1))
+
+          workflow = Path('.github/workflows/r23-apply-active-type-patches.yml')
+          workflow.unlink()
+      - name: Validate batch
         run: |
           git diff --check
-          git diff -- api/leads.ts api/system.ts src/server/ai-next-action.ts
-      - name: Commit and push
+          npm ci
+          npm install --no-save --package-lock=false @types/react@19.2.17 @types/react-dom@19.2.3
+          node scripts/check-g15-r23-tsc-active-product-scope.cjs
+          npx tsc --noEmit --pretty false > r23-batch-one-tsc.log 2>&1 || true
+          npm run build
+          cat r23-batch-one-tsc.log
+      - name: Commit batch and self-remove workflow
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add api/leads.ts api/system.ts src/server/ai-next-action.ts
-          git commit -m "fix(closeflow): repair active API nullability types"
+          git add api/leads.ts api/system.ts src/server/ai-next-action.ts src/lib/page-header-content.ts src/components/CloseFlowPageHeaderV2.tsx src/components/ContextActionDialogs.tsx src/components/EventCreateDialog.tsx src/components/TaskCreateDialog.tsx src/components/finance/CaseFinanceEditorDialog.tsx src/components/ui-system/icon-registry.ts src/lib/client-finance.ts src/lib/supabase-fallback.ts src/lib/closeflow-runtime-source-truth.ts src/lib/finance/finance-types.ts src/lib/work-items/no-flicker-mutation.ts .github/workflows/r23-apply-active-type-patches.yml
+          git commit -m "fix(closeflow): apply first active TypeScript repair batch"
           git push origin HEAD:g15-r23-scope-tsc-to-active-product
