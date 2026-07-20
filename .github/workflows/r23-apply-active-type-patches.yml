@@ -24,215 +24,77 @@ jobs:
         shell: python
         run: |
           from pathlib import Path
+          import re
 
-          def read(path):
-              return Path(path).read_text(encoding='utf-8-sig')
-
-          def write(path, text):
-              Path(path).write_text(text, encoding='utf-8')
+          def read(path): return Path(path).read_text(encoding='utf-8-sig')
+          def write(path, text): Path(path).write_text(text, encoding='utf-8')
 
           def replace_once(path, old, new):
               text = read(path)
               count = text.count(old)
-              if count != 1:
-                  raise SystemExit(f'{path}: expected one match, found {count}: {old[:120]!r}')
+              print(f'PATCH {path}: literal matches={count}: {old[:70]!r}')
+              if count != 1: raise SystemExit(f'{path}: expected one match, found {count}')
               write(path, text.replace(old, new, 1))
 
           def replace_count(path, old, new, expected):
               text = read(path)
               count = text.count(old)
-              if count != expected:
-                  raise SystemExit(f'{path}: expected {expected} matches, found {count}: {old[:120]!r}')
+              print(f'PATCH {path}: literal matches={count}: {old[:70]!r}')
+              if count != expected: raise SystemExit(f'{path}: expected {expected} matches, found {count}')
               write(path, text.replace(old, new))
 
-          replace_count(
-              'api/leads.ts',
-              "if (!shouldDropMissingColumnForLeadFallback('leads', missingColumn, currentPayload)) throw error;",
-              "if (!missingColumn || !shouldDropMissingColumnForLeadFallback('leads', missingColumn, currentPayload)) throw error;",
-              2,
-          )
-          replace_once(
-              'api/leads.ts',
-              "if (!shouldDropMissingColumnForLeadFallback('cases', missingColumn, currentPayload)) throw error;",
-              "if (!missingColumn || !shouldDropMissingColumnForLeadFallback('cases', missingColumn, currentPayload)) throw error;",
-          )
-          replace_once(
-              'api/leads.ts',
-              "if (!shouldDropMissingColumnForLeadFallback('activities', missingColumn, currentPayload)) throw error;",
-              "if (!missingColumn || !shouldDropMissingColumnForLeadFallback('activities', missingColumn, currentPayload)) throw error;",
-          )
-          replace_once(
-              'api/system.ts',
-              """    const row = await ensureProfileRow({
-                userId: identity.userId,
-                email: identity.email,
-                fullName: identity.fullName,
-                workspaceId,
-              });""",
-              """    const row = await ensureProfileRow({
-                userId: identity.userId || undefined,
-                email: identity.email || undefined,
-                fullName: identity.fullName || undefined,
-                workspaceId,
-              });""",
-          )
-          replace_once(
-              'src/server/ai-next-action.ts',
-              """  const overdueTask = openTasks.find((task) => task.dueAt && task.dueAt.getTime() < now.getTime());
-            if (overdueTask) {
-              const dueAt = addHours(now, 1);""",
-              """  const overdueTask = openTasks.find((task) => task.dueAt && task.dueAt.getTime() < now.getTime());
-            if (overdueTask?.dueAt) {
-              const overdueDueAt = overdueTask.dueAt;
-              const dueAt = addHours(now, 1);""",
-          )
-          replace_once(
-              'src/server/ai-next-action.ts',
-              "reason: `Zadanie miało termin ${formatMoment(overdueTask.dueAt.toISOString())}.`,",
-              "reason: `Zadanie miało termin ${formatMoment(overdueDueAt.toISOString())}.`,",
-          )
+          def regex_replace(path, pattern, replacement, expected=1):
+              text = read(path)
+              next_text, count = re.subn(pattern, replacement, text, flags=re.MULTILINE)
+              print(f'PATCH {path}: regex matches={count}: {pattern[:90]!r}')
+              if count != expected: raise SystemExit(f'{path}: expected {expected} regex matches, found {count}')
+              write(path, next_text)
+
+          replace_count('api/leads.ts', "if (!shouldDropMissingColumnForLeadFallback('leads', missingColumn, currentPayload)) throw error;", "if (!missingColumn || !shouldDropMissingColumnForLeadFallback('leads', missingColumn, currentPayload)) throw error;", 2)
+          replace_once('api/leads.ts', "if (!shouldDropMissingColumnForLeadFallback('cases', missingColumn, currentPayload)) throw error;", "if (!missingColumn || !shouldDropMissingColumnForLeadFallback('cases', missingColumn, currentPayload)) throw error;")
+          replace_once('api/leads.ts', "if (!shouldDropMissingColumnForLeadFallback('activities', missingColumn, currentPayload)) throw error;", "if (!missingColumn || !shouldDropMissingColumnForLeadFallback('activities', missingColumn, currentPayload)) throw error;")
+          regex_replace('api/system.ts', r'userId: identity\.userId,\s*\n\s*email: identity\.email,\s*\n\s*fullName: identity\.fullName,', 'userId: identity.userId || undefined,\n      email: identity.email || undefined,\n      fullName: identity.fullName || undefined,')
+          regex_replace('src/server/ai-next-action.ts', r'if \(overdueTask\) \{\s*\n\s*const dueAt = addHours\(now, 1\);', 'if (overdueTask?.dueAt) {\n    const overdueDueAt = overdueTask.dueAt;\n    const dueAt = addHours(now, 1);')
+          replace_once('src/server/ai-next-action.ts', 'reason: `Zadanie miało termin ${formatMoment(overdueTask.dueAt.toISOString())}.`,', 'reason: `Zadanie miało termin ${formatMoment(overdueDueAt.toISOString())}.`,')
 
           for path in ['src/lib/page-header-content.ts', 'src/components/CloseFlowPageHeaderV2.tsx']:
-              replace_once(
-                  path,
-                  """  leads: {
-                title: 'Leady',""",
-                  """  leads: {
-                kicker: 'SPRZEDAŻ',
-                title: 'Leady',""",
-              )
+              regex_replace(path, r"(\s+leads:\s*\{\s*\n)(\s+title: 'Leady',)", r"\1    kicker: 'SPRZEDAŻ',\n\2")
 
-          replace_once(
-              'src/components/ContextActionDialogs.tsx',
-              "import { type MouseEvent, useEffect, useMemo, useState } from 'react';",
-              "import { useEffect, useMemo, useState } from 'react';",
-          )
-          replace_once(
-              'src/components/ContextActionDialogs.tsx',
-              "const capture = (event: MouseEvent) => {",
-              "const capture = (event: globalThis.MouseEvent) => {",
-          )
-          replace_once(
-              'src/components/ContextActionDialogs.tsx',
-              "source: request.recordType === 'client' ? 'STAGE232I2_CONTEXT_ACTION_CLIENT_MISSING_ITEM_SOURCE' : 'context_action_dialogs_blocker',",
-              "source: 'context_action_dialogs_blocker',",
-          )
+          replace_once('src/components/ContextActionDialogs.tsx', "import { type MouseEvent, useEffect, useMemo, useState } from 'react';", "import { useEffect, useMemo, useState } from 'react';")
+          replace_once('src/components/ContextActionDialogs.tsx', 'const capture = (event: MouseEvent) => {', 'const capture = (event: globalThis.MouseEvent) => {')
+          replace_once('src/components/ContextActionDialogs.tsx', "source: request.recordType === 'client' ? 'STAGE232I2_CONTEXT_ACTION_CLIENT_MISSING_ITEM_SOURCE' : 'context_action_dialogs_blocker',", "source: 'context_action_dialogs_blocker',")
+          replace_once('src/components/EventCreateDialog.tsx', 'onSaved?: () => void | Promise<void>;', 'onSaved?: (createdEvent?: unknown) => void | Promise<void>;')
+          replace_once('src/components/TaskCreateDialog.tsx', 'onSaved?: () => void | Promise<void>;', 'onSaved?: (createdTask?: unknown) => void | Promise<void>;')
+          replace_once('src/components/finance/CaseFinanceEditorDialog.tsx', "import { normalizeCommissionMode, normalizeCurrency } from '../../lib/finance/finance-normalize';", "import { normalizeCommissionMode, normalizeCommissionStatus, normalizeCurrency } from '../../lib/finance/finance-normalize';")
+          replace_once('src/components/ui-system/icon-registry.ts', 'const RemoveIcon = (Lucide as Record<string, LucideIcon>)[removeIconKey] || X;', 'const RemoveIcon = (Lucide as unknown as Record<string, LucideIcon>)[removeIconKey] || X;')
+          replace_once('src/lib/client-finance.ts', '  commissionRemainingAmount?: number;\n};', '  commissionRemainingAmount?: number;\n  currency: string;\n};')
+          replace_once('src/lib/supabase-fallback.ts', 'export async function fetchPaymentsFromSupabase(params?: { leadId?: string; caseId?: string; clientId?: string; status?: string }) {', 'export async function fetchPaymentsFromSupabase(params?: { leadId?: string; caseId?: string; clientId?: string; status?: string; includeArchived?: boolean }) {')
+          replace_once('src/lib/closeflow-runtime-source-truth.ts', 'export function buildRuntimeAccessPlanTruth(input = {}) {', '/** @param {{ planId?: unknown, subscriptionStatus?: unknown }} input */\nexport function buildRuntimeAccessPlanTruth(input = {}) {')
 
-          replace_once(
-              'src/components/EventCreateDialog.tsx',
-              "onSaved?: () => void | Promise<void>;",
-              "onSaved?: (createdEvent?: unknown) => void | Promise<void>;",
-          )
-          replace_once(
-              'src/components/TaskCreateDialog.tsx',
-              "onSaved?: () => void | Promise<void>;",
-              "onSaved?: (createdTask?: unknown) => void | Promise<void>;",
-          )
-          replace_once(
-              'src/components/finance/CaseFinanceEditorDialog.tsx',
-              "import { normalizeCommissionMode, normalizeCurrency } from '../../lib/finance/finance-normalize';",
-              "import { normalizeCommissionMode, normalizeCommissionStatus, normalizeCurrency } from '../../lib/finance/finance-normalize';",
-          )
-          replace_once(
-              'src/components/ui-system/icon-registry.ts',
-              "const RemoveIcon = (Lucide as Record<string, LucideIcon>)[removeIconKey] || X;",
-              "const RemoveIcon = (Lucide as unknown as Record<string, LucideIcon>)[removeIconKey] || X;",
-          )
-          replace_once(
-              'src/lib/client-finance.ts',
-              """  commissionRemainingAmount?: number;
-            };""",
-              """  commissionRemainingAmount?: number;
-              currency: string;
-            };""",
-          )
-          replace_once(
-              'src/lib/supabase-fallback.ts',
-              "export async function fetchPaymentsFromSupabase(params?: { leadId?: string; caseId?: string; clientId?: string; status?: string }) {",
-              "export async function fetchPaymentsFromSupabase(params?: { leadId?: string; caseId?: string; clientId?: string; status?: string; includeArchived?: boolean }) {",
-          )
-          replace_once(
-              'src/lib/closeflow-runtime-source-truth.ts',
-              "export function buildRuntimeAccessPlanTruth(input = {}) {",
-              "/** @param {{ planId?: unknown, subscriptionStatus?: unknown }} input */\nexport function buildRuntimeAccessPlanTruth(input = {}) {",
-          )
-
-          finance_types = read('src/lib/finance/finance-types.ts')
-          finance_types = finance_types.replace(
-              """export type NormalizedFinancePayment = {
-              id?: string;""",
-              """export type NormalizedFinancePayment = {
-              id?: string;
-              workspaceId?: string;
-              leadId?: string | null;
-              clientId?: string | null;
-              caseId?: string | null;
-              createdAt?: string | null;
-              updatedAt?: string | null;""",
-              1,
-          )
-          finance_types = finance_types.replace(
-              """export type FinanceCommissionConfig = {""",
-              """export type FinanceRelationRef = {
-              workspaceId?: string;
-              leadId?: string | null;
-              clientId?: string | null;
-              caseId?: string | null;
-            };
-
-            export type FinanceCommissionConfig = {""",
-              1,
-          )
-          finance_types = finance_types.replace(
-              """export type FinanceSnapshotInput = {
-              contractValue?: number | string | null;
-              paidAmount?: number | string | null;""",
-              """export type FinanceSnapshotInput = {
-              contractValue?: number | string | null;
-              paidAmount?: number | string | null;
-              remainingAmount?: number | string | null;""",
-              1,
-          )
-          finance_types = finance_types.replace(
-              """export type FinanceSummary = FinanceSnapshot & {
-              paidCommissionAmount: number;""",
-              """export type FinanceSummary = FinanceSnapshot & {
-              plannedAmount?: number;
-              paidCommissionAmount: number;""",
-              1,
-          )
-          finance_types = finance_types.replace(
-              """export const CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_NOTE = {""",
-              """export type CommissionConfig = FinanceCommissionConfig;
-
-            export const CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_NOTE = {""",
-              1,
-          )
-          write('src/lib/finance/finance-types.ts', finance_types)
+          ft = read('src/lib/finance/finance-types.ts')
+          changes = [
+              ('export type NormalizedFinancePayment = {\n  id?: string;', 'export type NormalizedFinancePayment = {\n  id?: string;\n  workspaceId?: string;\n  leadId?: string | null;\n  clientId?: string | null;\n  caseId?: string | null;\n  createdAt?: string | null;\n  updatedAt?: string | null;'),
+              ('export type FinanceCommissionConfig = {', 'export type FinanceRelationRef = {\n  workspaceId?: string;\n  leadId?: string | null;\n  clientId?: string | null;\n  caseId?: string | null;\n};\n\nexport type FinanceCommissionConfig = {'),
+              ('  paidAmount?: number | string | null;\n  currency?:', '  paidAmount?: number | string | null;\n  remainingAmount?: number | string | null;\n  currency?:'),
+              ('export type FinanceSummary = FinanceSnapshot & {\n  paidCommissionAmount:', 'export type FinanceSummary = FinanceSnapshot & {\n  plannedAmount?: number;\n  paidCommissionAmount:'),
+              ('export const CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_NOTE = {', 'export type CommissionConfig = FinanceCommissionConfig;\n\nexport const CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_NOTE = {'),
+          ]
+          for old, new in changes:
+              count = ft.count(old)
+              print(f'PATCH finance-types: matches={count}: {old[:70]!r}')
+              if count != 1: raise SystemExit(f'finance-types expected one match, found {count}')
+              ft = ft.replace(old, new, 1)
+          write('src/lib/finance/finance-types.ts', ft)
 
           mutation = read('src/lib/work-items/no-flicker-mutation.ts')
-          replace_target = """  record?: unknown;
-              source?: string;
-              occurredAt?: string;
-            };"""
-          replacement = """  record?: unknown;
-              item?: unknown;
-              recordType?: string | null;
-              recordId?: string | null;
-              leadId?: string | null;
-              clientId?: string | null;
-              caseId?: string | null;
-              displayKind?: string;
-              businessKind?: string;
-              source?: string;
-              occurredAt?: string;
-            };"""
-          if mutation.count(replace_target) != 1:
-              raise SystemExit('no-flicker mutation base shape not found exactly once')
-          write('src/lib/work-items/no-flicker-mutation.ts', mutation.replace(replace_target, replacement, 1))
+          old = '  record?: unknown;\n  source?: string;\n  occurredAt?: string;\n};'
+          new = '  record?: unknown;\n  item?: unknown;\n  recordType?: string | null;\n  recordId?: string | null;\n  leadId?: string | null;\n  clientId?: string | null;\n  caseId?: string | null;\n  displayKind?: string;\n  businessKind?: string;\n  source?: string;\n  occurredAt?: string;\n};'
+          count = mutation.count(old)
+          print(f'PATCH no-flicker base: matches={count}')
+          if count != 1: raise SystemExit(f'no-flicker expected one base shape, found {count}')
+          write('src/lib/work-items/no-flicker-mutation.ts', mutation.replace(old, new, 1))
 
-          workflow = Path('.github/workflows/r23-apply-active-type-patches.yml')
-          workflow.unlink()
+          Path('.github/workflows/r23-apply-active-type-patches.yml').unlink()
       - name: Validate batch
         run: |
           git diff --check
