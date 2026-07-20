@@ -39,11 +39,12 @@ expect('src/pages/LeadDetail.tsx', "../styles/closeflow-lead-detail-sales-signal
 expect('src/pages/LeadDetail.tsx', 'STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD', 'current no-static-AI-card source marker');
 expect('src/pages/LeadDetail.tsx', 'STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_RAIL', 'current no-static-AI-rail source marker');
 reject('src/pages/LeadDetail.tsx', 'LeadAiFollowupDraft', 'obsolete static AI follow-up component');
-expect('src/pages/LeadDetail.tsx', 'LeadAiNextAction', 'AI next-action engine remains outside static rail');
+reject('src/pages/LeadDetail.tsx', 'LeadAiNextAction', 'obsolete static AI next-action component');
 
-expect('src/pages/LeadDetail.tsx', 'startLeadServiceInSupabase', 'lead to case service flow remains');
-expect('src/pages/LeadDetail.tsx', 'associatedCase', 'associated case state remains');
-expect('src/pages/LeadDetail.tsx', 'showServiceBanner', 'service banner remains');
+expect('src/pages/LeadDetail.tsx', 'startLeadServiceInSupabase', 'lead service persistence remains');
+expect('src/pages/LeadDetail.tsx', 'startLeadToCaseHandoff', 'current lead-to-case handoff remains');
+expect('src/pages/LeadDetail.tsx', 'caseDetailPath', 'current case navigation remains');
+expect('src/pages/LeadDetail.tsx', 'fetchCasesFromSupabase', 'associated case lookup remains');
 expect('src/pages/LeadDetail.tsx', 'STAGE86_CONTEXT_ACTION_EXPLICIT_TRIGGERS', 'shared context action source marker');
 expect('src/pages/LeadDetail.tsx', 'openLeadContextAction', 'shared lead action launcher remains');
 expect('src/pages/LeadDetail.tsx', 'openContextQuickAction({', 'shared context action host remains');
@@ -52,12 +53,15 @@ expect('src/pages/LeadDetail.tsx', "openLeadContextAction('event')", 'event crea
 expect('src/pages/LeadDetail.tsx', "window.addEventListener('closeflow:context-action-saved'", 'shared action save listener remains');
 reject('src/pages/LeadDetail.tsx', 'isQuickTaskOpen', 'obsolete local quick task modal state');
 reject('src/pages/LeadDetail.tsx', 'isQuickEventOpen', 'obsolete local quick event modal state');
-expect('src/pages/LeadDetail.tsx', 'handleCreateQuickTask', 'quick task trigger remains');
-expect('src/pages/LeadDetail.tsx', 'handleCreateQuickEvent', 'quick event trigger remains');
-expect('src/pages/LeadDetail.tsx', 'handleAddNote', 'note create flow remains');
-expect('src/pages/LeadDetail.tsx', 'handleUpdateLead', 'lead edit flow remains');
-expect('src/pages/LeadDetail.tsx', 'handleDeleteLead', 'lead delete flow remains');
-expect('src/pages/LeadDetail.tsx', 'getLeadFinance', 'lead finance remains');
+expect('src/pages/LeadDetail.tsx', 'insertTaskToSupabase', 'task persistence remains');
+expect('src/pages/LeadDetail.tsx', 'insertEventToSupabase', 'event persistence remains');
+expect('src/pages/LeadDetail.tsx', 'insertActivityToSupabase', 'note and activity persistence remains');
+expect('src/pages/LeadDetail.tsx', 'updateLeadInSupabase', 'lead edit persistence remains');
+expect('src/pages/LeadDetail.tsx', 'deleteLeadFromSupabase', 'lead delete persistence remains');
+expect('src/pages/LeadDetail.tsx', 'fetchPaymentsFromSupabase', 'lead finance read remains');
+expect('src/pages/LeadDetail.tsx', 'createPaymentInSupabase', 'lead finance write remains');
+expect('src/pages/LeadDetail.tsx', 'getActivityTimelineTitle', 'activity timeline title remains');
+expect('src/pages/LeadDetail.tsx', 'getActivityTimelineDescription', 'activity timeline description remains');
 expect('src/pages/LeadDetail.tsx', 'TabsTrigger', 'tabs remain');
 
 expect('src/styles/visual-stage04-lead-detail.css', 'VISUAL_STAGE_04_LEAD_DETAIL_UI_SYSTEM', 'Stage04 reference CSS marker');
