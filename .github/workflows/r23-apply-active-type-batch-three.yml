@@ -1,4 +1,4 @@
-name: R23 apply active type batch three
+name: R23 apply central adapter type batch
 
 on:
   pull_request:
@@ -20,7 +20,7 @@ jobs:
         with:
           ref: g15-r23-scope-tsc-to-active-product
           fetch-depth: 0
-      - name: Apply exact final mapped repairs
+      - name: Apply central adapter repairs
         shell: python
         run: |
           from pathlib import Path
@@ -29,20 +29,16 @@ jobs:
           def read(path): return Path(path).read_text(encoding='utf-8-sig')
           def write(path, text): Path(path).write_text(text, encoding='utf-8')
           def once(path, old, new):
-              text = read(path); count = text.count(old); print(f'{path}: literal matches={count}: {old[:90]!r}')
+              text = read(path); count = text.count(old)
+              print(f'{path}: {count} literal matches: {old[:80]!r}')
               if count != 1: raise SystemExit(f'{path}: expected 1 match, found {count}')
               write(path, text.replace(old, new, 1))
-          def count_replace(path, old, new, expected):
-              text = read(path); count = text.count(old); print(f'{path}: literal matches={count}: {old[:90]!r}')
-              if count != expected: raise SystemExit(f'{path}: expected {expected}, found {count}')
-              write(path, text.replace(old, new))
           def regex_once(path, pattern, replacement):
               text = read(path); next_text, count = re.subn(pattern, replacement, text, count=1, flags=re.MULTILINE)
-              print(f'{path}: regex matches={count}: {pattern[:100]!r}')
+              print(f'{path}: {count} regex matches: {pattern[:90]!r}')
               if count != 1: raise SystemExit(f'{path}: expected 1 regex match, found {count}')
               write(path, next_text)
 
-          # Central finance summary: return the complete compatibility contract.
           once(
               'src/lib/finance/finance-client-summary.ts',
               """  return {
@@ -88,93 +84,29 @@ jobs:
               };""",
           )
 
-          # CaseDetail: remove dead delete dialog from loading-only component, restore real local names and case-item payload type.
-          regex_once(
-              'src/pages/CaseDetail.tsx',
-              r"\n\s*<ConfirmDialog\s*\n\s*data-case-detail-delete-confirm=\"true\"[\s\S]*?\n\s*/>",
-              '',
-          )
+          regex_once('src/pages/CaseDetail.tsx', r"\n\s*<ConfirmDialog\s*\n\s*data-case-detail-delete-confirm=\"true\"[\s\S]*?\n\s*/>", '')
           once('src/pages/CaseDetail.tsx', 'getTaskNoteFollowUpPreviewStage231H_R1D2_R11(taskWithMissingBridgeStage232O)', 'getTaskNoteFollowUpPreviewStage231H_R1D2_R11(task)')
           once('src/lib/supabase-fallback.ts', '  approvedAt?: string | null;\n};', '  approvedAt?: string | null;\n  payload?: Record<string, unknown>;\n};')
 
-          # Cases: use the declared record and remove ignored legacy context keys.
           once('src/pages/Cases.tsx', 'const isClosedCase = isClosedCaseStatus((typeof caseRecord !== "undefined" ? caseRecord : null)?.status);', 'const isClosedCase = isClosedCaseStatus(record.status);')
-          regex_once(
-              'src/pages/Cases.tsx',
-              r"getCaseOwnerRiskBadges\(record,\s*\{\s*settings: ownerRiskSettings,[\s\S]*?updatedAt,\s*\}\);",
-              "getCaseOwnerRiskBadges(record, { settings: ownerRiskSettings });",
-          )
+          regex_once('src/pages/Cases.tsx', r"getCaseOwnerRiskBadges\(record,\s*\{\s*settings: ownerRiskSettings,[\s\S]*?updatedAt,\s*\}\);", "getCaseOwnerRiskBadges(record, { settings: ownerRiskSettings });")
 
-          # ClientDetail: complete the shared missing-item contract and remove unsupported visual props.
-          once('src/pages/ClientDetail.tsx', "import { buildMissingItemModalDraft } from '../lib/missing-items/stage227c2-missing-item-modal-contract';", "import { buildMissingItemModalDraft, type MissingItemKind } from '../lib/missing-items/stage227c2-missing-item-modal-contract';")
-          once('src/pages/ClientDetail.tsx', "  const [clientMissingBlocksProgress, setClientMissingBlocksProgress] = useState(false);", "  const [clientMissingKind, setClientMissingKind] = useState<MissingItemKind>('document');\n  const [clientMissingBlocksProgress, setClientMissingBlocksProgress] = useState(false);\n  const [clientMissingBlockScope, setClientMissingBlockScope] = useState('');")
-          once('src/pages/ClientDetail.tsx', "          title: clientMissingTitle,\n          note: clientMissingNote,", "          title: clientMissingTitle,\n          note: clientMissingNote,\n          missingKind: clientMissingKind,\n          blocksProgress: clientMissingBlocksProgress,\n          blockScope: clientMissingBlockScope,")
-          count_replace('src/pages/ClientDetail.tsx', "clientMissingBlocksProgress ? 'blocking_missing_item' : 'missing_item'", "draft.blocksProgress ? 'blocking_missing_item' : 'missing_item'", 5)
-          count_replace('src/pages/ClientDetail.tsx', "clientMissingBlocksProgress ? 'high' : 'medium'", "draft.blocksProgress ? 'high' : 'medium'", 2)
-          count_replace('src/pages/ClientDetail.tsx', 'blocksProgress: clientMissingBlocksProgress,', 'blocksProgress: draft.blocksProgress,', 4)
-          count_replace('src/pages/ClientDetail.tsx', "          missingItem: true,\n", "          missingItem: true,\n          missingKind: draft.missingKind,\n          blockScope: draft.blockScope,\n", 3)
-          once('src/pages/ClientDetail.tsx', "      setClientMissingTitle('');\n      setClientMissingNote('');", "      setClientMissingTitle('');\n      setClientMissingNote('');\n      setClientMissingKind('document');\n      setClientMissingBlocksProgress(false);\n      setClientMissingBlockScope('');")
-          once('src/pages/ClientDetail.tsx', "                noteValue={clientMissingNote}\n                error={clientMissingError}", "                noteValue={clientMissingNote}\n                missingKindValue={clientMissingKind}\n                blocksProgressValue={clientMissingBlocksProgress}\n                blockScopeValue={clientMissingBlockScope}\n                error={clientMissingError}")
-          once('src/pages/ClientDetail.tsx', "                onNoteChange={setClientMissingNote}\n                onCancel={() => {", "                onNoteChange={setClientMissingNote}\n                onMissingKindChange={setClientMissingKind}\n                onBlocksProgressChange={setClientMissingBlocksProgress}\n                onBlockScopeChange={setClientMissingBlockScope}\n                onCancel={() => {")
-          once('src/pages/ClientDetail.tsx', "                  setClientMissingTitle('');\n                  setClientMissingNote('');\n                  setClientMissingError('');", "                  setClientMissingTitle('');\n                  setClientMissingNote('');\n                  setClientMissingKind('document');\n                  setClientMissingBlocksProgress(false);\n                  setClientMissingBlockScope('');\n                  setClientMissingError('');")
-          count_replace('src/pages/ClientDetail.tsx', '                  variant="outline"\n                  size="sm"\n', '', 2)
-
-          # LeadDetail: current risk fields, native button props, optimistic snapshot scope and void-return handlers.
-          once('src/pages/LeadDetail.tsx', 'riskLabel: leadSilenceRisk.riskLabel || leadWorkCenter.riskLabel,', 'riskLabel: leadSilenceRisk.label || leadWorkCenter.riskLabel,')
-          once('src/pages/LeadDetail.tsx', 'riskReason: leadRiskReasonStage14F || leadSilenceRisk.riskReason || leadWorkCenter.riskReason,', 'riskReason: leadRiskReasonStage14F || leadSilenceRisk.details || leadWorkCenter.riskReason,')
-          once(
-              'src/pages/LeadDetail.tsx',
-              """function LeadActionButton({ children, onClick, disabled }: { children: ReactNode; onClick?: () => void; disabled?: boolean }) {
-              const isStartServiceActionStage14F = children === 'Rozpocznij obsługę';
-              return (
-                <button
-                  type="button"
-                  className={isStartServiceActionStage14F ? "lead-detail-chip-button cf-action-button cf-action-button-primary" : "lead-detail-chip-button cf-action-button"}
-                  data-lead-start-service={isStartServiceActionStage14F ? "true" : undefined}
-                  onClick={onClick}
-                  disabled={disabled}
-                >""",
-              """function LeadActionButton({ children, className = '', ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
-              const isStartServiceActionStage14F = children === 'Rozpocznij obsługę';
-              const resolvedClassName = [
-                isStartServiceActionStage14F ? 'lead-detail-chip-button cf-action-button cf-action-button-primary' : 'lead-detail-chip-button cf-action-button',
-                className,
-              ].filter(Boolean).join(' ');
-              return (
-                <button
-                  type="button"
-                  className={resolvedClassName}
-                  data-lead-start-service={isStartServiceActionStage14F ? "true" : undefined}
-                  {...props}
-                >""",
-          )
-          once('src/pages/LeadDetail.tsx', "  const handleDeleteLinkedEvent = async (event: any) => {\n    if (!window.confirm('Usunąć to wydarzenie?')) return;\n    try {", "  const handleDeleteLinkedEvent = async (event: any) => {\n    if (!window.confirm('Usunąć to wydarzenie?')) return;\n    const optimisticEventSnapshot = linkedEvents;\n    try {")
-          once('src/pages/LeadDetail.tsx', '    const optimisticEventSnapshot = linkedEvents;\n', '')
-          count_replace('src/pages/LeadDetail.tsx', "    if (!hasAccess) return toast.error('Trial wygasł.');", "    if (!hasAccess) { toast.error('Trial wygasł.'); return; }", 4)
-          once('src/pages/LeadDetail.tsx', "    if (!safeLeadId) return setLeadMissingManagerError('Brak ID leada. Nie można dodać braku.');", "    if (!safeLeadId) { setLeadMissingManagerError('Brak ID leada. Nie można dodać braku.'); return; }")
-          once('src/pages/LeadDetail.tsx', "    if (!title) return setLeadMissingManagerError('Wpisz nazwę braku.');", "    if (!title) { setLeadMissingManagerError('Wpisz nazwę braku.'); return; }")
-          once('src/pages/LeadDetail.tsx', "    if (!taskId) return toast.error('Brak ID braku. Nie można zmienić blokady.');", "    if (!taskId) { toast.error('Brak ID braku. Nie można zmienić blokady.'); return; }")
-          once('src/pages/LeadDetail.tsx', "    if (!taskId) return toast.error('Brak ID braku. Nie można oznaczyć jako rozwiązany.');", "    if (!taskId) { toast.error('Brak ID braku. Nie można oznaczyć jako rozwiązany.'); return; }")
-          once('src/pages/LeadDetail.tsx', "    if (!taskId) return toast.error('Brak ID braku. Nie można usunąć.');", "    if (!taskId) { toast.error('Brak ID braku. Nie można usunąć.'); return; }")
-          once('src/pages/LeadDetail.tsx', '    let optimisticSnapshot: any[] | null = null;', '    let optimisticSnapshot: any[] | null = linkedTasks;')
-
-          # Leads: use the row-owned next-action value for the tooltip.
           once('src/pages/Leads.tsx', '<span className="lead-action-cell" title={nextActionMeta.title}>', '<span className="lead-action-cell" title={row.nextMoveTitle || \'Brak zaplanowanej akcji\'}>')
 
           Path('.github/workflows/r23-apply-active-type-batch-three.yml').unlink()
-      - name: Validate final mapped batch
+      - name: Validate central adapter batch
         run: |
           git diff --check
           npm ci
           npm install --no-save --package-lock=false @types/react@19.2.17 @types/react-dom@19.2.3
           node scripts/check-g15-r23-tsc-active-product-scope.cjs
-          npx tsc --noEmit --pretty false > r23-batch-three-tsc.log 2>&1 || true
+          npx tsc --noEmit --pretty false > r23-central-adapter-tsc.log 2>&1 || true
           npm run build
-          cat r23-batch-three-tsc.log
-      - name: Commit batch and self-remove workflow
+          cat r23-central-adapter-tsc.log
+      - name: Commit and self-remove workflow
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/lib/finance/finance-client-summary.ts src/pages/CaseDetail.tsx src/lib/supabase-fallback.ts src/pages/Cases.tsx src/pages/ClientDetail.tsx src/pages/LeadDetail.tsx src/pages/Leads.tsx .github/workflows/r23-apply-active-type-batch-three.yml
-          git commit -m "fix(closeflow): apply final mapped TypeScript repair batch"
+          git add src/lib/finance/finance-client-summary.ts src/pages/CaseDetail.tsx src/lib/supabase-fallback.ts src/pages/Cases.tsx src/pages/Leads.tsx .github/workflows/r23-apply-active-type-batch-three.yml
+          git commit -m "fix(closeflow): repair central TypeScript adapters"
           git push origin HEAD:g15-r23-scope-tsc-to-active-product
