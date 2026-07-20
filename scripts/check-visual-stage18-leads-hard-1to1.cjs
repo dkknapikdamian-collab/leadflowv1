@@ -22,8 +22,20 @@ function expectAny(file, needles, label) {
   console.log(`OK: ${file} contains ${label || needles.join(' OR ')}`);
 }
 
-expect('src/index.css', 'visual-stage18-leads-hard-1to1.css', 'Stage18 CSS import');
-expect('src/styles/visual-stage18-leads-hard-1to1.css', 'VISUAL_STAGE18_LEADS_HTML_HARD_1TO1_CSS', 'Stage18 CSS marker');
+function reject(file, needle, label) {
+  const body = read(file);
+  if (body.includes(needle)) {
+    throw new Error(`${file}: forbidden ${label || needle}`);
+  }
+  console.log(`OK: ${file} excludes ${label || needle}`);
+}
+
+reject('src/index.css', 'visual-stage18-leads-hard-1to1.css', 'inactive Stage18 global CSS import');
+expect('src/pages/Leads.tsx', "../styles/closeflow-record-list-source-truth.css", 'current record-list CSS import');
+expect('src/pages/Leads.tsx', "../styles/closeflow-unified-page-canvas-stage211c.css", 'current Stage211C canvas import');
+expect('src/pages/Leads.tsx', "../styles/closeflow-canvas-source-truth-stage211e.css", 'current Stage211E canvas source import');
+expect('src/pages/Leads.tsx', 'VISUAL_STAGE25_LEADS_FULL_JSX_HTML_REBUILD', 'current Leads rebuild marker');
+expect('src/styles/visual-stage18-leads-hard-1to1.css', 'VISUAL_STAGE18_LEADS_HTML_HARD_1TO1_CSS', 'Stage18 reference CSS marker');
 expect('src/styles/visual-stage18-leads-hard-1to1.css', '--cf18-sidebar: #101828', 'HTML sidebar color token');
 expect('src/styles/visual-stage18-leads-hard-1to1.css', '.main-leads header h1::before', 'Leads HTML kicker selector');
 expect('src/styles/visual-stage18-leads-hard-1to1.css', '.main-leads .grid-5', 'Leads HTML metric grid selector');
@@ -33,7 +45,7 @@ expect('src/styles/visual-stage18-leads-hard-1to1.css', '.main-leads .right-card
 expect('src/styles/visual-stage18-leads-hard-1to1.css', '@media (max-width: 760px)', 'mobile breakpoint');
 expectAny('src/components/Layout.tsx', ['cf-html-shell', 'VISUAL_STAGE18_CF_HTML_SHELL_COMPAT'], 'HTML shell class/compat marker');
 expectAny('src/components/Layout.tsx', ['closeflow-visual-stage01', 'VISUAL_STAGE18_STAGE01_COMPAT'], 'Stage01 visual shell compatibility');
-expect('src/pages/Leads.tsx', 'VISUAL_STAGE18_LEADS_HTML_HARD_1TO1', 'Leads stage marker');
+expect('src/pages/Leads.tsx', 'VISUAL_STAGE18_LEADS_HTML_HARD_1TO1', 'retained Stage18 historical marker');
 expect('docs/VISUAL_STAGE18_LEADS_HARD_1TO1_2026-04-29.md', 'Funkcja obecna w repo', 'mapping table header');
 expect('package.json', 'check:visual-stage18-leads-hard-1to1', 'package guard script');
-console.log('OK: Visual Stage18 Leads hard 1:1 guard passed.');
+console.log('OK: Visual Stage18 Leads guard reconciled with current Leads source truth.');
