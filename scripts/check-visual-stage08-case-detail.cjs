@@ -16,19 +16,34 @@ function expectAny(file, options, label) {
   console.log(`OK: ${file} contains ${label}`);
 }
 
-expect('src/components/Layout.tsx', 'VISUAL_STAGE_08_CASE_DETAIL_ROUTE_SCOPE', 'Stage 08 route scope marker');
+function reject(file, text, label = text) {
+  const body = read(file);
+  if (body.includes(text)) throw new Error(`${file}: forbidden ${label}`);
+  console.log(`OK: ${file} excludes ${label}`);
+}
+
+expect('src/components/Layout.tsx', 'VISUAL_STAGE_08_CASE_DETAIL_ROUTE_SCOPE', 'Stage08 route scope marker');
 expect('src/components/Layout.tsx', 'isCaseDetailRoute', 'case detail route detection');
 expect('src/components/Layout.tsx', 'main-case-detail', 'main-case-detail scoped class');
 expect('src/components/Layout.tsx', 'data-visual-stage-case-detail', 'case detail visual data marker');
 
-expect('src/styles/visual-stage08-case-detail.css', 'VISUAL_STAGE_08_CASE_DETAIL_CSS', 'Stage 08 CSS marker');
-expect('src/styles/visual-stage08-case-detail.css', '.main-case-detail', 'scoped CaseDetail selector');
-expect('src/styles/visual-stage08-case-detail.css', 'layout-detail', 'layout-detail pattern');
-expect('src/styles/visual-stage08-case-detail.css', 'person-card', 'person-card pattern');
-expect('src/styles/visual-stage08-case-detail.css', 'hero.light', 'hero light pattern');
-expect('src/styles/visual-stage08-case-detail.css', 'right-card', 'right-card pattern');
-expect('src/styles/visual-stage08-case-detail.css', '@media (max-width: 760px)', 'mobile polish');
-expect('src/index.css', '@import "./styles/visual-stage08-case-detail.css";', 'Stage 08 CSS import');
+reject('src/index.css', 'visual-stage08-case-detail.css', 'inactive Stage08 CaseDetail CSS import');
+expect('src/pages/CaseDetail.tsx', "../styles/visual-stage13-case-detail-vnext.css", 'current Stage13 CaseDetail visual import');
+expect('src/pages/CaseDetail.tsx', "../styles/closeflow-case-history-visual-source-truth.css", 'current case history CSS import');
+expect('src/pages/CaseDetail.tsx', "../styles/closeflow-unified-page-canvas-stage211c.css", 'current Stage211C canvas import');
+expect('src/pages/CaseDetail.tsx', "../styles/closeflow-case-detail-stage217-operation-workspace.css", 'current Stage217 operation workspace import');
+expect('src/pages/CaseDetail.tsx', "../styles/closeflow-case-detail-stage220a10-tabs-layout-repair.css", 'current Stage220 tabs layout import');
+expect('src/pages/CaseDetail.tsx', "../styles/case-detail-stage228r9-shell-rail-lift.css", 'current Stage228 shell rail import');
+expect('src/pages/CaseDetail.tsx', 'STAGE231D2_R6_CASE_DETAIL_TOP_STRIP_RAIL_LIFT', 'current CaseDetail rail source marker');
+expect('src/pages/CaseDetail.tsx', 'STAGE217_CASE_DETAIL_OPERATION_WORKSPACE_UX', 'current operation workspace marker');
+
+expect('src/styles/visual-stage08-case-detail.css', 'VISUAL_STAGE_08_CASE_DETAIL_CSS', 'Stage08 reference CSS marker');
+expect('src/styles/visual-stage08-case-detail.css', '.main-case-detail', 'historical scoped CaseDetail selector');
+expect('src/styles/visual-stage08-case-detail.css', 'layout-detail', 'historical layout-detail pattern');
+expect('src/styles/visual-stage08-case-detail.css', 'person-card', 'historical person-card pattern');
+expect('src/styles/visual-stage08-case-detail.css', 'hero.light', 'historical hero light pattern');
+expect('src/styles/visual-stage08-case-detail.css', 'right-card', 'historical right-card pattern');
+expect('src/styles/visual-stage08-case-detail.css', '@media (max-width: 760px)', 'historical mobile polish');
 
 expect('src/pages/CaseDetail.tsx', 'fetchCaseByIdFromSupabase', 'case fetch remains present');
 expect('src/pages/CaseDetail.tsx', 'fetchCaseItemsFromSupabase', 'case checklist/items remain present');
@@ -52,4 +67,4 @@ expectAny('src/pages/CaseDetail.tsx', ['isAddTaskOpen', 'setIsAddTaskOpen'], 'ad
 expectAny('src/pages/CaseDetail.tsx', ['isAddEventOpen', 'setIsAddEventOpen'], 'add event modal remains present');
 expectAny('src/pages/CaseDetail.tsx', ['isAddNoteOpen', 'setIsAddNoteOpen'], 'add note modal remains present');
 
-console.log('OK: Visual Stage 08 CaseDetail guard passed.');
+console.log('OK: Visual Stage08 CaseDetail guard reconciled with current CaseDetail source truth.');
