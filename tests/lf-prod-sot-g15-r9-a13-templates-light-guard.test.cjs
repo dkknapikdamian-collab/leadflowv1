@@ -24,7 +24,7 @@ test('A13 critical regression guard passes against current source truth', () => 
 });
 
 test('guard anchors the current Templates record-list marker', () => {
-  assert.match(guard, /data-cf-templates-page-source=\\"record-list-source-truth\\"/);
+  assert.match(guard, /data-cf-templates-page-source="record-list-source-truth"/);
   assert.match(templates, /data-cf-templates-page-source="record-list-source-truth"/);
 });
 
