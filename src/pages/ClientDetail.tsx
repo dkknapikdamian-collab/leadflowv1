@@ -2105,6 +2105,8 @@ function ClientDetail() {
           kind: 'missing_item',
           type: 'missing_item',
           missingItem: true,
+          missingKind: draft.missingKind,
+          blockScope: draft.blockScope,
           blocksProgress: clientMissingBlocksProgress,
           status: clientMissingBlocksProgress ? 'blocking_missing_item' : 'missing_item',
                     title: draft.title,
@@ -2129,6 +2131,8 @@ note: draft.note,
           type: 'missing_item',
           status: clientMissingBlocksProgress ? 'blocking_missing_item' : 'missing_item',
           missingItem: true,
+          missingKind: draft.missingKind,
+          blockScope: draft.blockScope,
           blocksProgress: clientMissingBlocksProgress,
           title: draft.title,
           note: draft.note,
@@ -2160,6 +2164,8 @@ note: draft.note,
           kind: 'missing_item',
           type: 'missing_item',
           missingItem: true,
+          missingKind: draft.missingKind,
+          blockScope: draft.blockScope,
           blocksProgress: clientMissingBlocksProgress,
           status: clientMissingBlocksProgress ? 'blocking_missing_item' : 'missing_item',
           note: draft.note,
@@ -2196,6 +2202,9 @@ note: draft.note,
       );
       setClientMissingTitle('');
       setClientMissingNote('');
+      setClientMissingKind('document');
+      setClientMissingBlocksProgress(false);
+      setClientMissingBlockScope('');
       setClientMissingError('');
       setClientMissingModalOpen(false);
       setClientMissingListOpenStage232I6(false);
@@ -3635,8 +3644,6 @@ return (
                   kind="task"
                   recordType="client"
                   type="button"
-                  variant="outline"
-                  size="sm"
                   onClick={() =>
                     openContextQuickAction({
                       kind: 'task',
@@ -3656,8 +3663,6 @@ return (
                   kind="event"
                   recordType="client"
                   type="button"
-                  variant="outline"
-                  size="sm"
                   onClick={() =>
                     openContextQuickAction({
                       kind: 'event',
