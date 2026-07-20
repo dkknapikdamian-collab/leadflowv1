@@ -29,6 +29,20 @@ jobs:
       - name: TypeScript scope guard
         run: node scripts/check-g15-r23-tsc-active-product-scope.cjs
       - name: Active product typecheck
-        run: npx tsc --noEmit --pretty false
+        id: typecheck
+        continue-on-error: true
+        run: npx tsc --noEmit --pretty false > r23-active-tsc.log 2>&1
+      - name: Upload active typecheck evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: g15-r23-active-typecheck
+          path: r23-active-tsc.log
+          if-no-files-found: error
       - name: Production build
         run: npm run build
+      - name: Enforce active typecheck
+        if: steps.typecheck.outcome != 'success'
+        run: |
+          cat r23-active-tsc.log
+          exit 1
