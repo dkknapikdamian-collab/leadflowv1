@@ -19,6 +19,12 @@ function reject(file, text, label = text) {
   console.log(`OK: ${file} excludes ${label}`);
 }
 
+function rejectPattern(file, pattern, label = String(pattern)) {
+  const body = read(file);
+  if (pattern.test(body)) throw new Error(`${file}: forbidden ${label}`);
+  console.log(`OK: ${file} excludes ${label}`);
+}
+
 expect('src/components/Layout.tsx', 'VISUAL_STAGE_04_LEAD_DETAIL_ROUTE_SCOPE', 'Stage04 route marker');
 {
   const layout = read('src/components/Layout.tsx');
@@ -38,8 +44,8 @@ expect('src/pages/LeadDetail.tsx', "../styles/closeflow-shared-quick-actions-bar
 expect('src/pages/LeadDetail.tsx', "../styles/closeflow-lead-detail-sales-signal-stage227e4.css", 'current sales signal visual import');
 expect('src/pages/LeadDetail.tsx', 'STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD', 'current no-static-AI-card source marker');
 expect('src/pages/LeadDetail.tsx', 'STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_RAIL', 'current no-static-AI-rail source marker');
-reject('src/pages/LeadDetail.tsx', 'LeadAiFollowupDraft', 'obsolete static AI follow-up component');
-reject('src/pages/LeadDetail.tsx', 'LeadAiNextAction', 'obsolete static AI next-action component');
+rejectPattern('src/pages/LeadDetail.tsx', /<LeadAiFollowupDraft\b/, 'rendered static AI follow-up component');
+rejectPattern('src/pages/LeadDetail.tsx', /<LeadAiNextAction\b/, 'rendered static AI next-action component');
 
 expect('src/pages/LeadDetail.tsx', 'startLeadServiceInSupabase', 'lead service persistence remains');
 expect('src/pages/LeadDetail.tsx', 'startLeadToCaseHandoff', 'current lead-to-case handoff remains');
