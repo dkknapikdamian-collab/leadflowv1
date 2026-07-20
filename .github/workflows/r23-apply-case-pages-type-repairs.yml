@@ -48,14 +48,14 @@ jobs:
         shell: python
         run: |
           from pathlib import Path
-          import re
           path = Path('src/lib/supabase-fallback.ts')
           text = path.read_text(encoding='utf-8-sig')
-          pattern = r'(type CaseItemInput = \{[\s\S]*?approvedAt\?: string \| null;)(\s*\};)'
-          next_text, count = re.subn(pattern, r'\1\n  payload?: Record<string, unknown>;\2', text, count=1)
+          old = "type CaseItemInput = { id?: string; caseId: string; title?: string; description?: string; type?: string; status?: string; isRequired?: boolean; dueDate?: string | null; order?: number; response?: string | null; fileUrl?: string | null; fileName?: string | null; approvedAt?: string | null };"
+          new = "type CaseItemInput = { id?: string; caseId: string; title?: string; description?: string; type?: string; status?: string; isRequired?: boolean; dueDate?: string | null; order?: number; response?: string | null; fileUrl?: string | null; fileName?: string | null; approvedAt?: string | null; payload?: Record<string, unknown> };"
+          count = text.count(old)
           print('matches', count)
-          if count != 1: raise SystemExit(f'expected 1 CaseItemInput match, found {count}')
-          path.write_text(next_text, encoding='utf-8')
+          if count != 1: raise SystemExit(f'expected 1 exact CaseItemInput match, found {count}')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
       - name: Validate CaseDetail repairs
         run: |
           git diff --check
