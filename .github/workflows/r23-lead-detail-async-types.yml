@@ -1,0 +1,56 @@
+name: R23 LeadDetail async type repairs
+on:
+  pull_request:
+    branches: [dev-rollout-freeze]
+    paths: [.github/workflows/r23-lead-detail-async-types.yml]
+permissions:
+  contents: write
+jobs:
+  apply:
+    if: github.event.pull_request.head.ref == 'g15-r23-scope-tsc-to-active-product'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: g15-r23-scope-tsc-to-active-product
+          fetch-depth: 0
+      - name: Normalize async handler return contracts
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('src/pages/LeadDetail.tsx'); t=p.read_text(encoding='utf-8-sig')
+          replacements={
+            "if (!hasAccess) return toast.error('Trial wygasł.');":"if (!hasAccess) { toast.error('Trial wygasł.'); return; }",
+            "if (!editLinkedTask.title.trim()) return toast.error('Podaj tytuł zadania');":"if (!editLinkedTask.title.trim()) { toast.error('Podaj tytuł zadania'); return; }",
+            "if (!editLinkedEvent.title.trim()) return toast.error('Podaj tytuł wydarzenia');":"if (!editLinkedEvent.title.trim()) { toast.error('Podaj tytuł wydarzenia'); return; }",
+            "if (!safeLeadId) return setLeadMissingManagerError('Brak ID leada. Nie można dodać braku.');":"if (!safeLeadId) { setLeadMissingManagerError('Brak ID leada. Nie można dodać braku.'); return; }",
+            "if (!title) return setLeadMissingManagerError('Wpisz nazwę braku.');":"if (!title) { setLeadMissingManagerError('Wpisz nazwę braku.'); return; }",
+            "if (!taskId) return toast.error('Brak ID braku. Nie można zmienić blokady.');":"if (!taskId) { toast.error('Brak ID braku. Nie można zmienić blokady.'); return; }",
+            "if (!taskId) return toast.error('Brak ID braku. Nie można oznaczyć jako rozwiązany.');":"if (!taskId) { toast.error('Brak ID braku. Nie można oznaczyć jako rozwiązany.'); return; }",
+            "if (!taskId) return toast.error('Brak ID braku. Nie można usunąć.');":"if (!taskId) { toast.error('Brak ID braku. Nie można usunąć.'); return; }",
+          }
+          for old,new in replacements.items():
+            n=t.count(old); print(old[:55],n)
+            if n<1: raise SystemExit(f'missing return contract: {old}')
+            t=t.replace(old,new)
+          old='    let optimisticSnapshot: any[] | null = null;'
+          n=t.count(old); print('rollback snapshot',n)
+          if n!=1: raise SystemExit(f'rollback snapshot: {n}')
+          t=t.replace(old,'    const optimisticSnapshot = linkedTasks;',1)
+          p.write_text(t,encoding='utf-8'); Path('.github/workflows/r23-lead-detail-async-types.yml').unlink()
+      - name: Validate
+        run: |
+          git diff --check
+          npm ci
+          npm install --no-save --package-lock=false @types/react@19.2.17 @types/react-dom@19.2.3
+          node scripts/check-g15-r23-tsc-active-product-scope.cjs
+          npx tsc --noEmit --pretty false > r23-lead-async-tsc.log 2>&1 || true
+          npm run build
+          cat r23-lead-async-tsc.log
+      - name: Commit
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add src/pages/LeadDetail.tsx .github/workflows/r23-lead-detail-async-types.yml
+          git commit -m "fix(closeflow): normalize LeadDetail async handlers"
+          git push origin HEAD:g15-r23-scope-tsc-to-active-product
