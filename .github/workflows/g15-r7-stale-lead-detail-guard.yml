@@ -1,0 +1,32 @@
+name: G15-R7 stale LeadDetail guard reconciliation
+
+on:
+  pull_request:
+    branches:
+      - dev-rollout-freeze
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-g15-r7:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Focused G15-R7 tests
+        run: node --test tests/lf-prod-sot-g15-r7-stale-lead-detail-feedback-guard.test.cjs
+
+      - name: Reconciled LeadDetail feedback guard
+        run: npm run check:lead-detail-feedback-p1
