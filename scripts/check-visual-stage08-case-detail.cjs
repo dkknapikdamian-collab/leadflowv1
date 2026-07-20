@@ -53,8 +53,11 @@ expect('src/pages/CaseDetail.tsx', 'fetchEventsFromSupabase', 'case events remai
 expect('src/pages/CaseDetail.tsx', 'insertCaseItemToSupabase', 'add missing item flow remains present');
 expect('src/pages/CaseDetail.tsx', 'updateCaseItemInSupabase', 'case item status/update remains present');
 expect('src/pages/CaseDetail.tsx', 'deleteCaseItemFromSupabase', 'case item delete remains present');
-expect('src/pages/CaseDetail.tsx', 'insertTaskToSupabase', 'add task flow remains present');
-expect('src/pages/CaseDetail.tsx', 'insertEventToSupabase', 'add event flow remains present');
+expect('src/pages/CaseDetail.tsx', "openCaseContextAction('task')", 'shared task creation flow remains present');
+expect('src/pages/CaseDetail.tsx', "openCaseContextAction('event')", 'shared event creation flow remains present');
+expect('src/pages/CaseDetail.tsx', "openCaseContextAction('note')", 'shared note creation flow remains present');
+expect('src/pages/CaseDetail.tsx', 'openContextQuickAction({', 'shared context action launcher remains present');
+expect('src/pages/CaseDetail.tsx', "window.addEventListener('closeflow:context-action-saved'", 'shared action save refresh listener remains present');
 expect('src/pages/CaseDetail.tsx', 'insertActivityToSupabase', 'activity/note flow remains present');
 expect('src/pages/CaseDetail.tsx', 'createClientPortalTokenInSupabase', 'client portal token flow remains present');
 expect('src/pages/CaseDetail.tsx', 'buildPortalUrl', 'client portal url flow remains present');
@@ -63,8 +66,5 @@ expect('src/pages/CaseDetail.tsx', 'CaseDetailV1CommandCenter', 'case command ce
 expect('src/pages/CaseDetail.tsx', 'setCaseLifecycleStatusV1', 'case lifecycle actions remain present');
 expect('src/pages/CaseDetail.tsx', 'TabsTrigger', 'case detail tabs remain present');
 expectAny('src/pages/CaseDetail.tsx', ['isAddItemOpen', 'setIsAddItemOpen'], 'add item modal remains present');
-expectAny('src/pages/CaseDetail.tsx', ['isAddTaskOpen', 'setIsAddTaskOpen'], 'add task modal remains present');
-expectAny('src/pages/CaseDetail.tsx', ['isAddEventOpen', 'setIsAddEventOpen'], 'add event modal remains present');
-expectAny('src/pages/CaseDetail.tsx', ['isAddNoteOpen', 'setIsAddNoteOpen'], 'add note modal remains present');
 
 console.log('OK: Visual Stage08 CaseDetail guard reconciled with current CaseDetail source truth.');
