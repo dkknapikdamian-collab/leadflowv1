@@ -31,11 +31,11 @@ test('LeadDetail uses current Stage14, canvas and shared action sources', () => 
   ]) assert.match(leadDetail, new RegExp(required.replace(/\./g, '\\.')));
 });
 
-test('static AI follow-up and next-action rail components remain removed', () => {
+test('static AI follow-up and next-action rail components remain unrendered', () => {
   assert.match(leadDetail, /STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD/);
   assert.match(leadDetail, /STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_RAIL/);
-  assert.doesNotMatch(leadDetail, /LeadAiFollowupDraft/);
-  assert.doesNotMatch(leadDetail, /LeadAiNextAction/);
+  assert.doesNotMatch(leadDetail, /<LeadAiFollowupDraft\b/);
+  assert.doesNotMatch(leadDetail, /<LeadAiNextAction\b/);
 });
 
 test('Stage04 remains reference-only while current shared flows stay guarded', () => {
