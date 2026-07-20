@@ -147,7 +147,7 @@ void STAGE232I4_R16X_MISSING_BLOCKER_TOGGLE_STATE_AND_ACTION_LABEL;
 
 const STAGE232I4_R16Y_R2_MISSING_BLOCKER_SOURCE_TRUTH_ROBUST_FINAL = 'Client missing blocker source truth reads legal priority high/medium and delete action remains visible';
 void STAGE232I4_R16Y_R2_MISSING_BLOCKER_SOURCE_TRUTH_ROBUST_FINAL;
-import { buildMissingItemModalDraft } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
+import { buildMissingItemModalDraft, type MissingItemKind } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
 import { isClosedCaseStatus } from '../lib/cases';
 
 
@@ -1558,7 +1558,9 @@ function ClientDetail() {
   const [clientMissingModalOpen, setClientMissingModalOpen] = useState(false);
   const [clientMissingTitle, setClientMissingTitle] = useState('');
   const [clientMissingNote, setClientMissingNote] = useState('');
+  const [clientMissingKind, setClientMissingKind] = useState<MissingItemKind>('document');
   const [clientMissingBlocksProgress, setClientMissingBlocksProgress] = useState(false);
+  const [clientMissingBlockScope, setClientMissingBlockScope] = useState('');
   const [clientMissingError, setClientMissingError] = useState('');
   const [clientMissingSaving, setClientMissingSaving] = useState(false);
   const [clientMissingSourceFilterStage232I2, setClientMissingSourceFilterStage232I2] = useState<'all' | 'client' | 'lead' | 'case' | 'blockers' | 'missing'>('all');
@@ -2071,6 +2073,9 @@ function ClientDetail() {
         {
           title: clientMissingTitle,
           note: clientMissingNote,
+          missingKind: clientMissingKind,
+          blocksProgress: clientMissingBlocksProgress,
+          blockScope: clientMissingBlockScope,
         },
       );
     } catch (error: any) {
@@ -2203,7 +2208,7 @@ note: draft.note,
     } finally {
       setClientMissingSaving(false);
     }
-  }, [client, clientId, clientMissingBlocksProgress, clientMissingNote, clientMissingTitle, hasAccess, reload, workspace?.id]);
+  }, [client, clientId, clientMissingBlockScope, clientMissingBlocksProgress, clientMissingKind, clientMissingNote, clientMissingTitle, hasAccess, reload, workspace?.id]);
 
 
 
@@ -3233,6 +3238,9 @@ return (
                 }}
                 titleValue={clientMissingTitle}
                 noteValue={clientMissingNote}
+                missingKindValue={clientMissingKind}
+                blocksProgressValue={clientMissingBlocksProgress}
+                blockScopeValue={clientMissingBlockScope}
                 error={clientMissingError}
                 isSaving={clientMissingSaving}
                 onTitleChange={(value) => {
@@ -3240,11 +3248,17 @@ return (
                   if (clientMissingError) setClientMissingError('');
                 }}
                 onNoteChange={setClientMissingNote}
+                onMissingKindChange={setClientMissingKind}
+                onBlocksProgressChange={setClientMissingBlocksProgress}
+                onBlockScopeChange={setClientMissingBlockScope}
                 onCancel={() => {
                   if (clientMissingSaving) return;
                   setClientMissingModalOpen(false);
                   setClientMissingTitle('');
                   setClientMissingNote('');
+                  setClientMissingKind('document');
+                  setClientMissingBlocksProgress(false);
+                  setClientMissingBlockScope('');
                   setClientMissingError('');
                 }}
                 onSubmit={handleSaveClientMissingItemStage227C3B}
