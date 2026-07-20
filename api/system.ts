@@ -271,9 +271,9 @@ async function handleProfileSettings(req: any, res: any) {
 
     const workspaceId = await resolveRequestWorkspaceId(req, body);
     const row = await ensureProfileRow({
-      userId: identity.userId,
-      email: identity.email,
-      fullName: identity.fullName,
+      userId: identity.userId || undefined,
+      email: identity.email || undefined,
+      fullName: identity.fullName || undefined,
       workspaceId,
     });
 

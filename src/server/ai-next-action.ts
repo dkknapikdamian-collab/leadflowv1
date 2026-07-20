@@ -151,13 +151,14 @@ function buildSuggestion(input: NextActionRequest): NextActionSuggestion {
   if (!hasContact) warnings.push('Brak telefonu i e-maila. Najpierw warto uzupełnić kontakt, inaczej follow-up będzie ręczny.');
 
   const overdueTask = openTasks.find((task) => task.dueAt && task.dueAt.getTime() < now.getTime());
-  if (overdueTask) {
+  if (overdueTask?.dueAt) {
+    const overdueDueAt = overdueTask.dueAt;
     const dueAt = addHours(now, 1);
     return {
       kind: 'task',
       title: `Domknij zaległe zadanie: ${overdueTask.title}`,
       summary: 'Najpilniejszy ruch to wrócić do zaległego zadania, bo blokuje dalszy proces sprzedaży.',
-      reason: `Zadanie miało termin ${formatMoment(overdueTask.dueAt.toISOString())}.`,
+      reason: `Zadanie miało termin ${formatMoment(overdueDueAt.toISOString())}.`,
       priority: 'high',
       dueAt,
       suggestedTask: {

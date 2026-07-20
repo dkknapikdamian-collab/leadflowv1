@@ -62,7 +62,7 @@ const taskCreateDialogFooterClass = modalFooterClass('event-form-footer');
 type TaskCreateDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSaved?: () => void | Promise<void>;
+  onSaved?: (createdTask?: unknown) => void | Promise<void>;
   context?: TaskCreateDialogContext;
 };
 

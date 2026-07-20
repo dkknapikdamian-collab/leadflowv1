@@ -9,6 +9,7 @@ export type ClientFinanceSummary = {
   commissionAmount?: number;
   commissionPaidAmount?: number;
   commissionRemainingAmount?: number;
+  currency: string;
 };
 
 export type ClientFinanceSummaryMode = 'primary_case_first' | 'all_active_cases' | 'all_cases';

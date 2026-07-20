@@ -6,6 +6,14 @@ export type CloseflowWorkItemNoFlickerMutation = {
   kind: CloseflowWorkItemNoFlickerKind;
   id?: string;
   record?: unknown;
+  item?: unknown;
+  recordType?: string | null;
+  recordId?: string | null;
+  leadId?: string | null;
+  clientId?: string | null;
+  caseId?: string | null;
+  displayKind?: string;
+  businessKind?: string;
   source?: string;
   occurredAt?: string;
 };

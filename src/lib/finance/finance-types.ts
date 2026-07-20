@@ -40,6 +40,12 @@ export type FinancePaymentLike = {
 
 export type NormalizedFinancePayment = {
   id?: string;
+  workspaceId?: string;
+  leadId?: string | null;
+  clientId?: string | null;
+  caseId?: string | null;
+  createdAt?: string | null;
+  updatedAt?: string | null;
   type: PaymentType;
   status: PaymentStatus;
   amount: number;
@@ -67,6 +73,13 @@ export type FinanceCommissionInput = {
   currency?: FinanceCurrency | string | null;
 };
 
+export type FinanceRelationRef = {
+  workspaceId?: string;
+  leadId?: string | null;
+  clientId?: string | null;
+  caseId?: string | null;
+};
+
 export type FinanceCommissionConfig = {
   mode: CommissionMode;
   base: CommissionBase;
@@ -85,6 +98,7 @@ export type FinanceCommissionConfig = {
 export type FinanceSnapshotInput = {
   contractValue?: number | string | null;
   paidAmount?: number | string | null;
+  remainingAmount?: number | string | null;
   currency?: FinanceCurrency | string | null;
   payments?: FinancePaymentLike[] | null;
   commission?: FinanceCommissionInput | null;
@@ -112,12 +126,15 @@ export type FinanceSnapshot = {
 
 /** Backward-compatible summary shape used by existing FIN-5 components. */
 export type FinanceSummary = FinanceSnapshot & {
+  plannedAmount?: number;
   paidCommissionAmount: number;
   remainingCommissionAmount: number;
   paidClientAmount: number;
   clientPaidAmount: number;
   paymentPaidAmount: number;
 };
+
+export type CommissionConfig = FinanceCommissionConfig;
 
 export const CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_NOTE = {
   contractValue: 'Wartość kontraktu/sprawy. Nie oznacza jeszcze pieniędzy pobranych od klienta.',

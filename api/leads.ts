@@ -263,7 +263,7 @@ async function insertLeadWithSchemaFallback(payload: Record<string, unknown>) {
       return await insertWithVariants(['leads'], [currentPayload]);
     } catch (error) {
       const missingColumn = extractMissingColumn(error);
-      if (!shouldDropMissingColumnForLeadFallback('leads', missingColumn, currentPayload)) throw error;
+      if (!missingColumn || !shouldDropMissingColumnForLeadFallback('leads', missingColumn, currentPayload)) throw error;
       currentPayload = omitMissingColumn(currentPayload, missingColumn);
     }
   }
@@ -277,7 +277,7 @@ async function updateLeadWithSchemaFallback(id: string, workspaceId: string, pay
       return await updateByIdScoped('leads', id, workspaceId, currentPayload);
     } catch (error) {
       const missingColumn = extractMissingColumn(error);
-      if (!shouldDropMissingColumnForLeadFallback('leads', missingColumn, currentPayload)) throw error;
+      if (!missingColumn || !shouldDropMissingColumnForLeadFallback('leads', missingColumn, currentPayload)) throw error;
       currentPayload = omitMissingColumn(currentPayload, missingColumn);
     }
   }
@@ -291,7 +291,7 @@ async function insertCaseWithSchemaFallback(payload: Record<string, unknown>) {
       return await insertWithVariants(['cases'], [currentPayload]);
     } catch (error) {
       const missingColumn = extractMissingColumn(error);
-      if (!shouldDropMissingColumnForLeadFallback('cases', missingColumn, currentPayload)) throw error;
+      if (!missingColumn || !shouldDropMissingColumnForLeadFallback('cases', missingColumn, currentPayload)) throw error;
       currentPayload = omitMissingColumn(currentPayload, missingColumn);
     }
   }
@@ -305,7 +305,7 @@ async function insertActivityWithSchemaFallback(payload: Record<string, unknown>
       return await insertWithVariants(['activities'], [currentPayload]);
     } catch (error) {
       const missingColumn = extractMissingColumn(error);
-      if (!shouldDropMissingColumnForLeadFallback('activities', missingColumn, currentPayload)) throw error;
+      if (!missingColumn || !shouldDropMissingColumnForLeadFallback('activities', missingColumn, currentPayload)) throw error;
       currentPayload = omitMissingColumn(currentPayload, missingColumn);
     }
   }

@@ -63,7 +63,7 @@ type EventCreateFormState = {
 type EventCreateDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSaved?: () => void | Promise<void>;
+  onSaved?: (createdEvent?: unknown) => void | Promise<void>;
   context?: TaskCreateDialogContext;
 };
 

@@ -466,7 +466,7 @@ export async function fetchServiceProfilesFromSupabase(params?: { includeArchive
 }
 export async function createServiceProfileInSupabase(input: ServiceProfileUpsertInput) { return callApi<SupabaseInsertResult>('/api/service-profiles', { method: 'POST', body: JSON.stringify(input) }); }
 export async function updateServiceProfileInSupabase(input: ServiceProfileUpsertInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/service-profiles', { method: 'PATCH', body: JSON.stringify(input) }); }
-export async function fetchPaymentsFromSupabase(params?: { leadId?: string; caseId?: string; clientId?: string; status?: string }) {
+export async function fetchPaymentsFromSupabase(params?: { leadId?: string; caseId?: string; clientId?: string; status?: string; includeArchived?: boolean }) {
   if (isDevPreviewDataEnabled()) {
     const all = getDevPreviewData().payments as Record<string, unknown>[];
     return normalizePaymentListContract(all.filter((row) => {
