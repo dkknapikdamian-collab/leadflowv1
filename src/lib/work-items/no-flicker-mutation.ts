@@ -1,4 +1,3 @@
-
 export type CloseflowWorkItemNoFlickerKind = 'task' | 'event';
 export type CloseflowWorkItemNoFlickerAction = 'create' | 'update' | 'delete';
 
@@ -11,7 +10,23 @@ export type CloseflowWorkItemNoFlickerMutation = {
   occurredAt?: string;
 };
 
+export type WorkItemNoFlickerMutationDetail = {
+  action: CloseflowWorkItemNoFlickerAction | 'upsert';
+  kind: CloseflowWorkItemNoFlickerKind;
+  id?: string | null;
+  item?: unknown;
+  record?: unknown;
+  recordType?: string | null;
+  recordId?: string | null;
+  leadId?: string | null;
+  clientId?: string | null;
+  caseId?: string | null;
+  source?: string;
+  occurredAt?: string;
+};
+
 export const CLOSEFLOW_WORK_ITEM_NO_FLICKER_MUTATION = 'closeflow:work-item-no-flicker-mutation';
+export const CLOSEFLOW_WORK_ITEM_NO_FLICKER_MUTATION_EVENT = CLOSEFLOW_WORK_ITEM_NO_FLICKER_MUTATION;
 
 export function normalizeWorkItemMutationId(value: unknown) {
   if (typeof value === 'string') return value.trim();
