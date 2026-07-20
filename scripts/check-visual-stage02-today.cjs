@@ -1,88 +1,80 @@
 const fs = require('fs');
 const path = require('path');
-
 const repo = process.cwd();
 
 function read(relativePath) {
   const target = path.join(repo, relativePath);
-  if (!fs.existsSync(target)) {
-    throw new Error(`Missing required file: ${relativePath}`);
-  }
-  return fs.readFileSync(target, 'utf8');
+  if (!fs.existsSync(target)) throw new Error(`Missing required file: ${relativePath}`);
+  return fs.readFileSync(target, 'utf8').replace(/^\uFEFF/, '');
 }
 
-function expectIncludes(content, text, label, filePath) {
-  if (!content.includes(text)) {
-    throw new Error(`${filePath}: missing ${label || text}`);
-  }
-  console.log(`OK: ${filePath} contains ${label || text}`);
+function expect(file, text, label = text) {
+  const content = read(file);
+  if (!content.includes(text)) throw new Error(`${file}: missing ${label}`);
+  console.log(`OK: ${file} contains ${label}`);
 }
 
-function chars() {
-  return String.fromCharCode.apply(String, arguments);
+function reject(file, text, label = text) {
+  const content = read(file);
+  if (content.includes(text)) throw new Error(`${file}: forbidden ${label}`);
+  console.log(`OK: ${file} excludes ${label}`);
 }
 
 const badPatterns = [
-  chars(0x0139),
-  chars(0x00c4),
-  chars(0x0102),
-  chars(0x00e2, 0x20ac),
-  chars(0x00c5, 0x00bc),
-  chars(0x00c5, 0x00ba),
-  chars(0x00c5, 0x201a),
-  chars(0x00c5, 0x201e),
-  chars(0x00c5, 0x203a),
-  chars(0x00c3, 0x00b3),
+  String.fromCharCode(0x0139),
+  String.fromCharCode(0x00c4),
+  String.fromCharCode(0x0102),
+  String.fromCharCode(0x00e2, 0x20ac),
+  String.fromCharCode(0x00c5, 0x00bc),
+  String.fromCharCode(0x00c5, 0x00ba),
+  String.fromCharCode(0x00c5, 0x201a),
+  String.fromCharCode(0x00c5, 0x201e),
+  String.fromCharCode(0x00c5, 0x203a),
+  String.fromCharCode(0x00c3, 0x00b3),
 ];
 
-const files = {
-  layout: { path: 'src/components/Layout.tsx', content: read('src/components/Layout.tsx') },
-  todayCss: { path: 'src/styles/visual-stage02-today.css', content: read('src/styles/visual-stage02-today.css') },
-  indexCss: { path: 'src/index.css', content: read('src/index.css') },
-  today: { path: 'src/pages/Today.tsx', content: read('src/pages/Today.tsx') },
-};
+expect('src/components/Layout.tsx', 'VISUAL_STAGE_02_TODAY_ROUTE_SCOPE', 'Stage02 route scope marker');
+expect('src/components/Layout.tsx', "const isTodayRoute = location.pathname === '/'", 'Today route detection');
+expect('src/components/Layout.tsx', 'main-today', 'main-today scoped class');
+expect('src/components/Layout.tsx', 'data-current-section={currentSection}', 'current section marker');
+expect('src/components/Layout.tsx', 'data-visual-stage-today={isTodayRoute', 'Today visual data marker');
+expect('src/App.tsx', "import('./pages/TodayStable')", 'active TodayStable route module');
 
-expectIncludes(files.layout.content, 'VISUAL_STAGE_02_TODAY_ROUTE_SCOPE', 'Stage 02 route scope marker', files.layout.path);
-expectIncludes(files.layout.content, "const isTodayRoute = location.pathname === '/'", 'today route detection', files.layout.path);
-expectIncludes(files.layout.content, "main-today", 'main-today scoped class', files.layout.path);
-if (files.layout.content.includes("data-current-section={isTodayRoute ? 'today'") || files.layout.content.includes('data-current-section={currentSection}')) {
-  console.log(`OK: ${files.layout.path} contains current section marker`);
-} else {
-  throw new Error(`${files.layout.path}: missing current section marker`);
-}
-if (files.layout.content.includes("data-visual-stage-today={isTodayRoute ? '02-today'") || files.layout.content.includes('data-visual-stage-today={isTodayRoute')) {
-  console.log(`OK: ${files.layout.path} contains today visual data marker`);
-} else {
-  throw new Error(`${files.layout.path}: missing today visual data marker`);
-}
+reject('src/index.css', 'visual-stage02-today.css', 'inactive Stage02 Today CSS import');
+expect('src/pages/TodayStable.tsx', "../styles/closeflow-page-header-v2.css", 'current page header CSS import');
+expect('src/pages/TodayStable.tsx', "../styles/closeflow-unified-page-canvas-stage211c.css", 'current Stage211C canvas import');
+expect('src/pages/TodayStable.tsx', "../styles/closeflow-canvas-source-truth-stage211e.css", 'current Stage211E canvas source import');
+expect('src/pages/TodayStable.tsx', "../styles/closeflow-canvas-runtime-source-truth-stage211j.css", 'current Stage211J runtime canvas import');
+expect('src/pages/TodayStable.tsx', 'P0_TODAY_STABLE_REBUILD', 'current TodayStable rebuild marker');
+expect('src/pages/TodayStable.tsx', 'STAGE232T_R1C_TODAY_PRODUCTION_UI_CLEANUP_AND_SOURCE_TRUTH', 'current Today production UI source marker');
+expect('src/pages/TodayStable.tsx', 'STAGE232B_TODAY_OWNER_CONTROL_TILE_SOURCE_OF_TRUTH', 'current owner-control tile source marker');
+expect('src/pages/TodayStable.tsx', 'STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH', 'current work-item actions source marker');
+expect('src/pages/TodayStable.tsx', 'STAGE232T_R1E_TODAY_ACTIONS_CLOSEOUT_DELETE_EDIT_TRASH_VST', 'current Today action closeout marker');
 
-expectIncludes(files.todayCss.content, 'VISUAL_STAGE_02_TODAY_CSS', 'Stage 02 CSS marker', files.todayCss.path);
-expectIncludes(files.todayCss.content, '.closeflow-visual-stage01 .main-today', 'scoped Today selector', files.todayCss.path);
-expectIncludes(files.todayCss.content, '[data-today-tile-card="true"]', 'Today tile card styling', files.todayCss.path);
-expectIncludes(files.todayCss.content, '[data-today-tile-header="true"]', 'Today tile header styling', files.todayCss.path);
-expectIncludes(files.todayCss.content, '[data-today-quick-snooze-bar="true"]', 'Today snooze bar styling', files.todayCss.path);
-expectIncludes(files.todayCss.content, '@media (max-width: 760px)', 'mobile polish', files.todayCss.path);
+expect('src/styles/visual-stage02-today.css', 'VISUAL_STAGE_02_TODAY_CSS', 'Stage02 reference CSS marker');
+expect('src/styles/visual-stage02-today.css', '.closeflow-visual-stage01 .main-today', 'historical scoped Today selector');
+expect('src/styles/visual-stage02-today.css', '[data-today-tile-card="true"]', 'historical Today tile styling');
+expect('src/styles/visual-stage02-today.css', '[data-today-quick-snooze-bar="true"]', 'historical snooze styling');
+expect('src/styles/visual-stage02-today.css', '@media (max-width: 760px)', 'historical mobile polish');
 
-expectIncludes(files.indexCss.content, '@import "./styles/visual-stage02-today.css";', 'Stage 02 CSS import', files.indexCss.path);
+expect('src/pages/TodayStable.tsx', 'fetchTasksFromSupabase', 'task read flow');
+expect('src/pages/TodayStable.tsx', 'fetchEventsFromSupabase', 'event read flow');
+expect('src/pages/TodayStable.tsx', 'getAiLeadDraftsAsync', 'AI draft read flow');
+expect('src/pages/TodayStable.tsx', 'updateTaskInSupabase', 'task update flow');
+expect('src/pages/TodayStable.tsx', 'updateEventInSupabase', 'event update flow');
+expect('src/pages/TodayStable.tsx', 'deleteTaskFromSupabase', 'task delete flow');
+expect('src/pages/TodayStable.tsx', 'deleteEventFromSupabase', 'event delete flow');
+expect('src/pages/TodayStable.tsx', 'subscribeCloseflowDataMutations', 'mutation bus refresh');
+expect('src/pages/TodayStable.tsx', 'getOperationalEntryActionDecision', 'shared action policy decision');
+expect('src/pages/TodayStable.tsx', 'isOperationalEntryActionAllowed', 'shared action policy allow check');
+expect('src/pages/TodayStable.tsx', 'WorkItemCard', 'shared work-item card source');
 
-expectIncludes(files.today.content, 'TODAY_GLOBAL_QUICK_ACTIONS_DEDUPED_V97', 'global actions dedupe contract', files.today.path);
-expectIncludes(files.today.content, 'data-today-tile-header="true"', 'clickable/collapsible tile headers', files.today.path);
-expectIncludes(files.today.content, 'data-today-tile-card="true"', 'tile cards remain present', files.today.path);
-expectIncludes(files.today.content, 'data-today-quick-snooze-bar="true"', 'quick snooze remains present', files.today.path);
-expectIncludes(files.today.content, 'openTodayTopTileShortcut', 'top tile shortcut handler remains present', files.today.path);
-expectIncludes(files.today.content, 'getAiLeadDraftsAsync', 'AI drafts remain loaded in Today', files.today.path);
-expectIncludes(files.today.content, 'insertTaskToSupabase', 'task create flow remains present', files.today.path);
-expectIncludes(files.today.content, 'insertEventToSupabase', 'event create flow remains present', files.today.path);
-expectIncludes(files.today.content, 'updateTaskInSupabase', 'task update flow remains present', files.today.path);
-expectIncludes(files.today.content, 'updateEventInSupabase', 'event update flow remains present', files.today.path);
-
-for (const file of Object.values(files)) {
-  const lines = file.content.split(/\r?\n/);
-  lines.forEach((line, index) => {
+for (const file of ['src/components/Layout.tsx', 'src/App.tsx', 'src/pages/TodayStable.tsx', 'src/styles/visual-stage02-today.css', 'src/index.css']) {
+  read(file).split(/\r?\n/).forEach((line, index) => {
     if (badPatterns.some((pattern) => line.includes(pattern))) {
-      throw new Error(`Polish mojibake detected in ${file.path}:${index + 1}: ${line.trim().slice(0, 180)}`);
+      throw new Error(`Polish mojibake detected in ${file}:${index + 1}: ${line.trim().slice(0, 180)}`);
     }
   });
 }
 
-console.log('OK: Visual Stage 02 Today guard passed.');
+console.log('OK: Visual Stage02 Today guard reconciled with current TodayStable source truth.');
