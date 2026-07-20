@@ -39,7 +39,7 @@ expect('src/pages/LeadDetail.tsx', "../styles/closeflow-lead-detail-sales-signal
 expect('src/pages/LeadDetail.tsx', 'STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD', 'current no-static-AI-card source marker');
 expect('src/pages/LeadDetail.tsx', 'STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_RAIL', 'current no-static-AI-rail source marker');
 reject('src/pages/LeadDetail.tsx', 'LeadAiFollowupDraft', 'obsolete static AI follow-up component');
-reject('src/pages/LeadDetail.tsx', 'LeadAiNextAction', 'obsolete static AI next-action component');
+expect('src/pages/LeadDetail.tsx', 'LeadAiNextAction', 'AI next-action engine remains outside static rail');
 
 expect('src/pages/LeadDetail.tsx', 'startLeadServiceInSupabase', 'lead to case service flow remains');
 expect('src/pages/LeadDetail.tsx', 'associatedCase', 'associated case state remains');
