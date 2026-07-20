@@ -1,0 +1,78 @@
+name: R23 LeadDetail core type repairs
+on:
+  pull_request:
+    branches: [dev-rollout-freeze]
+    paths: [.github/workflows/r23-lead-detail-core-types.yml]
+permissions:
+  contents: write
+jobs:
+  apply:
+    if: github.event.pull_request.head.ref == 'g15-r23-scope-tsc-to-active-product'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: g15-r23-scope-tsc-to-active-product
+          fetch-depth: 0
+      - name: Repair LeadDetail core adapters
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('src/pages/LeadDetail.tsx'); t=p.read_text(encoding='utf-8-sig')
+          def one(a,b,label):
+            global t
+            n=t.count(a); print(label,n)
+            if n!=1: raise SystemExit(f'{label}: {n}')
+            t=t.replace(a,b,1)
+          one('riskLabel: leadSilenceRisk.riskLabel || leadWorkCenter.riskLabel,','riskLabel: leadSilenceRisk.label || leadWorkCenter.riskLabel,','risk label')
+          one('riskReason: leadRiskReasonStage14F || leadSilenceRisk.riskReason || leadWorkCenter.riskReason,','riskReason: leadRiskReasonStage14F || leadSilenceRisk.details || leadWorkCenter.riskReason,','risk reason')
+          one("""function LeadActionButton({ children, onClick, disabled }: { children: ReactNode; onClick?: () => void; disabled?: boolean }) {
+            const isStartServiceActionStage14F = children === 'Rozpocznij obsługę';
+            return (
+              <button
+                type="button"
+                className={isStartServiceActionStage14F ? "lead-detail-chip-button cf-action-button cf-action-button-primary" : "lead-detail-chip-button cf-action-button"}
+                data-lead-start-service={isStartServiceActionStage14F ? "true" : undefined}
+                onClick={onClick}
+                disabled={disabled}
+              >""","""function LeadActionButton({ children, className = '', ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+            const isStartServiceActionStage14F = children === 'Rozpocznij obsługę';
+            const resolvedClassName = [
+              isStartServiceActionStage14F ? 'lead-detail-chip-button cf-action-button cf-action-button-primary' : 'lead-detail-chip-button cf-action-button',
+              className,
+            ].filter(Boolean).join(' ');
+            return (
+              <button
+                type="button"
+                className={resolvedClassName}
+                data-lead-start-service={isStartServiceActionStage14F ? "true" : undefined}
+                {...props}
+              >""",'LeadActionButton')
+          one("""  const handleDeleteLinkedEvent = async (event: any) => {
+              if (!window.confirm('Usunąć to wydarzenie?')) return;
+              try {
+                setLinkedEntryActionId(`event:${event.id}:delete`);
+              const eventId = String(event?.id || '');
+              const optimisticEventSnapshot = linkedEvents;""","""  const handleDeleteLinkedEvent = async (event: any) => {
+              if (!window.confirm('Usunąć to wydarzenie?')) return;
+              const optimisticEventSnapshot = linkedEvents;
+              try {
+                setLinkedEntryActionId(`event:${event.id}:delete`);
+              const eventId = String(event?.id || '');""",'event snapshot')
+          p.write_text(t,encoding='utf-8'); Path('.github/workflows/r23-lead-detail-core-types.yml').unlink()
+      - name: Validate
+        run: |
+          git diff --check
+          npm ci
+          npm install --no-save --package-lock=false @types/react@19.2.17 @types/react-dom@19.2.3
+          node scripts/check-g15-r23-tsc-active-product-scope.cjs
+          npx tsc --noEmit --pretty false > r23-lead-core-tsc.log 2>&1 || true
+          npm run build
+          cat r23-lead-core-tsc.log
+      - name: Commit
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add src/pages/LeadDetail.tsx .github/workflows/r23-lead-detail-core-types.yml
+          git commit -m "fix(closeflow): repair LeadDetail core TypeScript adapters"
+          git push origin HEAD:g15-r23-scope-tsc-to-active-product
