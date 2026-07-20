@@ -1,10 +1,10 @@
-# LF-PROD-SOT-G15-R23 — TypeScript active product scope repair
+# LF-PROD-SOT-G15-R23 — TypeScript active product scope and active debt repair
 
 TIMESTAMP:
 2026-07-20 Europe/Warsaw
 
 STATUS:
-IMPLEMENTED_AWAITING_CI
+IN_PROGRESS_ACTIVE_TSC_DEBT_REPAIR
 
 PROJECT_ID:
 closeflow_lead_app
@@ -12,69 +12,86 @@ closeflow_lead_app
 APP_INPUT_HEAD:
 8480a77d76a4777c2b9ea9d069c632bfd14f5099
 
+PR:
+#37
+
 ## Classification
 
 FAILURE_CLASSIFICATION:
-MAIN_TSC_PROGRAM_ACCIDENTALLY_INCLUDED_HISTORICAL_ONE_SHOT_CJS_PATCHERS
+MAIN_TSC_PROGRAM_ACCIDENTALLY_INCLUDED_HISTORICAL_PATCHERS_THEN_EXPOSED_REAL_ACTIVE_TYPE_DEBT
 
-The root `tsconfig.json` had `allowJs: true` and no `include`, so `tsc --noEmit` parsed the whole repository. The first failures came from malformed historical `.cjs` patch/check generators in `scripts/` and `tools/`, not from active application or API sources. Production Vite build remained green.
+The root `tsconfig.json` had `allowJs: true` and no `include`, so `tsc --noEmit` parsed the whole repository. Historical malformed `.cjs` patchers were removed from the main TypeScript program by explicitly scoping it to `src/**/*`, `api/**/*` and `vite.config.ts`.
 
-Existing scoped configuration `tsconfig.g14.json` already demonstrates the repository rule: active product files are typechecked while `_project`, backups, `scripts` and `tools` are excluded from that TypeScript program.
+After installing the official React 19 type foundation diagnostically, the scoped program exposed a finite set of real active-code type errors. R23 does not hide them through further exclusions. It repairs them in narrow batches while preserving production behavior.
 
-## Repair
+## Scope repair
 
-- keep all compiler options, including `allowJs` and `noEmit`;
-- explicitly include `src/**/*`, `api/**/*` and `vite.config.ts`;
-- exclude dependency/build output, project evidence, backups, bisect, scripts and tools;
-- add a guard using the TypeScript config parser to inspect the actual program file list;
-- require representative active files `src/App.tsx`, `api/me.ts` and `vite.config.ts`;
-- fail if any historical patcher root leaks into the main program;
-- run the real scoped `tsc --noEmit`, focused tests and production build in Ubuntu CI.
+- preserve compiler options, including `allowJs` and `noEmit`;
+- include active application, API and Vite config sources;
+- exclude dependencies, build output, project evidence, backups, bisect, scripts and tools;
+- inspect the actual TypeScript program through the TypeScript API;
+- require representative active files and reject historical-root leakage.
+
+## Active repair batch one
+
+Validated and committed on the PR branch:
+
+- API schema-fallback nullability guards;
+- profile identity optional-field normalization;
+- overdue task date narrowing;
+- missing page-header kicker contract;
+- DOM `MouseEvent` type separation in context actions;
+- current Event/Task creation callback result typing;
+- commission-status import compatibility;
+- finance compatibility aliases and relation/payment fields;
+- client finance currency contract;
+- icon registry cast through `unknown`;
+- runtime access input JSDoc typing;
+- payment query `includeArchived` option;
+- no-flicker mutation compatibility fields;
+- existing Firebase, PWA and no-flicker import/type repairs.
+
+Batch validation:
+
+- exact replacement counters: PASS;
+- `git diff --check`: PASS;
+- TypeScript scope guard: PASS;
+- production build: PASS;
+- one-shot patch workflow: self-removed after commit.
 
 ## Quality boundary
 
-This stage does not suppress TypeScript errors in active product or API code. Imported active dependencies remain part of the TypeScript program. Historical scripts keep their own executable guards/tests and are not deleted or rewritten in bulk.
+- active `src`, `api` and `vite.config.ts` remain checked;
+- no active directory is excluded to obtain a false PASS;
+- historical scripts are not deleted or rewritten in bulk;
+- no SQL, migrations, Event DELETE, Task DELETE or remote Google behavior changes;
+- manual smoke remains `NOT_EXECUTED_DEFERRED_BY_OWNER`.
 
-## Scope
+## Dependency policy
 
-MUTATED_FILES:
-- tsconfig.json
-- scripts/check-g15-r23-tsc-active-product-scope.cjs
-- tests/lf-prod-sot-g15-r23-tsc-active-product-scope.test.cjs
-- .github/workflows/g15-r23-tsc-active-product-scope.yml
-- this report
+Official React types are currently installed only diagnostically in CI:
 
-PRODUCT_RUNTIME_CHANGED: NO
-API_RUNTIME_CHANGED: NO
-ACTIVE_SOURCE_EXCLUDED: NO
-HISTORICAL_SCRIPTS_DELETED: NO
-PACKAGE_JSON_CHANGED: NO
-DEPENDENCIES_CHANGED: NO
-SQL_OR_MIGRATIONS_CHANGED: NO
-EVENT_DELETE_CHANGED: NO
-TASK_DELETE_CHANGED: NO
-REMOTE_GOOGLE_CHANGED: NO
-MANUAL_SMOKE: NOT_EXECUTED_DEFERRED_BY_OWNER
+- `@types/react@19.2.17`;
+- `@types/react-dom@19.2.3`.
+
+`package.json` and `package-lock.json` remain unchanged. The repository rule requires reviewing lockfile status before any dependency commit.
 
 ## Verification pending
 
 FOCUSED_G15_R23_TESTS:
-PENDING_CI
+PENDING_FINAL_HEAD_CI
 
 TSC_SCOPE_GUARD:
-PENDING_CI
+PENDING_FINAL_HEAD_CI
 
 ACTIVE_PRODUCT_TSC:
-PENDING_CI
+IN_PROGRESS_REPAIR
 
 PRODUCTION_BUILD:
-PENDING_CI
-
-NEXT_FIRST_NONZERO_COMMAND:
-PENDING_DIAGNOSTIC
+PENDING_FINAL_HEAD_CI
 
 VERCEL_EXACT_SHA:
-PENDING_CHECK
+BLOCKED_BUILD_RATE_LIMIT_NOT_PASS
 
 RESULT:
-IMPLEMENTED_AWAITING_CI
+IN_PROGRESS_ACTIVE_TSC_DEBT_REPAIR
