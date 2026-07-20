@@ -1,6 +1,7 @@
 @import "tailwindcss" source("./");
 @import "./styles/closeflow-visual-foundation-stage212m.css";
 @import './styles/design-system/index.css';
+@import './styles/closeflow-operator-semantic-tones.css';
 @import './styles/core/core-contracts.css';
 @import './styles/page-adapters/page-adapters.css';
 @import './styles/legacy/legacy-imports.css';
