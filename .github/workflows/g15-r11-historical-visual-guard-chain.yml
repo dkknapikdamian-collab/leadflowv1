@@ -1,4 +1,5 @@
 name: G15-R11 historical visual guard chain reconciliation
+# Exact-SHA gate: all reconciled guards and build are blocking.
 
 on:
   pull_request:
