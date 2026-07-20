@@ -1,0 +1,32 @@
+name: G15-R23 TypeScript active product scope
+
+on:
+  pull_request:
+    branches:
+      - dev-rollout-freeze
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-g15-r23:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install
+        run: npm ci
+      - name: Focused G15-R23 tests
+        run: node --test tests/lf-prod-sot-g15-r23-tsc-active-product-scope.test.cjs
+      - name: TypeScript scope guard
+        run: node scripts/check-g15-r23-tsc-active-product-scope.cjs
+      - name: Active product typecheck
+        run: npx tsc --noEmit --pretty false
+      - name: Production build
+        run: npm run build
