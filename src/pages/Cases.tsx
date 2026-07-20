@@ -111,7 +111,7 @@ const stage231b0R7CasesClosedViewContract = {
   route: '/cases?view=closed',
   label: 'Sprawy zamknięte',
   matches(record: { status?: unknown }, caseView: CaseView) {
-    const isClosedCase = isClosedCaseStatus((typeof caseRecord !== "undefined" ? caseRecord : null)?.status);
+    const isClosedCase = isClosedCaseStatus(record.status);
     return (caseView === 'closed' && isClosedCase) || (caseView === 'open' && !isClosedCase) || caseView === 'all';
   },
 };
@@ -820,27 +820,7 @@ const attention = isCaseClosedStage231B0R13 ? false : caseNeedsAttention(record)
 
                     ? []
 
-                    : getCaseOwnerRiskBadges(record, {
-
-                        settings: ownerRiskSettings,
-
-                        lifecycle,
-
-                        nearestCaseAction,
-
-                        nextActionLabel,
-
-                        statusLabel,
-
-                        compactLifecycleLabel,
-
-                        compactLifecyclePill,
-
-                        percent,
-
-                        updatedAt,
-
-                      });
+                    : getCaseOwnerRiskBadges(record, { settings: ownerRiskSettings });
 const metaParts = [
                     lifecycle.openActionCount > 0 ? `${lifecycle.openActionCount} działań` : 'brak działań',
                     lifecycle.waitingApprovalCount > 0 ? `akceptacje ${lifecycle.waitingApprovalCount}` : null,
