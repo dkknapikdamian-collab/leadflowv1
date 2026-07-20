@@ -15,11 +15,11 @@ const guard = fs.readFileSync(guardPath, 'utf8');
 test('reconciled Stage01 guard passes against current shell source truth', () => {
   const result = spawnSync(process.execPath, [guardPath], { cwd: root, encoding: 'utf8' });
   assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
-  assert.match(result.stdout, /guard reconciled with current navigation and global-action source truth/);
+  assert.match(result.stdout, /guard reconciled with current navigation, shell and global-action source truth/);
 });
 
-test('Stage01 stylesheet remains active while current shell overrides remain explicit', () => {
-  assert.match(indexCss, /visual-stage01-shell\.css/);
+test('historical Stage01 stylesheet is inactive while current shell sources remain explicit', () => {
+  assert.doesNotMatch(indexCss, /visual-stage01-shell\.css/);
   assert.match(stage01Css, /VISUAL_STAGE_01_SHELL_CSS/);
   assert.match(layout, /closeflow-compact-top-shell-source-truth\.css/);
   assert.match(layout, /closeflow-operator-top-trim-source-truth\.css/);
@@ -45,6 +45,7 @@ test('current global toolbar keeps plan gates and direct modal actions', () => {
 
 test('guard covers current shell and action source contracts', () => {
   for (const required of [
+    'inactive Stage01 shell CSS import',
     'OperatorTopBarRuntime',
     'VisualFoundationRuntimeStage212M',
     'ContextActionDialogsHost',
