@@ -4,7 +4,7 @@ TIMESTAMP:
 2026-07-20 Europe/Warsaw
 
 STATUS:
-PASS_STAGE03_LEADS_GUARD_RECONCILED
+PASS_CODE_BUILD_WITH_EXTERNAL_DEPLOYMENT_RATE_LIMIT
 
 PROJECT_ID:
 closeflow_lead_app
@@ -23,7 +23,7 @@ PR:
 FAILURE_CLASSIFICATION:
 HISTORICAL_STALE_LEADS_VISUAL_GUARD
 
-The historical Stage03 guard required global import of `visual-stage03-leads.css`. The reference stylesheet applies obsolete promotional header copy, fixed metric-grid and relation-rail overrides with broad `!important` rules. Current Leads uses later Stage20 form, page-header, record-list, Stage211 canvas, Stage18 hard-1:1 and Stage231 frozen list-card contracts. Restoring Stage03 would override the current Leads operating surface.
+The historical Stage03 guard required global import of `visual-stage03-leads.css`. The reference stylesheet applies obsolete promotional header copy, fixed metric-grid and relation-rail overrides with broad `!important` rules. Current Leads uses later Stage20 form, page-header, record-list, Stage211 canvas, Stage18 hard-1:1, Stage226 lead/client separation and Stage231 frozen list-card contracts. Restoring Stage03 would override the current Leads operating surface.
 
 ## Repair
 
@@ -31,7 +31,7 @@ The historical Stage03 guard required global import of `visual-stage03-leads.css
 - assert current form, page-header, record-list and canvas sources;
 - assert current Stage18, Stage25, Stage226 and Stage231 source markers;
 - retain Stage03 stylesheet as historical reference evidence;
-- retain create, duplicate conflict, archive, restore, search, cadence, rescue and lead-only payload checks;
+- retain create, duplicate conflict, archive, restore, trash, search, cadence, rescue and lead-only payload checks;
 - add focused executable tests and an Ubuntu production-build gate.
 
 ## Verification evidence
@@ -79,10 +79,19 @@ NEXT_FAILURE_CLASSIFICATION:
 PENDING_NARROW_R18_CLASSIFICATION
 
 VERCEL_2_CLOSEFLOW:
-PENDING_MERGE_RETRY_AFTER_R16_RATE_LIMIT
+FAILED_EXTERNAL_BUILD_RATE_LIMIT
 
 VERCEL_CLOSEDOCKAPP:
-PENDING_MERGE_RETRY_AFTER_R16_RATE_LIMIT
+FAILED_EXTERNAL_BUILD_RATE_LIMIT
+
+VERCEL_FAILURE_TARGET:
+upgradeToPro=build-rate-limit
+
+DEPLOYMENT_FAILURE_CLASSIFICATION:
+EXTERNAL_PLAN_RATE_LIMIT_NOT_CODE_FAILURE
+
+DIRECT_VERCEL_RETRY:
+UNAVAILABLE_NO_CONNECTED_VERCEL_TEAM
 
 ## Scope
 
@@ -107,4 +116,5 @@ MANUAL_SMOKE: NOT_EXECUTED_DEFERRED_BY_OWNER
 NEXT_STAGE:
 LF-PROD-SOT-G15-R18_CLASSIFY_AND_REPAIR_STAGE02_TODAY_GUARD
 
-RESULT: PASS
+RESULT:
+PASS_CODE_BUILD_WITH_EXTERNAL_DEPLOYMENT_RATE_LIMIT
