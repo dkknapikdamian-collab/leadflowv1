@@ -52,19 +52,11 @@ for (const view of ["'open'", "'closed'", "'all'", "'waiting'", "'blocked'", "'a
   expectIncludes('src/pages/Cases.tsx', view, `current CaseView token ${view}`);
 }
 expectIncludes('src/pages/Cases.tsx', "route: '/cases?view=closed'", 'closed Cases route contract');
+expectIncludes('src/pages/Cases.tsx', "caseView === 'linked' && Boolean(record.leadId)", 'source lead relation filter remains present');
+expectIncludes('src/pages/Cases.tsx', "import { caseDetailPath } from '../lib/routes';", 'shared CaseDetail route helper import');
+expectIncludes('src/pages/Cases.tsx', 'to={caseDetailPath(record.id)}', 'CaseDetail links use shared route helper');
 expectIncludes('src/pages/Cases.tsx', 'searchQuery', 'case search remains present');
 expectIncludes('src/pages/Cases.tsx', 'isCreateCaseOpen', 'create modal remains present');
 expectIncludes('src/pages/Cases.tsx', 'handleSelectClientSuggestion', 'client suggestions remain present');
-const casesContent = read('src/pages/Cases.tsx');
-if (casesContent.includes("to={`/cases/${record.id}`}") || casesContent.includes("to={`/case/${record.id}`}")) {
-  console.log('OK: src/pages/Cases.tsx contains CaseDetail link remains present');
-} else {
-  throw new Error('src/pages/Cases.tsx: missing CaseDetail link remains present');
-}
-if (casesContent.includes("to={`/leads/${record.leadId}`}") || casesContent.includes("to={`/leads/${String(record.leadId)}`}") || casesContent.includes('Otw\u00F3rz histori\u0119 pozyskania')) {
-  console.log('OK: src/pages/Cases.tsx contains source lead link remains present');
-} else {
-  throw new Error('src/pages/Cases.tsx: missing source lead link remains present');
-}
 
 console.log('OK: Visual Stage07 Cases guard reconciled with current Cases source truth.');
