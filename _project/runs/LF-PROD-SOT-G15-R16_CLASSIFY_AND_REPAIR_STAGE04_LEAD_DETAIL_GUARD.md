@@ -4,7 +4,7 @@ TIMESTAMP:
 2026-07-20 Europe/Warsaw
 
 STATUS:
-PASS_STAGE04_LEAD_DETAIL_GUARD_RECONCILED
+PASS_CODE_BUILD_WITH_EXTERNAL_DEPLOYMENT_RATE_LIMIT
 
 PROJECT_ID:
 closeflow_lead_app
@@ -25,7 +25,7 @@ HISTORICAL_STALE_LEAD_DETAIL_VISUAL_STATIC_AI_RENDER_AND_LOCAL_QUICK_MODAL_GUARD
 
 The historical Stage04 guard required global import of `visual-stage04-lead-detail.css` and static AI follow-up / next-action rail rendering. Current LeadDetail uses later Stage14, Stage211, Stage227E3 and Stage227E4 visual sources. Stage78 explicitly removed the noisy static AI rail cards. The reconciled guard rejects rendered `<LeadAiFollowupDraft>` and `<LeadAiNextAction>` elements without forbidding underlying recommendation-engine symbols elsewhere in the source.
 
-The same historical guard expected local task and event modal state. Current LeadDetail routes task and event creation through the shared `openContextQuickAction` host and consumes `closeflow:context-action-saved` to append saved records before silent refresh.
+The same historical guard expected local task and event modal state and obsolete local aliases for case, finance, edit, delete and activity flows. Current LeadDetail routes task and event creation through the shared `openContextQuickAction` host, consumes `closeflow:context-action-saved`, uses `startLeadToCaseHandoff`, Supabase persistence functions and shared activity timeline formatters.
 
 ## Repair
 
@@ -34,8 +34,8 @@ The same historical guard expected local task and event modal state. Current Lea
 - assert the Stage78 no-static-AI-rail contract;
 - reject obsolete rendered static AI rail components;
 - replace stale local task/event modal assertions with shared context-action launcher and save-listener assertions;
+- replace stale local aliases with current case, finance, note, edit, delete and timeline contracts;
 - retain the Stage04 stylesheet as historical reference evidence;
-- retain lead-to-case, edit, delete, finance, note, task, event and timeline checks;
 - add focused executable tests and an Ubuntu production-build gate.
 
 ## Verification evidence
@@ -82,14 +82,20 @@ src/index.css: missing Stage 03 CSS import
 NEXT_FAILURE_CLASSIFICATION:
 PENDING_NARROW_R17_CLASSIFICATION
 
-EXCLUDED_STALE_DIAGNOSTIC:
-Run 29773598419 / artifact 8473752394 contained the earlier local-modal assertion despite naming the newer head and was not used as next-stage evidence.
-
 VERCEL_2_CLOSEFLOW:
-PENDING_MERGE
+FAILED_EXTERNAL_BUILD_RATE_LIMIT
 
 VERCEL_CLOSEDOCKAPP:
-PENDING_MERGE
+FAILED_EXTERNAL_BUILD_RATE_LIMIT
+
+VERCEL_FAILURE_TARGET:
+upgradeToPro=build-rate-limit
+
+DEPLOYMENT_FAILURE_CLASSIFICATION:
+EXTERNAL_PLAN_RATE_LIMIT_NOT_CODE_FAILURE
+
+DIRECT_VERCEL_RETRY:
+UNAVAILABLE_NO_CONNECTED_VERCEL_TEAM
 
 ## Scope
 
@@ -114,4 +120,5 @@ MANUAL_SMOKE: NOT_EXECUTED_DEFERRED_BY_OWNER
 NEXT_STAGE:
 LF-PROD-SOT-G15-R17_CLASSIFY_AND_REPAIR_STAGE03_LEADS_GUARD
 
-RESULT: PASS
+RESULT:
+PASS_CODE_BUILD_WITH_EXTERNAL_DEPLOYMENT_RATE_LIMIT
