@@ -1,0 +1,108 @@
+name: R23 apply case pages type repairs
+
+on:
+  pull_request:
+    branches:
+      - dev-rollout-freeze
+    paths:
+      - .github/workflows/r23-apply-case-pages-type-repairs.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.event.pull_request.head.ref == 'g15-r23-scope-tsc-to-active-product'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout R23 branch
+        uses: actions/checkout@v4
+        with:
+          ref: g15-r23-scope-tsc-to-active-product
+          fetch-depth: 0
+      - name: Apply exact case page repairs
+        shell: python
+        run: |
+          from pathlib import Path
+
+          def replace_once(path, old, new):
+              file = Path(path)
+              text = file.read_text(encoding='utf-8-sig')
+              count = text.count(old)
+              print(f'{path}: matches={count}: {old[:100]!r}')
+              if count != 1:
+                  raise SystemExit(f'{path}: expected one match, found {count}')
+              file.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          replace_once(
+              'src/pages/CaseDetail.tsx',
+              '''      <ConfirmDialog
+                data-case-detail-delete-confirm="true"
+                open={deleteCaseOpen}
+                onOpenChange={(open) => {
+                  if (!open && !deleteCasePending) setDeleteCaseOpen(false);
+                }}
+                title="Awaryjnie usunąć sprawę?"
+                description={`Czy na pewno chcesz usunąć sprawę "${caseData?.title || caseData?.clientName || 'bez tytułu'}"? Tej operacji nie można cofnąć.`}
+                confirmLabel={deleteCasePending ? 'Usuwanie...' : 'Tak, usuń'}
+                cancelLabel="Nie"
+                confirmTone="destructive"
+                pending={deleteCasePending}
+                onConfirm={handleConfirmDeleteCaseRecord}
+              />
+          ''',
+              '',
+          )
+          replace_once(
+              'src/pages/CaseDetail.tsx',
+              'getTaskNoteFollowUpPreviewStage231H_R1D2_R11(taskWithMissingBridgeStage232O)',
+              'getTaskNoteFollowUpPreviewStage231H_R1D2_R11(task)',
+          )
+          replace_once(
+              'src/lib/supabase-fallback.ts',
+              '  approvedAt?: string | null;\n};',
+              '  approvedAt?: string | null;\n  payload?: Record<string, unknown>;\n};',
+          )
+          replace_once(
+              'src/pages/Cases.tsx',
+              'const isClosedCase = isClosedCaseStatus((typeof caseRecord !== "undefined" ? caseRecord : null)?.status);',
+              'const isClosedCase = isClosedCaseStatus(record.status);',
+          )
+          replace_once(
+              'src/pages/Cases.tsx',
+              '''        const riskBadges = getCaseOwnerRiskBadges(record, {
+                  settings: ownerRiskSettings,
+                  lifecycle,
+                  activityTruth,
+                  nextMove,
+                  nearestAction: nearestCaseAction,
+                  nearestActionAt: nearestCaseAction?.at || nearestCaseAction?.startAt || nearestCaseAction?.dueAt || null,
+                  nextActionAt: nearestCaseAction?.at || nearestCaseAction?.startAt || nearestCaseAction?.dueAt || null,
+                  lastActivityAt: lastActivity?.happenedAt || lastActivity?.createdAt || lastActivity?.updatedAt || null,
+                  lastContactAt: lastContactActivity?.happenedAt || lastContactActivity?.createdAt || lastContactActivity?.updatedAt || null,
+                  updatedAt,
+                });''',
+              '        const riskBadges = getCaseOwnerRiskBadges(record, { settings: ownerRiskSettings });',
+          )
+          replace_once(
+              'src/pages/Leads.tsx',
+              '<span className="lead-action-cell" title={nextActionMeta.title}>',
+              '<span className="lead-action-cell" title={row.nextMoveTitle || \'Brak zaplanowanej akcji\'}>',
+          )
+          Path('.github/workflows/r23-apply-case-pages-type-repairs.yml').unlink()
+      - name: Validate case page repairs
+        run: |
+          git diff --check
+          npm ci
+          npm install --no-save --package-lock=false @types/react@19.2.17 @types/react-dom@19.2.3
+          node scripts/check-g15-r23-tsc-active-product-scope.cjs
+          npx tsc --noEmit --pretty false > r23-case-pages-tsc.log 2>&1 || true
+          npm run build
+          cat r23-case-pages-tsc.log
+      - name: Commit and self-remove workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/pages/CaseDetail.tsx src/lib/supabase-fallback.ts src/pages/Cases.tsx src/pages/Leads.tsx .github/workflows/r23-apply-case-pages-type-repairs.yml
+          git commit -m "fix(closeflow): repair case page TypeScript adapters"
+          git push origin HEAD:g15-r23-scope-tsc-to-active-product
