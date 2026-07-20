@@ -38,11 +38,11 @@ jobs:
           import re
           path = Path('src/pages/Cases.tsx')
           text = path.read_text(encoding='utf-8-sig')
-          pattern = r"const riskBadges = getCaseOwnerRiskBadges\(record, \{\s*settings: ownerRiskSettings,[\s\S]*?\n\s*\}\);"
-          replacement = "const riskBadges = getCaseOwnerRiskBadges(record, { settings: ownerRiskSettings });"
+          pattern = r"(const ownerRiskBadges = isCaseClosedStage231B0R13\s*\n\s*\? \[\]\s*\n\s*: getCaseOwnerRiskBadges\(record, \{)[\s\S]*?(\}\);)"
+          replacement = r"\1 settings: ownerRiskSettings \2"
           next_text, count = re.subn(pattern, replacement, text, count=1)
           print('matches', count)
-          if count != 1: raise SystemExit(f'expected 1 Cases risk-context match, found {count}')
+          if count != 1: raise SystemExit(f'expected 1 current Cases risk-context match, found {count}')
           path.write_text(next_text, encoding='utf-8')
       - name: Repair Leads rescue tooltip source
         shell: python
