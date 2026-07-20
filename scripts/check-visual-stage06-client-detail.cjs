@@ -56,7 +56,10 @@ expectIncludes('src/pages/ClientDetail.tsx', 'updateLeadInSupabase', 'client to 
 expectIncludes('src/pages/ClientDetail.tsx', 'ClientMultiContactField', 'multi contact field remains present');
 expectIncludes('src/pages/ClientDetail.tsx', 'copyValue', 'copy contact action remains present');
 expectIncludes('src/pages/ClientDetail.tsx', 'openNewCase', 'new case action remains present');
-expectIncludes('src/pages/ClientDetail.tsx', 'openNewLeadForExistingClient', 'new lead action remains present');
+expectIncludes('src/pages/ClientDetail.tsx', 'STAGE117B_CLIENT_DETAIL_NO_LEAD_VIEW_CONTRACT', 'no lead cockpit contract remains present');
+expectIncludes('src/pages/ClientDetail.tsx', 'no new/open lead shortcut from ClientDetail', 'no new/open lead shortcut source truth');
+expectIncludes('src/pages/ClientDetail.tsx', 'openMainCase', 'main case navigation remains present');
+rejectIncludes('src/pages/ClientDetail.tsx', 'openNewLeadForExistingClient', 'obsolete new lead shortcut');
 expectIncludes('src/pages/ClientDetail.tsx', 'setActiveTab', 'tabs remain present');
 expectRegex('src/pages/ClientDetail.tsx', /buildClientNextAction|clientNextAction|nextAction/, 'next action logic remains present');
 console.log('OK: Visual Stage06 ClientDetail guard reconciled with current ClientDetail source truth.');
