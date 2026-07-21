@@ -63,7 +63,9 @@ type EventCreateFormState = {
 type EventCreateDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSaved?: () => void | Promise<void>;
+  onSaved?: (
+    createdEvent: Awaited<ReturnType<typeof insertEventToSupabase>>,
+  ) => void | Promise<void>;
   context?: TaskCreateDialogContext;
 };
 
