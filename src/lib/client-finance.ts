@@ -1,4 +1,5 @@
 import { getClientCasesFinanceSummary } from './finance/case-finance-source.js';
+import type { FinanceCurrency } from './finance/finance-types.js';
 
 export type ClientFinanceSummary = {
   totalValue: number;
@@ -6,6 +7,7 @@ export type ClientFinanceSummary = {
   remainingValue: number;
   settlementsCount: number;
   source: 'primary_case' | 'all_active_cases' | 'all_cases';
+  currency: FinanceCurrency;
   commissionAmount?: number;
   commissionPaidAmount?: number;
   commissionRemainingAmount?: number;

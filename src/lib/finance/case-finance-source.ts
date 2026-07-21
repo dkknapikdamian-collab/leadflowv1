@@ -67,6 +67,7 @@ export type ClientCasesFinanceSummary = {
   remainingValue: number;
   settlementsCount: number;
   source: 'primary_case' | 'all_active_cases' | 'all_cases';
+  currency: FinanceCurrency;
   commissionAmount: number;
   commissionPaidAmount: number;
   commissionRemainingAmount: number;
@@ -423,6 +424,7 @@ export function getClientCasesFinanceSummary(input: ClientCasesFinanceInput): Cl
     remainingValue: roundMoney(caseSummaries.reduce((sum, summary) => sum + summary.remainingAmount, 0)),
     settlementsCount: caseSummaries.reduce((sum, summary) => sum + summary.paidPaymentCount, 0),
     source: selected.source,
+    currency: caseSummaries[0]?.currency || 'PLN',
     commissionAmount: roundMoney(caseSummaries.reduce((sum, summary) => sum + summary.commissionAmount, 0)),
     commissionPaidAmount: roundMoney(caseSummaries.reduce((sum, summary) => sum + summary.commissionPaidAmount, 0)),
     commissionRemainingAmount: roundMoney(caseSummaries.reduce((sum, summary) => sum + summary.commissionRemainingAmount, 0)),
