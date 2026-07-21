@@ -27,7 +27,12 @@ function readBase(relativePath) {
 
 const baseTypes = readBase(TYPES_PATH);
 const currentTypes = readCurrent(TYPES_PATH);
-const paidAmountLine = '  paidAmount?: number | string | null;\n';
+const snapshotInputPaidAmountAnchor = [
+  'export type FinanceSnapshotInput = {',
+  '  contractValue?: number | string | null;',
+  '  paidAmount?: number | string | null;',
+  '',
+].join('\n');
 const compatibilityField = [
   '  /**',
   '   * Backward-compatible input accepted from legacy summary callers.',
@@ -37,12 +42,23 @@ const compatibilityField = [
   '',
 ].join('\n');
 
-assert.ok(baseTypes.includes(paidAmountLine), 'base FinanceSnapshotInput paidAmount anchor is missing');
-const expectedTypes = baseTypes.replace(paidAmountLine, `${paidAmountLine}${compatibilityField}`);
+assert.ok(
+  baseTypes.includes(snapshotInputPaidAmountAnchor),
+  'base FinanceSnapshotInput paidAmount anchor is missing',
+);
+assert.equal(
+  baseTypes.split(snapshotInputPaidAmountAnchor).length - 1,
+  1,
+  'base FinanceSnapshotInput paidAmount anchor must be unique',
+);
+const expectedTypes = baseTypes.replace(
+  snapshotInputPaidAmountAnchor,
+  `${snapshotInputPaidAmountAnchor}${compatibilityField}`,
+);
 assert.equal(
   currentTypes,
   expectedTypes,
-  'finance-types.ts must differ from the R23J merge only by the documented optional remainingAmount input field',
+  'finance-types.ts must differ from the R23J merge only by the documented optional remainingAmount input field in FinanceSnapshotInput',
 );
 
 const baseCalculations = readBase(CALCULATIONS_PATH);
