@@ -4,7 +4,7 @@ TIMESTAMP:
 2026-07-21 Europe/Warsaw
 
 STATUS:
-IMPLEMENTED_BRANCH_PENDING_REMOTE_CI
+FIRST_REMOTE_CI_PASS_FINAL_READ_ONLY_CI_PENDING
 
 PROJECT_ID:
 closeflow_lead_app
@@ -17,6 +17,12 @@ LF-PROD-SOT-G15-R23H_CLIENT_FINANCE_SUMMARY_CURRENCY_CONTRACT_REPAIR
 
 IMPLEMENTATION_BRANCH:
 agent/g15-r23h-client-finance-summary-currency-contract
+
+PR:
+#46
+
+CURRENT_PR_HEAD:
+fac2956c9088919ca7290687d829f90b315fdaf7
 
 ## Source-of-truth resolution
 
@@ -58,13 +64,46 @@ Verification-only files:
 
 The guard reconstructs both R23G source blobs and proves that the two runtime files are unchanged outside the exact contract additions. It also pins `FinanceMiniSummary.tsx` byte-for-byte to the R23G blob.
 
-## Expected TypeScript delta
+## First remote verification
+
+WORKFLOW_RUN:
+29851156617
+
+WORKFLOW_JOB:
+88704070544
+
+WORKFLOW_RESULT:
+SUCCESS
+
+FOCUSED_R23H_TESTS:
+PASS
+
+R23H_BYTE_SCOPE_GUARD:
+PASS
+
+R23A_ACTIVE_SCOPE_GUARD:
+PASS
+
+DEPENDENCY_MANIFESTS_UNCHANGED:
+PASS
+
+CHANGED_FILE_ALLOWLIST:
+PASS_EXACT_6_FILES
+
+PRODUCTION_BUILD:
+PASS
 
 ACTIVE_TYPE_DEBT_BEFORE:
 56
 
-ACTIVE_TYPE_DEBT_EXPECTED_AFTER:
+ACTIVE_TYPE_DEBT_AFTER:
 54
+
+GLOBAL_ERRORS:
+0
+
+NON_ACTIVE_ERRORS:
+0
 
 REMOVED_ERRORS:
 
@@ -73,12 +112,22 @@ src/components/finance/FinanceMiniSummary.tsx(265,22) TS2339
 src/components/finance/FinanceMiniSummary.tsx(266,68) TS2339
 ```
 
-EXPECTED_FIRST_ERROR_AFTER_R23H:
+FIRST_ERROR_AFTER_R23H:
 
 ```text
 src/components/finance/FinanceSnapshot.tsx(4,15) TS2305
 Module '"../../lib/finance/finance-types"' has no exported member 'CommissionConfig'.
 ```
+
+ARTIFACT_ID:
+8503416279
+
+ARTIFACT_DIGEST:
+sha256:70cb099e4544968cb43e6440692c5130faf6f4b06f585b54eac24550015fcdac
+
+## Final exact-head gate
+
+The first workflow used a one-time idempotent bootstrap to write the two exact runtime additions and committed them to the PR branch. That bootstrap is now removed. The final workflow is read-only and must pass again on the exact final PR head before merge.
 
 ## Non-goals
 
@@ -95,4 +144,4 @@ Module '"../../lib/finance/finance-types"' has no exported member 'CommissionCon
 ## Result
 
 RESULT:
-IMPLEMENTED_BRANCH_PENDING_REMOTE_CI
+FIRST_REMOTE_CI_PASS_FINAL_READ_ONLY_CI_PENDING
