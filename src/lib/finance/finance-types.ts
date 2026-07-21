@@ -102,6 +102,11 @@ export type FinanceCommissionConfig = {
 export type FinanceSnapshotInput = {
   contractValue?: number | string | null;
   paidAmount?: number | string | null;
+  /**
+   * Backward-compatible input accepted from legacy summary callers.
+   * Runtime continues to derive remainingAmount from contractValue - paidAmount.
+   */
+  remainingAmount?: number | string | null;
   currency?: FinanceCurrency | string | null;
   payments?: FinancePaymentLike[] | null;
   commission?: FinanceCommissionInput | null;
