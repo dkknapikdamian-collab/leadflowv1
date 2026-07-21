@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { SurfaceCard } from '../ui-system';
 import { Button } from '../ui/button';
-import type { CommissionConfig, CommissionMode, CommissionStatus, FinancePayment, FinanceSummary } from '../../lib/finance/finance-types';
+import type { FinanceCommissionConfig, CommissionMode, CommissionStatus, FinancePayment, FinanceSummary } from '../../lib/finance/finance-types';
 import { buildFinanceSummary, clampFinanceAmount, calculateCommissionAmount } from '../../lib/finance/finance-calculations';
 import { normalizeCommissionConfig, normalizeCommissionStatus, normalizeFinancePayments } from '../../lib/finance/finance-normalize';
 import { FinanceMiniSummary } from './FinanceMiniSummary';
@@ -84,7 +84,7 @@ function buildFallbackPaidPayment(record: FinanceRecord | null | undefined, curr
   }];
 }
 
-function buildCommissionConfigFromRecord(record: FinanceRecord | null | undefined, currency: string): CommissionConfig {
+function buildCommissionConfigFromRecord(record: FinanceRecord | null | undefined, currency: string): FinanceCommissionConfig {
   return normalizeCommissionConfig({
     ...record,
     currency,
@@ -95,7 +95,7 @@ function buildCommissionConfigFromRecord(record: FinanceRecord | null | undefine
   });
 }
 
-function buildSummary(record: FinanceRecord | null | undefined, payments: FinancePayment[], commission: CommissionConfig): FinanceSummary {
+function buildSummary(record: FinanceRecord | null | undefined, payments: FinancePayment[], commission: FinanceCommissionConfig): FinanceSummary {
   const contractValue = pickNumber(record, ['contractValue', 'contract_value', 'expectedRevenue', 'expected_revenue', 'dealValue', 'deal_value', 'value']);
   const remainingAmount = pickNumber(record, ['remainingAmount', 'remaining_amount']);
   const summary = buildFinanceSummary({
