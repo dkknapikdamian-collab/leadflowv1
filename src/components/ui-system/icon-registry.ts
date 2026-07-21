@@ -3,7 +3,7 @@ import { Activity, AlertTriangle, BadgeDollarSign, Bell, Briefcase, Calendar, Ch
 export const CLOSEFLOW_ENTITY_ICON_REGISTRY_VS2B = 'CLOSEFLOW_ENTITY_ICON_REGISTRY_VS2B';
 
 const removeIconKey = 'Trash' + '2';
-const RemoveIcon = (Lucide as Record<string, LucideIcon>)[removeIconKey] || X;
+const RemoveIcon = (Lucide as unknown as Record<string, LucideIcon>)[removeIconKey] || X;
 
 export const ENTITY_ICON_MAP = {
   client: UserRound,
@@ -60,4 +60,4 @@ export function resolveEntityIcon(entity: CloseflowEntityIconName): LucideIcon {
    1. change client: UserRound to another lucide icon in ENTITY_ICON_MAP,
    2. keep the entity key "client",
    3. do not edit page-level imports.
-*/
+ */
