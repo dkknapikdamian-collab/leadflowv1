@@ -1,0 +1,54 @@
+name: G15-R23A active TypeScript debt map
+
+on:
+  pull_request:
+    branches:
+      - dev-rollout-freeze
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-g15-r23a:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Install diagnostic React type foundation without changing lockfiles
+        run: npm install --no-save --package-lock=false @types/react@19.2.17 @types/react-dom@19.2.3
+      - name: Focused R23A contract tests
+        run: node --test tests/lf-prod-sot-g15-r23a-active-type-debt-map.test.cjs
+      - name: Generate active type debt map
+        env:
+          R23A_INPUT_HEAD: 8480a77d76a4777c2b9ea9d069c632bfd14f5099
+          R23A_OUTPUT_DIR: ${{ runner.temp }}/r23a-artifacts
+        run: node scripts/diagnostics/lf-prod-sot-g15-r23a-active-type-debt-map.cjs
+      - name: Verify diagnostic stage changed only its allowlist
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin dev-rollout-freeze
+          unexpected="$(git diff --name-only origin/dev-rollout-freeze...HEAD | grep -vE '^(\.github/workflows/g15-r23a-active-type-debt-map\.yml|_project/runs/LF-PROD-SOT-G15-R23A_TSC_ACTIVE_SCOPE_AND_TYPE_DEBT_MAP\.md|scripts/diagnostics/lf-prod-sot-g15-r23a-active-type-debt-map\.cjs|tests/lf-prod-sot-g15-r23a-active-type-debt-map\.test\.cjs|tsconfig\.r23a-active\.json)$' || true)"
+          if [ -n "$unexpected" ]; then
+            printf '%s\n' "$unexpected"
+            exit 1
+          fi
+          git diff --check origin/dev-rollout-freeze...HEAD
+      - name: Upload R23A map evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: g15-r23a-active-type-debt-map
+          path: ${{ runner.temp }}/r23a-artifacts
+          if-no-files-found: error
+      - name: Production build
+        run: npm run build
