@@ -1,0 +1,57 @@
+name: G15-R23A TypeScript active scope and debt map
+
+on:
+  pull_request:
+    branches:
+      - dev-rollout-freeze
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-g15-r23a:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Install diagnostic React 19 type foundation
+        run: npm install --no-save --package-lock=false @types/react@19.2.17 @types/react-dom@19.2.3
+
+      - name: Prove dependency manifests unchanged
+        run: git diff --exit-code -- package.json package-lock.json
+
+      - name: Focused R23A tests
+        run: node --test tests/lf-prod-sot-g15-r23a-tsc-active-scope-type-debt-map.test.cjs
+
+      - name: Active TypeScript scope guard
+        run: node scripts/check-g15-r23a-tsc-active-scope.cjs
+
+      - name: Map active TypeScript debt
+        run: node scripts/diagnostics/map-g15-r23a-active-tsc-debt.cjs
+
+      - name: Print TypeScript debt summary
+        if: always()
+        run: cat _project/artifacts/g15-r23a-active-tsc/summary.json
+
+      - name: Upload complete TypeScript debt evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: g15-r23a-active-tsc-debt-map
+          path: _project/artifacts/g15-r23a-active-tsc/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Production build
+        run: npm run build
