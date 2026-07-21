@@ -4,7 +4,7 @@ TIMESTAMP:
 2026-07-21 Europe/Warsaw
 
 STATUS:
-IMPLEMENTED_AWAITING_PR_CI_AND_EXACT_SHA_DEPLOY
+PASS_CODE_CI_AND_EXACT_SHA_DEPLOY_READY_TO_MERGE
 
 PROJECT_ID:
 closeflow_lead_app
@@ -14,6 +14,12 @@ b8045dba2ef25d79475a1c2571fa364d13058908
 
 STAGE_ID:
 LF-PROD-SOT-G15-R23C_CONTEXT_ACTION_NATIVE_MOUSE_EVENT_TYPE_REPAIR
+
+PR:
+#41
+
+VERIFICATION_HEAD:
+096f1737e9dc122a79b3198837d2c26f3adc9251
 
 ## Scope
 
@@ -51,19 +57,69 @@ Verification-only files:
 - remote Google Calendar behavior unchanged;
 - manual Google Calendar smoke remains deferred by owner.
 
-## Expected verification
+## Verification evidence
 
-- focused R23C tests: PASS;
-- R23C guard: PASS;
-- R23A active scope guard: PASS;
-- active TypeScript debt: `66 -> 63`;
-- global errors: `0`;
-- non-active errors: `0`;
-- first error after R23C: `src/components/ContextActionDialogs.tsx(294,21) TS2367`;
-- exact changed-file allowlist: 5 files;
-- production build: PASS;
-- both exact-SHA Vercel deployments: SUCCESS.
+WORKFLOW_RUN:
+29832040752
+
+WORKFLOW_JOB:
+88638933689
+
+FOCUSED_R23C_TESTS:
+PASS
+
+R23C_GUARD:
+PASS
+
+R23A_SCOPE_GUARD:
+PASS
+
+DEPENDENCY_MANIFESTS_UNCHANGED:
+PASS
+
+CHANGED_FILE_ALLOWLIST:
+PASS_EXACT_5_FILES
+
+ACTIVE_TYPE_DEBT_BEFORE:
+66
+
+ACTIVE_TYPE_DEBT_AFTER:
+63
+
+GLOBAL_ERRORS:
+0
+
+NON_ACTIVE_ERRORS:
+0
+
+FIRST_ERROR_AFTER_R23C:
+`src/components/ContextActionDialogs.tsx(294,21) TS2367 — This comparison appears to be unintentional because the types '"case"' and '"client"' have no overlap.`
+
+SECOND_CONTEXT_ACTION_ERROR_AFTER_R23C:
+`src/components/ContextActionDialogs.tsx(419,11) TS2353 — 'item' does not exist in type 'CloseflowWorkItemNoFlickerMutation'.`
+
+ARTIFACT_ID:
+8495718014
+
+ARTIFACT_DIGEST:
+sha256:03d3c2e2b7b96fd997e5c6f942c694c67e8526c6f43f61e5775273a5ed2bdeb7
+
+PRODUCTION_BUILD:
+PASS
+
+VERCEL_2_CLOSEFLOW:
+SUCCESS
+
+VERCEL_CLOSEDOCKAPP:
+SUCCESS
+
+## Interpretation
+
+R23C removes exactly the three intended active TypeScript errors and introduces no global or non-active scope errors. Full lint is not PASS because 63 active TypeScript errors remain.
+
+The next stage must be derived only from TS2367 at `ContextActionDialogs.tsx(294,21)` and must not include the TS2353 no-flicker mutation contract repair in the same stage.
 
 ## Result
 
-Evidence fields are intentionally pending until PR CI and exact-SHA deployments complete. Full lint must not be marked PASS while 63 active TypeScript errors remain.
+RESULT:
+PASS_READY_TO_MERGE
