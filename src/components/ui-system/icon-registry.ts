@@ -60,4 +60,4 @@ export function resolveEntityIcon(entity: CloseflowEntityIconName): LucideIcon {
    1. change client: UserRound to another lucide icon in ENTITY_ICON_MAP,
    2. keep the entity key "client",
    3. do not edit page-level imports.
- */
+*/
