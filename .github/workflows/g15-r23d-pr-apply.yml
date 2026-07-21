@@ -1,0 +1,50 @@
+name: G15-R23D PR exact apply
+
+on:
+  pull_request:
+    branches:
+      - dev-rollout-freeze
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+permissions:
+  contents: write
+
+jobs:
+  apply-r23d:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Apply exact patch
+        run: python scripts/.tmp-apply-g15-r23d.py
+
+      - name: Remove temporary apply files
+        run: |
+          rm .github/workflows/g15-r23d-bootstrap-apply.yml
+          rm .github/workflows/g15-r23d-pr-apply.yml
+          rm scripts/.tmp-apply-g15-r23d.py
+
+      - name: Commit and push exact scope
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/components/ContextActionDialogs.tsx
+          git add tests/lf-prod-sot-g15-r23d-context-action-case-source-narrowing.test.cjs
+          git add scripts/check-g15-r23d-context-action-case-source-narrowing.cjs
+          git add .github/workflows/g15-r23d-context-action-case-source-narrowing.yml
+          git add _project/runs/LF-PROD-SOT-G15-R23D_CONTEXT_ACTION_CASE_SOURCE_NARROWING_TYPE_REPAIR.md
+          git add -u -- .github/workflows/g15-r23d-bootstrap-apply.yml
+          git add -u -- .github/workflows/g15-r23d-pr-apply.yml
+          git add -u -- scripts/.tmp-apply-g15-r23d.py
+          git diff --cached --check
+          git commit -m "fix(closeflow): repair R23D case source narrowing"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
