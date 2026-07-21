@@ -24,8 +24,10 @@ jobs:
         run: npm ci
       - name: Diagnostic React 19 type foundation
         run: npm install --no-save --package-lock=false @types/react@19.2.17 @types/react-dom@19.2.3
-      - name: Focused G15-R23 tests
+      - name: Focused G15-R23 scope tests
         run: node --test tests/lf-prod-sot-g15-r23-tsc-active-product-scope.test.cjs
+      - name: Focused G15-R23 finance runtime tests
+        run: npx tsx --test tests/lf-prod-sot-g15-r23-finance-runtime-semantics.test.ts
       - name: TypeScript scope guard
         run: node scripts/check-g15-r23-tsc-active-product-scope.cjs
       - name: Active product typecheck
