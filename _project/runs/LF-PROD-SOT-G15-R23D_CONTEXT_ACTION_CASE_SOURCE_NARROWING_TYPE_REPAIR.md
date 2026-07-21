@@ -4,7 +4,7 @@ TIMESTAMP:
 2026-07-21 Europe/Warsaw
 
 STATUS:
-IMPLEMENTED_AWAITING_PR_CI_AND_EXACT_SHA_DEPLOY
+PASS_CODE_CI_AND_EXACT_SHA_DEPLOY_READY_TO_MERGE
 
 PROJECT_ID:
 closeflow_lead_app
@@ -14,6 +14,12 @@ APP_INPUT_HEAD:
 
 STAGE_ID:
 LF-PROD-SOT-G15-R23D_CONTEXT_ACTION_CASE_SOURCE_NARROWING_TYPE_REPAIR
+
+PR:
+#42
+
+VERIFICATION_HEAD:
+9b40923cc99260a4971df4e297f25756acd82a31
 
 ## Scope
 
@@ -39,19 +45,66 @@ This is runtime-equivalent to the previous always-false ternary and does not cha
 - remote Google Calendar behavior unchanged;
 - manual Google Calendar smoke remains deferred by owner.
 
-## Expected verification
+## Verification evidence
 
-- focused R23D tests: PASS;
-- R23D guard: PASS;
-- R23A active scope guard: PASS;
-- active TypeScript debt: `63 -> 62`;
-- global errors: `0`;
-- non-active errors: `0`;
-- first error after R23D: `src/components/ContextActionDialogs.tsx(419,11) TS2353`;
-- exact changed-file allowlist: 5 files;
-- production build: PASS;
-- both exact-SHA Vercel deployments: SUCCESS.
+WORKFLOW_RUN:
+29838277995
+
+WORKFLOW_JOB:
+88660203983
+
+FOCUSED_R23D_TESTS:
+PASS
+
+R23D_GUARD:
+PASS
+
+R23A_SCOPE_GUARD:
+PASS
+
+DEPENDENCY_MANIFESTS_UNCHANGED:
+PASS
+
+CHANGED_FILE_ALLOWLIST:
+PASS_EXACT_5_FILES
+
+ACTIVE_TYPE_DEBT_BEFORE:
+63
+
+ACTIVE_TYPE_DEBT_AFTER:
+62
+
+GLOBAL_ERRORS:
+0
+
+NON_ACTIVE_ERRORS:
+0
+
+FIRST_ERROR_AFTER_R23D:
+`src/components/ContextActionDialogs.tsx(419,11) TS2353 — 'item' does not exist in type 'CloseflowWorkItemNoFlickerMutation'.`
+
+ARTIFACT_ID:
+8498320943
+
+ARTIFACT_DIGEST:
+sha256:7e9bd1f7d8dcfbcdb29bad8358df143d0052e2d040f73cd5a502b9acf9aead2f
+
+PRODUCTION_BUILD:
+PASS
+
+VERCEL_2_CLOSEFLOW:
+SUCCESS
+
+VERCEL_CLOSEDOCKAPP:
+SUCCESS
+
+## Interpretation
+
+R23D removes exactly the intended TS2367 error and introduces no global or non-active errors. Full lint remains NOT_PASS because 62 active TypeScript errors remain.
+
+The next stage must be derived only from TS2353 at `ContextActionDialogs.tsx(419,11)` and must not be implemented in this stage.
 
 ## Result
 
-Evidence fields are pending until PR CI and exact-SHA deployments complete. Full lint must not be marked PASS while 62 active TypeScript errors remain.
+RESULT:
+PASS_READY_TO_MERGE
