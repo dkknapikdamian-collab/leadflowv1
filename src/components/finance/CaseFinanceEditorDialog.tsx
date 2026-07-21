@@ -8,7 +8,7 @@ import {
   getCaseFinanceSummary,
   type CaseFinancePatchInput,
 } from '../../lib/finance/case-finance-source';
-import { normalizeCommissionMode, normalizeCurrency } from '../../lib/finance/finance-normalize';
+import { normalizeCommissionMode, normalizeCommissionStatus, normalizeCurrency } from '../../lib/finance/finance-normalize';
 import type { CommissionMode, CommissionStatus } from '../../lib/finance/finance-types';
 import '../../styles/finance/closeflow-finance.css';
 
