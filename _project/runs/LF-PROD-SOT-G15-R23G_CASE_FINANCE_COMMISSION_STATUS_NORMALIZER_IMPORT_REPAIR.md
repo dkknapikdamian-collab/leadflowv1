@@ -1,10 +1,10 @@
 # LF-PROD-SOT-G15-R23G — Case-finance commission-status normalizer import repair
 
 TIMESTAMP:
-2026-07-21 18:06 Europe/Warsaw
+2026-07-21 18:10 Europe/Warsaw
 
 STATUS:
-REMOTE_CI_PENDING
+FIRST_REMOTE_CI_PASS_NEXT_ERROR_PINNED_FINAL_CI_PENDING
 
 PROJECT_ID:
 closeflow_lead_app
@@ -17,6 +17,9 @@ LF-PROD-SOT-G15-R23G_CASE_FINANCE_COMMISSION_STATUS_NORMALIZER_IMPORT_REPAIR
 
 IMPLEMENTATION_BRANCH:
 agent/g15-r23g-case-finance-status-import-repair
+
+PR:
+#45
 
 ## Source-of-truth resolution
 
@@ -66,19 +69,67 @@ The R23G guard normalizes CRLF to LF, replaces the new import with the exact R23
 
 This proves `CaseFinanceEditorDialog.tsx` is byte-for-byte unchanged outside the single named import.
 
-## Expected acceptance evidence
+## First remote verification
 
-- focused R23G tests: PASS;
-- R23G byte-scope guard: PASS;
-- R23A active-scope guard: PASS;
-- dependency manifests unchanged: PASS;
-- exact changed-file allowlist: five files;
-- active TypeScript debt: `57 -> 56`;
-- global errors: `0`;
-- non-active errors: `0`;
-- `CaseFinanceEditorDialog.tsx(94,23) TS2552` absent;
-- next first error recorded from the mapper;
-- production build: PASS.
+WORKFLOW_RUN:
+29847151377
+
+WORKFLOW_JOB:
+88690531398
+
+WORKFLOW_RESULT:
+SUCCESS
+
+FOCUSED_R23G_TESTS:
+PASS
+
+R23G_BYTE_SCOPE_GUARD:
+PASS
+
+R23A_ACTIVE_SCOPE_GUARD:
+PASS
+
+DEPENDENCY_MANIFESTS_UNCHANGED:
+PASS
+
+CHANGED_FILE_ALLOWLIST:
+PASS_EXACT_5_FILES
+
+ACTIVE_TYPE_DEBT_BEFORE:
+57
+
+ACTIVE_TYPE_DEBT_AFTER:
+56
+
+GLOBAL_ERRORS:
+0
+
+NON_ACTIVE_ERRORS:
+0
+
+REMOVED_ERROR:
+`src/components/finance/CaseFinanceEditorDialog.tsx(94,23) TS2552`
+
+FIRST_ERROR_AFTER_R23G:
+`src/components/finance/FinanceMiniSummary.tsx(265,22) TS2339`
+
+FIRST_ERROR_MESSAGE:
+`Property 'currency' does not exist on type 'ClientFinanceSummary'.`
+
+ARTIFACT_ID:
+8501838946
+
+ARTIFACT_DIGEST:
+sha256:368d0ecb631f7b43791a4dddd82eb62727997d26eff11f7082f1e9a5d7996dc6
+
+PRODUCTION_BUILD:
+PASS
+
+## Final exact-head gate
+
+The workflow now pins the exact next first error shown above. Any final PR-head drift in active debt count, global errors, non-active errors, target removal, or next first error fails the stage.
+
+The two PR-head Vercel statuses currently report an external Hobby build-rate-limit URL, not an application build failure. They are not recorded as deployment PASS and must be rechecked on the exact merge SHA.
 
 ## Non-goals
 
@@ -94,6 +145,6 @@ This proves `CaseFinanceEditorDialog.tsx` is byte-for-byte unchanged outside the
 ## Result
 
 RESULT:
-REMOTE_CI_PENDING
+FIRST_REMOTE_CI_PASS_NEXT_ERROR_PINNED_FINAL_CI_PENDING
 
-The stage may be squash-merged only after the current PR head passes the R23G workflow and the exact next first error is added to the final evidence.
+The stage may be squash-merged only after the current final PR head passes the updated exact R23G workflow.
