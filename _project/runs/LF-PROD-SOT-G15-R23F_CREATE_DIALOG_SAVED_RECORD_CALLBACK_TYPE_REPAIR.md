@@ -1,10 +1,10 @@
 # LF-PROD-SOT-G15-R23F — Create-dialog saved-record callback type repair
 
 TIMESTAMP:
-2026-07-21 17:22 Europe/Warsaw
+2026-07-21 Europe/Warsaw
 
 STATUS:
-PASS_CODE_CI_AWAITING_FINAL_HEAD_EXACT_SHA_DEPLOY
+CODE_AND_REMOTE_CI_READY_LOCAL_EXACT_HEAD_GATE_PENDING
 
 PROJECT_ID:
 closeflow_lead_app
@@ -21,8 +21,8 @@ agent/g15-r23f-create-dialog-callback-type-repair
 PR:
 #44
 
-VERIFIED_HEAD:
-4a473d48f6bd4a26a7ad443148d0595ea2ec9bfb
+FINAL_PR_HEAD_RULE:
+The local verification result must report `LOCAL_EXACT_HEAD` equal to the current PR #44 head at merge time. The merge request uses GitHub `expected_head_sha` to reject head drift.
 
 ## Scope
 
@@ -76,19 +76,32 @@ onSaved?: (
 
 The R23F guard restores the former callback declaration in memory and verifies the reconstructed Git blob SHA against the exact R23E base blobs. This proves both runtime files are byte-for-byte unchanged outside the two callback type declarations.
 
-## Verification evidence
+## Windows CRLF portability repair
+
+The first local exact-head verification on Windows exposed that the focused test and guard compared LF-only strings while the local worktree contained CRLF line endings. The implementation itself was correct: both exact callback declarations and both saved-record callback invocations were present.
+
+The verification files now normalize `CRLF -> LF` in memory before:
+
+- matching callback declarations;
+- extracting the submit block;
+- reconstructing the R23E base blobs;
+- calculating the Git blob SHA.
+
+No runtime source file was changed by this portability repair.
+
+## Remote verification evidence before portability repair
 
 WORKFLOW_RUN:
-29843333254
+29843664209
 
 WORKFLOW_JOB:
-88677483220
+88678613733
 
 FOCUSED_R23F_TESTS:
-PASS
+PASS_LINUX_LF
 
 R23F_GUARD:
-PASS
+PASS_LINUX_LF
 
 R23A_SCOPE_GUARD:
 PASS
@@ -115,19 +128,31 @@ FIRST_ERROR_AFTER_R23F:
 `src/components/finance/CaseFinanceEditorDialog.tsx(94,23) TS2552`
 
 ARTIFACT_ID:
-8500329387
+8500428823
 
 ARTIFACT_DIGEST:
-sha256:bf1ed85a785cf91c17f45ab6017d3ff8392c9e95ccc5534a9e07909305b0f11f
+sha256:c9322526e534e992f6e0d00461505cacb9d627891b07423a95fa1c9934f5b351
 
 PRODUCTION_BUILD:
 PASS
 
+## Final gate policy
+
+The owner approved this order because both Vercel projects were rejected by an external Hobby build-rate limit rather than an application build error:
+
+1. current final PR head passes the R23F GitHub workflow;
+2. the same exact PR head passes the isolated Windows local package;
+3. squash merge PR #44 with `expected_head_sha` equal to the locally verified head;
+4. synchronize local `dev-rollout-freeze` to the exact merge SHA;
+5. verify both Vercel projects for the merge SHA after the build-rate window recovers.
+
 EXACT_SHA_VERCEL_2_CLOSEFLOW:
-PENDING_BUILD_RATE_LIMIT_RECOVERY
+DEFERRED_OWNER_APPROVED_BUILD_RATE_LIMIT
 
 EXACT_SHA_VERCEL_CLOSEDOCKAPP:
-PENDING_BUILD_RATE_LIMIT_RECOVERY
+DEFERRED_OWNER_APPROVED_BUILD_RATE_LIMIT
+
+Vercel is not recorded as PASS before a successful exact merge-SHA deployment.
 
 ## Interpretation
 
@@ -138,6 +163,6 @@ The next first error is `CaseFinanceEditorDialog.tsx(94,23) TS2552`, but that fi
 ## Result
 
 RESULT:
-PASS_CODE_CI_AWAITING_FINAL_HEAD_EXACT_SHA_DEPLOY
+LOCAL_EXACT_HEAD_GATE_PENDING
 
-The final report-only head must pass the same focused workflow and both Vercel projects must succeed for the exact final head before merge. After squash merge, both projects must also succeed for the exact merge SHA.
+R23F may be squash-merged only after the current final PR head passes both the final GitHub workflow and the isolated Windows local verification. Deployment closeout remains pending until both Vercel projects succeed for the exact merge SHA.
