@@ -22,6 +22,13 @@ function gitBlobSha(source) {
   return crypto.createHash('sha1').update(header).update(body).digest('hex');
 }
 
+function submitBlock(source, label) {
+  const start = source.indexOf('  const handleSubmit = async ');
+  const end = source.indexOf('\n  return (', start);
+  if (start === -1 || end === -1) fail(`${label}: handleSubmit block not found`);
+  return source.slice(start, end);
+}
+
 function assertOrdered(source, label, values) {
   let previous = -1;
   for (const value of values) {
@@ -38,6 +45,8 @@ for (const sourcePath of [eventPath, taskPath]) {
 
 const eventSource = fs.readFileSync(eventPath, 'utf8');
 const taskSource = fs.readFileSync(taskPath, 'utf8');
+const eventSubmit = submitBlock(eventSource, 'EventCreateDialog');
+const taskSubmit = submitBlock(taskSource, 'TaskCreateDialog');
 
 const oldCallback = '  onSaved?: () => void | Promise<void>;';
 const eventCallback = [
@@ -63,14 +72,14 @@ if (occurrences(taskSource, 'await onSaved?.(createdTask);') !== 1) fail('Task s
 if (occurrences(eventSource, 'const createdEvent = await insertEventToSupabase({') !== 1) fail('Event insert call changed');
 if (occurrences(taskSource, 'const createdTask = await insertTaskToSupabase({') !== 1) fail('Task insert call changed');
 
-assertOrdered(eventSource, 'EventCreateDialog', [
+assertOrdered(eventSubmit, 'EventCreateDialog', [
   'const createdEvent = await insertEventToSupabase({',
   "toast.success('Wydarzenie dodane');",
   'onOpenChange(false);',
   'setForm(defaultEventCreateForm(context));',
   'await onSaved?.(createdEvent);',
 ]);
-assertOrdered(taskSource, 'TaskCreateDialog', [
+assertOrdered(taskSubmit, 'TaskCreateDialog', [
   'const createdTask = await insertTaskToSupabase({',
   "toast.success('Zadanie dodane');",
   'onOpenChange(false);',
