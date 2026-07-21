@@ -1,0 +1,335 @@
+name: G15-R23C bootstrap exact patch
+
+on:
+  push:
+    branches:
+      - g15-r23c-context-action-native-mouse-event-type-repair
+
+permissions:
+  contents: write
+
+jobs:
+  apply-r23c:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: g15-r23c-context-action-native-mouse-event-type-repair
+
+      - name: Apply exact runtime repair
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('src/components/ContextActionDialogs.tsx')
+          text = path.read_text(encoding='utf-8')
+          old_import = "import { type MouseEvent, useEffect, useMemo, useState } from 'react';"
+          new_import = "import { useEffect, useMemo, useState } from 'react';"
+          old_capture = "    const capture = (event: MouseEvent) => {"
+          new_capture = "    const capture = (event: globalThis.MouseEvent) => {"
+          if text.count(old_import) != 1:
+              raise SystemExit(f'EXPECTED_ONE_OLD_IMPORT_GOT_{text.count(old_import)}')
+          if text.count(old_capture) != 1:
+              raise SystemExit(f'EXPECTED_ONE_OLD_CAPTURE_GOT_{text.count(old_capture)}')
+          text = text.replace(old_import, new_import, 1).replace(old_capture, new_capture, 1)
+          path.write_text(text, encoding='utf-8', newline='\n')
+          PY
+
+      - name: Create focused test
+        run: |
+          cat > tests/lf-prod-sot-g15-r23c-context-action-native-mouse-event.test.cjs <<'EOF'
+          const assert = require('node:assert/strict');
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const { spawnSync } = require('node:child_process');
+          const test = require('node:test');
+
+          const root = path.resolve(__dirname, '..');
+          const sourcePath = path.join(root, 'src/components/ContextActionDialogs.tsx');
+          const guardPath = path.join(root, 'scripts/check-g15-r23c-context-action-native-mouse-event.cjs');
+          const source = fs.readFileSync(sourcePath, 'utf8');
+
+          function occurrences(text, value) {
+            return text.split(value).length - 1;
+          }
+
+          test('R23C focused guard passes', () => {
+            const result = spawnSync(process.execPath, [guardPath], { cwd: root, encoding: 'utf8' });
+            assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+            assert.match(result.stdout, /PASS: R23C/);
+          });
+
+          test('native document click listener uses the DOM MouseEvent contract', () => {
+            assert.equal(occurrences(source, "const capture = (event: globalThis.MouseEvent) => {"), 1);
+            assert.equal(occurrences(source, "const capture = (event: MouseEvent) => {"), 0);
+            assert.equal(occurrences(source, "document.addEventListener('click', capture, true);"), 1);
+            assert.equal(occurrences(source, "document.removeEventListener('click', capture, true);"), 1);
+          });
+
+          test('React synthetic MouseEvent import is removed without changing hooks', () => {
+            assert.match(source, /^import \{ useEffect, useMemo, useState \} from 'react';/);
+            assert.doesNotMatch(source, /^import \{[^\n]*type MouseEvent[^\n]*\} from 'react';/m);
+          });
+
+          test('capture behavior remains fail-closed and unchanged', () => {
+            assert.equal(occurrences(source, 'event.preventDefault();'), 1);
+            assert.equal(occurrences(source, 'event.stopPropagation();'), 1);
+            assert.equal(occurrences(source, 'event.stopImmediatePropagation?.();'), 1);
+            assert.match(source, /const target = event\.target instanceof Element \? event\.target : null;/);
+            assert.match(source, /setRequest\(\{ \.\.\.context, kind \}\);/);
+          });
+
+          test('R23C does not repair the later context-action debt items', () => {
+            assert.match(source, /request\.recordType === 'case'/);
+            assert.match(source, /item: createdMissingTaskRecordStage232N,/);
+            assert.match(source, /record: createdMissingTaskRecordStage232N,/);
+          });
+          EOF
+
+      - name: Create focused guard
+        run: |
+          cat > scripts/check-g15-r23c-context-action-native-mouse-event.cjs <<'EOF'
+          #!/usr/bin/env node
+          const fs = require('node:fs');
+          const path = require('node:path');
+
+          const root = process.cwd();
+          const sourcePath = path.join(root, 'src/components/ContextActionDialogs.tsx');
+
+          function fail(message) {
+            console.error(`FAIL: ${message}`);
+            process.exit(1);
+          }
+
+          if (!fs.existsSync(sourcePath)) fail('missing ContextActionDialogs.tsx');
+          const source = fs.readFileSync(sourcePath, 'utf8');
+
+          function count(value) {
+            return source.split(value).length - 1;
+          }
+
+          if (!source.startsWith("import { useEffect, useMemo, useState } from 'react';")) {
+            fail('React hooks import must remain exact without synthetic MouseEvent');
+          }
+          if (/^import \{[^\n]*type MouseEvent[^\n]*\} from 'react';/m.test(source)) {
+            fail('React synthetic MouseEvent import remains');
+          }
+          if (count('const capture = (event: globalThis.MouseEvent) => {') !== 1) {
+            fail('native capture listener must use exactly one globalThis.MouseEvent annotation');
+          }
+          if (count('const capture = (event: MouseEvent) => {') !== 0) {
+            fail('ambiguous MouseEvent annotation remains');
+          }
+          for (const required of [
+            "document.addEventListener('click', capture, true);",
+            "document.removeEventListener('click', capture, true);",
+            'event.preventDefault();',
+            'event.stopPropagation();',
+            'event.stopImmediatePropagation?.();',
+            'const target = event.target instanceof Element ? event.target : null;',
+            'setRequest({ ...context, kind });',
+          ]) {
+            if (count(required) !== 1) fail(`required preserved listener contract missing or duplicated: ${required}`);
+          }
+          if (!source.includes("request.recordType === 'case'")) fail('later TS2367 context must remain for the next stage');
+          if (!source.includes('item: createdMissingTaskRecordStage232N,')) fail('later no-flicker item debt must remain untouched');
+          if (!source.includes('record: createdMissingTaskRecordStage232N,')) fail('existing no-flicker record contract must remain untouched');
+
+          console.log('PASS: R23C uses the native DOM MouseEvent type for the document capture listener and preserves behavior.');
+          EOF
+
+      - name: Create final verification workflow
+        run: |
+          cat > .github/workflows/g15-r23c-context-action-native-mouse-event.yml <<'EOF'
+          name: G15-R23C context-action native MouseEvent type repair
+
+          on:
+            pull_request:
+              branches:
+                - dev-rollout-freeze
+            workflow_dispatch:
+
+          permissions:
+            contents: read
+
+          jobs:
+            verify-g15-r23c:
+              runs-on: ubuntu-latest
+              steps:
+                - name: Checkout
+                  uses: actions/checkout@v4
+                  with:
+                    fetch-depth: 0
+
+                - name: Use Node.js
+                  uses: actions/setup-node@v4
+                  with:
+                    node-version: 22
+                    cache: npm
+
+                - name: Install locked dependencies
+                  run: npm ci
+
+                - name: Install diagnostic React 19 type foundation
+                  run: npm install --no-save --package-lock=false @types/react@19.2.17 @types/react-dom@19.2.3
+
+                - name: Prove dependency manifests unchanged
+                  run: git diff --exit-code "origin/${GITHUB_BASE_REF}...HEAD" -- package.json package-lock.json
+
+                - name: Focused R23C tests
+                  run: node --test tests/lf-prod-sot-g15-r23c-context-action-native-mouse-event.test.cjs
+
+                - name: R23C native MouseEvent guard
+                  run: node scripts/check-g15-r23c-context-action-native-mouse-event.cjs
+
+                - name: R23A active TypeScript scope guard
+                  run: node scripts/check-g15-r23a-tsc-active-scope.cjs
+
+                - name: Map active TypeScript debt after R23C
+                  run: node scripts/diagnostics/map-g15-r23a-active-tsc-debt.cjs
+
+                - name: Verify exact R23C debt delta
+                  run: |
+                    node - <<'NODE'
+                    const fs = require('node:fs');
+                    const summary = JSON.parse(fs.readFileSync('_project/artifacts/g15-r23a-active-tsc/summary.json', 'utf8'));
+                    const expectedFirstError = {
+                      file: 'src/components/ContextActionDialogs.tsx',
+                      line: 294,
+                      column: 21,
+                      code: 'TS2367',
+                    };
+                    if (summary.status !== 'ACTIVE_TYPE_DEBT_IDENTIFIED') throw new Error(`UNEXPECTED_STATUS=${summary.status}`);
+                    if (summary.errorCount !== 63) throw new Error(`EXPECTED_63_ACTIVE_ERRORS_GOT_${summary.errorCount}`);
+                    if (summary.globalErrorCount !== 0) throw new Error(`GLOBAL_ERRORS=${summary.globalErrorCount}`);
+                    if (summary.nonActiveErrorCount !== 0) throw new Error(`NON_ACTIVE_ERRORS=${summary.nonActiveErrorCount}`);
+                    for (const [key, value] of Object.entries(expectedFirstError)) {
+                      if (summary.firstError?.[key] !== value) {
+                        throw new Error(`UNEXPECTED_FIRST_ERROR_${key}=${summary.firstError?.[key]}`);
+                      }
+                    }
+                    console.log(JSON.stringify(summary, null, 2));
+                    NODE
+
+                - name: Verify exact changed-file allowlist
+                  run: |
+                    set -euo pipefail
+                    git diff --check
+                    git diff --name-only "origin/${GITHUB_BASE_REF}...HEAD" | sort > /tmp/actual.txt
+                    cat > /tmp/expected.txt <<'LIST'
+                    .github/workflows/g15-r23c-context-action-native-mouse-event.yml
+                    _project/runs/LF-PROD-SOT-G15-R23C_CONTEXT_ACTION_NATIVE_MOUSE_EVENT_TYPE_REPAIR.md
+                    scripts/check-g15-r23c-context-action-native-mouse-event.cjs
+                    src/components/ContextActionDialogs.tsx
+                    tests/lf-prod-sot-g15-r23c-context-action-native-mouse-event.test.cjs
+                    LIST
+                    sort -o /tmp/expected.txt /tmp/expected.txt
+                    diff -u /tmp/expected.txt /tmp/actual.txt
+
+                - name: Upload R23C TypeScript debt delta evidence
+                  if: always()
+                  uses: actions/upload-artifact@v4
+                  with:
+                    name: g15-r23c-active-tsc-debt-delta
+                    path: _project/artifacts/g15-r23a-active-tsc/
+                    if-no-files-found: error
+                    retention-days: 30
+
+                - name: Production build
+                  run: npm run build
+          EOF
+
+      - name: Create stage report
+        run: |
+          cat > _project/runs/LF-PROD-SOT-G15-R23C_CONTEXT_ACTION_NATIVE_MOUSE_EVENT_TYPE_REPAIR.md <<'EOF'
+          # LF-PROD-SOT-G15-R23C — Context-action native MouseEvent type repair
+
+          TIMESTAMP:
+          2026-07-21 Europe/Warsaw
+
+          STATUS:
+          IMPLEMENTED_AWAITING_PR_CI_AND_EXACT_SHA_DEPLOY
+
+          PROJECT_ID:
+          closeflow_lead_app
+
+          APP_INPUT_HEAD:
+          b8045dba2ef25d79475a1c2571fa364d13058908
+
+          STAGE_ID:
+          LF-PROD-SOT-G15-R23C_CONTEXT_ACTION_NATIVE_MOUSE_EVENT_TYPE_REPAIR
+
+          ## Scope
+
+          R23C repairs only the three TypeScript errors caused by using React's synthetic `MouseEvent` type for the native `document` click listener in `ContextActionDialogs.tsx`.
+
+          Exact runtime repair:
+
+          ```ts
+          import { useEffect, useMemo, useState } from 'react';
+          const capture = (event: globalThis.MouseEvent) => {
+          ```
+
+          Runtime file:
+
+          - `src/components/ContextActionDialogs.tsx`.
+
+          Verification-only files:
+
+          - `tests/lf-prod-sot-g15-r23c-context-action-native-mouse-event.test.cjs`;
+          - `scripts/check-g15-r23c-context-action-native-mouse-event.cjs`;
+          - `.github/workflows/g15-r23c-context-action-native-mouse-event.yml`;
+          - this report.
+
+          ## Preserved contracts
+
+          - capture phase remains `true`;
+          - `preventDefault()`, `stopPropagation()` and `stopImmediatePropagation()` remain unchanged;
+          - target and context resolution remain unchanged;
+          - listener registration and cleanup remain unchanged;
+          - TS2367 at the later record-type comparison remains for the next stage;
+          - no-flicker `item` and `record` mutation fields remain unchanged;
+          - package and lockfile unchanged;
+          - SQL and migrations unchanged;
+          - Event DELETE and Task DELETE remain local-tombstone-only;
+          - remote Google Calendar behavior unchanged;
+          - manual Google Calendar smoke remains deferred by owner.
+
+          ## Expected verification
+
+          - focused R23C tests: PASS;
+          - R23C guard: PASS;
+          - R23A active scope guard: PASS;
+          - active TypeScript debt: `66 -> 63`;
+          - global errors: `0`;
+          - non-active errors: `0`;
+          - first error after R23C: `src/components/ContextActionDialogs.tsx(294,21) TS2367`;
+          - exact changed-file allowlist: 5 files;
+          - production build: PASS;
+          - both exact-SHA Vercel deployments: SUCCESS.
+
+          ## Result
+
+          Evidence fields are intentionally pending until PR CI and exact-SHA deployments complete. Full lint must not be marked PASS while 63 active TypeScript errors remain.
+          EOF
+
+      - name: Remove bootstrap workflow
+        run: rm .github/workflows/g15-r23c-bootstrap-apply.yml
+
+      - name: Validate and commit exact stage scope
+        run: |
+          set -euo pipefail
+          git diff --check
+          git status --short
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            src/components/ContextActionDialogs.tsx \
+            tests/lf-prod-sot-g15-r23c-context-action-native-mouse-event.test.cjs \
+            scripts/check-g15-r23c-context-action-native-mouse-event.cjs \
+            .github/workflows/g15-r23c-context-action-native-mouse-event.yml \
+            _project/runs/LF-PROD-SOT-G15-R23C_CONTEXT_ACTION_NATIVE_MOUSE_EVENT_TYPE_REPAIR.md
+          git rm .github/workflows/g15-r23c-bootstrap-apply.yml
+          git commit -m "fix(closeflow): repair R23C native MouseEvent type"
+          git push origin HEAD:g15-r23c-context-action-native-mouse-event-type-repair
