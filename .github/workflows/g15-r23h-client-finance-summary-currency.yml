@@ -6,85 +6,16 @@ on:
       - dev-rollout-freeze
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   verify-g15-r23h:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout PR branch
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.head_ref }}
-
-      - name: Apply exact R23H runtime contract patch
-        run: |
-          node - <<'NODE'
-          const fs = require('node:fs');
-
-          function replaceExactlyOnce(source, oldValue, newValue, label) {
-            if (source.includes(newValue)) return source;
-            const count = source.split(oldValue).length - 1;
-            if (count !== 1) throw new Error(`${label}_EXPECTED_ONE_OLD_SNIPPET_GOT_${count}`);
-            return source.replace(oldValue, newValue);
-          }
-
-          const clientPath = 'src/lib/client-finance.ts';
-          const casePath = 'src/lib/finance/case-finance-source.ts';
-          let clientSource = fs.readFileSync(clientPath, 'utf8').replace(/\r\n/g, '\n');
-          let caseSource = fs.readFileSync(casePath, 'utf8').replace(/\r\n/g, '\n');
-
-          const oldClientImport = "import { getClientCasesFinanceSummary } from './finance/case-finance-source.js';\n";
-          const newClientImport = `${oldClientImport}import type { FinanceCurrency } from './finance/finance-types.js';\n`;
-          clientSource = replaceExactlyOnce(clientSource, oldClientImport, newClientImport, 'CLIENT_IMPORT');
-
-          const oldClientType = [
-            "  source: 'primary_case' | 'all_active_cases' | 'all_cases';",
-            '  commissionAmount?: number;',
-          ].join('\n');
-          const newClientType = [
-            "  source: 'primary_case' | 'all_active_cases' | 'all_cases';",
-            '  currency: FinanceCurrency;',
-            '  commissionAmount?: number;',
-          ].join('\n');
-          clientSource = replaceExactlyOnce(clientSource, oldClientType, newClientType, 'CLIENT_TYPE');
-
-          const oldCaseType = [
-            "  source: 'primary_case' | 'all_active_cases' | 'all_cases';",
-            '  commissionAmount: number;',
-          ].join('\n');
-          const newCaseType = [
-            "  source: 'primary_case' | 'all_active_cases' | 'all_cases';",
-            '  currency: FinanceCurrency;',
-            '  commissionAmount: number;',
-          ].join('\n');
-          caseSource = replaceExactlyOnce(caseSource, oldCaseType, newCaseType, 'CASE_TYPE');
-
-          const oldCaseReturn = [
-            '    source: selected.source,',
-            '    commissionAmount: roundMoney(caseSummaries.reduce((sum, summary) => sum + summary.commissionAmount, 0)),',
-          ].join('\n');
-          const newCaseReturn = [
-            '    source: selected.source,',
-            "    currency: caseSummaries[0]?.currency || 'PLN',",
-            '    commissionAmount: roundMoney(caseSummaries.reduce((sum, summary) => sum + summary.commissionAmount, 0)),',
-          ].join('\n');
-          caseSource = replaceExactlyOnce(caseSource, oldCaseReturn, newCaseReturn, 'CASE_RETURN');
-
-          fs.writeFileSync(clientPath, clientSource, 'utf8');
-          fs.writeFileSync(casePath, caseSource, 'utf8');
-          NODE
-
-      - name: Commit exact runtime patch to PR branch
-        run: |
-          if ! git diff --quiet -- src/lib/client-finance.ts src/lib/finance/case-finance-source.ts; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add src/lib/client-finance.ts src/lib/finance/case-finance-source.ts
-            git commit -m "fix(closeflow): expose R23H client finance currency"
-            git push origin "HEAD:${GITHUB_HEAD_REF}"
-          fi
 
       - name: Use Node.js
         uses: actions/setup-node@v4
