@@ -25,8 +25,19 @@ export type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
 
 export type FinanceCurrency = string;
 
-export type FinancePaymentLike = {
+export type FinanceRelationRef = {
+  workspaceId: string;
+  leadId: string | null;
+  clientId: string | null;
+  caseId: string | null;
+};
+
+export type FinancePaymentLike = Partial<FinanceRelationRef> & {
   id?: string;
+  workspace_id?: string | null;
+  lead_id?: string | null;
+  client_id?: string | null;
+  case_id?: string | null;
   type?: PaymentType | string | null;
   status?: PaymentStatus | string | null;
   amount?: number | string | null;
@@ -36,9 +47,13 @@ export type FinancePaymentLike = {
   dueAt?: string | null;
   due_at?: string | null;
   note?: string | null;
+  createdAt?: string | null;
+  created_at?: string | null;
+  updatedAt?: string | null;
+  updated_at?: string | null;
 };
 
-export type NormalizedFinancePayment = {
+export type NormalizedFinancePayment = Partial<FinanceRelationRef> & {
   id?: string;
   type: PaymentType;
   status: PaymentStatus;
@@ -47,6 +62,8 @@ export type NormalizedFinancePayment = {
   paidAt: string | null;
   dueAt: string | null;
   note: string;
+  createdAt?: string | null;
+  updatedAt?: string | null;
 };
 
 /** Backward-compatible alias used by existing FIN-5 components. */
