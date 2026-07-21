@@ -1,0 +1,60 @@
+name: G15-R23 persist React type dependencies
+
+on:
+  push:
+    branches:
+      - g15-r23-scope-tsc-to-active-product
+
+permissions:
+  contents: write
+
+jobs:
+  persist-react-types:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout R23 branch
+        uses: actions/checkout@v4
+        with:
+          ref: g15-r23-scope-tsc-to-active-product
+          fetch-depth: 0
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Persist exact React type dependencies
+        run: npm install --save-dev --save-exact @types/react@19.2.17 @types/react-dom@19.2.3
+      - name: Verify package diff scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          unexpected="$(git status --porcelain=v1 --untracked-files=all | grep -vE '^( M|M |\?\?) (package\.json|package-lock\.json)$' || true)"
+          if [ -n "$unexpected" ]; then
+            printf '%s\n' "$unexpected"
+            exit 1
+          fi
+      - name: Verify R23 after persistent install
+        run: |
+          node --test tests/lf-prod-sot-g15-r23-tsc-active-product-scope.test.cjs
+          npx tsx --test tests/lf-prod-sot-g15-r23-finance-runtime-semantics.test.ts
+          node scripts/check-g15-r23-tsc-active-product-scope.cjs
+          npx tsc --noEmit --pretty false
+          npm run build
+      - name: Commit and push package files only
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- package.json package-lock.json; then
+            echo "REACT_TYPES_ALREADY_PERSISTED"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json
+          git diff --cached --check
+          git commit -m "build(closeflow): persist React types for R23"
+          git push origin HEAD:g15-r23-scope-tsc-to-active-product
