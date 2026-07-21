@@ -291,7 +291,7 @@ export default function ContextActionDialogsHost() {
             missingKind: draft.missingKind,
             blocksProgress: draft.blocksProgress,
             blockScope: draft.blockScope || null,
-            source: request.recordType === 'client' ? 'STAGE232I2_CONTEXT_ACTION_CLIENT_MISSING_ITEM_SOURCE' : 'context_action_dialogs_blocker',
+            source: 'context_action_dialogs_blocker',
             sourceEntityType: request.recordType,
             sourceEntityId: request.recordId,
             recordType: request.recordType,
