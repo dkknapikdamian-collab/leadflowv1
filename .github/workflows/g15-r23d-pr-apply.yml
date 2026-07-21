@@ -1,40 +1,14 @@
-name: G15-R23D PR exact apply
+name: G15-R23D PR exact apply disabled
 
 on:
-  pull_request:
-    branches:
-      - dev-rollout-freeze
-    types:
-      - opened
-      - reopened
-      - synchronize
+  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  apply-r23d:
-    if: github.actor != 'github-actions[bot]'
+  disabled:
+    if: false
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout PR head
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.ref }}
-
-      - name: Apply exact patch
-        run: python scripts/.tmp-apply-g15-r23d.py
-
-      - name: Commit and push non-workflow R23D scope
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/components/ContextActionDialogs.tsx
-          git add tests/lf-prod-sot-g15-r23d-context-action-case-source-narrowing.test.cjs
-          git add scripts/check-g15-r23d-context-action-case-source-narrowing.cjs
-          git add _project/runs/LF-PROD-SOT-G15-R23D_CONTEXT_ACTION_CASE_SOURCE_NARROWING_TYPE_REPAIR.md
-          git diff --cached --check
-          git commit -m "fix(closeflow): repair R23D case source narrowing"
-          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+      - run: echo disabled
