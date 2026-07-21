@@ -1,0 +1,94 @@
+name: G15-R23G case-finance commission-status import repair
+
+on:
+  pull_request:
+    branches:
+      - dev-rollout-freeze
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-g15-r23g:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Install diagnostic React 19 type foundation
+        run: npm install --no-save --package-lock=false @types/react@19.2.17 @types/react-dom@19.2.3
+
+      - name: Prove dependency manifests unchanged
+        run: git diff --exit-code "origin/${GITHUB_BASE_REF}...HEAD" -- package.json package-lock.json
+
+      - name: Focused R23G tests
+        run: node --test tests/lf-prod-sot-g15-r23g-case-finance-status-import.test.cjs
+
+      - name: R23G case-finance import guard
+        run: node scripts/check-g15-r23g-case-finance-status-import.cjs
+
+      - name: R23A active TypeScript scope guard
+        run: node scripts/check-g15-r23a-tsc-active-scope.cjs
+
+      - name: Map active TypeScript debt after R23G
+        run: node scripts/diagnostics/map-g15-r23a-active-tsc-debt.cjs
+
+      - name: Verify R23G debt delta and print next first error
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const summary = JSON.parse(fs.readFileSync('_project/artifacts/g15-r23a-active-tsc/summary.json', 'utf8'));
+          if (summary.status !== 'ACTIVE_TYPE_DEBT_IDENTIFIED') throw new Error(`UNEXPECTED_STATUS=${summary.status}`);
+          if (summary.errorCount !== 56) throw new Error(`EXPECTED_56_ACTIVE_ERRORS_GOT_${summary.errorCount}`);
+          if (summary.globalErrorCount !== 0) throw new Error(`GLOBAL_ERRORS=${summary.globalErrorCount}`);
+          if (summary.nonActiveErrorCount !== 0) throw new Error(`NON_ACTIVE_ERRORS=${summary.nonActiveErrorCount}`);
+          if (summary.errors?.some((error) => (
+            error.file === 'src/components/finance/CaseFinanceEditorDialog.tsx'
+            && error.line === 94
+            && error.column === 23
+            && error.code === 'TS2552'
+          ))) {
+            throw new Error('R23G_TARGET_ERROR_REMAINS');
+          }
+          console.log(`R23G_NEXT_FIRST_ERROR=${JSON.stringify(summary.firstError)}`);
+          console.log(JSON.stringify(summary, null, 2));
+          NODE
+
+      - name: Verify exact changed-file allowlist
+        run: |
+          set -euo pipefail
+          git diff --check
+          git diff --name-only "origin/${GITHUB_BASE_REF}...HEAD" | sort > /tmp/actual.txt
+          cat > /tmp/expected.txt <<'EOF'
+          .github/workflows/g15-r23g-case-finance-status-import.yml
+          _project/runs/LF-PROD-SOT-G15-R23G_CASE_FINANCE_COMMISSION_STATUS_NORMALIZER_IMPORT_REPAIR.md
+          scripts/check-g15-r23g-case-finance-status-import.cjs
+          src/components/finance/CaseFinanceEditorDialog.tsx
+          tests/lf-prod-sot-g15-r23g-case-finance-status-import.test.cjs
+          EOF
+          sort -o /tmp/expected.txt /tmp/expected.txt
+          diff -u /tmp/expected.txt /tmp/actual.txt
+
+      - name: Upload R23G TypeScript debt delta evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: g15-r23g-active-tsc-debt-delta
+          path: _project/artifacts/g15-r23a-active-tsc/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Production build
+        run: npm run build
