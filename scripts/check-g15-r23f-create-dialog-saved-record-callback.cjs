@@ -12,6 +12,10 @@ function fail(message) {
   process.exit(1);
 }
 
+function normalizeLineEndings(source) {
+  return source.replace(/\r\n/g, '\n');
+}
+
 function occurrences(source, value) {
   return source.split(value).length - 1;
 }
@@ -43,8 +47,8 @@ for (const sourcePath of [eventPath, taskPath]) {
   if (!fs.existsSync(sourcePath)) fail(`missing source file: ${path.relative(root, sourcePath)}`);
 }
 
-const eventSource = fs.readFileSync(eventPath, 'utf8');
-const taskSource = fs.readFileSync(taskPath, 'utf8');
+const eventSource = normalizeLineEndings(fs.readFileSync(eventPath, 'utf8'));
+const taskSource = normalizeLineEndings(fs.readFileSync(taskPath, 'utf8'));
 const eventSubmit = submitBlock(eventSource, 'EventCreateDialog');
 const taskSubmit = submitBlock(taskSource, 'TaskCreateDialog');
 
@@ -99,4 +103,4 @@ if (gitBlobSha(restoredTask) !== expectedTaskBaseBlob) {
   fail('TaskCreateDialog contains runtime changes outside the callback type declaration');
 }
 
-console.log('PASS: R23F aligns both create-dialog onSaved callback types with saved insert records and preserves runtime byte-for-byte outside those declarations.');
+console.log('PASS: R23F aligns both create-dialog onSaved callback types with saved insert records and preserves runtime byte-for-byte outside those declarations on LF and CRLF worktrees.');
