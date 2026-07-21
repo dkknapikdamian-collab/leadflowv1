@@ -80,8 +80,11 @@ function nullableAmount(value: unknown): number | null {
   return Number.isFinite(normalized) ? normalized : null;
 }
 
-export function normalizeFinancePayment(payment: FinancePaymentLike | null | undefined, fallbackCurrency = 'PLN'): NormalizedFinancePayment {
-  const row = payment || {};
+export function normalizeFinancePayment(
+  payment: FinancePaymentLike | Record<string, unknown> | null | undefined,
+  fallbackCurrency = 'PLN',
+): NormalizedFinancePayment {
+  const row = (payment || {}) as FinancePaymentLike & Record<string, unknown>;
   return {
     id: typeof row.id === 'string' && row.id.trim() ? row.id.trim() : undefined,
     type: normalizePaymentType(row.type),
@@ -94,7 +97,10 @@ export function normalizeFinancePayment(payment: FinancePaymentLike | null | und
   };
 }
 
-export function normalizeFinancePayments(payments: FinancePaymentLike[] | null | undefined, fallbackCurrency = 'PLN'): NormalizedFinancePayment[] {
+export function normalizeFinancePayments(
+  payments: Array<FinancePaymentLike | Record<string, unknown>> | null | undefined,
+  fallbackCurrency = 'PLN',
+): NormalizedFinancePayment[] {
   return Array.isArray(payments) ? payments.map((payment) => normalizeFinancePayment(payment, fallbackCurrency)) : [];
 }
 
