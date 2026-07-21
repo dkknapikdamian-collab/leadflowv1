@@ -15,6 +15,14 @@ function occurrences(source, value) {
   return source.split(value).length - 1;
 }
 
+function submitBlock(source) {
+  const start = source.indexOf('  const handleSubmit = async ');
+  const end = source.indexOf('\n  return (', start);
+  assert.notEqual(start, -1, 'handleSubmit start missing');
+  assert.notEqual(end, -1, 'handleSubmit end missing');
+  return source.slice(start, end);
+}
+
 function assertOrdered(source, values) {
   const positions = values.map((value) => source.indexOf(value));
   assert.ok(positions.every((position) => position >= 0), `missing ordered contract: ${JSON.stringify({ values, positions })}`);
@@ -50,7 +58,7 @@ test('TaskCreateDialog callback accepts the exact insert result', () => {
 });
 
 test('Event create runtime order remains insert, toast, close, reset, callback', () => {
-  assertOrdered(eventSource, [
+  assertOrdered(submitBlock(eventSource), [
     'const createdEvent = await insertEventToSupabase({',
     "toast.success('Wydarzenie dodane');",
     'onOpenChange(false);',
@@ -60,7 +68,7 @@ test('Event create runtime order remains insert, toast, close, reset, callback',
 });
 
 test('Task create runtime order remains insert, toast, close, reset, callback', () => {
-  assertOrdered(taskSource, [
+  assertOrdered(submitBlock(taskSource), [
     'const createdTask = await insertTaskToSupabase({',
     "toast.success('Zadanie dodane');",
     'onOpenChange(false);',
