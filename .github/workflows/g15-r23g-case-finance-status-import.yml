@@ -45,15 +45,26 @@ jobs:
       - name: Map active TypeScript debt after R23G
         run: node scripts/diagnostics/map-g15-r23a-active-tsc-debt.cjs
 
-      - name: Verify R23G debt delta and print next first error
+      - name: Verify exact R23G debt delta and next first error
         run: |
           node - <<'NODE'
           const fs = require('node:fs');
           const summary = JSON.parse(fs.readFileSync('_project/artifacts/g15-r23a-active-tsc/summary.json', 'utf8'));
+          const expectedFirstError = {
+            file: 'src/components/finance/FinanceMiniSummary.tsx',
+            line: 265,
+            column: 22,
+            code: 'TS2339',
+          };
           if (summary.status !== 'ACTIVE_TYPE_DEBT_IDENTIFIED') throw new Error(`UNEXPECTED_STATUS=${summary.status}`);
           if (summary.errorCount !== 56) throw new Error(`EXPECTED_56_ACTIVE_ERRORS_GOT_${summary.errorCount}`);
           if (summary.globalErrorCount !== 0) throw new Error(`GLOBAL_ERRORS=${summary.globalErrorCount}`);
           if (summary.nonActiveErrorCount !== 0) throw new Error(`NON_ACTIVE_ERRORS=${summary.nonActiveErrorCount}`);
+          for (const [key, value] of Object.entries(expectedFirstError)) {
+            if (summary.firstError?.[key] !== value) {
+              throw new Error(`UNEXPECTED_FIRST_ERROR_${key}=${summary.firstError?.[key]}`);
+            }
+          }
           if (summary.errors?.some((error) => (
             error.file === 'src/components/finance/CaseFinanceEditorDialog.tsx'
             && error.line === 94
@@ -62,7 +73,6 @@ jobs:
           ))) {
             throw new Error('R23G_TARGET_ERROR_REMAINS');
           }
-          console.log(`R23G_NEXT_FIRST_ERROR=${JSON.stringify(summary.firstError)}`);
           console.log(JSON.stringify(summary, null, 2));
           NODE
 
