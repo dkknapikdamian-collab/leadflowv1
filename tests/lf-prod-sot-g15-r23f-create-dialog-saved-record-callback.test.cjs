@@ -8,8 +8,13 @@ const root = path.resolve(__dirname, '..');
 const eventPath = path.join(root, 'src/components/EventCreateDialog.tsx');
 const taskPath = path.join(root, 'src/components/TaskCreateDialog.tsx');
 const guardPath = path.join(root, 'scripts/check-g15-r23f-create-dialog-saved-record-callback.cjs');
-const eventSource = fs.readFileSync(eventPath, 'utf8');
-const taskSource = fs.readFileSync(taskPath, 'utf8');
+
+function normalizeLineEndings(source) {
+  return source.replace(/\r\n/g, '\n');
+}
+
+const eventSource = normalizeLineEndings(fs.readFileSync(eventPath, 'utf8'));
+const taskSource = normalizeLineEndings(fs.readFileSync(taskPath, 'utf8'));
 
 function occurrences(source, value) {
   return source.split(value).length - 1;
@@ -31,7 +36,7 @@ function assertOrdered(source, values) {
   }
 }
 
-test('R23F focused guard passes', () => {
+test('R23F focused guard passes on LF and CRLF worktrees', () => {
   const result = spawnSync(process.execPath, [guardPath], { cwd: root, encoding: 'utf8' });
   assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
   assert.match(result.stdout, /PASS: R23F/);
