@@ -4,7 +4,7 @@ TIMESTAMP:
 2026-07-21 Europe/Warsaw
 
 STATUS:
-IMPLEMENTED_AWAITING_PR_CI_AND_EXACT_SHA_DEPLOY
+PASS_CODE_CI_AWAITING_FINAL_HEAD_EXACT_SHA_DEPLOY
 
 PROJECT_ID:
 closeflow_lead_app
@@ -14,6 +14,12 @@ APP_INPUT_HEAD:
 
 STAGE_ID:
 LF-PROD-SOT-G15-R23E_NO_FLICKER_MUTATION_DETAIL_CONTRACT_TYPE_REPAIR
+
+PR:
+#43
+
+VERIFICATION_HEAD:
+bc8808c8b07b413a2d4f9369ead3e825d9b933e2
 
 ## Scope
 
@@ -52,19 +58,62 @@ Verification-only files:
 - remote Google Calendar behavior unchanged;
 - manual Google Calendar smoke remains deferred by owner.
 
-## Expected verification
+## Verification evidence
 
-- focused R23E tests: PASS;
-- R23E guard: PASS;
-- R23A active scope guard: PASS;
-- active TypeScript debt: `62 -> 59`;
-- global errors: `0`;
-- non-active errors: `0`;
-- first error after R23E: `src/components/EventCreateDialog.tsx(142,23) TS2554`;
-- exact changed-file allowlist: 5 files;
-- production build: PASS;
-- both exact-SHA Vercel deployments: SUCCESS.
+WORKFLOW_RUN:
+29840650540
+
+WORKFLOW_JOB:
+88668377375
+
+FOCUSED_R23E_TESTS:
+PASS
+
+R23E_GUARD:
+PASS
+
+R23A_SCOPE_GUARD:
+PASS
+
+DEPENDENCY_MANIFESTS_UNCHANGED:
+PASS
+
+CHANGED_FILE_ALLOWLIST:
+PASS_EXACT_5_FILES
+
+ACTIVE_TYPE_DEBT_BEFORE:
+62
+
+ACTIVE_TYPE_DEBT_AFTER:
+59
+
+GLOBAL_ERRORS:
+0
+
+NON_ACTIVE_ERRORS:
+0
+
+FIRST_ERROR_AFTER_R23E:
+`src/components/EventCreateDialog.tsx(142,23) TS2554`
+
+ARTIFACT_ID:
+8499223927
+
+ARTIFACT_DIGEST:
+sha256:518f62c6c54e88e4e5f10bf22b233bee2275450b070e1f2244a1484f4572bde4
+
+PRODUCTION_BUILD:
+PASS
+
+## Interpretation
+
+R23E removes exactly the three active TypeScript errors caused by the stale no-flicker mutation declaration and missing export aliases. It introduces no global or non-active errors. Full lint is not PASS because 59 active TypeScript errors remain.
+
+The next stage must be derived only from `EventCreateDialog.tsx(142,23) TS2554`. It must not be implemented in this session.
 
 ## Result
 
-Evidence fields are pending until PR CI and exact-SHA deployments complete. Full lint must not be marked PASS while active TypeScript errors remain.
+RESULT:
+PASS_CODE_CI_AWAITING_FINAL_HEAD_EXACT_SHA_DEPLOY
+
+Final PR-head and merge-SHA deployment evidence is recorded in the canonical CloseFlow closeout after the final report commit is verified.
