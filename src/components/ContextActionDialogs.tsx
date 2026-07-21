@@ -1,4 +1,4 @@
-import { type MouseEvent, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { CONTEXT_ACTION_CONTRACT, STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY_V1 } from '../lib/context-action-contract';
@@ -187,7 +187,7 @@ export default function ContextActionDialogsHost() {
   }, []);
 
   useEffect(() => {
-    const capture = (event: MouseEvent) => {
+    const capture = (event: globalThis.MouseEvent) => {
       const target = event.target instanceof Element ? event.target : null;
       if (shouldIgnoreClick(target)) return;
       const explicitContext = buildContextFromExplicitClick(target);
