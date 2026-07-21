@@ -4,7 +4,7 @@ TIMESTAMP:
 2026-07-21 Europe/Warsaw
 
 STATUS:
-PR_OPEN_VERIFICATION_PENDING
+PASS_CODE_CI_AND_EXACT_SHA_DEPLOY_READY_TO_MERGE
 
 PROJECT_ID:
 closeflow_lead_app
@@ -14,6 +14,12 @@ APP_INPUT_HEAD:
 
 STAGE_ID:
 LF-PROD-SOT-G15-R23B_PAGE_HEADER_CONTENT_CONTRACT_TYPE_REPAIR
+
+PR:
+#40
+
+VERIFICATION_HEAD:
+9e28aeeb88c42473487b0949579a5404807ee5bf
 
 ## Scope
 
@@ -27,8 +33,8 @@ kicker: 'LEADY',
 
 Changed runtime files:
 
-- `src/components/CloseFlowPageHeaderV2.tsx`;
-- `src/lib/page-header-content.ts`.
+- `src/components/CloseFlowPageHeaderV2.tsx` — one added line;
+- `src/lib/page-header-content.ts` — one added line.
 
 Verification-only files:
 
@@ -43,51 +49,75 @@ Verification-only files:
 - `content.kicker` remains rendered;
 - established leads title and description remain unchanged;
 - both typed maps remain separate;
-- no dependency or lockfile changes;
-- no finance, missing-items, LeadDetail, CaseDetail or ContextActionDialogs changes;
-- no SQL or migration changes;
+- package and lockfile unchanged;
+- finance, missing-items, LeadDetail, CaseDetail and ContextActionDialogs unchanged;
+- SQL and migrations unchanged;
 - Event DELETE and Task DELETE remain local-tombstone-only;
-- remote Google Calendar behavior remains unchanged;
+- remote Google Calendar behavior unchanged;
 - manual Google Calendar smoke remains deferred by owner.
 
-## Expected verification
+## Verification evidence
+
+WORKFLOW_RUN:
+29829816236
+
+WORKFLOW_JOB:
+88631575179
 
 FOCUSED_R23B_TESTS:
-PENDING
+PASS
 
 R23B_GUARD:
-PENDING
+PASS
 
 R23A_SCOPE_GUARD:
-PENDING
+PASS
+
+DEPENDENCY_MANIFESTS_UNCHANGED:
+PASS
+
+CHANGED_FILE_ALLOWLIST:
+PASS_EXACT_6_FILES
 
 ACTIVE_TYPE_DEBT_BEFORE:
 68
 
-ACTIVE_TYPE_DEBT_EXPECTED_AFTER:
+ACTIVE_TYPE_DEBT_AFTER:
 66
 
-EXPECTED_FIRST_ERROR:
-`src/components/ContextActionDialogs.tsx(201,13) TS2339`
-
-GLOBAL_ERRORS_EXPECTED:
+GLOBAL_ERRORS:
 0
 
-NON_ACTIVE_ERRORS_EXPECTED:
+NON_ACTIVE_ERRORS:
 0
+
+FIRST_ERROR_AFTER_R23B:
+`src/components/ContextActionDialogs.tsx(201,13) TS2339 — Property 'stopImmediatePropagation' does not exist on type 'MouseEvent<Element, MouseEvent>'.`
+
+ARTIFACT_ID:
+8494819370
+
+ARTIFACT_DIGEST:
+sha256:297ab730587f1eb985de9c8ecae44b5afe56229425a591bfd63e4be9a21a711c
 
 PRODUCTION_BUILD:
-PENDING
+PASS
 
 VERCEL_2_CLOSEFLOW:
-PENDING
+SUCCESS
 
 VERCEL_CLOSEDOCKAPP:
-PENDING
+SUCCESS
+
+## Interpretation
+
+R23B removes exactly the two intended active TypeScript errors and introduces no global or non-active scope errors. Full lint is not PASS because 66 active TypeScript errors remain.
+
+The next stage must be derived only from the new first error in `src/components/ContextActionDialogs.tsx` and must not expand into a bulk repair.
 
 ## Result
 
-R23B is not PASS until the dedicated workflow, exact debt delta, production build, both exact-SHA Vercel deployments and merge to `dev-rollout-freeze` are proven.
+Merge to `dev-rollout-freeze` remains the final step. After merge, exact merge-SHA status and the next narrow stage must be recorded.
 
 RESULT:
-VERIFICATION_PENDING
+PASS_READY_TO_MERGE
