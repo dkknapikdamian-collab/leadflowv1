@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "project_id": "closeflow_lead_app",
+  "document_types": {
+    "technical_stage": {"canonical_owner":"APPLICATION_REPOSITORY","path":"docs/stages/","writers":["STAGE_PLANNER"],"executor_action":"PROPOSE_UPDATE_ONLY","approval_required":true},
+    "technical_plan": {"canonical_owner":"APPLICATION_REPOSITORY","path":"docs/plans/","writers":["STAGE_PLANNER","CONTROLLER"],"executor_action":"PROPOSE_UPDATE_ONLY","approval_required":false},
+    "workflow_state": {"canonical_owner":"APPLICATION_REPOSITORY","path":"_project/WORKFLOW_STATE.json","writers":["CONTROLLER"],"executor_action":"PROPOSE_UPDATE_ONLY","approval_required":false},
+    "technical_finding": {"canonical_owner":"APPLICATION_REPOSITORY","path":"audit/findings/","writers":["STAGE_EXECUTOR","CONTROLLER"],"executor_action":null,"approval_required":false},
+    "evidence": {"canonical_owner":"APPLICATION_REPOSITORY","path":"audit/evidence/","writers":["STAGE_EXECUTOR","CONTROLLER"],"executor_action":null,"approval_required":false},
+    "owner_decision": {"canonical_owner":"OBSIDIAN","path":"10_PROJEKTY/CloseFlow_Lead_App/03_AKTYWNE_DECYZJE.md","writers":["OWNER","MEMORY_CONTROLLER"],"executor_action":"PROPOSED_OWNER_DECISION_ONLY","approval_required":true},
+    "product_direction": {"canonical_owner":"OBSIDIAN","path":"10_PROJEKTY/CloseFlow_Lead_App/04_KIERUNEK_DO_WDROZENIA.md","writers":["OWNER","MEMORY_CONTROLLER"],"executor_action":"PROPOSED_OBSIDIAN_UPDATE_ONLY","approval_required":true}
+  }
+}
