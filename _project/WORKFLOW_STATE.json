@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "project_id": "closeflow_lead_app",
+  "state_revision": 1,
+  "last_accepted": null,
+  "current_workflow": {
+    "id": "LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR",
+    "kind": "TECHNICAL_STAGE",
+    "contract_path": null,
+    "status": "LEGACY_OBSIDIAN_STAGE_SOURCE_PENDING_REPO_MIGRATION",
+    "base_sha": null,
+    "target_branch": "dev-rollout-freeze",
+    "blocker": "The current technical stage contract is still stored in Obsidian. Do not execute it through DOCSYS until its exact contract and base evidence are reconciled into the repository."
+  },
+  "next_workflow": {"id": null, "status": "LOCKED_PENDING_STAGE_SOURCE_MIGRATION"},
+  "source_evidence": [
+    "obsidian:10_PROJEKTY/CloseFlow_Lead_App/STAGES/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
+    "AGENTS.md@dev-rollout-freeze"
+  ]
+}
