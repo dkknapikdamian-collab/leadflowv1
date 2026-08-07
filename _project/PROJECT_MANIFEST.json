@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "project_id": "closeflow_lead_app",
+  "project_name": "CloseFlow / LeadFlow",
+  "project_class": ["CODE_APPLICATION"],
+  "repository": "dkknapikdamian-collab/leadflowv1",
+  "canonical_branch": "dev-rollout-freeze",
+  "workflow_state": "_project/WORKFLOW_STATE.json",
+  "document_ownership": "_project/DOCUMENT_OWNERSHIP.json",
+  "agent_capabilities": "_project/AGENT_CAPABILITIES.json",
+  "stages_root": "docs/stages",
+  "plans_root": "docs/plans",
+  "findings_root": "audit/findings",
+  "evidence_root": "audit/evidence",
+  "obsidian": {
+    "project_registry": "00_SYSTEM/PROJECTS.json",
+    "project_entry": "10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md",
+    "current_state": "10_PROJEKTY/CloseFlow_Lead_App/02_AKTUALNY_STAN.md",
+    "decisions": "10_PROJEKTY/CloseFlow_Lead_App/03_AKTYWNE_DECYZJE.md",
+    "direction": "10_PROJEKTY/CloseFlow_Lead_App/04_KIERUNEK_DO_WDROZENIA.md"
+  },
+  "legacy_routes": ["_project/00_AI_START_SPIS_TRESCI.md"]
+}
