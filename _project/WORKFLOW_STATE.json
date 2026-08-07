@@ -1,20 +1,26 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 1,
-  "last_accepted": null,
+  "state_revision": 2,
+  "last_accepted": {
+    "id": "LF-PROD-SOT-G15-R23K_FINANCE_SNAPSHOT_REMAINING_AMOUNT_INPUT_CONTRACT",
+    "status": "CLOSED",
+    "commit_sha": "21f27150df059e79e066fa0cba97cbd3483eda76",
+    "evidence": "obsidian:10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md"
+  },
   "current_workflow": {
     "id": "LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": null,
-    "status": "LEGACY_OBSIDIAN_STAGE_SOURCE_PENDING_REPO_MIGRATION",
-    "base_sha": null,
-    "target_branch": "dev-rollout-freeze",
-    "blocker": "The current technical stage contract is still stored in Obsidian. Do not execute it through DOCSYS until its exact contract and base evidence are reconciled into the repository."
+    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
+    "status": "REMOTE_GATES_PASS_DRAFT_PR_OPEN_LOCAL_ACCEPTANCE_PACKAGE_READY_EXACT_LOCAL_AND_MERGE_PENDING",
+    "base_sha": "21f27150df059e79e066fa0cba97cbd3483eda76",
+    "target_branch": "stage/lf-prod-sot-g15-r23l-lucide-namespace-registry-cast-repair-r1",
+    "blocker": "Exact local verification, squash merge of unchanged PR #50 head, and exact merge-SHA local reverify remain pending."
   },
-  "next_workflow": {"id": null, "status": "LOCKED_PENDING_STAGE_SOURCE_MIGRATION"},
+  "next_workflow": {"id": null, "status": "LOCKED_PENDING_CURRENT_STAGE_ACCEPTANCE"},
   "source_evidence": [
-    "obsidian:10_PROJEKTY/CloseFlow_Lead_App/STAGES/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
-    "AGENTS.md@dev-rollout-freeze"
+    "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
+    "github:pull/50@787b9e0f5d2172c0fbd399807ee53b2f6e8cde49",
+    "obsidian:10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md"
   ]
 }
