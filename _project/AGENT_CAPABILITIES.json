@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "repository": "dkknapikdamian-collab/leadflowv1",
+  "project_id": null,
+  "selection_policy": "LOAD_ONLY_MATCHING_CAPABILITIES",
+  "capabilities": [
+    {
+      "id": "ai-code-guardian",
+      "type": "PLUGIN_AND_SKILL",
+      "required_for": [
+        "CODE_CHANGE",
+        "CODE_AUDIT",
+        "BUG_REPAIR",
+        "SECURITY_REVIEW",
+        "RELEASE"
+      ],
+      "optional_for": [
+        "TECHNICAL_PLANNING",
+        "DOCUMENTATION_REVIEW"
+      ],
+      "canonical_repository": "dkknapikdamian-collab/ai-code-guardian",
+      "canonical_ref": "main",
+      "canonical_path": "skills/ai-code-guardian/SKILL.md",
+      "loading_policy": "PLUGIN_FIRST_REPOSITORY_FALLBACK",
+      "on_unavailable": "BLOCKED_FAIL_CLOSED"
+    }
+  ],
+  "code_change_gate": "AI_CODE_GUARDIAN_REQUIRED=YES"
+}

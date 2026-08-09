@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "repository": "dkknapikdamian-collab/leadflowv1",
+  "repository_class": "STANDALONE_APPLICATION",
+  "project_class": [
+    "STANDALONE_APPLICATION",
+    "CODE_APPLICATION"
+  ],
+  "project_id": null,
+  "routing_status": "UNKNOWN_REQUIRES_OBSIDIAN_ROUTING",
+  "canonical_branch": "main",
+  "workflow_state": "_project/WORKFLOW_STATE.json",
+  "document_ownership": "_project/DOCUMENT_OWNERSHIP.json",
+  "agent_capabilities": "_project/AGENT_CAPABILITIES.json",
+  "code_policy": {
+    "AI_CODE_GUARDIAN_REQUIRED": "YES",
+    "on_unavailable": "BLOCKED_FAIL_CLOSED"
+  },
+  "obsidian": {
+    "project_registry": "00_SYSTEM/PROJECTS.json",
+    "router_required": true,
+    "project_entry": null,
+    "source_of_truth_status": "UNRESOLVED"
+  }
+}

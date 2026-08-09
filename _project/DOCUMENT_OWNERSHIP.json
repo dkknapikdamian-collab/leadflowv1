@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "repository": "dkknapikdamian-collab/leadflowv1",
+  "project_id": null,
+  "routing_status": "UNKNOWN_REQUIRES_OBSIDIAN_ROUTING",
+  "document_types": {
+    "repository_instructions": {
+      "canonical_owner": "APPLICATION_REPOSITORY",
+      "path": "AGENTS.md",
+      "writers": [
+        "CONTROLLER"
+      ],
+      "approval_required": true
+    },
+    "workflow_state": {
+      "canonical_owner": "APPLICATION_REPOSITORY",
+      "path": "_project/WORKFLOW_STATE.json",
+      "writers": [
+        "CONTROLLER"
+      ],
+      "approval_required": false
+    },
+    "technical_stage": {
+      "canonical_owner": "APPLICATION_REPOSITORY",
+      "path": "docs/stages/",
+      "writers": [
+        "STAGE_PLANNER"
+      ],
+      "approval_required": true
+    },
+    "owner_decision": {
+      "canonical_owner": "OBSIDIAN",
+      "path": null,
+      "writers": [
+        "OWNER",
+        "MEMORY_CONTROLLER"
+      ],
+      "approval_required": true
+    },
+    "project_direction": {
+      "canonical_owner": "OBSIDIAN",
+      "path": null,
+      "writers": [
+        "OWNER",
+        "MEMORY_CONTROLLER"
+      ],
+      "approval_required": true
+    }
+  },
+  "rule": "Do not create a second source of truth; unresolved ownership is a block."
+}
