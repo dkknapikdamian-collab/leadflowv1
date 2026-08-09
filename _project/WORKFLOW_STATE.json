@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "repository": "dkknapikdamian-collab/leadflowv1",
+  "project_id": null,
+  "status": "BLOCKED_FAIL_CLOSED_UNROUTED",
+  "current_workflow": null,
+  "next_workflow": null,
+  "blocker": "Global DOCSYS routing has not yet verified project identity, canonical Obsidian owner or workflow.",
+  "allowed_actions": [
+    "DOCSYS_REPOSITORY_BOOTSTRAP",
+    "READ_ONLY_DISCOVERY"
+  ],
+  "forbidden_actions": [
+    "PRODUCT_CHANGE",
+    "RUNTIME_CHANGE",
+    "TEST_CHANGE",
+    "DEPENDENCY_CHANGE",
+    "DEPLOYMENT",
+    "NEXT_STAGE_ACTIVATION"
+  ],
+  "guardian_required": "AI_CODE_GUARDIAN_REQUIRED=YES"
+}
