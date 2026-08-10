@@ -1,6 +1,6 @@
 import { deleteByWorkspaceAndId, insertWithVariants, isUuid, selectFirstAvailable, updateByWorkspaceAndId } from './_supabase.js';
-import { writeAuthErrorResponse } from './_supabase-auth.js';
-import { asText, requireRequestIdentity, requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
+import { RequestAuthError, requireSupabaseRequestContext, writeAuthErrorResponse } from './_supabase-auth.js';
+import { asText, requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
 import { assertWorkspaceAiAllowed, assertWorkspaceEntityLimit, assertWorkspaceWriteAccess } from './_access-gate.js';
 import { claimAiDraftConfirmation, createFinalRecordFromAiDraft, releaseAiDraftConfirmation } from './ai-draft-confirmation.js';
 
@@ -200,6 +200,17 @@ function getLinkedTable(linkedType: string | null) {
   return null;
 }
 
+function assertDraftConfirmable(row: RecordMap) {
+  const status = normalizeStoredStatus(row.status);
+  if (status !== 'draft' && status !== 'pending') {
+    throw new RequestAuthError(409, 'AI_DRAFT_NOT_CONFIRMABLE');
+  }
+  const expiresAt = toIsoOrNull(row.expires_at ?? row.expiresAt);
+  if (expiresAt && new Date(expiresAt).getTime() <= Date.now()) {
+    throw new RequestAuthError(409, 'AI_DRAFT_EXPIRED');
+  }
+}
+
 
 export default async function handler(req: any, res: any) {
   try {
@@ -238,7 +249,9 @@ export default async function handler(req: any, res: any) {
         return;
       }
 
-      const identity = await requireRequestIdentity(req);
+      const verifiedContext = await requireSupabaseRequestContext(req);
+      const verifiedUserId = asText(verifiedContext.userId);
+      if (!verifiedUserId) throw new RequestAuthError(401, 'AI_DRAFT_USER_CONTEXT_REQUIRED');
       const nowIso = new Date().toISOString();
       const type = normalizeEnum(body.type, TYPES, 'lead');
       const status = normalizeDbStatus(body.status, 'draft');
@@ -250,7 +263,7 @@ export default async function handler(req: any, res: any) {
       }
       const payload: RecordMap = {
         workspace_id: workspaceId,
-        user_id: asText(body.userId ?? body.user_id ?? identity.userId) || null,
+        user_id: verifiedUserId,
         type,
         kind: normalizeKind(type, body.kind),
         raw_text: shouldClearRawText(status) ? null : rawText,
@@ -336,6 +349,7 @@ export default async function handler(req: any, res: any) {
           res.status(200).json({ draft: normalizeDraft(draftRow), createdRecord: { id: existingLinkedId, type: existingLinkedType }, idempotent: true });
           return;
         }
+        assertDraftConfirmable(draftRow);
         const claimed = await claimAiDraftConfirmation(id, workspaceId);
         if (!claimed) {
           const latest = await requireScopedRow('ai_drafts', id, workspaceId, 'AI_DRAFT_NOT_FOUND');
@@ -354,6 +368,7 @@ export default async function handler(req: any, res: any) {
           payload.linked_record_id = created.id;
           payload.linked_record_type = created.type;
           const updated = await safeUpdateAiDraft(id, workspaceId, payload);
+          await releaseAiDraftConfirmation(id, workspaceId).catch(() => null);
           const row = Array.isArray(updated) && updated[0] ? updated[0] as RecordMap : { id, workspace_id: workspaceId, ...payload };
           res.status(200).json({ draft: normalizeDraft(row), createdRecord: created });
           return;

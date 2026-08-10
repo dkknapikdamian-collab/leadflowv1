@@ -1,4 +1,4 @@
-import { RequestAuthError, requireSupabaseRequestContext } from './_supabase-auth.js';
+import { assertSupabaseEmailVerifiedForMutation, RequestAuthError, requireSupabaseRequestContext } from './_supabase-auth.js';
 import { requireRequestIdentity, resolveRequestWorkspaceId } from './_request-scope.js';
 import { assertWorkspaceAiAllowed, getWorkspaceAiLimits } from './_access-gate.js';
 import { supabaseRpc } from './_supabase.js';
@@ -121,6 +121,7 @@ export async function requireAiRequestAccess(
   assertInputBudget(bodyInput);
   const identity = await requireRequestIdentity(req, bodyInput);
   const context = await requireSupabaseRequestContext(req);
+  await assertSupabaseEmailVerifiedForMutation(context);
   const workspaceId = await resolveRequestWorkspaceId(req, bodyInput);
   const userId = asText(identity.userId || identity.uid || identity.email);
   if (!userId) throw new RequestAuthError(401, 'AI_USER_CONTEXT_REQUIRED');

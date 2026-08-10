@@ -1,5 +1,6 @@
 import { insertWithVariants, selectFirstAvailable, updateByWorkspaceAndId, withWorkspaceFilter } from './_supabase.js';
-import { asText, requireRequestIdentity, requireScopedRow, resolveRequestWorkspaceId } from './_request-scope.js';
+import { RequestAuthError, requireSupabaseRequestContext, writeAuthErrorResponse } from './_supabase-auth.js';
+import { asText, requireScopedRow, resolveRequestWorkspaceId } from './_request-scope.js';
 import { assertWorkspaceWriteAccess, assertWorkspaceAiAllowed } from './_access-gate.js';
 import { claimAiDraftConfirmation, createFinalRecordFromAiDraft, releaseAiDraftConfirmation } from './ai-draft-confirmation.js';
 
@@ -68,6 +69,15 @@ function normalizeDraft(row: Record<string, unknown>) {
   };
 }
 
+function assertDraftConfirmable(row: Record<string, unknown>) {
+  const status = normalizeStatus(row.status);
+  if (status !== 'pending') throw new RequestAuthError(409, 'DRAFT_NOT_CONFIRMABLE');
+  const expiresAt = asText(row.expires_at ?? row.expiresAt);
+  if (expiresAt && Number.isFinite(new Date(expiresAt).getTime()) && new Date(expiresAt).getTime() <= Date.now()) {
+    throw new RequestAuthError(409, 'DRAFT_EXPIRED');
+  }
+}
+
 async function loadDraftById(id: string, workspaceId: string) {
   const query = withWorkspaceFilter(`ai_drafts?id=eq.${encodeURIComponent(id)}&select=*&limit=1`, workspaceId);
   const result = await selectFirstAvailable([query]);
@@ -96,12 +106,14 @@ export default async function handler(req: any, res: any) {
 
     if (req.method === 'POST') {
       await assertWorkspaceAiAllowed(workspaceId);
-      const identity = await requireRequestIdentity(req);
+       const verifiedContext = await requireSupabaseRequestContext(req);
+       const verifiedUserId = asText(verifiedContext.userId);
+       if (!verifiedUserId) throw new RequestAuthError(401, 'DRAFT_USER_CONTEXT_REQUIRED');
       const nowIso = new Date().toISOString();
       const status = normalizeStatus(body.status);
       const payload = {
         workspace_id: workspaceId,
-        user_id: asText(body.userId ?? identity.userId) || null,
+         user_id: verifiedUserId,
         type: normalizeType(body.type),
         raw_text: status === 'pending' ? (asText(body.rawText) || null) : null,
         parsed_data: asObject(body.parsedData),
@@ -144,6 +156,7 @@ export default async function handler(req: any, res: any) {
           res.status(200).json({ draft: normalizeDraft(draftRow), createdRecord: { id: existingLinkedId, type: existingLinkedType }, idempotent: true });
           return;
         }
+        assertDraftConfirmable(draftRow);
         const claimed = await claimAiDraftConfirmation(id, workspaceId);
         if (!claimed) {
           res.status(409).json({ error: 'AI_DRAFT_CONFIRMATION_IN_PROGRESS' });
@@ -151,16 +164,17 @@ export default async function handler(req: any, res: any) {
         }
         try {
           const created = await createFinalRecordFromAiDraft(draftRow, workspaceId, asObject(body.confirmation));
-          const updatedRows = await updateByWorkspaceAndId('ai_drafts', id, workspaceId, {
+           const updatedRows = await updateByWorkspaceAndId('ai_drafts', id, workspaceId, {
             status: 'confirmed',
             raw_text: null,
             confirmed_at: nowIso,
             converted_at: nowIso,
             updated_at: nowIso,
             linked_record_id: created.id,
-            linked_record_type: created.type,
-          });
-          const updated = Array.isArray(updatedRows) && updatedRows[0] ? updatedRows[0] : { ...draftRow, status: 'confirmed', updated_at: nowIso, raw_text: null };
+             linked_record_type: created.type,
+           });
+           await releaseAiDraftConfirmation(id, workspaceId).catch(() => null);
+           const updated = Array.isArray(updatedRows) && updatedRows[0] ? updatedRows[0] : { ...draftRow, status: 'confirmed', updated_at: nowIso, raw_text: null };
           res.status(200).json({ draft: normalizeDraft(updated), createdRecord: created });
           return;
         } catch (error) {
@@ -209,6 +223,10 @@ export default async function handler(req: any, res: any) {
 
     res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
   } catch (error: any) {
+    if (error?.code || error?.status) {
+      writeAuthErrorResponse(res, error);
+      return;
+    }
     res.status(500).json({ error: error?.message || 'DRAFTS_API_FAILED' });
   }
 }

@@ -34,6 +34,7 @@ function request(body: Record<string, unknown>, workspaceId = 'workspace-a') {
       rawUser: {
         sub: 'user-a',
         email: 'user-a@example.com',
+        email_confirmed_at: '2026-01-01T00:00:00.000Z',
         app_metadata: { workspace_id: workspaceId },
       },
     },

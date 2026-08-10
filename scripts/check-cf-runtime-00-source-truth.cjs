@@ -143,6 +143,19 @@ const allowedChangePrefixes = [
   'supabase/migrations/20260810130000_b3_billing_webhook_processing_boundary.sql',
   'tests/b3-billing-authority.test.cjs',
   'tests/b3-billing-authority-runtime.test.ts',
+  // B4 AI confirmation remediation allowlist: server confirmation, lifecycle
+  // gates, trusted context origin, idempotency migration and focused tests.
+  'src/components/quick-lead/QuickLeadCaptureModal.tsx',
+  'src/server/ai-access.ts',
+  'src/server/ai-draft-confirmation.ts',
+  'src/server/ai-drafts.ts',
+  'src/server/assistant-context.ts',
+  'src/server/drafts.ts',
+  'supabase/migrations/20260810150000_b4_ai_draft_confirmation_idempotency.sql',
+  'tests/b4-ai-access-runtime.test.ts',
+  'tests/b4-ai-remediation-runtime.test.ts',
+  'tests/b4-ai-remediation.test.cjs',
+  'tests/stage27-quick-lead-capture.test.cjs',
   // STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH_ALLOWLIST
   'src/pages/TodayStable.tsx',
   'src/pages/TasksStable.tsx',

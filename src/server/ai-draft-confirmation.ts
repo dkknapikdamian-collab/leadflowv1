@@ -1,4 +1,4 @@
-import { insertWithVariants, supabaseRpc } from './_supabase.js';
+import { insertWithVariants, selectFirstAvailable, supabaseRpc } from './_supabase.js';
 import { asText, requireScopedRow } from './_request-scope.js';
 
 type RecordMap = Record<string, unknown>;
@@ -53,6 +53,48 @@ function resultId(result: { data?: unknown }) {
   return asText(row.id || row.record_id || row.recordId) || null;
 }
 
+function missingColumn(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error || '');
+  return /could not find the 'ai_draft_id' column|column ["']ai_draft_id["'] does not exist/i.test(message);
+}
+
+function uniqueViolation(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error || '');
+  return /duplicate key|unique constraint|23505/i.test(message);
+}
+
+async function findFinalRecordByDraftId(table: string, draftId: string, workspaceId: string) {
+  try {
+    const query = `${table}?ai_draft_id=eq.${encodeURIComponent(draftId)}&workspace_id=eq.${encodeURIComponent(workspaceId)}&select=*&limit=1`;
+    const result = await selectFirstAvailable([query]);
+    return Array.isArray(result.data) && result.data[0] && typeof result.data[0] === 'object'
+      ? result.data[0] as RecordMap
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+async function insertFinalRecord(table: string, payload: RecordMap, draftId: string) {
+  if (!draftId) return insertWithVariants([table], [payload]);
+
+  const existing = await findFinalRecordByDraftId(table, draftId, asText(payload.workspace_id));
+  if (existing) return { table, data: [existing], payload, idempotent: true };
+
+  try {
+    return await insertWithVariants([table], [{ ...payload, ai_draft_id: draftId }]);
+  } catch (error) {
+    // The migration is required for production idempotency. Keep a narrow
+    // compatibility fallback for older local schemas, never for auth/scope errors.
+    if (missingColumn(error)) return insertWithVariants([table], [payload]);
+    if (uniqueViolation(error)) {
+      const concurrent = await findFinalRecordByDraftId(table, draftId, asText(payload.workspace_id));
+      if (concurrent) return { table, data: [concurrent], payload, idempotent: true };
+    }
+    throw error;
+  }
+}
+
 export async function claimAiDraftConfirmation(draftId: string, workspaceId: string) {
   const result = await supabaseRpc('claim_ai_draft_confirmation', {
     p_draft_id: draftId,
@@ -86,6 +128,7 @@ export async function createFinalRecordFromAiDraft(
   const leadId = asText(input.leadId) || asText(parsed.leadId ?? parsed.lead_id);
   const caseId = asText(input.caseId) || asText(parsed.caseId ?? parsed.case_id);
   const clientId = asText(input.clientId) || asText(parsed.clientId ?? parsed.client_id);
+  const draftId = asText(draft.id);
   const nowIso = new Date().toISOString();
 
   await assertRelation('leads', leadId, workspaceId, 'AI_DRAFT_LEAD_NOT_FOUND');
@@ -93,7 +136,7 @@ export async function createFinalRecordFromAiDraft(
   await assertRelation('clients', clientId, workspaceId, 'AI_DRAFT_CLIENT_NOT_FOUND');
 
   if (type === 'lead') {
-    const result = await insertWithVariants(['leads'], [{
+    const result = await insertFinalRecord('leads', {
       workspace_id: workspaceId,
       name,
       company,
@@ -107,15 +150,36 @@ export async function createFinalRecordFromAiDraft(
       linked_case_id: caseId || null,
       created_at: nowIso,
       updated_at: nowIso,
-    }]);
-    return { id: resultId(result), type: 'lead' as const };
+    }, draftId);
+    const leadRecordId = resultId(result);
+    const nextAction = asText(parsed.nextAction ?? parsed.next_action);
+    const dueAt = asText(parsed.dueAt ?? parsed.due_at);
+    if (nextAction && dueAt) {
+      await insertFinalRecord('work_items', {
+        workspace_id: workspaceId,
+        title: nextAction,
+        description: asText(parsed.need),
+        type: 'follow_up',
+        record_type: 'task',
+        status: 'todo',
+        priority: asText(parsed.priority) || 'medium',
+        due_at: dueAt,
+        scheduled_at: dueAt,
+        lead_id: leadRecordId || null,
+        show_in_tasks: true,
+        show_in_calendar: false,
+        created_at: nowIso,
+        updated_at: nowIso,
+      }, draftId);
+    }
+    return { id: leadRecordId, type: 'lead' as const };
   }
 
   if (type === 'note') {
     const noteBody = asText(input.body) || asText(parsed.body ?? parsed.description ?? draft.raw_text);
     if (!noteBody) throw new Error('AI_DRAFT_NOTE_BODY_REQUIRED');
     if (!leadId && !caseId && !clientId) throw new Error('AI_DRAFT_NOTE_RELATION_REQUIRED');
-    const result = await insertWithVariants(['activities'], [{
+    const result = await insertFinalRecord('activities', {
       workspace_id: workspaceId,
       lead_id: leadId || null,
       case_id: caseId || null,
@@ -125,11 +189,11 @@ export async function createFinalRecordFromAiDraft(
       payload: { note: noteBody, title, source: 'ai_draft_approval' },
       created_at: nowIso,
       updated_at: nowIso,
-    }]);
+    }, draftId);
     return { id: resultId(result), type: 'note' as const };
   }
 
-  const result = await insertWithVariants(['work_items'], [{
+  const result = await insertFinalRecord('work_items', {
     workspace_id: workspaceId,
     title,
     status: asText(parsed.status) || (type === 'event' ? 'scheduled' : 'todo'),
@@ -149,6 +213,6 @@ export async function createFinalRecordFromAiDraft(
     show_in_calendar: type === 'event',
     created_at: nowIso,
     updated_at: nowIso,
-  }]);
+  }, draftId);
   return { id: resultId(result), type: type as 'task' | 'event' };
 }

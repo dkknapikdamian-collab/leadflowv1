@@ -65,6 +65,7 @@ const requiredTests = [
   'tests/b2-case-items-scope.test.cjs',
   'tests/b3-billing-authority.test.cjs',
   'tests/b4-ai-access.test.cjs',
+  'tests/b4-ai-remediation.test.cjs',
   'tests/email-digest-domain-gate.test.cjs',
   'tests/billing-stripe-blik-foundation.test.cjs',
   'tests/billing-foundation-test-polish-label-regression.test.cjs',
@@ -266,6 +267,9 @@ runQuiet('tests/b3-billing-authority-runtime.test.ts', process.execPath, [
 ]);
 runQuiet('tests/b4-ai-access-runtime.test.ts', process.execPath, [
   '--import', 'tsx', '--test', 'tests/b4-ai-access-runtime.test.ts',
+]);
+runQuiet('tests/b4-ai-remediation-runtime.test.ts', process.execPath, [
+  '--import', 'tsx', '--test', 'tests/b4-ai-remediation-runtime.test.ts',
 ]);
 
 console.log('');
