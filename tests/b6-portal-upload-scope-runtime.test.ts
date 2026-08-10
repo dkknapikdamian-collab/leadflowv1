@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import storageUploadHandler from '../api/storage-upload.ts';
+import caseItemsHandler from '../api/case-items.ts';
 import { createPortalSession } from '../src/server/_portal-token.ts';
 
 type ResponseState = { statusCode: number | null; payload: unknown };
@@ -67,6 +68,9 @@ function installFetch(itemExists = true): Fixture {
     }
     if (url.includes('/rest/v1/case_items?')) {
       return { ok: true, async text() { return itemExists ? JSON.stringify([{ id: itemId, case_id: caseId, type: 'file' }]) : '[]'; } } as Response;
+    }
+    if (url.includes('/rest/v1/portal_upload_admissions?')) {
+      return { ok: true, async text() { return '[]'; } } as Response;
     }
     if (url.includes('/rest/v1/rpc/closeflow_portal_upload_admit')) {
       const payload = JSON.parse(body || '{}');
@@ -151,6 +155,30 @@ test('B6 deterministic replay returns the admitted object without a second provi
     assert.deepEqual(second.state.payload, first.state.payload);
     assert.equal(fixture.calls.filter((call) => call.url.includes('/storage/v1/object/')).length, 1);
     assert.equal(fixture.calls.filter((call) => call.url.includes('closeflow_portal_upload_admit')).length, 2);
+  } finally {
+    restore(fixture);
+  }
+});
+
+test('B6 portal clients cannot create checklist items', async () => {
+  const fixture = installFetch();
+  try {
+    const response = responseRecorder();
+    await caseItemsHandler({ method: 'POST', query: {}, body: { caseId, portalSession: session(), title: 'forged item' } }, response);
+    assert.equal(response.state.statusCode, 403, JSON.stringify(response.state.payload));
+    assert.equal(fixture.calls.filter((call) => call.url.includes('/rest/v1/case_items')).length, 0);
+  } finally {
+    restore(fixture);
+  }
+});
+
+test('B6 portal clients cannot attach an unadmitted external file URL', async () => {
+  const fixture = installFetch();
+  try {
+    const response = responseRecorder();
+    await caseItemsHandler({ method: 'PATCH', query: {}, body: { caseId, portalSession: session(), id: itemId, fileUrl: 'https://evil.example/file.pdf' } }, response);
+    assert.equal(response.state.statusCode, 403, JSON.stringify(response.state.payload));
+    assert.equal(fixture.calls.filter((call) => call.url.includes('/rest/v1/case_items') && call.method === 'PATCH').length, 0);
   } finally {
     restore(fixture);
   }

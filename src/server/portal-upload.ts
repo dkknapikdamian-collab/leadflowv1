@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { supabaseRpc } from './_supabase.js';
+import { selectFirstAvailable, supabaseRpc } from './_supabase.js';
 import { requireCaseItemInCase } from './case-item-scope.js';
 import {
   requireOperatorCaseAccess,
@@ -34,10 +34,13 @@ function encodeStorageObjectPath(objectPath: string) {
   return objectPath.split('/').map((part) => encodeURIComponent(part)).join('/');
 }
 
-function decodeFile(file: PortalUploadFile) {
+function decodeFile(file: PortalUploadFile, maxBytes: number) {
   if (!file.name || !file.type || !file.dataBase64) throw new Error('PORTAL_FILE_REQUIRED');
   if (!/^[A-Za-z0-9+/]*={0,2}$/.test(file.dataBase64) || file.dataBase64.length % 4 === 1) {
     throw new Error('PORTAL_FILE_ENCODING_INVALID');
+  }
+  if (file.dataBase64.length > 4 * Math.ceil(maxBytes / 3)) {
+    throw new Error('PORTAL_FILE_SIZE_LIMIT');
   }
   const binary = Buffer.from(file.dataBase64, 'base64');
   const normalizedInput = file.dataBase64.replace(/=+$/, '');
@@ -46,6 +49,33 @@ function decodeFile(file: PortalUploadFile) {
   if (!Number.isInteger(file.size) || file.size <= 0) throw new Error('PORTAL_FILE_SIZE_LIMIT');
   if (binary.byteLength !== file.size) throw new Error('PORTAL_FILE_SIZE_MISMATCH');
   return binary;
+}
+
+export async function requirePortalUploadedObject(
+  workspaceId: string,
+  caseId: string,
+  itemId: string,
+  objectPath: string,
+) {
+  const normalizedWorkspaceId = asText(workspaceId);
+  const normalizedCaseId = asText(caseId);
+  const normalizedItemId = asText(itemId);
+  const normalizedPath = asText(objectPath);
+  const expectedPrefix = `portal/${normalizedCaseId}/${normalizedItemId}/`;
+  if (!normalizedWorkspaceId || !normalizedCaseId || !normalizedItemId || !normalizedPath.startsWith(expectedPrefix) || normalizedPath.includes('..') || normalizedPath.includes('://')) {
+    throw new Error('PORTAL_FILE_URL_NOT_ADMITTED');
+  }
+
+  const result = await selectFirstAvailable([
+    `portal_upload_admissions?select=object_path,file_name&workspace_id=eq.${encodeURIComponent(normalizedWorkspaceId)}&case_id=eq.${encodeURIComponent(normalizedCaseId)}&case_item_id=eq.${encodeURIComponent(normalizedItemId)}&object_path=eq.${encodeURIComponent(normalizedPath)}&status=eq.uploaded&limit=1`,
+  ]);
+  const rows = Array.isArray(result.data) ? result.data as Record<string, unknown>[] : [];
+  const row = rows[0];
+  if (!row) throw new Error('PORTAL_FILE_URL_NOT_ADMITTED');
+  return {
+    objectPath: asText(row.object_path) || normalizedPath,
+    fileName: asText(row.file_name),
+  };
 }
 
 function admissionRow(value: unknown) {
@@ -89,7 +119,7 @@ export async function uploadPortalFileWithPolicy(
     throw new Error('PORTAL_FILE_SIZE_LIMIT');
   }
 
-  const binary = decodeFile(file);
+  const binary = decodeFile(file, config.maxBytes);
   const fileName = sanitizePortalUploadFileName(file.name);
   const contentHash = createHash('sha256').update(binary).digest('hex');
   const idempotencyKey = deriveIdempotencyKey(normalizedCaseId, normalizedItemId, contentHash, options.idempotencyKey);

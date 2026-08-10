@@ -3,7 +3,7 @@ import { readPortalSession, requireOperatorCaseAccess, requirePortalSessionConte
 import { resolveRequestWorkspaceId, requireScopedRow } from '../src/server/_request-scope.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 import { findCaseItemById, requireCaseItemInCase, updateCaseItemInCase, deleteCaseItemInCase } from '../src/server/case-item-scope.js';
-import { uploadPortalFileWithPolicy } from '../src/server/portal-upload.js';
+import { requirePortalUploadedObject, uploadPortalFileWithPolicy } from '../src/server/portal-upload.js';
 
 const STAGE232A_R7_CASE_ITEMS_ITEM_ORDER_SCHEMA_COMPAT = 'case-items API falls back when production schema has no item_order column';
 void STAGE232A_R7_CASE_ITEMS_ITEM_ORDER_SCHEMA_COMPAT;
@@ -88,8 +88,9 @@ export default async function handler(req: any, res: any) {
         return;
       }
       let itemType = asText(body.type);
+      let portalContext: Awaited<ReturnType<typeof requirePortalSessionContext>> | null = null;
       if (portalMode) {
-        await requirePortalSessionContext(caseId, portalSession);
+        portalContext = await requirePortalSessionContext(caseId, portalSession);
       } else {
         await requireOperatorCaseAccess(req, caseId);
       }
@@ -100,8 +101,19 @@ export default async function handler(req: any, res: any) {
       const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
       if (body.status !== undefined) payload.status = asText(body.status) || 'missing';
       if (body.response !== undefined) payload.response = sanitizeAccessResponse(itemType, body.response);
-      if (body.fileUrl !== undefined) payload.file_url = asText(body.fileUrl) || null;
-      if (body.fileName !== undefined) payload.file_name = asText(body.fileName) || null;
+      if (portalMode && body.fileName !== undefined && body.fileUrl === undefined && body.file === undefined) {
+        throw new Error('PORTAL_FILE_NAME_SERVER_ONLY');
+      }
+      if (body.fileUrl !== undefined) {
+        if (portalMode) {
+          const verifiedUpload = await requirePortalUploadedObject(String(portalContext?.workspaceId || ''), caseId, id, asText(body.fileUrl));
+          payload.file_url = verifiedUpload.objectPath;
+          payload.file_name = verifiedUpload.fileName || null;
+        } else {
+          payload.file_url = asText(body.fileUrl) || null;
+        }
+      }
+      if (!portalMode && body.fileName !== undefined) payload.file_name = asText(body.fileName) || null;
       if (!portalMode) {
         if (body.title !== undefined) payload.title = asText(body.title);
         if (body.description !== undefined) payload.description = asText(body.description);
@@ -149,8 +161,11 @@ export default async function handler(req: any, res: any) {
         res.status(400).json({ error: 'CASE_ID_REQUIRED' });
         return;
       }
-      if (portalMode) await requirePortalSessionContext(caseId, portalSession);
-      else await requireOperatorCaseAccess(req, caseId);
+      if (portalMode) {
+        res.status(403).json({ error: 'PORTAL_CASE_ITEM_CREATE_NOT_ALLOWED' });
+        return;
+      }
+      await requireOperatorCaseAccess(req, caseId);
       const now = new Date().toISOString();
       const itemType = asText(body.type) || 'file';
       const basePayload = {
@@ -184,6 +199,10 @@ export default async function handler(req: any, res: any) {
     const message = String(error?.message || 'CASE_ITEMS_API_FAILED');
     const status = message.includes('PORTAL_SESSION') || message.includes('PORTAL_TOKEN')
       ? 403
+      : message.includes('PORTAL_FILE_URL_NOT_ADMITTED') || message.includes('PORTAL_CASE_ITEM_CREATE_NOT_ALLOWED')
+        ? 403
+        : message.includes('PORTAL_FILE_NAME_SERVER_ONLY')
+          ? 400
       : message === 'CASE_NOT_FOUND'
         ? 404
         : 500;

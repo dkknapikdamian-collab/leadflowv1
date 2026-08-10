@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: closed_with_registered_findings
+status: routed
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-SEC-CG-001F_PORTAL_UPLOAD_PARENT_SCOPE_RATE_LIMIT_AND_QUOTA_REPAIR
@@ -54,44 +54,3 @@ FOCUSED_TESTS=PASS
 GUARDIAN=PASS_OR_REGISTERED_FINDING
 INDEPENDENT_REVIEW=COMPLETED
 ```
-
-## Closeout evidence
-
-```text
-IMPLEMENTATION_REF=6c8cb6aa
-COMPATIBILITY_GUARD_REF=8889c7c7
-PORTAL_ROUTES_MAPPED=YES
-SESSION_AND_PARENT_SCOPE=PASS_LOCAL
-UPLOAD_LIMITS=PASS_LOCAL
-DOWNLOAD_SCOPE=NOT_IMPLEMENTED_IN_THIS_UPLOAD_CONTRACT
-PROVIDER_CALLS_UNAUTHORIZED=0_LOCAL_RUNTIME
-FOCUSED_TESTS=PASS (static 3/3, runtime 4/4)
-B2_IMPACT=PASS (static 2/2)
-TSC=PASS
-LINT=PASS
-BUILD=PASS
-QUIET_RELEASE_GATE=PASS
-SOURCE_TRUTH_GUARD=PASS
-GUARDIAN_PATCH_PATTERNS=0
-GUARDIAN_TEST_WEAKENING=CLEAR
-INDEPENDENT_REVIEW=TIMEOUT_REGISTERED; replacement reviewer also pending at closeout
-SUPABASE_CLI=UNAVAILABLE
-LIVE_MIGRATION_RLS_RUNTIME=OWNER_RUNTIME_REQUIRED
-STATUS=CLOSED_WITH_REGISTERED_FINDINGS
-```
-
-## Registered findings and risks
-
-1. Live Supabase migration, RLS, RPC privileges and storage admission runtime
-   were not verified locally because the Supabase CLI and live credentials are
-   unavailable.
-2. The quota/rate ledger uses the database `current_date`; production must
-   confirm the database timezone policy matches the CloseFlow Europe/Warsaw
-   contract, or the migration must use an explicit Warsaw-day boundary.
-3. Failed provider attempts consume reserved quota until an explicit
-   reconciliation policy exists; this is conservative but may require an
-   operator recovery path.
-4. Legacy nullable parent/workspace data and storage object retention require a
-   live data audit before release.
-5. Independent semantic review did not complete within the controller window;
-   no reviewer PASS is claimed.

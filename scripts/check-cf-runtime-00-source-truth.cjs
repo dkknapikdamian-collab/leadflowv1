@@ -163,7 +163,6 @@ const allowedChangePrefixes = [
   'tests/b5-support-actor-audit-runtime.test.ts',
   'docs/stages/LF-SEC-CG-001E_SUPPORT_ACTOR_AUTHORITY_AND_AUDIT_TRAIL_REPAIR.md',
   'docs/stages/LF-SEC-CG-001F_PORTAL_UPLOAD_PARENT_SCOPE_RATE_LIMIT_AND_QUOTA_REPAIR.md',
-  'docs/stages/LF-SEC-CG-001G_DEPENDENCY_SECRET_AND_SUPPLY_CHAIN_AUDIT_AND_REPAIR.md',
   '_project/WORKFLOW_STATE.json',
   // B6 portal upload scope, admission, quota/rate and replay allowlist.
   'api/case-items.ts',

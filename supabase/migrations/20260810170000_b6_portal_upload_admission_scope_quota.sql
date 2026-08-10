@@ -87,6 +87,10 @@ begin
     raise exception 'CASE_ITEM_NOT_FOUND';
   end if;
 
+  perform pg_advisory_xact_lock(
+    hashtextextended(p_workspace_id::text || ':' || trim(p_idempotency_key), 0)
+  );
+
   select * into existing_admission
   from public.portal_upload_admissions
   where workspace_id = p_workspace_id and idempotency_key = p_idempotency_key
