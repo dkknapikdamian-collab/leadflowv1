@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 27,
+  "state_revision": 28,
   "last_accepted": {
     "id": "LF-PROD-SOT-G15-R23M-12_CLIENT_MISSING_MODAL_CANONICAL_METADATA_WIRING_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
@@ -9,16 +9,16 @@
     "evidence": "A2-12 guard/test 11/11; Stage232A related tests PASS; TSC 23->22; build PASS; exact three-file implementation scope; controller Guardian-style audit PASS; two independent reviewer timeouts registered; Stage227C3B and inherited Stage231B0 guard drift registered"
   },
   "current_workflow": {
-    "id": "LF-PROD-SOT-G15-R23M-12_CLIENT_MISSING_MODAL_CANONICAL_METADATA_WIRING_REPAIR",
+    "id": "LF-PROD-SOT-G15-R23M-13_CLIENT_CONTEXT_ACTION_BUTTON_CONTRACT_REPAIR",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-12_CLIENT_MISSING_MODAL_CANONICAL_METADATA_WIRING_REPAIR.md",
-    "status": "CLOSED_A2_NEXT_MAPPER_REQUIRED",
-    "base_sha": "961c90b773963c9cccb4bda5626d20de1df9a86c",
+    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-13_CLIENT_CONTEXT_ACTION_BUTTON_CONTRACT_REPAIR.md",
+    "status": "ROUTED_A2_ACTIVE",
+    "base_sha": "02bf7cef499953d000fca78db2d49785fb70837c",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
   },
-  "next_workflow": {"id": null, "status": "LOCKED_PENDING_FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION"},
+  "next_workflow": {"id": null, "status": "LOCKED_PENDING_A2_13_CLOSEOUT"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
@@ -70,6 +70,9 @@
     "working-branch:tsc-map@961c90b773963c9cccb4bda5626d20de1df9a86c:22-active-error-lines",
     "working-branch:a2-12-build@961c90b7:pass",
     "working-branch:a2-12-independent-review:timeout-registered-twice-no-pass-claim",
-    "working-branch:a2-12-related-tests:stage227c3b-baseline-drift-registered"
+    "working-branch:a2-12-related-tests:stage227c3b-baseline-drift-registered",
+    "working-branch:tsc-map@02bf7cef499953d000fca78db2d49785fb70837c:22-active-error-lines",
+    "working-branch:a2-13-mapper-timeout:controller-root-cause-selection",
+    "working-branch:controller-root-cause@02bf7cef:context-action-button-unsupported-variant-size"
   ]
 }
