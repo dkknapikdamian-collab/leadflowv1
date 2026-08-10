@@ -1,12 +1,12 @@
-# DOCSYS-V1 repository bootstrap router — CLOSEFLOW_LEAD_APP branch gate
+# DOCSYS-V1 repository bootstrap router — CLOSEFLOW_LEAD_APP
 
 Repo: dkknapikdamian-collab/leadflowv1
 Repository default branch: main
-Application canonical branch evidence: dev-rollout-freeze
+Application canonical branch: main
 Preliminary class: STANDALONE_APPLICATION
-Status: OWNER_DECISION_REQUIRED / FAIL-CLOSED_BRANCH_SOT_CONFLICT
+Status: ROUTED / CODE_TASKS_REQUIRE_AI_CODE_GUARDIAN
 
-`main` is the GitHub default branch and carries the DOCSYS bootstrap kernel. The current application repository contract, Obsidian router and active R23L workflow point to `dev-rollout-freeze`. This branch-role distinction is now explicit; it is not permission to silently choose a canonical branch. The owner must record `A_MAIN_CANONICAL`, `B_DEV_ROLLOUT_FREEZE_CANONICAL` or `C_EXPLICIT_SPLIT_WITH_SEPARATE_BOUNDARIES` before product work, merge, deployment or next-stage activation.
+`main` is the GitHub default and canonical application branch selected by the current global registry and owner routing commits. `dev-rollout-freeze` is preserved as historical branch-role evidence and is not a competing source of truth. Product work still requires the repository workflow contract and the applicable AI Code Guardian gate.
 
 ## READ_FIRST
 
@@ -30,4 +30,4 @@ Status: OWNER_DECISION_REQUIRED / FAIL-CLOSED_BRANCH_SOT_CONFLICT
 
 ## Routing
 
-The current repository is deliberately blocked for dependent work until the global DOCSYS router and owner decision reconcile `main` versus `dev-rollout-freeze`.
+The repository is routed through the global DOCSYS router. Dependent work remains bounded by `_project/WORKFLOW_STATE.json`, exact stage contracts and the independent controller; no next stage is activated by this routing repair.
