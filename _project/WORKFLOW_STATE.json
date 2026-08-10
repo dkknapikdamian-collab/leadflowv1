@@ -6,7 +6,7 @@
     "id": "LF-SEC-CG-001F_PORTAL_UPLOAD_PARENT_SCOPE_RATE_LIMIT_AND_QUOTA_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
     "commit_sha": "5a261599",
-    "evidence": "B6 local evidence: shared portal upload policy enforces verified portal/operator scope, item-to-case-to-workspace binding, MIME/size/base64 validation, deterministic DB admission with advisory serialization, quota/rate limits, admitted file references and service-only RLS tables; B2 static 2/2, B6 static 4/4, runtime 6/6, TSC/lint/build/quiet release gate/source-truth guard PASS, Guardian patch-patterns 0/test-weakening CLEAR; independent review completed with four findings and all four remediated locally; live Supabase migration/RLS and final post-remediation review remain registered"
+    "evidence": "B6 local evidence: shared portal upload policy enforces verified portal/operator scope, item-to-case-to-workspace binding, MIME/size/base64 validation, deterministic DB admission with advisory serialization, quota/rate limits, admitted file references and service-only RLS tables; B2 static 2/2, B6 static 4/4, runtime 6/6, TSC/lint/build/quiet release gate/source-truth guard PASS, Guardian patch-patterns 0/test-weakening CLEAR; independent review completed with four findings and all four remediated locally; live Supabase migration/RLS and final post-remediation review timeout remain registered"
   },
   "current_workflow": {
     "id": "LF-SEC-CG-001G_DEPENDENCY_SECRET_AND_SUPPLY_CHAIN_AUDIT_AND_REPAIR",
@@ -191,7 +191,7 @@
     "b6:5a261599:static-4-runtime-6-b2-compat-2-tsc-lint-build-quiet-pass",
     "b6:8889c7c7:shared-upload-service-preserved-B2-scope-contract",
     "b6:5a261599:review-findings-admission-race-portal-create-file-url-base64-remediated",
-    "b6:5a261599:live-supabase-and-post-remediation-review-registered",
+    "b6:5a261599:live-supabase-and-post-remediation-review-timeout-registered",
     "b7-route:8889c7c7:dependency-secret-supply-chain-contract-created"
   ]
 }

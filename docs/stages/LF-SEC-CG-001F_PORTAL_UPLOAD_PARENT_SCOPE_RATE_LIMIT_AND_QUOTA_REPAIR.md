@@ -74,7 +74,7 @@ QUIET_RELEASE_GATE=PASS
 SOURCE_TRUTH_GUARD=PASS
 GUARDIAN_PATCH_PATTERNS=0
 GUARDIAN_TEST_WEAKENING=CLEAR
-INDEPENDENT_REVIEW=COMPLETED_WITH_FOUR_FINDINGS; remediation implemented; final post-remediation review pending
+INDEPENDENT_REVIEW=COMPLETED_WITH_FOUR_FINDINGS; remediation implemented; final post-remediation review TIMEOUT_REGISTERED
 SUPABASE_CLI=UNAVAILABLE
 LIVE_MIGRATION_RLS_RUNTIME=OWNER_RUNTIME_REQUIRED
 STATUS=CLOSED_WITH_REGISTERED_FINDINGS
@@ -95,4 +95,4 @@ STATUS=CLOSED_WITH_REGISTERED_FINDINGS
    live data audit before release.
 5. The independent reviewer found and the controller remediated the admission
    race, portal checklist creation, unadmitted file URL and oversized base64
-   issues; the post-remediation review remains pending.
+   issues; the final post-remediation reviewer timed out and no PASS is claimed.
