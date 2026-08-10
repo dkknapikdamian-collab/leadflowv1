@@ -474,7 +474,6 @@ export async function fetchPaymentsFromSupabase(params?: { leadId?: string; case
       if (params?.caseId && String((row as any).caseId || '') !== params.caseId) return false;
       if (params?.clientId && String((row as any).clientId || '') !== params.clientId) return false;
       if (params?.status && String((row as any).status || '') !== params.status) return false;
-      if (!params?.includeArchived && String((row as any).status || '').toLowerCase() === 'archived') return false;
       return true;
     }));
   }
