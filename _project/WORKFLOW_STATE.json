@@ -1,27 +1,29 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 3,
+  "state_revision": 4,
   "last_accepted": {
-    "id": "LF-PROD-SOT-G15-R23K_FINANCE_SNAPSHOT_REMAINING_AMOUNT_INPUT_CONTRACT",
+    "id": "LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR",
     "status": "CLOSED",
-    "commit_sha": "21f27150df059e79e066fa0cba97cbd3483eda76",
-    "evidence": "obsidian:10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md"
+    "commit_sha": "299a4e165e27bc36d73b72980beab30f79b246f9",
+    "evidence": "working-branch exact guard/test/tsc/build evidence; clean checkout guard/test verification"
   },
   "current_workflow": {
-    "id": "LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR",
+    "id": "LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
-    "status": "CONTROL_00_RESOLVED_A1_REEXECUTION_REQUIRED_ON_SINGLE_WORKING_BRANCH",
-    "base_sha": "ab0f5c85f6cb3636c483debd13c04c5e29779c81",
+    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
+    "status": "READY_FOR_EXECUTION",
+    "base_sha": "299a4e165e27bc36d73b72980beab30f79b246f9",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
-    "blocker": "Historical PR #50 is evidence only; R23L must be re-executed and verified on the single working branch before A2."
+    "blocker": null
   },
   "next_workflow": {"id": null, "status": "LOCKED_PENDING_CURRENT_STAGE_ACCEPTANCE"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
+    "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
     "github:pull/50@787b9e0f5d2172c0fbd399807ee53b2f6e8cde49",
-    "obsidian:10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md"
+    "obsidian:10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md",
+    "working-branch:tsc-map@299a4e165e27bc36d73b72980beab30f79b246f9:49-active-error-lines"
   ]
 }
