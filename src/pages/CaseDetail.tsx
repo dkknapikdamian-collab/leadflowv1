@@ -1604,37 +1604,6 @@ function CaseHistoryKindIconStage220A17({ kind }: { kind: CaseHistoryItem['kind'
 const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_CASE_DETAIL = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
 
 
-function CaseDetailLoadingState() {
-  return (
-    <Layout>
-      <main className="case-detail-page case-detail-page-loading" data-case-detail-loading="true">
-        <section className="case-detail-transition-loader" role="status" aria-live="polite">
-          <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
-          <div>
-            <p>Ładowanie sprawy...</p>
-            <span>Przygotowujemy dane sprawy. Panele i akcje pojawią się po załadowaniu rekordu.</span>
-          </div>
-        </section>
-      </main>
-      <ConfirmDialog
-        data-case-detail-delete-confirm="true"
-        open={deleteCaseOpen}
-        onOpenChange={(open) => {
-          if (!open && !deleteCasePending) setDeleteCaseOpen(false);
-        }}
-        title="Awaryjnie usunąć sprawę?"
-        description={`Czy na pewno chcesz usunąć sprawę "${caseData?.title || caseData?.clientName || 'bez tytułu'}"? Tej operacji nie można cofnąć.`}
-        confirmLabel={deleteCasePending ? 'Usuwanie...' : 'Tak, usuń'}
-        cancelLabel="Nie"
-        confirmTone="destructive"
-        pending={deleteCasePending}
-        onConfirm={handleConfirmDeleteCaseRecord}
-      />
-    </Layout>
-  );
-}
-
-
 const CASEDETAIL_ACTION_COLOR_TAXONOMY_V1 = 'case detail action visual taxonomy V1';
 function caseDetailActionVisualKind(row: Record<string, unknown> | null | undefined) {
   return inferCloseFlowActionVisualKind(row);
