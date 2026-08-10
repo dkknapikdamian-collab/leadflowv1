@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: active
+status: closed_with_registered_findings
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-PROD-SOT-G15-R23M-15_LEAD_ACTION_BUTTON_POINTER_CONTRACT_REPAIR
@@ -84,3 +84,38 @@ TSC_ROOT_CAUSE_REMOVED=YES
 BUILD=PASS
 ALLOWLIST=PASS
 ```
+
+## Closeout evidence
+
+```text
+STATUS=PASS_ON_WORK_BRANCH_WITH_REGISTERED_FINDINGS
+SOURCE_BASE_SHA=554761c0b4568403c7b9318abbbe97704c330a89
+IMPLEMENTATION_SHA=b7ef166981850620d309f1b4b008f0b701590609
+FILES_CHANGED=src/pages/LeadDetail.tsx;scripts/check-lf-prod-sot-g15-r23m-15-lead-action-button-pointer.cjs;tests/lf-prod-sot-g15-r23m-15-lead-action-button-pointer.test.cjs
+TSC=18->17
+FOCUSED_TESTS=3/3_PASS
+RELATED_R23C_AND_STAGE18_TESTS=9/9_PASS
+BUILD=PASS
+DIFF_CHECK=PASS
+ALLOWLIST=3_IMPLEMENTATION_FILES_PASS
+GUARDIAN_STYLE_AUDIT=PASS
+MAPPER_REVIEW=ROOT_CAUSE_CONFIRMED;RECOMMENDATION_CONFIRMED
+INDEPENDENT_REVIEW=TIMEOUT_REGISTERED_NO_PASS_CLAIM
+FREEBUFF_USED=NO_MCP_EXPOSED
+OPENCODE_USED=NO_MCP_EXPOSED
+MARKET_PLUGINS_USED=ai-code-guardian@damian-agent-plugins;agent-efficiency-guardian@damian-agent-plugins;marketplace-router@damian-agent-plugins
+NEXT_STAGE=FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION
+```
+
+### Registered findings
+
+1. `INDEPENDENT_SUBAGENT_REVIEW_TIMEOUT`: the bounded reviewer did not return
+   before timeout; mapper evidence, focused tests, TSC and build are retained,
+   but no independent PASS is claimed.
+2. `STAGE228R12_R13_R16R2_GUARD_DRIFT`: three existing guards fail because
+   current runtime lacks historical ClientDetail markers or `item_added`; they
+   are outside this pointer contract diff and were not restored as a patch.
+3. `STAGE227C3A_RUNTIME_GUARD_DRIFT`: three existing tests still expect the
+   superseded LeadDetail missing-item modal/payload wiring; outside this diff.
+4. The checkpoint findings from A2-01..A2-13 remain active, including
+   Supabase/auth/migration/workspace-scope and AI draft-only guard failures.
