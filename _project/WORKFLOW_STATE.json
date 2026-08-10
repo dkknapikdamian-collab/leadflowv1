@@ -1,24 +1,24 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 24,
+  "state_revision": 25,
   "last_accepted": {
-    "id": "LF-PROD-SOT-G15-R23M-10_CASES_CLOSED_VIEW_RECORD_SCOPE_REPAIR",
+    "id": "LF-PROD-SOT-G15-R23M-11_CASE_OWNER_RISK_CONTEXT_CANONICAL_INPUT_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
-    "commit_sha": "718211817a1cee1822751813025c5460ddaab403",
-    "evidence": "A2-10 guard/test 3/3; related Cases tests 4/4; related guards 2 PASS with one pre-existing drift registered; TSC 26->24; build PASS; controller Guardian-style audit PASS; independent review timeout registered"
+    "commit_sha": "208f53ecde3143f50e5ba7d7e69053587d0f2ca7",
+    "evidence": "A2-11 guard/test 3/3; related owner-risk tests 9/9; owner-risk guards 2/2; stale R13-R6 guard drift registered; TSC 24->23; build PASS; controller Guardian-style audit PASS; mapper bounded diagnosis complete-batch; independent review PASS"
   },
   "current_workflow": {
     "id": "LF-PROD-SOT-G15-R23M-11_CASE_OWNER_RISK_CONTEXT_CANONICAL_INPUT_REPAIR",
     "kind": "TECHNICAL_STAGE",
     "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-11_CASE_OWNER_RISK_CONTEXT_CANONICAL_INPUT_REPAIR.md",
-    "status": "ROUTED_A2_ACTIVE",
-    "base_sha": "34befb167310eb98bcf3437284502645c895a077",
+    "status": "CLOSED_A2_NEXT_MAPPER_REQUIRED",
+    "base_sha": "208f53ecde3143f50e5ba7d7e69053587d0f2ca7",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
   },
-  "next_workflow": {"id": null, "status": "LOCKED_PENDING_A2_11_CLOSEOUT"},
+  "next_workflow": {"id": null, "status": "LOCKED_PENDING_FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
@@ -59,6 +59,10 @@
     "working-branch:a2-10-related-guard@71821181:stage231b0-r7-preexisting-drift",
     "working-branch:a2-10-independent-review:timeout-registered",
     "working-branch:tsc-map@34befb167310eb98bcf3437284502645c895a077:24-active-error-lines",
-    "working-branch:controller-root-cause@34befb16:owner-risk-context-lifecycle-unused-property"
+    "working-branch:controller-root-cause@34befb16:owner-risk-context-lifecycle-unused-property",
+    "working-branch:a2-11-mapper@622f34f6:bounded-diagnosis-complete-batch-required",
+    "working-branch:tsc-map@208f53ecde3143f50e5ba7d7e69053587d0f2ca7:23-active-error-lines",
+    "working-branch:a2-11-independent-review@622f34f6:pass",
+    "working-branch:a2-11-related-guard:stage231b0-r13-r6-stale-context-contract"
   ]
 }
