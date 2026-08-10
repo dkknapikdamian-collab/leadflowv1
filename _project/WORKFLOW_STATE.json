@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 44,
+  "state_revision": 45,
   "last_accepted": {
     "id": "LF-PROD-SOT-G15-R23M-20_TODAY_NATIVE_MOUSE_EVENT_BOUNDARY_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
@@ -141,6 +141,21 @@
     "working-branch:a2-20-guard-test:3-of-3-pass",
     "working-branch:a2-20-related-today-visual:4-of-4-pass",
     "working-branch:a2-20-build@023b96b8:pass",
-    "working-branch:a2-20-independent-review:timeout-registered-no-pass-claim"
+    "working-branch:a2-20-independent-review:timeout-registered-no-pass-claim",
+    "checkpoint:a2-14-a2-20@9be05831:lint-fails-at-3-active-pwa-tsc-errors",
+    "checkpoint:a2-14-a2-20@9be05831:full-test-2357-of-2778-pass-419-fail",
+    "checkpoint:a2-14-a2-20:build-reused-from-023b96b8-code-unchanged",
+    "checkpoint:a2-14-a2-20:google-calendar-env-truth-pass",
+    "checkpoint:a2-14-a2-20:billing-truth-pass",
+    "checkpoint:a2-14-a2-20:portal-secrets-hardening-pass",
+    "checkpoint:a2-14-a2-20:access-billing-stage02a-pass",
+    "checkpoint-finding:a2-14-a2-20:SUPABASE_FIRST_ARCHITECTURE_FIRESTORE_RUNTIME_DRIFT",
+    "checkpoint-finding:a2-14-a2-20:SUPABASE_AUTH_MIGRATION_MISSING",
+    "checkpoint-finding:a2-14-a2-20:MIGRATION_SECRET_SCAN_POSSIBLE_SECRET_IN_MIGRATION",
+    "checkpoint-finding:a2-14-a2-20:WORKSPACE_BILLING_SCOPE_GUARD_DRIFT",
+    "checkpoint-finding:a2-14-a2-20:PLAN_ACCESS_GATING_DRIFT",
+    "checkpoint-finding:a2-14-a2-20:AI_DRAFT_ONLY_GUARD_DRIFT",
+    "checkpoint-finding:a2-14-a2-20:AI_SUPABASE_SOURCE_GUARD_DRIFT",
+    "checkpoint-finding:a2-14-a2-20:PORTAL_STORAGE_HEALTH_SOURCE_MISSING"
   ]
 }
