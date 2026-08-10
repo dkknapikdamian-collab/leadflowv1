@@ -172,6 +172,7 @@ const allowedChangePrefixes = [
   'supabase/migrations/20260810170000_b6_portal_upload_admission_scope_quota.sql',
   'tests/b6-portal-upload-scope.test.cjs',
   'tests/b6-portal-upload-scope-runtime.test.ts',
+  'tests/b2-case-items-scope.test.cjs',
   // STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH_ALLOWLIST
   'src/pages/TodayStable.tsx',
   'src/pages/TasksStable.tsx',

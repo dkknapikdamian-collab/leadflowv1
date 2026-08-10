@@ -1,6 +1,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const api = require('node:fs').readFileSync('api/case-items.ts', 'utf8');
+const storageUpload = require('node:fs').readFileSync('api/storage-upload.ts', 'utf8');
+const portalUpload = require('node:fs').readFileSync('src/server/portal-upload.ts', 'utf8');
 const records = require('node:fs').readFileSync('src/server/records.ts', 'utf8');
 const scope = require('node:fs').readFileSync('src/server/case-item-scope.ts', 'utf8');
 
@@ -9,8 +11,9 @@ test('B2 direct case-items API uses the canonical case parent scope and supports
   assert.match(api, /req\.method === 'DELETE'/);
   assert.match(scope, /case_items\?select=\*&id=eq\./);
   assert.match(api, /requireScopedRow\('cases'/);
-  assert.match(require('node:fs').readFileSync('api/storage-upload.ts', 'utf8'), /requireCaseItemInCase\(itemId, caseId\)/);
-  assert.match(require('node:fs').readFileSync('api/storage-upload.ts', 'utf8'), /message === 'CASE_ITEM_NOT_FOUND'/);
+  assert.match(storageUpload, /uploadPortalFileWithPolicy/);
+  assert.match(portalUpload, /requireCaseItemInCase\(normalizedItemId, normalizedCaseId\)/);
+  assert.match(storageUpload, /message === 'CASE_ITEM_NOT_FOUND'/);
 });
 
 test('B2 compatibility records route validates case scope for every mutation', () => {
