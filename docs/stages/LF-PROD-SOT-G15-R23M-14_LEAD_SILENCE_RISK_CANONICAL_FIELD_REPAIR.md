@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: active
+status: closed_with_registered_findings
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-PROD-SOT-G15-R23M-14_LEAD_SILENCE_RISK_CANONICAL_FIELD_REPAIR
@@ -83,3 +83,36 @@ TSC_ROOT_CAUSE_REMOVED=YES
 BUILD=PASS
 ALLOWLIST=PASS
 ```
+
+## Closeout evidence
+
+```text
+STATUS=PASS_ON_WORK_BRANCH_WITH_REGISTERED_FINDINGS
+SOURCE_BASE_SHA=e6658f6cbc6018f9997e7449a36a45d7fd5b5fa3
+IMPLEMENTATION_SHA=b3691a7949039d0afef1be4f558522af12e6a4d0
+FILES_CHANGED=src/pages/LeadDetail.tsx;scripts/check-lf-prod-sot-g15-r23m-14-lead-silence-risk.cjs;tests/lf-prod-sot-g15-r23m-14-lead-silence-risk.test.cjs
+TSC=20->18
+FOCUSED_TESTS=3/3_PASS
+RELATED_STAGE227E_TESTS=24/25_PASS
+BUILD=PASS
+DIFF_CHECK=PASS
+ALLOWLIST=3_IMPLEMENTATION_FILES_PASS
+GUARDIAN_STYLE_AUDIT=PASS
+MAPPER_REVIEW=ROOT_CAUSE_CONFIRMED;RECOMMENDATION_CONFIRMED
+INDEPENDENT_REVIEW=TIMEOUT_REGISTERED_NO_PASS_CLAIM
+FREEBUFF_USED=NO_MCP_EXPOSED
+OPENCODE_USED=NO_MCP_EXPOSED
+MARKET_PLUGINS_USED=ai-code-guardian@damian-agent-plugins;agent-efficiency-guardian@damian-agent-plugins;marketplace-router@damian-agent-plugins
+NEXT_STAGE=FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION
+```
+
+### Registered findings
+
+1. `INDEPENDENT_SUBAGENT_REVIEW_TIMEOUT`: the bounded reviewer did not return
+   before timeout; mapper evidence, focused tests, related tests, TSC and build
+   are retained, but no independent PASS is claimed.
+2. `STAGE227E6_NOTES_HISTORY_GUARD_DRIFT`: one related historical test expects
+   `data-stage227e6-notes-history-separation`, which is absent from the current
+   runtime and outside this diff. The other 24 related Stage227E tests passed.
+3. The checkpoint findings from A2-01..A2-13 remain active, including
+   Supabase/auth/migration/workspace-scope and AI draft-only guard failures.
