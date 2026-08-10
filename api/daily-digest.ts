@@ -7,24 +7,17 @@ import dailyDigestHandler from '../src/server/daily-digest-handler.js';
 
 
 // STAGE223_R2S_DAILY_DIGEST_CRON_AUTH_CONTRACT_HOTFIX
-// Legacy cron auth contract markers for tests/daily-digest-cron-auth.test.cjs.
-// Real cron auth remains delegated to the canonical daily digest handler.
+// Legacy compatibility marker mirrors the canonical fail-closed cron contract.
 function asNullableText(value: unknown): string | null {
   return typeof value === 'string' && value.trim() ? value.trim() : null;
 }
 
 function stage223R2sDailyDigestCronAuthContract(req: any): boolean {
-  const vercelCron = asNullableText(req?.headers?.['x-vercel-cron']);
   const cronSecret = asNullableText(process.env.CRON_SECRET);
-  const providedSecret = asNullableText(req?.headers?.['x-cron-secret'] || req?.query?.secret);
-
-  if (vercelCron) return true;
-
-  if (cronSecret) {
-    return providedSecret === cronSecret;
-  }
-
-  return false;
+  const authorization = asNullableText(req?.headers?.authorization || req?.headers?.Authorization);
+  const bearerSecret = authorization?.match(/^Bearer\s+(.+)$/i)?.[1]?.trim() || null;
+  const providedSecret = asNullableText(req?.headers?.['x-cron-secret']) || bearerSecret;
+  return Boolean(cronSecret && providedSecret === cronSecret);
 }
 void stage223R2sDailyDigestCronAuthContract;
 

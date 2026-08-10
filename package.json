@@ -73,6 +73,7 @@
                     "verify:migrations:supabase":  "node scripts/check-supabase-migrations-guard.cjs",
                     "check:a13-critical-regressions":  "node scripts/check-a13-critical-regressions.cjs",
                     "test:raw":  "node --test \"tests/**/*.test.cjs\"",
+                    "test:b1-digest-authorization":  "node --test tests/b1-digest-authorization.test.cjs && node --import tsx --test tests/b1-digest-authorization-runtime.test.ts",
                     "test:compact":  "node scripts/run-tests-compact.cjs",
                     "test:critical":  "node scripts/run-tests-compact.cjs --critical",
                     "check:a14-business-types":  "node scripts/check-a14-business-types.cjs",

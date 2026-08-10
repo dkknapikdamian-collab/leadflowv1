@@ -603,10 +603,12 @@ useEffect(() => {
 
     setCheckingDigestDiagnostics(true);
     try {
+      const token = await getSupabaseAccessToken().catch(() => '');
       const response = await fetch('/api/daily-digest', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
           'x-workspace-id': workspace.id,
           'x-user-id': auth.currentUser?.uid || '',
           'x-user-email': auth.currentUser?.email || workspaceProfile?.email || recipientEmail,
@@ -646,10 +648,12 @@ useEffect(() => {
 
     setSendingDigestTest(true);
     try {
+      const token = await getSupabaseAccessToken().catch(() => '');
       const response = await fetch('/api/daily-digest', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
           'x-workspace-id': workspace.id,
           'x-user-id': auth.currentUser?.uid || '',
           'x-user-email': auth.currentUser?.email || workspaceProfile?.email || recipientEmail,

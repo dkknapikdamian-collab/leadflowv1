@@ -3,6 +3,8 @@ import { buildDailyDigestPayload, buildDigestEmail, shouldSendDigestNow } from '
 import { getAppUrlFromRequest, getMailDiagnostics, sendResendEmail } from './_mail-provider.js';
 import { insertWithVariants, selectFirstAvailable, updateWhere } from './_supabase.js';
 import { withWorkspaceFilter } from './_request-scope.js';
+import { getInteractiveDigestScope, isDigestCronAuthorized } from './digest-authorization.js';
+import { RequestAuthError, writeAuthErrorResponse } from './_supabase-auth.js';
 const DEFAULT_TZ = 'Europe/Warsaw';
 const DEFAULT_DIGEST_HOUR = 7;
 
@@ -79,12 +81,6 @@ function parseBody(req: any) {
   return req.body;
 }
 
-function extractBearerToken(req: any) {
-  const auth = asText(req?.headers?.authorization || req?.headers?.Authorization);
-  if (!auth.toLowerCase().startsWith('bearer ')) return '';
-  return auth.slice(7).trim();
-}
-
 function getDateKey(date: Date, timeZone: string) {
   return new Intl.DateTimeFormat('en-CA', {
     timeZone,
@@ -116,10 +112,10 @@ async function readDigestWorkspaces() {
   return Array.isArray(result.data) ? result.data.filter((row) => row && typeof row === 'object') : [];
 }
 
-async function alreadySentToday(profileEmail: string, sentForDate: string) {
+async function alreadySentToday(workspaceId: string, profileEmail: string, sentForDate: string) {
   try {
     const result = await selectFirstAvailable([
-      `digest_logs?select=id&profile_email=eq.${encodeURIComponent(profileEmail)}&report_type=eq.daily&sent_for_date=eq.${encodeURIComponent(sentForDate)}&limit=1`,
+      `digest_logs?select=id&workspace_id=eq.${encodeURIComponent(workspaceId)}&profile_email=eq.${encodeURIComponent(profileEmail)}&report_type=eq.daily&sent_for_date=eq.${encodeURIComponent(sentForDate)}&limit=1`,
     ]);
     return Array.isArray(result.data) && result.data.length > 0;
   } catch {
@@ -233,20 +229,6 @@ function shouldEnforceWorkspaceDigestHour() {
   return asBool(process.env.DIGEST_ENFORCE_WORKSPACE_HOUR, true);
 }
 
-function isRequestAuthorized(req: any, body: Record<string, unknown>) {
-  const cronSecret = asNullableText(process.env.CRON_SECRET);
-  const providedSecret =
-    asNullableText(req?.headers?.['x-cron-secret'])
-    || asNullableText(req?.query?.secret)
-    || asNullableText((body as any)?.secret)
-    || asNullableText(extractBearerToken(req));
-
-  const vercelCron = asNullableText(req?.headers?.['x-vercel-cron']);
-  if (vercelCron) return true;
-  if (!cronSecret) return false;
-  return providedSecret === cronSecret;
-}
-
 export default async function handler(req: any, res: any) {
   try {
     if (!['GET', 'POST'].includes(req.method || '')) {
@@ -263,28 +245,11 @@ export default async function handler(req: any, res: any) {
         return;
       }
 
-      const workspaceId = asNullableText((body as any)?.workspaceId || req?.headers?.['x-workspace-id']);
-      const requesterEmail = asNullableText(req?.headers?.['x-user-email'] || (body as any)?.requesterEmail)?.toLowerCase() || null;
-
-      if (!workspaceId) {
-        res.status(400).json({ error: 'WORKSPACE_ID_REQUIRED' });
-        return;
-      }
-      if (!requesterEmail) {
-        res.status(401).json({ error: 'REQUESTER_EMAIL_REQUIRED' });
-        return;
-      }
-
-      const workspaceResult = await selectFirstAvailable([
-        `workspaces?select=*&id=eq.${encodeURIComponent(workspaceId)}&limit=1`,
-      ]);
-      const workspaceRow = Array.isArray(workspaceResult.data) && workspaceResult.data[0]
-        ? workspaceResult.data[0] as Record<string, unknown>
-        : { id: workspaceId };
-
-      const recipientEmail =
-        asNullableText((body as any)?.recipientEmail || workspaceRow.daily_digest_recipient_email || workspaceRow.dailyDigestRecipientEmail || requesterEmail)?.toLowerCase()
-        || null;
+      const interactiveScope = await getInteractiveDigestScope(req, body);
+      const workspaceId = interactiveScope.workspaceId;
+      const workspaceRow = interactiveScope.workspaceRow;
+      const requesterEmail = interactiveScope.requesterEmail || null;
+      const recipientEmail = interactiveScope.recipientEmail;
       const timeZone =
         asNullableText((body as any)?.dailyDigestTimezone || workspaceRow.daily_digest_timezone || workspaceRow.dailyDigestTimezone || workspaceRow.timezone)
         || DEFAULT_TZ;
@@ -340,28 +305,10 @@ export default async function handler(req: any, res: any) {
         return;
       }
 
-      const workspaceId = asNullableText((body as any)?.workspaceId || req?.headers?.['x-workspace-id']);
-      const requesterEmail = asNullableText(req?.headers?.['x-user-email'] || (body as any)?.requesterEmail)?.toLowerCase() || null;
-
-      if (!workspaceId) {
-        res.status(400).json({ error: 'WORKSPACE_ID_REQUIRED' });
-        return;
-      }
-      if (!requesterEmail) {
-        res.status(401).json({ error: 'REQUESTER_EMAIL_REQUIRED' });
-        return;
-      }
-
-      const workspaceResult = await selectFirstAvailable([
-        `workspaces?select=*&id=eq.${encodeURIComponent(workspaceId)}&limit=1`,
-      ]);
-      const workspaceRow = Array.isArray(workspaceResult.data) && workspaceResult.data[0]
-        ? workspaceResult.data[0] as Record<string, unknown>
-        : { id: workspaceId };
-
-      const recipientEmail =
-        asNullableText((body as any)?.recipientEmail || workspaceRow.daily_digest_recipient_email || workspaceRow.dailyDigestRecipientEmail || requesterEmail)?.toLowerCase()
-        || null;
+      const interactiveScope = await getInteractiveDigestScope(req, body);
+      const workspaceId = interactiveScope.workspaceId;
+      const workspaceRow = interactiveScope.workspaceRow;
+      const recipientEmail = interactiveScope.recipientEmail;
       const timeZone =
         asNullableText((body as any)?.dailyDigestTimezone || workspaceRow.daily_digest_timezone || workspaceRow.dailyDigestTimezone || workspaceRow.timezone)
         || DEFAULT_TZ;
@@ -441,7 +388,7 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
-    if (!isRequestAuthorized(req, body)) {
+    if (!isDigestCronAuthorized(req)) {
       res.status(401).json({ error: 'DIGEST_CRON_UNAUTHORIZED' });
       return;
     }
@@ -495,7 +442,7 @@ export default async function handler(req: any, res: any) {
         stats.skippedHour += 1;
         continue;
       }
-      if (await alreadySentToday(recipientEmail, sentForDate)) {
+      if (await alreadySentToday(workspaceId, recipientEmail, sentForDate)) {
         stats.skippedDuplicate += 1;
         continue;
       }
@@ -580,6 +527,10 @@ export default async function handler(req: any, res: any) {
       errors: errors.slice(0, 50),
     });
   } catch (error: any) {
+    if (error instanceof RequestAuthError) {
+      writeAuthErrorResponse(res, error);
+      return;
+    }
     res.status(500).json({ error: error?.message || 'DAILY_DIGEST_FAILED' });
   }
 }
