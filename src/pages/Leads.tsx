@@ -1112,7 +1112,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                         </span>
                         <span className="sub">{row.reasonDetail}</span>
                       </span>
-                      <span className="lead-action-cell" title={nextActionMeta.title}>
+                      <span className="lead-action-cell" title={row.nextMoveTitle || 'Brak zaplanowanej akcji'}>
                         <span className="mini">Następny ruch</span>
                         <strong>{row.nextMoveTitle || 'Brak zaplanowanej akcji'}</strong>
                         <span className="sub">{row.nextMoveAt || 'Ustaw zadanie ręcznie po otwarciu leada.'}</span>
