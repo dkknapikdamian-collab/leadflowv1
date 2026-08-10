@@ -156,6 +156,11 @@ const allowedChangePrefixes = [
   'tests/b4-ai-remediation-runtime.test.ts',
   'tests/b4-ai-remediation.test.cjs',
   'tests/stage27-quick-lead-capture.test.cjs',
+  // B5 support actor authority and atomic audit allowlist.
+  'src/server/support-handler.ts',
+  'supabase/migrations/20260810160000_b5_support_actor_authority_audit.sql',
+  'tests/b5-support-actor-audit.test.cjs',
+  'tests/b5-support-actor-audit-runtime.test.ts',
   // STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH_ALLOWLIST
   'src/pages/TodayStable.tsx',
   'src/pages/TasksStable.tsx',
