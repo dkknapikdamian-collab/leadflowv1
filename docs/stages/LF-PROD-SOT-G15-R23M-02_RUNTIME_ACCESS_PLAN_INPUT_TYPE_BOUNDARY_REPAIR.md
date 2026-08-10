@@ -9,7 +9,7 @@ parent_stage: LF-PROD-SOT-G15-R23M_PLUS_ACTIVE_TSC_DEBT_TO_ZERO
 source_repo: dkknapikdamian-collab/leadflowv1
 source_branch: codex/closeflow-v1-e2e-roadmap
 base_branch: dev-rollout-freeze
-base_ref: 87d6d0d52f2560e282ef9f056430fe65e0099e28
+base_ref: d075c76292eee3ce263c8045c3f164c3fd446fab
 target_branch: codex/closeflow-v1-e2e-roadmap
 ---
 
@@ -23,7 +23,9 @@ normalization, fallback, plan decision, and returned field.
 
 ## Evidence and root cause
 
-The fresh TypeScript map at the exact base SHA reports 46 active error lines.
+The fresh TypeScript map at the exact pre-routing code SHA reported 46 active
+error lines; the routing commit changed only workflow documentation. A fresh
+map is rerun at the exact route SHA before implementation.
 The first root-cause group is:
 
 ```text
@@ -66,7 +68,7 @@ Read before implementation:
    `buildRuntimeAccessPlanTruth`.
 2. `tests/cf-runtime-00-source-truth.test.cjs`.
 3. `scripts/check-cf-runtime-00-source-truth.cjs`.
-4. the fresh TypeScript map at `87d6d0d52f2560e282ef9f056430fe65e0099e28`.
+4. the fresh TypeScript map at `d075c76292eee3ce263c8045c3f164c3fd446fab`.
 
 ## Mutable paths and implementation allowlist
 
@@ -82,7 +84,7 @@ manifests, runtime callers, or access/billing behavior.
 
 ## Required checks
 
-1. Fail-first evidence: base `npx tsc --noEmit --pretty false` reports the two
+1. Fail-first evidence: exact base `npx tsc --noEmit --pretty false` reports the two
    listed errors and 46 total error lines.
 2. The focused guard proves the current source equals the base source with only
    the explicit input signature replacement.

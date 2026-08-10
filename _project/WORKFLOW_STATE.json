@@ -13,7 +13,7 @@
     "kind": "TECHNICAL_STAGE",
     "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-02_RUNTIME_ACCESS_PLAN_INPUT_TYPE_BOUNDARY_REPAIR.md",
     "status": "READY_FOR_EXECUTION",
-    "base_sha": "87d6d0d52f2560e282ef9f056430fe65e0099e28",
+    "base_sha": "d075c76292eee3ce263c8045c3f164c3fd446fab",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
@@ -25,6 +25,6 @@
     "docs/stages/LF-PROD-SOT-G15-R23M-02_RUNTIME_ACCESS_PLAN_INPUT_TYPE_BOUNDARY_REPAIR.md",
     "github:pull/50@787b9e0f5d2172c0fbd399807ee53b2f6e8cde49",
     "obsidian:10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md",
-    "working-branch:tsc-map@87d6d0d52f2560e282ef9f056430fe65e0099e28:46-active-error-lines"
+    "working-branch:tsc-map@d075c76292eee3ce263c8045c3f164c3fd446fab:46-active-error-lines"
   ]
 }
