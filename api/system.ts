@@ -364,17 +364,32 @@ async function handleWorkspaceSettings(req: any, res: any) {
     await assertWorkspaceOwnerOrAdmin(workspaceId, req);
     await assertWorkspaceWriteAccess(workspaceId, req);
 
+    const webhookOwnedBillingFields = [
+      'planId',
+      'plan_id',
+      'subscriptionStatus',
+      'subscription_status',
+      'billingProvider',
+      'billing_provider',
+      'providerCustomerId',
+      'provider_customer_id',
+      'providerSubscriptionId',
+      'provider_subscription_id',
+      'nextBillingAt',
+      'next_billing_at',
+      'cancelAtPeriodEnd',
+      'cancel_at_period_end',
+      'trialEndsAt',
+      'trial_ends_at',
+    ];
+    if (webhookOwnedBillingFields.some((field) => (body as any)[field] !== undefined)) {
+      res.status(403).json({ error: 'BILLING_FIELDS_WEBHOOK_ONLY' });
+      return;
+    }
+
     const payload: Record<string, unknown> = {
       updated_at: new Date().toISOString(),
     };
-    if ((body as any).planId !== undefined) payload.plan_id = normalizePlanId((body as any).planId, (body as any).subscriptionStatus);
-    if ((body as any).subscriptionStatus !== undefined) payload.subscription_status = (body as any).subscriptionStatus;
-    if ((body as any).trialEndsAt !== undefined) payload.trial_ends_at = toIso((body as any).trialEndsAt);
-    if ((body as any).billingProvider !== undefined) payload.billing_provider = asNullableString((body as any).billingProvider) || 'manual';
-    if ((body as any).providerCustomerId !== undefined) payload.provider_customer_id = asNullableString((body as any).providerCustomerId);
-    if ((body as any).providerSubscriptionId !== undefined) payload.provider_subscription_id = asNullableString((body as any).providerSubscriptionId);
-    if ((body as any).nextBillingAt !== undefined) payload.next_billing_at = toIso((body as any).nextBillingAt);
-    if ((body as any).cancelAtPeriodEnd !== undefined) payload.cancel_at_period_end = asBoolean((body as any).cancelAtPeriodEnd, false);
     if ((body as any).dailyDigestEnabled !== undefined) payload.daily_digest_enabled = asBoolean((body as any).dailyDigestEnabled, true);
     if ((body as any).dailyDigestHour !== undefined) payload.daily_digest_hour = asHour((body as any).dailyDigestHour, 7);
     if ((body as any).dailyDigestTimezone !== undefined) payload.daily_digest_timezone = asNullableString((body as any).dailyDigestTimezone) || 'Europe/Warsaw';
@@ -413,14 +428,14 @@ async function handleWorkspaceSettings(req: any, res: any) {
       ok: true,
       workspace: {
         id: workspaceId,
-        planId: normalizePlanId((row as any)?.plan_id ?? (body as any).planId ?? null, (row as any)?.subscription_status ?? (body as any).subscriptionStatus ?? null),
-        subscriptionStatus: (row as any)?.subscription_status ?? (body as any).subscriptionStatus ?? null,
-        trialEndsAt: (row as any)?.trial_ends_at ?? (body as any).trialEndsAt ?? null,
-        billingProvider: (row as any)?.billing_provider ?? (body as any).billingProvider ?? 'manual',
-        providerCustomerId: (row as any)?.provider_customer_id ?? (body as any).providerCustomerId ?? null,
-        providerSubscriptionId: (row as any)?.provider_subscription_id ?? (body as any).providerSubscriptionId ?? null,
-        nextBillingAt: (row as any)?.next_billing_at ?? (body as any).nextBillingAt ?? null,
-        cancelAtPeriodEnd: Boolean((row as any)?.cancel_at_period_end ?? (body as any).cancelAtPeriodEnd ?? false),
+        planId: normalizePlanId((row as any)?.plan_id ?? null, (row as any)?.subscription_status ?? null),
+        subscriptionStatus: (row as any)?.subscription_status ?? null,
+        trialEndsAt: (row as any)?.trial_ends_at ?? null,
+        billingProvider: (row as any)?.billing_provider ?? 'manual',
+        providerCustomerId: (row as any)?.provider_customer_id ?? null,
+        providerSubscriptionId: (row as any)?.provider_subscription_id ?? null,
+        nextBillingAt: (row as any)?.next_billing_at ?? null,
+        cancelAtPeriodEnd: Boolean((row as any)?.cancel_at_period_end ?? false),
         dailyDigestEnabled: Boolean((row as any)?.daily_digest_enabled ?? (body as any).dailyDigestEnabled ?? true),
         dailyDigestHour: Number((row as any)?.daily_digest_hour ?? (body as any).dailyDigestHour ?? 7),
         dailyDigestTimezone: (row as any)?.daily_digest_timezone ?? (body as any).dailyDigestTimezone ?? 'Europe/Warsaw',

@@ -63,6 +63,7 @@ const requiredTests = [
   'tests/daily-digest-email-runtime.test.cjs',
   'tests/b1-digest-authorization.test.cjs',
   'tests/b2-case-items-scope.test.cjs',
+  'tests/b3-billing-authority.test.cjs',
   'tests/email-digest-domain-gate.test.cjs',
   'tests/billing-stripe-blik-foundation.test.cjs',
   'tests/billing-foundation-test-polish-label-regression.test.cjs',
@@ -258,6 +259,10 @@ runQuiet('production build', process.execPath, ['scripts/closeflow-vite-build-ru
 for (const relativePath of requiredTests) {
   runQuiet(relativePath, process.execPath, ['--test', relativePath]);
 }
+
+runQuiet('tests/b3-billing-authority-runtime.test.ts', process.execPath, [
+  '--import', 'tsx', '--test', 'tests/b3-billing-authority-runtime.test.ts',
+]);
 
 console.log('');
 console.log('CloseFlow quiet release gate passed.');

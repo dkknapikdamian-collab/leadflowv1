@@ -125,6 +125,24 @@ if (exists('scripts/closeflow-release-check-quiet.cjs')) {
 }
 
 const allowedChangePrefixes = [
+  // CLOSEFLOW_B3_BILLING_AUTHORITY_ALLOWLIST
+  'api/me.ts',
+  'api/system.ts',
+  'scripts/check-p14-billing-production-validation.cjs',
+  'scripts/closeflow-release-check.cjs',
+  'scripts/closeflow-release-check-quiet.cjs',
+  'src/lib/source-of-truth/billing-options.ts',
+  'src/lib/supabase-fallback.ts',
+  'src/pages/Billing.tsx',
+  'src/server/_request-scope.ts',
+  'src/server/_stripe.ts',
+  'src/server/billing-actions-handler.ts',
+  'src/server/billing-checkout-handler.ts',
+  'src/server/billing-webhook-handler.ts',
+  'src/server/digest-authorization.ts',
+  'supabase/migrations/20260810130000_b3_billing_webhook_processing_boundary.sql',
+  'tests/b3-billing-authority.test.cjs',
+  'tests/b3-billing-authority-runtime.test.ts',
   // STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH_ALLOWLIST
   'src/pages/TodayStable.tsx',
   'src/pages/TasksStable.tsx',

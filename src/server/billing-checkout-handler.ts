@@ -1,6 +1,8 @@
 import { asNullableText, createStripeBlikCheckout, getAppUrl, getStripeConfig, parseBody, resolveStripeBillingPlan } from './_stripe.js';
 import { requireAuthContext, resolveRequestWorkspaceId } from './_request-scope.js';
-import { writeAuthErrorResponse } from './_supabase-auth.js';
+import { assertWorkspaceOwnerOrAdmin } from './_request-scope.js';
+import { resolveRequestedWorkspaceId } from './_request-scope.js';
+import { RequestAuthError, writeAuthErrorResponse } from './_supabase-auth.js';
 
 const BILLING_CHECKOUT_WEBHOOK_SOURCE_OF_TRUTH_STAGE86J = 'paid access is activated only by Stripe webhook after confirmed payment';
 const BILLING_CHECKOUT_RESOLVES_SCOPED_WORKSPACE_STAGE86K = 'checkout resolves workspace through verified request scope, not raw body trust';
@@ -14,16 +16,23 @@ export default async function handler(req: any, res: any) {
 
     const body = parseBody(req);
     const authContext = await requireAuthContext(req, body);
-    const workspaceId = asNullableText(await resolveRequestWorkspaceId(req));
+    const workspaceId = asNullableText(await resolveRequestWorkspaceId(req, body));
     const customerEmail = asNullableText(authContext.email);
     const planKey = asNullableText(body.planKey || req?.headers?.['x-billing-plan']);
     const billingPeriod = asNullableText(body.billingPeriod || req?.headers?.['x-billing-period']);
-    const dryRun = body.dryRun === true || body.dryRun === '1' || req?.headers?.['x-billing-dry-run'] === '1';
+    const route = asNullableText(req?.query?.route || req?.query?.action)?.toLowerCase();
+    const configOnly = route === 'config';
+    const dryRun = configOnly || body.dryRun === true || body.dryRun === '1' || req?.headers?.['x-billing-dry-run'] === '1';
 
     if (!workspaceId) {
       res.status(400).json({ error: 'WORKSPACE_ID_REQUIRED' });
       return;
     }
+    const requestedWorkspaceId = resolveRequestedWorkspaceId(body);
+    if (requestedWorkspaceId && requestedWorkspaceId !== workspaceId) {
+      throw new RequestAuthError(403, 'WORKSPACE_SCOPE_MISMATCH');
+    }
+    await assertWorkspaceOwnerOrAdmin(workspaceId, req);
     // STAGE15D_SCOPED_BILLING_CHECKOUT_NO_RAW_WORKSPACE_HINT
 
     if (dryRun) {

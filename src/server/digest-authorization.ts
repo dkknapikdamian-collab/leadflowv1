@@ -1,6 +1,6 @@
 import { selectFirstAvailable } from './_supabase.js';
 import { RequestAuthError } from './_supabase-auth.js';
-import { requireRequestIdentity, resolveRequestWorkspaceId } from './_request-scope.js';
+import { requireRequestIdentity, resolveRequestWorkspaceId, resolveRequestedWorkspaceId } from './_request-scope.js';
 
 type DigestWorkspaceRow = Record<string, unknown>;
 
@@ -25,7 +25,7 @@ function extractBearerToken(req: any) {
 }
 
 function requestedBodyWorkspaceId(body: Record<string, unknown>) {
-  return asText(body.workspaceId ?? body.workspace_id);
+  return resolveRequestedWorkspaceId(body);
 }
 
 function requestedBodyRecipient(body: Record<string, unknown>) {

@@ -942,6 +942,12 @@ export async function createBillingCheckoutSessionInSupabase(input: { workspaceI
     body: JSON.stringify(input),
   });
 }
+export async function getBillingCheckoutConfigurationInSupabase(input: { workspaceId: string }) {
+  return callApi<{ ok: boolean; provider?: string; error?: string; missing?: Record<string, boolean>; checkoutConfigured?: boolean; webhookConfigured?: boolean; appUrl?: string; planId?: string; planKey?: string; billingPeriod?: string; amount?: number; amountPln?: number; currency?: string; accessDays?: number }>('/api/billing-checkout?route=config', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
 export async function billingActionInSupabase(action: 'cancel' | 'resume') {
   return callApi<{ ok: boolean; action: 'cancel' | 'resume'; cancelAtPeriodEnd: boolean; note?: string }>('/api/billing-actions', {
     method: 'POST',

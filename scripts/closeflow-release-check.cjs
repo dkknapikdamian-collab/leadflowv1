@@ -34,6 +34,7 @@ const requiredTests = [
   'tests/daily-digest-email-runtime.test.cjs',
   'tests/b1-digest-authorization.test.cjs',
   'tests/b2-case-items-scope.test.cjs',
+  'tests/b3-billing-authority.test.cjs',
   'tests/email-digest-domain-gate.test.cjs',
   'tests/billing-stripe-blik-foundation.test.cjs',
   'tests/billing-foundation-test-polish-label-regression.test.cjs',
@@ -116,6 +117,10 @@ runNpmScript('production build', 'build');
 for (const relativePath of requiredTests) {
   run(relativePath, process.execPath, ['--test', relativePath]);
 }
+
+run('tests/b3-billing-authority-runtime.test.ts', process.execPath, [
+  '--import', 'tsx', '--test', 'tests/b3-billing-authority-runtime.test.ts',
+]);
 
 console.log('');
 console.log('CloseFlow release gate passed.');

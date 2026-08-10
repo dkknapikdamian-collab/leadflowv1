@@ -192,13 +192,23 @@ function identityMatches(value: unknown, identity: RequestIdentity) {
 
 
 // WORKSPACE_OWNER_REQUIRED compatibility marker for legacy P0 workspace scope guard.
-// Current runtime error remains WORKSPACE_OWNER_OR_ADMIN_REQUIRED because the helper allows verified owner/member/admin access.
+// Billing authority is stricter than workspace membership: a verified member
+// must not be able to mutate plan or Stripe state.
 export async function assertWorkspaceOwnerOrAdmin(workspaceId: string, req?: any) {
   const normalizedWorkspaceId = asText(workspaceId);
   if (!normalizedWorkspaceId) throw new RequestAuthError(401, 'WORKSPACE_CONTEXT_REQUIRED');
   const identity = await requireRequestIdentity(req || {});
-
-  if (identity.workspaceId && identity.workspaceId === normalizedWorkspaceId) return true;
+  const context = await requireSupabaseRequestContext(req || {});
+  const appMeta = context.rawUser?.app_metadata && typeof context.rawUser.app_metadata === 'object'
+    ? context.rawUser.app_metadata as Record<string, unknown>
+    : {};
+  const appRole = asText(appMeta.role || appMeta.claims_role || '').toLowerCase();
+  const appRoles = Array.isArray(appMeta.roles) ? appMeta.roles.map((role) => asText(role).toLowerCase()) : [];
+  const appWorkspaceId = asText(appMeta.workspace_id || appMeta.workspaceId);
+  const appHasGlobalAdmin = appRole === 'admin' || appRoles.includes('admin');
+  const appHasScopedOwner = (appRole === 'owner' || appRoles.includes('owner'))
+    && appWorkspaceId === normalizedWorkspaceId;
+  if (appHasGlobalAdmin || appHasScopedOwner) return true;
 
   const workspaceRows = await selectRows(`workspaces?select=*&id=eq.${encodeURIComponent(normalizedWorkspaceId)}&limit=1`);
   const workspace = workspaceRows[0] || null;
@@ -218,18 +228,26 @@ export async function assertWorkspaceOwnerOrAdmin(workspaceId: string, req?: any
     const membershipRows = await selectRows(
       `workspace_members?user_id=eq.${encodeURIComponent(identity.userId)}&workspace_id=eq.${encodeURIComponent(normalizedWorkspaceId)}&select=*&limit=1`,
     );
-    if (membershipRows[0]) return true;
+    if (membershipRows.some((row) => profileHasAdminRole(row))) return true;
   }
 
   if (identity.email) {
     const profileRows = await selectRows(
       `profiles?select=*&workspace_id=eq.${encodeURIComponent(normalizedWorkspaceId)}&email=eq.${encodeURIComponent(identity.email)}&limit=1`,
     );
-    if (profileRows[0]) return true;
+    if (profileRows.some((row) => profileHasAdminRole(row))) return true;
   }
 
-  // STAGE15_NO_AUTH_ONLY_WORKSPACE_FALLBACK: authenticated user alone is not enough for another workspace.
+  // STAGE15_NO_AUTH_ONLY_WORKSPACE_FALLBACK: authenticated membership alone is not owner/admin authority.
 throw new RequestAuthError(403, 'WORKSPACE_OWNER_OR_ADMIN_REQUIRED');
+}
+
+// Body workspace identifiers are comparison hints only. They never establish
+// authority; the verified request scope remains the source of truth.
+export function resolveRequestedWorkspaceId(bodyInput: unknown) {
+  const body = bodyInput && typeof bodyInput === 'object' ? bodyInput as Record<string, unknown> : {};
+  const entry = Object.entries(body).find(([key]) => key === 'workspaceId' || key === 'workspace_id');
+  return asText(entry?.[1]);
 }
 
 export async function resolveRequestWorkspaceId(req: any, bodyInput?: any) {

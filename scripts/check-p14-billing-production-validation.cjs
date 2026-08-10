@@ -25,7 +25,10 @@ const stripe = read('src/server/_stripe.ts');
 const checkout = read('src/server/billing-checkout-handler.ts');
 const webhook = read('src/server/billing-webhook-handler.ts');
 const actions = read('src/server/billing-actions-handler.ts');
-const billing = read('src/pages/Billing.tsx');
+// Billing plan identity/checkout keys live in the canonical source-of-truth
+// module; the page owns only presentation/runtime copy and orchestration.
+const billing = read('src/lib/source-of-truth/billing-options.ts');
+const billingPage = read('src/pages/Billing.tsx');
 const plans = read('src/lib/plans.ts');
 const accessGate = read('src/server/_access-gate.ts');
 const apiCheckout = read('api/billing-checkout.ts');
@@ -102,8 +105,8 @@ expect(billing.includes("type CheckoutPlanKey = 'basic' | 'pro' | 'ai'"), 'Billi
 expect(billing.includes("checkoutKey: 'ai'"), 'Billing UI must send ai checkout key');
 expect(billing.includes("id: 'closeflow_ai'"), 'Billing UI AI plan must use closeflow_ai');
 expect(!billing.includes("checkoutKey: 'business'"), 'Billing UI must not send business checkout key');
-expect(billing.includes('BILLING_UI_WEBHOOK_ACTIVATES_PAID_PLAN_STAGE86J') || includesAny(billing, ['Aktywny plan pojawi si\u0119 dopiero po webhooku Stripe', 'Aktywny plan pojawi sie dopiero po webhooku Stripe']), 'Billing UI must say webhook activates paid plan');
-expect(!billing.includes('P\u0142atno\u015B\u0107 zako\u0144czona. Od\u015Bwie\u017Cam status dost\u0119pu'), 'Billing UI must not imply checkout success activates access');
+expect(billingPage.includes('BILLING_UI_WEBHOOK_ACTIVATES_PAID_PLAN_STAGE86J') || includesAny(billingPage, ['Aktywny plan pojawi si\u0119 dopiero po webhooku Stripe', 'Aktywny plan pojawi sie dopiero po webhooku Stripe']), 'Billing UI must say webhook activates paid plan');
+expect(!billingPage.includes('P\u0142atno\u015B\u0107 zako\u0144czona. Od\u015Bwie\u017Cam status dost\u0119pu'), 'Billing UI must not imply checkout success activates access');
 
 expect(plans.includes('closeflow_ai'), 'plans.ts must know closeflow_ai alias');
 expect(plans.includes('closeflow_ai_yearly'), 'plans.ts must know closeflow_ai_yearly alias');

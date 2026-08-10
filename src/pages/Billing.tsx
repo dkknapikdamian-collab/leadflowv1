@@ -68,6 +68,7 @@ import {
   fetchLeadsFromSupabase,
   fetchPaymentsFromSupabase,
   createBillingCheckoutSessionInSupabase,
+  getBillingCheckoutConfigurationInSupabase,
 } from '../lib/supabase-fallback';
 import '../styles/visual-stage16-billing-vnext.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
@@ -184,10 +185,7 @@ export default function Billing() {
     }
 
     let cancelled = false;
-    createBillingCheckoutSessionInSupabase({
-      workspaceId: workspace.id,
-
-    })
+    getBillingCheckoutConfigurationInSupabase({ workspaceId: workspace.id })
       .then((result) => {
         if (cancelled) return;
         setStripeCheckoutConfigured(Boolean(result?.checkoutConfigured));

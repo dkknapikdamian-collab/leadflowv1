@@ -75,6 +75,7 @@
                     "test:raw":  "node --test \"tests/**/*.test.cjs\"",
                     "test:b1-digest-authorization":  "node --test tests/b1-digest-authorization.test.cjs && node --import tsx --test tests/b1-digest-authorization-runtime.test.ts",
                     "test:b2-case-items-scope":  "node --test tests/b2-case-items-scope.test.cjs && node --import tsx --test tests/b2-case-items-scope-runtime.test.ts",
+                    "test:b3-billing-authority":  "node --test tests/b3-billing-authority.test.cjs && node --import tsx --test tests/b3-billing-authority-runtime.test.ts",
                     "test:compact":  "node scripts/run-tests-compact.cjs",
                     "test:critical":  "node scripts/run-tests-compact.cjs --critical",
                     "check:a14-business-types":  "node scripts/check-a14-business-types.cjs",
