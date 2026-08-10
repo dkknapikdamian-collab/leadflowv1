@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 32,
+  "state_revision": 33,
   "last_accepted": {
     "id": "LF-PROD-SOT-G15-R23M-14_LEAD_SILENCE_RISK_CANONICAL_FIELD_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
@@ -9,16 +9,16 @@
     "evidence": "A2-14 guard/test 3/3; related Stage227E tests 24/25; TSC 20->18; build PASS; exact three-file implementation scope; controller Guardian-style audit PASS; mapper root cause confirmed; independent reviewer timeout registered; Stage227E6 guard drift and checkpoint findings remain registered"
   },
   "current_workflow": {
-    "id": "LF-PROD-SOT-G15-R23M-14_LEAD_SILENCE_RISK_CANONICAL_FIELD_REPAIR",
+    "id": "LF-PROD-SOT-G15-R23M-15_LEAD_ACTION_BUTTON_POINTER_CONTRACT_REPAIR",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-14_LEAD_SILENCE_RISK_CANONICAL_FIELD_REPAIR.md",
-    "status": "CLOSED_A2_NEXT_MAPPER_REQUIRED",
-    "base_sha": "b3691a7949039d0afef1be4f558522af12e6a4d0",
+    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-15_LEAD_ACTION_BUTTON_POINTER_CONTRACT_REPAIR.md",
+    "status": "ROUTED_A2_ACTIVE",
+    "base_sha": "554761c0b4568403c7b9318abbbe97704c330a89",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
   },
-  "next_workflow": {"id": null, "status": "LOCKED_PENDING_FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION"},
+  "next_workflow": {"id": null, "status": "LOCKED_PENDING_A2_15_CLOSEOUT"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
@@ -97,6 +97,8 @@
     "working-branch:tsc-map@b3691a7949039d0afef1be4f558522af12e6a4d0:18-active-error-lines",
     "working-branch:a2-14-related-stage227e-tests:24-of-25-pass-stage227e6-marker-drift",
     "working-branch:a2-14-build@b3691a79:pass",
-    "working-branch:a2-14-independent-review:timeout-registered-no-pass-claim"
+    "working-branch:a2-14-independent-review:timeout-registered-no-pass-claim",
+    "working-branch:tsc-map@554761c0b4568403c7b9318abbbe97704c330a89:18-active-error-lines",
+    "working-branch:controller-root-cause@554761c0:lead-action-button-pointer-handler-contract-drift"
   ]
 }
