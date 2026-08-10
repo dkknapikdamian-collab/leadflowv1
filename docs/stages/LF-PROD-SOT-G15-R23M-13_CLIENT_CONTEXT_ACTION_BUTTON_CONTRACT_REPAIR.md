@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: active
+status: closed_with_registered_findings
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-PROD-SOT-G15-R23M-13_CLIENT_CONTEXT_ACTION_BUTTON_CONTRACT_REPAIR
@@ -82,3 +82,37 @@ TSC_ROOT_CAUSE_REMOVED=YES
 BUILD=PASS
 ALLOWLIST=PASS
 ```
+
+## Closeout evidence
+
+```text
+STATUS=PASS_ON_WORK_BRANCH_WITH_REGISTERED_FINDINGS
+SOURCE_BASE_SHA=02bf7cef499953d000fca78db2d49785fb70837c
+IMPLEMENTATION_SHA=4055b7391702526ccdcb29ecf72e181dee6d6f43
+FILES_CHANGED=src/pages/ClientDetail.tsx;scripts/check-lf-prod-sot-g15-r23m-13-client-context-action-button.cjs;tests/lf-prod-sot-g15-r23m-13-client-context-action-button.test.cjs
+TSC=22->20
+FOCUSED_TESTS=3/3_PASS
+RELATED_CONTEXT_ACTION_TESTS=20/20_PASS
+BUILD=PASS
+DIFF_CHECK=PASS
+ALLOWLIST=3_IMPLEMENTATION_FILES_PASS
+GUARDIAN_STYLE_AUDIT=PASS
+MAPPER_REVIEW=ROOT_CAUSE_CONFIRMED;RECOMMENDATION_CONFIRMED
+INDEPENDENT_REVIEW=TIMEOUT_REGISTERED_NO_PASS_CLAIM
+FREEBUFF_USED=NO_MCP_EXPOSED
+OPENCODE_USED=NO_MCP_EXPOSED
+MARKET_PLUGINS_USED=ai-code-guardian@damian-agent-plugins;agent-efficiency-guardian@damian-agent-plugins;marketplace-router@damian-agent-plugins
+NEXT_STAGE=FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION
+```
+
+### Registered findings
+
+1. `INDEPENDENT_SUBAGENT_REVIEW_TIMEOUT`: the bounded independent reviewer
+   did not return before timeout; mapper evidence, focused tests, related
+   tests, TSC and build are retained, but no independent PASS is claimed.
+2. `STAGE216M_R5_FINANCE_GUARD_DRIFT`: mapper identified an unrelated existing
+   finance-card marker failure in Stage216M-R5; it is outside this diff and
+   remains for later guard inventory.
+3. Build still reports pre-existing large-chunk and mixed static/dynamic
+   `supabase-fallback` warnings; this stage does not change bundling or import
+   topology. Reassess at the performance/release checkpoint.
