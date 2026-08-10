@@ -7,8 +7,10 @@
     "CODE_APPLICATION"
   ],
   "project_id": "closeflow_lead_app",
-  "routing_status": "OWNER_DECISION_REQUIRED_MAIN_VS_DEV_ROLLOUT_FREEZE",
+  "routing_status": "ROUTED_CANONICAL_PRODUCT_BRANCH_RESOLVED",
   "canonical_branch": "dev-rollout-freeze",
+  "production_branch": "dev-rollout-freeze",
+  "repository_default_branch": "main",
   "workflow_state": "_project/WORKFLOW_STATE.json",
   "document_ownership": "_project/DOCUMENT_OWNERSHIP.json",
   "agent_capabilities": "_project/AGENT_CAPABILITIES.json",
@@ -20,18 +22,22 @@
     "project_registry": "00_SYSTEM/PROJECTS.json",
     "router_required": true,
     "project_entry": "10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md",
-    "source_of_truth_status": "ROUTED_OWNER_GATE",
+    "source_of_truth_status": "ROUTED_OWNER_DECISION_RESOLVED",
     "router": "10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md"
   },
   "branch_reconciliation": {
-    "status": "OWNER_DECISION_REQUIRED_MAIN_VS_DEV_ROLLOUT_FREEZE",
+    "status": "RESOLVED_SELECT_DEV_ROLLOUT_FREEZE_AS_CANONICAL_PRODUCT_AND_PRODUCTION_BRANCH",
     "default_branch": "main",
-    "active_application_branch_evidence": "dev-rollout-freeze",
-    "owner_decision_path": "00_SYSTEM/DOCSYS/REPORTS/DOCSYS-R3-TRUE-OWNER-ROUTING-DECISIONS.md",
-    "options": [
-      "SELECT_MAIN_AS_CANONICAL",
-      "SELECT_DEV_ROLLOUT_FREEZE_AS_CANONICAL",
-      "DECLARE_SPLIT_RUNTIME_AND_RELEASE_BRANCHES"
-    ]
+    "canonical_product_branch": "dev-rollout-freeze",
+    "production_branch": "dev-rollout-freeze",
+    "autonomous_work_branch_required": true,
+    "current_preferred_work_branch": "codex/closeflow-v1-e2e-roadmap",
+    "direct_autonomous_product_work_on_production_forbidden": true,
+    "autonomous_merge_to_production_forbidden": true,
+    "production_promotion_requires": [
+      "INDEPENDENT_VERIFICATION",
+      "CONTROLLER_OR_OWNER_DECISION"
+    ],
+    "owner_decision_source": "obsidian:10_PROJEKTY/CloseFlow_Lead_App/03_AKTYWNE_DECYZJE - DO_POTWIERDZENIA - CloseFlow LeadFlow.md"
   }
 }
