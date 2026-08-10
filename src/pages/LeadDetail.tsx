@@ -1149,11 +1149,20 @@ export default function LeadDetail() {
   };
 
   const handleAddLeadMissingFromManagerStage232I4R14 = async () => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
     const safeLeadId = String(leadId || '').trim();
     const title = leadMissingManagerTitle.trim();
-    if (!safeLeadId) return setLeadMissingManagerError('Brak ID leada. Nie można dodać braku.');
-    if (!title) return setLeadMissingManagerError('Wpisz nazwę braku.');
+    if (!safeLeadId) {
+      setLeadMissingManagerError('Brak ID leada. Nie można dodać braku.');
+      return;
+    }
+    if (!title) {
+      setLeadMissingManagerError('Wpisz nazwę braku.');
+      return;
+    }
     const createdAt = new Date().toISOString();
     const status = leadMissingManagerBlocksProgress ? 'blocking_missing_item' : 'missing_item';
     try {
@@ -1246,10 +1255,16 @@ export default function LeadDetail() {
   };
 
   const handleToggleLeadMissingBlockerStage232I4R14 = async (entry: MissingItemsManagerItem, blocksProgress: boolean) => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
     const task = (entry?.raw || entry) as any;
     const taskId = String(task?.id || entry?.id || '').trim();
-    if (!taskId) return toast.error('Brak ID braku. Nie można zmienić blokady.');
+    if (!taskId) {
+      toast.error('Brak ID braku. Nie można zmienić blokady.');
+      return;
+    }
     const taskTitle = String(task?.title || entry?.title || 'Brak');
     const nextStatus = blocksProgress ? 'blocking_missing_item' : 'missing_item';
     const nextPriorityStage232I4R16ZR8 = blocksProgress ? 'high' : 'medium';
@@ -1290,10 +1305,16 @@ export default function LeadDetail() {
     }
   };
   const handleResolveLeadMissingItemStage228R13 = async (entry: any) => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
     const task = entry?.raw || entry || {};
     const taskId = String(task?.id || '').trim();
-    if (!taskId) return toast.error('Brak ID braku. Nie można oznaczyć jako rozwiązany.');
+    if (!taskId) {
+      toast.error('Brak ID braku. Nie można oznaczyć jako rozwiązany.');
+      return;
+    }
     const resolvedAt = new Date().toISOString();
 
     try {
@@ -1330,10 +1351,16 @@ export default function LeadDetail() {
 
 
   const handleDeleteLeadMissingItemStage228R15 = async (entry: any) => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
     const task = entry?.raw || entry || {};
     const taskId = String(task?.id || '').trim();
-    if (!taskId) return toast.error('Brak ID braku. Nie można usunąć.');
+    if (!taskId) {
+      toast.error('Brak ID braku. Nie można usunąć.');
+      return;
+    }
     if (!window.confirm('Usunąć ten brak?')) return;
 
     const deletedAt = new Date().toISOString();
