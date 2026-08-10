@@ -22,5 +22,16 @@
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "github:pull/50@787b9e0f5d2172c0fbd399807ee53b2f6e8cde49",
     "obsidian:10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md"
-  ]
+  ],
+  "routing": {
+    "status": "ROUTED_REDIRECT_TO_CANONICAL_PRODUCT_BRANCH",
+    "default_branch": "main",
+    "canonical_product_branch": "dev-rollout-freeze",
+    "production_branch": "dev-rollout-freeze",
+    "owner_decision": "SELECT_DEV_ROLLOUT_FREEZE_AS_CANONICAL_PRODUCT_AND_PRODUCTION_BRANCH",
+    "owner_decision_resolved": true,
+    "autonomous_work_branch_required": true,
+    "autonomous_merge_to_production_forbidden": true,
+    "promotion_rule": "independent_verification_plus_controller_or_owner_decision"
+  }
 }

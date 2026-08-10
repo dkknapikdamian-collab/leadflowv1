@@ -4,10 +4,24 @@ Status: ACTIVE
 Read policy: MUST_READ_REPO_START
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
+Routing status: OWNER_DECISION_RESOLVED_CANONICAL_PRODUCT_AND_PRODUCTION_BRANCH
+Repository default branch: main
 Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
 canonical_name: CloseFlow / LeadFlow
 project_id: closeflow_lead_app
 Inherited stage policy: 10_PROJEKTY/CloseFlow_Lead_App/STAGES/LF_AICG_STAGE_EXECUTION_POLICY.md
+
+## Canonical branch decision
+
+Owner decision 2026-08-10: `dev-rollout-freeze` is the canonical CloseFlow
+product and production branch. `main` remains the repository default and
+control-plane branch; it is not the CloseFlow production branch.
+
+Autonomous executors must create or use a separate non-production work branch
+from the verified current `dev-rollout-freeze` SHA. They must not commit,
+merge, rebase or force-push autonomous product work directly into
+`dev-rollout-freeze`. Promotion requires independent verification plus an
+explicit controller or owner decision.
 
 ## Cel
 
@@ -32,6 +46,11 @@ Czytaj tylko:
 Stary `_project/CODEX_CONTEXT_INDEX.md`, jesli istnieje, jest tylko legacy bridge. Nie traktuj go jako glownego startu.
 
 ## Routing pracy
+
+- `main` is default/control-plane context and redirects product execution to
+  the canonical `dev-rollout-freeze` branch.
+- Product work starts from the verified canonical branch and proceeds on a
+  separate work branch; production promotion remains independently gated.
 
 - STATUS / PLAN -> Obsidian 00, 01 i 04.
 - BUGFIX -> konkretny plik bledu, bezposrednie zaleznosci i powiazany guard/test.
