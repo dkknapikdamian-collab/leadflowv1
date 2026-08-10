@@ -1,24 +1,24 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 50,
+  "state_revision": 51,
   "last_accepted": {
-    "id": "LF-SEC-CG-001A_DIGEST_REPORT_AUTHORIZATION_AND_CROSS_TENANT_EXFILTRATION_REPAIR",
+    "id": "LF-SEC-CG-001B_CASE_ITEMS_WORKSPACE_SCOPE_AND_IDOR_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
-    "commit_sha": "20fd185561dfb6fa8dc9966f0b1608e76135d0ff",
-    "evidence": "B1 exact evidence: report endpoints mapped; shared auth/workspace/recipient gate before data/provider access; CRON_SECRET fail-closed; static 3/3 and authenticated runtime 6/6; unauthorized and cross-tenant provider calls 0; tsc PASS; migration duplicate preflight is pending owner backup/runtime execution; repository guard drift, live-provider limitation and bundle warnings remain registered"
+    "commit_sha": "ed38d08ca4ce95619c7a3d8c89fd95f46f4c947c",
+    "evidence": "B2 exact evidence: shared item-to-case scope helper covers dedicated and compatibility routes plus portal upload parent validation; static 2/2 and runtime 5/5; foreign GET/POST/PATCH/DELETE cases make zero mutations; TSC, lint, build and quiet release gate PASS; live Supabase/RLS/Storage and independent review remain registered limitations"
   },
   "current_workflow": {
-    "id": "LF-SEC-CG-001B_CASE_ITEMS_WORKSPACE_SCOPE_AND_IDOR_REPAIR",
+    "id": "LF-SEC-CG-001C_WORKSPACE_BILLING_OWNER_ADMIN_AUTHORITY_REPAIR",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-SEC-CG-001B_CASE_ITEMS_WORKSPACE_SCOPE_AND_IDOR_REPAIR.md",
+    "contract_path": "docs/stages/LF-SEC-CG-001C_WORKSPACE_BILLING_OWNER_ADMIN_AUTHORITY_REPAIR.md",
     "status": "ROUTED",
-    "base_sha": "20fd185561dfb6fa8dc9966f0b1608e76135d0ff",
+    "base_sha": "ed38d08ca4ce95619c7a3d8c89fd95f46f4c947c",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
   },
-  "next_workflow": {"id": null, "status": "LOCKED_PENDING_B2_CLOSEOUT"},
+  "next_workflow": {"id": null, "status": "LOCKED_PENDING_B3_CLOSEOUT"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
@@ -170,6 +170,11 @@
     "b1:20fd1855:migration-duplicate-preflight-owner-backup-and-runtime-required",
     "b1:20fd1855:independent-review-completed-with-limitations-and-replacement-reviewer-used",
     "b1:20fd1855:freebuff-opencode-mcp-not-exposed",
-    "b2-route:20fd1855:case-items-item-case-workspace-scope-contract-created"
+    "b2-route:20fd1855:case-items-item-case-workspace-scope-contract-created",
+    "b2:ed38d08c:direct-and-compat-case-item-scope-static-2-of-2-runtime-5-of-5",
+    "b2:ed38d08c:foreign-get-post-patch-delete-zero-mutations-and-portal-parent-check",
+    "b2:ed38d08c:tsc-lint-build-quiet-release-gate-pass",
+    "b2:ed38d08c:independent-review-timeouts-registered-no-pass-claim",
+    "b3-route:ed38d08c:workspace-billing-owner-admin-authority-contract-created"
   ]
 }
