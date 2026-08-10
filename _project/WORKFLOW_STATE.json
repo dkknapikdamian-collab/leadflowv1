@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 45,
+  "state_revision": 46,
   "last_accepted": {
     "id": "LF-PROD-SOT-G15-R23M-20_TODAY_NATIVE_MOUSE_EVENT_BOUNDARY_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
@@ -9,11 +9,11 @@
     "evidence": "A2-20 guard/test 3/3; Today visual/source guards 4/4; TSC 10->3; build PASS; exact four-file implementation scope; controller Guardian-style audit PASS; mapper and independent reviewer timeouts registered; checkpoint findings remain registered"
   },
   "current_workflow": {
-    "id": "LF-PROD-SOT-G15-R23M-20_TODAY_NATIVE_MOUSE_EVENT_BOUNDARY_REPAIR",
+    "id": "LF-PROD-SOT-G15-R23M-21_PWA_CHUNK_EVENT_TYPE_BOUNDARY_REPAIR",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-20_TODAY_NATIVE_MOUSE_EVENT_BOUNDARY_REPAIR.md",
-    "status": "CLOSED_A2_NEXT_MAPPER_REQUIRED",
-    "base_sha": "023b96b8213aaa7f4043efa2396a3724f1b0ae0c",
+    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-21_PWA_CHUNK_EVENT_TYPE_BOUNDARY_REPAIR.md",
+    "status": "ROUTED",
+    "base_sha": "54bdfd7d7a920d7f7237d733d012cd366844e67f",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
@@ -156,6 +156,9 @@
     "checkpoint-finding:a2-14-a2-20:PLAN_ACCESS_GATING_DRIFT",
     "checkpoint-finding:a2-14-a2-20:AI_DRAFT_ONLY_GUARD_DRIFT",
     "checkpoint-finding:a2-14-a2-20:AI_SUPABASE_SOURCE_GUARD_DRIFT",
-    "checkpoint-finding:a2-14-a2-20:PORTAL_STORAGE_HEALTH_SOURCE_MISSING"
+    "checkpoint-finding:a2-14-a2-20:PORTAL_STORAGE_HEALTH_SOURCE_MISSING",
+    "working-branch:tsc-map@54bdfd7d7a920d7f7237d733d012cd366844e67f:3-active-error-lines",
+    "working-branch:controller-root-cause@54bdfd7d:pwa-vite-event-and-dom-target-boundary-drift",
+    "working-branch:a2-21-mapper:pending"
   ]
 }
