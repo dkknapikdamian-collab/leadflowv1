@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 47,
+  "state_revision": 48,
   "last_accepted": {
     "id": "LF-PROD-SOT-G15-R23M-21_PWA_CHUNK_EVENT_TYPE_BOUNDARY_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
@@ -9,11 +9,11 @@
     "evidence": "A2-21 guard/test 3/3; PWA stale-chunk/tab-return guard drift registered; TSC 3->0; build PASS; exact three-file implementation scope; controller Guardian-style audit PASS; mapper and independent reviewer timeouts registered; checkpoint findings remain registered"
   },
   "current_workflow": {
-    "id": "LF-PROD-SOT-G15-R23M-21_PWA_CHUNK_EVENT_TYPE_BOUNDARY_REPAIR",
+    "id": "LF-PROD-SOT-G15_TERMINAL_CLOSEOUT_AND_REPOSITORY_TRUTH_HANDOFF",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-21_PWA_CHUNK_EVENT_TYPE_BOUNDARY_REPAIR.md",
-    "status": "CLOSED_A3_NEXT",
-    "base_sha": "d3731bc1f6014289572ffd1fd7236a352947439f",
+    "contract_path": "docs/stages/LF-PROD-SOT-G15_TERMINAL_CLOSEOUT_AND_REPOSITORY_TRUTH_HANDOFF.md",
+    "status": "ROUTED",
+    "base_sha": "4e602f4b0ebd31e2f6f75c47d18514c8ace7c5e3",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
@@ -164,6 +164,7 @@
     "working-branch:a2-21-related-pwa-guards:baseline-drift-registered",
     "working-branch:a2-21-build@d3731bc1:pass",
     "working-branch:a2-21-independent-review:timeout-registered-no-pass-claim",
-    "a2-closeout:d3731bc1:ACTIVE_TSC_ERRORS=0"
+    "a2-closeout:d3731bc1:ACTIVE_TSC_ERRORS=0",
+    "a3-route:4e602f4b:terminal-closeout-contract-created"
   ]
 }
