@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 41,
+  "state_revision": 42,
   "last_accepted": {
-    "id": "LF-PROD-SOT-G15-R23M-18_LEADS_RESCUE_NEXT_ACTION_SCOPE_CONTRACT_REPAIR",
+    "id": "LF-PROD-SOT-G15-R23M-19_TASK_CLIENT_RELATION_DRAFT_CONTRACT_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
-    "commit_sha": "1de50be0da1670c5220dbc7423377a31ac62e835",
-    "evidence": "A2-18 guard/test 3/3; A25 related guard drift registered; TSC 12->11; build PASS; exact three-file implementation scope; controller Guardian-style audit PASS; mapper and independent reviewer timeouts registered; checkpoint findings remain registered"
+    "commit_sha": "0a3035353a62051a6bab6b85bc2d693304bc7c93",
+    "evidence": "A2-19 guard/test 3/3; client/task relation regression 6/6; TSC 11->10; build PASS; exact three-file implementation scope; controller Guardian-style audit PASS; mapper and independent reviewer timeouts registered; checkpoint findings remain registered"
   },
   "current_workflow": {
     "id": "LF-PROD-SOT-G15-R23M-19_TASK_CLIENT_RELATION_DRAFT_CONTRACT_REPAIR",
     "kind": "TECHNICAL_STAGE",
     "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-19_TASK_CLIENT_RELATION_DRAFT_CONTRACT_REPAIR.md",
-    "status": "ROUTED",
-    "base_sha": "9d9ef57c96130414c993a95c35b0c97b51840bb0",
+    "status": "CLOSED_A2_NEXT_MAPPER_REQUIRED",
+    "base_sha": "0a3035353a62051a6bab6b85bc2d693304bc7c93",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
@@ -130,6 +130,10 @@
     "working-branch:a2-18-independent-review:timeout-registered-no-pass-claim",
     "working-branch:tsc-map@9d9ef57c96130414c993a95c35b0c97b51840bb0:11-active-error-lines",
     "working-branch:controller-root-cause@9d9ef57c:task-client-relation-draft-contract-drift",
-    "working-branch:a2-19-mapper:pending"
+    "working-branch:a2-19-mapper:timeout-registered-no-pass-claim",
+    "working-branch:a2-19-guard-test:3-of-3-pass",
+    "working-branch:a2-19-related-client-task:6-of-6-pass",
+    "working-branch:a2-19-build@0a303535:pass",
+    "working-branch:a2-19-independent-review:timeout-registered-no-pass-claim"
   ]
 }
