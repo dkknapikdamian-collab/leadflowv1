@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "repository": "dkknapikdamian-collab/leadflowv1",
-  "project_id": null,
+  "project_id": "closeflow_lead_app",
   "selection_policy": "LOAD_ONLY_MATCHING_CAPABILITIES",
   "capabilities": [
     {
