@@ -474,6 +474,7 @@ export default function Tasks() {
       priority: 'medium',
       leadId: '',
       caseId: '',
+      clientId: '',
       relationQuery: '',
       recurrence: createDefaultRecurrence(),
       reminder: createDefaultReminder(),
@@ -487,12 +488,12 @@ export default function Tasks() {
 
   const selectedNewTaskOption = useMemo(
     () => findTopicContactOption(topicContactOptions, { leadId: newTask.leadId || null, caseId: newTask.caseId || null, clientId: newTask.clientId || null }),
-    [newTask.caseId, newTask.leadId, topicContactOptions],
+    [newTask.caseId, newTask.clientId, newTask.leadId, topicContactOptions],
   );
 
   const selectedEditTaskOption = useMemo(
     () => findTopicContactOption(topicContactOptions, { leadId: editTask?.leadId || null, caseId: editTask?.caseId || null, clientId: editTask?.clientId || null }),
-    [editTask?.caseId, editTask?.leadId, topicContactOptions],
+    [editTask?.caseId, editTask?.clientId, editTask?.leadId, topicContactOptions],
   );
 
   const handleSelectNewTaskRelation = (option: TopicContactOption | null) => {
