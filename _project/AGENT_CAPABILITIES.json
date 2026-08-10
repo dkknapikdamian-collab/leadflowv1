@@ -1,19 +1,6 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "project_id": "closeflow_lead_app",
   "selection_policy": "LOAD_ONLY_MATCHING_CAPABILITIES",
-  "capabilities": [
-    {
-      "id": "ai-code-guardian",
-      "type": "PLUGIN_AND_SKILL",
-      "required_for": ["CODE_CHANGE","CODE_AUDIT","BUG_REPAIR","SECURITY_REVIEW","RELEASE"],
-      "optional_for": ["TECHNICAL_PLANNING","DOCUMENTATION_REVIEW"],
-      "not_required_for": ["BUSINESS_ANALYSIS","OWNER_DECISION","PRODUCT_DIRECTION","COPYWRITING"],
-      "canonical_repository": "dkknapikdamian-collab/ai-code-guardian",
-      "canonical_ref": "main",
-      "canonical_path": "skills/ai-code-guardian/SKILL.md",
-      "loading_policy": "PLUGIN_FIRST_REPOSITORY_FALLBACK",
-      "on_unavailable": "READ_CANONICAL_SKILL_FROM_REPOSITORY"
-    }
-  ]
+  "capabilities": [{"id":"ai-code-guardian","type":"PLUGIN_AND_SKILL","required_for":["CODE_CHANGE","BUG_REPAIR","CODE_AUDIT","SECURITY_REVIEW","RELEASE","TECHNICAL_REFACTOR","PERFORMANCE_REPAIR","API_ARCHITECTURE_CHANGE","DATABASE_CODE_CHANGE","TECHNICAL_IMPLEMENTATION_STAGE_DESIGN"],"not_required_for":["BUSINESS_ANALYSIS","MARKET_RESEARCH","OWNER_DECISION","PRODUCT_DIRECTION","COPYWRITING","PURE_WIKI_MAINTENANCE"],"canonical_repository":"dkknapikdamian-collab/ai-code-guardian","canonical_ref":"main","canonical_path":"skills/ai-code-guardian/SKILL.md","loading_policy":"PLUGIN_FIRST_REPOSITORY_FALLBACK","on_unavailable":"BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE"}]
 }
