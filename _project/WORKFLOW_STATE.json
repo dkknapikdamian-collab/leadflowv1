@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 34,
+  "state_revision": 35,
   "last_accepted": {
     "id": "LF-PROD-SOT-G15-R23M-15_LEAD_ACTION_BUTTON_POINTER_CONTRACT_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
@@ -9,11 +9,11 @@
     "evidence": "A2-15 guard/test 3/3; R23C and Stage18 tests 9/9; TSC 18->17; build PASS; exact three-file implementation scope; controller Guardian-style audit PASS; mapper root cause confirmed; independent reviewer timeout registered; Stage228 and Stage227C3A guard drift plus checkpoint findings remain registered"
   },
   "current_workflow": {
-    "id": "LF-PROD-SOT-G15-R23M-15_LEAD_ACTION_BUTTON_POINTER_CONTRACT_REPAIR",
+    "id": "LF-PROD-SOT-G15-R23M-16_LEAD_OPTIMISTIC_EVENT_SNAPSHOT_CONTRACT_REPAIR",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-15_LEAD_ACTION_BUTTON_POINTER_CONTRACT_REPAIR.md",
-    "status": "CLOSED_A2_NEXT_MAPPER_REQUIRED",
-    "base_sha": "b7ef166981850620d309f1b4b008f0b701590609",
+    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-16_LEAD_OPTIMISTIC_EVENT_SNAPSHOT_CONTRACT_REPAIR.md",
+    "status": "ROUTED",
+    "base_sha": "046dc10730033e13a1570ff31d11d621904b9002",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
