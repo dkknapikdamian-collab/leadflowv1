@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 53,
+  "state_revision": 54,
   "last_accepted": {
     "id": "LF-SEC-CG-001D_AI_AUTH_PLAN_GATE_AND_USAGE_CONTROL_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
-    "commit_sha": "f193256fe202d98f2edb710a6f3d06aa09096990",
-    "evidence": "B4 local evidence: canonical server AI access boundary, auth/plan/input/rate/usage fail-closed gates, provider call count zero negative runtime cases, server-owned draft confirmation with workspace relation checks and atomic confirmation claim migration; focused static 5/5, runtime 5/5, draft confirmation 6/6, TSC/lint/build/quiet release gate PASS; live migration and fresh independent reviewer timeout registered"
+    "commit_sha": "cb4c4b6d98bb6be54bf2d8601ab2f8bf4c619370",
+    "evidence": "B4 remediation local evidence: Quick Lead uses canonical server confirmation, assistant caller snapshots are ignored, draft status/expiry and verified user attribution are enforced, final-record ai_draft_id idempotency keys and claim TTL migration added; remediation static 4/4, runtime 3/3, prior B4 static 5/5/runtime 5/5, Guardian patch-patterns 0 and test-weakening CLEAR, TSC/lint/build/quiet release gate PASS; live Supabase migrations and fresh independent reviewers remain registered"
   },
   "current_workflow": {
     "id": "LF-SEC-CG-001E_SUPPORT_ACTOR_AUTHORITY_AND_AUDIT_TRAIL_REPAIR",
     "kind": "TECHNICAL_STAGE",
     "contract_path": "docs/stages/LF-SEC-CG-001E_SUPPORT_ACTOR_AUTHORITY_AND_AUDIT_TRAIL_REPAIR.md",
     "status": "ROUTED",
-    "base_sha": "f193256fe202d98f2edb710a6f3d06aa09096990",
+    "base_sha": "cb4c4b6d98bb6be54bf2d8601ab2f8bf4c619370",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
@@ -181,8 +181,9 @@
     "b3:f9aee3264a6c69ed848e12d07166e04ad7121430:independent high findings addressed; final reviewer timeout registered",
     "b4-route:f9aee3264a6c69ed848e12d07166e04ad7121430:ai-auth-plan-gate-contract-created",
     "b4:f193256fe202d98f2edb710a6f3d06aa09096990:static-5-runtime-5-draft-confirmation-6-tsc-lint-build-quiet-pass",
-    "b4:f193256fe202d98f2edb710a6f3d06aa09096990:live-supabase-migration-owner-runtime-required",
-    "b4:f193256fe202d98f2edb710a6f3d06aa09096990:post-implementation-independent-review-timeout-registered",
-    "b5-route:f193256fe202d98f2edb710a6f3d06aa09096990:support-actor-authority-contract-created"
+    "b4:cb4c4b6d98bb6be54bf2d8601ab2f8bf4c619370:quicklead-snapshot-lifecycle-idempotency-remediation-static-4-runtime-3-guardian-clear",
+    "b4:cb4c4b6d98bb6be54bf2d8601ab2f8bf4c619370:live-supabase-migrations-owner-runtime-required",
+    "b4:cb4c4b6d98bb6be54bf2d8601ab2f8bf4c619370:post-remediation-independent-review-and-opencode-timeouts-registered",
+    "b5-route:cb4c4b6d98bb6be54bf2d8601ab2f8bf4c619370:support-actor-authority-contract-created"
   ]
 }

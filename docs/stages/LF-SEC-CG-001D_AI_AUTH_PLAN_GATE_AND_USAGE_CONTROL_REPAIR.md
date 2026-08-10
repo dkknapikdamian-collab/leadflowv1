@@ -10,6 +10,7 @@ source_repo: dkknapikdamian-collab/leadflowv1
 source_branch: codex/closeflow-v1-e2e-roadmap
 base_branch: dev-rollout-freeze
 base_ref: f193256fe202d98f2edb710a6f3d06aa09096990
+remediation_ref: cb4c4b6d98bb6be54bf2d8601ab2f8bf4c619370
 target_branch: codex/closeflow-v1-e2e-roadmap
 ---
 
@@ -65,6 +66,7 @@ for a B4 PASS.
 
 ```text
 IMPLEMENTATION_SHA=f193256fe202d98f2edb710a6f3d06aa09096990
+REMEDIATION_SHA=cb4c4b6d98bb6be54bf2d8601ab2f8bf4c619370
 AI_ROUTES_MAPPED=YES
 AUTH_BEFORE_READ=YES
 PLAN_GATE_BEFORE_PROVIDER=YES
@@ -73,28 +75,37 @@ INPUT_RATE_USAGE_LIMITS=PASS
 DRAFT_CONFIRMATION_BOUNDARY=PASS
 FOCUSED_STATIC=5/5
 FOCUSED_RUNTIME=5/5
+REMEDIATION_STATIC=4/4
+REMEDIATION_RUNTIME=3/3
 TSC=PASS
 LINT=PASS
 BUILD=PASS
 QUIET_RELEASE_GATE=PASS
 GUARDIAN=PASS_WITH_REGISTERED_FINDINGS
 INDEPENDENT_REVIEW=TIMEOUT_REGISTERED
+GUARDIAN_PATCH_PATTERNS=0
+GUARDIAN_TEST_WEAKENING=CLEAR
 ```
 
 The active AI routes now use `src/server/ai-access.ts`, the provider adapter
 is reached only after verified request/workspace/plan/usage checks, and draft
-confirmation is server-owned by `src/server/ai-draft-confirmation.ts`. The
-confirmation claim RPC prevents concurrent confirmation races after the
-migration is applied.
+confirmation is server-owned by `src/server/ai-draft-confirmation.ts`. Quick
+Lead uses the same confirmation endpoint; caller snapshots are ignored; draft
+status/expiry and verified user attribution are enforced. Final records carry
+an `ai_draft_id` idempotency key and confirmation claims have a recovery TTL
+after the remediation migration is applied.
 
 Registered findings:
 
-1. `supabase/migrations/20260810140000_b4_ai_usage_authority.sql` has not been
+1. `supabase/migrations/20260810140000_b4_ai_usage_authority.sql` and
+   `20260810150000_b4_ai_draft_confirmation_idempotency.sql` have not been
    applied or verified against live Supabase in this local-only run. Owner
-   runtime execution is required before production promotion.
-2. A fresh post-implementation independent reviewer timed out twice; earlier
-   B4 mapper/security reviews and the controller's exact tests are retained as
-   evidence, but no timeout was treated as PASS.
+   runtime execution is required before production promotion; without the
+   second migration, database-level final-record idempotency is not proven.
+2. A fresh post-remediation independent reviewer and OpenCode CLI review timed
+   out; earlier B4 mapper/security reviews, local Guardian guards and exact
+   remediation tests are retained as evidence, but no timeout was treated as
+   PASS.
 3. Generic non-AI workspace access fallback remains fail-open in the legacy
    write path; the strict AI path is fail-closed. This remains a separate
    security hardening item for the subsequent security/data stages.
@@ -102,5 +113,7 @@ Registered findings:
    rule-fallback requests, as a conservative cost-control policy.
 5. App-level admins bypass plan/usage in the shared boundary by policy; the
    handler-level admin authorization remains authoritative for `ai-config`.
+6. AI usage ledger timezone/retention, provider fallback cost accounting and
+   stale workspace membership remain registered follow-up risks.
 
 Next stage: `LF-SEC-CG-001E_SUPPORT_ACTOR_AUTHORITY_AND_AUDIT_TRAIL_REPAIR`.
