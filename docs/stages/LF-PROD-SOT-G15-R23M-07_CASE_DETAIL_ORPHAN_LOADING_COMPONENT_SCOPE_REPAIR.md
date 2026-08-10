@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: active
+status: closed_with_registered_findings
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-PROD-SOT-G15-R23M-07_CASE_DETAIL_ORPHAN_LOADING_COMPONENT_SCOPE_REPAIR
@@ -108,4 +108,34 @@ FINDING=R23J_FINANCE_PAYMENT_RECORD_GUARD_SCOPE_DRIFT
 SCOPE=pre-existing finance type evolution outside A2-06; carry to A3
 FINDING=STAGE227C3_LEGACY_EXPECTATION_DRIFT
 SCOPE=pre-existing historical missing-item UI marker drift; carry to A3/D-stage inventory
+FINDING=CASE_DETAIL_DELETE_PLACEMENT_LEGACY_GUARD_DRIFT
+EVIDENCE=tests/case-detail-delete-placement.test.cjs fails because active delete action lacks historical tooltip/title marker
+SCOPE=pre-existing active CaseDetail UI marker drift; no A2-07 active dialog or action code changed
+FOLLOWUP=A3/D1 owner-control acceptance and UI guard inventory
+FINDING=INDEPENDENT_SUBAGENT_REVIEW_TIMEOUT
+EVIDENCE=three bounded mapper/reviewer attempts exceeded wait limit; no reviewer result was used as PASS
+SCOPE=review infrastructure finding; controller performed exact staged-scope/Guardian-style audit and recorded this limitation
+FOLLOWUP=retry independent review at the next A2 checkpoint
+
+## Controller closeout
+
+```text
+STATUS=CLOSED_WITH_REGISTERED_FINDINGS
+SOURCE_BASE_SHA=a3b00ffc76a6945cc222997c6a3fd4f1072f7908
+FINAL_SHA=852844ccf16df630f14ca72cd4a8be611e125430
+FILES_CHANGED=3 implementation files
+ROOT_CAUSE_CONFIRMED=YES
+WHY_NOT_PATCH=unreachable out-of-scope code was removed; no duplicate state or handler was introduced
+TSC=37->29
+FOCUSED_GUARD=PASS
+FOCUSED_TEST=3/3_PASS
+CASE_DETAIL_REGRESSION=17/18_PASS_WITH_PRE_EXISTING_DELETE_PLACEMENT_FINDING
+BUILD=PASS
+DIFF_CHECK=PASS
+GUARDIAN_STYLE_AUDIT=PASS
+INDEPENDENT_REVIEW=TIMEOUT_REGISTERED_NO_PASS_CLAIM
+FREEBUFF_USED=NO_MCP_EXPOSED
+OPENCODE_USED=NO_MCP_EXPOSED
+NEXT_STAGE=FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION
+```
 ```

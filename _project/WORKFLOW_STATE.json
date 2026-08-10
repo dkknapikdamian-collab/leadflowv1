@@ -1,24 +1,24 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 16,
+  "state_revision": 17,
   "last_accepted": {
-    "id": "LF-PROD-SOT-G15-R23M-06_SUPABASE_FALLBACK_PAYMENT_ARCHIVE_INPUT_CONTRACT_REPAIR",
+    "id": "LF-PROD-SOT-G15-R23M-07_CASE_DETAIL_ORPHAN_LOADING_COMPONENT_SCOPE_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
-    "commit_sha": "8c0113cdce71bf16c16a82896bcbb2e0f8065e86",
-    "evidence": "A2-06 guard/test 3/3; relevant payment runtime tests 18/18; TSC 38->37; build PASS; scoped independent review PASS; R23J historical guard finding registered"
+    "commit_sha": "852844ccf16df630f14ca72cd4a8be611e125430",
+    "evidence": "A2-07 guard/test 3/3; CaseDetail regression 17/18 with pre-existing delete-placement finding; TSC 37->29; build PASS; controller Guardian-style audit PASS; independent subagent review timeout registered"
   },
   "current_workflow": {
     "id": "LF-PROD-SOT-G15-R23M-07_CASE_DETAIL_ORPHAN_LOADING_COMPONENT_SCOPE_REPAIR",
     "kind": "TECHNICAL_STAGE",
     "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-07_CASE_DETAIL_ORPHAN_LOADING_COMPONENT_SCOPE_REPAIR.md",
-    "status": "ROUTED_A2_ACTIVE",
-    "base_sha": "5b6203085a3844a775892b92d9c60f06c50e5f09",
+    "status": "CLOSED_A2_NEXT_MAPPER_REQUIRED",
+    "base_sha": "852844ccf16df630f14ca72cd4a8be611e125430",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
   },
-  "next_workflow": {"id": null, "status": "LOCKED_PENDING_A2_07_CLOSEOUT"},
+  "next_workflow": {"id": null, "status": "LOCKED_PENDING_FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
@@ -39,6 +39,10 @@
     "working-branch:a2-06-review@e62992be:scoped-independent-pass",
     "working-branch:mapper-review@8dfa73871536ce3c60b44051987af8e2f7961990:remove-stale-archive-branch",
     "working-branch:tsc-map@5b6203085a3844a775892b92d9c60f06c50e5f09:37-active-error-lines",
-    "working-branch:mapper-review@5b6203085a3844a775892b92d9c60f06c50e5f09:orphan-loading-component-scope"
+    "working-branch:mapper-review@5b6203085a3844a775892b92d9c60f06c50e5f09:orphan-loading-component-scope",
+    "working-branch:tsc-map@a3b00ffc76a6945cc222997c6a3fd4f1072f7908:37-active-error-lines",
+    "working-branch:tsc-map@852844ccf16df630f14ca72cd4a8be611e125430:29-active-error-lines",
+    "working-branch:a2-07-controller-audit@852844cc:exact-three-file-scope-pass",
+    "working-branch:a2-07-independent-review:timeout-registered"
   ]
 }
