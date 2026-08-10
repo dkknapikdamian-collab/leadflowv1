@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: routed
+status: closed_with_registered_findings
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-PROD-SOT-G15_TERMINAL_CLOSEOUT_AND_REPOSITORY_TRUTH_HANDOFF
@@ -66,18 +66,38 @@ WORKTREE_SCOPED=YES
 ## Closeout evidence
 
 ```text
-STATUS=ROUTED
+STATUS=CLOSED_WITH_REGISTERED_FINDINGS
 SOURCE_BASE_SHA=4e602f4b0ebd31e2f6f75c47d18514c8ace7c5e3
-FINAL_SHA=PENDING
-LINT=PENDING
-TSC=PENDING
-BUILD=PENDING
-ROUTER_AUDIT=PENDING
-DUPLICATE_SOT_AUDIT=PENDING
-LEGACY_PR_ASSESSMENT=PENDING
-GUARDIAN_CLOSEOUT=PENDING
-INDEPENDENT_REVIEW=PENDING
+FINAL_SHA=9c27a2464ebdd238fa8587c924a5b03b99dade21
+LINT=PASS_EXACT_SHA
+TSC=ACTIVE_0_EXACT_SHA
+BUILD=PASS_EXACT_SHA
+ROUTER_AUDIT=PASS_ONE_WORKFLOW_STATE_ONE_ACTIVE_CONTRACT
+DUPLICATE_SOT_AUDIT=PASS_DYNAMIC_STATE_ONLY
+LEGACY_PR_ASSESSMENT=PASS_PR50_HISTORICAL_NOT_MERGED
+GUARDIAN_CLOSEOUT=PASS_WITH_REGISTERED_LIMITATIONS
+INDEPENDENT_REVIEW=COMPLETED_WITH_FINDINGS_RECONCILED
 FREEBUFF_USED=NO_MCP_EXPOSED
 OPENCODE_USED=NO_MCP_EXPOSED
 NEXT_STAGE=PHASE_B_SECURITY
 ```
+
+## Registered findings
+
+- `OBSIDIAN_PROJECT_REGISTRY_BRANCH_METADATA_STALE`: canonical Obsidian
+  registry still says `main`; repository execution truth is
+  `dev-rollout-freeze`. An Obsidian update proposal is required; the Vault
+  was not changed by the repository executor.
+- `WORKSPACE_SCOPE_GUARD_BACKLOG`: the existing workspace-scope guard still
+  fails for `api/activities.ts` and legacy Vercel task/event rewrites. This is
+  a security backlog and remains a blocker for B/C security readiness, not a
+  reason to falsify A3 type/build evidence.
+- `SECURITY_CHECKPOINT_FINDINGS_REMAIN`: prior checkpoint findings for
+  Supabase-first runtime, auth migration, workspace/billing scope, AI gating
+  and portal storage remain open.
+- `BUILD_BUNDLE_WARNING`: Vite reports a large vendor-icons bundle and mixed
+  static/dynamic imports of `supabase-fallback.ts`; this is a performance and
+  maintainability risk for a later bounded optimization stage.
+- `AUXILIARY_REVIEW_LIMITATION`: FreeBuff/OpenCode MCP were not exposed;
+  one independent reviewer initially hit model capacity, replacement review
+  completed read-only, and the controller re-ran the exact gate locally.
