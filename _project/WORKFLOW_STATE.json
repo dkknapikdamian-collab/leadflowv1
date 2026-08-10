@@ -2,17 +2,18 @@
   "schema_version": 1,
   "repository": "dkknapikdamian-collab/leadflowv1",
   "project_id": "closeflow_lead_app",
-  "status": "ROUTED_FAIL_CLOSED_UNTIL_STAGE_CONTRACT",
-  "current_workflow": "DOCSYS_R3_ROUTING_RECONCILIATION",
+  "status": "ROUTED_REDIRECT_TO_CANONICAL_PRODUCT_BRANCH",
+  "current_workflow": null,
   "next_workflow": null,
-  "blocker": "No product stage is activated by the routing repair; an executor must use an explicit stage contract after the independent controller accepts the route.",
+  "blocker": null,
   "allowed_actions": [
     "DOCSYS_REPOSITORY_RECONCILIATION",
     "READ_ONLY_DISCOVERY",
     "DOCUMENTATION_ONLY_ROUTING_REPAIR",
-    "SECURITY_REVIEW_OF_EXISTING_RUNTIME"
+    "SECURITY_REVIEW_OF_EXISTING_RUNTIME",
+    "REDIRECT_PRODUCT_EXECUTION_TO_CANONICAL_BRANCH"
   ],
-  "forbidden_actions": [
+  "forbidden_actions_on_main": [
     "PRODUCT_CHANGE",
     "RUNTIME_CHANGE",
     "TEST_CHANGE",
@@ -23,8 +24,19 @@
   "guardian_required": "AI_CODE_GUARDIAN_REQUIRED=YES",
   "branch_evidence": {
     "default_branch": "main",
-    "application_contract_branch": "dev-rollout-freeze",
-    "owner_decision_required": "OWNER_DECISION_REQUIRED_MAIN_VS_DEV_ROLLOUT_FREEZE",
+    "canonical_product_branch": "dev-rollout-freeze",
+    "production_branch": "dev-rollout-freeze",
+    "owner_decision": "SELECT_DEV_ROLLOUT_FREEZE_AS_CANONICAL_PRODUCT_AND_PRODUCTION_BRANCH",
+    "owner_decision_resolved": true,
+    "autonomous_work_branch_required": true,
+    "current_preferred_work_branch": "codex/closeflow-v1-e2e-roadmap",
+    "autonomous_merge_to_production_forbidden": true,
     "route": "10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md"
+  },
+  "product_workflow_resolution": {
+    "read_from_branch": "dev-rollout-freeze",
+    "workflow_state_path": "_project/WORKFLOW_STATE.json",
+    "execution_rule": "create_or_use_separate_non_production_work_branch_from_verified_canonical_product_sha",
+    "promotion_rule": "independent_verification_plus_controller_or_owner_decision"
   }
 }
