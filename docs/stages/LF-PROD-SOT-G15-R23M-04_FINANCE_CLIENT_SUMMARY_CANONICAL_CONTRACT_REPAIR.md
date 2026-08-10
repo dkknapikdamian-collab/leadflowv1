@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: ready_for_execution
+status: closed_with_registered_findings
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-PROD-SOT-G15-R23M-04_FINANCE_CLIENT_SUMMARY_CANONICAL_CONTRACT_REPAIR
@@ -113,24 +113,48 @@ broadened edits and remap the contract. Do not repair the issue by adding
 historical fields to `FinanceSummary`, weakening the type, or introducing a
 second summary helper.
 
+## Registered findings observed during execution
+
+```text
+FINDING=LEGACY_FIN7_STATIC_GUARD_DRIFT
+EVIDENCE=scripts/check-closeflow-fin7-client-finance-summary.cjs reports four missing historical UI markers
+SCOPE=current FIN13 client-finance runtime replaced the historical FIN-7 mount; no A2-04 UI file changed
+FOLLOWUP=review legacy guard ownership during A3 terminal SOT closeout
+
+FINDING=LEGACY_FINANCE_CONTRACT_GUARD_DRIFT
+EVIDENCE=scripts/check-closeflow-finance-contract.cjs reports five missing historical API markers; finance-domain guard reports CaseSettlementPanel compatibility drift
+SCOPE=pre-existing API/component architecture drift outside the three-file A2-04 allowlist
+FOLLOWUP=classify or retire stale guards at A3/D-stage acceptance; do not broaden A2-04
+
+FINDING=FIN13_STATIC_EXPECTATION_DRIFT
+EVIDENCE=tests/fin13-client-case-finances.test.cjs expects `caseId: row.caseId`, while current source uses `caseId: getCaseId(caseRecord)`
+SCOPE=pre-existing test expectation mismatch; current case grouping helpers remain present and A2-04 does not change FinanceMiniSummary.tsx
+FOLLOWUP=review with FIN13 source-of-truth guard during A3/D1
+
+FINDING=HISTORICAL_R23H_R23I_GUARD_SCOPE_DRIFT
+EVIDENCE=R23H/R23I focused guards reject unrelated historical changes in current finance files
+SCOPE=pre-existing guard scope drift outside A2-04
+FOLLOWUP=legacy guard inventory during A3
+```
+
 ## Controller closeout
 
 ```text
-STATUS=OPEN
+STATUS=PASS_ON_WORK_BRANCH_WITH_REGISTERED_FINDINGS
 SOURCE_BASE_SHA=b695965e3540d7f2675be94241b4cd959bf40534
-FINAL_SHA=
-FILES_CHANGED=
+FINAL_SHA=2a0ff8fe280066b857d822b118aaa620ba93d392
+FILES_CHANGED=3 implementation files
 ROOT_CAUSE_CONFIRMED=YES
 WHY_NOT_PATCH=canonical FinanceSummary completion is delegated to the existing source-of-truth calculator
-TSC=
-FOCUSED_GUARD=
-FOCUSED_TEST=
-FINANCE_TESTS=
-BUILD=
-DIFF_CHECK=
-GUARDIAN_STYLE_AUDIT=
-INDEPENDENT_REVIEW=
+TSC=40->39
+FOCUSED_GUARD=PASS
+FOCUSED_TEST=4/4_PASS_PLUS_RUNTIME_SMOKE_PASS
+FINANCE_TESTS=PASS_WITH_REGISTERED_FINDINGS
+BUILD=PASS
+DIFF_CHECK=PASS
+GUARDIAN_STYLE_AUDIT=PASS
+INDEPENDENT_REVIEW=PASS
 FREEBUFF_USED=NO_MCP_EXPOSED
 OPENCODE_USED=NO_MCP_EXPOSED
-NEXT_STAGE=
+NEXT_STAGE=FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION
 ```
