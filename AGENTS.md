@@ -2,11 +2,14 @@
 
 Repo: dkknapikdamian-collab/leadflowv1
 Repository default branch: main
-Application evidence branch: dev-rollout-freeze
+Canonical product branch: dev-rollout-freeze
+Production branch: dev-rollout-freeze
 Preliminary class: STANDALONE_APPLICATION
-Status: OWNER_DECISION_REQUIRED_MAIN_VS_DEV_ROLLOUT_FREEZE / CODE_TASKS_REQUIRE_AI_CODE_GUARDIAN
+Status: OWNER_DECISION_RESOLVED / CODE_TASKS_REQUIRE_AI_CODE_GUARDIAN
 
-`main` is the GitHub default branch, while current application evidence points to `dev-rollout-freeze`. The owner must choose the canonical branch or explicitly declare a split runtime/release model. Product work remains fail-closed until that decision, and still requires the repository workflow contract and the applicable AI Code Guardian gate.
+Owner decision 2026-08-10: `dev-rollout-freeze` is the canonical product and production branch for CloseFlow. `main` remains the repository default/control-plane branch and must not be treated as the application production branch.
+
+Autonomous executors must not perform multi-stage product work directly on `dev-rollout-freeze`. They must create/use a separate work branch from the verified current `dev-rollout-freeze` SHA (for the current program: `codex/closeflow-v1-e2e-roadmap`). They may commit and push there, but may not merge, rebase or force-push into `dev-rollout-freeze`. Promotion to production requires independent verification plus an explicit controller/owner decision.
 
 ## READ_FIRST
 
@@ -15,19 +18,20 @@ Status: OWNER_DECISION_REQUIRED_MAIN_VS_DEV_ROLLOUT_FREEZE / CODE_TASKS_REQUIRE_
 3. _project/AGENT_CAPABILITIES.json
 4. _project/WORKFLOW_STATE.json
 5. _project/DOCUMENT_OWNERSHIP.json
-6. Existing repository README and project-specific instructions only when the workflow state routes them.
+6. Canonical Obsidian router: `10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md` when available.
+7. Existing repository README and project-specific instructions only when the canonical product workflow routes them.
 
-## DOCSYS-V1 lock
+## DOCSYS-V1 lock on `main`
 
-- ONE_STAGE_ONLY: YES.
-- This bootstrap is documentation/control-plane only.
-- Product code, runtime, tests, dependencies, secrets and deployment are out of scope.
+- `main` is documentation/control-plane/default-branch context, not the CloseFlow production branch.
+- Product code, runtime, tests, dependencies, secrets and deployment changes must not be executed directly on `main` through this bootstrap.
+- Product execution starts from the verified canonical product branch `dev-rollout-freeze`, then moves to a separate non-production work branch.
 - AI_CODE_GUARDIAN_REQUIRED=YES for every code change, audit, security review or release.
-- If the canonical AI Code Guardian capability is unavailable, status is BLOCKED_FAIL_CLOSED.
-- The evidenced project identity is `closeflow_lead_app`; the canonical Obsidian route is `10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md`.
+- If the canonical AI Code Guardian capability is unavailable for a required code gate, status is BLOCKED_FAIL_CLOSED.
+- The project identity is `closeflow_lead_app`; canonical Obsidian route is `10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md`.
 - No new project identity, workflow, Obsidian path or next stage may be invented.
-- Canonical Obsidian writes require the global router and documented ownership; this repository may propose updates but may not self-accept them.
+- Canonical Obsidian writes require the global router and documented ownership; repository executors propose memory updates and do not self-accept them.
 
 ## Routing
 
-The repository is routed through the global DOCSYS router. Dependent work remains bounded by `_project/WORKFLOW_STATE.json`, exact stage contracts and the independent controller; no next stage is activated by this routing repair.
+`main` redirects product execution to the canonical product branch. Product work must resolve the active technical workflow from `_project/WORKFLOW_STATE.json` on `dev-rollout-freeze` (or from the controller-approved non-production work branch derived from its exact SHA). No autonomous executor may promote its own work into production.
