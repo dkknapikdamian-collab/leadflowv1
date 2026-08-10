@@ -6,7 +6,7 @@
     "id": "LF-PROD-SOT-G15-R23K_FINANCE_SNAPSHOT_REMAINING_AMOUNT_INPUT_CONTRACT",
     "status": "CLOSED",
     "commit_sha": "21f27150df059e79e066fa0cba97cbd3483eda76",
-    "evidence": "obsidian:10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md"
+    "evidence": "obsidian:10_PROJEKTY/CloseFlow_Lead_App/00_AI_START_SPIS_TRESCI.md"
   },
   "current_workflow": {
     "id": "LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR",
@@ -21,6 +21,6 @@
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "github:pull/50@787b9e0f5d2172c0fbd399807ee53b2f6e8cde49",
-    "obsidian:10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md"
+    "obsidian:10_PROJEKTY/CloseFlow_Lead_App/00_AI_START_SPIS_TRESCI.md"
   ]
 }
