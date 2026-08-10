@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 36,
+  "state_revision": 37,
   "last_accepted": {
     "id": "LF-PROD-SOT-G15-R23M-16_LEAD_OPTIMISTIC_EVENT_SNAPSHOT_CONTRACT_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
@@ -9,11 +9,11 @@
     "evidence": "A2-16 guard/test 3/3; Stage228R50 and R53 related guards/tests PASS; TSC 17->16; build PASS; exact three-file implementation scope; controller Guardian-style audit PASS; mapper and independent reviewer timeouts registered; checkpoint findings remain registered"
   },
   "current_workflow": {
-    "id": "LF-PROD-SOT-G15-R23M-16_LEAD_OPTIMISTIC_EVENT_SNAPSHOT_CONTRACT_REPAIR",
+    "id": "LF-PROD-SOT-G15-R23M-17_MISSING_ITEM_CALLBACK_VOID_CONTRACT_REPAIR",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-16_LEAD_OPTIMISTIC_EVENT_SNAPSHOT_CONTRACT_REPAIR.md",
-    "status": "CLOSED_A2_NEXT_MAPPER_REQUIRED",
-    "base_sha": "b6df0edea54e48d422a36abd76274270186e4e0e",
+    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-17_MISSING_ITEM_CALLBACK_VOID_CONTRACT_REPAIR.md",
+    "status": "ROUTED",
+    "base_sha": "b94f069f2ec553cab6d2db449158f48173632dea",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
@@ -113,6 +113,9 @@
     "working-branch:a2-16-related-stage228r50-r53:guards-and-tests-pass",
     "working-branch:a2-16-build@b6df0ede:pass",
     "working-branch:a2-16-mapper:timeout-registered-no-pass-claim",
-    "working-branch:a2-16-independent-review:timeout-registered-no-pass-claim"
+    "working-branch:a2-16-independent-review:timeout-registered-no-pass-claim",
+    "working-branch:tsc-map@b94f069f2ec553cab6d2db449158f48173632dea:16-active-error-lines",
+    "working-branch:controller-root-cause@b94f069f:missing-item-callback-toast-return-contract-drift",
+    "working-branch:a2-17-mapper:pending"
   ]
 }
