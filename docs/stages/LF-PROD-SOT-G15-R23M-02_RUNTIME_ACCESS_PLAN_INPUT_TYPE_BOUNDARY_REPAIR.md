@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: active
+status: closed
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-PROD-SOT-G15-R23M-02_RUNTIME_ACCESS_PLAN_INPUT_TYPE_BOUNDARY_REPAIR
@@ -45,16 +45,23 @@ PREVIOUS_STAGE_IMPACT=none; A2-01 Firebase import repair remains unchanged
 SECURITY_IMPACT=none; no authorization decision or billing authority changes
 ```
 
-The selected signature is:
+The selected runtime-compatible destructured input contract is:
 
 ```ts
 export function buildRuntimeAccessPlanTruth(
-  input: Readonly<{
-    planId?: string | null;
-    subscriptionStatus?: string | null;
-  }> = {},
+  { planId = '', subscriptionStatus: rawSubscriptionStatusInput = '' } = {},
 ) {
+  const rawPlanId = normalizePlanToken(planId);
+  const rawSubscriptionStatus = normalizeRuntimeStatus(rawSubscriptionStatusInput || 'inactive');
+  // ...existing runtime logic...
+}
 ```
+
+An inline TypeScript parameter annotation was rejected during fail-first
+runtime verification because the existing CF-RUNTIME-00 test imports this file
+as raw ESM without transpiling TypeScript syntax. Destructuring defaults provide
+the needed inferred property boundary while preserving that established
+runtime verification contract.
 
 The function is read-only with respect to its input and all current callers
 provide these string-like fields or omit them. No caller, dependency, or
@@ -122,3 +129,40 @@ before A2-03. If the expected two-error reduction does not occur, preserve the
 branch and remap the root cause rather than broadening this stage. Rollback is
 the single implementation commit revert; controller metadata remains as
 evidence.
+
+## Controller closeout
+
+```text
+STATUS=PASS_ON_WORK_BRANCH
+SOURCE_BASE_SHA=d075c76292eee3ce263c8045c3f164c3fd446fab
+ROUTER_BASE_SHA=1c0e9a8635339e4bb87a0a58faf2bc67ddae5f84
+FINAL_SHA=a5c48303dfebf0255f94f51c91b912c405622f09
+FILES_CHANGED=3 implementation files; contract evidence is recorded separately
+ROOT_CAUSE_CONFIRMED=YES
+WHY_NOT_PATCH=type-safe inferred boundary replaces implicit {} without bypass or runtime transpiler dependency
+RUNTIME_SOURCE_TRUTH_UNCHANGED=YES
+TSC=46->44
+FOCUSED_GUARD=PASS
+FOCUSED_TEST=3/3_PASS
+CF_RUNTIME_TEST=5/5_PASS
+CLEAN_CHECKOUT_GUARD_TEST=PASS
+LEGACY_CF_RUNTIME_GUARD_CLEAN_CHECKOUT=PASS
+DIFF_CHECK=PASS
+BUILD=PASS
+GUARDIAN_STYLE_AUDIT=PASS
+INDEPENDENT_STATIC_REVIEW=PASS
+FREEBUFF_USED=NO_MCP_EXPOSED
+OPENCODE_USED=NO_MCP_EXPOSED
+NEXT_STAGE=FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION
+```
+
+An initial inline TypeScript annotation was rejected during fail-first runtime
+verification because the established CF-RUNTIME-00 test imports this file as
+raw ESM. The final destructured-default implementation was selected after
+that fail-first evidence; it restores the raw-ESM test while reducing the two
+targeted TypeScript errors.
+
+The dirty working tree still contains the preserved untracked `.stversions/`
+directory, so the legacy CF runtime guard reports a dirty-tree finding
+locally. The exact clean checkout at `a5c48303` passed that guard and all
+focused/runtime tests.
