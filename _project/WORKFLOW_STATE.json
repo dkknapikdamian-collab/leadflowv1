@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 42,
+  "state_revision": 43,
   "last_accepted": {
     "id": "LF-PROD-SOT-G15-R23M-19_TASK_CLIENT_RELATION_DRAFT_CONTRACT_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
@@ -9,11 +9,11 @@
     "evidence": "A2-19 guard/test 3/3; client/task relation regression 6/6; TSC 11->10; build PASS; exact three-file implementation scope; controller Guardian-style audit PASS; mapper and independent reviewer timeouts registered; checkpoint findings remain registered"
   },
   "current_workflow": {
-    "id": "LF-PROD-SOT-G15-R23M-19_TASK_CLIENT_RELATION_DRAFT_CONTRACT_REPAIR",
+    "id": "LF-PROD-SOT-G15-R23M-20_TODAY_NATIVE_MOUSE_EVENT_BOUNDARY_REPAIR",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-19_TASK_CLIENT_RELATION_DRAFT_CONTRACT_REPAIR.md",
-    "status": "CLOSED_A2_NEXT_MAPPER_REQUIRED",
-    "base_sha": "0a3035353a62051a6bab6b85bc2d693304bc7c93",
+    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-20_TODAY_NATIVE_MOUSE_EVENT_BOUNDARY_REPAIR.md",
+    "status": "ROUTED",
+    "base_sha": "bdabf65c56612bb1c4dc4fa7768735de9bcc1c5d",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
@@ -134,6 +134,9 @@
     "working-branch:a2-19-guard-test:3-of-3-pass",
     "working-branch:a2-19-related-client-task:6-of-6-pass",
     "working-branch:a2-19-build@0a303535:pass",
-    "working-branch:a2-19-independent-review:timeout-registered-no-pass-claim"
+    "working-branch:a2-19-independent-review:timeout-registered-no-pass-claim",
+    "working-branch:tsc-map@bdabf65c56612bb1c4dc4fa7768735de9bcc1c5d:10-active-error-lines",
+    "working-branch:controller-root-cause@bdabf65c:today-react-dom-mouse-event-boundary-drift",
+    "working-branch:a2-20-mapper:pending"
   ]
 }
