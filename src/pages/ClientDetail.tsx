@@ -147,7 +147,7 @@ void STAGE232I4_R16X_MISSING_BLOCKER_TOGGLE_STATE_AND_ACTION_LABEL;
 
 const STAGE232I4_R16Y_R2_MISSING_BLOCKER_SOURCE_TRUTH_ROBUST_FINAL = 'Client missing blocker source truth reads legal priority high/medium and delete action remains visible';
 void STAGE232I4_R16Y_R2_MISSING_BLOCKER_SOURCE_TRUTH_ROBUST_FINAL;
-import { buildMissingItemModalDraft } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
+import { buildMissingItemModalDraft, type MissingItemKind } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
 import { isClosedCaseStatus } from '../lib/cases';
 
 
@@ -1558,7 +1558,9 @@ function ClientDetail() {
   const [clientMissingModalOpen, setClientMissingModalOpen] = useState(false);
   const [clientMissingTitle, setClientMissingTitle] = useState('');
   const [clientMissingNote, setClientMissingNote] = useState('');
+  const [clientMissingKind, setClientMissingKind] = useState<MissingItemKind>('document');
   const [clientMissingBlocksProgress, setClientMissingBlocksProgress] = useState(false);
+  const [clientMissingBlockScope, setClientMissingBlockScope] = useState('');
   const [clientMissingError, setClientMissingError] = useState('');
   const [clientMissingSaving, setClientMissingSaving] = useState(false);
   const [clientMissingSourceFilterStage232I2, setClientMissingSourceFilterStage232I2] = useState<'all' | 'client' | 'lead' | 'case' | 'blockers' | 'missing'>('all');
@@ -2045,6 +2047,9 @@ function ClientDetail() {
 
   const openClientMissingItemModalStage227C3B = useCallback(() => {
     setContactEditing(false);
+    setClientMissingKind('document');
+    setClientMissingBlocksProgress(false);
+    setClientMissingBlockScope('');
     setClientMissingError('');
     setClientMissingModalOpen(true);
   }, []);
@@ -2071,6 +2076,9 @@ function ClientDetail() {
         {
           title: clientMissingTitle,
           note: clientMissingNote,
+          missingKind: clientMissingKind,
+          blocksProgress: clientMissingBlocksProgress,
+          blockScope: clientMissingBlockScope,
         },
       );
     } catch (error: any) {
@@ -2079,13 +2087,18 @@ function ClientDetail() {
     }
 
     const createdAt = new Date().toISOString();
+    const stage232aMissingItemMetadata = {
+      missingKind: draft.missingKind,
+      blocksProgress: draft.blocksProgress,
+      blockScope: draft.blockScope || null,
+    };
     setClientMissingSaving(true);
     try {
       const savedTask = await insertTaskToSupabase({
         title: draft.title,
         type: 'missing_item',
-        status: clientMissingBlocksProgress ? 'blocking_missing_item' : 'missing_item',
-        priority: clientMissingBlocksProgress ? 'high' : 'medium',
+        status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item',
+        priority: draft.blocksProgress ? 'high' : 'medium',
         date: createdAt.slice(0, 10),
         scheduledAt: createdAt,
         dueAt: createdAt,
@@ -2095,15 +2108,15 @@ function ClientDetail() {
         recordType: 'client',
         recordId: safeClientId,
         workspaceId: workspace?.id,
-        blocksProgress: clientMissingBlocksProgress,
+        ...stage232aMissingItemMetadata,
         payload: {
           kind: 'missing_item',
           type: 'missing_item',
           missingItem: true,
-          blocksProgress: clientMissingBlocksProgress,
-          status: clientMissingBlocksProgress ? 'blocking_missing_item' : 'missing_item',
-                    title: draft.title,
-note: draft.note,
+          ...stage232aMissingItemMetadata,
+          status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item',
+          title: draft.title,
+          note: draft.note,
           source: 'stage232i4_r14_r6_client_runtime_smoke_fix',
           recordType: 'client',
           sourceEntityType: 'client',
@@ -2122,9 +2135,9 @@ note: draft.note,
           entityId: safeClientId,
           kind: 'missing_item',
           type: 'missing_item',
-          status: clientMissingBlocksProgress ? 'blocking_missing_item' : 'missing_item',
+          status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item',
           missingItem: true,
-          blocksProgress: clientMissingBlocksProgress,
+          ...stage232aMissingItemMetadata,
           title: draft.title,
           note: draft.note,
           content: draft.note,
@@ -2141,9 +2154,9 @@ note: draft.note,
         id: String((savedTask as any)?.id || 'client-missing-local-' + Date.now()),
         title: draft.title,
         type: 'missing_item',
-        status: clientMissingBlocksProgress ? 'blocking_missing_item' : 'missing_item',
-        priority: clientMissingBlocksProgress ? 'high' : 'medium',
-        blocksProgress: clientMissingBlocksProgress,
+        status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item',
+        priority: draft.blocksProgress ? 'high' : 'medium',
+        ...stage232aMissingItemMetadata,
         date: createdAt.slice(0, 10),
         scheduledAt: createdAt,
         dueAt: createdAt,
@@ -2155,8 +2168,9 @@ note: draft.note,
           kind: 'missing_item',
           type: 'missing_item',
           missingItem: true,
-          blocksProgress: clientMissingBlocksProgress,
-          status: clientMissingBlocksProgress ? 'blocking_missing_item' : 'missing_item',
+          ...stage232aMissingItemMetadata,
+          status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item',
+          title: draft.title,
           note: draft.note,
           source: 'stage232i4_r14_r6_client_runtime_smoke_fix',
           sourceEntityType: 'client',
@@ -2184,6 +2198,7 @@ note: draft.note,
               note: draft.note,
               content: draft.note,
               createdAt,
+              ...stage232aMissingItemMetadata,
             },
           },
           ...previous,
@@ -2191,6 +2206,9 @@ note: draft.note,
       );
       setClientMissingTitle('');
       setClientMissingNote('');
+      setClientMissingKind('document');
+      setClientMissingBlocksProgress(false);
+      setClientMissingBlockScope('');
       setClientMissingError('');
       setClientMissingModalOpen(false);
       setClientMissingListOpenStage232I6(false);
@@ -2203,7 +2221,7 @@ note: draft.note,
     } finally {
       setClientMissingSaving(false);
     }
-  }, [client, clientId, clientMissingBlocksProgress, clientMissingNote, clientMissingTitle, hasAccess, reload, workspace?.id]);
+  }, [client, clientId, clientMissingBlockScope, clientMissingBlocksProgress, clientMissingKind, clientMissingNote, clientMissingTitle, hasAccess, reload, workspace?.id]);
 
 
 
@@ -3233,6 +3251,9 @@ return (
                 }}
                 titleValue={clientMissingTitle}
                 noteValue={clientMissingNote}
+                missingKindValue={clientMissingKind}
+                blocksProgressValue={clientMissingBlocksProgress}
+                blockScopeValue={clientMissingBlockScope}
                 error={clientMissingError}
                 isSaving={clientMissingSaving}
                 onTitleChange={(value) => {
@@ -3240,11 +3261,17 @@ return (
                   if (clientMissingError) setClientMissingError('');
                 }}
                 onNoteChange={setClientMissingNote}
+                onMissingKindChange={setClientMissingKind}
+                onBlocksProgressChange={setClientMissingBlocksProgress}
+                onBlockScopeChange={setClientMissingBlockScope}
                 onCancel={() => {
                   if (clientMissingSaving) return;
                   setClientMissingModalOpen(false);
                   setClientMissingTitle('');
                   setClientMissingNote('');
+                  setClientMissingKind('document');
+                  setClientMissingBlocksProgress(false);
+                  setClientMissingBlockScope('');
                   setClientMissingError('');
                 }}
                 onSubmit={handleSaveClientMissingItemStage227C3B}
