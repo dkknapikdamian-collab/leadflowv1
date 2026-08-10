@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: routed
+status: closed_with_registered_findings
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-PROD-SOT-G15-R23M-21_PWA_CHUNK_EVENT_TYPE_BOUNDARY_REPAIR
@@ -78,20 +78,33 @@ ALLOWLIST=PASS
 ## Closeout evidence
 
 ```text
-STATUS=ROUTED
+STATUS=PASS_ON_WORK_BRANCH_WITH_REGISTERED_FINDINGS
 SOURCE_BASE_SHA=54bdfd7d7a920d7f7237d733d012cd366844e67f
-IMPLEMENTATION_SHA=PENDING
-FILES_CHANGED=PENDING
-TSC=PENDING
-FOCUSED_TESTS=PENDING
-RELATED_TESTS=PENDING
-BUILD=PENDING
-DIFF_CHECK=PENDING
-ALLOWLIST=PENDING
-GUARDIAN_STYLE_AUDIT=PENDING
-MAPPER_REVIEW=PENDING
-INDEPENDENT_REVIEW=PENDING
+IMPLEMENTATION_SHA=d3731bc1f6014289572ffd1fd7236a352947439f
+FILES_CHANGED=src/pwa/chunk-asset-reload-guard.ts;scripts/check-lf-prod-sot-g15-r23m-21-pwa-chunk-event-type.cjs;tests/lf-prod-sot-g15-r23m-21-pwa-chunk-event-type.test.cjs
+TSC=3->0
+FOCUSED_TESTS=3/3_PASS
+RELATED_TESTS=PWA_STALE_CHUNK_AND_TAB_RETURN_GUARD_DRIFT_REGISTERED
+BUILD=PASS
+DIFF_CHECK=PASS
+ALLOWLIST=3_IMPLEMENTATION_FILES_PASS
+GUARDIAN_STYLE_AUDIT=PASS_CONTROLLER_AUDIT
+MAPPER_REVIEW=TIMEOUT_REGISTERED_NO_PASS_CLAIM
+INDEPENDENT_REVIEW=TIMEOUT_REGISTERED_NO_PASS_CLAIM
 FREEBUFF_USED=NO_MCP_EXPOSED
 OPENCODE_USED=NO_MCP_EXPOSED
 NEXT_STAGE=A3_TERMINAL_SOT_CLOSEOUT
 ```
+
+### Registered findings
+
+1. `MAPPER_SUBAGENT_TIMEOUT`: bounded root-cause mapper did not return before
+   timeout; local diagnosis and fail-first evidence remain authoritative.
+2. `INDEPENDENT_SUBAGENT_REVIEW_TIMEOUT`: bounded reviewer did not return
+   before timeout; no independent PASS is claimed.
+3. `PWA_RELATED_GUARD_DRIFT`: existing stale-chunk/tab-return checks fail on
+   missing service-worker guard/network-only markers outside this typed event
+   repair; this stage did not broaden into service-worker behavior changes.
+4. `A2_TSC_ZERO_REACHED`: active TypeScript error count is now zero.
+5. Checkpoint findings from A2-01..A2-20 remain active, including
+   Supabase/auth/migration/workspace-scope and AI draft-only guard failures.

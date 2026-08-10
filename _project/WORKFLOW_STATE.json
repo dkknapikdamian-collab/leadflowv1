@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 46,
+  "state_revision": 47,
   "last_accepted": {
-    "id": "LF-PROD-SOT-G15-R23M-20_TODAY_NATIVE_MOUSE_EVENT_BOUNDARY_REPAIR",
+    "id": "LF-PROD-SOT-G15-R23M-21_PWA_CHUNK_EVENT_TYPE_BOUNDARY_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
-    "commit_sha": "023b96b8213aaa7f4043efa2396a3724f1b0ae0c",
-    "evidence": "A2-20 guard/test 3/3; Today visual/source guards 4/4; TSC 10->3; build PASS; exact four-file implementation scope; controller Guardian-style audit PASS; mapper and independent reviewer timeouts registered; checkpoint findings remain registered"
+    "commit_sha": "d3731bc1f6014289572ffd1fd7236a352947439f",
+    "evidence": "A2-21 guard/test 3/3; PWA stale-chunk/tab-return guard drift registered; TSC 3->0; build PASS; exact three-file implementation scope; controller Guardian-style audit PASS; mapper and independent reviewer timeouts registered; checkpoint findings remain registered"
   },
   "current_workflow": {
     "id": "LF-PROD-SOT-G15-R23M-21_PWA_CHUNK_EVENT_TYPE_BOUNDARY_REPAIR",
     "kind": "TECHNICAL_STAGE",
     "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-21_PWA_CHUNK_EVENT_TYPE_BOUNDARY_REPAIR.md",
-    "status": "ROUTED",
-    "base_sha": "54bdfd7d7a920d7f7237d733d012cd366844e67f",
+    "status": "CLOSED_A3_NEXT",
+    "base_sha": "d3731bc1f6014289572ffd1fd7236a352947439f",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
@@ -159,6 +159,11 @@
     "checkpoint-finding:a2-14-a2-20:PORTAL_STORAGE_HEALTH_SOURCE_MISSING",
     "working-branch:tsc-map@54bdfd7d7a920d7f7237d733d012cd366844e67f:3-active-error-lines",
     "working-branch:controller-root-cause@54bdfd7d:pwa-vite-event-and-dom-target-boundary-drift",
-    "working-branch:a2-21-mapper:pending"
+    "working-branch:a2-21-mapper:timeout-registered-no-pass-claim",
+    "working-branch:a2-21-guard-test:3-of-3-pass",
+    "working-branch:a2-21-related-pwa-guards:baseline-drift-registered",
+    "working-branch:a2-21-build@d3731bc1:pass",
+    "working-branch:a2-21-independent-review:timeout-registered-no-pass-claim",
+    "a2-closeout:d3731bc1:ACTIVE_TSC_ERRORS=0"
   ]
 }
