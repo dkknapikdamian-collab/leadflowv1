@@ -540,7 +540,9 @@ export default async function aiAssistantHandler(req: any, res: any) {
       query,
       timezone: typeof body.timezone === "string" ? body.timezone : "Europe/Warsaw",
       now: typeof body.now === "string" ? body.now : undefined,
-      seed: (body.context || body.snapshot || body.seed || undefined) as any,
+      // Frontend snapshots are not an authorization boundary. The server
+      // context must be rebuilt from the verified request scope.
+      seed: undefined,
       request: { headers: req.headers || {}, url: req.url },
     });
 

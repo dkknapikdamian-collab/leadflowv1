@@ -6,7 +6,7 @@ import { buildAssistantContextFromRequest } from './assistant-context.js';
 import { runAssistantQuery } from './ai-assistant.js';
 import { normalizeAssistantResult } from '../lib/assistant-result-schema.js';
 
-export const MAX_ASSISTANT_QUERY_BODY_BYTES = 1024 * 1024;
+export const MAX_ASSISTANT_QUERY_BODY_BYTES = 64 * 1024;
 
 function sendJson(res: any, status: number, body: unknown) {
   res.status(status).setHeader('content-type', 'application/json; charset=utf-8');
@@ -115,12 +115,17 @@ export default async function assistantQueryHandler(req: any, res: any) {
   if (!query) {
     return sendJson(res, 400, emptyPromptApiResult({ timezone, now }));
   }
+  if (query.length > 4000) {
+    return sendJson(res, 413, payloadTooLargeApiResult({ timezone, now }));
+  }
 
   const context = await buildAssistantContextFromRequest({
     query,
     timezone,
     now,
-    seed: body.snapshot || body.data || undefined,
+    // Caller-provided snapshots are untrusted and must never replace the
+    // workspace-scoped server context fetched with the verified request.
+    seed: undefined,
     request: {
       headers: req.headers || {},
       url: req.url,

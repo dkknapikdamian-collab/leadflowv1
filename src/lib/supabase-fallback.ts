@@ -521,6 +521,7 @@ export type AiDraftApiInput = {
   cancelledAt?: string | null;
   linkedRecordId?: string | null;
   linkedRecordType?: string | null;
+  confirmation?: Record<string, unknown> | null;
 };
 
 export async function fetchAiDraftsFromSupabase(params?: { status?: string; limit?: number }) {
@@ -536,6 +537,13 @@ export async function createAiDraftInSupabase(input: AiDraftApiInput) {
 
 export async function updateAiDraftInSupabase(input: AiDraftApiInput & { id: string; action?: string }) {
   return callApi<Record<string, unknown>>('/api/system?kind=ai-drafts', { method: 'PATCH', body: JSON.stringify(input) });
+}
+
+export async function confirmAiDraftInSupabase(input: { id: string; confirmation: Record<string, unknown> }) {
+  return callApi<{ draft: Record<string, unknown>; createdRecord: Record<string, unknown>; idempotent?: boolean }>('/api/system?kind=ai-drafts', {
+    method: 'PATCH',
+    body: JSON.stringify({ id: input.id, action: 'confirm', confirmation: input.confirmation }),
+  });
 }
 
 export async function deleteAiDraftFromSupabase(id: string) {

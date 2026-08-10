@@ -46,6 +46,15 @@ export async function supabaseRequest(path: string, init?: RequestInit) {
   return data;
 }
 
+export async function supabaseRpc(functionName: string, payload: RecordMap = {}) {
+  const normalizedFunctionName = String(functionName || '').trim();
+  if (!normalizedFunctionName) throw new Error('SUPABASE_RPC_FUNCTION_REQUIRED');
+  return supabaseRequest(`rpc/${encodeURIComponent(normalizedFunctionName)}`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
 async function readSingleValue(path: string, key: string) {
   const rows = await supabaseRequest(path, {
     method: 'GET',
