@@ -3313,13 +3313,8 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
         caseId,
         status: 'rejected',
         approvedAt: null,
-        payload: {
-          stage232kDeleteMode: 'legacy_case_item_reject_no_delete_method',
-          deletedAt: new Date().toISOString(),
-          source: 'STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED',
-        },
       });
-      await recordActivity('item_deleted', { itemId: item.id, title: item.title, legacyCaseItems: true, source: 'STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED' });
+      await recordActivity('item_deleted', { itemId: item.id, title: item.title, legacyCaseItems: true, stage232kDeleteMode: 'legacy_case_item_reject_no_delete_method', source: 'STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED' });
       await refreshCaseData();
       toast.success('Brak usunięty z aktywnych działań');
     } catch (error: any) {
@@ -3412,13 +3407,8 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
         caseId,
         status: 'rejected',
         approvedAt: null,
-        payload: {
-          stage232kDeleteMode: 'legacy_case_item_reject_no_delete_method',
-          deletedAt: new Date().toISOString(),
-          source: 'STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED',
-        },
       });
-          await recordActivity('item_deleted', { itemId: item.id, title: item.title, legacyCaseItems: true, source: 'STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED' });
+          await recordActivity('item_deleted', { itemId: item.id, title: item.title, legacyCaseItems: true, stage232kDeleteMode: 'legacy_case_item_reject_no_delete_method', source: 'STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED' });
           toast.success('Element sprawy usunięty z aktywnych działań');
         }
       }
