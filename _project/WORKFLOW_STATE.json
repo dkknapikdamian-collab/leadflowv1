@@ -1,24 +1,24 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 51,
+  "state_revision": 52,
   "last_accepted": {
-    "id": "LF-SEC-CG-001B_CASE_ITEMS_WORKSPACE_SCOPE_AND_IDOR_REPAIR",
+    "id": "LF-SEC-CG-001C_WORKSPACE_BILLING_OWNER_ADMIN_AUTHORITY_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
-    "commit_sha": "ed38d08ca4ce95619c7a3d8c89fd95f46f4c947c",
-    "evidence": "B2 exact evidence: shared item-to-case scope helper covers dedicated and compatibility routes plus portal upload parent validation; static 2/2 and runtime 5/5; foreign GET/POST/PATCH/DELETE cases make zero mutations; TSC, lint, build and quiet release gate PASS; live Supabase/RLS/Storage and independent review remain registered limitations"
+    "commit_sha": "f9aee3264a6c69ed848e12d07166e04ad7121430",
+    "evidence": "B3 local evidence: owner/admin/member billing matrix, workspace mismatch, foreign Stripe subscription/customer binding, webhook-only settings, canonical billing_events retry ledger, stale signature rejection and read-only config route; static 2/2 and runtime 6/6; TSC, lint, build and quiet release gate PASS; live migration/provider runtime and final reviewer timeout remain registered"
   },
   "current_workflow": {
-    "id": "LF-SEC-CG-001C_WORKSPACE_BILLING_OWNER_ADMIN_AUTHORITY_REPAIR",
+    "id": "LF-SEC-CG-001D_AI_AUTH_PLAN_GATE_AND_USAGE_CONTROL_REPAIR",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-SEC-CG-001C_WORKSPACE_BILLING_OWNER_ADMIN_AUTHORITY_REPAIR.md",
+    "contract_path": "docs/stages/LF-SEC-CG-001D_AI_AUTH_PLAN_GATE_AND_USAGE_CONTROL_REPAIR.md",
     "status": "ROUTED",
-    "base_sha": "ed38d08ca4ce95619c7a3d8c89fd95f46f4c947c",
+    "base_sha": "f9aee3264a6c69ed848e12d07166e04ad7121430",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
   },
-  "next_workflow": {"id": null, "status": "LOCKED_PENDING_B3_CLOSEOUT"},
+  "next_workflow": {"id": null, "status": "LOCKED_PENDING_B4_CLOSEOUT"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
@@ -175,6 +175,10 @@
     "b2:ed38d08c:foreign-get-post-patch-delete-zero-mutations-and-portal-parent-check",
     "b2:ed38d08c:tsc-lint-build-quiet-release-gate-pass",
     "b2:ed38d08c:independent-review-timeouts-registered-no-pass-claim",
-    "b3-route:ed38d08c:workspace-billing-owner-admin-authority-contract-created"
+    "b3-route:ed38d08c:workspace-billing-owner-admin-authority-contract-created",
+    "b3:f9aee3264a6c69ed848e12d07166e04ad7121430:local billing authority hardening static-2-runtime-6 quiet-gate-pass",
+    "b3:f9aee3264a6c69ed848e12d07166e04ad7121430:live Supabase migration and provider runtime owner-required",
+    "b3:f9aee3264a6c69ed848e12d07166e04ad7121430:independent high findings addressed; final reviewer timeout registered",
+    "b4-route:f9aee3264a6c69ed848e12d07166e04ad7121430:ai-auth-plan-gate-contract-created"
   ]
 }
