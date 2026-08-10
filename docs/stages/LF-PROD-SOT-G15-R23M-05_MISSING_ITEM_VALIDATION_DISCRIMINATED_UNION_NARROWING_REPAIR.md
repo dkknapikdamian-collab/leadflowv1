@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: ready_for_execution
+status: closed_with_registered_findings
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-PROD-SOT-G15-R23M-05_MISSING_ITEM_VALIDATION_DISCRIMINATED_UNION_NARROWING_REPAIR
@@ -65,7 +65,9 @@ TypeScript configuration.
 2. The focused guard proves the current source equals the base source with
    only the explicit discriminant narrowing change.
 3. Focused Node guard/test pass with positive and negative assertions.
-4. Existing Stage227C2 modal and Stage227C3 runtime-wiring tests pass.
+4. Existing Stage227C2 modal tests pass. Stage227C3 runtime-wiring tests are
+   executed and any pre-existing legacy expectation drift is registered below;
+   they are not repaired in this union-only substage.
 5. Fresh TypeScript mapping verifies 39 -> 38 active errors and removal of
    this union-narrowing error.
 6. `npm run build` passes.
@@ -87,6 +89,15 @@ ALLOWLIST=PASS
 INDEPENDENT_REVIEW=PASS
 ```
 
+## Registered pre-existing test finding
+
+```text
+FINDING=STAGE227C3_LEGACY_EXPECTATION_DRIFT
+EVIDENCE=tests/stage227c3a-lead-missing-item-runtime-wiring.test.cjs and tests/stage227c3b-client-case-missing-item-runtime-wiring.test.cjs report five legacy marker/component mismatches
+SCOPE=current runtime routes LeadDetail/ClientDetail/CaseQuickActions through the later ContextActionDialogs host; A2-05 changes only the validation union narrowing
+FOLLOWUP=review current Stage228R12/Stage232 source-of-truth guards during A3/D1
+```
+
 ## Recovery boundary
 
 If the explicit discriminant does not remove the first error, remap the actual
@@ -96,21 +107,21 @@ result type or add a cast.
 ## Controller closeout
 
 ```text
-STATUS=OPEN
+STATUS=PASS_ON_WORK_BRANCH_WITH_REGISTERED_FINDINGS
 SOURCE_BASE_SHA=52b19a73959a1524f0708a0ae43c6805810d6175
-FINAL_SHA=
-FILES_CHANGED=
+FINAL_SHA=d1e3fc5e2e9334dc5b030b9ebca6ee66e35a3825
+FILES_CHANGED=3 implementation files
 ROOT_CAUSE_CONFIRMED=YES
 WHY_NOT_PATCH=the existing union discriminant is used explicitly without changing runtime semantics
-TSC=
-FOCUSED_GUARD=
-FOCUSED_TEST=
-MISSING_ITEM_TESTS=
-BUILD=
-DIFF_CHECK=
-GUARDIAN_STYLE_AUDIT=
-INDEPENDENT_REVIEW=
+TSC=39->38
+FOCUSED_GUARD=PASS
+FOCUSED_TEST=3/3_PASS_PLUS_RUNTIME_SEMANTICS_PASS
+MISSING_ITEM_TESTS=STAGE227C2_3/3_PASS_WITH_STAGE227C3_FINDING
+BUILD=PASS
+DIFF_CHECK=PASS
+GUARDIAN_STYLE_AUDIT=PASS
+INDEPENDENT_REVIEW=PASS
 FREEBUFF_USED=NO_MCP_EXPOSED
 OPENCODE_USED=NO_MCP_EXPOSED
-NEXT_STAGE=
+NEXT_STAGE=FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION
 ```
