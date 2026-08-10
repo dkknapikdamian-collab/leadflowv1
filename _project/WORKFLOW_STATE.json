@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 21,
+  "state_revision": 22,
   "last_accepted": {
     "id": "LF-PROD-SOT-G15-R23M-09_CASE_ITEM_DELETE_METADATA_CANONICAL_ACTIVITY_CONTRACT_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
@@ -9,16 +9,16 @@
     "evidence": "A2-09 guard/test 3/3; related Stage232 tests 16/16; TSC 28->26; build PASS; controller Guardian-style audit PASS; independent review timeout registered; inherited findings registered"
   },
   "current_workflow": {
-    "id": "LF-PROD-SOT-G15-R23M-09_CASE_ITEM_DELETE_METADATA_CANONICAL_ACTIVITY_CONTRACT_REPAIR",
+    "id": "LF-PROD-SOT-G15-R23M-10_CASES_CLOSED_VIEW_RECORD_SCOPE_REPAIR",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-09_CASE_ITEM_DELETE_METADATA_CANONICAL_ACTIVITY_CONTRACT_REPAIR.md",
-    "status": "CLOSED_A2_NEXT_MAPPER_REQUIRED",
-    "base_sha": "7d612c4b118b291e9059552f4eb9edbfce2e9685",
+    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-10_CASES_CLOSED_VIEW_RECORD_SCOPE_REPAIR.md",
+    "status": "ROUTED_A2_ACTIVE",
+    "base_sha": "c44dd3d0ab01a1fdc67546694900309ae2fbd703",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
   },
-  "next_workflow": {"id": null, "status": "LOCKED_PENDING_FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION"},
+  "next_workflow": {"id": null, "status": "LOCKED_PENDING_A2_10_CLOSEOUT"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
@@ -52,6 +52,8 @@
     "working-branch:tsc-map@94a00369c65f13075275c96017b0bd7b4d69f5e4:28-active-error-lines",
     "working-branch:mapper-review@94a00369:case-item-payload-server-contract-drift",
     "working-branch:tsc-map@7d612c4b118b291e9059552f4eb9edbfce2e9685:26-active-error-lines",
-    "working-branch:a2-09-independent-review:timeout-registered"
+    "working-branch:a2-09-independent-review:timeout-registered",
+    "working-branch:tsc-map@c44dd3d0ab01a1fdc67546694900309ae2fbd703:26-active-error-lines",
+    "working-branch:a2-10-mapper-timeout@c44dd3d0:controller-root-cause-selection"
   ]
 }
