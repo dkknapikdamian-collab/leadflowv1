@@ -3018,7 +3018,7 @@ export default function CaseDetail() {
 
     let noteIdStage231H_R1D2_R15C = String(payloadStage231H_R1D2_R15C.sourceNoteId || payloadStage231H_R1D2_R15C.noteId || (task as any).sourceNoteId || (task as any).noteId || '').trim();
     let notePreviewStage231H_R1D2_R15C = normalizeCaseNotePreviewStage231H_R1D2_R11(
-      getTaskNoteFollowUpPreviewStage231H_R1D2_R11(taskWithMissingBridgeStage232O) ||
+      getTaskNoteFollowUpPreviewStage231H_R1D2_R11(task) ||
       payloadStage231H_R1D2_R15C.notePreview ||
       payloadStage231H_R1D2_R15C.note ||
       payloadStage231H_R1D2_R15C.content ||
