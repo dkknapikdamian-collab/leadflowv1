@@ -1603,8 +1603,8 @@ useEffect(() => {
       financePotential: leadFinancePanel.potential,
       financeLabel: leadFinance.formatted,
       nextActionLabel: nextTimelineEntry ? nextTimelineEntry.title + ' • ' + nextTimelineEntry.dateLabel : '',
-      riskLabel: leadSilenceRisk.riskLabel || leadWorkCenter.riskLabel,
-      riskReason: leadRiskReasonStage14F || leadSilenceRisk.riskReason || leadWorkCenter.riskReason,
+      riskLabel: leadSilenceRisk.label || leadWorkCenter.riskLabel,
+      riskReason: leadRiskReasonStage14F || leadSilenceRisk.details || leadWorkCenter.riskReason,
     }),
     [lead, leadFinance.formatted, leadFinancePanel.potential, leadPrimaryNoteText, leadRiskReasonStage14F, leadSilenceRisk, leadWorkCenter.riskLabel, leadWorkCenter.riskReason, nextTimelineEntry],
   );
