@@ -3648,8 +3648,6 @@ return (
                   kind="task"
                   recordType="client"
                   type="button"
-                  variant="outline"
-                  size="sm"
                   onClick={() =>
                     openContextQuickAction({
                       kind: 'task',
@@ -3669,8 +3667,6 @@ return (
                   kind="event"
                   recordType="client"
                   type="button"
-                  variant="outline"
-                  size="sm"
                   onClick={() =>
                     openContextQuickAction({
                       kind: 'event',
