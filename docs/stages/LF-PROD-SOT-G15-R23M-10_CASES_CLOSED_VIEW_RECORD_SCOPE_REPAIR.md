@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: active
+status: closed_with_registered_findings
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-PROD-SOT-G15-R23M-10_CASES_CLOSED_VIEW_RECORD_SCOPE_REPAIR
@@ -84,4 +84,39 @@ FOCUSED_TEST=PASS
 TSC_ROOT_CAUSE_REMOVED=YES
 BUILD=PASS
 ALLOWLIST=PASS
+```
+
+## Registered findings
+
+```text
+FINDING=STAGE231B0_R7_CASE_ARCHIVE_RESTORE_GUARD_DRIFT
+SCOPE=pre-existing guard failure: src/lib/cases.ts lacks historical 'completed' token; no A2-10 diff touches that file
+FOLLOWUP=A3/D1 guard inventory and repository-truth reconciliation
+FINDING=INDEPENDENT_SUBAGENT_REVIEW_TIMEOUT
+SCOPE=bounded A2-10 independent reviewer did not return a complete report after two waits
+FOLLOWUP=retain controller evidence and require independent review at the next checkpoint
+```
+
+## Controller closeout
+
+```text
+STATUS=PASS_ON_WORK_BRANCH_WITH_REGISTERED_FINDINGS
+SOURCE_BASE_SHA=c44dd3d0ab01a1fdc67546694900309ae2fbd703
+FINAL_SHA=718211817a1cee1822751813025c5460ddaab403
+FILES_CHANGED=3 implementation files
+ROOT_CAUSE_CONFIRMED=YES
+WHY_NOT_PATCH=restore the declared record binding and leave the canonical status helper and view semantics unchanged
+TSC=26->24
+FOCUSED_GUARD=PASS
+FOCUSED_TEST=3/3_PASS
+RELATED_CASES_TESTS=4/4_PASS
+RELATED_GUARDS=2_PASS;1_PREEXISTING_DRIFT_REGISTERED
+BUILD=PASS
+DIFF_CHECK=PASS
+GUARDIAN_STYLE_AUDIT=PASS
+INDEPENDENT_REVIEW=TIMEOUT_REGISTERED_NO_PASS_CLAIM
+FREEBUFF_USED=NO_MCP_EXPOSED
+OPENCODE_USED=NO_MCP_EXPOSED
+MARKET_PLUGINS_USED=ai-code-guardian@damian-agent-plugins,agent-efficiency-guardian@damian-agent-plugins,marketplace-router@damian-agent-plugins
+NEXT_STAGE=FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION
 ```
