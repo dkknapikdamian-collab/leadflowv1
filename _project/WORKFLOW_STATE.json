@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 13,
+  "state_revision": 14,
   "last_accepted": {
     "id": "LF-PROD-SOT-G15-R23M-05_MISSING_ITEM_VALIDATION_DISCRIMINATED_UNION_NARROWING_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
@@ -9,16 +9,16 @@
     "evidence": "A2-05 guard/test 3/3; Stage227C2 tests 3/3; TSC 39->38; build PASS; scoped independent review PASS; Stage227C3 legacy expectation finding registered"
   },
   "current_workflow": {
-    "id": "LF-PROD-SOT-G15-R23M-05_MISSING_ITEM_VALIDATION_DISCRIMINATED_UNION_NARROWING_REPAIR",
+    "id": "LF-PROD-SOT-G15-R23M-06_SUPABASE_FALLBACK_PAYMENT_ARCHIVE_INPUT_CONTRACT_REPAIR",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-05_MISSING_ITEM_VALIDATION_DISCRIMINATED_UNION_NARROWING_REPAIR.md",
-    "status": "CLOSED_A2_NEXT_MAPPER_REQUIRED",
-    "base_sha": "d1e3fc5e2e9334dc5b030b9ebca6ee66e35a3825",
+    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-06_SUPABASE_FALLBACK_PAYMENT_ARCHIVE_INPUT_CONTRACT_REPAIR.md",
+    "status": "READY_FOR_EXECUTION",
+    "base_sha": "8dfa73871536ce3c60b44051987af8e2f7961990",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
   },
-  "next_workflow": {"id": null, "status": "LOCKED_PENDING_FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION"},
+  "next_workflow": {"id": null, "status": "LOCKED_PENDING_A2_06_CLOSEOUT"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
@@ -33,6 +33,7 @@
     "working-branch:a2-04-review@fa793333:independent-pass",
     "working-branch:tsc-map@52b19a73959a1524f0708a0ae43c6805810d6175:39-active-error-lines",
     "working-branch:tsc-map@d1e3fc5e2e9334dc5b030b9ebca6ee66e35a3825:38-active-error-lines",
-    "working-branch:a2-05-review@f8ff90de:scoped-independent-pass"
+    "working-branch:a2-05-review@f8ff90de:scoped-independent-pass",
+    "working-branch:tsc-map@8dfa73871536ce3c60b44051987af8e2f7961990:38-active-error-lines"
   ]
 }
