@@ -2194,10 +2194,10 @@ useEffect(() => {
 
   const handleDeleteLinkedEvent = async (event: any) => {
     if (!window.confirm('Usunąć to wydarzenie?')) return;
+    const optimisticEventSnapshot = linkedEvents;
     try {
       setLinkedEntryActionId(`event:${event.id}:delete`);
     const eventId = String(event?.id || '');
-    const optimisticEventSnapshot = linkedEvents;
     setLinkedEvents((previous) => previous.filter((item: any) => String(item?.id || '') !== eventId));
     const stage228r50EventDeleteOptimisticSnapshot = 'stage228r50_lead_detail_event_delete_optimistic_snapshot';
     void stage228r50EventDeleteOptimisticSnapshot;
