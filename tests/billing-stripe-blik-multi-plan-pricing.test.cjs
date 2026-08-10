@@ -9,10 +9,10 @@ function read(relativePath) {
   return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
 }
 
-test('Billing page exposes Basic, Pro, Business and monthly/yearly periods', () => {
-  const billing = read('src/pages/Billing.tsx');
+test('Billing page uses the canonical Basic, Pro, AI and monthly/yearly plan source', () => {
+  const billing = read('src/pages/Billing.tsx') + '\n' + read('src/lib/source-of-truth/billing-options.ts');
 
-  assert.match(billing, /BILLING_PLANS/);
+  assert.match(billing, /BILLING_PLAN_OPTIONS/);
   assert.match(billing, /monthlyPrice: 19/);
   assert.match(billing, /yearlyPrice: 190/);
   assert.match(billing, /monthlyPrice: 39/);
