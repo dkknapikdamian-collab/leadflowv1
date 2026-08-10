@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: routed
+status: closed_with_registered_findings
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-PROD-SOT-G15-R23M-20_TODAY_NATIVE_MOUSE_EVENT_BOUNDARY_REPAIR
@@ -89,20 +89,31 @@ ALLOWLIST=PASS
 ## Closeout evidence
 
 ```text
-STATUS=ROUTED
+STATUS=PASS_ON_WORK_BRANCH_WITH_REGISTERED_FINDINGS
 SOURCE_BASE_SHA=bdabf65c56612bb1c4dc4fa7768735de9bcc1c5d
-IMPLEMENTATION_SHA=PENDING
-FILES_CHANGED=PENDING
-TSC=PENDING
-FOCUSED_TESTS=PENDING
-RELATED_TESTS=PENDING
-BUILD=PENDING
-DIFF_CHECK=PENDING
-ALLOWLIST=PENDING
-GUARDIAN_STYLE_AUDIT=PENDING
-MAPPER_REVIEW=PENDING
-INDEPENDENT_REVIEW=PENDING
+IMPLEMENTATION_SHA=023b96b8213aaa7f4043efa2396a3724f1b0ae0c
+FILES_CHANGED=src/pages/Today.tsx;src/pages/TodayStable.tsx;scripts/check-lf-prod-sot-g15-r23m-20-today-native-mouse-event.cjs;tests/lf-prod-sot-g15-r23m-20-today-native-mouse-event.test.cjs
+TSC=10->3
+FOCUSED_TESTS=3/3_PASS
+RELATED_TESTS=TODAY_VISUAL_SOURCE_GUARDS_4/4_PASS
+BUILD=PASS
+DIFF_CHECK=PASS
+ALLOWLIST=4_IMPLEMENTATION_FILES_PASS
+GUARDIAN_STYLE_AUDIT=PASS_CONTROLLER_AUDIT
+MAPPER_REVIEW=TIMEOUT_REGISTERED_NO_PASS_CLAIM
+INDEPENDENT_REVIEW=TIMEOUT_REGISTERED_NO_PASS_CLAIM
 FREEBUFF_USED=NO_MCP_EXPOSED
 OPENCODE_USED=NO_MCP_EXPOSED
 NEXT_STAGE=FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION
 ```
+
+### Registered findings
+
+1. `MAPPER_SUBAGENT_TIMEOUT`: bounded root-cause mapper did not return before
+   timeout; local diagnosis and fail-first evidence remain authoritative.
+2. `INDEPENDENT_SUBAGENT_REVIEW_TIMEOUT`: bounded reviewer did not return
+   before timeout; no independent PASS is claimed.
+3. `A2_TSC_REMAINING_DEBT`: 3 independent active error lines remain in
+   `src/pwa/chunk-asset-reload-guard.ts`.
+4. Checkpoint findings from A2-01..A2-19 remain active, including
+   Supabase/auth/migration/workspace-scope and AI draft-only guard failures.
