@@ -5,6 +5,9 @@
   "project_class": ["CODE_APPLICATION"],
   "repository": "dkknapikdamian-collab/leadflowv1",
   "canonical_branch": "dev-rollout-freeze",
+  "routing_status": "ROUTED_CANONICAL_PRODUCT_BRANCH_RESOLVED",
+  "production_branch": "dev-rollout-freeze",
+  "repository_default_branch": "main",
   "workflow_state": "_project/WORKFLOW_STATE.json",
   "document_ownership": "_project/DOCUMENT_OWNERSHIP.json",
   "agent_capabilities": "_project/AGENT_CAPABILITIES.json",
@@ -19,5 +22,18 @@
     "decisions": "10_PROJEKTY/CloseFlow_Lead_App/03_AKTYWNE_DECYZJE.md",
     "direction": "10_PROJEKTY/CloseFlow_Lead_App/04_KIERUNEK_DO_WDROZENIA.md"
   },
-  "legacy_routes": ["_project/00_AI_START_SPIS_TRESCI.md"]
+  "legacy_routes": ["_project/00_AI_START_SPIS_TRESCI.md"],
+  "branch_reconciliation": {
+    "status": "RESOLVED_SELECT_DEV_ROLLOUT_FREEZE_AS_CANONICAL_PRODUCT_AND_PRODUCTION_BRANCH",
+    "default_branch": "main",
+    "canonical_product_branch": "dev-rollout-freeze",
+    "production_branch": "dev-rollout-freeze",
+    "autonomous_work_branch_required": true,
+    "direct_autonomous_product_work_on_production_forbidden": true,
+    "autonomous_merge_to_production_forbidden": true,
+    "production_promotion_requires": [
+      "INDEPENDENT_VERIFICATION",
+      "CONTROLLER_OR_OWNER_DECISION"
+    ]
+  }
 }
