@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 39,
+  "state_revision": 40,
   "last_accepted": {
-    "id": "LF-PROD-SOT-G15-R23M-17_MISSING_ITEM_CALLBACK_VOID_CONTRACT_REPAIR",
+    "id": "LF-PROD-SOT-G15-R23M-18_LEADS_RESCUE_NEXT_ACTION_SCOPE_CONTRACT_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
-    "commit_sha": "5dae45edd52a4772e7e6fd4d56cb6342e841fd76",
-    "evidence": "A2-17 guard/test 3/3; Stage228R13/R17 baseline drift registered; TSC 16->12; build PASS; exact three-file implementation scope; controller Guardian-style audit PASS; mapper and independent reviewer timeouts registered; checkpoint findings remain registered"
+    "commit_sha": "1de50be0da1670c5220dbc7423377a31ac62e835",
+    "evidence": "A2-18 guard/test 3/3; A25 related guard drift registered; TSC 12->11; build PASS; exact three-file implementation scope; controller Guardian-style audit PASS; mapper and independent reviewer timeouts registered; checkpoint findings remain registered"
   },
   "current_workflow": {
     "id": "LF-PROD-SOT-G15-R23M-18_LEADS_RESCUE_NEXT_ACTION_SCOPE_CONTRACT_REPAIR",
     "kind": "TECHNICAL_STAGE",
     "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-18_LEADS_RESCUE_NEXT_ACTION_SCOPE_CONTRACT_REPAIR.md",
-    "status": "ROUTED",
-    "base_sha": "638e64f87160ff615113fb54428ac81cd54f91b4",
+    "status": "CLOSED_A2_NEXT_MAPPER_REQUIRED",
+    "base_sha": "1de50be0da1670c5220dbc7423377a31ac62e835",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
@@ -123,6 +123,10 @@
     "working-branch:a2-17-independent-review:timeout-registered-no-pass-claim",
     "working-branch:tsc-map@638e64f87160ff615113fb54428ac81cd54f91b4:12-active-error-lines",
     "working-branch:controller-root-cause@638e64f8:leads-rescue-next-action-scope-drift",
-    "working-branch:a2-18-mapper:pending"
+    "working-branch:a2-18-mapper:timeout-registered-no-pass-claim",
+    "working-branch:a2-18-guard-test:3-of-3-pass",
+    "working-branch:a2-18-related-a25:baseline-drift-registered",
+    "working-branch:a2-18-build@1de50be0:pass",
+    "working-branch:a2-18-independent-review:timeout-registered-no-pass-claim"
   ]
 }

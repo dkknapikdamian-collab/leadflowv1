@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: routed
+status: closed_with_registered_findings
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-PROD-SOT-G15-R23M-18_LEADS_RESCUE_NEXT_ACTION_SCOPE_CONTRACT_REPAIR
@@ -84,20 +84,34 @@ ALLOWLIST=PASS
 ## Closeout evidence
 
 ```text
-STATUS=ROUTED
+STATUS=PASS_ON_WORK_BRANCH_WITH_REGISTERED_FINDINGS
 SOURCE_BASE_SHA=638e64f87160ff615113fb54428ac81cd54f91b4
-IMPLEMENTATION_SHA=PENDING
-FILES_CHANGED=PENDING
-TSC=PENDING
-FOCUSED_TESTS=PENDING
-RELATED_TESTS=PENDING
-BUILD=PENDING
-DIFF_CHECK=PENDING
-ALLOWLIST=PENDING
-GUARDIAN_STYLE_AUDIT=PENDING
-MAPPER_REVIEW=PENDING
-INDEPENDENT_REVIEW=PENDING
+IMPLEMENTATION_SHA=1de50be0da1670c5220dbc7423377a31ac62e835
+FILES_CHANGED=src/pages/Leads.tsx;scripts/check-lf-prod-sot-g15-r23m-18-leads-rescue-next-action.cjs;tests/lf-prod-sot-g15-r23m-18-leads-rescue-next-action.test.cjs
+TSC=12->11
+FOCUSED_TESTS=3/3_PASS
+RELATED_TESTS=A25_GUARDS_BASELINE_DRIFT_REGISTERED
+BUILD=PASS
+DIFF_CHECK=PASS
+ALLOWLIST=3_IMPLEMENTATION_FILES_PASS
+GUARDIAN_STYLE_AUDIT=PASS_CONTROLLER_AUDIT
+MAPPER_REVIEW=TIMEOUT_REGISTERED_NO_PASS_CLAIM
+INDEPENDENT_REVIEW=TIMEOUT_REGISTERED_NO_PASS_CLAIM
 FREEBUFF_USED=NO_MCP_EXPOSED
 OPENCODE_USED=NO_MCP_EXPOSED
 NEXT_STAGE=FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION
 ```
+
+### Registered findings
+
+1. `MAPPER_SUBAGENT_TIMEOUT`: bounded root-cause mapper did not return before
+   timeout; local diagnosis and fail-first evidence remain authoritative.
+2. `INDEPENDENT_SUBAGENT_REVIEW_TIMEOUT`: bounded reviewer did not return
+   before timeout; no independent PASS is claimed.
+3. `A25_RELATED_GUARD_DRIFT`: existing nearest-action checks fail on a stale
+   LeadDetail label/import expectation and a missing extensionless runtime
+   module; outside this display-only rescue scope.
+4. `A2_TSC_REMAINING_DEBT`: 11 independent active error lines remain in Tasks,
+   Today, TodayStable and PWA.
+5. Checkpoint findings from A2-01..A2-17 remain active, including
+   Supabase/auth/migration/workspace-scope and AI draft-only guard failures.
