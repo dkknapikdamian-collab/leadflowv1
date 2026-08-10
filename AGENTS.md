@@ -1,76 +1,50 @@
-# AGENTS.md - CloseFlow / LeadFlow
+# AGENTS.md — CloseFlow / LeadFlow
 
-Status: ACTIVE
-Read policy: MUST_READ_REPO_START
-Repo: dkknapikdamian-collab/leadflowv1
-Branch: dev-rollout-freeze
-Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
-canonical_name: CloseFlow / LeadFlow
-project_id: closeflow_lead_app
-Inherited stage policy: 10_PROJEKTY/CloseFlow_Lead_App/STAGES/LF_AICG_STAGE_EXECUTION_POLICY.md
+```text
+PROJECT_ID=closeflow_lead_app
+REPOSITORY=dkknapikdamian-collab/leadflowv1
+CANONICAL_APPLICATION_BRANCH=dev-rollout-freeze
+GITHUB_DEFAULT_BRANCH=main
+OBSIDIAN_PROJECT_ENTRY=10_PROJEKTY/CloseFlow_Lead_App/00_AI_START_SPIS_TRESCI.md
+```
 
-## Cel
+This is the minimal repository bootstrap. Do not store current stage, SHA, PR, deployment or test result here.
 
-Ten plik jest minimalnym startem repo dla AI.
+## Stable routing flow
 
-Repo aplikacji jest dla kodu, konfiguracji, testow technicznych, guardow technicznych, migracji wykonywalnych i minimalnych instrukcji startowych.
+1. Read `_project/PROJECT_MANIFEST.json`.
+2. Classify the task.
+3. Read `_project/AGENT_CAPABILITIES.json` and load only capabilities required for that task class.
+4. Read `_project/WORKFLOW_STATE.json` only when the task needs the current technical workflow.
+5. If a workflow is active, read exactly `current_workflow.contract_path` plus bounded dependencies/evidence.
+6. Read the canonical Obsidian router only for project memory, owner decisions, direction or source routing.
 
-Pelna dokumentacja projektu, etapy, decyzje, roadmapa, ryzyka, bugi, testy operacyjne, SQL ledger, ZIP/push ledger i historia pracy sa w Obsidianie.
+## Task classification
 
-## Minimalny start
+Code-changing or technical review classes include `CODE_CHANGE`, `BUG_REPAIR`, `CODE_AUDIT`, `SECURITY_REVIEW`, `RELEASE`, `TECHNICAL_REFACTOR`, `PERFORMANCE_REPAIR`, `API_ARCHITECTURE_CHANGE`, `DATABASE_CODE_CHANGE`, `TECHNICAL_IMPLEMENTATION_STAGE_DESIGN`.
 
-Nie czytaj calego repo, calego _project, wszystkich run reportow ani obsidian_updates na starcie.
+For those classes: `AI_CODE_GUARDIAN_REQUIRED=YES`. If the required capability cannot be loaded: `BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE`.
 
-Czytaj tylko:
+`BUSINESS_ANALYSIS`, `MARKET_RESEARCH`, `OWNER_DECISION`, `PRODUCT_DIRECTION`, `COPYWRITING` and pure wiki maintenance do not require Guardian by default.
 
-1. ten plik,
-2. `_project/00_AI_START_SPIS_TRESCI.md`,
-3. kanoniczny router w Obsidianie: `10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md`, jesli masz dostep,
-4. obowiazkowa polityke etapow: `10_PROJEKTY/CloseFlow_Lead_App/STAGES/LF_AICG_STAGE_EXECUTION_POLICY.md`,
-5. master roadmape i kontrakt dokladnie jednego aktywnego etapu.
+## CloseFlow branch ownership
 
-Stary `_project/CODEX_CONTEXT_INDEX.md`, jesli istnieje, jest tylko legacy bridge. Nie traktuj go jako glownego startu.
+- `dev-rollout-freeze` is the canonical application/product branch.
+- `main` is the GitHub default/control-plane branch and is not the canonical application branch.
+- Do not merge `dev-rollout-freeze` into `main` merely to make those roles equal.
+- Autonomous product work must use a bounded non-production work branch created from a verified `dev-rollout-freeze` base unless an accepted stage contract says otherwise.
+- Executor self-merge, rebase or force-push into `dev-rollout-freeze` is forbidden.
 
-## Routing pracy
+## Scope and quality guards
 
-- STATUS / PLAN -> Obsidian 00, 01 i 04.
-- BUGFIX -> konkretny plik bledu, bezposrednie zaleznosci i powiazany guard/test.
-- UI / TODAY / LEADS / CLIENTS / CASES / CASEDETAIL -> aktywne decyzje UI z Obsidian 04, mapa plikow 07, guard UI 09 i ryzyka 11.
-- SUPABASE / SQL / MIGRACJE / RLS -> Obsidian 13, repo `_project/13_SQL_LEDGER_I_MIGRACJE.md` i konkretne migracje/funkcje.
-- DELIVERY / ZIP / PUSH -> Obsidian 10, testy 09, ryzyka 11 i globalny WORKFLOW_GUARDS.
-- DOCS / OBSIDIAN -> aktualizuj Obsidian zgodnie ze spisem 00-13; nie tworz luznych dokumentow w repo aplikacji.
-- CLEANUP / ARCHIWUM -> tylko gdy zadanie tego wymaga; wtedy czytaj Obsidian 12 i wskazane pliki.
+- Code/runtime/config/tests/executable migrations belong to the repository; product memory, owner decisions, direction and coordination belong to Obsidian.
+- Fix evidenced root causes; do not use `any`, `ts-ignore`, disabled tests/files, random retry/timeout/catch/cache, duplicate stores/config/helpers/SOTs, or weakened tests as patches without a bounded accepted exception.
+- No `git add .`, `git add -A`, `git commit -a`, force-push, reset/clean/stash/rebase as a shortcut.
+- One commit must not mix unrelated project scope.
+- If exact SHA/log/runtime/evidence is required and unavailable, return `INSUFFICIENT_EVIDENCE` or `OWNER_RUNTIME_EXECUTION_REQUIRED`, never fabricated PASS.
 
-## AI Code Guardian - kontrakt kazdego etapu
+## Project boundaries
 
-Wszystkie obecne i przyszle etapy dziedzicza polityke `LF_AICG_STAGE_EXECUTION_POLICY.md`.
+CloseFlow is an owner control system for leads, clients, cases, tasks, calendar, follow-ups and finances. Do not rewrite accepted visual baselines or change SQL, cost, Google Calendar, LeadListCard, ClientDetail or finance behavior outside the accepted stage scope.
 
-- Naprawiaj potwierdzona przyczyne zrodlowa, nie tylko aktualny blad TypeScript albo widoczny objaw.
-- Zakazane sa plastry: `any`, `ts-ignore`, wylaczenie aktywnego pliku, losowy fallback/retry/timeout/catch/cache, drugi store/config/helper/source of truth albo oslabienie testu bez dowodu przyczyny i ograniczonego wyjatku.
-- Po awarii najpierw zmapuj cala powiazana klase bledow, potem wykonaj najmniejsza spojna naprawe; nie poprawiaj po jednym komunikacie bez batch diagnosis.
-- Zwykly etap wykonuje testy celowane i `PREVIOUS_STAGE_IMPACT_CHECK`; pelna regresja calego projektu nie jest wymagana po kazdym etapie.
-- Najpozniej po kazdych 10 zakonczonych etapach od poprzedniego checkpointu wykonaj kumulacyjna regresje: nowe okno plus rozliczenie wszystkich wczesniejszych aktywnych etapow i integracji.
-- Jezeli test wymaga Windows, realnego Google Calendar, Supabase, sekretu, deploymentu albo srodowiska wlasciciela, nie zgaduj wyniku. Zglos `OWNER_RUNTIME_EXECUTION_REQUIRED` i przekaz Damianowi gotowa komende PowerShell albo checksum-bound ZIP z markerami PASS/FAIL.
-- Brak exact SHA, logu lub evidence oznacza `INSUFFICIENT_EVIDENCE`, nie `PASS`.
-
-## Granice CloseFlow
-
-CloseFlow / LeadFlow nie jest kopia CRM. To owner control system dla leadow, klientow, spraw, zadan, kalendarza, follow-upow i finansow.
-
-AI nie moze przepisywac zaakceptowanych wizualnie baseline'ow bez jawnego etapu.
-
-Dla CaseDetail baseline R4 jest zamrozony jako kierunek, dopoki Damian go nie zmieni.
-
-Nie zmieniaj SQL, kosztow, Google Calendar, LeadListCard, ClientDetail ani finansow bez zakresu etapu.
-
-## Git / testy
-
-Jeden commit = jeden projekt albo jeden globalny etap systemowy.
-
-Nie uzywaj `git add .`, `git add -A`, zbiorczego dodawania wszystkich zmian ani force push.
-
-Przed commitem wykonaj scope guard, guardy/testy zgodne z zakresem i diff check. Jesli sa zmiany spoza zakresu, czerwony guard albo brak wymaganego proofu, zrob STOP.
-
-## Scan report
-
-Przed planem, kodem albo audytem wypisz: Project, Read mode, Files read, Files intentionally not read, Current stage, Active decisions, Open risks, Tests/guards relevant, Next step.
+For SQL/migrations use the canonical project SQL ledger and concrete executable migrations. For historical evidence, read only the specific linked report/receipt required by the current task.
