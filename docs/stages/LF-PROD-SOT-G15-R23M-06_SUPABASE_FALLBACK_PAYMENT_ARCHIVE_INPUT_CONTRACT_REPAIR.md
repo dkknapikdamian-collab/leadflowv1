@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: ready_for_execution
+status: closed_with_registered_findings
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-PROD-SOT-G15-R23M-06_SUPABASE_FALLBACK_PAYMENT_ARCHIVE_INPUT_CONTRACT_REPAIR
@@ -92,24 +92,33 @@ If callers or the server require a real archived-payment behavior, stop and
 route a separate product/data contract stage. This A2 substage removes only
 the stale preview branch.
 
+## Registered pre-existing test finding
+
+```text
+FINDING=R23J_FINANCE_PAYMENT_RECORD_GUARD_SCOPE_DRIFT
+EVIDENCE=tests/lf-prod-sot-g15-r23j-finance-payment-record-contract.test.cjs reports finance-types.ts changes outside its historical exact-additions scope
+SCOPE=pre-existing finance type evolution outside the A2-06 three-file allowlist; relevant payment runtime tests pass
+FOLLOWUP=legacy guard inventory during A3 terminal SOT closeout
+```
+
 ## Controller closeout
 
 ```text
-STATUS=OPEN
+STATUS=PASS_ON_WORK_BRANCH_WITH_REGISTERED_FINDINGS
 SOURCE_BASE_SHA=8dfa73871536ce3c60b44051987af8e2f7961990
-FINAL_SHA=
-FILES_CHANGED=
+FINAL_SHA=8c0113cdce71bf16c16a82896bcbb2e0f8065e86
+FILES_CHANGED=3 implementation files
 ROOT_CAUSE_CONFIRMED=YES
 WHY_NOT_PATCH=the unsupported archive branch is removed without changing supported payment runtime or API behavior
-TSC=
-FOCUSED_GUARD=
-FOCUSED_TEST=
-PAYMENT_TESTS=
-BUILD=
-DIFF_CHECK=
-GUARDIAN_STYLE_AUDIT=
-INDEPENDENT_REVIEW=
+TSC=38->37
+FOCUSED_GUARD=PASS
+FOCUSED_TEST=3/3_PASS
+PAYMENT_TESTS=RELEVANT_RUNTIME_TESTS_18/18_PASS_WITH_R23J_GUARD_FINDING
+BUILD=PASS
+DIFF_CHECK=PASS
+GUARDIAN_STYLE_AUDIT=PASS
+INDEPENDENT_REVIEW=PASS
 FREEBUFF_USED=NO_MCP_EXPOSED
 OPENCODE_USED=NO_MCP_EXPOSED
-NEXT_STAGE=
+NEXT_STAGE=FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION
 ```
