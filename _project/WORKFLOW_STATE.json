@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 7,
+  "state_revision": 8,
   "last_accepted": {
     "id": "LF-PROD-SOT-G15-R23M-02_RUNTIME_ACCESS_PLAN_INPUT_TYPE_BOUNDARY_REPAIR",
     "status": "CLOSED",
@@ -9,11 +9,11 @@
     "evidence": "working-branch and clean-checkout focused/runtime guards; TSC 46->44; build PASS"
   },
   "current_workflow": {
-    "id": "LF-PROD-SOT-G15-R23M-02_RUNTIME_ACCESS_PLAN_INPUT_TYPE_BOUNDARY_REPAIR",
+    "id": "LF-PROD-SOT-G15-R23M-03_FINANCE_PAYMENT_REDUCE_ACCUMULATOR_TYPE_REPAIR",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-02_RUNTIME_ACCESS_PLAN_INPUT_TYPE_BOUNDARY_REPAIR.md",
-    "status": "CLOSED_A2_NEXT_MAPPER_REQUIRED",
-    "base_sha": "a5c48303dfebf0255f94f51c91b912c405622f09",
+    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-03_FINANCE_PAYMENT_REDUCE_ACCUMULATOR_TYPE_REPAIR.md",
+    "status": "READY_FOR_EXECUTION",
+    "base_sha": "5501ee0f1f9bc61bb1f768f4bae64da1f8b47422",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
@@ -23,8 +23,9 @@
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-02_RUNTIME_ACCESS_PLAN_INPUT_TYPE_BOUNDARY_REPAIR.md",
+    "docs/stages/LF-PROD-SOT-G15-R23M-03_FINANCE_PAYMENT_REDUCE_ACCUMULATOR_TYPE_REPAIR.md",
     "github:pull/50@787b9e0f5d2172c0fbd399807ee53b2f6e8cde49",
     "obsidian:10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md",
-    "working-branch:tsc-map@d075c76292eee3ce263c8045c3f164c3fd446fab:46-active-error-lines"
+    "working-branch:tsc-map@5501ee0f1f9bc61bb1f768f4bae64da1f8b47422:44-active-error-lines"
   ]
 }
