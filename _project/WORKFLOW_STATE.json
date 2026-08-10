@@ -23,8 +23,8 @@
   "guardian_required": "AI_CODE_GUARDIAN_REQUIRED=YES",
   "branch_evidence": {
     "default_branch": "main",
-    "application_contract_branch": "main",
-    "historical_branch_evidence": "dev-rollout-freeze",
+    "application_contract_branch": "dev-rollout-freeze",
+    "owner_decision_required": "OWNER_DECISION_REQUIRED_MAIN_VS_DEV_ROLLOUT_FREEZE",
     "route": "10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md"
   }
 }

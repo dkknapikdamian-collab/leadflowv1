@@ -7,8 +7,8 @@
     "CODE_APPLICATION"
   ],
   "project_id": "closeflow_lead_app",
-  "routing_status": "ROUTED_FROM_GLOBAL_OBSIDIAN_REGISTRY",
-  "canonical_branch": "main",
+  "routing_status": "OWNER_DECISION_REQUIRED_MAIN_VS_DEV_ROLLOUT_FREEZE",
+  "canonical_branch": "dev-rollout-freeze",
   "workflow_state": "_project/WORKFLOW_STATE.json",
   "document_ownership": "_project/DOCUMENT_OWNERSHIP.json",
   "agent_capabilities": "_project/AGENT_CAPABILITIES.json",
@@ -20,7 +20,18 @@
     "project_registry": "00_SYSTEM/PROJECTS.json",
     "router_required": true,
     "project_entry": "10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md",
-    "source_of_truth_status": "ROUTED_EXACT_MATCH",
+    "source_of_truth_status": "ROUTED_OWNER_GATE",
     "router": "10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md"
+  },
+  "branch_reconciliation": {
+    "status": "OWNER_DECISION_REQUIRED_MAIN_VS_DEV_ROLLOUT_FREEZE",
+    "default_branch": "main",
+    "active_application_branch_evidence": "dev-rollout-freeze",
+    "owner_decision_path": "00_SYSTEM/DOCSYS/REPORTS/DOCSYS-R3-TRUE-OWNER-ROUTING-DECISIONS.md",
+    "options": [
+      "SELECT_MAIN_AS_CANONICAL",
+      "SELECT_DEV_ROLLOUT_FREEZE_AS_CANONICAL",
+      "DECLARE_SPLIT_RUNTIME_AND_RELEASE_BRANCHES"
+    ]
   }
 }

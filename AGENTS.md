@@ -2,11 +2,11 @@
 
 Repo: dkknapikdamian-collab/leadflowv1
 Repository default branch: main
-Application canonical branch: main
+Application evidence branch: dev-rollout-freeze
 Preliminary class: STANDALONE_APPLICATION
-Status: ROUTED / CODE_TASKS_REQUIRE_AI_CODE_GUARDIAN
+Status: OWNER_DECISION_REQUIRED_MAIN_VS_DEV_ROLLOUT_FREEZE / CODE_TASKS_REQUIRE_AI_CODE_GUARDIAN
 
-`main` is the GitHub default and canonical application branch selected by the current global registry and owner routing commits. `dev-rollout-freeze` is preserved as historical branch-role evidence and is not a competing source of truth. Product work still requires the repository workflow contract and the applicable AI Code Guardian gate.
+`main` is the GitHub default branch, while current application evidence points to `dev-rollout-freeze`. The owner must choose the canonical branch or explicitly declare a split runtime/release model. Product work remains fail-closed until that decision, and still requires the repository workflow contract and the applicable AI Code Guardian gate.
 
 ## READ_FIRST
 
