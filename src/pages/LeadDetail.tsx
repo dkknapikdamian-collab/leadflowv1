@@ -44,7 +44,7 @@ const STAGE232I4_R16Z_R8_LEAD_MISSING_BLOCKER_TOGGLE_PRIORITY_FIX = 'LeadDetail 
 void STAGE232I4_R16Z_R8_LEAD_MISSING_BLOCKER_TOGGLE_PRIORITY_FIX;
 
 void STAGE232A_R6_LEAD_MISSING_BLOCKER_ACTIVE_LIST_AND_TOP_CARD_SOURCE_TRUTH;
-import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { type FormEvent, type PointerEventHandler, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, Clock, DollarSign, Edit2, Loader2, Mail, Mic, MicOff, MoreVertical, Phone, Plus, Trash2 } from 'lucide-react';
 import { EntityIcon } from '../components/ui-system';
@@ -654,7 +654,7 @@ function buildTimeline(tasks: any[], events: any[]): TimelineEntry[] {
     return (asDate(left.dateValue)?.getTime() ?? Number.MAX_SAFE_INTEGER) - (asDate(right.dateValue)?.getTime() ?? Number.MAX_SAFE_INTEGER);
   });
 }
-function LeadActionButton({ children, onClick, disabled }: { children: ReactNode; onClick?: () => void; disabled?: boolean }) {
+function LeadActionButton({ children, onClick, onPointerDown, disabled }: { children: ReactNode; onClick?: () => void; onPointerDown?: PointerEventHandler<HTMLButtonElement>; disabled?: boolean }) {
   const isStartServiceActionStage14F = children === 'Rozpocznij obsługę';
   return (
     <button
@@ -662,6 +662,7 @@ function LeadActionButton({ children, onClick, disabled }: { children: ReactNode
       className={isStartServiceActionStage14F ? "lead-detail-chip-button cf-action-button cf-action-button-primary" : "lead-detail-chip-button cf-action-button"}
       data-lead-start-service={isStartServiceActionStage14F ? "true" : undefined}
       onClick={onClick}
+      onPointerDown={onPointerDown}
       disabled={disabled}
     >
       {children}
