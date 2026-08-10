@@ -83,7 +83,7 @@ test('CaseDetail command center changes lifecycle status with activity log', () 
 });
 
 test('Activity recognizes CaseDetail lifecycle events', () => {
-  const source = read('src/pages/Activity.tsx');
+  const source = read('src/pages/Activity.tsx') + '\n' + read('src/lib/source-of-truth/activity-options.ts');
 
   assert.ok(source.includes('case_lifecycle_started'));
   assert.ok(source.includes('case_lifecycle_completed'));
