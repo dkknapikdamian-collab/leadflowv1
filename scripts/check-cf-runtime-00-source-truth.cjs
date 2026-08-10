@@ -164,6 +164,14 @@ const allowedChangePrefixes = [
   'docs/stages/LF-SEC-CG-001E_SUPPORT_ACTOR_AUTHORITY_AND_AUDIT_TRAIL_REPAIR.md',
   'docs/stages/LF-SEC-CG-001F_PORTAL_UPLOAD_PARENT_SCOPE_RATE_LIMIT_AND_QUOTA_REPAIR.md',
   '_project/WORKFLOW_STATE.json',
+  // B6 portal upload scope, admission, quota/rate and replay allowlist.
+  'api/case-items.ts',
+  'api/storage-upload.ts',
+  'src/server/_portal-storage.ts',
+  'src/server/portal-upload.ts',
+  'supabase/migrations/20260810170000_b6_portal_upload_admission_scope_quota.sql',
+  'tests/b6-portal-upload-scope.test.cjs',
+  'tests/b6-portal-upload-scope-runtime.test.ts',
   // STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH_ALLOWLIST
   'src/pages/TodayStable.tsx',
   'src/pages/TasksStable.tsx',

@@ -1,6 +1,10 @@
 const DEFAULT_PORTAL_UPLOAD_BUCKET = 'portal-uploads';
 const DEFAULT_PORTAL_UPLOAD_MAX_BYTES = 10 * 1024 * 1024;
 const HARD_PORTAL_UPLOAD_MAX_BYTES = 25 * 1024 * 1024;
+const DEFAULT_PORTAL_DAILY_QUOTA_BYTES = 100 * 1024 * 1024;
+const HARD_PORTAL_DAILY_QUOTA_BYTES = 1024 * 1024 * 1024;
+const DEFAULT_PORTAL_UPLOAD_WINDOW_COUNT = 20;
+const HARD_PORTAL_UPLOAD_WINDOW_COUNT = 200;
 
 const DEFAULT_PORTAL_UPLOAD_ALLOWED_MIME_TYPES = [
   'application/pdf',
@@ -17,12 +21,20 @@ function asText(value: unknown) {
   return String(value).trim();
 }
 
-function parsePositiveInt(value: unknown, fallback: number) {
+function parsePositiveInt(value: unknown, defaultValue: number) {
   const raw = asText(value);
-  if (!raw) return fallback;
+  if (!raw) return defaultValue;
   const parsed = Number.parseInt(raw, 10);
-  if (!Number.isFinite(parsed) || parsed <= 0) return fallback;
+  if (!Number.isFinite(parsed) || parsed <= 0) return defaultValue;
   return Math.min(parsed, HARD_PORTAL_UPLOAD_MAX_BYTES);
+}
+
+function parseBoundedPositiveInt(value: unknown, defaultValue: number, maximum: number) {
+  const raw = asText(value);
+  if (!raw) return defaultValue;
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) return defaultValue;
+  return Math.min(parsed, maximum);
 }
 
 function parseMimeTypes(value: unknown) {
@@ -40,6 +52,16 @@ export function getPortalStorageConfig() {
   const serviceRoleKey = asText(process.env.SUPABASE_SERVICE_ROLE_KEY);
   const bucket = asText(process.env.SUPABASE_PORTAL_BUCKET) || DEFAULT_PORTAL_UPLOAD_BUCKET;
   const maxBytes = parsePositiveInt(process.env.PORTAL_UPLOAD_MAX_BYTES, DEFAULT_PORTAL_UPLOAD_MAX_BYTES);
+  const dailyQuotaBytes = parseBoundedPositiveInt(
+    process.env.PORTAL_UPLOAD_DAILY_QUOTA_BYTES,
+    DEFAULT_PORTAL_DAILY_QUOTA_BYTES,
+    HARD_PORTAL_DAILY_QUOTA_BYTES,
+  );
+  const windowUploadCount = parseBoundedPositiveInt(
+    process.env.PORTAL_UPLOAD_WINDOW_COUNT,
+    DEFAULT_PORTAL_UPLOAD_WINDOW_COUNT,
+    HARD_PORTAL_UPLOAD_WINDOW_COUNT,
+  );
   const allowedMimeTypes = parseMimeTypes(process.env.PORTAL_UPLOAD_ALLOWED_MIME_TYPES);
 
   return {
@@ -47,6 +69,8 @@ export function getPortalStorageConfig() {
     serviceRoleKey,
     bucket,
     maxBytes,
+    dailyQuotaBytes,
+    windowUploadCount,
     allowedMimeTypes,
   };
 }

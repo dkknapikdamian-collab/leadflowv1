@@ -38,6 +38,7 @@ const requiredTests = [
   'tests/b4-ai-access.test.cjs',
   'tests/b4-ai-remediation.test.cjs',
   'tests/b5-support-actor-audit.test.cjs',
+  'tests/b6-portal-upload-scope.test.cjs',
   'tests/email-digest-domain-gate.test.cjs',
   'tests/billing-stripe-blik-foundation.test.cjs',
   'tests/billing-foundation-test-polish-label-regression.test.cjs',
@@ -132,6 +133,9 @@ run('tests/b4-ai-remediation-runtime.test.ts', process.execPath, [
 ]);
 run('tests/b5-support-actor-audit-runtime.test.ts', process.execPath, [
   '--import', 'tsx', '--test', 'tests/b5-support-actor-audit-runtime.test.ts',
+]);
+run('tests/b6-portal-upload-scope-runtime.test.ts', process.execPath, [
+  '--import', 'tsx', '--test', 'tests/b6-portal-upload-scope-runtime.test.ts',
 ]);
 
 console.log('');

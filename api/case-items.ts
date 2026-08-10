@@ -3,6 +3,7 @@ import { readPortalSession, requireOperatorCaseAccess, requirePortalSessionConte
 import { resolveRequestWorkspaceId, requireScopedRow } from '../src/server/_request-scope.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 import { findCaseItemById, requireCaseItemInCase, updateCaseItemInCase, deleteCaseItemInCase } from '../src/server/case-item-scope.js';
+import { uploadPortalFileWithPolicy } from '../src/server/portal-upload.js';
 
 const STAGE232A_R7_CASE_ITEMS_ITEM_ORDER_SCHEMA_COMPAT = 'case-items API falls back when production schema has no item_order column';
 void STAGE232A_R7_CASE_ITEMS_ITEM_ORDER_SCHEMA_COMPAT;
@@ -51,44 +52,6 @@ function normalizeCaseItem(row: any, forPortal = false) {
     updatedAt: row.updated_at || null,
     portalSafe: forPortal || undefined,
   };
-}
-
-function isAllowedFileType(fileType: string) {
-  const allowed = new Set([
-    'application/pdf',
-    'image/jpeg',
-    'image/png',
-    'image/webp',
-    'text/plain',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  ]);
-  return allowed.has(fileType);
-}
-
-async function uploadPortalFile(caseId: string, itemId: string, file: { name: string; type: string; size: number; dataBase64: string }) {
-  if (!isAllowedFileType(file.type)) throw new Error('PORTAL_FILE_TYPE_NOT_ALLOWED');
-  if (!Number.isFinite(file.size) || file.size <= 0 || file.size > 10 * 1024 * 1024) throw new Error('PORTAL_FILE_SIZE_LIMIT');
-  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_').slice(-120) || 'upload.bin';
-  const path = `portal/${caseId}/${itemId}/${Date.now()}-${safeName}`;
-  const binary = Buffer.from(file.dataBase64, 'base64');
-  if (binary.byteLength !== file.size) throw new Error('PORTAL_FILE_SIZE_MISMATCH');
-
-  const url = (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '').replace(/\/+$/, '');
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-  const bucket = process.env.SUPABASE_PORTAL_BUCKET || 'portal-uploads';
-  if (!url || !key) throw new Error('SUPABASE_SERVER_CONFIG_MISSING');
-  const response = await fetch(`${url}/storage/v1/object/${bucket}/${encodeURIComponent(path)}`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${key}`,
-      apikey: key,
-      'Content-Type': file.type,
-      'x-upsert': 'true',
-    },
-    body: binary,
-  });
-  if (!response.ok) throw new Error('PORTAL_FILE_UPLOAD_FAILED');
-  return { filePath: path, fileName: safeName };
 }
 
 export default async function handler(req: any, res: any) {
@@ -145,7 +108,10 @@ export default async function handler(req: any, res: any) {
         if (body.type !== undefined) payload.type = itemType;
       }
       if (body.file !== undefined && body.file && typeof body.file === 'object') {
-        const uploaded = await uploadPortalFile(caseId, id, body.file as { name: string; type: string; size: number; dataBase64: string });
+        const uploaded = await uploadPortalFileWithPolicy(caseId, id, body.file as { name: string; type: string; size: number; dataBase64: string }, {
+          portalSession: portalMode ? portalSession : null,
+          operatorRequest: portalMode ? undefined : req,
+        });
         payload.file_name = uploaded.fileName;
         payload.file_url = uploaded.filePath;
       }
