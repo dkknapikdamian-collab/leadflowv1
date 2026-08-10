@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: active
+status: closed_with_registered_findings
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-PROD-SOT-G15-R23M-12_CLIENT_MISSING_MODAL_CANONICAL_METADATA_WIRING_REPAIR
@@ -88,3 +88,39 @@ TSC_ROOT_CAUSE_REMOVED=YES
 BUILD=PASS
 ALLOWLIST=PASS
 ```
+
+## Closeout evidence
+
+```text
+STATUS=PASS_ON_WORK_BRANCH_WITH_REGISTERED_FINDINGS
+SOURCE_BASE_SHA=fb578a1ca4bb3cdc2f3a91841eab2a4fd898a652
+IMPLEMENTATION_SHA=961c90b773963c9cccb4bda5626d20de1df9a86c
+FILES_CHANGED=src/pages/ClientDetail.tsx;scripts/check-lf-prod-sot-g15-r23m-12-client-missing-modal-metadata.cjs;tests/lf-prod-sot-g15-r23m-12-client-missing-modal-metadata.test.cjs
+TSC=23->22
+FOCUSED_TESTS=11/11_PASS
+RELATED_STAGE232A_TESTS=PASS
+BUILD=PASS
+DIFF_CHECK=PASS
+ALLOWLIST=3_IMPLEMENTATION_FILES_PASS
+GUARDIAN_STYLE_AUDIT=PASS
+INDEPENDENT_REVIEW=TIMEOUT_REGISTERED_TWICE_NO_PASS_CLAIM
+FREEBUFF_USED=NO_MCP_EXPOSED
+OPENCODE_USED=NO_MCP_EXPOSED
+MARKET_PLUGINS_USED=ai-code-guardian@damian-agent-plugins;agent-efficiency-guardian@damian-agent-plugins;marketplace-router@damian-agent-plugins
+NEXT_STAGE=FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION
+```
+
+### Registered findings
+
+1. `INDEPENDENT_SUBAGENT_REVIEW_TIMEOUT`: two bounded reviewer attempts did
+   not return before timeout; controller evidence and tests are retained, but
+   no independent PASS is claimed.
+2. `STAGE227C3B_GUARD_DRIFT`: the existing runtime test expects the removed
+   `data-stage227c3b-client-missing-action` marker. It is outside this diff and
+   remains a baseline guard mismatch.
+3. `STAGE227C3B_CASE_DIALOG_GUARD_DRIFT`: the existing CaseDetail test expects
+   the removed `AddCaseMissingItemDialog`, while the current runtime uses the
+   shared `ContextActionDialogs` host. It is outside this diff.
+4. `STAGE231B0_R7_GUARD_DRIFT` and `STAGE231B0_R13_R6_GUARD_STALE_CONTEXT`
+   remain inherited findings from A2-10/A2-11 and require A3 guard inventory;
+   they were not weakened here.
