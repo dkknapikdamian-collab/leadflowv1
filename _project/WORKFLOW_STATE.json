@@ -1,14 +1,16 @@
 {
   "schema_version": 1,
   "repository": "dkknapikdamian-collab/leadflowv1",
-  "project_id": null,
-  "status": "BLOCKED_FAIL_CLOSED_UNROUTED",
-  "current_workflow": null,
+  "project_id": "closeflow_lead_app",
+  "status": "BLOCKED_FAIL_CLOSED_BRANCH_SOT_CONFLICT",
+  "current_workflow": "DOCSYS_POST_CLOSEOUT_RECONCILIATION",
   "next_workflow": null,
-  "blocker": "Global DOCSYS routing has not yet verified project identity, canonical Obsidian owner or workflow.",
+  "blocker": "The project identity is evidenced, but main and dev-rollout-freeze carry conflicting branch-role claims; owner decision is required before dependent product work or merge.",
   "allowed_actions": [
-    "DOCSYS_REPOSITORY_BOOTSTRAP",
-    "READ_ONLY_DISCOVERY"
+    "DOCSYS_REPOSITORY_RECONCILIATION",
+    "READ_ONLY_DISCOVERY",
+    "DOCUMENTATION_ONLY_BRANCH_ROLE_REPAIR",
+    "SECURITY_REVIEW_OF_EXISTING_RUNTIME"
   ],
   "forbidden_actions": [
     "PRODUCT_CHANGE",
@@ -16,7 +18,13 @@
     "TEST_CHANGE",
     "DEPENDENCY_CHANGE",
     "DEPLOYMENT",
+    "CANONICAL_BRANCH_SELECTION",
     "NEXT_STAGE_ACTIVATION"
   ],
-  "guardian_required": "AI_CODE_GUARDIAN_REQUIRED=YES"
+  "guardian_required": "AI_CODE_GUARDIAN_REQUIRED=YES",
+  "branch_evidence": {
+    "default_branch": "main",
+    "application_contract_branch": "dev-rollout-freeze",
+    "route": "10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md"
+  }
 }

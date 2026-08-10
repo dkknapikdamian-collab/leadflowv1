@@ -6,9 +6,9 @@
     "STANDALONE_APPLICATION",
     "CODE_APPLICATION"
   ],
-  "project_id": null,
-  "routing_status": "UNKNOWN_REQUIRES_OBSIDIAN_ROUTING",
-  "canonical_branch": "main",
+  "project_id": "closeflow_lead_app",
+  "routing_status": "OWNER_DECISION_REQUIRED_MAIN_VS_DEV_ROLLOUT_FREEZE",
+  "canonical_branch": "dev-rollout-freeze",
   "workflow_state": "_project/WORKFLOW_STATE.json",
   "document_ownership": "_project/DOCUMENT_OWNERSHIP.json",
   "agent_capabilities": "_project/AGENT_CAPABILITIES.json",
@@ -19,7 +19,21 @@
   "obsidian": {
     "project_registry": "00_SYSTEM/PROJECTS.json",
     "router_required": true,
-    "project_entry": null,
-    "source_of_truth_status": "UNRESOLVED"
+    "project_entry": "CLOSEFLOW_LEAD_APP",
+    "source_of_truth_status": "BRANCH_CONFLICT_FAIL_CLOSED",
+    "router": "10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md"
+  },
+  "branch_reconciliation": {
+    "status": "OWNER_DECISION_REQUIRED_MAIN_VS_DEV_ROLLOUT_FREEZE",
+    "default_branch": "main",
+    "application_canonical_branch_evidence": "dev-rollout-freeze",
+    "main_role": "DOCSYS_BOOTSTRAP_NONCANONICAL_UNROUTED",
+    "dev_rollout_role": "ACTIVE_CLOSEFLOW_APPLICATION_CONTRACT",
+    "owner_options": [
+      "A_MAIN_CANONICAL",
+      "B_DEV_ROLLOUT_FREEZE_CANONICAL",
+      "C_EXPLICIT_SPLIT_WITH_SEPARATE_BOUNDARIES"
+    ],
+    "dependent_work_blocked_until_owner_decision": true
   }
 }
