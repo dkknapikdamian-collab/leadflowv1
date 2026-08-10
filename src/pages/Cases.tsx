@@ -111,7 +111,7 @@ const stage231b0R7CasesClosedViewContract = {
   route: '/cases?view=closed',
   label: 'Sprawy zamknięte',
   matches(record: { status?: unknown }, caseView: CaseView) {
-    const isClosedCase = isClosedCaseStatus((typeof caseRecord !== "undefined" ? caseRecord : null)?.status);
+    const isClosedCase = isClosedCaseStatus(record?.status);
     return (caseView === 'closed' && isClosedCase) || (caseView === 'open' && !isClosedCase) || caseView === 'all';
   },
 };
