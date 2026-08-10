@@ -1,14 +1,16 @@
 {
   "schema_version": 1,
   "repository": "dkknapikdamian-collab/leadflowv1",
-  "project_id": null,
-  "status": "BLOCKED_FAIL_CLOSED_UNROUTED",
-  "current_workflow": null,
+  "project_id": "closeflow_lead_app",
+  "status": "ROUTED_FAIL_CLOSED_UNTIL_STAGE_CONTRACT",
+  "current_workflow": "DOCSYS_R3_ROUTING_RECONCILIATION",
   "next_workflow": null,
-  "blocker": "Global DOCSYS routing has not yet verified project identity, canonical Obsidian owner or workflow.",
+  "blocker": "No product stage is activated by the routing repair; an executor must use an explicit stage contract after the independent controller accepts the route.",
   "allowed_actions": [
-    "DOCSYS_REPOSITORY_BOOTSTRAP",
-    "READ_ONLY_DISCOVERY"
+    "DOCSYS_REPOSITORY_RECONCILIATION",
+    "READ_ONLY_DISCOVERY",
+    "DOCUMENTATION_ONLY_ROUTING_REPAIR",
+    "SECURITY_REVIEW_OF_EXISTING_RUNTIME"
   ],
   "forbidden_actions": [
     "PRODUCT_CHANGE",
@@ -18,5 +20,11 @@
     "DEPLOYMENT",
     "NEXT_STAGE_ACTIVATION"
   ],
-  "guardian_required": "AI_CODE_GUARDIAN_REQUIRED=YES"
+  "guardian_required": "AI_CODE_GUARDIAN_REQUIRED=YES",
+  "branch_evidence": {
+    "default_branch": "main",
+    "application_contract_branch": "dev-rollout-freeze",
+    "owner_decision_required": "OWNER_DECISION_REQUIRED_MAIN_VS_DEV_ROLLOUT_FREEZE",
+    "route": "10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md"
+  }
 }
