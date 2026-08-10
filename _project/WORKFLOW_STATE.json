@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 30,
+  "state_revision": 31,
   "last_accepted": {
     "id": "LF-PROD-SOT-G15-R23M-13_CLIENT_CONTEXT_ACTION_BUTTON_CONTRACT_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
@@ -9,16 +9,16 @@
     "evidence": "A2-13 guard/test 3/3; related context-action tests 20/20; TSC 22->20; build PASS; exact three-file implementation scope; controller Guardian-style audit PASS; mapper root cause confirmed; independent reviewer timeout registered; Stage216M-R5 drift and build warnings registered"
   },
   "current_workflow": {
-    "id": "LF-PROD-SOT-G15-R23M-13_CLIENT_CONTEXT_ACTION_BUTTON_CONTRACT_REPAIR",
+    "id": "LF-PROD-SOT-G15-R23M-14_LEAD_SILENCE_RISK_CANONICAL_FIELD_REPAIR",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-13_CLIENT_CONTEXT_ACTION_BUTTON_CONTRACT_REPAIR.md",
-    "status": "CLOSED_A2_NEXT_MAPPER_REQUIRED",
-    "base_sha": "4055b7391702526ccdcb29ecf72e181dee6d6f43",
+    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-14_LEAD_SILENCE_RISK_CANONICAL_FIELD_REPAIR.md",
+    "status": "ROUTED_A2_ACTIVE",
+    "base_sha": "e6658f6cbc6018f9997e7449a36a45d7fd5b5fa3",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
   },
-  "next_workflow": {"id": null, "status": "LOCKED_PENDING_FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION"},
+  "next_workflow": {"id": null, "status": "LOCKED_PENDING_A2_14_CLOSEOUT"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
@@ -89,6 +89,8 @@
     "checkpoint-finding:SUPABASE_AUTH_MIGRATION_MISSING",
     "checkpoint-finding:MIGRATION_SECRET_SCAN_POSSIBLE_SECRET_IN_MIGRATION",
     "checkpoint-finding:WORKSPACE_BILLING_SCOPE_GUARD_DRIFT",
-    "checkpoint-finding:AI_DRAFT_ONLY_GUARD_DRIFT"
+    "checkpoint-finding:AI_DRAFT_ONLY_GUARD_DRIFT",
+    "working-branch:tsc-map@e6658f6cbc6018f9997e7449a36a45d7fd5b5fa3:20-active-error-lines",
+    "working-branch:controller-root-cause@e6658f6c:lead-silence-risk-label-details-contract-drift"
   ]
 }
