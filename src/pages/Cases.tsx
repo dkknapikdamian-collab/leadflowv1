@@ -824,22 +824,6 @@ const attention = isCaseClosedStage231B0R13 ? false : caseNeedsAttention(record)
 
                         settings: ownerRiskSettings,
 
-                        lifecycle,
-
-                        nearestCaseAction,
-
-                        nextActionLabel,
-
-                        statusLabel,
-
-                        compactLifecycleLabel,
-
-                        compactLifecyclePill,
-
-                        percent,
-
-                        updatedAt,
-
                       });
 const metaParts = [
                     lifecycle.openActionCount > 0 ? `${lifecycle.openActionCount} działań` : 'brak działań',
