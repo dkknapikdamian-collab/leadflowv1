@@ -1,24 +1,24 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 20,
+  "state_revision": 21,
   "last_accepted": {
     "id": "LF-PROD-SOT-G15-R23M-09_CASE_ITEM_DELETE_METADATA_CANONICAL_ACTIVITY_CONTRACT_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
-    "commit_sha": "cf7ae5edc55277af17894ed1b9f16e3080f67eae",
-    "evidence": "A2-08 guard/test 3/3; related Stage232 tests 6/6; TSC 29->28; build PASS; controller Guardian-style audit PASS; independent review PASS; inherited findings registered"
+    "commit_sha": "7d612c4b118b291e9059552f4eb9edbfce2e9685",
+    "evidence": "A2-09 guard/test 3/3; related Stage232 tests 16/16; TSC 28->26; build PASS; controller Guardian-style audit PASS; independent review timeout registered; inherited findings registered"
   },
   "current_workflow": {
-    "id": "LF-PROD-SOT-G15-R23M-08_CASE_DETAIL_NOTE_FOLLOWUP_LOCAL_TASK_SCOPE_REPAIR",
+    "id": "LF-PROD-SOT-G15-R23M-09_CASE_ITEM_DELETE_METADATA_CANONICAL_ACTIVITY_CONTRACT_REPAIR",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-08_CASE_DETAIL_NOTE_FOLLOWUP_LOCAL_TASK_SCOPE_REPAIR.md",
-    "status": "ROUTED_A2_ACTIVE",
-    "base_sha": "94a00369c65f13075275c96017b0bd7b4d69f5e4",
+    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-09_CASE_ITEM_DELETE_METADATA_CANONICAL_ACTIVITY_CONTRACT_REPAIR.md",
+    "status": "CLOSED_A2_NEXT_MAPPER_REQUIRED",
+    "base_sha": "7d612c4b118b291e9059552f4eb9edbfce2e9685",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
   },
-  "next_workflow": {"id": null, "status": "LOCKED_PENDING_A2_09_CLOSEOUT"},
+  "next_workflow": {"id": null, "status": "LOCKED_PENDING_FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
@@ -50,6 +50,8 @@
     "working-branch:tsc-map@cf7ae5edc55277af17894ed1b9f16e3080f67eae:28-active-error-lines",
     "working-branch:a2-08-review@977704d8:independent-pass",
     "working-branch:tsc-map@94a00369c65f13075275c96017b0bd7b4d69f5e4:28-active-error-lines",
-    "working-branch:mapper-review@94a00369:case-item-payload-server-contract-drift"
+    "working-branch:mapper-review@94a00369:case-item-payload-server-contract-drift",
+    "working-branch:tsc-map@7d612c4b118b291e9059552f4eb9edbfce2e9685:26-active-error-lines",
+    "working-branch:a2-09-independent-review:timeout-registered"
   ]
 }

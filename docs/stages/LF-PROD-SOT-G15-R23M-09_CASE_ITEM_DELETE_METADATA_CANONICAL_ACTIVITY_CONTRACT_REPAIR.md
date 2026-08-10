@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: active
+status: closed_with_registered_findings
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-PROD-SOT-G15-R23M-09_CASE_ITEM_DELETE_METADATA_CANONICAL_ACTIVITY_CONTRACT_REPAIR
@@ -87,4 +87,43 @@ FOCUSED_TEST=PASS
 TSC_ROOT_CAUSE_REMOVED=YES
 BUILD=PASS
 ALLOWLIST=PASS
+```
+
+## Registered inherited findings
+
+```text
+FINDING=CASE_DETAIL_DELETE_PLACEMENT_LEGACY_GUARD_DRIFT
+SCOPE=pre-existing CaseDetail UI marker drift; outside A2-09 API-contract repair
+FOLLOWUP=A3/D1 UI guard inventory
+FINDING=R23J_FINANCE_PAYMENT_RECORD_GUARD_SCOPE_DRIFT
+SCOPE=pre-existing finance historical guard drift; carry to A3
+FINDING=STAGE227C3_LEGACY_EXPECTATION_DRIFT
+SCOPE=pre-existing historical expectation drift; outside A2-09 scope
+FOLLOWUP=A3 repository truth handoff
+FINDING=INDEPENDENT_SUBAGENT_REVIEW_TIMEOUT
+SCOPE=two bounded A2-09 reviewer attempts did not return a complete report
+FOLLOWUP=retain controller evidence and require independent review at the next checkpoint
+```
+
+## Controller closeout
+
+```text
+STATUS=PASS_ON_WORK_BRANCH_WITH_REGISTERED_FINDINGS
+SOURCE_BASE_SHA=94a00369c65f13075275c96017b0bd7b4d69f5e4
+FINAL_SHA=7d612c4b118b291e9059552f4eb9edbfce2e9685
+FILES_CHANGED=3 implementation files
+ROOT_CAUSE_CONFIRMED=YES
+WHY_NOT_PATCH=preserve the CaseItemInput and API contract; move existing audit metadata to the canonical activity payload
+TSC=28->26
+FOCUSED_GUARD=PASS
+FOCUSED_TEST=3/3_PASS
+RELATED_STAGE232_TESTS=16/16_PASS
+BUILD=PASS
+DIFF_CHECK=PASS
+GUARDIAN_STYLE_AUDIT=PASS
+INDEPENDENT_REVIEW=TIMEOUT_REGISTERED_NO_PASS_CLAIM
+FREEBUFF_USED=NO_MCP_EXPOSED
+OPENCODE_USED=NO_MCP_EXPOSED
+MARKET_PLUGINS_USED=ai-code-guardian@damian-agent-plugins,agent-efficiency-guardian@damian-agent-plugins,marketplace-router@damian-agent-plugins
+NEXT_STAGE=FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION
 ```
