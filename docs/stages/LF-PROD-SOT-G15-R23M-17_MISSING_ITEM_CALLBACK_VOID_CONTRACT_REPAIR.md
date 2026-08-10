@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: routed
+status: closed_with_registered_findings
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-PROD-SOT-G15-R23M-17_MISSING_ITEM_CALLBACK_VOID_CONTRACT_REPAIR
@@ -79,20 +79,34 @@ ALLOWLIST=PASS
 ## Closeout evidence
 
 ```text
-STATUS=ROUTED
+STATUS=PASS_ON_WORK_BRANCH_WITH_REGISTERED_FINDINGS
 SOURCE_BASE_SHA=b94f069f2ec553cab6d2db449158f48173632dea
-IMPLEMENTATION_SHA=PENDING
-FILES_CHANGED=PENDING
-TSC=PENDING
-FOCUSED_TESTS=PENDING
-RELATED_TESTS=PENDING
-BUILD=PENDING
-DIFF_CHECK=PENDING
-ALLOWLIST=PENDING
-GUARDIAN_STYLE_AUDIT=PENDING
-MAPPER_REVIEW=PENDING
-INDEPENDENT_REVIEW=PENDING
+IMPLEMENTATION_SHA=5dae45edd52a4772e7e6fd4d56cb6342e841fd76
+FILES_CHANGED=src/pages/LeadDetail.tsx;scripts/check-lf-prod-sot-g15-r23m-17-missing-item-callback-void.cjs;tests/lf-prod-sot-g15-r23m-17-missing-item-callback-void.test.cjs
+TSC=16->12
+FOCUSED_TESTS=3/3_PASS
+RELATED_TESTS=STAGE228R13_AND_R17_BASELINE_DRIFT_REGISTERED
+BUILD=PASS
+DIFF_CHECK=PASS
+ALLOWLIST=3_IMPLEMENTATION_FILES_PASS
+GUARDIAN_STYLE_AUDIT=PASS_CONTROLLER_AUDIT
+MAPPER_REVIEW=TIMEOUT_REGISTERED_NO_PASS_CLAIM
+INDEPENDENT_REVIEW=TIMEOUT_REGISTERED_NO_PASS_CLAIM
 FREEBUFF_USED=NO_MCP_EXPOSED
 OPENCODE_USED=NO_MCP_EXPOSED
 NEXT_STAGE=FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION
 ```
+
+### Registered findings
+
+1. `MAPPER_SUBAGENT_TIMEOUT`: bounded root-cause mapper did not return before
+   timeout; local diagnosis and fail-first evidence remain authoritative.
+2. `INDEPENDENT_SUBAGENT_REVIEW_TIMEOUT`: bounded reviewer did not return
+   before timeout; no independent PASS is claimed.
+3. `STAGE228R13_R17_GUARD_DRIFT`: existing checks fail on superseded
+   ClientDetail marker and missing-item soft-delete expectations outside this
+   callback contract; restoring those historical markers would be a patch.
+4. `A2_TSC_REMAINING_DEBT`: 12 independent active error lines remain in Leads,
+   Tasks, Today, TodayStable and PWA.
+5. Checkpoint findings from A2-01..A2-16 remain active, including
+   Supabase/auth/migration/workspace-scope and AI draft-only guard failures.
