@@ -1,24 +1,24 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 55,
+  "state_revision": 56,
   "last_accepted": {
-    "id": "LF-SEC-CG-001E_SUPPORT_ACTOR_AUTHORITY_AND_AUDIT_TRAIL_REPAIR",
+    "id": "LF-SEC-CG-001F_PORTAL_UPLOAD_PARENT_SCOPE_RATE_LIMIT_AND_QUOTA_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
-    "commit_sha": "7e7365540a850b6ef3b95e8298f36ec46c3cf479",
-    "evidence": "B5 local evidence: verified actor/role/workspace boundary, admin-only includeAll/status, owner-scoped member replies, atomic support RPC mutations with immutable audit events, generic provider errors; static 3/3, runtime 7/7, Guardian patch-patterns 0/test-weakening CLEAR, TSC/lint/build/quiet release gate PASS; live Supabase migration/RLS and fresh independent reviewer timeouts remain registered"
+    "commit_sha": "6c8cb6aa",
+    "evidence": "B6 local evidence: shared portal upload policy enforces verified portal/operator scope, item-to-case-to-workspace binding, MIME/size/base64 validation, deterministic admission, DB-backed quota/rate and service-only RLS tables; B2 static 2/2, B6 static 3/3, runtime 4/4, TSC/lint/build/quiet release gate/source-truth guard PASS, Guardian patch-patterns 0/test-weakening CLEAR; B6 compatibility follow-up 8889c7c7; live Supabase migration/RLS and independent reviewer timeouts remain registered"
   },
   "current_workflow": {
-    "id": "LF-SEC-CG-001F_PORTAL_UPLOAD_PARENT_SCOPE_RATE_LIMIT_AND_QUOTA_REPAIR",
+    "id": "LF-SEC-CG-001G_DEPENDENCY_SECRET_AND_SUPPLY_CHAIN_AUDIT_AND_REPAIR",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-SEC-CG-001F_PORTAL_UPLOAD_PARENT_SCOPE_RATE_LIMIT_AND_QUOTA_REPAIR.md",
+    "contract_path": "docs/stages/LF-SEC-CG-001G_DEPENDENCY_SECRET_AND_SUPPLY_CHAIN_AUDIT_AND_REPAIR.md",
     "status": "ROUTED",
-    "base_sha": "7e7365540a850b6ef3b95e8298f36ec46c3cf479",
+    "base_sha": "8889c7c7",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
   },
-  "next_workflow": {"id": "LF-SEC-CG-001F_PORTAL_UPLOAD_PARENT_SCOPE_RATE_LIMIT_AND_QUOTA_REPAIR", "status": "ROUTED"},
+  "next_workflow": {"id": "LF-SEC-CG-001G_DEPENDENCY_SECRET_AND_SUPPLY_CHAIN_AUDIT_AND_REPAIR", "status": "ROUTED"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
@@ -187,6 +187,10 @@
     "b5-route:cb4c4b6d98bb6be54bf2d8601ab2f8bf4c619370:support-actor-authority-contract-created",
     "b5:7e7365540a850b6ef3b95e8298f36ec46c3cf479:static-3-runtime-7-atomic-audit-rpc-tsc-lint-build-quiet-pass",
     "b5:7e7365540a850b6ef3b95e8298f36ec46c3cf479:live-supabase-migration-and-independent-review-timeouts-registered",
-    "b6-route:7e7365540a850b6ef3b95e8298f36ec46c3cf479:portal-upload-parent-scope-rate-limit-quota-contract-created"
+    "b6-route:7e7365540a850b6ef3b95e8298f36ec46c3cf479:portal-upload-parent-scope-rate-limit-quota-contract-created",
+    "b6:6c8cb6aa:static-3-runtime-4-b2-compat-2-tsc-lint-build-quiet-pass",
+    "b6:8889c7c7:shared-upload-service-preserved-B2-scope-contract",
+    "b6:6c8cb6aa:live-supabase-and-independent-review-timeouts-registered",
+    "b7-route:8889c7c7:dependency-secret-supply-chain-contract-created"
   ]
 }
