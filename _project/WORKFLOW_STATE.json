@@ -1,24 +1,24 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 18,
+  "state_revision": 19,
   "last_accepted": {
     "id": "LF-PROD-SOT-G15-R23M-08_CASE_DETAIL_NOTE_FOLLOWUP_LOCAL_TASK_SCOPE_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
-    "commit_sha": "852844ccf16df630f14ca72cd4a8be611e125430",
-    "evidence": "A2-07 guard/test 3/3; CaseDetail regression 17/18 with pre-existing delete-placement finding; TSC 37->29; build PASS; controller Guardian-style audit PASS; independent subagent review timeout registered"
+    "commit_sha": "cf7ae5edc55277af17894ed1b9f16e3080f67eae",
+    "evidence": "A2-08 guard/test 3/3; related Stage232 tests 6/6; TSC 29->28; build PASS; controller Guardian-style audit PASS; independent review PASS; inherited findings registered"
   },
   "current_workflow": {
-    "id": "LF-PROD-SOT-G15-R23M-07_CASE_DETAIL_ORPHAN_LOADING_COMPONENT_SCOPE_REPAIR",
+    "id": "LF-PROD-SOT-G15-R23M-08_CASE_DETAIL_NOTE_FOLLOWUP_LOCAL_TASK_SCOPE_REPAIR",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-07_CASE_DETAIL_ORPHAN_LOADING_COMPONENT_SCOPE_REPAIR.md",
-    "status": "ROUTED_A2_ACTIVE",
-    "base_sha": "ddab9c5d869a892effadea59fea4026dfc6e1dcb",
+    "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-08_CASE_DETAIL_NOTE_FOLLOWUP_LOCAL_TASK_SCOPE_REPAIR.md",
+    "status": "CLOSED_A2_NEXT_MAPPER_REQUIRED",
+    "base_sha": "cf7ae5edc55277af17894ed1b9f16e3080f67eae",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
   },
-  "next_workflow": {"id": null, "status": "LOCKED_PENDING_A2_08_CLOSEOUT"},
+  "next_workflow": {"id": null, "status": "LOCKED_PENDING_FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
@@ -45,6 +45,9 @@
     "working-branch:a2-07-controller-audit@852844cc:exact-three-file-scope-pass",
     "working-branch:a2-07-independent-review:timeout-registered",
     "working-branch:tsc-map@ddab9c5d869a892effadea59fea4026dfc6e1dcb:29-active-error-lines",
-    "working-branch:mapper-review@ddab9c5d:local-task-scope-repair"
+    "working-branch:mapper-review@ddab9c5d:local-task-scope-repair",
+    "working-branch:tsc-map@977704d85fa91edab051e30451ce051b8bae30c1:29-active-error-lines",
+    "working-branch:tsc-map@cf7ae5edc55277af17894ed1b9f16e3080f67eae:28-active-error-lines",
+    "working-branch:a2-08-review@977704d8:independent-pass"
   ]
 }

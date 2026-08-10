@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: active
+status: closed_with_registered_findings
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-PROD-SOT-G15-R23M-08_CASE_DETAIL_NOTE_FOLLOWUP_LOCAL_TASK_SCOPE_REPAIR
@@ -82,4 +82,36 @@ FOCUSED_TEST=PASS
 TSC_ROOT_CAUSE_REMOVED=YES
 BUILD=PASS
 ALLOWLIST=PASS
+```
+
+## Registered inherited findings
+
+```text
+FINDING=CASE_DETAIL_DELETE_PLACEMENT_LEGACY_GUARD_DRIFT
+SCOPE=pre-existing CaseDetail UI marker drift; outside A2-08 one-line helper scope
+FOLLOWUP=A3/D1 UI guard inventory
+FINDING=R23J_FINANCE_PAYMENT_RECORD_GUARD_SCOPE_DRIFT
+SCOPE=pre-existing finance historical guard drift; carry to A3
+```
+
+## Controller closeout
+
+```text
+STATUS=PASS_ON_WORK_BRANCH_WITH_REGISTERED_FINDINGS
+SOURCE_BASE_SHA=977704d85fa91edab051e30451ce051b8bae30c1
+FINAL_SHA=cf7ae5edc55277af17894ed1b9f16e3080f67eae
+FILES_CHANGED=3 implementation files
+ROOT_CAUSE_CONFIRMED=YES
+WHY_NOT_PATCH=the helper uses its existing local argument; the valid memo-local bridge remains unchanged
+TSC=29->28
+FOCUSED_GUARD=PASS
+FOCUSED_TEST=3/3_PASS
+RELATED_STAGE232_TESTS=6/6_PASS
+BUILD=PASS
+DIFF_CHECK=PASS
+GUARDIAN_STYLE_AUDIT=PASS
+INDEPENDENT_REVIEW=PASS
+FREEBUFF_USED=NO_MCP_EXPOSED
+OPENCODE_USED=NO_MCP_EXPOSED
+NEXT_STAGE=FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION
 ```
