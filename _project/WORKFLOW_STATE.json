@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 29,
+  "state_revision": 30,
   "last_accepted": {
     "id": "LF-PROD-SOT-G15-R23M-13_CLIENT_CONTEXT_ACTION_BUTTON_CONTRACT_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
@@ -79,6 +79,16 @@
     "working-branch:tsc-map@4055b7391702526ccdcb29ecf72e181dee6d6f43:20-active-error-lines",
     "working-branch:a2-13-related-context-action-tests:20-of-20-pass",
     "working-branch:a2-13-build@4055b739:pass",
-    "working-branch:a2-13-independent-review:timeout-registered-no-pass-claim"
+    "working-branch:a2-13-independent-review:timeout-registered-no-pass-claim",
+    "checkpoint:a2-01-a2-13@be8ccb63:lint-fails-at-known-20-active-tsc-errors",
+    "checkpoint:a2-01-a2-13@be8ccb63:full-test-2336-of-2757-pass-419-fail",
+    "checkpoint:a2-01-a2-13@be8ccb63:build-reused-from-4055b739-code-unchanged",
+    "checkpoint:a2-01-a2-13:google-calendar-env-truth-pass-billing-truth-pass-portal-secrets-pass",
+    "checkpoint:a2-01-a2-13:security-supabase-ai-guards-have-registered-failures",
+    "checkpoint-finding:SUPABASE_FIRST_ARCHITECTURE_FIRESTORE_RUNTIME_DRIFT",
+    "checkpoint-finding:SUPABASE_AUTH_MIGRATION_MISSING",
+    "checkpoint-finding:MIGRATION_SECRET_SCAN_POSSIBLE_SECRET_IN_MIGRATION",
+    "checkpoint-finding:WORKSPACE_BILLING_SCOPE_GUARD_DRIFT",
+    "checkpoint-finding:AI_DRAFT_ONLY_GUARD_DRIFT"
   ]
 }
