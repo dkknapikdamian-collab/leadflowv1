@@ -134,7 +134,7 @@ export function registerChunkAssetReloadGuard() {
 
   window.addEventListener('vite:preloadError', (event) => {
     event.preventDefault();
-    reloadOnceForChunkAssetFailure((event as CustomEvent).payload || event, 'vite-preload-error');
+    reloadOnceForChunkAssetFailure(event.payload || event, 'vite-preload-error');
   });
 
   window.addEventListener('unhandledrejection', (event) => {
@@ -146,10 +146,11 @@ export function registerChunkAssetReloadGuard() {
   window.addEventListener(
     'error',
     (event) => {
-      const target = event.target as HTMLElement | null;
-      const assetUrl =
-        target && ('src' in target || 'href' in target)
-          ? String((target as HTMLScriptElement | HTMLLinkElement).src || (target as HTMLLinkElement).href || '')
+      const target = event.target;
+      const assetUrl = target instanceof HTMLScriptElement
+        ? target.src
+        : target instanceof HTMLLinkElement
+          ? target.href
           : '';
 
       if (assetUrl.includes('/assets/') && /\.(js|css)(\?|$)/i.test(assetUrl)) {
