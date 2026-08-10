@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 8,
+  "state_revision": 9,
   "last_accepted": {
-    "id": "LF-PROD-SOT-G15-R23M-02_RUNTIME_ACCESS_PLAN_INPUT_TYPE_BOUNDARY_REPAIR",
-    "status": "CLOSED",
-    "commit_sha": "a5c48303dfebf0255f94f51c91b912c405622f09",
-    "evidence": "working-branch and clean-checkout focused/runtime guards; TSC 46->44; build PASS"
+    "id": "LF-PROD-SOT-G15-R23M-03_FINANCE_PAYMENT_REDUCE_ACCUMULATOR_TYPE_REPAIR",
+    "status": "CLOSED_WITH_REGISTERED_FINDING",
+    "commit_sha": "c4599df72af7552d50db70660d5479e82c4dc20f",
+    "evidence": "working-branch and clean-checkout finance guards/tests; TSC 44->40; build PASS; FIN14 copy finding registered"
   },
   "current_workflow": {
     "id": "LF-PROD-SOT-G15-R23M-03_FINANCE_PAYMENT_REDUCE_ACCUMULATOR_TYPE_REPAIR",
     "kind": "TECHNICAL_STAGE",
     "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-03_FINANCE_PAYMENT_REDUCE_ACCUMULATOR_TYPE_REPAIR.md",
-    "status": "READY_FOR_EXECUTION",
-    "base_sha": "5501ee0f1f9bc61bb1f768f4bae64da1f8b47422",
+    "status": "CLOSED_A2_NEXT_MAPPER_REQUIRED",
+    "base_sha": "c4599df72af7552d50db70660d5479e82c4dc20f",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null

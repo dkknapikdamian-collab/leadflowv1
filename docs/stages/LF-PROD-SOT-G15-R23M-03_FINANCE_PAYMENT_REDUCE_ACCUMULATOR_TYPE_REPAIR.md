@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: active
+status: closed_with_registered_finding
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-PROD-SOT-G15-R23M-03_FINANCE_PAYMENT_REDUCE_ACCUMULATOR_TYPE_REPAIR
@@ -75,7 +75,8 @@ payment semantics, or billing behavior.
    three `.reduce<number>` accumulator annotations.
 3. Focused Node guard/test pass with positive and negative assertions.
 4. Existing `tests/case-finance-source.test.cjs` and relevant finance static
-   tests pass.
+   tests pass. Any unrelated pre-existing UI test failure is recorded with
+   exact path and is not repaired in this accumulator-only substage.
 5. Fresh TypeScript mapping reports 44 -> 40 active error lines.
 6. `npm run build` passes.
 7. AI Code Guardian audit and independent subagent review pass before commit.
@@ -90,10 +91,20 @@ NO_ANY_BYPASS=YES
 NO_TS_IGNORE_BYPASS=YES
 FOCUSED_GUARD=PASS
 FOCUSED_TEST=PASS
-FINANCE_TESTS=PASS
+FINANCE_TESTS=PASS_OR_PREEXISTING_FAILURE_REGISTERED
 BUILD=PASS
 ALLOWLIST=PASS
 INDEPENDENT_REVIEW=PASS
+```
+
+## Pre-existing finding observed during execution
+
+```text
+FINDING=FIN14_PAYMENT_BUTTON_LABEL_EXPECTATION_MISMATCH
+TEST=tests/fin14-payment-types.test.cjs
+FAILURE=expects "Dodaj płatność prowizji" but existing component renders "Dodaj wpłatę prowizji"
+SCOPE=outside A2-03; no UI component or copy file changed
+FOLLOWUP=product/acceptance finance copy decision before D-stage acceptance
 ```
 
 ## Recovery boundary
@@ -101,3 +112,35 @@ INDEPENDENT_REVIEW=PASS
 The executor may change only the three implementation files and must stop
 before A2-04. If the expected four-error reduction does not occur, preserve
 the branch and remap the error class rather than broadening this stage.
+
+## Controller closeout
+
+```text
+STATUS=PASS_ON_WORK_BRANCH_WITH_REGISTERED_FINDING
+SOURCE_BASE_SHA=5501ee0f1f9bc61bb1f768f4bae64da1f8b47422
+ROUTER_BASE_SHA=1179c4e2f4afefc0cdff3f02b543354bd6802b87
+FINAL_SHA=c4599df72af7552d50db70660d5479e82c4dc20f
+FILES_CHANGED=3 implementation files; contract evidence is recorded separately
+ROOT_CAUSE_CONFIRMED=YES
+WHY_NOT_PATCH=numeric accumulator type is declared at the existing reducer boundaries; payment logic is untouched
+FINANCE_PAYMENT_SEMANTICS_UNCHANGED=YES
+TSC=44->40
+FOCUSED_GUARD=PASS
+FOCUSED_TEST=3/3_PASS
+RELEVANT_FINANCE_TESTS=21/21_PASS
+CLEAN_CHECKOUT_GUARD_AND_TESTS=24/24_PASS
+DIFF_CHECK=PASS
+BUILD=PASS
+GUARDIAN_STYLE_AUDIT=PASS
+INDEPENDENT_REVIEW=PASS
+FINANCE_TESTS=PASS_WITH_REGISTERED_FINDING
+FREEBUFF_USED=NO_MCP_EXPOSED
+OPENCODE_USED=NO_MCP_EXPOSED
+NEXT_STAGE=FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION
+```
+
+The registered FIN14 finding is outside this reducer-only scope. The failing
+test expects `Dodaj płatność prowizji`, while the unchanged existing component
+renders `Dodaj wpłatę prowizji`; the exact relevant finance source and payment
+tests pass in a clean checkout. Product/acceptance review must decide whether
+the test or UI copy is canonical before D-stage acceptance.
