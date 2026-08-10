@@ -19,6 +19,10 @@ const skipDirs = new Set([
   '.turbo',
   '.cache',
   '.claude',
+  '.closeflow-diagnostics',
+  '.closeflow-recovery-backups',
+  '.stversions',
+  '_local_backups',
   '2.closeflow_bisect',
 ]);
 const skipFiles = new Set(['package-lock.json', 'pnpm-lock.yaml', 'yarn.lock']);
