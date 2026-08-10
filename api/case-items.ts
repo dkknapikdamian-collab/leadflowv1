@@ -1,7 +1,8 @@
-import { insertWithVariants, selectFirstAvailable, supabaseRequest, updateById } from '../src/server/_supabase.js';
+import { insertWithVariants, selectFirstAvailable } from '../src/server/_supabase.js';
 import { readPortalSession, requireOperatorCaseAccess, requirePortalSessionContext } from '../src/server/_portal-token.js';
-import { resolveRequestWorkspaceId, withWorkspaceFilter } from '../src/server/_request-scope.js';
+import { resolveRequestWorkspaceId, requireScopedRow } from '../src/server/_request-scope.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
+import { findCaseItemById, requireCaseItemInCase, updateCaseItemInCase, deleteCaseItemInCase } from '../src/server/case-item-scope.js';
 
 const STAGE232A_R7_CASE_ITEMS_ITEM_ORDER_SCHEMA_COMPAT = 'case-items API falls back when production schema has no item_order column';
 void STAGE232A_R7_CASE_ITEMS_ITEM_ORDER_SCHEMA_COMPAT;
@@ -127,16 +128,10 @@ export default async function handler(req: any, res: any) {
       if (portalMode) {
         await requirePortalSessionContext(caseId, portalSession);
       } else {
-        const workspaceId = await resolveRequestWorkspaceId(req);
-        if (!workspaceId) throw new Error('AUTH_WORKSPACE_REQUIRED');
+        await requireOperatorCaseAccess(req, caseId);
       }
 
-      const current = await selectFirstAvailable([`case_items?select=*&id=eq.${encodeURIComponent(id)}&case_id=eq.${encodeURIComponent(caseId)}&limit=1`]);
-      const currentRow = Array.isArray(current.data) && current.data[0] ? current.data[0] as Record<string, unknown> : null;
-      if (!currentRow) {
-        res.status(404).json({ error: 'CASE_ITEM_NOT_FOUND' });
-        return;
-      }
+      const currentRow = await requireCaseItemInCase(id, caseId);
       if (!itemType) itemType = asText((currentRow as any).type) || 'file';
 
       const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
@@ -154,17 +149,33 @@ export default async function handler(req: any, res: any) {
         payload.file_name = uploaded.fileName;
         payload.file_url = uploaded.filePath;
       }
-      const updated = await updateById('case_items', id, payload);
+      const updated = await updateCaseItemInCase(id, caseId, payload);
       const row = Array.isArray(updated) && updated[0] ? updated[0] : { ...currentRow, ...payload, id };
       res.status(200).json(normalizeCaseItem(row, portalMode));
       return;
     }
 
-    if (!portalMode) {
+    if (req.method === 'DELETE') {
+      if (portalMode) {
+        res.status(403).json({ error: 'PORTAL_CASE_ITEM_DELETE_NOT_ALLOWED' });
+        return;
+      }
+      const id = asText(req.query?.id || body.id);
+      if (!id) {
+        res.status(400).json({ error: 'CASE_ITEM_ID_REQUIRED' });
+        return;
+      }
       const workspaceId = await resolveRequestWorkspaceId(req);
-      if (!workspaceId) throw new Error('AUTH_WORKSPACE_REQUIRED');
-    } else if (caseId) {
-      await requirePortalSessionContext(caseId, portalSession);
+      const currentRow = await findCaseItemById(id);
+      const itemCaseId = asText(currentRow?.case_id);
+      if (!itemCaseId) {
+        res.status(404).json({ error: 'CASE_ITEM_NOT_FOUND' });
+        return;
+      }
+      await requireScopedRow('cases', itemCaseId, workspaceId, 'CASE_NOT_FOUND');
+      await deleteCaseItemInCase(id, itemCaseId);
+      res.status(200).json({ ok: true, id });
+      return;
     }
 
     if (req.method === 'POST') {
@@ -172,6 +183,8 @@ export default async function handler(req: any, res: any) {
         res.status(400).json({ error: 'CASE_ID_REQUIRED' });
         return;
       }
+      if (portalMode) await requirePortalSessionContext(caseId, portalSession);
+      else await requireOperatorCaseAccess(req, caseId);
       const now = new Date().toISOString();
       const itemType = asText(body.type) || 'file';
       const basePayload = {

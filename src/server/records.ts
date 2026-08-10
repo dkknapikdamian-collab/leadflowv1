@@ -4,6 +4,8 @@ Moved from api/ to src/server/ and routed through api/system.ts to keep the Verc
 */
 import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from './_request-scope.js';
+import { findCaseItemById, updateCaseItemInCase, deleteCaseItemInCase } from './case-item-scope.js';
+import { writeAuthErrorResponse } from './_supabase-auth.js';
 
 function asString(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -184,9 +186,8 @@ export default async function handler(req: any, res: any) {
 
     if (req.method === 'PATCH') {
       if (!body.id) { res.status(400).json({ error: 'CASE_ITEM_ID_REQUIRED' }); return; }
-      const currentResult = await selectFirstAvailable([`case_items?select=case_id&id=eq.${encodeURIComponent(String(body.id))}&limit=1`]);
-      const currentRows = Array.isArray(currentResult.data) ? currentResult.data : [];
-      const currentCaseId = asString((currentRows[0] as any)?.case_id);
+      const currentRow = await findCaseItemById(String(body.id));
+      const currentCaseId = asString(currentRow?.case_id);
       if (!currentCaseId) { res.status(404).json({ error: 'CASE_ITEM_NOT_FOUND' }); return; }
       await requireScopedRow('cases', currentCaseId, workspaceId, 'CASE_NOT_FOUND');
       const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
@@ -201,7 +202,7 @@ export default async function handler(req: any, res: any) {
       if (body.fileUrl !== undefined) payload.file_url = body.fileUrl || null;
       if (body.fileName !== undefined) payload.file_name = body.fileName || null;
       if (body.approvedAt !== undefined) payload.approved_at = body.approvedAt || null;
-      const data = await updateById('case_items', String(body.id), payload);
+      const data = await updateCaseItemInCase(String(body.id), currentCaseId, payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };
       res.status(200).json(normalizeCaseItem(updated));
       return;
@@ -210,18 +211,21 @@ export default async function handler(req: any, res: any) {
     if (req.method === 'DELETE') {
       const id = asString(req.query?.id);
       if (!id) { res.status(400).json({ error: 'CASE_ITEM_ID_REQUIRED' }); return; }
-      const currentResult = await selectFirstAvailable([`case_items?select=case_id&id=eq.${encodeURIComponent(id)}&limit=1`]);
-      const currentRows = Array.isArray(currentResult.data) ? currentResult.data : [];
-      const currentCaseId = asString((currentRows[0] as any)?.case_id);
+      const currentRow = await findCaseItemById(id);
+      const currentCaseId = asString(currentRow?.case_id);
       if (!currentCaseId) { res.status(404).json({ error: 'CASE_ITEM_NOT_FOUND' }); return; }
       await requireScopedRow('cases', currentCaseId, workspaceId, 'CASE_NOT_FOUND');
-      await deleteById('case_items', id);
+      await deleteCaseItemInCase(id, currentCaseId);
       res.status(200).json({ ok: true, id });
       return;
     }
 
     res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
   } catch (error: any) {
+    if (error?.code || error?.status) {
+      writeAuthErrorResponse(res, error);
+      return;
+    }
     res.status(500).json({ error: error.message || 'RECORDS_API_FAILED' });
   }
 }

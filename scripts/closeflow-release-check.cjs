@@ -33,6 +33,7 @@ const requiredTests = [
   'tests/pwa-foundation.test.cjs',
   'tests/daily-digest-email-runtime.test.cjs',
   'tests/b1-digest-authorization.test.cjs',
+  'tests/b2-case-items-scope.test.cjs',
   'tests/email-digest-domain-gate.test.cjs',
   'tests/billing-stripe-blik-foundation.test.cjs',
   'tests/billing-foundation-test-polish-label-regression.test.cjs',

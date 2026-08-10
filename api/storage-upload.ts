@@ -1,4 +1,5 @@
 import { requirePortalSessionContext } from '../src/server/_portal-token.js';
+import { requireCaseItemInCase } from '../src/server/case-item-scope.js';
 import {
   getPortalStorageHealthSecret,
   isAllowedPortalUploadFileType,
@@ -43,7 +44,7 @@ function encodeStorageObjectPath(objectPath: string) {
 
 function resolveErrorStatus(message: string) {
   if (message.includes('PORTAL_SESSION') || message.includes('PORTAL_TOKEN')) return 403;
-  if (message === 'CASE_NOT_FOUND') return 404;
+  if (message === 'CASE_NOT_FOUND' || message === 'CASE_ITEM_NOT_FOUND') return 404;
   if (message.includes('REQUIRED') || message.includes('LIMIT') || message.includes('NOT_ALLOWED') || message.includes('MISMATCH')) return 400;
   if (message.includes('SUPABASE_SERVER_CONFIG_MISSING') || message.includes('SUPABASE_PORTAL_BUCKET_MISSING')) return 500;
   return 500;
@@ -141,6 +142,7 @@ async function handleUpload(req: any, res: any) {
   if (!file.name || !file.type || !file.dataBase64) throw new Error('PORTAL_FILE_REQUIRED');
 
   await requirePortalSessionContext(caseId, portalSession);
+  await requireCaseItemInCase(itemId, caseId);
 
   const config = requirePortalStorageServerConfig();
   const fileName = sanitizePortalUploadFileName(file.name);
