@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: active
+status: closed_with_registered_finding
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR
@@ -81,7 +81,10 @@ runtime behavior, or any R23L file.
    compiler exposes an additional root-cause dependency; no errors may be
    hidden, excluded, or bypassed.
 5. `npm run build` passes.
-6. Existing `npm run verify:auth:supabase-stage01` passes when available.
+6. Existing `npm run verify:auth:supabase-stage01` is executed and its result is
+   recorded. If it fails because the pre-existing Stage 01 migration is absent
+   from both the current tree and the A2 base, register that finding for C1;
+   do not add the migration to this type-only substage.
 7. `git diff --check` and the exact allowlist guard pass.
 8. AI Code Guardian review and an independent subagent review pass before the
    controller commits.
@@ -97,8 +100,19 @@ R23L_SCOPE_UNCHANGED=YES
 FOCUSED_GUARD=PASS
 FOCUSED_TEST=PASS
 BUILD=PASS
-AUTH_GUARD=PASS
+AUTH_GUARD=PASS_OR_PREEXISTING_FAILURE_REGISTERED
 ALLOWLIST=PASS
+```
+
+## Pre-existing finding observed during execution
+
+```text
+FINDING=C1_SUPABASE_STAGE01_MIGRATION_ABSENT_FROM_A2_BASE
+EVIDENCE=verify:auth:supabase-stage01 fails because supabase/migrations/2026-05-01_stage01_supabase_auth_identity.sql is missing
+BASE_CHECK=absent at 299a4e165e27bc36d73b72980beab30f79b246f9
+CURRENT_CHECK=absent at 5f9f357560d9b81979fbb6bbd9854874f62aa73b
+SCOPE_IMPACT=outside A2-01; no auth or migration files changed
+REQUIRED_FOLLOWUP=C1 migration/RLS foundation audit before C2
 ```
 
 ## Recovery boundary
@@ -107,3 +121,34 @@ The implementation is one logical commit containing only the allowlisted
 paths. If a check fails, preserve the current branch and fix only within this
 contract; do not advance A2 or alter the workflow router until the stage is
 closed. The next fresh TypeScript map, not this contract, selects A2-02.
+
+## Controller closeout
+
+```text
+STATUS=PASS_ON_WORK_BRANCH_WITH_REGISTERED_FINDING
+BASE_SHA=299a4e165e27bc36d73b72980beab30f79b246f9
+FINAL_SHA=5f9f357560d9b81979fbb6bbd9854874f62aa73b
+IMPLEMENTATION_COMMIT=fix(closeflow): LF-PROD-SOT-G15-R23M-01 remove duplicate User import
+FILES_CHANGED=3 implementation files; contract evidence is recorded separately
+ROOT_CAUSE_CONFIRMED=YES
+WHY_NOT_PATCH=invalid duplicate declaration removed at source; Firebase hook behavior preserved
+TSC=49->46
+FOCUSED_GUARD=PASS
+FOCUSED_TEST=3/3_PASS
+CLEAN_CHECKOUT_GUARD_AND_TEST=PASS
+DIFF_CHECK=PASS
+BUILD=PASS
+GUARDIAN_STYLE_AUDIT=PASS
+INDEPENDENT_RUNTIME_REVIEW=PASS
+INDEPENDENT_REVIEW_FINDING=C1_SUPABASE_STAGE01_MIGRATION_ABSENT_FROM_A2_BASE
+AUTH_GUARD=PREEXISTING_FAILURE_REGISTERED_FOR_C1
+FREEBUFF_USED=NO_MCP_EXPOSED
+OPENCODE_USED=NO_MCP_EXPOSED
+NEXT_STAGE=FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION
+```
+
+The Supabase auth guard was executed and failed only because
+`supabase/migrations/2026-05-01_stage01_supabase_auth_identity.sql` is absent
+from both the A2 base and final SHA. No auth or migration file changed in this
+substage. This finding is not evidence for an A2-01 failure, but it blocks a
+future C1/C2 auth-foundation acceptance until resolved.

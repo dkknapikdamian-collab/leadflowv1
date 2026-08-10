@@ -1,24 +1,24 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 4,
+  "state_revision": 5,
   "last_accepted": {
-    "id": "LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR",
-    "status": "CLOSED",
-    "commit_sha": "299a4e165e27bc36d73b72980beab30f79b246f9",
-    "evidence": "working-branch exact guard/test/tsc/build evidence; clean checkout guard/test verification"
+    "id": "LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR",
+    "status": "CLOSED_WITH_REGISTERED_FINDING",
+    "commit_sha": "5f9f357560d9b81979fbb6bbd9854874f62aa73b",
+    "evidence": "working-branch and clean-checkout guard/test; TSC 49->46; build PASS; C1 auth migration finding registered"
   },
   "current_workflow": {
     "id": "LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR",
     "kind": "TECHNICAL_STAGE",
     "contract_path": "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
-    "status": "READY_FOR_EXECUTION",
-    "base_sha": "299a4e165e27bc36d73b72980beab30f79b246f9",
+    "status": "CLOSED_WITH_REGISTERED_FINDING_A2_NEXT_MAPPER_REQUIRED",
+    "base_sha": "5f9f357560d9b81979fbb6bbd9854874f62aa73b",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
-    "blocker": null
+    "blocker": "C1 auth-foundation migration is absent from the A2 base and remains registered for C1; it does not block A2 type-debt execution."
   },
-  "next_workflow": {"id": null, "status": "LOCKED_PENDING_CURRENT_STAGE_ACCEPTANCE"},
+  "next_workflow": {"id": null, "status": "LOCKED_PENDING_FRESH_A2_MAP_AND_ROOT_CAUSE_SELECTION"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
