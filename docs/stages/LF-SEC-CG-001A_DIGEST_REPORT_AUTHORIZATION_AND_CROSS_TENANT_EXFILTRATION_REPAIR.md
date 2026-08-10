@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: routed
+status: closed_with_registered_findings
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-SEC-CG-001A_DIGEST_REPORT_AUTHORIZATION_AND_CROSS_TENANT_EXFILTRATION_REPAIR
@@ -67,3 +67,43 @@ INDEPENDENT_REVIEW=COMPLETED
 Do not claim PASS from static strings alone. Real provider credentials or
 owner runtime execution are required whenever the evidence cannot be proved
 locally without them.
+
+## Controller closeout
+
+```text
+STATUS=CLOSED_WITH_REGISTERED_FINDINGS
+IMPLEMENTATION_SHA=20fd185561dfb6fa8dc9966f0b1608e76135d0ff
+REPORT_ENDPOINTS_MAPPED=YES
+AUTH_BEFORE_READ=PASS
+WORKSPACE_MEMBERSHIP_ENFORCED=PASS_WITH_REGISTERED_LIVE_RUNTIME_LIMITATION
+RECIPIENT_SCOPE_ENFORCED=PASS
+CRON_AUTHORIZATION_FAIL_CLOSED=PASS
+CROSS_TENANT_TEST=PASS
+UNAUTHORIZED_PROVIDER_CALLS=0
+FOCUSED_TESTS=PASS_9_OF_9
+TSC=PASS
+LINT=PASS_REUSED_FROM_EXACT_CODE_SCOPE
+BUILD=PASS_REUSED_FROM_EXACT_CODE_SCOPE
+GUARDIAN=PASS_WITH_REGISTERED_FINDINGS
+INDEPENDENT_REVIEW=COMPLETED_WITH_LIMITATIONS
+MIGRATION_APPLIED=OWNER_RUNTIME_REQUIRED
+```
+
+Evidence and limitations:
+
+* `npm run test:b1-digest-authorization`: static 3/3 and runtime 6/6.
+* The runtime suite proves unauthenticated and cross-tenant denial, recipient
+  tampering denial, fail-closed cron behavior and zero provider calls using
+  verified-auth test doubles. A live Supabase/Resend smoke test is not
+  available in this environment.
+* The migration performs a duplicate preflight before changing indexes. It
+  must be preceded by a verified backup and executed in the owner-controlled
+  Supabase environment; it is not silently marked applied here.
+* Registered repository findings remain outside B1 scope: stale P13/P0 and
+  digest-environment guard markers, existing Supabase/auth architecture drift,
+  and Vite bundle-size warnings. They are not evidence of a B1 authorization
+  bypass.
+* FreeBuff and OpenCode MCPs were not exposed. One post-implementation
+  reviewer timed out; a replacement review was completed, and its initial
+  evidence gap was closed by the authenticated runtime tests and migration
+  preflight above. No reviewer self-approval is used as the sole PASS basis.
