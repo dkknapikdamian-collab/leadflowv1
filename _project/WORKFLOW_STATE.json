@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 2,
+  "state_revision": 3,
   "last_accepted": {
     "id": "LF-PROD-SOT-G15-R23K_FINANCE_SNAPSHOT_REMAINING_AMOUNT_INPUT_CONTRACT",
     "status": "CLOSED",
@@ -12,10 +12,11 @@
     "id": "LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR",
     "kind": "TECHNICAL_STAGE",
     "contract_path": "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
-    "status": "REMOTE_GATES_PASS_DRAFT_PR_OPEN_LOCAL_ACCEPTANCE_PACKAGE_READY_EXACT_LOCAL_AND_MERGE_PENDING",
-    "base_sha": "21f27150df059e79e066fa0cba97cbd3483eda76",
-    "target_branch": "stage/lf-prod-sot-g15-r23l-lucide-namespace-registry-cast-repair-r1",
-    "blocker": "Exact local verification, squash merge of unchanged PR #50 head, and exact merge-SHA local reverify remain pending."
+    "status": "CONTROL_00_RESOLVED_A1_REEXECUTION_REQUIRED_ON_SINGLE_WORKING_BRANCH",
+    "base_sha": "ab0f5c85f6cb3636c483debd13c04c5e29779c81",
+    "base_branch": "dev-rollout-freeze",
+    "target_branch": "codex/closeflow-v1-e2e-roadmap",
+    "blocker": "Historical PR #50 is evidence only; R23L must be re-executed and verified on the single working branch before A2."
   },
   "next_workflow": {"id": null, "status": "LOCKED_PENDING_CURRENT_STAGE_ACCEPTANCE"},
   "source_evidence": [

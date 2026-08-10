@@ -4,7 +4,8 @@ Data: 2026-06-12 20:19 Europe/Warsaw
 Status: ACTIVE  
 Typ: obowiązkowy protokół audytu przed i po każdym etapie  
 Repo: dkknapikdamian-collab/leadflowv1  
-Branch: dev-rollout-freeze  
+Canonical base branch: dev-rollout-freeze
+Working branch: codex/closeflow-v1-e2e-roadmap
 Canonical name: CloseFlow / LeadFlow  
 Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
 
@@ -32,7 +33,8 @@ Przed kodem, ZIP-em albo poleceniem dla Codexa trzeba ustalić:
 
 - projekt: CloseFlow / LeadFlow,
 - repo: `dkknapikdamian-collab/leadflowv1`,
-- branch: `dev-rollout-freeze`,
+- branch roboczy: `codex/closeflow-v1-e2e-roadmap`,
+- branch bazowy: `dev-rollout-freeze`,
 - local path: `C:\Users\malim\Desktop\biznesy_ai\2.closeflow`,
 - Obsidian folder: `10_PROJEKTY/CloseFlow_Lead_App`,
 - etap: nazwa i numer,
@@ -259,6 +261,7 @@ Dla etapów z `_project/07_REPAIR_STAGES_HIDDEN_AUDIT_FINDINGS.md`:
 - typ wpisu: obowiązkowy protokół audytu przed i po etapie
 - project: CloseFlow / LeadFlow
 - repo: dkknapikdamian-collab/leadflowv1
-- branch: dev-rollout-freeze
+- branch roboczy: codex/closeflow-v1-e2e-roadmap
+- branch bazowy: dev-rollout-freeze
 - docelowe pliki Obsidiana: `04_KIERUNEK_DO_WDROZENIA`, `09_TESTY_DO_WYKONANIA_I_WYNIKI`, `11_RYZYKA_BUGI_I_DLUG_TECHNICZNY`, `08_HISTORIA_ZMIAN`
 - status: zapisane w repo; Obsidian lokalny DO_SYNCHRONIZACJI

@@ -3,7 +3,8 @@
 Status: ACTIVE
 Read policy: MUST_READ_PROJECT_START
 Repo: dkknapikdamian-collab/leadflowv1
-Branch: dev-rollout-freeze
+Canonical base branch: dev-rollout-freeze
+Working branch: codex/closeflow-v1-e2e-roadmap
 Local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
 Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
 Obsidian start: 10_PROJEKTY/CloseFlow_Lead_App/00_AI_START_SPIS_TRESCI - DO_POTWIERDZENIA - CloseFlow LeadFlow.md
@@ -29,7 +30,8 @@ Dokumentacja projektu, etapy, decyzje, ryzyka, testy operacyjne, SQL ledger i hi
 ## Snapshot
 
 - Produkt: owner control system dla leadow, klientow, spraw, zadan, kalendarza, follow-upow i finansow.
-- Branch roboczy: dev-rollout-freeze.
+- Branch bazowy: dev-rollout-freeze.
+- Branch roboczy: codex/closeflow-v1-e2e-roadmap.
 - Lokalna sciezka Damiana: C:\Users\malim\Desktop\biznesy_ai\2.closeflow.
 - Aktywny znany kierunek: STAGE231F_R3 owner control baseline / nastepne etapy maja wynikac z Obsidiana.
 - Frozen UI baseline: CaseDetail R4 lean service workspace, dopoki Damian nie zmieni decyzji.

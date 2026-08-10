@@ -3,7 +3,8 @@
 Status: ACTIVE
 Read policy: MUST_READ_REPO_START
 Repo: dkknapikdamian-collab/leadflowv1
-Branch: dev-rollout-freeze
+Canonical base branch: dev-rollout-freeze
+Working branch: codex/closeflow-v1-e2e-roadmap
 Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
 canonical_name: CloseFlow / LeadFlow
 project_id: closeflow_lead_app
