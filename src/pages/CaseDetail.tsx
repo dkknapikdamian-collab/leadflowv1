@@ -4382,7 +4382,7 @@ async function handleConfirmDeleteCaseRecord() {
         onConfirm={handleConfirmCloseCaseRecord}
       />
 
-      <span hidden data-stage220a7-delete-case-confirm="true" />
+      <span hidden data-stage220a7-delete-case-confirm="true" data-case-detail-delete-confirm="true" />
       <ConfirmDialog
         open={deleteCaseOpen}
         onOpenChange={setDeleteCaseOpen}

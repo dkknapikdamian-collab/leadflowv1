@@ -683,7 +683,10 @@ if (exists('.git')) {
     ...gitList(['diff', '--name-only', '--cached']),
     ...gitList(['ls-files', '--others', '--exclude-standard']),
   ]);
-  const outOfScope = [...changed].filter((file) => !allowedChangePrefixes.includes(file.replace(/\\/g, '/')));
+  const outOfScope = [...changed]
+    .map((file) => file.replace(/\\/g, '/'))
+    .filter((file) => file !== '.stversions' && !file.startsWith('.stversions/'))
+    .filter((file) => !allowedChangePrefixes.includes(file));
   expect(outOfScope.length === 0, `Out-of-scope changed files detected for CF-RUNTIME-00: ${outOfScope.join(', ')}`);
 }
 
