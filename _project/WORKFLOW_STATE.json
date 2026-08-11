@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 59,
+  "state_revision": 60,
   "last_accepted": {
-    "id": "LF-SEC-CG-001H_INDEPENDENT_SECURITY_RESCAN_AND_RELEASE_GATE",
-    "status": "CLOSED_WITH_REGISTERED_FINDINGS",
-    "commit_sha": "baae74b2",
-    "evidence": "B8 cumulative independent security rescan: B1-B7 static 23/23, runtime 38/38, critical 13/13, npm audit 0, Gemini guard PASS, TSC/lint/build PASS; two agent-remediable guard defects were repaired in baae74b2 (server-only secret scanner local-tree traversal and stale Firebase Stage03 assertion); OpenCode timeout, Freebuff deadline block, and GPT thread-limit unavailability are recorded without PASS claims; Firebase client API-key provider restrictions and live provider evidence remain registered non-blocking follow-ups"
+    "id": "LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY",
+    "status": "CLOSED_WITH_REGISTERED_OWNER_BOUNDARY",
+    "commit_sha": "92aafb2b31230d920b0654116f9641a093a47437",
+    "evidence": "C1 exact local migration ledger, read-only provider schema/RLS/storage/grants/function and migration-history evidence, service-role matrix, C1/legacy/RLS focused guards, TSC/lint/build and final independent DeepSeek review PASS; provider anon ACL/default-privilege repair is committed but intentionally unapplied because backup/restore evidence is unavailable; production untouched"
   },
   "current_workflow": {
     "id": "LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY",
@@ -18,12 +18,11 @@
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": {
       "type": "TRUE_OWNER_ACTION_REQUIRED",
-      "reason": "C1 local fail-closed schema/RLS/service-role evidence passes, but provider-side exact schema proof and backup-before-change proof are unavailable; two legacy-format migration entries require reconciliation against Supabase migration history before any rename, removal or apply.",
+      "reason": "C1 implementation and exact read-only provider reconciliation pass. A verified backup/restore proof is still unavailable before any live ACL repair or migration, and the unmatched 20260531 legacy-format grants file remains owner-controlled evidence until a preserve/retire decision is made.",
       "agent_remediable_blockers": 0,
       "required_owner_proof": [
-        "exact read-only Supabase schema/RLS/storage/grants/functions dump bound to the working SHA",
         "verified backup and restore/rollback evidence before any migration change",
-        "provider migration history decision for the legacy-format entries"
+        "owner decision to preserve or retire the unmatched 20260531 legacy-format grants file; no rename, removal or apply is authorized by C1"
       ],
       "production_touched": false
     }
@@ -214,6 +213,8 @@
     "c1-route:baae74b2:Supabase-schema-migrations-RLS-service-role-boundary",
     "c1:0ec50a36:local-static-pass-with-exact-migration-ledger-and-service-role-repair",
     "c1:0ec50a36:owner-boundary-live-schema-dump-backup-proof-and-legacy-migration-history-reconciliation",
-    "c1:0ec50a36:agent-remediable-blockers-zero-production-provider-secret-mutation-zero"
+    "c1:0ec50a36:agent-remediable-blockers-zero-production-provider-secret-mutation-zero",
+    "c1:92aafb2b:provider-read-only-revalidation-and-public-anon-default-privilege-repair",
+    "c1:92aafb2b:implementation-and-evidence-commit-pushed-work-remote-verified-production-untouched"
   ]
 }
