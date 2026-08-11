@@ -15,7 +15,7 @@ assert(supabase.includes('updateByWorkspaceAndId'), '_supabase.ts must expose up
 assert(supabase.includes('deleteByWorkspaceAndId'), '_supabase.ts must expose deleteByWorkspaceAndId');
 assert(/workspaceColumn\s*=\s*['"]workspace_id['"]/.test(supabase), 'scoped helpers must default to workspace_id');
 
-const endpointFiles = ['api/leads.ts', 'api/clients.ts', 'api/cases.ts', 'api/activities.ts', 'api/work-items.ts'];
+const endpointFiles = ['api/leads.ts', 'api/clients.ts', 'api/cases.ts', 'api/work-items.ts'];
 for (const rel of endpointFiles) {
   const src = read(rel);
   if (!src) {
@@ -33,6 +33,15 @@ for (const rel of endpointFiles) {
     errors.push(`${rel}:${line} still uses await updateById('${match[1]}', ...) in a workspace-owned endpoint`);
   }
 }
+
+const consolidatedActivities = read('src/server/activities-handler.ts');
+assert(consolidatedActivities.includes('resolveRequestWorkspaceId'), 'activities handler must resolve workspace through request scope');
+assert(consolidatedActivities.includes('updateByIdScoped'), 'activities handler must use scoped update helper');
+assert(consolidatedActivities.includes('deleteByIdScoped'), 'activities handler must use scoped delete helper');
+
+const consolidatedRecords = read('src/server/records.ts');
+assert(consolidatedRecords.includes('updateByIdScoped'), 'records handler must use scoped update helper');
+assert(consolidatedRecords.includes('deleteByIdScoped'), 'records handler must use scoped delete helper');
 
 const system = read('api/system.ts');
 if (system) {

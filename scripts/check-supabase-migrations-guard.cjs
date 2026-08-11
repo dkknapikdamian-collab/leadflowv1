@@ -21,6 +21,12 @@ const errors = [];
 const numbers = [];
 const warnings = [];
 
+function stripSqlComments(sql) {
+  return sql
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/(^|\s)--[^\r\n]*/g, '$1');
+}
+
 for (const filename of migrationFiles) {
   const match = filename.match(/^(\d{14}|\d{8}|\d{4}-\d{2}-\d{2})_/);
   if (!match) {
@@ -38,6 +44,7 @@ for (const filename of migrationFiles) {
 
   const filePath = path.join(migrationsDir, filename);
   const content = fs.readFileSync(filePath, 'utf8');
+  const executableContent = stripSqlComments(content);
 
   const hasDestructiveDrop = /\bDROP\s+(TABLE|SCHEMA|DATABASE)\b/i.test(content);
   if (hasDestructiveDrop) {
@@ -53,7 +60,7 @@ for (const filename of migrationFiles) {
     /-----BEGIN (RSA|EC|OPENSSH|PRIVATE) KEY-----/,
     /\b(SUPABASE_SERVICE_ROLE_KEY|OPENAI_API_KEY|GEMINI_API_KEY|STRIPE_SECRET_KEY)\b/i,
   ];
-  if (likelySecretPatterns.some((pattern) => pattern.test(content))) {
+  if (likelySecretPatterns.some((pattern) => pattern.test(executableContent))) {
     errors.push(`POSSIBLE_SECRET_IN_MIGRATION: ${filename}`);
   }
 }

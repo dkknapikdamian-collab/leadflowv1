@@ -71,6 +71,8 @@
         "verify:security:firebase-stage03": "node scripts/check-stage03-firebase-legacy-lockdown.cjs",
         "verify:data-contract-stage05": "node scripts/check-stage05-supabase-data-contract.cjs",
         "verify:migrations:supabase": "node scripts/check-supabase-migrations-guard.cjs",
+        "check:c1-supabase-boundary": "node scripts/check-c1-supabase-boundary.cjs",
+        "test:c1-supabase-boundary": "node --test tests/c1-supabase-boundary.test.cjs",
         "check:a13-critical-regressions": "node scripts/check-a13-critical-regressions.cjs",
         "test:raw": "node --test \"tests/**/*.test.cjs\"",
         "test:b1-digest-authorization": "node --test tests/b1-digest-authorization.test.cjs && node --import tsx --test tests/b1-digest-authorization-runtime.test.ts",

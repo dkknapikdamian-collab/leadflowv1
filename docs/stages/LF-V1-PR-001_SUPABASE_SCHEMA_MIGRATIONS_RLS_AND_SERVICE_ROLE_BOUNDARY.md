@@ -68,6 +68,13 @@ scripts/check-supabase-migrations-guard.cjs
 scripts/check-service-role-scoped-mutations.cjs
 scripts/check-p0-supabase-rls-schema-confirmation.cjs
 scripts/check-supabase-first-architecture.cjs
+scripts/verify-server-only-secrets.cjs
+scripts/check-a22-supabase-auth-rls-workspace.cjs
+scripts/check-a22c-profiles-id-rls-hotfix.cjs
+scripts/check-faza2-etap22-rls-backend-security-proof.cjs
+scripts/check-stage05-supabase-data-contract.cjs
+tests/faza2-etap22-rls-backend-security-proof.test.cjs
+package.json
 src/server/records.ts
 scripts/check-c1-*.cjs
 tests/c1-*.test.cjs

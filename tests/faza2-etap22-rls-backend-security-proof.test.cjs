@@ -36,7 +36,7 @@ test('Faza 2 Etap 2.2 RLS/backend security proof is documented and wired', () =>
 });
 
 test('A22 migration and backend markers cover workspace RLS proof surface', () => {
-  const migration = read('supabase/migrations/2026-05-01_stageA22_supabase_auth_rls_workspace_foundation.sql').toLowerCase();
+  const migration = read('supabase/migrations/20260501012200_stageA22_supabase_auth_rls_workspace_foundation.sql').toLowerCase();
   const requestScope = read('src/server/_request-scope.ts');
   const accessGate = read('src/server/_access-gate.ts');
   const supabaseAuth = read('src/server/_supabase-auth.ts');

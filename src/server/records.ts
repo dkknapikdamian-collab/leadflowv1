@@ -2,7 +2,7 @@
 VERCEL_HOBBY_API_BUDGET_HOTFIX_2026_04_28
 Moved from api/ to src/server/ and routed through api/system.ts to keep the Vercel Hobby function budget green.
 */
-import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
+import { insertWithVariants, selectFirstAvailable, updateByIdScoped, deleteByIdScoped } from './_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from './_request-scope.js';
 import { findCaseItemById, updateCaseItemInCase, deleteCaseItemInCase } from './case-item-scope.js';
 import { writeAuthErrorResponse } from './_supabase-auth.js';
@@ -107,7 +107,7 @@ export default async function handler(req: any, res: any) {
         if (body.actorType !== undefined) payload.actor_type = body.actorType || 'operator';
         if (body.eventType !== undefined) payload.event_type = body.eventType || 'activity';
         if (body.payload !== undefined) payload.payload = body.payload || {};
-        const result = await updateById('activities', String(body.id), payload);
+        const result = await updateByIdScoped('activities', String(body.id), workspaceId, payload);
         const updated = Array.isArray(result) && result[0] ? result[0] : { id: body.id, ...payload };
         res.status(200).json(normalizeActivity(updated));
         return;
@@ -117,7 +117,7 @@ export default async function handler(req: any, res: any) {
         const id = asString(req.query?.id);
         if (!id || !workspaceId) { res.status(400).json({ error: 'ACTIVITY_ID_REQUIRED' }); return; }
         await requireScopedRow('activities', id, workspaceId, 'ACTIVITY_NOT_FOUND');
-        await deleteById('activities', id);
+        await deleteByIdScoped('activities', id, workspaceId);
         res.status(200).json({ ok: true, id });
         return;
       }
