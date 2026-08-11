@@ -1,16 +1,30 @@
 # LF-V1-PR-001 migration ledger
 
 STAGE_ID=LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY
-SOURCE_SHA=b7035c1e83736435855c40b35480ceef0cc4acf5
+SOURCE_SHA=baae74b2b3304bbbf5caedd56dda2f2db1eda03b
 LEDGER_ROOT=supabase/migrations
-PHYSICAL_SQL_FILES=53
-STRICT_14_DIGIT_FILES=50
+PHYSICAL_SQL_FILES=54
+STRICT_14_DIGIT_FILES=51
 LEGACY_FORMAT_CANDIDATES=3
 LEGACY_FORMAT_CANDIDATES=2026-05-01_stageA22_supabase_auth_rls_workspace_foundation.sql; 20260502_portal_uploads_storage_bucket.sql; 20260531_stage213a_public_data_api_explicit_grants.sql
 MIGRATION_GUARD=node scripts/check-supabase-migrations-guard.cjs PASS with two legacy-format ordering warnings
 CANONICAL_FOUNDATION=20260501012200_stageA22_supabase_auth_rls_workspace_foundation.sql
 CANONICAL_P0_RLS=20260501194000_p0_supabase_rls_schema_confirmation.sql
 CANONICAL_B1_TO_B6=20260810120000_b1_digest_workspace_scope.sql through 20260810170000_b6_portal_upload_admission_scope_quota.sql
+C1_PUBLIC_GRANT_REPAIR=20260811180000_c1_revoke_public_anon_grants.sql
+C1_PUBLIC_GRANT_REPAIR_SHA256=2b9a0755258d72b04543432c820bcf287cf69006e78da1147e72fcc403b10043
+
+## Provider migration-history revalidation
+
+PROVIDER_PROJECT_REF=amrxiaetdocrywnnkoct
+PROVIDER_HISTORY_RELATION=supabase_migrations.schema_migrations
+PROVIDER_APPLIED_MIGRATIONS=42
+PROVIDER_NOT_IN_LOCAL=0
+LOCAL_STRICT_NOT_PROVIDER=9
+LOCAL_STRICT_NOT_PROVIDER_FILES=20260613065348_stage231f_r3_owner_control_workspace_settings.sql; 20260613143500_restore_case_items_canonical_columns.sql; 20260810120000_b1_digest_workspace_scope.sql; 20260810130000_b3_billing_webhook_processing_boundary.sql; 20260810140000_b4_ai_usage_authority.sql; 20260810150000_b4_ai_draft_confirmation_idempotency.sql; 20260810160000_b5_support_actor_authority_audit.sql; 20260810170000_b6_portal_upload_admission_scope_quota.sql; 20260811180000_c1_revoke_public_anon_grants.sql
+LEGACY_HISTORY_RECONCILIATION=the A22 and portal-upload legacy-format entries have no matching provider history rows; their strict canonical counterparts are applied. The 20260531 grants entry has no provider history row and remains a pending legacy-format candidate.
+
+The local C1 repair migration is intentionally pending and was not applied.
 
 The following exact SHA-256 hashes bind the physical files at the reviewed
 working-tree source. Historical SQL under `supabase/sql`, `supabase/rescue`
@@ -76,9 +90,9 @@ executable-directory ledger.
 ## Boundary status
 
 RLS_AND_SERVICE_ROLE_STATIC=PASS
-LIVE_SCHEMA_DUMP=NOT_EXECUTED
-BACKUP_BEFORE_CHANGE=NOT_EXECUTED
-MIGRATION_LEDGER_PROVIDER_RECONCILIATION=OWNER_BOUNDARY_REQUIRED
+LIVE_SCHEMA_DUMP=PASS_READ_ONLY_MANAGEMENT_API; see LF-V1-PR-001_provider-readonly.md
+BACKUP_BEFORE_CHANGE=OWNER_BOUNDARY_REQUIRED; provider reports PITR disabled and no listed backups
+MIGRATION_LEDGER_PROVIDER_RECONCILIATION=PASS_WITH_PENDING_LOCAL_MIGRATIONS_AND_REGISTERED_LEGACY_FORMAT_FINDING
 
 The two duplicate historical-format names are preserved because deleting or
 renaming an already-applied migration without the provider migration history

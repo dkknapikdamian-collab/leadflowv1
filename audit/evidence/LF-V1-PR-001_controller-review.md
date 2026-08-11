@@ -2,7 +2,7 @@
 
 STAGE_ID=LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY
 START_SHA=baae74b2b3304bbbf5caedd56dda2f2db1eda03b
-REVIEW_BASE_CONTRACT_SHA=b7035c1e83736435855c40b35480ceef0cc4acf5
+REVIEW_BASE_CONTRACT_SHA=baae74b2b3304bbbf5caedd56dda2f2db1eda03b
 
 ## Root-cause classifications
 
@@ -86,7 +86,7 @@ RESULT=node scripts/verify-server-only-secrets.cjs PASS in approximately 2.5 sec
 
 ## C1 evidence and tests
 
-C1_LEDGER=PASS_WITH_REGISTERED_PROVIDER_BOUNDARY; 53 physical SQL files, 50 strict 14-digit files, 3 legacy-format candidates, exact hashes in LF-V1-PR-001_migration-ledger.md
+C1_LEDGER=PASS_WITH_REGISTERED_PROVIDER_BOUNDARY; 54 physical SQL files, 51 strict 14-digit files, 3 legacy-format candidates, exact hashes in LF-V1-PR-001_migration-ledger.md
 C1_STATIC_BOUNDARY=PASS
 C1_SECRET_BOUNDARY=PASS
 C1_FOCUSED_TESTS=2/2 PASS
@@ -104,8 +104,9 @@ BUILD=PASS; pre-existing non-blocking warnings for Supabase fallback chunk overl
 ## Findings not silently accepted
 
 STAGE05_LEGACY_GUARD=FAIL outside the C1 mutation scope because its historical guard additionally asserts a calendar-items contract; this is registered as unrelated guard drift and is not reported as a C1 PASS.
+FAZA2_ETAP21_LEGACY_GUARD=FAIL outside the C1 mutation scope because its audit guard still reports the pre-existing `body.workspaceId` marker in request-scope source; the direct Etap21 runtime test passes and no C1 file changed this surface.
 LEGACY_FORMAT_MIGRATION_RECONCILIATION=OWNER_BOUNDARY_REQUIRED; two duplicate historical-format files are preserved because deleting/renaming a migration without provider migration history can break replay safety.
-LIVE_SCHEMA_DUMP=OWNER_BOUNDARY_REQUIRED
+LIVE_SCHEMA_DUMP=PASS_READ_ONLY_MANAGEMENT_API; exact digest in LF-V1-PR-001_provider-readonly.md
 BACKUP_BEFORE_CHANGE=OWNER_BOUNDARY_REQUIRED
 PRODUCTION_TOUCHED=NO
 PROVIDER_MUTATION=NO
@@ -115,12 +116,21 @@ SECRET_CHANGED=NO
 
 IMPLEMENTER=CONTROLLER_FALLBACK; GPT implementer delegation failed with agent thread limit before work began
 GPT_INDEPENDENT_REVIEWER=UNAVAILABLE_THREAD_LIMIT
-OPENCODE=COMMAND_COMPLETED_WITHOUT_REVIEW_OUTPUT; free DeepSeek process exited cleanly with no residual process, so no independent PASS claim
-FREEBUFF=AVAILABLE_RESULT_FROM_B7_BLOCKED_PROVIDER_DEADLINE; no residual process
-CONTROLLER_REVIEW=COMPLETED; source-backed exact diff and guard results reviewed
+OPENCODE=INITIAL_NO_TOOL_REVIEW_REFUSED; SECOND_READ_ONLY_REVIEW=NO_DEFECT_FOUND_WITH_LOW_GUARD_SCOPE_NOTES; FINAL_ATTACHED_FILE_REVIEW=PASS_AFTER_POSTGRES_SUPABASE_ADMIN_AND_SUPABASE_STORAGE_ADMIN_REPAIR
+FREEBUFF=NOT_DELEGATED; canonical WinPTY adapter was unavailable in this process; no residual process
+CONTROLLER_REVIEW=COMPLETED; source-backed exact diff, PostgreSQL privilege semantics, guard results and provider evidence reviewed
+
+## Provider revalidation and C1 repair
+
+PROVIDER_AUTH=PASS; exact project ref `amrxiaetdocrywnnkoct`, `CloseFlow`, `ACTIVE_HEALTHY`
+LIVE_SCHEMA_DUMP=PASS_READ_ONLY_MANAGEMENT_API; exact digest and query scope in `LF-V1-PR-001_provider-readonly.md`
+ROOT_CAUSE_PROVIDER_ACL_DRIFT=explicit `anon` arwdDxtm ACL remained on 20 of 24 public tables, `supabase_admin` default ACLs granted broad anon rights, and storage relations are owned by `supabase_storage_admin`; RLS was enabled but defense-in-depth contract was not met
+REPAIR=add `20260811180000_c1_revoke_public_anon_grants.sql` for postgres, supabase_admin and supabase_storage_admin owners, then bind C1 guard to it
+BACKUP_BEFORE_CHANGE=OWNER_BOUNDARY_REQUIRED; PITR disabled and no listed backups
+LIVE_MIGRATION=FORBIDDEN_AND_NOT_PERFORMED
 
 ## Controller decision
 
 C1_LOCAL_IMPLEMENTATION=PASS_WITH_REGISTERED_OWNER_BOUNDARY
 AGENT_REMEDIABLE_CODE_BLOCKERS_REMAIN=0
-NEXT_REQUIRED_BOUNDARY=owner must provide/authorize exact read-only Supabase schema proof and backup-before-change evidence, then migration ledger reconciliation can be completed without guessing provider history
+NEXT_REQUIRED_BOUNDARY=owner-controlled backup/restore evidence remains required before any live migration or ACL repair; no live change was authorized or performed

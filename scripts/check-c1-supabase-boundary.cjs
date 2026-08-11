@@ -43,6 +43,7 @@ for (let index = 1; index < strictPrefixes.length; index += 1) {
 const foundation = read('supabase/migrations/20260501012200_stageA22_supabase_auth_rls_workspace_foundation.sql');
 const p0 = read('supabase/migrations/20260501194000_p0_supabase_rls_schema_confirmation.sql');
 const storage = read('supabase/migrations/20260502100000_portal_uploads_storage_bucket.sql');
+const publicGrantBoundary = read('supabase/migrations/20260811180000_c1_revoke_public_anon_grants.sql');
 const serviceRole = read('src/server/_supabase.ts');
 const records = read('src/server/records.ts');
 const activities = read('src/server/activities-handler.ts');
@@ -70,6 +71,23 @@ for (const marker of ['enable row level security', 'force row level security', '
 requireText(storage, "'portal-uploads'", 'STORAGE_BUCKET');
 requireText(storage, 'public,', 'STORAGE_BUCKET');
 requireText(storage, 'public = false', 'STORAGE_BUCKET');
+requireText(publicGrantBoundary, 'revoke all on all tables in schema public from public, anon', 'PUBLIC_GRANT_BOUNDARY');
+requireText(publicGrantBoundary, 'revoke all on all tables in schema storage from public, anon', 'PUBLIC_GRANT_BOUNDARY');
+requireText(publicGrantBoundary, 'alter default privileges for role postgres in schema public', 'PUBLIC_GRANT_BOUNDARY');
+requireText(publicGrantBoundary, 'alter default privileges for role postgres in schema storage', 'PUBLIC_GRANT_BOUNDARY');
+requireText(publicGrantBoundary, 'alter default privileges for role supabase_admin in schema public', 'PUBLIC_GRANT_BOUNDARY');
+requireText(publicGrantBoundary, 'alter default privileges for role supabase_admin in schema storage', 'PUBLIC_GRANT_BOUNDARY');
+requireText(publicGrantBoundary, 'alter default privileges for role supabase_storage_admin in schema storage', 'PUBLIC_GRANT_BOUNDARY');
+
+const c1BoundaryIndex = migrationFiles.indexOf('20260811180000_c1_revoke_public_anon_grants.sql');
+if (c1BoundaryIndex >= 0) {
+  for (const filename of migrationFiles.slice(c1BoundaryIndex + 1)) {
+    const laterMigration = read(path.join('supabase', 'migrations', filename));
+    if (/\bgrant\b[\s\S]*?\bto\s+(?:public|anon)\b/i.test(laterMigration)) {
+      failures.push(`PUBLIC_GRANT_BOUNDARY: later migration re-grants PUBLIC/anon privileges: ${filename}`);
+    }
+  }
+}
 
 requireText(serviceRole, 'SUPABASE_SERVICE_ROLE_KEY', 'SERVICE_ROLE');
 if (/VITE_SUPABASE_SERVICE_ROLE_KEY|NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY/.test(serviceRole)) {
