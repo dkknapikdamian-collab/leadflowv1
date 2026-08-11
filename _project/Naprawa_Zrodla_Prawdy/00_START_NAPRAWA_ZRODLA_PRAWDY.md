@@ -64,6 +64,27 @@ Historyczny dashboard `00_START - CloseFlow Lead App.md` nie jest technicznym ro
 - glowny Obsidian start: canonical binding jest wskazany w repo; lokalny Vault nie zawiera potwierdzonego pliku o tej nazwie, dlatego nie tworzono go automatycznie
 - Obsidian local sync: LOCAL_SYNC_PENDING
 
+## 2026-08-11 — SSOT terminal deep audit
+
+`LF-SSOT-002_SUPABASE_AUTH_SINGLE_SESSION_OWNER_REPAIR` został zaakceptowany
+w `f1339e51cb7cc5002572760c094fc5ad504134ca`. Terminalny audyt na
+`65b28dfd920977be0ff254a6844359e82dc9efbc` potwierdził zero aktywnych
+konfliktów źródła prawdy:
+
+- Supabase Auth jest jedynym aktywnym właścicielem sesji/tożsamości;
+- `supabase/migrations` jest jedynym executable migration ledger;
+- route map, statusy task/event, billing/access i Storage/portal mają jednego
+  aktywnego ownera per decyzja;
+- Firebase files, SOT-005 oraz brakujący historyczny `check:p15` endpoint są
+  sklasyfikowane jako legacy/historical-only i nie są aktywną authority;
+- lokalny Obsidian pozostaje `LOCAL_SYNC_PENDING`, bez tworzenia konkurencyjnego
+  routera.
+
+`SSOT_PROGRAM=ACCEPTED_AND_CLOSED`
+`SSOT_OPEN_FINDINGS=0`
+`SSOT_ACTIVE_STAGE=NONE`
+Evidence: `audit/evidence/LF-V1-PR-001_provider-acl-repair-20260811.md`.
+
 ## 2026-06-28 15:35 Europe/Warsaw - LF-UI-SOT-004_GLOBAL_CSS_LAYER_SOURCE_OF_TRUTH_AUDIT completion
 
 <!-- LF-UI-SOT-004_GLOBAL_CSS_LAYER_SOURCE_OF_TRUTH_AUDIT_COMPLETION_R2 -->

@@ -1,26 +1,27 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 66,
+  "state_revision": 67,
   "last_accepted": {
     "id": "LF-SSOT-002_SUPABASE_AUTH_SINGLE_SESSION_OWNER_REPAIR",
     "status": "ACCEPTED_AND_CLOSED",
-    "commit_sha": "f1339e51",
-    "evidence": "LF-SSOT-002 accepted: Supabase Auth is the sole active session/identity owner in scoped production paths; Firebase Auth call sites and legacy Google identity-header fallbacks removed; client auth snapshot is cache-only; canonical Stage 01 migration guard repaired; focused negative tests, direct regressions, TSC/lint/build and bounded Guardian PASS recorded in audit/evidence/LF-V1-PR-001_provider-acl-repair-20260811.md; OpenCode timeout recorded; production untouched"
+    "commit_sha": "f1339e51cb7cc5002572760c094fc5ad504134ca",
+    "evidence": "LF-SSOT-002 accepted: Supabase Auth is the sole active session/identity owner in scoped production paths; Firebase Auth call sites and legacy Google identity-header fallbacks removed; client auth snapshot is cache-only; canonical Stage 01 migration guard repaired; focused negative tests, direct regressions, TSC/lint/build and bounded Guardian PASS recorded in audit/evidence/LF-V1-PR-001_provider-acl-repair-20260811.md; OpenCode timeout recorded; terminal SSOT deep audit passed at 65b28dfd920977be0ff254a6844359e82dc9efbc with zero active SSOT findings; production untouched"
   },
   "current_workflow": {
-    "id": "LF-SSOT-002_SUPABASE_AUTH_SINGLE_SESSION_OWNER_REPAIR",
-    "kind": "SSOT_STAGE",
-    "contract_path": "docs/stages/LF-SSOT-002_SUPABASE_AUTH_SINGLE_SESSION_OWNER_REPAIR.md",
-    "status": "ACCEPTED_AND_CLOSED",
-    "base_sha": "b2e18253d61c4ce5760df18feed1a35567cf69e4",
+    "id": null,
+    "kind": "SSOT_PROGRAM",
+    "contract_path": null,
+    "status": "SSOT_PROGRAM_ACCEPTED_AND_CLOSED",
+    "base_sha": "65b28dfd920977be0ff254a6844359e82dc9efbc",
     "base_branch": "codex/closeflow-v1-e2e-roadmap",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null,
-    "root_cause": "Supabase Auth is the active session owner but Firebase Auth and legacy identity headers remain reachable in protected production paths",
-    "allowed_scope": "Supabase Auth single-session owner, active Firebase Auth call-site removal, verified server identity only, canonical Stage 01 migration guard"
+    "ssot_open_findings": 0,
+    "active_stage_count": 0,
+    "terminal_audit": "PASS"
   },
-  "next_workflow": {"id": null, "status": "SSOT_TERMINAL_AUDIT_REQUIRED"},
+  "next_workflow": {"id": null, "status": "NO_CANONICAL_NEXT_CONTRACT_IN_ACTIVE_WORKFLOW_STATE"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
@@ -216,6 +217,7 @@
     "c1:03e5e796:c1-ssot-01..07-accepted;terminal-ssot-audit-required",
     "ssot-audit-round-1:b2e18253:active-firebase-auth-and-legacy-header-identity-conflict-confirmed",
     "ssot-audit-round-1:b2e18253:historical-stage01-guard-filename-drift-and-p15-storage-guard-drift-registered",
-    "ssot-002:f1339e51:supabase-auth-single-session-owner-accepted;terminal-ssot-audit-required"
+    "ssot-002:f1339e51cb7cc5002572760c094fc5ad504134ca:supabase-auth-single-session-owner-accepted",
+    "ssot-final-deep-audit:65b28dfd920977be0ff254a6844359e82dc9efbc:PASS;zero-active-ssot-findings;no-active-stage"
   ]
 }

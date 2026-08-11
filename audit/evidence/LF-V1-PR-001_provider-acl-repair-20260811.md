@@ -59,6 +59,53 @@ LF_SSOT_002_IMPLEMENTATION_COMMIT=f1339e51
 LF_SSOT_002_VERDICT=ACCEPTED_AND_CLOSED
 LF_SSOT_002_CONTROL_PLANE=state_revision_66; current_workflow=ACCEPTED_AND_CLOSED; next_workflow=SSOT_TERMINAL_AUDIT_REQUIRED
 
+## SSOT terminal deep audit — final closeout
+
+FINAL_AUDIT_HEAD=65b28dfd920977be0ff254a6844359e82dc9efbc
+SSOT_FINAL_DEEP_AUDIT=PASS
+SSOT_OPEN_FINDINGS=0
+SSOT_ACTIVE_STAGE=NONE
+
+CANONICAL_PROJECT_ROUTER_COUNT=1; repo `_project/00_AI_START_SPIS_TRESCI.md`
+CANONICAL_TECHNICAL_WORKFLOW=repo `_project/WORKFLOW_STATE.json`; state_revision=67; no active contract
+EXECUTABLE_MIGRATION_LEDGER_COUNT=1; `supabase/migrations`
+ACTIVE_DATA_AUTHORITY_PER_DOMAIN=1; Supabase-backed runtime; local/dev fallbacks are non-production compatibility paths
+AUTH_SESSION_AUTHORITY=1; Supabase Auth session/access token and verified server request context
+WORKSPACE_AUTHORITY=1; verified server workspace membership/context
+DOMAIN_STATUS_OWNER_PER_ENTITY=1; canonical domain status owner and display adapters
+BILLING_ACCESS_AUTHORITY=1; central plan/access model and backend access state
+PORTAL_STORAGE_AUTHORITY=1; active `api/storage-upload.ts` and `src/server/portal-upload.ts`
+ROUTE_AUTHORITY=1; `src/lib/routes.ts` plus App route bindings; aliases/legacy routes explicit
+DEV_PREVIEW_PRODUCTION_AUTHORITY=0
+DANGEROUS_LEGACY_AUTHORITIES=0
+COMPETING_ACTIVE_OWNERS=0
+ACTIVE_DO_POTWIERDZENIA_OWNERS=0
+
+TERMINAL_CLASSIFICATIONS:
+- `src/firebase.ts` and `src/hooks/useFirebaseSession.ts`: legacy compatibility artifacts, no active production import/reachability
+- `firebase_uid`/`auth_uid` profile columns and lookup aliases: historical data compatibility fields behind verified Supabase identity, not an Auth provider
+- `src/lib/workspace.ts` local bootstrap: unused legacy helper, no active call site
+- `src/lib/ai-drafts.ts` localStorage fallback: DEV-only/non-production; production path clears local cache and uses Supabase
+- `supabase-fallback.ts` no-auth preview data: `import.meta.env.DEV && !isSupabaseConfigured()` only; not production authority
+- SOT-005: missing historical artifact, `NOT_FABRICATED`; no active authority
+- `check:p15-portal-storage-bucket`: stale guard expects missing `api/storage-upload-health.ts`; active upload implementation is present and guarded through `api/storage-upload.ts`/`portal-upload.ts`; registered historical drift only
+- migration guard warnings: two known legacy filename-order warnings; executable ledger remains singular and unchanged
+
+TERMINAL_GUARDS=PASS; auth owner, Stage 01, canonical routes, Supabase-first, Firebase legacy lockdown, task/event status, config status, billing/access, migrations, server-only secrets, A22/A22c
+SSOT_NEGATIVE_TESTS=PASS; duplicate Firebase/header authority and client-auth transport fixtures rejected
+GUARDIAN_FINAL=PASS; bounded canonical Guardian milestone review, receipts `closeflow-ssot-terminal-coverage` and `closeflow-ssot-terminal-result`
+TSC=PASS
+LINT=PASS
+BUILD=PASS; existing Vite chunk/dynamic-import warnings only
+GIT_DIFF_CHECK=PASS
+INDEPENDENT_REVIEW_FINAL=controller exact-source audit; optional OpenCode LF-SSOT-002 review timed out at 120s and was not counted as PASS
+PROVIDER_MUTATIONS_FINAL=NO
+PRODUCTION_TOUCHED=NO
+DEV_ROLLOUT_FREEZE_TOUCHED=NO
+OBSIDIAN_SAVE=LOCAL_SYNC_PENDING; canonical local Vault binding file unavailable; no competing file created
+NEXT_PRODUCT_STAGE=NOT_ROUTED
+NEXT_PRODUCT_STAGE_IMPLEMENTATION=NOT_STARTED
+
 ## C1 SSOT owner-amendment verification
 
 C1_SSOT_01_CANONICAL_PROJECT_ENTRY=PASS; repo AGENTS, PROJECT_MANIFEST, repo start bridge, SOT index and WORKFLOW_STATE now bind to `10_PROJEKTY/CloseFlow_Lead_App/00_AI_START_SPIS_TRESCI.md`; old routes are explicitly legacy/alias; local Vault sync remains pending because the canonical binding file was not fabricated.

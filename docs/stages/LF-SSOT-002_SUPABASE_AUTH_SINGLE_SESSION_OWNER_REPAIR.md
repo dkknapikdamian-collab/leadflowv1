@@ -1,7 +1,7 @@
 ---
 typ: implementation_stage
 doc_role: active_stage_contract
-status: active
+status: accepted_and_closed
 canonical: true
 project_id: closeflow_lead_app
 stage_id: LF-SSOT-002_SUPABASE_AUTH_SINGLE_SESSION_OWNER_REPAIR
@@ -11,6 +11,7 @@ source_branch: codex/closeflow-v1-e2e-roadmap
 base_branch: dev-rollout-freeze
 base_ref: b2e18253d61c4ce5760df18feed1a35567cf69e4
 target_branch: codex/closeflow-v1-e2e-roadmap
+closeout_sha: f1339e51cb7cc5002572760c094fc5ad504134ca
 ---
 
 # Goal
