@@ -1,24 +1,24 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 57,
+  "state_revision": 58,
   "last_accepted": {
-    "id": "LF-SEC-CG-001G_DEPENDENCY_SECRET_AND_SUPPLY_CHAIN_AUDIT_AND_REPAIR",
+    "id": "LF-SEC-CG-001H_INDEPENDENT_SECURITY_RESCAN_AND_RELEASE_GATE",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
-    "commit_sha": "59c2741e",
-    "evidence": "B7 controlled dependency repair: pre-audit 25 vulnerabilities (critical=2, high=12), post-audit 0; npm manifest/lock root exact, lockfile integrity complete, npm ci dry-run PASS, lifecycle review complete, tracked secret boundary scan classified, focused security/regression 12/12 PASS, TSC/lint/build PASS; server-only secret guard EPERM in historical backups and Firebase Stage03 guard/source mismatch remain registered outside B7 dependency ownership; optional provider review timeouts recorded"
+    "commit_sha": "baae74b2",
+    "evidence": "B8 cumulative independent security rescan: B1-B7 static 23/23, runtime 38/38, critical 13/13, npm audit 0, Gemini guard PASS, TSC/lint/build PASS; two agent-remediable guard defects were repaired in baae74b2 (server-only secret scanner local-tree traversal and stale Firebase Stage03 assertion); OpenCode timeout, Freebuff deadline block, and GPT thread-limit unavailability are recorded without PASS claims; Firebase client API-key provider restrictions and live provider evidence remain registered non-blocking follow-ups"
   },
   "current_workflow": {
-    "id": "LF-SEC-CG-001H_INDEPENDENT_SECURITY_RESCAN_AND_RELEASE_GATE",
+    "id": "LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-SEC-CG-001H_INDEPENDENT_SECURITY_RESCAN_AND_RELEASE_GATE.md",
+    "contract_path": "docs/stages/LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY.md",
     "status": "ROUTED",
-    "base_sha": "59c2741e43097b017b145b189c38ae1633849aea",
+    "base_sha": "baae74b2b3304bbbf5caedd56dda2f2db1eda03b",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
   },
-  "next_workflow": {"id": "LF-SEC-CG-001H_INDEPENDENT_SECURITY_RESCAN_AND_RELEASE_GATE", "status": "ROUTED"},
+  "next_workflow": {"id": "LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY", "status": "ROUTED"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
@@ -197,6 +197,10 @@
     "b7:59c2741e:tsc-lint-build-focused-regression-pass",
     "b7:59c2741e:server-only-secret-guard-eperm-registered",
     "b7:59c2741e:firebase-stage03-guard-source-mismatch-registered",
-    "b8-route:59c2741e:independent-security-rescan-release-gate-routed"
+    "b8-route:59c2741e:independent-security-rescan-release-gate-routed",
+    "b8:baae74b2:cumulative-static-23-runtime-38-critical-13-npm-audit-zero-guard-repairs-pass-with-registered-findings",
+    "b8:baae74b2:UNBOUNDED_RETRY-and-DISABLED_TEST_MASKING_FAILURE-real-guard-defects-repaired",
+    "b8:baae74b2:opencode-timeout-freebuff-deadline-gpt-thread-limit-recorded-no-pass-claim",
+    "c1-route:baae74b2:Supabase-schema-migrations-RLS-service-role-boundary"
   ]
 }
