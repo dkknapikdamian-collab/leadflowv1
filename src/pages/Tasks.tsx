@@ -64,7 +64,7 @@ import {
   updateTaskInSupabase
 } from '../lib/supabase-fallback';
 import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
-import { auth } from '../firebase';
+import { getClientAuthSnapshot } from '../lib/client-auth';
 import {
   addDays,
   addHours,
@@ -298,6 +298,7 @@ function TaskReminderEditor({
 const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_TASKS = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
 
 export default function Tasks() {
+  const authSnapshot = getClientAuthSnapshot();
   const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
   const [tasks, setTasks] = useState<any[]>([]);
   const [leads, setLeads] = useState<any[]>([]);
@@ -364,8 +365,8 @@ export default function Tasks() {
 
     try {
       await insertActivityToSupabase({
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
+        ownerId: authSnapshot.uid || null,
+        actorId: authSnapshot.uid || null,
         actorType: 'operator',
         eventType: 'reminder_scheduled',
         payload: {
@@ -571,8 +572,8 @@ export default function Tasks() {
       const workspaceId = requireWorkspaceId(workspace);
       await insertActivityToSupabase({
         leadId: softNextStepDialog.leadId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
+        ownerId: authSnapshot.uid || null,
+        actorId: authSnapshot.uid || null,
         actorType: 'operator',
         eventType: 'lead_next_step_skipped',
         workspaceId,
@@ -610,7 +611,7 @@ export default function Tasks() {
         leadId: softNextStepDialog.leadId,
         clientId: lead?.clientId ?? null,
         caseId: lead?.linkedCaseId ?? lead?.caseId ?? null,
-        ownerId: auth.currentUser?.uid ?? undefined,
+        ownerId: authSnapshot.uid || undefined,
         workspaceId,
       });
 
@@ -622,8 +623,8 @@ export default function Tasks() {
 
       await insertActivityToSupabase({
         leadId: softNextStepDialog.leadId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
+        ownerId: authSnapshot.uid || null,
+        actorId: authSnapshot.uid || null,
         actorType: 'operator',
         eventType: 'lead_next_step_created',
         workspaceId,
@@ -713,7 +714,7 @@ export default function Tasks() {
         clientId: newTask.clientId || null,
         reminderAt,
         recurrenceRule: payload.recurrence?.mode ?? 'none',
-        ownerId: auth.currentUser?.uid,
+        ownerId: authSnapshot.uid,
         workspaceId,
       });
       await registerReminderScheduled({

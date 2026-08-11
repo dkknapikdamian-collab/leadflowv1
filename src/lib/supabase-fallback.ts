@@ -238,18 +238,10 @@ export function persistWorkspaceId(workspaceId?: string | null) {
 }
 async function getAuthHeaders() {
   const accessToken = await getSupabaseAccessToken();
-  const authContext = getAuthContext();
   const workspaceId = getStoredWorkspaceId();
   const headers: Record<string, string> = {};
 
   if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
-  if (authContext.uid) {
-    headers['x-user-id'] = authContext.uid;
-    headers['x-firebase-uid'] = authContext.uid;
-    headers['x-auth-uid'] = authContext.uid;
-  }
-  if (authContext.email) headers['x-user-email'] = authContext.email;
-  if (authContext.fullName) headers['x-user-full-name'] = authContext.fullName;
   if (workspaceId) {
     headers['x-workspace-id'] = workspaceId;
     headers['x-closeflow-workspace-id'] = workspaceId;
@@ -913,18 +905,11 @@ export async function fetchMeFromSupabase(input?: { uid?: string; email?: string
   // STAGE231D_R6_FIX_FETCH_ME_SYNTAX
   // R5 added Google auth intent routing, but a malformed duplicate tail broke build.
   // Keep the intent query path and replace the whole function block atomically.
-  const headers: Record<string, string> = {};
-  if (input?.uid) {
-    headers['x-user-id'] = input.uid;
-    headers['x-firebase-uid'] = input.uid;
-    headers['x-auth-uid'] = input.uid;
-  }
-  if (input?.email) headers['x-user-email'] = input.email;
-  if (input?.fullName) headers['x-user-full-name'] = input.fullName;
+  void input;
 
   const authIntent = getCloseFlowAuthIntent();
   const path = authIntent ? `/api/me?authIntent=${encodeURIComponent(authIntent)}` : '/api/me';
-  return callApi<MeResponse>(path, { headers });
+  return callApi<MeResponse>(path);
 }
 export async function updateProfileSettingsInSupabase(input: ProfileSettingsUpdate) { return callApi<SupabaseInsertResult>('/api/system?kind=profile-settings', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function updateWorkspaceSettingsInSupabase(input: WorkspaceSettingsUpdate) { return callApi<SupabaseInsertResult>('/api/workspace-settings', { method: 'PATCH', body: JSON.stringify(input) }); }

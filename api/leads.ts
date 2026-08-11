@@ -3,7 +3,7 @@ import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, supabaseR
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
 import { buildLeadMovedToServicePayload } from '../src/server/_lead-service.js';
 import { assertWorkspaceEntityLimit, assertWorkspaceFeatureAccess, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
-import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
+import { requireSupabaseRequestContext, writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 import { normalizeLeadContract } from '../src/lib/data-contract.js';
 import { LEAD_STATUS_VALUES, normalizeLeadStatus } from '../src/lib/domain-statuses.js';
 import { createGoogleCalendarEvent, deleteGoogleCalendarEvent, getGoogleCalendarConnection, updateGoogleCalendarEvent } from '../src/server/google-calendar-sync.js';
@@ -612,15 +612,6 @@ async function handleStartService(body: Record<string, unknown>, workspaceId: st
 }
 
 
-function getRequestUserIdForLeadGoogle(req: any) {
-  const raw =
-    req.headers?.['x-user-id']
-    || req.headers?.['x-auth-uid']
-    || req.headers?.['x-firebase-uid']
-    || '';
-  return Array.isArray(raw) ? String(raw[0] || '') : String(raw || '').trim();
-}
-
 function readLeadGoogleEventId(row: Record<string, unknown>, body: Record<string, unknown>) {
   return asText(
     row.google_calendar_event_id
@@ -694,7 +685,8 @@ async function syncGoogleCalendarLeadAfterMutation(input: {
     });
     return;
   }
-  const userId = getRequestUserIdForLeadGoogle(input.req);
+  const requestContext = await requireSupabaseRequestContext(input.req);
+  const userId = requestContext.userId;
   const existingGoogleEventId = readLeadGoogleEventId(input.row, input.body) || readLeadGoogleEventId(input.previousRow || {}, input.body);
   const nextActionAt = readLeadNextActionAt(input.row, input.body);
 

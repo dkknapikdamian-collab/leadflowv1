@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 64,
+  "state_revision": 65,
   "last_accepted": {
     "id": "LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY",
     "status": "ACCEPTED_AND_CLOSED",
@@ -9,19 +9,18 @@
     "evidence": "C1 true provider ACL model correction remains the pre-amendment sub-closeout. C1 SSOT owner amendment C1-SSOT-01..07 accepted in 03e5e796e9f69aaf89fe0a2ef1f0ddabe097be49: canonical project binding, single workflow semantics, auditable provider chronology, migration execution separation, SOT index provenance, single task/event status owner, semantic status guard; focused tests, direct regressions, TSC/lint/build, bounded Guardian PASS and OpenCode timeout recorded in audit/evidence/LF-V1-PR-001_provider-acl-repair-20260811.md; production untouched"
   },
   "current_workflow": {
-    "id": "LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY",
-    "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY.md",
-    "status": "ACCEPTED_AND_CLOSED",
-    "base_sha": "baae74b2b3304bbbf5caedd56dda2f2db1eda03b",
-    "base_branch": "dev-rollout-freeze",
+    "id": "LF-SSOT-002_SUPABASE_AUTH_SINGLE_SESSION_OWNER_REPAIR",
+    "kind": "SSOT_STAGE",
+    "contract_path": "docs/stages/LF-SSOT-002_SUPABASE_AUTH_SINGLE_SESSION_OWNER_REPAIR.md",
+    "status": "ACTIVE",
+    "base_sha": "b2e18253d61c4ce5760df18feed1a35567cf69e4",
+    "base_branch": "codex/closeflow-v1-e2e-roadmap",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null,
-    "amendment_commit": "88d85cde8e969fea54030a4b9e9b642e0d50e3c6",
-    "amendment_scope": ["C1-SSOT-01", "C1-SSOT-02", "C1-SSOT-03", "C1-SSOT-04", "C1-SSOT-05", "C1-SSOT-06", "C1-SSOT-07"],
-    "amendment_verdict": "C1-SSOT-01..07 PASS; provider ACL closeout preserved as pre-amendment history; no production/provider mutation in amendment"
+    "root_cause": "Supabase Auth is the active session owner but Firebase Auth and legacy identity headers remain reachable in protected production paths",
+    "allowed_scope": "Supabase Auth single-session owner, active Firebase Auth call-site removal, verified server identity only, canonical Stage 01 migration guard"
   },
-  "next_workflow": {"id": null, "status": "SSOT_TERMINAL_AUDIT_REQUIRED"},
+  "next_workflow": {"id": null, "status": "WAITING_FOR_CURRENT_STAGE_ACCEPTANCE"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
@@ -214,6 +213,8 @@
     "c1:2bd9403a:true-provider-acl-model-correction-accepted-and-closed",
     "c1:88d85cde:owner-amendment-reopened-for-ssot-preclose-gate",
     "obsidian:local-sync-pending:canonical-binding-file-not-present-in-local-vault",
-    "c1:03e5e796:c1-ssot-01..07-accepted;terminal-ssot-audit-required"
+    "c1:03e5e796:c1-ssot-01..07-accepted;terminal-ssot-audit-required",
+    "ssot-audit-round-1:b2e18253:active-firebase-auth-and-legacy-header-identity-conflict-confirmed",
+    "ssot-audit-round-1:b2e18253:historical-stage01-guard-filename-drift-and-p15-storage-guard-drift-registered"
   ]
 }

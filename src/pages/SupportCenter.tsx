@@ -5,7 +5,7 @@ import Layout from '../components/Layout';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { auth } from '../firebase';
+import { getClientAuthSnapshot } from '../lib/client-auth';
 import { useWorkspace } from '../hooks/useWorkspace';
 import {
   createSupportRequestInSupabase,
@@ -218,8 +218,9 @@ function getLastReplyLabel(ticket: TicketRow) {
 
 export default function SupportCenter() {
   const { workspace, isAdmin, loading: workspaceLoading } = useWorkspace();
-  const userId = auth.currentUser?.uid || '';
-  const userEmail = auth.currentUser?.email || '';
+  const authSnapshot = getClientAuthSnapshot();
+  const userId = authSnapshot.uid || '';
+  const userEmail = authSnapshot.email || '';
 
   const [composeKind, setComposeKind] = useState<TicketKind>('problem');
   const [kindFilter, setKindFilter] = useState<TicketKindFilter>('all');

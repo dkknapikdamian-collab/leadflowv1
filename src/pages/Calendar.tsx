@@ -61,7 +61,7 @@ import {
 
 } from '../lib/supabase-fallback';
 import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
-import { auth } from '../firebase';
+import { getClientAuthSnapshot } from '../lib/client-auth';
 import {
   addDays,
   addHours,
@@ -725,6 +725,7 @@ function CalendarSelectedDayTileV9({ selectedDate, entries, actionPendingId, onE
 }
 
 export default function Calendar() {
+  const authSnapshot = getClientAuthSnapshot();
   const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -1521,7 +1522,7 @@ export default function Calendar() {
     };
   }, [calendarView, calendarScale, currentMonth, events.length, tasks.length, leads.length, cases.length, clients.length, loading]);
 
-  const calendarAuthUserId = auth.currentUser?.uid || 'anonymous';
+  const calendarAuthUserId = authSnapshot.uid || 'anonymous';
 
 
   // CLOSEFLOW_STAGE181I_LOCAL_CALENDAR_DIRECT_SEED
@@ -2068,8 +2069,8 @@ export default function Calendar() {
 
     try {
       await insertActivityToSupabase({
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
+        ownerId: authSnapshot.uid || null,
+        actorId: authSnapshot.uid || null,
         actorType: 'operator',
         eventType: 'reminder_scheduled',
         payload: {
@@ -2113,7 +2114,7 @@ export default function Calendar() {
         priority: newTask.priority,
         leadId: newTask.leadId || null,
         caseId: newTask.caseId || null,
-        ownerId: auth.currentUser?.uid,
+        ownerId: authSnapshot.uid,
         workspaceId,
       });
 
@@ -2316,8 +2317,8 @@ export default function Calendar() {
   ) => {
     try {
       await insertActivityToSupabase({
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
+        ownerId: authSnapshot.uid || null,
+        actorId: authSnapshot.uid || null,
         actorType: 'operator',
         eventType,
         leadId: entry.raw?.leadId ?? null,
@@ -2657,7 +2658,7 @@ export default function Calendar() {
       status: 'done',
       leadId,
       caseId: readCalendarRawText(entry.raw?.caseId || entry.raw?.case_id) || null,
-      ownerId: auth.currentUser?.uid,
+      ownerId: authSnapshot.uid,
       workspaceId,
     });
 

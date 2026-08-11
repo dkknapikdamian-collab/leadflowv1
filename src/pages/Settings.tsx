@@ -6,15 +6,6 @@ import {
 } from '../components/ui-system';
 
 import {
-  EmailAuthProvider,
-  fetchSignInMethodsForEmail,
-  linkWithCredential,
-  reauthenticateWithCredential,
-  sendPasswordResetEmail,
-  signOut,
-  verifyBeforeUpdateEmail
-} from 'firebase/auth';
-import {
   toast
 } from 'sonner';
 import Layout from '../components/Layout';
@@ -28,11 +19,9 @@ import {
   Label
 } from '../components/ui/label';
 import {
-  auth
-} from '../firebase';
-import {
   useWorkspace
 } from '../hooks/useWorkspace';
+import { useSupabaseSession } from '../hooks/useSupabaseSession';
 import {
   useClientAuthSnapshot
 } from '../hooks/useClientAuthSnapshot';
@@ -56,7 +45,11 @@ import {
   isSupabaseConfigured
 } from '../lib/supabase-fallback';
 import {
-  getSupabaseAccessToken
+  getSupabaseAccessToken,
+  sendPasswordReset,
+  signInWithPassword,
+  signOutFromSupabase,
+  updateSupabaseUser
 } from '../lib/supabase-auth';
 import {
   GOOGLE_CALENDAR_REMINDER_METHOD_OPTIONS
@@ -200,7 +193,8 @@ function asText(value: unknown, fallback = 'Nie ustawiono') {
 
 export default function Settings() {
   const { workspace, profile: workspaceProfile, loading: workspaceLoading, refresh, access, isAdmin, isAppOwner } = useWorkspace();
-const authSnapshot = useClientAuthSnapshot();
+  const authSnapshot = useClientAuthSnapshot();
+  const [sessionUser] = useSupabaseSession();
   const [activeSettingsTab, setActiveSettingsTab] = useState<SettingsTab>('account');
 
   const [profile, setProfile] = useState<ProfileFormState>({ fullName: '', companyName: '' });
@@ -245,7 +239,7 @@ const authSnapshot = useClientAuthSnapshot();
 
 useEffect(() => {
     setProfile({
-      fullName: workspaceProfile?.fullName || auth.currentUser?.displayName || '',
+      fullName: workspaceProfile?.fullName || authSnapshot.fullName || '',
       companyName: workspaceProfile?.companyName || '',
     });
     setConflictWarningsEnabledState(
@@ -266,41 +260,25 @@ useEffect(() => {
     setDailyDigestEnabled(typeof workspace?.dailyDigestEnabled === 'boolean' ? workspace.dailyDigestEnabled : true);
     setDailyDigestHour(String(workspace?.dailyDigestHour ?? 7));
     setDailyDigestTimezone(workspace?.dailyDigestTimezone || workspace?.timezone || 'Europe/Warsaw');
-    setDailyDigestRecipientEmail(workspace?.dailyDigestRecipientEmail || workspaceProfile?.email || auth.currentUser?.email || '');
+    setDailyDigestRecipientEmail(workspace?.dailyDigestRecipientEmail || workspaceProfile?.email || authSnapshot.email || '');
     const ownerRiskSettings = readOwnerRiskSettings(workspace);
     setOwnerRiskWarningDays(String(ownerRiskSettings.warningDays));
     setOwnerRiskCriticalDays(String(ownerRiskSettings.criticalDays));
     setOwnerRiskHighValueThreshold(String(ownerRiskSettings.highValueThresholdPln));
-  }, [workspace, workspaceProfile]);
+  }, [authSnapshot.email, authSnapshot.fullName, workspace, workspaceProfile]);
 
   useEffect(() => {
-    if (!auth.currentUser) return;
+    const providers = (sessionUser?.authProviders || []).map((provider) => String(provider || '').trim().toLowerCase());
+    setPasswordAuthAvailable(providers.includes('email') || providers.includes('password'));
+  }, [sessionUser]);
 
-    const fetchAuthMethods = async () => {
-      let canUsePassword = auth.currentUser?.providerData?.some((item) => item.providerId === 'password') ?? false;
-
-      if (auth.currentUser?.email) {
-        try {
-          const methods = await fetchSignInMethodsForEmail(auth, auth.currentUser.email);
-          canUsePassword = canUsePassword || methods.includes('password');
-        } catch (error) {
-          console.warn('SETTINGS_FETCH_SIGNIN_METHODS_FAILED', error);
-        }
-      }
-
-      setPasswordAuthAvailable(canUsePassword);
-    };
-
-    void fetchAuthMethods();
-  }, [workspaceProfile?.email]);
-
-  const accountEmail = auth.currentUser?.email || authSnapshot.email || workspaceProfile?.email || '';
+  const accountEmail = sessionUser?.email || authSnapshot.email || workspaceProfile?.email || '';
   const planLabel = humanPlan(workspace?.planId, workspace?.subscriptionStatus);
   const accessLabel = humanAccessStatus(access?.status);
   const workspaceName = asText(workspaceProfile?.companyName || profile.companyName || workspace?.name, 'Workspace CloseFlow');
   // GOOGLE_CALENDAR_STAGE07C_SUPABASE_AUTH_SNAPSHOT
-  const activeUserId = auth.currentUser?.uid || authSnapshot.uid || workspaceProfile?.id || '';
-  const activeUserEmail = auth.currentUser?.email || authSnapshot.email || workspaceProfile?.email || '';
+  const activeUserId = sessionUser?.uid || authSnapshot.uid || workspaceProfile?.id || '';
+  const activeUserEmail = sessionUser?.email || authSnapshot.email || workspaceProfile?.email || '';
 
   const settingsSummary = useMemo(
     () => [
@@ -326,8 +304,6 @@ useEffect(() => {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       'x-workspace-id': workspace?.id || '',
-      'x-user-id': activeUserId,
-      'x-user-email': activeUserEmail,
     };
   };
 
@@ -545,7 +521,7 @@ useEffect(() => {
   };
 
   const handleUpdateProfile = async () => {
-    if (!auth.currentUser) return;
+    if (!sessionUser) return;
 
     setSavingProfile(true);
     try {
@@ -599,7 +575,7 @@ useEffect(() => {
       return;
     }
 
-    const recipientEmail = dailyDigestRecipientEmail.trim() || workspaceProfile?.email || auth.currentUser?.email || '';
+    const recipientEmail = dailyDigestRecipientEmail.trim() || workspaceProfile?.email || sessionUser?.email || '';
 
     setCheckingDigestDiagnostics(true);
     try {
@@ -610,8 +586,6 @@ useEffect(() => {
           'Content-Type': 'application/json',
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
           'x-workspace-id': workspace.id,
-          'x-user-id': auth.currentUser?.uid || '',
-          'x-user-email': auth.currentUser?.email || workspaceProfile?.email || recipientEmail,
         },
         body: JSON.stringify({
           mode: 'workspace-diagnostics',
@@ -640,7 +614,7 @@ useEffect(() => {
       return;
     }
 
-    const recipientEmail = dailyDigestRecipientEmail.trim() || workspaceProfile?.email || auth.currentUser?.email || '';
+    const recipientEmail = dailyDigestRecipientEmail.trim() || workspaceProfile?.email || sessionUser?.email || '';
     if (!recipientEmail) {
       toast.error('Podaj adres odbiorcy digestu.');
       return;
@@ -655,8 +629,6 @@ useEffect(() => {
           'Content-Type': 'application/json',
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
           'x-workspace-id': workspace.id,
-          'x-user-id': auth.currentUser?.uid || '',
-          'x-user-email': auth.currentUser?.email || workspaceProfile?.email || recipientEmail,
         },
         body: JSON.stringify({
           mode: 'workspace-test',
@@ -680,7 +652,7 @@ useEffect(() => {
   };
 
   const handleChangeEmail = async () => {
-    if (!auth.currentUser?.email) return;
+    if (!sessionUser?.email) return;
     if (!passwordAuthAvailable) {
       toast.error('Zmiana e-maila z potwierdzeniem hasła działa dla kont z logowaniem e-mail + hasło.');
       return;
@@ -692,7 +664,7 @@ useEffect(() => {
       return;
     }
 
-    if (normalizedEmail === String(auth.currentUser.email).trim().toLowerCase()) {
+    if (normalizedEmail === String(sessionUser.email).trim().toLowerCase()) {
       toast.error('Nowy adres e-mail jest taki sam jak obecny.');
       return;
     }
@@ -704,9 +676,8 @@ useEffect(() => {
 
     setEmailChangeSubmitting(true);
     try {
-      const credential = EmailAuthProvider.credential(auth.currentUser.email, currentPassword);
-      await reauthenticateWithCredential(auth.currentUser, credential);
-      await verifyBeforeUpdateEmail(auth.currentUser, normalizedEmail);
+      await signInWithPassword(sessionUser.email, currentPassword);
+      await updateSupabaseUser({ email: normalizedEmail });
       toast.success('Wysłaliśmy link potwierdzający na nowy e-mail.');
       setEmailChangeOpen(false);
       setNewEmail('');
@@ -719,7 +690,7 @@ useEffect(() => {
   };
 
   const handleSendPasswordChangeLink = async () => {
-    if (!auth.currentUser?.email) return;
+    if (!sessionUser?.email) return;
     if (!passwordAuthAvailable) {
       toast.error('To konto nie ma aktywnego logowania e-mail + hasło.');
       return;
@@ -727,7 +698,7 @@ useEffect(() => {
 
     setPasswordResetSubmitting(true);
     try {
-      await sendPasswordResetEmail(auth, auth.currentUser.email);
+      await sendPasswordReset(sessionUser.email);
       toast.success('Wysłaliśmy link do zmiany hasła na Twój e-mail.');
     } catch (error: any) {
       toast.error(`Błąd wysyłki linku: ${error?.message || 'REQUEST_FAILED'}`);
@@ -737,7 +708,7 @@ useEffect(() => {
   };
 
   const handleSetupPassword = async () => {
-    if (!auth.currentUser?.email) return;
+    if (!sessionUser?.email) return;
 
     if (passwordAuthAvailable) {
       toast.success('To konto ma już aktywne logowanie e-mail + hasło.');
@@ -757,10 +728,9 @@ useEffect(() => {
 
     setSetupPasswordSubmitting(true);
     try {
-      const credential = EmailAuthProvider.credential(auth.currentUser.email, setupPassword);
-      await linkWithCredential(auth.currentUser, credential);
+      await updateSupabaseUser({ password: setupPassword });
       await updateProfileSettingsInSupabase({
-        email: auth.currentUser.email,
+        email: sessionUser.email,
         workspaceId: workspace?.id || null,
       });
       setPasswordAuthAvailable(true);
@@ -770,14 +740,7 @@ useEffect(() => {
       toast.success('Hasło do logowania e-mail zostało ustawione.');
       refresh();
     } catch (error: any) {
-      const code = String(error?.code || '');
-      if (code === 'auth/provider-already-linked') {
-        setPasswordAuthAvailable(true);
-        setSetupPasswordOpen(false);
-        toast.success('Logowanie e-mail + hasło było już aktywne dla tego konta.');
-      } else {
-        toast.error(`Błąd ustawiania hasła: ${error?.message || 'REQUEST_FAILED'}`);
-      }
+      toast.error(`Błąd ustawiania hasła: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setSetupPasswordSubmitting(false);
     }
@@ -834,7 +797,7 @@ useEffect(() => {
   };
 
   const handleSignOutEverywhere = async () => {
-    if (!auth.currentUser) return;
+    if (!sessionUser) return;
     if (!window.confirm('Wylogować wszystkie urządzenia, łącznie z tym?')) return;
 
     setSigningOutEverywhere(true);
@@ -844,7 +807,7 @@ useEffect(() => {
         workspaceId: workspace?.id || null,
       });
       toast.success('Wylogowano wszystkie urządzenia. Zaloguj się ponownie.');
-      await signOut(auth);
+      await signOutFromSupabase();
     } catch (error: any) {
       toast.error(`Błąd: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {

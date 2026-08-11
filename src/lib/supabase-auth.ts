@@ -196,6 +196,13 @@ export async function sendPasswordReset(email: string) {
   return data;
 }
 
+export async function updateSupabaseUser(attributes: { email?: string; password?: string }) {
+  const supabase = requireClient();
+  const { data, error } = await supabase.auth.updateUser(attributes);
+  if (error) throw error;
+  return data;
+}
+
 export function isSupabaseEmailVerificationRequiredForUser(user: SupabaseSessionUser | null | undefined) {
   if (!user) return false;
   if (user.emailVerified) return false;

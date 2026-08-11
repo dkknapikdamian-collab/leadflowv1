@@ -21,6 +21,42 @@ PROVIDER_MUTATIONS_AFTER_REVALIDATION_START=NONE
 PRODUCTION_DEPLOYMENT=NO
 DEV_ROLLOUT_FREEZE_TOUCHED=NO
 
+## SSOT terminal audit round 1 — LF-SSOT-002
+
+STAGE_ID=LF-SSOT-002_SUPABASE_AUTH_SINGLE_SESSION_OWNER_REPAIR
+START_HEAD=b2e18253d61c4ce5760df18feed1a35567cf69e4
+ROOT_CAUSE=active Firebase Auth reads/security operations and legacy identity-header fallbacks remained reachable beside the Supabase Auth session; Stage 01 verification also referenced a non-canonical migration filename
+CANONICAL_OWNER=src/lib/supabase-auth.ts; src/hooks/useSupabaseSession.ts; verified server requireSupabaseRequestContext
+COMPETING_OWNER=Firebase Auth call sites in active pages and unverified legacy identity headers in Google sync paths
+
+REPAIR=Settings security actions now use Supabase Auth; Dashboard/Tasks/Calendar/SupportCenter no longer use Firebase Auth; Google sync identity is derived from verified Supabase request context; client auth snapshot is explicitly cache-only; Stage 01 guard binds to the existing timestamped migration; bounded negative auth-owner guard/test added
+MIGRATION_LEDGER=supabase/migrations unchanged; no migration created, renamed or applied
+ACTIVE_FIREBASE_AUTH_CALLS=0 in scoped active production paths
+LEGACY_HEADER_AUTHORITY=0 in scoped auth/Google authority paths
+CLIENT_AUTH_SNAPSHOT=NON_AUTHENTICATING_CACHE_ONLY
+SERVER_AUTH_SOURCE=VERIFIED_SUPABASE_BEARER_CONTEXT
+
+LF_SSOT_002_TESTS:
+- `npm.cmd run guard:ssot-auth-session-owner`: PASS
+- `npm.cmd run test:ssot-auth-session-owner`: 3/3 PASS, including negative Firebase/header and cache-only fixtures
+- `npm.cmd run verify:auth:supabase-stage01`: PASS
+- `npm.cmd run verify:security:firebase-stage03`: PASS
+- `npm.cmd run check:a23-firestore-supabase-migration`: PASS
+- `npx.cmd tsc --noEmit --pretty false`: PASS
+- direct Supabase-first, server-only-secret, A22/A22c RLS, billing/access, status SSOT and migration guards: PASS; migration guard retained two known historical filename-order warnings only
+- `npm.cmd run lint`: PASS
+- `npm.cmd run build`: PASS; existing Vite chunk/dynamic-import warnings only
+- `git diff --check`: PASS
+
+LF_SSOT_002_REVIEW:
+- BOUNDED_GUARDIAN_STAGE=PASS; canonical Guardian router/orchestrator; read-only; no blockers
+- OPENCODE=TIMEOUT_120S; `opencode/deepseek-v4-flash-free`; no PASS claim; process tree closed; replacement exact-diff controller review completed
+- PROVIDER_MUTATIONS=NO
+- USER_DATA_READ=NO
+- SECRETS_READ=NO
+
+LF_SSOT_002_VERDICT=READY_FOR_COMMIT_ACCEPTANCE
+
 ## C1 SSOT owner-amendment verification
 
 C1_SSOT_01_CANONICAL_PROJECT_ENTRY=PASS; repo AGENTS, PROJECT_MANIFEST, repo start bridge, SOT index and WORKFLOW_STATE now bind to `10_PROJEKTY/CloseFlow_Lead_App/00_AI_START_SPIS_TRESCI.md`; old routes are explicitly legacy/alias; local Vault sync remains pending because the canonical binding file was not fabricated.

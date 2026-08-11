@@ -1,5 +1,6 @@
 import { assertWorkspaceWriteAccess } from './_access-gate.js';
-import { requireRequestIdentity, resolveRequestWorkspaceId } from './_request-scope.js';
+import { resolveRequestWorkspaceId } from './_request-scope.js';
+import { requireSupabaseRequestContext } from './_supabase-auth.js';
 import {
   buildGoogleCalendarOAuthUrl,
   disconnectGoogleCalendarConnection,
@@ -14,20 +15,6 @@ import {
 } from './google-calendar-user-scope.js';
 import { syncGoogleCalendarInbound } from './google-calendar-inbound.js';
 import { syncGoogleCalendarOutbound } from './google-calendar-outbound.js';
-
-function getUserId(req: any) {
-  const raw =
-    req.headers?.['x-user-id']
-    || req.headers?.['x-auth-uid']
-    || req.headers?.['x-firebase-uid']
-    || '';
-  return Array.isArray(raw) ? String(raw[0] || '') : String(raw || '');
-}
-
-function getUserEmail(req: any) {
-  const raw = req.headers?.['x-user-email'] || '';
-  return Array.isArray(raw) ? String(raw[0] || '') : String(raw || '');
-}
 
 function parseBody(req: any) {
   if (!req.body) return {};
@@ -98,15 +85,9 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
-    let requestIdentity: any = null;
-    try {
-      requestIdentity = await requireRequestIdentity(req, body);
-    } catch (error) {
-      if (!getUserId(req)) throw error;
-    }
-
-    const userId = String(requestIdentity?.userId || requestIdentity?.uid || getUserId(req) || '').trim();
-    const userEmail = String(requestIdentity?.email || getUserEmail(req) || '').trim();
+    const requestContext = await requireSupabaseRequestContext(req);
+    const userId = String(requestContext.userId || '').trim();
+    const userEmail = String(requestContext.email || '').trim();
     if (!userId) {
       res.status(401).json({ error: 'GOOGLE_CALENDAR_USER_REQUIRED' });
       return;

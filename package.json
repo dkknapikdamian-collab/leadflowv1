@@ -104,6 +104,8 @@
         "guard:c1-task-event-status-source-of-truth": "node scripts/check-c1-task-event-status-ssot.cjs",
         "test:c1-task-event-status-source-of-truth": "node --test tests/c1-task-event-status-ssot.test.cjs",
         "test:c1-task-event-status-runtime": "node --import tsx --test tests/c1-task-event-status-runtime.test.ts",
+        "guard:ssot-auth-session-owner": "node scripts/check-ssot-auth-session-owner.cjs",
+        "test:ssot-auth-session-owner": "node --test tests/ssot-auth-session-owner.test.cjs",
         "verify:lf-prod-sot-001b-status-repository": "node scripts/guards/verify-lf-prod-sot-001b-status-repository.cjs",
         "verify:lf-prod-sot-002b-date-time-repository": "node scripts/guards/verify-lf-prod-sot-002b-date-time-repository.cjs",
         "verify:lf-prod-sot-003b-visual-repository": "node scripts/guards/verify-lf-prod-sot-003b-visual-repository.cjs",
