@@ -66,6 +66,9 @@ Do not preload C2 or later stages. Do not inspect or change provider secrets.
 supabase/migrations/<one bounded C1 migration or explicit repair only>
 scripts/check-supabase-migrations-guard.cjs
 scripts/check-service-role-scoped-mutations.cjs
+scripts/check-p0-supabase-rls-schema-confirmation.cjs
+scripts/check-supabase-first-architecture.cjs
+src/server/records.ts
 scripts/check-c1-*.cjs
 tests/c1-*.test.cjs
 tests/c1-*.test.ts
