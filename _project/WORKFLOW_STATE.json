@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 60,
+  "state_revision": 61,
   "last_accepted": {
     "id": "LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY",
     "status": "CLOSED_WITH_REGISTERED_OWNER_BOUNDARY",
     "commit_sha": "92aafb2b31230d920b0654116f9641a093a47437",
-    "evidence": "C1 exact local migration ledger, read-only provider schema/RLS/storage/grants/function and migration-history evidence, service-role matrix, C1/legacy/RLS focused guards, TSC/lint/build and final independent DeepSeek review PASS; provider anon ACL/default-privilege repair is committed but intentionally unapplied because backup/restore evidence is unavailable; production untouched"
+    "evidence": "C1 exact local migration ledger, provider schema/RLS/storage/grants/function evidence, service-role matrix, focused guards, TSC/lint/build PASS; owner backup and historical-file decisions were received; full ACL repair failed closed on provider-managed role permissions, bounded public/postgres ACL repair applied, residual provider boundary recorded in audit/evidence/LF-V1-PR-001_provider-acl-repair-20260811.md; production untouched"
   },
   "current_workflow": {
     "id": "LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY",
@@ -18,11 +18,10 @@
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": {
       "type": "TRUE_OWNER_ACTION_REQUIRED",
-      "reason": "C1 implementation and exact read-only provider reconciliation pass. A verified backup/restore proof is still unavailable before any live ACL repair or migration, and the unmatched 20260531 legacy-format grants file remains owner-controlled evidence until a preserve/retire decision is made.",
+      "reason": "C1 local implementation and validation pass, and bounded public/postgres ACL repair applied. The exact remaining provider ACL statements cannot be executed by the authenticated postgres role: supabase_admin owns public default ACLs and supabase_storage_admin owns storage relations/defaults; provider rejects role escalation. The 20260531 legacy-format grants file is preserved as historical per owner decision.",
       "agent_remediable_blockers": 0,
       "required_owner_proof": [
-        "verified backup and restore/rollback evidence before any migration change",
-        "owner decision to preserve or retire the unmatched 20260531 legacy-format grants file; no rename, removal or apply is authorized by C1"
+        "execute the remaining exact ACL statements through a provider-supported privileged channel as supabase_admin and supabase_storage_admin, then provide or allow a fresh read-only C1 ACL verification"
       ],
       "production_touched": false
     }
@@ -215,6 +214,7 @@
     "c1:0ec50a36:owner-boundary-live-schema-dump-backup-proof-and-legacy-migration-history-reconciliation",
     "c1:0ec50a36:agent-remediable-blockers-zero-production-provider-secret-mutation-zero",
     "c1:92aafb2b:provider-read-only-revalidation-and-public-anon-default-privilege-repair",
-    "c1:92aafb2b:implementation-and-evidence-commit-pushed-work-remote-verified-production-untouched"
+    "c1:92aafb2b:implementation-and-evidence-commit-pushed-work-remote-verified-production-untouched",
+    "c1:provider-acl-repair-20260811:bounded-public-postgres-repair-and-provider-role-boundary"
   ]
 }
