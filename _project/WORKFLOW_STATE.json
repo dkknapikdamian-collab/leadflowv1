@@ -1,32 +1,24 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 61,
+  "state_revision": 62,
   "last_accepted": {
     "id": "LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY",
-    "status": "CLOSED_WITH_REGISTERED_OWNER_BOUNDARY",
-    "commit_sha": "92aafb2b31230d920b0654116f9641a093a47437",
-    "evidence": "C1 exact local migration ledger, provider schema/RLS/storage/grants/function evidence, service-role matrix, focused guards, TSC/lint/build PASS; owner backup and historical-file decisions were received; full ACL repair failed closed on provider-managed role permissions, bounded public/postgres ACL repair applied, residual provider boundary recorded in audit/evidence/LF-V1-PR-001_provider-acl-repair-20260811.md; production untouched"
+    "status": "ACCEPTED_AND_CLOSED",
+    "commit_sha": "2bd9403a0af539cfe25549f237957f38a59ee33d",
+    "evidence": "C1 true provider ACL model correction accepted: official Supabase role/Storage model, fresh read-only provider snapshot, residual ACL classification, supported application-owned public/postgres migration, partial mutation revalidation, focused negative boundary probes, service-role/RLS guards, TSC/lint/build, bounded Guardian PASS and independent OpenCode PASS recorded in audit/evidence/LF-V1-PR-001_provider-acl-repair-20260811.md; production untouched"
   },
   "current_workflow": {
     "id": "LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY",
     "kind": "TECHNICAL_STAGE",
     "contract_path": "docs/stages/LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY.md",
-    "status": "OWNER_REQUIRED",
+    "status": "ACCEPTED",
     "base_sha": "baae74b2b3304bbbf5caedd56dda2f2db1eda03b",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
-    "blocker": {
-      "type": "TRUE_OWNER_ACTION_REQUIRED",
-      "reason": "C1 local implementation and validation pass, and bounded public/postgres ACL repair applied. The exact remaining provider ACL statements cannot be executed by the authenticated postgres role: supabase_admin owns public default ACLs and supabase_storage_admin owns storage relations/defaults; provider rejects role escalation. The 20260531 legacy-format grants file is preserved as historical per owner decision.",
-      "agent_remediable_blockers": 0,
-      "required_owner_proof": [
-        "execute the remaining exact ACL statements through a provider-supported privileged channel as supabase_admin and supabase_storage_admin, then provide or allow a fresh read-only C1 ACL verification"
-      ],
-      "production_touched": false
-    }
+    "blocker": null
   },
-  "next_workflow": {"id": "LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY", "status": "OWNER_REQUIRED"},
+  "next_workflow": {"id": null, "status": "NO_CANONICAL_NEXT_CONTRACT_IN_ACTIVE_WORKFLOW_STATE"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
@@ -215,6 +207,7 @@
     "c1:0ec50a36:agent-remediable-blockers-zero-production-provider-secret-mutation-zero",
     "c1:92aafb2b:provider-read-only-revalidation-and-public-anon-default-privilege-repair",
     "c1:92aafb2b:implementation-and-evidence-commit-pushed-work-remote-verified-production-untouched",
-    "c1:provider-acl-repair-20260811:bounded-public-postgres-repair-and-provider-role-boundary"
+    "c1:provider-acl-repair-20260811:bounded-public-postgres-repair-and-provider-role-boundary",
+    "c1:2bd9403a:true-provider-acl-model-correction-accepted-and-closed"
   ]
 }
