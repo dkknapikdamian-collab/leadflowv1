@@ -36,6 +36,8 @@ const SERVER_SECRET_ENV_NAMES = [
 const SKIP_DIRS = new Set([
   '.git',
   '.github',
+  '_local_backups',
+  '.stversions',
   'node_modules',
   'coverage',
   '.turbo',

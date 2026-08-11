@@ -38,7 +38,7 @@ assert(!firestore.includes('allow read: if isValidClientToken'), 'Firestore must
 assert(!firestore.includes('allow read, update: if isValidClientToken'), 'Firestore case items must not be exposed by legacy token helper');
 assert(!firestore.includes('allow create: if isValidClientToken'), 'Firestore activities must not be exposed by legacy token helper');
 assert(firestore.includes('match /client_portal_tokens/{tokenId}'), 'Firestore must keep explicit client_portal_tokens lockdown block');
-assert(firestore.includes('allow get, list: if isCaseOwner(tokenId);'), 'client_portal_tokens must be owner-only');
+assert(firestore.includes('allow read, write: if false;'), 'client_portal_tokens must remain deny-all in the legacy Firestore path');
 assert(firestore.includes('match /{document=**}'), 'Firestore must include catch-all deny block');
 assert(firestore.includes('allow read, write: if false;'), 'Firestore must include deny-all fallback');
 
