@@ -44,6 +44,9 @@ const foundation = read('supabase/migrations/20260501012200_stageA22_supabase_au
 const p0 = read('supabase/migrations/20260501194000_p0_supabase_rls_schema_confirmation.sql');
 const storage = read('supabase/migrations/20260502100000_portal_uploads_storage_bucket.sql');
 const publicGrantBoundary = read('supabase/migrations/20260811180000_c1_revoke_public_anon_grants.sql');
+const executablePublicGrantBoundary = publicGrantBoundary
+  .replace(/\/\*[\s\S]*?\*\//g, '')
+  .replace(/(^|\s)--[^\r\n]*/g, '$1');
 const serviceRole = read('src/server/_supabase.ts');
 const records = read('src/server/records.ts');
 const activities = read('src/server/activities-handler.ts');
@@ -71,13 +74,17 @@ for (const marker of ['enable row level security', 'force row level security', '
 requireText(storage, "'portal-uploads'", 'STORAGE_BUCKET');
 requireText(storage, 'public,', 'STORAGE_BUCKET');
 requireText(storage, 'public = false', 'STORAGE_BUCKET');
-requireText(publicGrantBoundary, 'revoke all on all tables in schema public from public, anon', 'PUBLIC_GRANT_BOUNDARY');
-requireText(publicGrantBoundary, 'revoke all on all tables in schema storage from public, anon', 'PUBLIC_GRANT_BOUNDARY');
-requireText(publicGrantBoundary, 'alter default privileges for role postgres in schema public', 'PUBLIC_GRANT_BOUNDARY');
-requireText(publicGrantBoundary, 'alter default privileges for role postgres in schema storage', 'PUBLIC_GRANT_BOUNDARY');
-requireText(publicGrantBoundary, 'alter default privileges for role supabase_admin in schema public', 'PUBLIC_GRANT_BOUNDARY');
-requireText(publicGrantBoundary, 'alter default privileges for role supabase_admin in schema storage', 'PUBLIC_GRANT_BOUNDARY');
-requireText(publicGrantBoundary, 'alter default privileges for role supabase_storage_admin in schema storage', 'PUBLIC_GRANT_BOUNDARY');
+requireText(executablePublicGrantBoundary, 'revoke all on schema public from public, anon', 'PUBLIC_GRANT_BOUNDARY');
+requireText(executablePublicGrantBoundary, 'revoke all on all tables in schema public from public, anon', 'PUBLIC_GRANT_BOUNDARY');
+requireText(executablePublicGrantBoundary, 'revoke all on all sequences in schema public from public, anon', 'PUBLIC_GRANT_BOUNDARY');
+requireText(executablePublicGrantBoundary, 'revoke all on all functions in schema public from public, anon', 'PUBLIC_GRANT_BOUNDARY');
+requireText(executablePublicGrantBoundary, 'alter default privileges for role postgres in schema public', 'PUBLIC_GRANT_BOUNDARY');
+if (/\b(?:revoke|grant|alter\s+default\s+privileges)\b[\s\S]*?\bschema\s+storage\b/i.test(executablePublicGrantBoundary)) {
+  failures.push('PUBLIC_GRANT_BOUNDARY: C1 migration must not mutate provider-managed storage ACLs');
+}
+if (/\b(?:supabase_admin|supabase_storage_admin)\b/i.test(executablePublicGrantBoundary)) {
+  failures.push('PUBLIC_GRANT_BOUNDARY: C1 migration must not target provider-managed roles');
+}
 
 const c1BoundaryIndex = migrationFiles.indexOf('20260811180000_c1_revoke_public_anon_grants.sql');
 if (c1BoundaryIndex >= 0) {

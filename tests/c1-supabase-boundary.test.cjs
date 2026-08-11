@@ -24,3 +24,17 @@ test('C1 consolidated activity mutations remain workspace scoped', () => {
   assert.match(activities, /updateByIdScoped/);
   assert.match(activities, /deleteByIdScoped/);
 });
+
+test('C1 migration limits ACL repair to application-owned public defaults', () => {
+  const migration = fs.readFileSync(
+    path.join(root, 'supabase/migrations/20260811180000_c1_revoke_public_anon_grants.sql'),
+    'utf8',
+  );
+  const executableSql = migration
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/(^|\s)--[^\r\n]*/g, '$1');
+  assert.match(executableSql, /revoke all on schema public from public, anon/i);
+  assert.match(executableSql, /alter default privileges for role postgres in schema public/i);
+  assert.doesNotMatch(executableSql, /\bschema\s+storage\b/i);
+  assert.doesNotMatch(executableSql, /\b(?:supabase_admin|supabase_storage_admin)\b/i);
+});
