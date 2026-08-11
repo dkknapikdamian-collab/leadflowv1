@@ -14,10 +14,10 @@
   "evidence_root": "audit/evidence",
   "obsidian": {
     "project_registry": "00_SYSTEM/PROJECTS.json",
-    "project_entry": "10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md",
+    "project_entry": "10_PROJEKTY/CloseFlow_Lead_App/00_AI_START_SPIS_TRESCI.md",
     "current_state": "10_PROJEKTY/CloseFlow_Lead_App/02_AKTUALNY_STAN.md",
     "decisions": "10_PROJEKTY/CloseFlow_Lead_App/03_AKTYWNE_DECYZJE.md",
     "direction": "10_PROJEKTY/CloseFlow_Lead_App/04_KIERUNEK_DO_WDROZENIA.md"
   },
-  "legacy_routes": ["_project/00_AI_START_SPIS_TRESCI.md"]
+  "legacy_routes": ["_project/00_AI_START_SPIS_TRESCI.md", "10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md"]
 }

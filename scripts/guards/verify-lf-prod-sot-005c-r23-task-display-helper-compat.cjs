@@ -18,7 +18,7 @@ function mustNot(text, token) {
 
 function localClosed(status) {
   const key = String(status || '').trim().toLowerCase();
-  return ['done', 'completed', 'closed', 'cancelled', 'canceled'].includes(key);
+  return ['done', 'completed', 'complete', 'finished', 'closed', 'cancelled', 'canceled', 'deleted', 'archived', 'removed', 'zrobione', 'wykonane'].includes(key);
 }
 
 function compatDateKey(raw) {
@@ -45,6 +45,7 @@ function compatGroupId(input) {
 }
 
 const facade = read('src/lib/source-of-truth/task-display-status.ts');
+const domain = read('src/lib/domain-statuses.ts');
 const tasks = read('src/pages/TasksStable.tsx');
 const pkg = read('package.json');
 const report = read('_project/runs/LF-PROD-SOT-005C-R23_TASKS_STABLE_FACADE_HELPER_EXPORT_COMPAT_CONTRACT.md');
@@ -52,22 +53,23 @@ const test = read('tests/lf-prod-sot-005c-r23-task-display-helper-compat.test.cj
 
 must(facade, "export type TaskStableGroupIdCompat = 'overdue' | 'today' | 'upcoming' | 'no_due' | 'done';");
 must(facade, 'export type TaskStableGroupCompatInput = {');
-must(facade, 'const TASK_STABLE_GROUP_CLOSED_COMPAT_VALUES = new Set([');
+must(facade, "import { isTaskStatusClosed } from '../domain-statuses';");
+mustNot(facade, 'TASK_STABLE_GROUP_CLOSED_COMPAT_VALUES');
 must(facade, 'export function getTaskStableGroupDateKeyCompat');
 must(facade, 'export function isTaskStableGroupClosedCompat');
 must(facade, 'export function isTaskStableGroupOverdueCompat');
 must(facade, 'export function getTaskStableGroupIdCompat');
 
 must(facade, "return String(momentRaw || '').slice(0, 10);");
-must(facade, "TASK_STABLE_GROUP_CLOSED_COMPAT_VALUES.has(normalizeRawTaskDisplayStatus(status))");
+must(facade, 'return isTaskStatusClosed(status);');
 must(facade, "if (isTaskStableGroupClosedCompat(status)) return 'done';");
 must(facade, "if (isTaskStableGroupOverdueCompat(momentRaw, status, todayKey)) return 'overdue';");
 must(facade, "if (dateKey === todayKey) return 'today';");
 must(facade, "if (!raw) return 'no_due';");
 must(facade, "return 'upcoming';");
 
-for (const closed of ['done', 'completed', 'closed', 'cancelled', 'canceled']) {
-  must(facade, "'" + closed + "'");
+for (const closed of ['done', 'completed', 'closed', 'cancelled', 'canceled', 'deleted', 'archived', 'removed']) {
+  must(domain, "'" + closed + "'");
 }
 
 const helperSection = facade.slice(facade.indexOf('export type TaskStableGroupIdCompat'));
@@ -79,7 +81,9 @@ mustNot(helperSection, 'sessionStorage');
 mustNot(helperSection, 'new Date(');
 
 must(tasks, 'function getTaskDateKey(task: any)');
+must(tasks, "import { isTaskStatusClosed } from '../lib/domain-statuses';");
 must(tasks, 'function isTaskDone(task: any)');
+must(tasks, 'return isTaskStatusClosed(task?.status);');
 must(tasks, 'function getTaskGroupId(task: any): TaskGroupId');
 must(tasks, 'return getTaskStableGroupDateKeyCompat(getTaskMomentRaw(task));');
 mustNot(tasks, 'isTaskStableGroupClosedCompat');
@@ -98,10 +102,10 @@ const closedResults = statuses
   .map((status) => status === '' ? 'empty' : status === null ? 'null' : String(status));
 const openDeletedArchivedRemoved = ['deleted', 'archived', 'removed'].filter((status) => !localClosed(status));
 
-if (JSON.stringify(closedResults) !== JSON.stringify(['done', 'completed', 'closed', 'cancelled', 'canceled'])) {
+if (JSON.stringify(closedResults) !== JSON.stringify(['done', 'completed', 'closed', 'cancelled', 'canceled', 'deleted', 'archived', 'removed'])) {
   throw new Error('R23 closed compat matrix mismatch: ' + JSON.stringify(closedResults));
 }
-if (JSON.stringify(openDeletedArchivedRemoved) !== JSON.stringify(['deleted', 'archived', 'removed'])) {
+if (openDeletedArchivedRemoved.length !== 0) {
   throw new Error('R23 deleted/archived/removed compat mismatch: ' + JSON.stringify(openDeletedArchivedRemoved));
 }
 
@@ -109,9 +113,9 @@ const todayKey = '2026-07-09';
 const cases = [
   { name: 'done closed', status: 'done', raw: '2026-07-08', expected: 'done' },
   { name: 'completed closed', status: 'completed', raw: '2026-07-08', expected: 'done' },
-  { name: 'deleted stays open overdue', status: 'deleted', raw: '2026-07-08', expected: 'overdue' },
-  { name: 'archived stays open overdue', status: 'archived', raw: '2026-07-08', expected: 'overdue' },
-  { name: 'removed stays open overdue', status: 'removed', raw: '2026-07-08', expected: 'overdue' },
+  { name: 'deleted is closed', status: 'deleted', raw: '2026-07-08', expected: 'done' },
+  { name: 'archived is closed', status: 'archived', raw: '2026-07-08', expected: 'done' },
+  { name: 'removed is closed', status: 'removed', raw: '2026-07-08', expected: 'done' },
   { name: 'today', status: 'todo', raw: '2026-07-09T14:30:00.000Z', expected: 'today' },
   { name: 'empty raw no_due', status: 'todo', raw: '', expected: 'no_due' },
   { name: 'future upcoming', status: 'todo', raw: '2026-07-10', expected: 'upcoming' },

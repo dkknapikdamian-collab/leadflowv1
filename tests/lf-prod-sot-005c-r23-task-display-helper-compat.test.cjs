@@ -12,7 +12,7 @@ function read(rel) {
 
 function compatClosed(status) {
   const key = String(status || '').trim().toLowerCase();
-  return ['done', 'completed', 'closed', 'cancelled', 'canceled'].includes(key);
+  return ['done', 'completed', 'complete', 'finished', 'closed', 'cancelled', 'canceled', 'deleted', 'archived', 'removed', 'zrobione', 'wykonane'].includes(key);
 }
 
 function compatDateKey(raw) {
@@ -63,10 +63,10 @@ test('R23 compat closed status matches current TasksStable local isTaskDone beha
     .filter((status) => compatClosed(status))
     .map((status) => status === '' ? 'empty' : status === null ? 'null' : String(status));
 
-  assert.deepEqual(closed, ['done', 'completed', 'closed', 'cancelled', 'canceled']);
-  assert.equal(compatClosed('deleted'), false);
-  assert.equal(compatClosed('archived'), false);
-  assert.equal(compatClosed('removed'), false);
+  assert.deepEqual(closed, ['done', 'completed', 'closed', 'cancelled', 'canceled', 'deleted', 'archived', 'removed']);
+  assert.equal(compatClosed('deleted'), true);
+  assert.equal(compatClosed('archived'), true);
+  assert.equal(compatClosed('removed'), true);
 });
 
 test('R23 compat date and group matrix preserves current TasksStable grouping behavior', () => {
@@ -76,9 +76,9 @@ test('R23 compat date and group matrix preserves current TasksStable grouping be
     ['done closed', { status: 'done', momentRaw: '2026-07-08', todayKey }, 'done'],
     ['completed closed', { status: 'completed', momentRaw: '2026-07-08', todayKey }, 'done'],
     ['cancelled closed', { status: 'cancelled', momentRaw: '2026-07-08', todayKey }, 'done'],
-    ['deleted remains open overdue', { status: 'deleted', momentRaw: '2026-07-08', todayKey }, 'overdue'],
-    ['archived remains open overdue', { status: 'archived', momentRaw: '2026-07-08', todayKey }, 'overdue'],
-    ['removed remains open overdue', { status: 'removed', momentRaw: '2026-07-08', todayKey }, 'overdue'],
+    ['deleted is closed', { status: 'deleted', momentRaw: '2026-07-08', todayKey }, 'done'],
+    ['archived is closed', { status: 'archived', momentRaw: '2026-07-08', todayKey }, 'done'],
+    ['removed is closed', { status: 'removed', momentRaw: '2026-07-08', todayKey }, 'done'],
     ['today ISO', { status: 'todo', momentRaw: '2026-07-09T12:00:00Z', todayKey }, 'today'],
     ['empty no_due', { status: 'todo', momentRaw: '', todayKey }, 'no_due'],
     ['future upcoming', { status: 'todo', momentRaw: '2026-07-10', todayKey }, 'upcoming'],

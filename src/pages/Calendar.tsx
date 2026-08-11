@@ -84,6 +84,7 @@ import Layout from '../components/Layout';
 import { pl } from 'date-fns/locale';
 import '../styles/visual-stage22-event-form-vnext.css';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
+import { isTaskOrEventStatusCompleted } from '../lib/domain-statuses';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-calendar-skin-only-v1.css';
@@ -268,19 +269,8 @@ function getCalendarEntryStatus(entry: ScheduleEntry) {
 function isCompletedCalendarEntry(entry: ScheduleEntry) {
   // STAGE34B_CALENDAR_COMPLETED_VISIBILITY: completed tasks/events/leads stay visible but are clearly crossed out.
   const status = getCalendarEntryStatus(entry);
-  const doneStatuses = new Set([
-    'done',
-    'completed',
-    'complete',
-    'finished',
-    'closed',
-    'zrobione',
-    'wykonane',
-    'archived',
-  ]);
-
   return (
-    doneStatuses.has(status) ||
+    isTaskOrEventStatusCompleted(status) ||
     entry.raw?.done === true ||
     entry.raw?.isDone === true ||
     entry.raw?.is_done === true ||
@@ -382,7 +372,7 @@ function getCalendarEntryVstKindStage220A20(entry: ScheduleEntry) {
 
 function getCalendarEntryStatusVstKindStage220A20(entry: ScheduleEntry) {
   const status = getCalendarEntryStatus(entry);
-  if (status === 'done' || status === 'completed' || status === 'complete' || status === 'finished' || status === 'zrobione' || status === 'wykonane') return 'success';
+  if (isTaskOrEventStatusCompleted(status)) return 'success';
   if (status === 'overdue') return 'danger';
   if (status === 'cancelled' || status === 'canceled') return 'status';
   if (status === 'in_progress') return 'primary';
@@ -961,7 +951,7 @@ export default function Calendar() {
 
   function isCalendarRetainedRowCompletedStage232GR1I(row: any) {
     const status = String(row?.status || '').trim().toLowerCase();
-    return ['done', 'completed', 'complete', 'finished', 'zrobione', 'wykonane'].includes(status) || row?.done === true || row?.isDone === true || row?.is_done === true || Boolean(row?.completedAt || row?.completed_at || row?.doneAt || row?.done_at);
+    return isTaskOrEventStatusCompleted(status) || row?.done === true || row?.isDone === true || row?.is_done === true || Boolean(row?.completedAt || row?.completed_at || row?.doneAt || row?.done_at);
   }
 
   function buildCalendarCompletedRetentionRowStage232GR1I(entry: ScheduleEntry) {
@@ -2600,7 +2590,7 @@ export default function Calendar() {
         taskLeadId === leadKey &&
         taskMoment === momentKey &&
         taskTitle === titleKey &&
-        (taskStatus === 'done' || taskStatus === 'completed')
+        isTaskOrEventStatusCompleted(taskStatus)
       );
     }) as any;
 
@@ -3384,7 +3374,7 @@ export default function Calendar() {
                     </div>
                     <div className="space-y-1">
                       {dayEntries.slice(0, calendarScale === 'compact' ? 3 : 4).map((entry) => {
-                        const isCompletedEntry = entry.kind === 'task' && entry.raw?.status === 'done';
+                        const isCompletedEntry = entry.kind === 'task' && isTaskOrEventStatusCompleted(entry.raw?.status);
 
                         return (
                           <button

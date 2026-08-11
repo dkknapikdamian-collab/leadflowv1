@@ -11,6 +11,11 @@ Closeout: LF-UI-SOT-006R1_CLOSEOUT_STATUS_SYNC
 
 DONE / GUARD_ADDED / TESTS_GREEN / BUILD_PASS / PUSH_CONFIRMED / VERCEL_SUCCESS / NO_UI_CSS_CLEANUP
 
+Provenance reconciliation (C1-SSOT-05): this file is the canonical repo-local
+artifact for the completed SOT-006 guard stage. No canonical SOT-005 artifact
+was found in the current tree or Git history search, so the historical SOT-005
+reference above is preserved but is not treated as a recoverable source file.
+
 ## Cel
 
 Zamienic audyt SOT-005 w techniczne guardy przed cleanupem CSS.

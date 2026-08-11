@@ -38,6 +38,7 @@ import { requireWorkspaceId } from '../lib/workspace-context';
 import { toDateTimeLocalValue } from '../lib/scheduling';
 import { getTaskDisplayStatusLabel, getTaskDisplayStatusTone } from '../lib/source-of-truth/task-display-status';
 import { getTaskStableGroupDateKeyCompat } from '../lib/source-of-truth/task-display-status';
+import { isTaskStatusClosed } from '../lib/domain-statuses';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import { ConfirmDialog } from '../components/confirm-dialog';
 import '../styles/closeflow-page-header-v2.css';
@@ -129,8 +130,7 @@ function parseTaskTime(task: any) {
 }
 
 function isTaskDone(task: any) {
-  const status = String(task?.status || '').trim().toLowerCase();
-  return status === 'done' || status === 'completed' || status === 'closed' || status === 'cancelled' || status === 'canceled';
+  return isTaskStatusClosed(task?.status);
 }
 
 function isTaskToday(task: any) {

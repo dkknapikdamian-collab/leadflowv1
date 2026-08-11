@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 62,
+  "state_revision": 63,
   "last_accepted": {
     "id": "LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY",
     "status": "ACCEPTED_AND_CLOSED",
@@ -12,20 +12,22 @@
     "id": "LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY",
     "kind": "TECHNICAL_STAGE",
     "contract_path": "docs/stages/LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY.md",
-    "status": "ACCEPTED",
+    "status": "ACTIVE_SSOT_AMENDMENT",
     "base_sha": "baae74b2b3304bbbf5caedd56dda2f2db1eda03b",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
-    "blocker": null
+    "blocker": null,
+    "amendment_commit": "88d85cde8e969fea54030a4b9e9b642e0d50e3c6",
+    "amendment_scope": ["C1-SSOT-01", "C1-SSOT-02", "C1-SSOT-03", "C1-SSOT-04", "C1-SSOT-05", "C1-SSOT-06", "C1-SSOT-07"]
   },
-  "next_workflow": {"id": null, "status": "NO_CANONICAL_NEXT_CONTRACT_IN_ACTIVE_WORKFLOW_STATE"},
+  "next_workflow": {"id": "LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY", "status": "ACTIVE_SSOT_AMENDMENT"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-02_RUNTIME_ACCESS_PLAN_INPUT_TYPE_BOUNDARY_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-03_FINANCE_PAYMENT_REDUCE_ACCUMULATOR_TYPE_REPAIR.md",
     "github:pull/50@787b9e0f5d2172c0fbd399807ee53b2f6e8cde49",
-    "obsidian:10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md",
+    "obsidian:10_PROJEKTY/CloseFlow_Lead_App/00_AI_START_SPIS_TRESCI.md",
     "working-branch:tsc-map@5501ee0f1f9bc61bb1f768f4bae64da1f8b47422:44-active-error-lines",
     "working-branch:tsc-map@b695965e3540d7f2675be94241b4cd959bf40534:40-active-error-lines",
     "working-branch:mapper-review@b695965e3540d7f2675be94241b4cd959bf40534:FinanceSummary-contract-drift",
@@ -208,6 +210,8 @@
     "c1:92aafb2b:provider-read-only-revalidation-and-public-anon-default-privilege-repair",
     "c1:92aafb2b:implementation-and-evidence-commit-pushed-work-remote-verified-production-untouched",
     "c1:provider-acl-repair-20260811:bounded-public-postgres-repair-and-provider-role-boundary",
-    "c1:2bd9403a:true-provider-acl-model-correction-accepted-and-closed"
+    "c1:2bd9403a:true-provider-acl-model-correction-accepted-and-closed",
+    "c1:88d85cde:owner-amendment-reopened-for-ssot-preclose-gate",
+    "obsidian:local-sync-pending:canonical-binding-file-not-present-in-local-vault"
   ]
 }

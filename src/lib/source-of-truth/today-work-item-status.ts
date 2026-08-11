@@ -1,22 +1,7 @@
-import { normalizeEventStatus, normalizeTaskStatus } from '../domain-statuses';
+import { isTaskOrEventStatusClosed } from '../domain-statuses';
 
 export type TodayWorkItemKind = 'task' | 'event';
 export type TodayWorkItemTone = 'neutral' | 'danger' | 'success';
-
-const CLOSED_STATUS_VALUES = new Set([
-  'done',
-  'completed',
-  'closed',
-  'cancelled',
-  'canceled',
-  'del' + 'eted',
-  'archived',
-  'rem' + 'oved',
-]);
-
-function normalizeRawTodayWorkItemStatus(status: unknown) {
-  return String(status || '').trim().toLowerCase();
-}
 
 function getTodayWorkItemDateKey(momentRaw: unknown) {
   const text = String(momentRaw || '').trim();
@@ -25,10 +10,7 @@ function getTodayWorkItemDateKey(momentRaw: unknown) {
 }
 
 export function isTodayWorkItemClosed(status: unknown): boolean {
-  const raw = normalizeRawTodayWorkItemStatus(status);
-  if (CLOSED_STATUS_VALUES.has(raw)) return true;
-  if (CLOSED_STATUS_VALUES.has(normalizeTaskStatus(status))) return true;
-  return CLOSED_STATUS_VALUES.has(normalizeEventStatus(status));
+  return isTaskOrEventStatusClosed(status);
 }
 
 export function isTodayWorkItemOverdue(momentRaw: unknown, status: unknown, todayKey: string): boolean {

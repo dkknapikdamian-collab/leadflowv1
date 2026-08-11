@@ -1,6 +1,7 @@
 import { resolveEntityIcon } from '../../components/ui-system/icon-registry';
 
 import {
+  TASK_EVENT_CLOSED_STATUS_VALUES,
   normalizeEventStatus,
   normalizeTaskStatus,
   type EventStatus,
@@ -123,7 +124,7 @@ export const CALENDAR_EVENT_STATUS_LABELS = Object.fromEntries(
   Object.entries(EVENT_STATUS_META_BY_VALUE).map(([value, meta]) => [value, meta.label]),
 ) as Record<keyof typeof EVENT_STATUS_META_BY_VALUE, string>;
 
-export const CLOSED_WORK_ITEM_STATUSES = ['done', 'completed', 'cancelled', 'canceled', 'archived', 'deleted'] as const;
+export const CLOSED_WORK_ITEM_STATUSES = TASK_EVENT_CLOSED_STATUS_VALUES;
 
 function findOption<T extends ScheduleOption<string | number>>(
   options: readonly T[],

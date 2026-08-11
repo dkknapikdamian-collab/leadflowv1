@@ -5,7 +5,8 @@
 -- functions are intentionally outside this migration. Storage authorization
 -- remains owned by storage.objects RLS and the Storage API.
 -- This file is intentionally not applied by C1; provider migration execution
--- is outside the current contract.
+-- is outside the current contract. A direct provider repair is not this
+-- migration and must not be represented as a schema_migrations entry.
 
 begin;
 

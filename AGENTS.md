@@ -26,7 +26,7 @@ Czytaj tylko:
 
 1. ten plik,
 2. `_project/00_AI_START_SPIS_TRESCI.md`,
-3. kanoniczny router w Obsidianie: `10_PROJEKTY/CloseFlow_Lead_App/00_AI_START.md`, jesli masz dostep,
+3. kanoniczny binding projektu: `10_PROJEKTY/CloseFlow_Lead_App/00_AI_START_SPIS_TRESCI.md`; lokalny Obsidian alias/redirect sprawdz tylko, jesli masz dostep,
 4. obowiazkowa polityke etapow: `10_PROJEKTY/CloseFlow_Lead_App/STAGES/LF_AICG_STAGE_EXECUTION_POLICY.md`,
 5. master roadmape i kontrakt dokladnie jednego aktywnego etapu.
 

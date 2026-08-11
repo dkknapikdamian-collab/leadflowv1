@@ -21,6 +21,52 @@ PROVIDER_MUTATIONS_AFTER_REVALIDATION_START=NONE
 PRODUCTION_DEPLOYMENT=NO
 DEV_ROLLOUT_FREEZE_TOUCHED=NO
 
+## C1 SSOT owner-amendment verification
+
+C1_SSOT_01_CANONICAL_PROJECT_ENTRY=PASS; repo AGENTS, PROJECT_MANIFEST, repo start bridge, SOT index and WORKFLOW_STATE now bind to `10_PROJEKTY/CloseFlow_Lead_App/00_AI_START_SPIS_TRESCI.md`; old routes are explicitly legacy/alias; local Vault sync remains pending because the canonical binding file was not fabricated.
+C1_SSOT_02_WORKFLOW_STATE_SEMANTICS=PASS_FOR_REOPENED_STATE; state revision 63 explicitly represents one active `ACTIVE_SSOT_AMENDMENT` workflow with amendment scope C1-SSOT-01..07, while preserving the provider sub-closeout in `last_accepted` history.
+C1_SSOT_03_PROVIDER_MUTATION_CHRONOLOGY=PASS; original provider-write prohibition, later explicit owner authorization, bounded mutation, provider ACL correction and SSOT reopening are recorded without rewriting history.
+C1_SSOT_04_MIGRATION_EXECUTION_SEMANTICS=PASS; `supabase/migrations` remains the only executable ledger; direct provider repair is explicitly not this migration and must not create a `schema_migrations` row.
+C1_SSOT_05_REPAIR_INDEX_PROVENANCE=PASS; existing index now records SOT-000..SOT-006, missing SOT-005 is not fabricated, and SOT-006 provenance is bound to its actual repo-local artifact.
+C1_SSOT_06_TASK_EVENT_STATUS_SINGLE_OWNER=PASS; `src/lib/domain-statuses.ts` owns task/event raw values, legacy aliases, normalization and closed/completed semantics; Today, Tasks, Calendar, planned-actions, schedule options and status repository consume adapters/constants.
+C1_SSOT_07_SEMANTIC_STATUS_GUARD=PASS; new `check-c1-task-event-status-ssot.cjs` rejects duplicate local status sets and accepts canonical adapters; negative fixture and runtime matrix tests pass.
+
+ROOT_CAUSE=task/event closed and completed semantics were duplicated in status repository metadata, Today/Tasks/Calendar adapters, planned-actions and display helpers, while the route/index/workflow amendment was not represented in the control plane.
+CANONICAL_OWNER=src/lib/domain-statuses.ts
+COMPETING_OWNERS_REMOVED_OR_DEMOTED=local closed/completed Sets and page predicates in the C1 active surface; context-specific labels remain display adapters.
+
+TARGETED_TESTS=PASS; `npm.cmd run guard:c1-task-event-status-source-of-truth`, `npm.cmd run test:c1-task-event-status-source-of-truth`, `npm.cmd run test:c1-task-event-status-runtime`, `node --test tests/lf-ui-sot-cz2-004-schedule-options-source-of-truth.test.cjs`, `npm.cmd run verify:lf-prod-sot-005c-r15`, `npm.cmd run verify:lf-prod-sot-005c-r17`, `npm.cmd run verify:lf-prod-sot-005c-r23`.
+DIRECT_REGRESSION=PASS; C1 Supabase boundary, migration, server-only secret, Supabase-first, A22/A22c RLS/workspace and config status guards passed. Historical R10 guard remains incompatible with its own old `NO_TODAYSTABLE_CALLSITE_REWIRE` assertion and was registered, not weakened.
+TSC=PASS; `npx.cmd tsc --noEmit`.
+LINT=PASS; `npm.cmd run lint`.
+BUILD=PASS; `npm.cmd run build` with existing Vite chunk/dynamic-import warnings only.
+GIT_DIFF_CHECK=PASS; `git diff --check`.
+
+BOUNDED_GUARDIAN_STAGE=PASS
+GUARDIAN_RESULT_ID=closeflow-c1-ssot-stage-result
+GUARDIAN_COVERAGE_RECEIPT_ID=closeflow-c1-ssot-stage-coverage
+GUARDIAN_SCOPE=C1-SSOT-01..C1-SSOT-07
+GUARDIAN_FINDINGS=NONE
+GUARDIAN_FULL_REPOSITORY_SCAN=BLOCK_ENVIRONMENTAL_SCOPE; untracked `.codex`, `.stversions` and historical evidence cause unrelated full-scan contamination; no such artifacts were modified or deleted.
+OPENCODE=TIMEOUT_120S; free DeepSeek model `opencode/deepseek-v4-flash-free` was discovered and a bounded read-only review was attempted; timeout is not treated as PASS.
+INDEPENDENT_CONTROLLER_REVIEW=PASS; exact diff, guard/test behavior, scope and no-provider-write boundary reviewed after Guardian.
+
+PRODUCTION_TOUCHED=NO
+DEV_ROLLOUT_FREEZE_TOUCHED=NO
+C2_IMPLEMENTATION=NO
+
+## C1 owner amendment chronology
+
+The provider ACL closeout below remains the pre-amendment provider-boundary
+sub-closeout. It is not rewritten by the later SSOT amendment.
+
+ORIGINAL_C1_CONTRACT_PROVIDER_WRITE=FORBIDDEN
+LATER_OWNER_AUTHORIZATION=explicit owner decision permitted a bounded provider-side ACL repair after authenticated project identity and test-data disposal authority were supplied
+OWNER_AMENDMENT_COMMIT=88d85cde8e969fea54030a4b9e9b642e0d50e3c6
+AMENDMENT_SCOPE=C1-SSOT-01..C1-SSOT-07
+PROVIDER_MUTATION_CHRONOLOGY=original contract prohibition -> explicit later owner authorization -> bounded ACL mutation -> true provider ACL model correction -> SSOT amendment reopening for final control-plane reconciliation
+HISTORY_REWRITE=NO
+
 The earlier `TRUE_OWNER_ACTION_REQUIRED` was false as a C1 blocker. It treated
 provider-managed Supabase ACLs as application-owned ACLs and proposed executing
 SQL as `supabase_admin`/`supabase_storage_admin`. The authenticated project role

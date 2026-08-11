@@ -7,7 +7,9 @@ Canonical base branch: dev-rollout-freeze
 Working branch: codex/closeflow-v1-e2e-roadmap
 Local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
 Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
-Obsidian start: 10_PROJEKTY/CloseFlow_Lead_App/00_AI_START_SPIS_TRESCI - DO_POTWIERDZENIA - CloseFlow LeadFlow.md
+Canonical Obsidian project binding: 10_PROJEKTY/CloseFlow_Lead_App/00_AI_START_SPIS_TRESCI.md
+Local Obsidian alias/redirect observed: 10_PROJEKTY/CloseFlow_Lead_App/00_AI_START_SPIS_TRESCI - DO_POTWIERDZENIA - CloseFlow LeadFlow.md
+Obsidian local sync: LOCAL_SYNC_PENDING; no canonical binding file was fabricated locally.
 canonical_name: CloseFlow / LeadFlow
 project_id: closeflow_lead_app
 
@@ -23,7 +25,7 @@ Dokumentacja projektu, etapy, decyzje, ryzyka, testy operacyjne, SQL ledger i hi
 
 1. Przeczytaj AGENTS.md.
 2. Przeczytaj ten plik.
-3. Jesli masz dostep do Obsidiana, przeczytaj projektowy 00_AI_START_SPIS_TRESCI - DO_POTWIERDZENIA - CloseFlow LeadFlow.md.
+3. Jesli masz dostep do Obsidiana, zweryfikuj kanoniczny binding projektu; lokalny plik DO_POTWIERDZENIA jest tylko aliasem/redirectem.
 4. Wybierz typ zadania.
 5. Otworz tylko pliki pasujace do typu zadania.
 
