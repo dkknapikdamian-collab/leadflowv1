@@ -166,7 +166,7 @@ Required C1 static/provider guards and focused tests:
 
 RLS_TESTS=PASS; existing exact-SHA RLS/workspace guards and provider metadata verification reused where code/input scope was unchanged; no client data was read
 STORAGE_TESTS=PASS; private bucket, Storage RLS metadata and anonymous rejection probe verified; provider-managed metadata ACLs preserved
-CROSS_WORKSPACE_LIVE_DUAL_USER_TEST=NOT_REQUIRED_FOR_THIS_ACL_MODEL_CORRECTION; application workspace guards are unchanged and exact-SHA guards passed
+CROSS_WORKSPACE_LIVE_DUAL_USER_TEST=REUSED_EXACT_SHA_EVIDENCE; unchanged application workspace guards and exact-SHA workspace negative evidence passed; no new provider user session was created
 
 Out-of-scope historical guard:
 
