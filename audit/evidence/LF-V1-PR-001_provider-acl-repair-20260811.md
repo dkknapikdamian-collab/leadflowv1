@@ -24,7 +24,7 @@ DEV_ROLLOUT_FREEZE_TOUCHED=NO
 ## C1 SSOT owner-amendment verification
 
 C1_SSOT_01_CANONICAL_PROJECT_ENTRY=PASS; repo AGENTS, PROJECT_MANIFEST, repo start bridge, SOT index and WORKFLOW_STATE now bind to `10_PROJEKTY/CloseFlow_Lead_App/00_AI_START_SPIS_TRESCI.md`; old routes are explicitly legacy/alias; local Vault sync remains pending because the canonical binding file was not fabricated.
-C1_SSOT_02_WORKFLOW_STATE_SEMANTICS=PASS_FOR_REOPENED_STATE; state revision 63 explicitly represents one active `ACTIVE_SSOT_AMENDMENT` workflow with amendment scope C1-SSOT-01..07, while preserving the provider sub-closeout in `last_accepted` history.
+C1_SSOT_02_WORKFLOW_STATE_SEMANTICS=PASS_FOR_REOPENED_STATE; state revision 63 represented one active `ACTIVE_SSOT_AMENDMENT` workflow with amendment scope C1-SSOT-01..07, and state revision 64 now records that amendment as `ACCEPTED_AND_CLOSED` while preserving the provider sub-closeout in `last_accepted` history.
 C1_SSOT_03_PROVIDER_MUTATION_CHRONOLOGY=PASS; original provider-write prohibition, later explicit owner authorization, bounded mutation, provider ACL correction and SSOT reopening are recorded without rewriting history.
 C1_SSOT_04_MIGRATION_EXECUTION_SEMANTICS=PASS; `supabase/migrations` remains the only executable ledger; direct provider repair is explicitly not this migration and must not create a `schema_migrations` row.
 C1_SSOT_05_REPAIR_INDEX_PROVENANCE=PASS; existing index now records SOT-000..SOT-006, missing SOT-005 is not fabricated, and SOT-006 provenance is bound to its actual repo-local artifact.
@@ -50,6 +50,9 @@ GUARDIAN_FINDINGS=NONE
 GUARDIAN_FULL_REPOSITORY_SCAN=BLOCK_ENVIRONMENTAL_SCOPE; untracked `.codex`, `.stversions` and historical evidence cause unrelated full-scan contamination; no such artifacts were modified or deleted.
 OPENCODE=TIMEOUT_120S; free DeepSeek model `opencode/deepseek-v4-flash-free` was discovered and a bounded read-only review was attempted; timeout is not treated as PASS.
 INDEPENDENT_CONTROLLER_REVIEW=PASS; exact diff, guard/test behavior, scope and no-provider-write boundary reviewed after Guardian.
+
+C1_IMPLEMENTATION_COMMIT=03e5e796e9f69aaf89fe0a2ef1f0ddabe097be49
+C1_STAGE_VERDICT=ACCEPTED_AND_CLOSED; control-plane closeout records `SSOT_TERMINAL_AUDIT_REQUIRED` as the only next action; no C2 implementation is routed.
 
 PRODUCTION_TOUCHED=NO
 DEV_ROLLOUT_FREEZE_TOUCHED=NO
