@@ -1,24 +1,24 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 56,
+  "state_revision": 57,
   "last_accepted": {
-    "id": "LF-SEC-CG-001F_PORTAL_UPLOAD_PARENT_SCOPE_RATE_LIMIT_AND_QUOTA_REPAIR",
+    "id": "LF-SEC-CG-001G_DEPENDENCY_SECRET_AND_SUPPLY_CHAIN_AUDIT_AND_REPAIR",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
-    "commit_sha": "5a261599",
-    "evidence": "B6 local evidence: shared portal upload policy enforces verified portal/operator scope, item-to-case-to-workspace binding, MIME/size/base64 validation, deterministic DB admission with advisory serialization, quota/rate limits, admitted file references and service-only RLS tables; B2 static 2/2, B6 static 4/4, runtime 6/6, TSC/lint/build/quiet release gate/source-truth guard PASS, Guardian patch-patterns 0/test-weakening CLEAR; independent review completed with four findings and all four remediated locally; live Supabase migration/RLS and final post-remediation review timeout remain registered"
+    "commit_sha": "59c2741e",
+    "evidence": "B7 controlled dependency repair: pre-audit 25 vulnerabilities (critical=2, high=12), post-audit 0; npm manifest/lock root exact, lockfile integrity complete, npm ci dry-run PASS, lifecycle review complete, tracked secret boundary scan classified, focused security/regression 12/12 PASS, TSC/lint/build PASS; server-only secret guard EPERM in historical backups and Firebase Stage03 guard/source mismatch remain registered outside B7 dependency ownership; optional provider review timeouts recorded"
   },
   "current_workflow": {
-    "id": "LF-SEC-CG-001G_DEPENDENCY_SECRET_AND_SUPPLY_CHAIN_AUDIT_AND_REPAIR",
+    "id": "LF-SEC-CG-001H_INDEPENDENT_SECURITY_RESCAN_AND_RELEASE_GATE",
     "kind": "TECHNICAL_STAGE",
-    "contract_path": "docs/stages/LF-SEC-CG-001G_DEPENDENCY_SECRET_AND_SUPPLY_CHAIN_AUDIT_AND_REPAIR.md",
+    "contract_path": "docs/stages/LF-SEC-CG-001H_INDEPENDENT_SECURITY_RESCAN_AND_RELEASE_GATE.md",
     "status": "ROUTED",
-    "base_sha": "5a261599",
+    "base_sha": "59c2741e43097b017b145b189c38ae1633849aea",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
     "blocker": null
   },
-  "next_workflow": {"id": "LF-SEC-CG-001G_DEPENDENCY_SECRET_AND_SUPPLY_CHAIN_AUDIT_AND_REPAIR", "status": "ROUTED"},
+  "next_workflow": {"id": "LF-SEC-CG-001H_INDEPENDENT_SECURITY_RESCAN_AND_RELEASE_GATE", "status": "ROUTED"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
@@ -192,6 +192,11 @@
     "b6:8889c7c7:shared-upload-service-preserved-B2-scope-contract",
     "b6:5a261599:review-findings-admission-race-portal-create-file-url-base64-remediated",
     "b6:5a261599:live-supabase-and-post-remediation-review-timeout-registered",
-    "b7-route:8889c7c7:dependency-secret-supply-chain-contract-created"
+    "b7-route:8889c7c7:dependency-secret-supply-chain-contract-created",
+    "b7:59c2741e:controlled-remediation-zero-final-npm-audit",
+    "b7:59c2741e:tsc-lint-build-focused-regression-pass",
+    "b7:59c2741e:server-only-secret-guard-eperm-registered",
+    "b7:59c2741e:firebase-stage03-guard-source-mismatch-registered",
+    "b8-route:59c2741e:independent-security-rescan-release-gate-routed"
   ]
 }
