@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 58,
+  "state_revision": 59,
   "last_accepted": {
     "id": "LF-SEC-CG-001H_INDEPENDENT_SECURITY_RESCAN_AND_RELEASE_GATE",
     "status": "CLOSED_WITH_REGISTERED_FINDINGS",
@@ -12,13 +12,23 @@
     "id": "LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY",
     "kind": "TECHNICAL_STAGE",
     "contract_path": "docs/stages/LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY.md",
-    "status": "ROUTED",
+    "status": "OWNER_REQUIRED",
     "base_sha": "baae74b2b3304bbbf5caedd56dda2f2db1eda03b",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
-    "blocker": null
+    "blocker": {
+      "type": "TRUE_OWNER_ACTION_REQUIRED",
+      "reason": "C1 local fail-closed schema/RLS/service-role evidence passes, but provider-side exact schema proof and backup-before-change proof are unavailable; two legacy-format migration entries require reconciliation against Supabase migration history before any rename, removal or apply.",
+      "agent_remediable_blockers": 0,
+      "required_owner_proof": [
+        "exact read-only Supabase schema/RLS/storage/grants/functions dump bound to the working SHA",
+        "verified backup and restore/rollback evidence before any migration change",
+        "provider migration history decision for the legacy-format entries"
+      ],
+      "production_touched": false
+    }
   },
-  "next_workflow": {"id": "LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY", "status": "ROUTED"},
+  "next_workflow": {"id": "LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY", "status": "OWNER_REQUIRED"},
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",
@@ -201,6 +211,9 @@
     "b8:baae74b2:cumulative-static-23-runtime-38-critical-13-npm-audit-zero-guard-repairs-pass-with-registered-findings",
     "b8:baae74b2:UNBOUNDED_RETRY-and-DISABLED_TEST_MASKING_FAILURE-real-guard-defects-repaired",
     "b8:baae74b2:opencode-timeout-freebuff-deadline-gpt-thread-limit-recorded-no-pass-claim",
-    "c1-route:baae74b2:Supabase-schema-migrations-RLS-service-role-boundary"
+    "c1-route:baae74b2:Supabase-schema-migrations-RLS-service-role-boundary",
+    "c1:0ec50a36:local-static-pass-with-exact-migration-ledger-and-service-role-repair",
+    "c1:0ec50a36:owner-boundary-live-schema-dump-backup-proof-and-legacy-migration-history-reconciliation",
+    "c1:0ec50a36:agent-remediable-blockers-zero-production-provider-secret-mutation-zero"
   ]
 }
