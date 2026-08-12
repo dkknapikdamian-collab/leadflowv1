@@ -28,6 +28,7 @@ import {
   Search,
   Send,
   Settings,
+  ShieldCheck,
   Sparkles,
   Target,
   Trash2,
@@ -62,6 +63,7 @@ export type SemanticIconRole =
   | 'pin'
   | 'refresh'
   | 'risk_alert'
+  | 'safety'
   | 'search'
   | 'send'
   | 'settings'
@@ -118,6 +120,7 @@ export const semanticIconConfig = {
   pin: { role: 'pin', tone: 'neutral', label: 'Przypięte', defaultIcon: Pin, migrationStage: 'later' },
   refresh: { role: 'refresh', tone: 'neutral', label: 'Odśwież', defaultIcon: RefreshCw, migrationStage: 'later' },
   risk_alert: { role: 'risk_alert', tone: 'danger', label: 'Ryzyko / alert', defaultIcon: AlertTriangle, migrationStage: 'UI-2' },
+  safety: { role: 'safety', tone: 'task', label: 'Bezpieczeństwo', defaultIcon: ShieldCheck, migrationStage: 'UI-2' },
   search: { role: 'search', tone: 'neutral', label: 'Szukaj', defaultIcon: Search, migrationStage: 'later' },
   send: { role: 'send', tone: 'primary', label: 'Wyślij', defaultIcon: Send, migrationStage: 'later' },
   settings: { role: 'settings', tone: 'neutral', label: 'Ustawienia', defaultIcon: Settings, migrationStage: 'later' },

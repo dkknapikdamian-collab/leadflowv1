@@ -219,7 +219,7 @@ const CSS_PATCH_ALLOWLIST = new Map([
 ]);
 
 const APP_STYLES_IMPORT_MAX = new Map([
-  ['src/App.tsx', 45],
+  ['src/App.tsx', 2],
 ]);
 
 const LOCAL_ICON_BUTTON_CLONE_ALLOWLIST = new Map([

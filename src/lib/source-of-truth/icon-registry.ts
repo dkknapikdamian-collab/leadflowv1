@@ -1,4 +1,6 @@
-import { APP_ICON_LUCIDE_MAP, type CloseflowAppLucideIcon } from '../../components/ui-system/icon-registry';
+import { ACTION_ICON_MAP } from '../../components/ui-system/action-icon-registry';
+import { semanticIconConfig } from '../../ui-system/icons/SemanticIcon';
+import type { CloseflowAppLucideIcon } from '../../components/ui-system/icon-registry';
 
 export type AppIconMeta = {
   icon: CloseflowAppLucideIcon;
@@ -8,82 +10,82 @@ export type AppIconMeta = {
 
 export const APP_ICONS = {
   add: {
-    icon: APP_ICON_LUCIDE_MAP.add,
+    icon: ACTION_ICON_MAP.add,
     label: 'Dodaj',
     semanticGroup: 'action',
   },
   alert: {
-    icon: APP_ICON_LUCIDE_MAP.alert,
+    icon: semanticIconConfig.risk_alert.defaultIcon,
     label: 'Alert',
     semanticGroup: 'status',
   },
   calendar: {
-    icon: APP_ICON_LUCIDE_MAP.calendar,
+    icon: ACTION_ICON_MAP.calendar,
     label: 'Kalendarz',
     semanticGroup: 'record',
   },
   check: {
-    icon: APP_ICON_LUCIDE_MAP.check,
+    icon: semanticIconConfig.task_status.defaultIcon,
     label: 'Gotowe',
     semanticGroup: 'status',
   },
   chevronRight: {
-    icon: APP_ICON_LUCIDE_MAP.chevronRight,
+    icon: semanticIconConfig.navigation.defaultIcon,
     label: 'Przejdź dalej',
     semanticGroup: 'navigation',
   },
   clock: {
-    icon: APP_ICON_LUCIDE_MAP.clock,
+    icon: semanticIconConfig.time.defaultIcon,
     label: 'Termin',
     semanticGroup: 'status',
   },
   copy: {
-    icon: APP_ICON_LUCIDE_MAP.copy,
+    icon: ACTION_ICON_MAP.copy,
     label: 'Kopiuj',
     semanticGroup: 'action',
   },
   externalLink: {
-    icon: APP_ICON_LUCIDE_MAP.externalLink,
+    icon: ACTION_ICON_MAP.open,
     label: 'Otwórz link',
     semanticGroup: 'navigation',
   },
   fileText: {
-    icon: APP_ICON_LUCIDE_MAP.fileText,
+    icon: semanticIconConfig.note.defaultIcon,
     label: 'Dokument',
     semanticGroup: 'record',
   },
   loading: {
-    icon: APP_ICON_LUCIDE_MAP.loading,
+    icon: semanticIconConfig.loading.defaultIcon,
     label: 'Ładowanie',
     semanticGroup: 'system',
   },
   mail: {
-    icon: APP_ICON_LUCIDE_MAP.mail,
+    icon: semanticIconConfig.email.defaultIcon,
     label: 'E-mail',
     semanticGroup: 'record',
   },
   phone: {
-    icon: APP_ICON_LUCIDE_MAP.phone,
+    icon: semanticIconConfig.phone.defaultIcon,
     label: 'Telefon',
     semanticGroup: 'record',
   },
   restore: {
-    icon: APP_ICON_LUCIDE_MAP.restore,
+    icon: ACTION_ICON_MAP.restore,
     label: 'Przywróć',
     semanticGroup: 'action',
   },
   search: {
-    icon: APP_ICON_LUCIDE_MAP.search,
+    icon: ACTION_ICON_MAP.search,
     label: 'Szukaj',
     semanticGroup: 'action',
   },
   trash: {
-    icon: APP_ICON_LUCIDE_MAP.trash,
+    icon: ACTION_ICON_MAP.delete,
     label: 'Usuń',
     semanticGroup: 'action',
   },
   close: {
-    icon: APP_ICON_LUCIDE_MAP.close,
+    icon: ACTION_ICON_MAP.cancel,
     label: 'Zamknij',
     semanticGroup: 'action',
   },

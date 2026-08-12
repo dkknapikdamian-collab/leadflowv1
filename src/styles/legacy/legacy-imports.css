@@ -5,7 +5,7 @@
    remove_after_stage: after matching screens are migrated to current component contracts.
 */
 
-@import '../case-detail-simplified.css';
-@import '../case-detail-stage2.css';
-@import '../visual-stage3-pipeline-and-case.css';
-@import '../stage7a-tasks-blue-outline-fix.css';
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/case-detail-simplified.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/case-detail-stage2.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage3-pipeline-and-case.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage7a-tasks-blue-outline-fix.css; content merged above. */

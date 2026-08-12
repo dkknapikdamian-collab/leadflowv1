@@ -46,8 +46,8 @@ import '../styles/closeflow-record-list-source-truth.css';
 import '../styles/visual-stage22-event-form-vnext.css';
 import '../styles/closeflow-template-modal-source-truth-stage181l.css';
 import '../styles/closeflow-template-modal-source-truth-stage181n.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
 import {
   TEMPLATE_ITEM_TYPE_OPTIONS,
   createEmptyTemplateDraft,
@@ -535,3 +535,5 @@ export default function Templates() {
     </Layout>
   );
 }
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

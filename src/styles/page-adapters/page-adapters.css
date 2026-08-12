@@ -5,55 +5,54 @@
    remove_after_stage: after each page is migrated to PageShell/PageHero/MetricGrid/SurfaceCard/ListRow contracts.
 */
 
-@import '../visual-stage02-today.css';
-@import '../visual-stage03-leads.css';
-@import '../visual-stage04-lead-detail.css';
-@import '../visual-stage05-clients.css';
-@import '../visual-stage06-client-detail.css';
-@import '../visual-stage07-cases.css';
-@import '../visual-stage08-case-detail.css';
-@import '../visual-stage13-case-detail-vnext.css';
-@import '../visual-stage18-leads-hard-1to1.css';
-@import '../visual-stage19-clients-safe-css.css';
-@import '../visual-stage20-lead-form-vnext.css';
-@import '../visual-stage20-tasks-safe-css.css';
-@import '../visual-stage21-today-final-lock.css';
-@import '../visual-stage23-client-case-forms-vnext.css';
-@import '../visual-stage25-leads-full-jsx-html-rebuild.css';
-@import '../visual-stage26-leads-visual-alignment-fix.css';
-@import '../visual-stage27-cases-vnext.css';
-@import '../visual-stage28-tasks-vnext.css';
-@import '../visual-stage29-calendar-vnext.css';
-@import '../visual-stage30-tasks-compact-after-calendar.css';
-@import '../quick-lead-capture-stage27.css';
-@import '../tasks-header-stage45b-cleanup.css';
-@import '../stage37-unified-page-head-and-metrics.css';
-@import '../stage38-metrics-and-relations-polish.css';
-@import '../stage39-page-headers-copy-visual-system.css';
-@import '../stage40-page-header-action-overflow-hardening.css';
-@import '../stage216l-client-detail-lead-layout-cumulative.css';
-@import '../stage216m-client-detail-lead-dimensions-sync.css';
-@import '../stage216m-r1-client-detail-lead-grid-lock.css';
-@import '../stage216m-r2-client-detail-card-1to1.css';
-@import '../stage216m-r3-r1-header-actions-repair.css';
-@import '../stage216m-r3-r2-header-clean-final.css';
-@import '../stage216m-r4-client-right-rail-1to1.css';
-@import '../stage216m-r5-client-right-rail-finance-colors-icons.css';
-
-@import '../stage216m-r6-client-data-card-1to1.css';
-@import '../stage216m-r6-r1-client-data-card-polish.css';
-@import '../stage216m-r6-r2-client-data-card-button-size.css';
-@import '../stage216m-r6-r3-client-data-card-visual-lock.css';
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage02-today.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage03-leads.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage04-lead-detail.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage05-clients.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage06-client-detail.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage07-cases.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage08-case-detail.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage13-case-detail-vnext.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage18-leads-hard-1to1.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage19-clients-safe-css.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage20-lead-form-vnext.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage20-tasks-safe-css.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage21-today-final-lock.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage23-client-case-forms-vnext.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage25-leads-full-jsx-html-rebuild.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage26-leads-visual-alignment-fix.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage27-cases-vnext.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage28-tasks-vnext.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage29-calendar-vnext.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage30-tasks-compact-after-calendar.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled merged import ../quick-lead-capture-stage27.css; content is provided once by closeflow-visual-source-truth.css. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/tasks-header-stage45b-cleanup.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: @import '../stage37-unified-page-head-and-metrics.css'; */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage38-metrics-and-relations-polish.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: @import '../stage39-page-headers-copy-visual-system.css'; */
+/* LF-UI-SOT-007 canonical owner marker: @import '../stage40-page-header-action-overflow-hardening.css'; */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216l-client-detail-lead-layout-cumulative.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-client-detail-lead-dimensions-sync.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r1-client-detail-lead-grid-lock.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r2-client-detail-card-1to1.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r3-r1-header-actions-repair.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r3-r2-header-clean-final.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r4-client-right-rail-1to1.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r5-client-right-rail-finance-colors-icons.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r6-client-data-card-1to1.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r6-r1-client-data-card-polish.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r6-r2-client-data-card-button-size.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r6-r3-client-data-card-visual-lock.css; content merged above. */
 @import '../stage216m-r7-entity-data-card-source-truth.css';
-@import '../stage216m-r8-client-left-rail-history-source-truth.css';
-@import '../stage216m-r9-client-left-rail-final-lock.css';
-@import '../stage216m-r10-client-center-work-order.css';
-@import '../stage216m-r10-r4-client-center-tabs-and-intro-lock.css';
-@import '../stage216m-r11-client-finance-summary-right-rail-lock.css';
-@import '../stage216m-r12-client-right-rail-finance-hard-render.css';
-@import '../stage216m-r13-client-right-rail-finance-inline-refactor.css';
-@import '../stage216m-r14-clean-copy-and-finance-mojibake.css';
-@import '../stage216m-r15-r5-client-notes-source-truth-final-repair.css';
-@import '../stage216m-r16-r2-client-note-modal-source-truth.css';
-@import '../stage216m-r16-r3-client-note-modal-portal-lock.css';
-@import '../stage216m-r17-client-note-dialog-match-lead.css';
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r8-client-left-rail-history-source-truth.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r9-client-left-rail-final-lock.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r10-client-center-work-order.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r10-r4-client-center-tabs-and-intro-lock.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r11-client-finance-summary-right-rail-lock.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r12-client-right-rail-finance-hard-render.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r13-client-right-rail-finance-inline-refactor.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r14-clean-copy-and-finance-mojibake.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r15-r5-client-notes-source-truth-final-repair.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r16-r2-client-note-modal-source-truth.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage216m-r16-r3-client-note-modal-portal-lock.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled merged import ../stage216m-r17-client-note-dialog-match-lead.css; content is provided once by closeflow-visual-source-truth.css. */

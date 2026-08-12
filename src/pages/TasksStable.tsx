@@ -42,8 +42,8 @@ import { isTaskStatusClosed } from '../lib/domain-statuses';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import { ConfirmDialog } from '../components/confirm-dialog';
 import '../styles/closeflow-page-header-v2.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 const P0_TASKS_STABLE_REBUILD = 'P0_TASKS_STABLE_REBUILD';
 void P0_TASKS_STABLE_REBUILD;
@@ -855,3 +855,5 @@ void FIN14_REPAIR4_TASKS_HEADER_CLICK_GUARD;
 
 const FIN14_REPAIR5_TASKS_HEADER_PLUS_GUARD = 'FIN-14_REPAIR5_TASKS_HEADER_PLUS_GUARD_no_plus_icon_in_new_task_button';
 void FIN14_REPAIR5_TASKS_HEADER_PLUS_GUARD;
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

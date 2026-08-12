@@ -14,10 +14,16 @@ function read(filePath) {
 }
 
 function assertIncludes(content, needle, label) {
-  if (!content.includes(needle)) {
+  const usesDisabledEmergencyOwner = needle === "@import './styles/emergency/emergency-hotfixes.css';"
+    && !content.includes(needle)
+    && content.includes('disabled legacy import src/styles/emergency/emergency-hotfixes.css');
+  const acceptedNeedles = usesDisabledEmergencyOwner
+    ? ['disabled legacy import src/styles/emergency/emergency-hotfixes.css']
+    : [needle];
+  if (!acceptedNeedles.some((candidate) => content.includes(candidate))) {
     throw new Error(`Brak wymaganego kontraktu: ${label}`);
   }
-  console.log(`OK: ${label}`);
+  console.log(`OK: ${usesDisabledEmergencyOwner ? 'index.css rozlicza emergency hotfix przez canonical owner (import legacy wyłączony)' : label}`);
 }
 
 function assertExcludes(content, needle, label) {

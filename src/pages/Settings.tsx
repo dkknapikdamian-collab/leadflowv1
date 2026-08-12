@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Building2, Calendar, CalendarDays, Database, KeyRound, LockKeyhole, LogOut, Mail, Menu, MonitorCog, RefreshCw, Save, Settings as SettingsIcon, Shield, SlidersHorizontal, Smartphone, User, Users, WalletCards } from 'lucide-react';
+import { Building2, CalendarDays, Database, KeyRound, LockKeyhole, LogOut, Mail, Menu, MonitorCog, RefreshCw, Save, Settings as SettingsIcon, Shield, SlidersHorizontal, Smartphone, User, Users, WalletCards } from 'lucide-react';
 import {
   EntityIcon,
   NotificationEntityIcon
@@ -68,8 +68,8 @@ import '../styles/closeflow-settings-tabs-stage181ac.css';
 import '../styles/closeflow-settings-summary-right-rail-stage181ae.css';
 import '../styles/closeflow-settings-profile-readability-stage181af.css';
 import '../styles/closeflow-settings-safe-copy-cleanup-stage181ai.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
 import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
 const SETTINGS_VISUAL_REBUILD_STAGE19 = 'SETTINGS_VISUAL_REBUILD_STAGE19';
 const DAILY_DIGEST_EMAIL_UI_VISIBLE = false;
@@ -1491,3 +1491,5 @@ useEffect(() => { if (!canUseGoogleCalendarByPlan) return; loadGoogleCalendarSta
 <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-reminder-ui="stage06"
 <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-sync-v1-stage03="true"
 */}
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

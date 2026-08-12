@@ -1,5 +1,6 @@
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, Archive, CheckCircle2, Clock3, HelpCircle, LifeBuoy, Lightbulb, Loader2, Mail, MessageSquare, Search, Send, ShieldCheck, Sparkles, Wrench } from 'lucide-react';
+import { AlertTriangle, Archive, CheckCircle2, Clock3, HelpCircle, LifeBuoy, Lightbulb, Loader2, Mail, MessageSquare, Search, Send, ShieldCheck, Wrench } from 'lucide-react';
+import { SemanticIcon } from '../components/ui-system';
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { Button } from '../components/ui/button';
@@ -16,8 +17,8 @@ import {
 import '../styles/visual-stage17-support-vnext.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
 import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
 
 type TicketKind = 'suggestion' | 'problem' | 'support';
@@ -120,7 +121,7 @@ const SUGGESTED_TICKETS: SuggestedTicket[] = [
     kind: 'suggestion',
     title: '',
     message: 'Opisz, co spowalnia pracę, jak powinien wyglądać docelowy ruch i jaki problem ma zniknąć.',
-    Icon: Sparkles,
+    Icon: ({ className }: { className?: string }) => <SemanticIcon role="ai" size="sm" className={className} />,
   },
   {
     kind: 'support',
@@ -717,3 +718,5 @@ export default function SupportCenter() {
     </Layout>
   );
 }
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

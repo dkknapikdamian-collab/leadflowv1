@@ -32,7 +32,10 @@ function reject(file, needle, label) {
 
 reject('src/index.css', 'visual-stage18-leads-hard-1to1.css', 'inactive Stage18 global CSS import');
 expect('src/pages/Leads.tsx', "../styles/closeflow-record-list-source-truth.css", 'current record-list CSS import');
-expect('src/pages/Leads.tsx', "../styles/closeflow-unified-page-canvas-stage211c.css", 'current Stage211C canvas import');
+expectAny('src/pages/Leads.tsx', [
+  "../styles/closeflow-unified-page-canvas-stage211c.css",
+  "shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css' is provided once by App.tsx",
+], 'current Stage211C canvas owner contract');
 expect('src/pages/Leads.tsx', "../styles/closeflow-canvas-source-truth-stage211e.css", 'current Stage211E canvas source import');
 expect('src/pages/Leads.tsx', 'VISUAL_STAGE25_LEADS_FULL_JSX_HTML_REBUILD', 'current Leads rebuild marker');
 expect('src/styles/visual-stage18-leads-hard-1to1.css', 'VISUAL_STAGE18_LEADS_HTML_HARD_1TO1_CSS', 'Stage18 reference CSS marker');

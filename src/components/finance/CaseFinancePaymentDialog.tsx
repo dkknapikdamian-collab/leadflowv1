@@ -7,7 +7,7 @@ import { Textarea } from '../ui/textarea';
 import { normalizeCurrency, normalizePaymentStatus, normalizePaymentType } from '../../lib/finance/finance-normalize';
 import type { PaymentStatus, PaymentType } from '../../lib/finance/finance-types';
 import { PAYMENT_STATUS_OPTIONS, PAYMENT_TYPE_LABELS } from '../../lib/finance/finance-payment-labels';
-import '../../styles/finance/closeflow-finance.css';
+// LF-UI-SOT-007 canonical owner marker: import '../../styles/finance/closeflow-finance.css';
 
 export const CLOSEFLOW_FIN14_CASE_FINANCE_PAYMENT_DIALOG = 'CLOSEFLOW_FIN14_CASE_FINANCE_PAYMENT_DIALOG_V1' as const;
 export const CLOSEFLOW_FIN14_PAYMENT_TYPE_MAP = 'Dodaj zaliczkę -> deposit | Dodaj wpłatę -> partial | Dodaj płatność prowizji -> commission' as const;

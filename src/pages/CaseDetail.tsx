@@ -105,14 +105,17 @@ import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import { getEventMainDate, getTaskMainDate } from '../lib/scheduling';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
-import '../styles/visual-stage13-case-detail-vnext.css';
-import '../styles/visual-stage12-client-detail-vnext.css'; // STAGE220A6_CASE_HEADER_CLIENT_SOURCE
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage13-case-detail-vnext.css; content merged above.
+// LF-UI-SOT-007 shared-source contract: import '../styles/visual-stage13-case-detail-vnext.css' is provided once by App.tsx.
+// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/visual-stage12-client-detail-vnext.css; content is provided once by App.tsx.
 import '../styles/closeflow-case-history-visual-source-truth.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-case-detail-stage217-operation-workspace.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css' is provided once by App.tsx.
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-case-detail-stage217-operation-workspace.css; content merged above.
+// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-case-detail-stage217-operation-workspace.css' is provided once by App.tsx.
 import '../styles/closeflow-case-detail-stage220a10-tabs-layout-repair.css';
 import '../styles/case-detail-stage228r9-shell-rail-lift.css';
-import '../styles/closeflow-case-finance-modal-stage220a30.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-case-finance-modal-stage220a30.css; content merged above.
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 import {
   getCaseItemStatusLabel as getConfiguredCaseItemStatusLabel,

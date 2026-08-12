@@ -99,13 +99,14 @@ import { buildRelationFunnelValue, buildRelationValueEntries, formatRelationValu
 import { LEAD_SOURCE_OPTIONS, getLeadSourceLabel } from '../lib/source-of-truth/lead-options';
 import { LEAD_STATUS_OPTIONS, getLeadStatusLabel, getLeadStatusTone } from '../lib/config/lead-status';
 
-import '../styles/visual-stage20-lead-form-vnext.css';
-
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage20-lead-form-vnext.css; content merged above.
+// LF-UI-SOT-007 shared-source contract: import '../styles/visual-stage20-lead-form-vnext.css' is provided once by App.tsx.
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-record-list-source-truth.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css' is provided once by App.tsx.
+// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
 const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadów jest pusty';
 const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'Przywróć leada';
 const STAGE_PANEL_DELETE_LEADS_CONFIRM_GUARD = '\\\\n\\\\nTen lead ma powiązaną sprawę';
@@ -1402,3 +1403,5 @@ relationValueEntries.slice(0, 5)
 Najcenniejsze relacje
 data-relation-value-board="true"
 */
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

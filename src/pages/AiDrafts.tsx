@@ -57,14 +57,14 @@ import {
   fetchLeadsFromSupabase,
   fetchCasesFromSupabase
 } from '../lib/supabase-fallback';
-import '../styles/visual-stage20-lead-form-vnext.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage20-lead-form-vnext.css; content merged above.
 import '../styles/visual-stage9-ai-drafts-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
 import '../styles/closeflow-ai-drafts-rail-force-colors-stage181w.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
 import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
 type DraftFilter =
   | 'all'
@@ -1440,3 +1440,5 @@ Przejrzyj i zatwierdź
 markAiLeadDraftConverted
 Szkice AI
 */
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

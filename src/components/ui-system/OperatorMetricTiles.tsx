@@ -95,7 +95,7 @@ export function OperatorMetricTile<TId extends string = string>({
         {item.helper ? <span className="cf-operator-metric-helper">{item.helper}</span> : null}
       </div>
       <div className="cf-operator-metric-value-row">
-        <strong className="cf-operator-metric-value" data-cf-operator-metric-value="true" data-cf-operator-metric-value-tone={tone}>{item.value}</strong>
+        <strong className="cf-operator-metric-value cf-vst-text-metric" data-cf-operator-metric-value="true" data-cf-operator-metric-value-tone={tone}>{item.value}</strong>
         <span className="cf-operator-metric-icon" aria-hidden="true" data-cf-operator-metric-icon-tone={tone}>
           <Icon className="h-4 w-4" />
         </span>

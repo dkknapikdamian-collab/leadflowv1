@@ -1,5 +1,5 @@
 import * as Lucide from 'lucide-react';
-import { Activity, AlertTriangle, BadgeDollarSign, Bell, Briefcase, Calendar, CheckCircle2, ChevronRight, ClipboardList, Clock, Copy, CreditCard, ExternalLink, FileText, Loader2, LucideIcon, Mail, Phone, Plus, Search, Settings, Sparkles, Target, Undo2, UserRound, Wallet, X } from 'lucide-react';
+import { Activity, BadgeDollarSign, Bell, Briefcase, Calendar, ClipboardList, CreditCard, FileText, Settings, Sparkles, Target, UserRound, Wallet, X, type LucideIcon } from 'lucide-react';
 export const CLOSEFLOW_ENTITY_ICON_REGISTRY_VS2B = 'CLOSEFLOW_ENTITY_ICON_REGISTRY_VS2B';
 
 const removeIconKey = 'Trash' + '2';
@@ -23,27 +23,6 @@ export const ENTITY_ICON_MAP = {
 
 export type CloseflowEntityIconName = keyof typeof ENTITY_ICON_MAP;
 export type CloseflowAppLucideIcon = LucideIcon;
-
-export const APP_ICON_LUCIDE_MAP = {
-  add: Plus,
-  alert: AlertTriangle,
-  calendar: Calendar,
-  check: CheckCircle2,
-  chevronRight: ChevronRight,
-  clock: Clock,
-  copy: Copy,
-  externalLink: ExternalLink,
-  fileText: FileText,
-  loading: Loader2,
-  mail: Mail,
-  phone: Phone,
-  restore: Undo2,
-  search: Search,
-  trash: RemoveIcon,
-  close: X,
-} satisfies Record<string, LucideIcon>;
-
-export type CloseflowAppIconName = keyof typeof APP_ICON_LUCIDE_MAP;
 
 /**
  * Backward-compatible alias for code written before VS-2B was tightened.

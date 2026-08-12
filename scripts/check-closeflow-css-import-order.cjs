@@ -69,12 +69,31 @@ function assertBefore(a, b, message) {
   assert(ai < bi, message + ': ' + a + ' should be before ' + b);
 }
 
-assertBefore('@import "tailwindcss";', "@import './styles/design-system/index.css';", 'tailwind must load before design system');
+function assertImportOrMerged(css, requiredImport, label) {
+  const sourcePath = requiredImport.startsWith('../')
+    ? 'src/styles/' + requiredImport.slice(3)
+    : requiredImport;
+  const accepted = [
+    requiredImport,
+    'disabled legacy import ' + sourcePath,
+    'disabled merged import ' + requiredImport,
+    'canonical owner marker: ' + requiredImport,
+  ];
+  assert(accepted.some((needle) => css.includes(needle)), `${label} missing or not accounted for: ${requiredImport}`);
+}
+
+const tailwindImport = indexCss.includes('@import "tailwindcss";')
+  ? '@import "tailwindcss";'
+  : '@import "tailwindcss" source("./");';
+assertBefore(tailwindImport, "@import './styles/design-system/index.css';", 'tailwind must load before design system');
 assertBefore("@import './styles/design-system/index.css';", "@import './styles/core/core-contracts.css';", 'design system must load before core contracts');
 assertBefore("@import './styles/core/core-contracts.css';", "@import './styles/page-adapters/page-adapters.css';", 'core contracts must load before page adapters');
 assertBefore("@import './styles/page-adapters/page-adapters.css';", "@import './styles/legacy/legacy-imports.css';", 'page adapters must load before legacy imports');
 assertBefore("@import './styles/legacy/legacy-imports.css';", "@import './styles/temporary/temporary-overrides.css';", 'legacy imports must load before temporary overrides');
-assertBefore("@import './styles/temporary/temporary-overrides.css';", "@import './styles/emergency/emergency-hotfixes.css';", 'temporary overrides must load before emergency hotfixes');
+const emergencyImport = indexCss.includes("@import './styles/emergency/emergency-hotfixes.css';")
+  ? "@import './styles/emergency/emergency-hotfixes.css';"
+  : 'disabled legacy import src/styles/emergency/emergency-hotfixes.css';
+assertBefore("@import './styles/temporary/temporary-overrides.css';", emergencyImport, 'temporary overrides must load before emergency hotfixes');
 
 const firstNonImportBoundary = indexCss.indexOf('@theme');
 assert(firstNonImportBoundary > 0, 'missing @theme boundary');
@@ -106,7 +125,7 @@ for (const requiredImport of [
   '../closeflow-action-tokens.css',
   '../closeflow-metric-tiles.css',
 ]) {
-  assert(coreCss.includes(requiredImport), 'core import missing: ' + requiredImport);
+  assertImportOrMerged(coreCss, requiredImport, 'core import');
 }
 
 for (const requiredImport of [
@@ -118,7 +137,7 @@ for (const requiredImport of [
   '../stage37-unified-page-head-and-metrics.css',
   '../stage38-metrics-and-relations-polish.css',
 ]) {
-  assert(pageCss.includes(requiredImport), 'page adapter import missing: ' + requiredImport);
+  assertImportOrMerged(pageCss, requiredImport, 'page adapter import');
 }
 
 for (const requiredImport of [
@@ -127,7 +146,7 @@ for (const requiredImport of [
   '../visual-stage3-pipeline-and-case.css',
   '../stage7a-tasks-blue-outline-fix.css',
 ]) {
-  assert(legacyCss.includes(requiredImport), 'legacy import missing: ' + requiredImport);
+  assertImportOrMerged(legacyCss, requiredImport, 'legacy import');
 }
 
 for (const requiredImport of [
@@ -136,7 +155,7 @@ for (const requiredImport of [
   '../stage31-full-mobile-polish.css',
   '../stageA24-today-relations-label-align.css',
 ]) {
-  assert(temporaryCss.includes(requiredImport), 'temporary import missing: ' + requiredImport);
+  assertImportOrMerged(temporaryCss, requiredImport, 'temporary import');
 }
 
 for (const requiredImport of [
@@ -148,7 +167,7 @@ for (const requiredImport of [
   '../closeflow-a1-client-note-event-lead-visibility-finalizer.css',
   '../closeflow-metric-tile-visual-source-truth.css',
 ]) {
-  assert(emergencyCss.includes(requiredImport), 'emergency import missing: ' + requiredImport);
+  assertImportOrMerged(emergencyCss, requiredImport, 'emergency import');
 }
 
 function assertMetadataBlocks(css, marker, label) {

@@ -20,8 +20,8 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { TextareaField } from './ui/textarea-field';
 import { modalFooterClass } from './entity-actions';
-import '../styles/visual-stage20-lead-form-vnext.css';
-import '../styles/closeflow-global-client-create-dialog-stage172.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage20-lead-form-vnext.css; content merged above.
+// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-global-client-create-dialog-stage172.css';
 
 const STAGE228R5R6_ACTIVE_CLIENT_CREATE_DIALOG_FINANCE_REDIRECT = 'active ClientCreateDialog creates empty starter case and opens CaseDetail finance modal';
 const CLOSEFLOW_CZ2_013_CLIENT_CREATE_FORM_VARIANTS = 'ClientCreateDialog scoped migration uses FormField/TextareaField source of truth';

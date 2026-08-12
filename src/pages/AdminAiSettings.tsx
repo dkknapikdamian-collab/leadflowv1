@@ -13,8 +13,8 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import { fetchAiConfigDiagnostics, type AiConfigDiagnostics, type AiProviderDiagnostics } from '../lib/ai-config';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_ADMIN_AI
 
 function StatusBadge({ configured, available }: { configured: boolean; available?: boolean }) {
@@ -251,3 +251,5 @@ export default function AdminAiSettings() {
 }
 
 /* PHASE0_AI_ADMIN_PAGE_GUARD Dostęp tylko dla admina Konfiguracja AI Klucze są sprawdzane po stronie backendu Frontend dostaje tylko informację */
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

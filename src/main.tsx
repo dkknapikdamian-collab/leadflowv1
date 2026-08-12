@@ -1,17 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import './index.css';
-import './styles/stage80-today-task-done-desktop-visibility.css';
+// LF-UI-SOT-007 canonical owner marker: index.css is bootstrapped by App.tsx before the canonical owner.
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage80-today-task-done-desktop-visibility.css; content merged above.
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AppearanceProvider } from './components/appearance-provider';
 import { registerCloseFlowServiceWorker } from './pwa/register-service-worker';
 import { registerChunkAssetReloadGuard } from './pwa/chunk-asset-reload-guard';
-import './styles/action-color-taxonomy-v1.css';
-import './styles/closeflow-right-rail-source-truth.css';
-import './styles/operator-rail-tasks-pattern-stage228r1.css';
-import './styles/closeflow-leads-right-rail-layout-lock.css';
-import './styles/closeflow-detail-view-source-truth-stage219.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/action-color-taxonomy-v1.css; content merged above.
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/operator-rail-tasks-pattern-stage228r1.css; content merged above.
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-leads-right-rail-layout-lock.css; content merged above.
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-detail-view-source-truth-stage219.css; content merged above.
 registerChunkAssetReloadGuard();
 registerCloseFlowServiceWorker();
 console.info('CLOSEFLOW_STAGE122_RUNTIME_MARKER', 'runtime-auth-api-pwa-hardening-2026-05-18');

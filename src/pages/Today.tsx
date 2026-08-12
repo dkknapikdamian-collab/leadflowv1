@@ -150,8 +150,8 @@ import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { getNearestPlannedAction } from '../lib/nearest-action';
 import { buildTodaySections, dedupeTodaySectionEntries } from '../lib/today-sections';
 import '../styles/today-collapsible-masonry.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
 
 const TODAY_TILE_STORAGE_KEY = 'closeflow:today:collapsed:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';

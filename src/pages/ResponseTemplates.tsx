@@ -27,8 +27,8 @@ import { PageShell } from '../components/layout/page-shell';
 import '../styles/closeflow-page-header-v2.css';
 import '../styles/visual-stage22-event-form-vnext.css';
 import '../styles/closeflow-response-template-modal-source-truth-stage181r.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
 type ResponseTemplate = {
   id: string;
   name: string;
@@ -347,3 +347,5 @@ export default function ResponseTemplates() {
     </Layout>
   );
 }
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

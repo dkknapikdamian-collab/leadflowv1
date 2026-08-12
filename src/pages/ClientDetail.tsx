@@ -129,8 +129,10 @@ import {
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { resolveClientPrimaryCase } from '../lib/client-cases';
-import '../styles/visual-stage12-client-detail-vnext.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage12-client-detail-vnext.css; content merged above.
+// LF-UI-SOT-007 shared-source contract: import '../styles/visual-stage12-client-detail-vnext.css' is provided once by App.tsx.
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css' is provided once by App.tsx.
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 import { getClientCasesFinanceSummary, getCaseFinanceSummary } from '../lib/finance/case-finance-source';
 import { getLeadStatusLabel as getConfiguredLeadStatusLabel } from '../lib/config/lead-status';

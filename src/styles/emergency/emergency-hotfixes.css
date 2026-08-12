@@ -11,48 +11,42 @@
    scope: lead and client right rail wrappers.
    remove_after_stage: after right rail wrapper component contract is shipped.
 */
-@import '../hotfix-lead-client-right-rail-dark-wrappers.css';
-
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/hotfix-lead-client-right-rail-dark-wrappers.css; content merged above. */
 /* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
    owner: CloseFlow Visual System
    reason: preserve AI drafts right rail contrast repair.
    scope: AI drafts right rail dark wrapper.
    remove_after_stage: after AI drafts right rail uses component contract.
 */
-@import '../hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css';
-
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css; content merged above. */
 /* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
    owner: CloseFlow Visual System
    reason: preserve secondary AI drafts right rail runtime patch.
    scope: AI drafts right rail.
    remove_after_stage: after AI drafts right rail patches are consolidated.
 */
-@import '../hotfix-ai-drafts-right-rail-stage28.css';
-
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/hotfix-ai-drafts-right-rail-stage28.css; content merged above. */
 /* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
    owner: CloseFlow Visual System
    reason: preserve admin feedback visual repair from P1 hotfix.
    scope: admin feedback panel visual repair.
    remove_after_stage: after admin feedback module receives stable page adapter.
 */
-@import '../eliteflow-admin-feedback-p1-hotfix.css';
-
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/eliteflow-admin-feedback-p1-hotfix.css; content merged above. */
 /* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
    owner: CloseFlow Visual System
    reason: preserve client event modal runtime repair.
    scope: client event modal runtime visibility/contrast repair.
    remove_after_stage: after client event modal component contract.
 */
-@import '../closeflow-client-event-modal-runtime-repair.css';
-
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-client-event-modal-runtime-repair.css; content merged above. */
 /* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
    owner: CloseFlow Visual System
    reason: preserve client note/event/lead visibility finalizer.
    scope: client note, event and lead visibility finalizer.
    remove_after_stage: after client detail visual contract consolidation.
 */
-@import '../closeflow-a1-client-note-event-lead-visibility-finalizer.css';
-
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-a1-client-note-event-lead-visibility-finalizer.css; content merged above. */
 /* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
    owner: CloseFlow Visual System
    reason: hide empty client warning strip that only renders an icon.
@@ -200,7 +194,7 @@
    scope: Today/Tasks/Notifications/shared MetricTile visual parity only.
    remove_after_stage: after old metric CSS files are deleted and all active screens use MetricGrid.
 */
-@import '../closeflow-metric-tile-visual-source-truth.css';
+/* LF-UI-SOT-007 canonical owner marker: @import '../closeflow-metric-tile-visual-source-truth.css'; */
 
 /* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
    owner: CloseFlow Visual System
@@ -208,42 +202,38 @@
    scope: OperatorMetricTiles renderer only; does not target legacy StatShortcutCard classes.
    remove_after_stage: never; keep with OperatorMetricTiles contract.
 */
-@import '../closeflow-operator-metric-tiles.css';
-
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-operator-metric-tiles.css; content merged above. */
 /* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
    owner: CloseFlow Visual System
    reason: final page header source-of-truth must load after old page adapters and hotfixes.
    scope: [data-cf-page-header="true"] top page headers only.
    remove_after_stage: after all page headers are native PageHeader components.
 */
-@import '../closeflow-page-header-card-source-truth.css';
-
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-page-header-card-source-truth.css; content merged above. */
 /* CLOSEFLOW_COMMAND_ACTIONS_SOURCE_TRUTH_STAGE6_ENTRY
    Final button/action source-of-truth import. Must stay after legacy hotfixes.
 */
-@import '../closeflow-command-actions-source-truth.css';
 
 
 /* CLOSEFLOW_PAGE_HEADER_PACKET1_IMPORTS_2026_05_11 */
-@import '../closeflow-page-header-copy-source-truth.css';
-@import '../closeflow-page-header-action-semantics-packet1.css';
+/* LF-UI-SOT-007 canonical owner marker: @import '../closeflow-command-actions-source-truth.css'; */
+/* LF-UI-SOT-007 canonical owner marker: @import '../closeflow-page-header-copy-source-truth.css'; */
+/* LF-UI-SOT-007 canonical owner marker: @import '../closeflow-page-header-action-semantics-packet1.css'; */
 /* CLOSEFLOW_PAGE_HEADER_STAGE6_FINAL_LOCK_IMPORT_2026_05_11 */
-@import '../closeflow-page-header-stage6-final-lock.css';
-
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-page-header-stage6-final-lock.css; content merged above. */
 /* CLOSEFLOW_PAGE_HEADER_FINAL_LOCK_PACKET2_ENTRY
    Final source of truth for top page header layout/copy/actions. Must stay last.
 */
-@import '../closeflow-page-header-final-lock.css';
-
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-page-header-final-lock.css; content merged above. */
 /* CLOSEFLOW_PAGE_HEADER_STRUCTURE_LOCK_PACKET3_ENTRY
    Final source of truth for kicker/title/description placement. Must stay last.
 */
-@import '../closeflow-page-header-structure-lock.css';
+/* LF-UI-SOT-007 canonical owner marker: @import '../closeflow-page-header-structure-lock.css'; */
 
 /* CLOSEFLOW_PAGE_HEADER_COPY_LEFT_ONLY_PACKET4_ENTRY
    Final narrow lock: copy left, kicker above title. Must stay last.
 */
-@import '../closeflow-page-header-copy-left-only.css';
+/* LF-UI-SOT-007 canonical owner marker: @import '../closeflow-page-header-copy-left-only.css'; */
 
 /* STAGE211B_SECONDARY_PAGES_UNIFIED_WHITE_SHELL
    Source-truth cleanup for secondary operator pages.

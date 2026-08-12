@@ -1,17 +1,26 @@
 @import "tailwindcss" source("./");
-@import "./styles/closeflow-visual-foundation-stage212m.css";
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-visual-foundation-stage212m.css; content merged above. */
 @import './styles/design-system/index.css';
-@import './styles/closeflow-operator-semantic-tones.css';
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-operator-semantic-tones.css; content merged above. */
 @import './styles/core/core-contracts.css';
 @import './styles/page-adapters/page-adapters.css';
 @import './styles/legacy/legacy-imports.css';
 @import './styles/temporary/temporary-overrides.css';
-@import './styles/emergency/emergency-hotfixes.css';
-@import './styles/stage232a-r10-r2-lead-action-groups-visual-polish.css';
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/emergency/emergency-hotfixes.css; content merged above. */
+/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage232a-r10-r2-lead-action-groups-visual-polish.css; content merged above. */
 /* STAGE212J_INDEX_IMPORT_ORDER_LOCK */
 /* STAGE212I_INDEX_CSS_IMPORT_ORDER_SOURCE_TRUTH */
 
 /* STAGE212H_CSS_IMPORT_ORDER_LOCK: @import rules intentionally start at line 1. Do not place comments before imports. */
+
+/* CLOSEFLOW_CSS_IMPORT_ORDER_VS3 */
+/* 1. Tailwind/base */
+/* 2. Design system */
+/* 3. Core contracts */
+/* 4. Page adapters */
+/* 5. Legacy imports */
+/* 6. Temporary overrides */
+/* 7. Emergency hotfixes */
 
 /* 2. Visual foundation source truth */
 
@@ -106,7 +115,7 @@
   body {
     @apply font-sans;
     background-color: var(--app-bg);
-    color: var(--app-text);
+    /* LF-UI-SOT-007 canonical owner marker: body visual color is owned by closeflow-visual-source-truth.css. */
     transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
   }
 }

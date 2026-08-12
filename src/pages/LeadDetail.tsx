@@ -46,8 +46,8 @@ void STAGE232I4_R16Z_R8_LEAD_MISSING_BLOCKER_TOGGLE_PRIORITY_FIX;
 void STAGE232A_R6_LEAD_MISSING_BLOCKER_ACTIVE_LIST_AND_TOP_CARD_SOURCE_TRUTH;
 import { type FormEvent, type PointerEventHandler, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, Clock, DollarSign, Edit2, Loader2, Mail, Mic, MicOff, MoreVertical, Phone, Plus, Trash2 } from 'lucide-react';
-import { EntityIcon } from '../components/ui-system';
+import { ArrowLeft, ArrowRight, CheckCircle2, Clock, DollarSign, Edit2, Loader2, Mail, Mic, MicOff, MoreVertical, Phone, Plus, Trash2 } from 'lucide-react';
+import { EntityIcon, SemanticIcon } from '../components/ui-system';
 // LEAD_TO_CASE_FLOW_STAGE24_LEAD_DETAIL
 /* STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP */
 /* STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP_REPAIR1_BUILD_FIX */
@@ -177,10 +177,13 @@ import {
   softDeleteTaskInSupabase,
   updateCaseInSupabase,
 } from '../lib/supabase-fallback';
-import '../styles/visual-stage14-lead-detail-vnext.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage14-lead-detail-vnext.css; content merged above.
+// LF-UI-SOT-007 shared-source contract: import '../styles/visual-stage14-lead-detail-vnext.css' is provided once by App.tsx.
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css' is provided once by App.tsx.
 import '../styles/closeflow-shared-quick-actions-bar-stage227e3.css';
-import '../styles/closeflow-lead-detail-sales-signal-stage227e4.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-lead-detail-sales-signal-stage227e4.css; content merged above.
+// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-lead-detail-sales-signal-stage227e4.css' is provided once by App.tsx.
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 
 
@@ -1716,7 +1719,7 @@ useEffect(() => {
             data-context-case-id={serviceCaseId || ''}
             data-context-record-label={getLeadName(lead)}
           >
-            <AlertTriangle className="h-4 w-4" /> Brak
+            <SemanticIcon role="risk_alert" size="sm" /> Brak
           </LeadActionButton>
           {serviceCaseId ? (
             <LeadActionButton onClick={() => navigate(caseDetailPath(serviceCaseId))}>
@@ -2658,7 +2661,7 @@ useEffect(() => {
                   </div>
                 </article>
                 <article className="lead-detail-top-card lead-detail-callout-amber" data-stage227e2-silence-risk-card="true" data-stage227e3-silence-risk-card="true">
-                  <div className="lead-detail-card-title-row"><AlertTriangle className="h-4 w-4" /><h2>Cisza / ryzyko</h2></div>
+                  <div className="lead-detail-card-title-row"><SemanticIcon role="risk_alert" size="sm" /><h2>Cisza / ryzyko</h2></div>
                   <strong>{leadSilenceRisk.headline}</strong>
                   <p>{leadSilenceRisk.details}</p>
                   <span className={`lead-detail-pill ${leadSilenceRisk.toneClass}`}>{leadSilenceRisk.label}</span>
@@ -2670,7 +2673,7 @@ useEffect(() => {
                   </div>
                 </article>
                 <article className="lead-detail-top-card lead-detail-callout-red" data-stage227e3-blocker-card="true" data-stage232a-r9-blocker-top-card-summary="true">
-                  <div className="lead-detail-card-title-row"><AlertTriangle className="h-4 w-4" /><h2>Blokada</h2></div>
+                  <div className="lead-detail-card-title-row"><SemanticIcon role="risk_alert" size="sm" /><h2>Blokada</h2></div>
                   {leadBlockerEntries.length > 0 ? (
                     <>
                       <strong>{leadBlockerEntries.length === 1 ? '1 aktywna blokada' : leadBlockerEntries.length + ' aktywne blokady'}</strong>
@@ -2728,7 +2731,7 @@ useEffect(() => {
                         data-lead-work-item-overdue={entry.isOverdue ? 'true' : 'false'}
                          data-stage231g-work-row-layout="true" data-stage232n-row-kind={getLeadTimelineRowDataKindStage232N(entry)}
                       >
-                        <span className="lead-detail-work-row__icon lead-detail-work-icon">{isMissingItemTimelineEntry(entry) ? <AlertTriangle className="h-4 w-4" /> : entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
+                        <span className="lead-detail-work-row__icon lead-detail-work-icon">{isMissingItemTimelineEntry(entry) ? <SemanticIcon role="risk_alert" size="sm" /> : entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
                         <div className="lead-detail-work-row__content lead-detail-work-content">
                           <small>{getLeadTimelineKindLabelStage232N(entry)}</small>
                           <h3>{entry.title}</h3>
@@ -2785,7 +2788,7 @@ useEffect(() => {
                       count: activeMissingItemEntriesStage228R19R2.length,
                       empty: 'Brak jawnych braków i blokad przy tym leadzie.',
                       items: activeMissingItemEntriesStage228R19R2.slice(0, 5),
-                      icon: <AlertTriangle className="h-4 w-4" />,
+                      icon: <SemanticIcon role="risk_alert" size="sm" />,
                     },
                     {
                       key: 'active' as LeadActionAccordionGroup,
@@ -2823,7 +2826,7 @@ useEffect(() => {
                               <div className="lead-detail-work-list lead-detail-stage228d-work-list" data-stage228d-lead-action-visible-limit="5">
                                 {group.items.map((entry) => (
                                   <article key={`stage228d-${String(group.key)}-${entry.id}`} className={`lead-detail-work-row ${entry.isOverdue || group.key === 'blockers' ? 'lead-detail-work-row-overdue' : ''}`} data-stage228d-lead-work-row="true" data-stage231g-work-row-layout="true" data-stage232n-row-kind={getLeadTimelineRowDataKindStage232N(entry)} data-stage232a-r10-r1-group-key={String(group.key)} data-stage232a-r10-r1-missing-tone-row={group.key === 'blockers' ? 'true' : 'false'}>
-                                    <span className="lead-detail-work-row__icon lead-detail-work-icon">{isMissingItemTimelineEntry(entry) ? <AlertTriangle className="h-4 w-4" /> : entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
+                                    <span className="lead-detail-work-row__icon lead-detail-work-icon">{isMissingItemTimelineEntry(entry) ? <SemanticIcon role="risk_alert" size="sm" /> : entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
                                     <div className="lead-detail-work-row__content lead-detail-work-content">
                                       <small>{getLeadTimelineKindLabelStage232N(entry)} • {getLeadTimelineStatusLabelStage232N(entry)}</small>
                                       <h3>{entry.title}</h3>
@@ -2958,7 +2961,7 @@ useEffect(() => {
                   key: 'missing',
                   label: 'Brak',
                   tone: 'missing',
-                  icon: <AlertTriangle className="h-4 w-4" />,
+                  icon: <SemanticIcon role="risk_alert" size="sm" />,
                   onClick: () => openLeadContextAction('blocker'),
                   disabled: !hasAccess,
                   data: { 'data-context-action-kind': 'blocker', 'data-context-record-type': 'lead', 'data-context-record-id': leadId || '', 'data-context-record-label': getLeadName(lead), 'data-stage227e3-lead-action': 'missing', 'data-stage227c3a-lead-missing-action': 'true', 'data-stage228r12-lead-context-blocker': 'true' },

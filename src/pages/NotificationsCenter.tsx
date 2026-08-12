@@ -53,8 +53,8 @@ import '../styles/closeflow-notifications-rail-force-colors-stage181x.css';
 import '../styles/closeflow-notifications-conflict-card-stage181aj.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
 import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
 
 const CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W = 'CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W';
@@ -851,3 +851,5 @@ export default function NotificationsCenter() {
     </Layout>
   );
 }
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

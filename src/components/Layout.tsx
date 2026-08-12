@@ -64,11 +64,12 @@ import AdminDebugToolbar from './admin-tools/AdminDebugToolbar';
 import OperatorTopBarRuntime from './OperatorTopBarRuntime';
 import VisualFoundationRuntimeStage212M from './VisualFoundationRuntimeStage212M';
 
-import '../styles/closeflow-compact-top-shell-source-truth.css';
-import '../styles/closeflow-operator-top-trim-source-truth.css';
-
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-compact-top-shell-source-truth.css; content merged above.
+// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-compact-top-shell-source-truth.css' is provided once by App.tsx.
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-operator-top-trim-source-truth.css; content merged above.
+// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-operator-top-trim-source-truth.css' is provided once by App.tsx.
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css' is provided once by App.tsx.
 import { OperatorMetricToneRuntime } from './ui-system';
 // STAGE200 disabled legacy visual/sidebar layer: /* STAGE198B disabled global 80pct density import: closeflow-desktop-density-source-truth.css */
 interface LayoutProps {
@@ -223,9 +224,6 @@ export default function Layout({ children }: LayoutProps) {
       const globalBar = document.querySelector('[data-shell-global-bar="true"]');
       const content = document.querySelector('main[data-shell-main="true"] > div.view.active[data-shell-content="true"]');
 
-      const scaledHeight = 'calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333))';
-      const scaledWidth = 'calc(100vw * var(--cf-stage201-app-scale-inverse, 1.3333333333))';
-
       if (window.innerWidth <= 860) {
         setImportant(document.documentElement, {
           height: 'auto',
@@ -290,21 +288,21 @@ export default function Layout({ children }: LayoutProps) {
       });
 
       setImportant(appShell, {
-        width: scaledWidth,
-        'min-width': scaledWidth,
-        height: scaledHeight,
-        'min-height': scaledHeight,
-        'max-height': scaledHeight,
-        transform: 'scale(var(--cf-stage201-app-scale, 0.75))',
+        width: '100%',
+        'min-width': '100%',
+        height: '100dvh',
+        'min-height': '100dvh',
+        'max-height': '100dvh',
+        transform: 'none',
         'transform-origin': 'top left',
         overflow: 'hidden',
         'align-items': 'stretch'
       });
 
       setImportant(sidebar, {
-        height: scaledHeight,
-        'min-height': scaledHeight,
-        'max-height': scaledHeight,
+        height: '100dvh',
+        'min-height': '100dvh',
+        'max-height': '100dvh',
         overflow: 'hidden',
         'align-self': 'stretch'
       });
@@ -316,9 +314,9 @@ export default function Layout({ children }: LayoutProps) {
       });
 
       setImportant(main, {
-        height: scaledHeight,
-        'min-height': scaledHeight,
-        'max-height': scaledHeight,
+        height: '100dvh',
+        'min-height': '100dvh',
+        'max-height': '100dvh',
         overflow: 'hidden',
         display: 'flex',
         'flex-direction': 'column',
@@ -340,7 +338,7 @@ export default function Layout({ children }: LayoutProps) {
         'overflow-x': 'hidden',
         'overscroll-behavior': 'contain',
         'scrollbar-gutter': 'stable both-edges',
-        'padding-bottom': 'calc(240px * var(--cf-stage201-app-scale-inverse, 1.3333333333))'
+        'padding-bottom': '240px'
       });
 
       content?.setAttribute('data-stage209-scroll-owner', 'true');

@@ -4,9 +4,9 @@ const path = require('node:path');
 
 const root = path.resolve(__dirname, '..');
 const SOT006_STAGE = 'LF-UI-SOT-006_CSS_OWNER_GUARDS_BEFORE_CLEANUP';
-const CSS_IMPORT_BASELINE = 45;
+const CSS_IMPORT_BASELINE = 2;
 const DISABLED_LEGACY_CSS_IMPORT_BASELINE = 1;
-const APP_STYLES_IMPORT_MAX_BASELINE = 45;
+const APP_STYLES_IMPORT_MAX_BASELINE = 2;
 const SEARCH_OWNER_GUARD = 'Search cleanup blocked until search owner is confirmed';
 const DEV_PREVIEW_NOT_PRODUCTION_SOT = 'DEV_PREVIEW_NOT_PRODUCTION_SOT';
 const NO_HOTFIX_DELETE_GUARD = 'NO_HOTFIX_DELETE_GUARD';
@@ -61,6 +61,7 @@ const ROUTE_OWNER_DICTIONARY = [
 
 const css = (status, ownerArea, smokeRequired = true) => ({ status, ownerArea, smokeRequired });
 const CSS_OWNER_DICTIONARY = new Map([
+  ['src/index.css', css('ACTIVE_OWNER', 'base/theme')],
   ['src/styles/closeflow-visual-source-truth.css', css('ACTIVE_OWNER', 'app shell/layout')],
   ['src/styles/closeflow-action-tokens.css', css('TOKEN_OWNER', 'buttons/actions')],
   ['src/styles/closeflow-action-clusters.css', css('ACTIVE_OWNER', 'buttons/actions')],
@@ -103,7 +104,6 @@ const CSS_OWNER_DICTIONARY = new Map([
   ['src/styles/closeflow-leads-clients-list-layout-source-truth-stage177.css', css('HOTFIX_TO_MERGE_LATER', 'lists/rows')],
   ['src/styles/closeflow-tasks-right-rail-grouped-list-source-truth-stage178.css', css('HOTFIX_TO_MERGE_LATER', 'right rail/tasks')],
   ['src/styles/closeflow-secondary-pages-full-width-stage181ad.css', css('DO_NOT_TOUCH_YET', 'secondary pages')],
-  ['src/styles/closeflow-app-viewport-scale-75-stage201.css', css('DO_NOT_TOUCH_YET', 'density/runtime')],
   ['src/styles/closeflow-ops-badges-and-icons-stretch-stage204.css', css('DO_NOT_TOUCH_YET', 'ops badges/icons')],
   ['src/styles/stage231h-r1e-case-finance-correction-modal-final.css', css('HOTFIX_TO_MERGE_LATER', 'finance/modal')],
 ]);
@@ -140,8 +140,8 @@ const DENSITY_LAYERS = [
   'src/styles/closeflow-real-density-tokens-no-zoom-stage156.css',
   'src/styles/closeflow-overlay-portal-density-stage158.css',
   'src/styles/closeflow-overlay-real-density-and-footer-stage159.css',
-  'src/styles/closeflow-app-viewport-scale-75-stage201.css',
 ];
+const CANONICAL_CSS_MERGED_BLOCKS = 164;
 
 function readRepoFile(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8');
@@ -175,6 +175,7 @@ function runChecks() {
   const routeSource = readRepoFile('src/lib/routes.ts');
   const patchGuardSource = readRepoFile('scripts/check-ui-patch-layers.cjs');
   const layoutSource = readRepoFile('src/components/Layout.tsx');
+  const canonicalCssSource = readRepoFile('src/styles/closeflow-visual-source-truth.css');
   const activeCssImports = extractActiveCssImports(appSource);
   const disabledLegacyCssImports = extractDisabledLegacyCssImports(appSource);
   const routePaths = extractRoutePaths(routeSource);
@@ -193,8 +194,12 @@ function runChecks() {
     const allowedHotfixStatus = ['HOTFIX_TO_MERGE_LATER', 'DELETE_AFTER_GUARD', 'DO_NOT_TOUCH_YET', 'DO_POTWIERDZENIA'].includes(owner.status);
     if (isStageOrHotfix && !allowedHotfixStatus) fail(failures, `${NO_HOTFIX_DELETE_GUARD}: hotfix/stage CSS cannot be ACTIVE_OWNER without merge/delete guard: ${cssImport}`);
   }
+  const mergedCssBlocks = (canonicalCssSource.match(/LF-UI-SOT-007_CANONICAL_CSS_OWNER_BEGIN:/g) || []).length;
+  if (mergedCssBlocks !== CANONICAL_CSS_MERGED_BLOCKS) fail(failures, `Canonical CSS owner merged block count changed from ${CANONICAL_CSS_MERGED_BLOCKS} to ${mergedCssBlocks}`);
   for (const cssOwner of CSS_OWNER_DICTIONARY.keys()) {
-    if (!activeCssImports.includes(cssOwner)) fail(failures, `CSS owner dictionary has stale/non-active App.tsx import: ${cssOwner}`);
+    if (activeCssImports.includes(cssOwner)) continue;
+    const mergedMarker = `LF-UI-SOT-007_CANONICAL_CSS_OWNER_BEGIN: ./${cssOwner.replace(/^src\//, '')}`;
+    if (!canonicalCssSource.includes(mergedMarker)) fail(failures, `CSS owner was neither active nor merged into canonical owner: ${cssOwner}`);
   }
   for (const routeOwner of ROUTE_OWNER_DICTIONARY) {
     if (!routePaths.includes(routeOwner.route)) fail(failures, `Missing route in src/lib/routes.ts for ${routeOwner.route}`);
@@ -224,8 +229,8 @@ function runChecks() {
     const owner = CSS_OWNER_DICTIONARY.get(layer);
     if (!owner || !owner.smokeRequired || !/density|runtime|modal/.test(owner.ownerArea)) fail(failures, `${DENSITY_RUNTIME_GUARD}: missing density/runtime owner/smoke for ${layer}`);
   }
-  if (!layoutSource.includes('STAGE209_CENTER_SCROLL_RUNTIME_ENFORCER_START') || !layoutSource.includes("transform: 'scale(var(--cf-stage201-app-scale")) {
-    fail(failures, `${DENSITY_RUNTIME_GUARD}: Layout.tsx runtime scroll/scale contract not detected`);
+  if (!layoutSource.includes('STAGE209_CENTER_SCROLL_RUNTIME_ENFORCER_START') || !layoutSource.includes("transform: 'none'") || layoutSource.includes('stage201-app-scale')) {
+    fail(failures, `${DENSITY_RUNTIME_GUARD}: Layout.tsx must use the canonical unscaled shell contract`);
   }
   return {
     ok: failures.length === 0,
@@ -236,6 +241,7 @@ function runChecks() {
       appStylesImportMax,
       routeOwners: ROUTE_OWNER_DICTIONARY.length,
       cssOwners: CSS_OWNER_DICTIONARY.size,
+      mergedCssBlocks,
       searchLayersBlocked: SEARCH_LAYERS.length,
       modalLayersGuarded: MODAL_LAYERS.length,
       rightRailLayersGuarded: RIGHT_RAIL_LAYERS.length,

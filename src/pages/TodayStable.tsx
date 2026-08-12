@@ -1,6 +1,6 @@
 import { type FormEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AlertTriangle, ArrowRight, Calendar, CalendarDays, CheckSquare, ChevronDown, ChevronUp, Loader2, RefreshCcw, SlidersHorizontal, Trash2, TrendingUp } from 'lucide-react';
+import { AlertTriangle, ArrowRight, CalendarDays, CheckSquare, ChevronDown, ChevronUp, Loader2, RefreshCcw, SlidersHorizontal, Trash2, TrendingUp } from 'lucide-react';
 import {
   EntityIcon } from '../components/ui-system';
 /*
@@ -57,8 +57,9 @@ import {
 } from '../lib/source-of-truth/today-work-item-status';
 import { EVENT_TYPES, PRIORITY_OPTIONS, TASK_TYPES } from '../lib/options';
 import '../styles/closeflow-page-header-v2.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css' is provided once by App.tsx.
+// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';import {
   getTodayEventMomentRaw,
@@ -2281,3 +2282,5 @@ function TodayStable() {
 /* CLOSEFLOW_STAGE89_TODAYSTABLE_EXPLICIT_EXPORT_CONTRACT: lazy runtime needs both named and default exports. */
 export { TodayStable };
 export default TodayStable;
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

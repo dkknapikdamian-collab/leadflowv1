@@ -71,14 +71,17 @@ import {
 } from '../lib/owner-control/last-contact-intake';
 import { isActiveClientCase } from '../lib/client-cases';
 import { getCaseFinanceSummary, getClientCasesFinanceSummary } from '../lib/finance/case-finance-source';
-import '../styles/visual-stage23-client-case-forms-vnext.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage23-client-case-forms-vnext.css; content merged above.
+// LF-UI-SOT-007 shared-source contract: import '../styles/visual-stage23-client-case-forms-vnext.css'; is provided once by App.tsx.
 import '../styles/clients-next-action-layout.css';
 
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-record-list-source-truth.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css'; is provided once by App.tsx.
+// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
+// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-canvas-source-truth-stage211e.css'; is provided once by App.tsx.
 const CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS = 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS';
 const STAGE30_CLIENTS_TRASH_COPY_REMOVED = 'STAGE30_CLIENTS_TRASH_COPY_REMOVED';
 const CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER = 'Szukaj po nazwie, telefonie, e-mailu, firmie albo sprawie...';
@@ -1167,3 +1170,5 @@ export default function Clients() {
     </Layout>
   );
 }
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

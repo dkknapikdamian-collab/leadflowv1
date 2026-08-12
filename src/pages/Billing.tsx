@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, ArrowRight, BadgeCheck, Calendar, CalendarClock, Check, Loader2, LockKeyhole, RefreshCw, Shield } from 'lucide-react';
+import { AlertTriangle, ArrowRight, BadgeCheck, CalendarClock, Check, Loader2, LockKeyhole, RefreshCw, Shield } from 'lucide-react';
 import {
   EntityIcon } from '../components/ui-system';
 
@@ -74,8 +74,8 @@ import '../styles/visual-stage16-billing-vnext.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-billing-visual-taxonomy-stage181z.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
 import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
 type BillingTab = 'plan' | 'settlements';
 
@@ -535,3 +535,5 @@ Funkcji nieudostępnionych backendowo nie udajemy.
 data-plan-visibility-stage32e="billing-plan-comparison"
 data-plan-visibility-stage32e="billing-feature-matrix"
 */
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState, type ComponentType, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { AlertTriangle, ArrowRight, Clock3, Filter, Loader2, RefreshCw, ShieldAlert, Target } from 'lucide-react';
+import { ArrowRight, Filter, Loader2, RefreshCw, Target } from 'lucide-react';
 import Layout from '../components/Layout';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { PaymentEntityIcon, resolveCloseflowMetricIconTone } from '../components/ui-system';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-metric-tiles.css';
+import { PaymentEntityIcon, SemanticIcon, resolveCloseflowMetricIconTone } from '../components/ui-system';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-metric-tiles.css';
 import '../styles/closeflow-record-list-source-truth.css';
 import '../styles/sales-funnel-stage231d0f-visual-alignment.css';
 import {
@@ -82,6 +82,12 @@ type FunnelTileDefinition = {
 };
 
 const FunnelMoneyMetricIcon: ComponentType<{ className?: string }> = PaymentEntityIcon;
+const FunnelSemanticTimeIcon: ComponentType<{ className?: string }> = ({ className }) => (
+  <SemanticIcon role="time" className={className} />
+);
+const FunnelSemanticRiskIcon: ComponentType<{ className?: string }> = ({ className }) => (
+  <SemanticIcon role="risk_alert" className={className} />
+);
 
 type FunnelFilterState = {
   ownerFilter: OwnerFilter;
@@ -91,8 +97,8 @@ type FunnelFilterState = {
 const FUNNEL_OWNER_TILE_TONE_MAP: Record<FunnelTileFilter, FunnelTileDefinition> = {
   move_now: { ...FUNNEL_OWNER_TILE_CONFIG.move_now, Icon: Target },
   no_next_move: { ...FUNNEL_OWNER_TILE_CONFIG.no_next_move, Icon: Filter },
-  silent_7: { ...FUNNEL_OWNER_TILE_CONFIG.silent_7, Icon: Clock3 },
-  high_risk: { ...FUNNEL_OWNER_TILE_CONFIG.high_risk, Icon: ShieldAlert },
+  silent_7: { ...FUNNEL_OWNER_TILE_CONFIG.silent_7, Icon: FunnelSemanticTimeIcon },
+  high_risk: { ...FUNNEL_OWNER_TILE_CONFIG.high_risk, Icon: FunnelSemanticRiskIcon },
   money: { ...FUNNEL_OWNER_TILE_CONFIG.money, Icon: FunnelMoneyMetricIcon },
 };
 
@@ -345,7 +351,7 @@ function FunnelDecisionListCard({ card }: { card: SalesFunnelMovementCard }) {
             {card.entityType === 'lead' ? 'Lead' : 'Sprawa'}
           </Badge>
           <Badge variant="outline" className={getOwnerRiskBadgeClass(card.riskLevel)} data-stage227a-funnel-risk-flag="true">
-            <ShieldAlert className="mr-1 h-3 w-3" />
+            <SemanticIcon role="risk_alert" size="xs" className="mr-1" />
             {getOwnerRiskLabel(card.riskLevel)} ryzyko
           </Badge>
           <Badge variant="outline" className={movementTone}>
@@ -483,7 +489,7 @@ export function SalesFunnel() {
           {error ? (
             <Card className="border-red-200 bg-red-50 text-red-800">
               <CardContent className="flex items-center gap-3 p-4 text-sm font-semibold">
-                <AlertTriangle className="h-5 w-5" />
+                <SemanticIcon role="risk_alert" size="md" />
                 {error}
               </CardContent>
             </Card>
@@ -581,7 +587,7 @@ export function SalesFunnel() {
               <Card className="border-slate-200 bg-white shadow-sm">
                 <CardContent className="p-4 text-sm text-slate-600">
                   <div className="mb-2 flex items-center gap-2 font-black text-slate-900">
-                    <Clock3 className="h-4 w-4 text-blue-600" />
+                    <SemanticIcon role="time" size="sm" tone="primary" />
                     Reguła widoku
                   </div>
                   Lejek to lista decyzji, nie kanban. Etapy jako filtr, nie ściśnięte kolumny. Ma szybko pokazać: ruch, ciszę, ryzyko i pieniądze.

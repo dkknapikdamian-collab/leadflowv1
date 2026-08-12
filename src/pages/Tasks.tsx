@@ -108,9 +108,7 @@ import { pl } from 'date-fns/locale';
 import { isActiveSalesLead } from '../lib/lead-health';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 import '../styles/visual-stage21-task-form-vnext.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-
-
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
 const TASK_FORM_VISUAL_REBUILD_STAGE21 = 'TASK_FORM_VISUAL_REBUILD_STAGE21';
 const TASK_FORM_STAGE21_HUMAN_COPY = 'Podaj tytuł zadania. Wybierz poprawny termin. Termin ma nieprawidłowy format. Nie udało się zapisać zadania. Spróbuj ponownie.';
 const TASK_REMINDERS_STAGE45A_GUARD = 'Zadania mają opcje przypomnienia, a mutacje nie gubią reminderAt ani recurrenceRule.';

@@ -55,7 +55,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <Comp
         data-cf-vst-button="true"
         data-cf-vst-button-kind={variant || "default"}
-        className={cn("cf-vst-button", vstVariantClass, buttonVariants({ variant, size }), className)}
+        className={cn("cf-vst-button cf-vst-text-button", vstVariantClass, buttonVariants({ variant, size }), className)}
         ref={ref}
         {...props}
       />

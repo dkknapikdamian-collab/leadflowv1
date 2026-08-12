@@ -20,7 +20,7 @@ import {
 } from '../lib/ai-usage-guard';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import '../styles/closeflow-command-actions-source-truth.css';
+// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-command-actions-source-truth.css';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';

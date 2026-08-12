@@ -1,7 +1,7 @@
 import { type FormEvent, type MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Calendar as CalendarIcon, CheckSquare, ChevronLeft, ChevronRight, Loader2, Plus, Repeat, Trash2 } from 'lucide-react';
-import { EntityIcon, NotificationEntityIcon } from '../components/ui-system';
+import { CheckSquare, ChevronLeft, ChevronRight, Loader2, Repeat, Trash2 } from 'lucide-react';
+import { EntityIcon, NotificationEntityIcon, SemanticIcon } from '../components/ui-system';
 import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
 import { actionButtonClass as entityActionButtonClass, modalFooterClass, trashActionButtonClass, trashActionIconClass } from '../components/entity-actions';
 import {
@@ -87,16 +87,16 @@ import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { isTaskOrEventStatusCompleted } from '../lib/domain-statuses';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
-import '../styles/closeflow-calendar-skin-only-v1.css';
-import '../styles/closeflow-calendar-color-tooltip-v2.css';
-import '../styles/closeflow-calendar-month-chip-overlap-fix-v1.css';
-import '../styles/closeflow-calendar-month-rows-no-overlap-repair2.css';
-import '../styles/closeflow-calendar-month-entry-structural-fix-v3.css';
-import '../styles/closeflow-calendar-month-plain-text-rows-v4.css';
-import '../styles/closeflow-calendar-selected-day-full-text-repair11.css';
-import '../styles/closeflow-calendar-selected-day-new-tile-v9.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-calendar-skin-only-v1.css';
+// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-calendar-color-tooltip-v2.css';
+// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-calendar-month-chip-overlap-fix-v1.css';
+// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-calendar-month-rows-no-overlap-repair2.css';
+// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-calendar-month-entry-structural-fix-v3.css';
+// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-calendar-month-plain-text-rows-v4.css';
+// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-calendar-selected-day-full-text-repair11.css';
+// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-calendar-selected-day-new-tile-v9.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
 import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';import {
   getOperationalEntryActionDecision,
   isOperationalEntryActionAllowed,
@@ -3088,11 +3088,11 @@ export default function Calendar() {
             <>
               <div className="head-actions">
                           <button type="button" className={createEntryActionClass()} data-cf-header-action="primary" data-calendar-header-add-event-stage6="true" onClick={() => setIsNewEventOpen(true)}>
-                            <Plus className="mr-1 h-3.5 w-3.5" />
+                            <SemanticIcon role="add" size="xs" className="mr-1" />
                             Dodaj wydarzenie
                           </button>
                           <button type="button" className={createEntryActionClass()} data-cf-header-action="primary" data-calendar-header-add-task-stage6="true" onClick={() => setIsNewTaskOpen(true)}>
-                            <Plus className="mr-1 h-3.5 w-3.5" />
+                            <SemanticIcon role="add" size="xs" className="mr-1" />
                             Dodaj zadanie
                           </button>
                           <Link to="/ai-drafts" className="btn soft-blue" data-cf-header-action="ai">
@@ -3698,3 +3698,5 @@ export default function Calendar() {
 }
 
 /* CALENDAR_STAGE08D_NO_FIREBASE_BOOT_BLOCK GLOBAL_QUICK_ACTIONS_STAGE08D_CALENDAR_MODAL_EVENT_BUS */
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

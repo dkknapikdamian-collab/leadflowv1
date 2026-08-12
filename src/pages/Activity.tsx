@@ -11,8 +11,8 @@ import {
 } from '../components/ui-system';
 
 import Layout from '../components/Layout';
-import '../styles/visual-stage8-activity-vnext.css';
-import '../styles/closeflow-activity-visual-source-truth-stage181u.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage8-activity-vnext.css; content merged above.
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-activity-visual-source-truth-stage181u.css; content merged above.
 import '../styles/hotfix-right-rail-dark-wrappers.css';
 import '../styles/closeflow-activity-rail-force-colors-stage181v.css';
 import {
@@ -32,8 +32,8 @@ import {
 } from '../hooks/useWorkspace';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
+// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 import {
   ACTIVITY_FILTER_OPTIONS as activityFilters,
@@ -478,3 +478,5 @@ export default function Activity() {
     </Layout>
   );
 }
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

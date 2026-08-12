@@ -84,7 +84,10 @@ export const CLOSEFLOW_VISUAL_FOUNDATION_TOKENS = {
     sectionTitle: 'cf-vst-text-section-title',
     cardTitle: 'cf-vst-text-card-title',
     body: 'cf-vst-text-body',
+    label: 'cf-vst-text-label',
     meta: 'cf-vst-text-meta',
+    metric: 'cf-vst-text-metric',
+    button: 'cf-vst-text-button',
   },
   surfaces: {
     card: 'cf-vst-card',

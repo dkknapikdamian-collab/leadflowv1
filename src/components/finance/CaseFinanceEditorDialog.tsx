@@ -10,7 +10,7 @@ import {
 } from '../../lib/finance/case-finance-source';
 import { normalizeCommissionMode, normalizeCommissionStatus, normalizeCurrency } from '../../lib/finance/finance-normalize';
 import type { CommissionMode, CommissionStatus } from '../../lib/finance/finance-types';
-import '../../styles/finance/closeflow-finance.css';
+// LF-UI-SOT-007 canonical owner marker: import '../../styles/finance/closeflow-finance.css';
 
 export const CLOSEFLOW_FIN12_SHARED_CASE_FINANCE_EDITOR_DIALOG = 'CLOSEFLOW_FIN12_SHARED_CASE_FINANCE_EDITOR_DIALOG_V1' as const;
 // FIN-13 parser guard literal: replace(/\./g, '').replace(',', '\.')
