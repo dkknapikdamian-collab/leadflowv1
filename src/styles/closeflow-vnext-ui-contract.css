@@ -1,3 +1,4 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-vnext-ui-contract.css","concerns":[],"scope":"component","consumerRoots":["src/styles/closeflow-vnext-ui-contract.css"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
 /* CloseFlow VNext UI Contract
    Skopiuj do: src/styles/closeflow-vnext-ui-contract.css
    Import w src/index.css:

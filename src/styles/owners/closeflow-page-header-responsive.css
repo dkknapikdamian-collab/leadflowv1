@@ -1,0 +1,706 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:page-header-responsive","concerns":[],"scope":"route-scoped","consumerRoots":["src/styles/closeflow-visual-source-truth.css"],"role":"scoped-adapter","boundary":"route-component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
+/* CLOSEFLOW_PAGE_HEADER_COPY_LEFT_ONLY_PACKET4_2026_05_11
+   owner: CloseFlow Visual System
+   scope: ONLY top page header copy/kicker/title/description placement.
+   reason: legacy rules still let row wrappers behave like copy/action blocks and push text toward the center/right.
+   hard rule: copy column is always left; kicker is always directly above title; actions stay right only when explicitly marked.
+*/
+
+:root {
+  --cf-ph-copy-left-max: 780px;
+  --cf-ph-copy-grid-gap: 18px;
+
+  --cf-ph-kicker-left-bg: #eef4ff;
+  --cf-ph-kicker-left-border: #bfdbfe;
+  --cf-ph-kicker-left-text: #2563eb;
+
+  --cf-ph-title-left-color: #0f172a;
+  --cf-ph-title-left-size: clamp(28px, 2.75vw, 40px);
+  --cf-ph-title-left-weight: 950;
+  --cf-ph-title-left-line: 1;
+  --cf-ph-title-left-tracking: -0.058em;
+
+  --cf-ph-desc-left-color: #64748b;
+  --cf-ph-desc-left-size: 13px;
+  --cf-ph-desc-left-weight: 650;
+  --cf-ph-desc-left-line: 1.45;
+}
+
+/* Outer header must provide two zones: copy left, actions right.
+   This selector intentionally comes after all previous header source files. */
+#root .cf-html-shell main .cf-page-header[data-cf-page-header="true"],
+#root main .cf-page-header[data-cf-page-header="true"],
+#root .cf-page-header[data-cf-page-header="true"] {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) max-content !important;
+  grid-template-areas: "cf-copy cf-actions" !important;
+  align-items: start !important;
+  justify-items: stretch !important;
+  justify-content: stretch !important;
+  gap: var(--cf-ph-copy-grid-gap) !important;
+  text-align: left !important;
+}
+
+/* Layout rows are NOT copy. They must stretch full width.
+   This fixes pages like Tasks/Templates where the row wrapper was previously constrained/centered. */
+#root .cf-html-shell main .cf-page-header[data-cf-page-header="true"] > .cf-page-header-row,
+#root main .cf-page-header[data-cf-page-header="true"] > .cf-page-header-row,
+#root .cf-page-header[data-cf-page-header="true"] > .cf-page-header-row,
+#root .cf-html-shell main .cf-page-header[data-cf-page-header="true"] > .cf-page-hero-layout,
+#root main .cf-page-header[data-cf-page-header="true"] > .cf-page-hero-layout,
+#root .cf-page-header[data-cf-page-header="true"] > .cf-page-hero-layout {
+  grid-column: 1 / -1 !important;
+  grid-area: auto !important;
+  justify-self: stretch !important;
+  align-self: start !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) max-content !important;
+  grid-template-areas: "cf-copy cf-actions" !important;
+  align-items: start !important;
+  justify-items: stretch !important;
+  justify-content: stretch !important;
+  gap: var(--cf-ph-copy-grid-gap) !important;
+  text-align: left !important;
+}
+
+/* Real copy column. This is the main fix: never center, never right-align. */
+#root .cf-html-shell main .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="copy"],
+#root main .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="copy"],
+#root .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="copy"] {
+  grid-area: cf-copy !important;
+  grid-column: 1 !important;
+  justify-self: start !important;
+  align-self: center !important;
+  place-self: center start !important;
+
+  width: 100% !important;
+  max-width: var(--cf-ph-copy-left-max) !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding: 0 !important;
+  transform: none !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  text-align: left !important;
+}
+
+/* If copy is the only child in a header, it still stays left. */
+#root .cf-page-header[data-cf-page-header="true"] > [data-cf-page-header-part="copy"]:only-child,
+#root .cf-page-header[data-cf-page-header="true"] > .cf-page-header-row > [data-cf-page-header-part="copy"]:only-child,
+#root .cf-page-header[data-cf-page-header="true"] > .cf-page-hero-layout > [data-cf-page-header-part="copy"]:only-child {
+  grid-column: 1 / -1 !important;
+  grid-area: cf-copy !important;
+  justify-self: start !important;
+  place-self: center start !important;
+}
+
+/* Explicit actions only. No :last-child guessing. */
+#root .cf-html-shell main .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="actions"],
+#root main .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="actions"],
+#root .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="actions"],
+#root .cf-page-header[data-cf-page-header="true"] .head-actions,
+#root .cf-page-header[data-cf-page-header="true"] .cf-page-hero-actions,
+#root .cf-page-header[data-cf-page-header="true"] .ai-drafts-header-actions,
+#root .cf-page-header[data-cf-page-header="true"] .activity-header-actions,
+#root .cf-page-header[data-cf-page-header="true"] .notifications-header-actions,
+#root .cf-page-header[data-cf-page-header="true"] .settings-header-actions,
+#root .cf-page-header[data-cf-page-header="true"] .billing-header-actions,
+#root .cf-page-header[data-cf-page-header="true"] .support-header-actions {
+  grid-area: cf-actions !important;
+  grid-column: 2 !important;
+  justify-self: end !important;
+  align-self: start !important;
+  place-self: start end !important;
+  margin: 0 !important;
+  margin-left: auto !important;
+
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  min-width: max-content !important;
+  text-align: left !important;
+}
+
+/* Kicker like "CENTRUM DNIA", "ZADANIA", "AKTYWNOŚĆ": always directly above title, same color. */
+#root .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="kicker"],
+#root .cf-page-header[data-cf-page-header="true"] .kicker,
+#root .cf-page-header[data-cf-page-header="true"] .cf-page-hero-kicker,
+#root .cf-page-header[data-cf-page-header="true"] .activity-kicker,
+#root .cf-page-header[data-cf-page-header="true"] .ai-drafts-kicker,
+#root .cf-page-header[data-cf-page-header="true"] .notifications-kicker,
+#root .cf-page-header[data-cf-page-header="true"] [class*="kicker"],
+#root .cf-page-header[data-cf-page-header="true"] [data-slot="badge"],
+#root .cf-page-header[data-cf-page-header="true"] .badge {
+  order: 1 !important;
+  align-self: flex-start !important;
+  display: inline-flex !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  align-items: center !important;
+  gap: 6px !important;
+
+  margin: 0 0 9px 0 !important;
+  padding: 7px 10px !important;
+  border: 1px solid var(--cf-ph-kicker-left-border) !important;
+  border-radius: 999px !important;
+  background: var(--cf-ph-kicker-left-bg) !important;
+  background-color: var(--cf-ph-kicker-left-bg) !important;
+  background-image: none !important;
+  color: var(--cf-ph-kicker-left-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-kicker-left-text) !important;
+
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.055em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  text-align: left !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+/* Title directly below kicker. */
+#root .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="title"],
+#root .cf-page-header[data-cf-page-header="true"] h1,
+#root .cf-page-header[data-cf-page-header="true"] .cf-page-hero-title {
+  order: 2 !important;
+  align-self: flex-start !important;
+  display: block !important;
+  max-width: var(--cf-ph-copy-left-max) !important;
+  margin: 0 !important;
+
+  color: var(--cf-ph-title-left-color) !important;
+  -webkit-text-fill-color: var(--cf-ph-title-left-color) !important;
+  font-size: var(--cf-ph-title-left-size) !important;
+  font-weight: var(--cf-ph-title-left-weight) !important;
+  line-height: var(--cf-ph-title-left-line) !important;
+  letter-spacing: var(--cf-ph-title-left-tracking) !important;
+  text-align: left !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+/* Description directly below title. */
+#root .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="description"],
+#root .cf-page-header[data-cf-page-header="true"] .cf-page-header-description,
+#root .cf-page-header[data-cf-page-header="true"] p:not([data-cf-page-header-part="kicker"]):not(.kicker):not(.cf-page-hero-kicker):not(.activity-kicker) {
+  order: 3 !important;
+  align-self: flex-start !important;
+  display: block !important;
+  max-width: var(--cf-ph-copy-left-max) !important;
+  margin: 8px 0 0 0 !important;
+
+  color: var(--cf-ph-desc-left-color) !important;
+  -webkit-text-fill-color: var(--cf-ph-desc-left-color) !important;
+  font-size: var(--cf-ph-desc-left-size) !important;
+  font-weight: var(--cf-ph-desc-left-weight) !important;
+  line-height: var(--cf-ph-desc-left-line) !important;
+  text-align: left !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+/* Emergency duplicate description guard. */
+#root .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="copy"] > .cf-page-header-description + .cf-page-header-description,
+#root .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="copy"] > p + p {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  #root .cf-page-header[data-cf-page-header="true"],
+  #root .cf-page-header[data-cf-page-header="true"] > .cf-page-header-row,
+  #root .cf-page-header[data-cf-page-header="true"] > .cf-page-hero-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  #root .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="copy"],
+  #root .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="actions"],
+  #root .cf-page-header[data-cf-page-header="true"] .head-actions,
+  #root .cf-page-header[data-cf-page-header="true"] .cf-page-hero-actions {
+    justify-self: stretch !important;
+    align-self: stretch !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+  }
+
+  #root .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="actions"],
+  #root .cf-page-header[data-cf-page-header="true"] .head-actions,
+  #root .cf-page-header[data-cf-page-header="true"] .cf-page-hero-actions {
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+  }
+}
+
+/* CLOSEFLOW_PAGE_HEADER_STRUCTURE_LOCK_PACKET3_2026_05_11
+   owner: CloseFlow Visual System
+   goal: final source of truth for top page header text position/kicker placement.
+   reason: previous fixes still allowed page-specific wrappers to center/right-align copy.
+   rule:
+   - text/copy column always left
+   - kicker always directly above title
+   - title + description always below kicker
+   - actions always right if they exist
+   - never infer actions from :last-child
+*/
+
+:root {
+  --cf-page-header-kicker-bg-final: #eef4ff;
+  --cf-page-header-kicker-border-final: #bfdbfe;
+  --cf-page-header-kicker-text-final: #2563eb;
+
+  --cf-page-header-copy-left-max: 780px;
+  --cf-page-header-copy-row-gap: 18px;
+
+  --cf-page-header-title-color-final: #0f172a;
+  --cf-page-header-title-size-final: clamp(28px, 2.75vw, 40px);
+  --cf-page-header-title-weight-final: 950;
+  --cf-page-header-title-line-final: 1;
+  --cf-page-header-title-tracking-final: -0.058em;
+
+  --cf-page-header-description-color-final: #64748b;
+  --cf-page-header-description-size-final: 13px;
+  --cf-page-header-description-weight-final: 650;
+  --cf-page-header-description-line-final: 1.45;
+}
+
+#root .cf-page-header[data-cf-page-header="true"] {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) max-content !important;
+  grid-template-areas: "copy actions" !important;
+  align-items: start !important;
+  justify-content: stretch !important;
+  text-align: left !important;
+}
+
+/* If a page has an inner row wrapper, it must be layout-only, not the copy column. */
+#root .cf-page-header[data-cf-page-header="true"] .cf-page-header-row,
+#root .cf-page-header[data-cf-page-header="true"] .cf-page-hero-layout {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) max-content !important;
+  grid-template-areas: "copy actions" !important;
+  align-items: start !important;
+  justify-content: stretch !important;
+  gap: var(--cf-page-header-copy-row-gap) !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  text-align: left !important;
+}
+
+/* Copy is explicit only. This prevents a single text block from becoming a right-side action. */
+#root .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="copy"] {
+  grid-area: copy !important;
+  grid-column: auto !important;
+  justify-self: start !important;
+  align-self: center !important;
+  margin: 0 !important;
+  min-width: 0 !important;
+  max-width: var(--cf-page-header-copy-left-max) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  text-align: left !important;
+  transform: none !important;
+}
+
+/* Actions are explicit only. */
+#root .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="actions"],
+#root .cf-page-header[data-cf-page-header="true"] .head-actions,
+#root .cf-page-header[data-cf-page-header="true"] .cf-page-hero-actions,
+#root .cf-page-header[data-cf-page-header="true"] .ai-drafts-header-actions,
+#root .cf-page-header[data-cf-page-header="true"] .activity-header-actions,
+#root .cf-page-header[data-cf-page-header="true"] .notifications-header-actions,
+#root .cf-page-header[data-cf-page-header="true"] .settings-header-actions,
+#root .cf-page-header[data-cf-page-header="true"] .billing-header-actions,
+#root .cf-page-header[data-cf-page-header="true"] .support-header-actions {
+  grid-area: actions !important;
+  grid-column: auto !important;
+  justify-self: end !important;
+  align-self: start !important;
+  margin: 0 0 0 auto !important;
+  min-width: max-content !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  text-align: left !important;
+}
+
+/* No explicit actions? Copy still owns the left side and spans if needed. */
+#root .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="copy"]:only-child,
+#root .cf-page-header[data-cf-page-header="true"] .cf-page-header-row > [data-cf-page-header-part="copy"]:only-child,
+#root .cf-page-header[data-cf-page-header="true"] .cf-page-hero-layout > [data-cf-page-header-part="copy"]:only-child {
+  grid-area: copy !important;
+  grid-column: 1 / -1 !important;
+  justify-self: start !important;
+}
+
+/* Kicker always directly above title. Same color everywhere as source truth. */
+#root .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="kicker"],
+#root .cf-page-header[data-cf-page-header="true"] .kicker,
+#root .cf-page-header[data-cf-page-header="true"] .cf-page-hero-kicker,
+#root .cf-page-header[data-cf-page-header="true"] .activity-kicker,
+#root .cf-page-header[data-cf-page-header="true"] .ai-drafts-kicker,
+#root .cf-page-header[data-cf-page-header="true"] .notifications-kicker,
+#root .cf-page-header[data-cf-page-header="true"] [class*="kicker"],
+#root .cf-page-header[data-cf-page-header="true"] [data-slot="badge"],
+#root .cf-page-header[data-cf-page-header="true"] .badge {
+  order: 1 !important;
+  display: inline-flex !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin: 0 0 9px 0 !important;
+  padding: 7px 10px !important;
+  border: 1px solid var(--cf-page-header-kicker-border-final) !important;
+  border-radius: 999px !important;
+  background: var(--cf-page-header-kicker-bg-final) !important;
+  background-color: var(--cf-page-header-kicker-bg-final) !important;
+  color: var(--cf-page-header-kicker-text-final) !important;
+  -webkit-text-fill-color: var(--cf-page-header-kicker-text-final) !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.055em !important;
+  text-transform: uppercase !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+/* Title below kicker, always left. */
+#root .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="title"],
+#root .cf-page-header[data-cf-page-header="true"] h1,
+#root .cf-page-header[data-cf-page-header="true"] .cf-page-hero-title {
+  order: 2 !important;
+  display: block !important;
+  margin: 0 !important;
+  max-width: var(--cf-page-header-copy-left-max) !important;
+  color: var(--cf-page-header-title-color-final) !important;
+  -webkit-text-fill-color: var(--cf-page-header-title-color-final) !important;
+  font-size: var(--cf-page-header-title-size-final) !important;
+  font-weight: var(--cf-page-header-title-weight-final) !important;
+  line-height: var(--cf-page-header-title-line-final) !important;
+  letter-spacing: var(--cf-page-header-title-tracking-final) !important;
+  text-align: left !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+/* Description below title, always left. */
+#root .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="description"],
+#root .cf-page-header[data-cf-page-header="true"] .cf-page-header-description,
+#root .cf-page-header[data-cf-page-header="true"] p:not([data-cf-page-header-part="kicker"]):not(.kicker):not(.cf-page-hero-kicker):not(.activity-kicker) {
+  order: 3 !important;
+  display: block !important;
+  margin: 8px 0 0 0 !important;
+  max-width: var(--cf-page-header-copy-left-max) !important;
+  color: var(--cf-page-header-description-color-final) !important;
+  -webkit-text-fill-color: var(--cf-page-header-description-color-final) !important;
+  font-size: var(--cf-page-header-description-size-final) !important;
+  font-weight: var(--cf-page-header-description-weight-final) !important;
+  line-height: var(--cf-page-header-description-line-final) !important;
+  text-align: left !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+/* Hide duplicates from old local paragraphs/source truth overlap. */
+#root .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="copy"] > .cf-page-header-description + .cf-page-header-description,
+#root .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="copy"] > p + p {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  #root .cf-page-header[data-cf-page-header="true"],
+  #root .cf-page-header[data-cf-page-header="true"] .cf-page-header-row,
+  #root .cf-page-header[data-cf-page-header="true"] .cf-page-hero-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  #root .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="actions"],
+  #root .cf-page-header[data-cf-page-header="true"] .head-actions,
+  #root .cf-page-header[data-cf-page-header="true"] .cf-page-hero-actions {
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+  }
+}
+
+.cf-html-view .page-head {
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  background: linear-gradient(120deg, #ffffff 0%, #f8fafc 60%, #eef2ff 100%);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  padding: 16px 20px;
+}
+
+.cf-html-view .grid-4 > .metric,
+.cf-html-view .grid-5 > .metric {
+  min-height: 92px;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05) !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px !important;
+  height: auto !important;
+  min-width: 0 !important;
+}
+
+.cf-html-view .grid-4 > .metric > div,
+.cf-html-view .grid-5 > .metric > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.cf-html-view .grid-4 > .metric label,
+.cf-html-view .grid-5 > .metric label {
+  margin: 0 !important;
+  min-width: 0;
+  flex: 1;
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.cf-html-view .grid-4 > .metric strong,
+.cf-html-view .grid-5 > .metric strong {
+  margin: 0 !important;
+  font-size: 28px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  white-space: nowrap;
+}
+
+.cf-html-view .grid-4 > .metric .hint,
+.cf-html-view .grid-5 > .metric .hint {
+  display: none !important;
+}
+
+.cf-html-view .grid-4 > .metric .metric-icon,
+.cf-html-view .grid-5 > .metric .metric-icon {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px;
+  border-radius: 14px !important;
+  background: #f1f5f9 !important;
+  color: #64748b !important;
+  padding: 10px !important;
+}
+
+/* CLOSEFLOW_STAGE39_PAGE_HEADERS_COPY_VISUAL_SYSTEM
+   owner: CloseFlow Visual System
+   intent: make page headers quiet, operational and consistent without rebuilding page TSX.
+   scope: existing .cf-html-view .page-head and .head-actions only.
+   rule: no landing-page hero, no fake marketing promise, no metric tile rewrite.
+*/
+
+.cf-html-view .page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 18px;
+  padding: 18px 20px !important;
+  border: 1px solid color-mix(in srgb, var(--app-border, #e2e8f0) 92%, transparent) !important;
+  border-radius: 22px !important;
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--color-primary, #2563eb) 10%, transparent) 0, transparent 34%),
+    linear-gradient(135deg, var(--app-surface-strong, #ffffff) 0%, var(--app-surface, #f8fafc) 68%, color-mix(in srgb, var(--color-primary, #2563eb) 6%, var(--app-surface, #f8fafc)) 100%) !important;
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--app-shadow-color, rgba(15, 23, 42, 0.06)) 88%, transparent) !important;
+}
+
+.cf-html-view .page-head > div:first-child {
+  min-width: 0;
+  max-width: 760px;
+}
+
+.cf-html-view .page-head h1 {
+  margin: 0 !important;
+  color: var(--app-text, #0f172a) !important;
+  font-size: clamp(24px, 2.2vw, 34px) !important;
+  line-height: 1.04 !important;
+  letter-spacing: -0.045em !important;
+  font-weight: 900 !important;
+}
+
+.cf-html-view .page-head p,
+.cf-html-view .page-head .hint,
+.cf-html-view .page-head .subtitle {
+  margin-top: 7px !important;
+  max-width: 680px;
+  color: var(--app-muted, #64748b) !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+  font-weight: 650 !important;
+}
+
+.cf-html-view .head-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.cf-html-view .head-actions .btn,
+.cf-html-view .page-head .btn {
+  min-height: 38px;
+  border-radius: 999px !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.01em;
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--app-shadow-color, rgba(15, 23, 42, 0.06)) 70%, transparent);
+}
+
+.cf-html-view .head-actions .btn svg,
+.cf-html-view .page-head .btn svg {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 920px) {
+  .cf-html-view .page-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cf-html-view .head-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .cf-html-view .page-head {
+    padding: 15px 14px !important;
+    border-radius: 18px !important;
+  }
+
+  .cf-html-view .page-head h1 {
+    font-size: 24px !important;
+  }
+
+  .cf-html-view .head-actions {
+    width: 100%;
+  }
+
+  .cf-html-view .head-actions .btn,
+  .cf-html-view .page-head .btn {
+    flex: 1 1 160px;
+    justify-content: center;
+  }
+}
+
+/* CLOSEFLOW_STAGE40_PAGE_HEADER_ACTION_OVERFLOW_HARDENING
+   owner: CloseFlow Visual System
+   intent: make page-head actions readable when a page has many buttons or long Polish labels.
+   scope: .cf-html-view .page-head and .head-actions only.
+   rule: CSS-only; no business logic, no data contract change, no metric tile rewrite.
+*/
+
+.cf-html-view .page-head {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.cf-html-view .page-head::after {
+  content: "";
+  position: absolute;
+  inset: auto 18px 0 18px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--color-primary, #2563eb) 18%, transparent),
+    transparent
+  );
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+.cf-html-view .head-actions {
+  max-width: min(620px, 100%);
+}
+
+.cf-html-view .head-actions .btn,
+.cf-html-view .page-head .btn {
+  max-width: 100%;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.cf-html-view .head-actions .btn span,
+.cf-html-view .page-head .btn span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cf-html-view .head-actions .btn.soft-blue,
+.cf-html-view .page-head .btn.soft-blue {
+  border: 1px solid color-mix(in srgb, var(--color-primary, #2563eb) 20%, var(--app-border, #e2e8f0)) !important;
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 9%, var(--app-surface-strong, #ffffff)) !important;
+  color: var(--color-primary, #2563eb) !important;
+}
+
+@media (max-width: 760px) {
+  .cf-html-view .page-head {
+    gap: 14px;
+  }
+
+  .cf-html-view .head-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .cf-html-view .head-actions .btn,
+  .cf-html-view .page-head .btn {
+    width: 100%;
+    min-height: 40px;
+    padding-inline: 12px !important;
+  }
+}
+
+@media (max-width: 460px) {
+  .cf-html-view .head-actions {
+    grid-template-columns: 1fr;
+  }
+}

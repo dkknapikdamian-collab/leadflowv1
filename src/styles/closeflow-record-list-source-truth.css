@@ -1,3 +1,4 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-record-list-source-truth.css","concerns":[],"scope":"component","consumerRoots":["src/styles/closeflow-record-list-source-truth.css"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
 /* CLOSEFLOW_RECORD_LIST_SOURCE_TRUTH_2026_05_12
    owner: CloseFlow Visual System
    scope: /leads and /clients list rows
@@ -330,20 +331,20 @@
 /* CLOSEFLOW_STAGE95_RECORD_TRASH_ACTION_SOURCE_OF_TRUTH
    Record rows may size the button, but they must not repaint destructive actions as red slabs.
 */
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-button {
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-semantic48-task-card) .cf-trash-action-button {
   border-color: var(--cf-trash-border-color, #fecaca) !important;
   background: var(--cf-trash-bg, #ffffff) !important;
   color: var(--cf-trash-text-color, #334155) !important;
   box-shadow: none !important;
 }
 
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-button:hover {
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-semantic48-task-card) .cf-trash-action-button:hover {
   border-color: var(--cf-trash-border-hover-color, #fca5a5) !important;
   background: var(--cf-trash-bg-hover, rgba(254, 242, 242, 0.72)) !important;
 }
 
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-icon,
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-button svg {
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-semantic48-task-card) .cf-trash-action-icon,
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-semantic48-task-card) .cf-trash-action-button svg {
   color: var(--cf-trash-icon-color, #dc2626) !important;
 }
 
@@ -543,19 +544,19 @@
   -webkit-text-fill-color: var(--cf-vst-color-primary-strong) !important;
 }
 
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-button {
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-semantic48-task-card) .cf-trash-action-button {
   border-color: var(--cf-vst-color-delete-border) !important;
   background: var(--cf-vst-surface-card-solid) !important;
   color: var(--cf-vst-color-delete-strong) !important;
 }
 
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-button:hover {
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-semantic48-task-card) .cf-trash-action-button:hover {
   border-color: var(--cf-vst-color-delete) !important;
   background: var(--cf-vst-color-delete-soft) !important;
 }
 
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-icon,
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-button svg {
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-semantic48-task-card) .cf-trash-action-icon,
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-semantic48-task-card) .cf-trash-action-button svg {
   color: var(--cf-vst-color-delete) !important;
 }
 

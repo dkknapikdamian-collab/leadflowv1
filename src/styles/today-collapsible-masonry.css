@@ -1,3 +1,4 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/today-collapsible-masonry.css","concerns":[],"scope":"component","consumerRoots":["src/pages/Today.tsx"],"role":"scoped-adapter","boundary":"today-masonry","whyNotGlobal":"This stylesheet is limited to the Today page masonry consumer and does not define shared semantic primitives.","whyNotDuplicate":"The Today masonry layout is a route-specific adapter; shared card and spacing semantics remain owned by the registered semantic owners.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 /*
 FAZA5_ETAP52_TODAY_COLLAPSIBLE_MASONRY
 Cel: sekcje w Dziś są zwijane i mają niezależną wysokość.

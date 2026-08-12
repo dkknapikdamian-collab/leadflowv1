@@ -1,3 +1,4 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/entity-contact-card.css","concerns":[],"scope":"component","consumerRoots":["src/styles/entity-contact-card.css"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
 /* STAGE115_LEAD_CONTACT_CLIENT_PARITY
    Shared contact card source for ClientDetail and LeadDetail.
    The class names intentionally preserve the active ClientDetail visual contract. */

@@ -25,21 +25,13 @@ expect('src/components/Layout.tsx', 'main-leads', 'main-leads class');
 expect('src/components/Layout.tsx', "data-visual-stage-leads={isLeadsRoute ? '03-leads' : undefined}", 'Stage03 data marker');
 
 reject('src/index.css', 'visual-stage03-leads.css', 'inactive Stage03 Leads CSS import');
-expect('src/pages/Leads.tsx', "../styles/visual-stage20-lead-form-vnext.css", 'current Stage20 lead form CSS import');
-expect('src/pages/Leads.tsx', "../styles/closeflow-page-header-v2.css", 'current page header CSS import');
+expect('src/App.tsx', "./styles/closeflow-visual-source-truth.css", 'canonical visual source-truth entrypoint');
 expect('src/pages/Leads.tsx', "../styles/closeflow-record-list-source-truth.css", 'current record-list CSS import');
-expect('src/pages/Leads.tsx', "../styles/closeflow-unified-page-canvas-stage211c.css", 'current Stage211C canvas import');
-expect('src/pages/Leads.tsx', "../styles/closeflow-canvas-source-truth-stage211e.css", 'current Stage211E canvas import');
-expect('src/pages/Leads.tsx', 'VISUAL_STAGE25_LEADS_FULL_JSX_HTML_REBUILD', 'current Leads full rebuild marker');
-expect('src/pages/Leads.tsx', 'VISUAL_STAGE18_LEADS_HTML_HARD_1TO1', 'current Stage18 Leads marker');
-expect('src/pages/Leads.tsx', 'STAGE231D0C_LEAD_LIST_CARD_CLIENT_VIEW_FREEZE', 'current frozen list-card shell marker');
-expect('src/pages/Leads.tsx', 'STAGE226R10_LEAD_CLIENT_SEPARATION_RUNTIME', 'current lead/client separation marker');
-
-expect('src/styles/visual-stage03-leads.css', 'VISUAL_STAGE_03_LEADS_UI_SYSTEM', 'Stage03 reference CSS marker');
-expect('src/styles/visual-stage03-leads.css', '.main-leads', 'historical scoped CSS');
-expect('src/styles/visual-stage03-leads.css', 'grid-template-columns: repeat(5', 'historical grid-5 styling');
-expect('src/styles/visual-stage03-leads.css', 'data-stage32-leads-value-layout', 'historical relation rail styling');
-expect('src/styles/visual-stage03-leads.css', '@media (max-width:760px)', 'historical mobile polish');
+expect('src/styles/closeflow-visual-source-truth.css', './owners/closeflow-page-header-responsive.css', 'page-header semantic owner');
+expect('src/styles/closeflow-visual-source-truth.css', './owners/closeflow-records-and-rails.css', 'records/rails semantic owner');
+expect('src/styles/closeflow-visual-source-truth.css', './owners/closeflow-page-adapters.css', 'page adapter semantic owner');
+expect('src/styles/owners/closeflow-responsive-adapters.css', 'LF-UI-SOT-007_OWNER', 'responsive scoped-owner evidence');
+reject('src/styles/closeflow-visual-source-truth.css', 'visual-stage03-leads.css', 'historical Stage03 CSS in active graph');
 
 expect('src/pages/Leads.tsx', "consumeGlobalQuickAction() === 'lead'", 'global lead trigger compatibility');
 expect('src/pages/Leads.tsx', 'const [isNewLeadOpen, setIsNewLeadOpen]', 'add lead modal');

@@ -12,7 +12,7 @@ const requiredFiles = [
   'public/manifest.webmanifest',
   'docs/PRODUCTION_READINESS_STATUS.md',
   'docs/STAGE_A18_BRANDING_DOCUMENTATION.md',
-  'src/styles/visual-stage21-task-form-vnext.css',
+  'src/styles/closeflow-task-form.css',
 ];
 
 const errors = [];
@@ -80,7 +80,7 @@ for (const rel of canonicalFiles) {
   if (/\bLeadFlow\b/.test(content)) errors.push(`${rel} contains old main brand: LeadFlow`);
 }
 
-const css = read('src/styles/visual-stage21-task-form-vnext.css');
+const css = read('src/styles/closeflow-task-form.css');
 if (!css.includes('STAGE_A18_TASK_ACTION_CONTRAST')) errors.push('task contrast CSS marker missing');
 if (!/\.task-row[\s\S]*color:\s*#334155/.test(css)) errors.push('task row actions should get stronger text contrast');
 

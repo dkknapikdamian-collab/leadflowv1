@@ -1,0 +1,388 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-case-detail-shell-rail.css","concerns":[],"scope":"component","consumerRoots":["src/styles/closeflow-case-detail-shell-rail.css"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
+/* STAGE228R9_CASE_DETAIL_SHELL_WIDTH_RAIL_LIFT
+   Header spans the full workspace, tabs become a compact in-column control,
+   and the right rail starts directly under the header instead of below a full-width tabs bar. */
+
+.case-detail-vnext-page .case-detail-header[data-stage228r9-wide-header="true"] {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  max-width: none !important;
+  width: 100% !important;
+  margin-bottom: 14px !important;
+  padding: 18px 24px !important;
+}
+
+.case-detail-vnext-page .case-detail-header[data-stage228r9-wide-header="true"] .case-detail-header-copy::after {
+  display: none !important;
+}
+
+.case-detail-vnext-page .case-detail-header[data-stage228r9-wide-header="true"] .case-detail-header-copy {
+  gap: 6px !important;
+}
+
+.case-detail-vnext-page .case-detail-header[data-stage228r9-wide-header="true"] .case-detail-back-button {
+  min-height: 34px !important;
+  padding: 7px 11px !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-shell {
+  align-items: start !important;
+  display: grid !important;
+  gap: 22px !important;
+  grid-template-columns: minmax(0, 1fr) 320px !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  max-width: none !important;
+  width: 100% !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-right-rail {
+  margin-top: 0 !important;
+  position: sticky !important;
+  top: 18px !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-tabs-compact {
+  align-items: center !important;
+  display: inline-flex !important;
+  justify-content: flex-start !important;
+  margin: 0 0 12px !important;
+  max-width: 100% !important;
+  width: auto !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-tabs-compact .case-detail-stage220a10-tabs {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  border-radius: 999px !important;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04) !important;
+  display: inline-flex !important;
+  gap: 4px !important;
+  min-height: 34px !important;
+  padding: 4px !important;
+  width: auto !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-tabs-compact [data-stage220a11-case-tab-trigger] {
+  border-radius: 999px !important;
+  font-size: 12px !important;
+  gap: 5px !important;
+  min-height: 28px !important;
+  padding: 5px 9px !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-tabs-compact .case-detail-stage220a10-tab-icon svg {
+  height: 14px !important;
+  min-height: 14px !important;
+  min-width: 14px !important;
+  width: 14px !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-tabs-compact .case-detail-stage220a10-tab-count {
+  font-size: 10px !important;
+  min-height: 18px !important;
+  min-width: 18px !important;
+  padding: 2px 5px !important;
+}
+
+@media (max-width: 1220px) {
+  .case-detail-vnext-page .case-detail-stage228r9-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  .case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-right-rail {
+    position: static !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .case-detail-vnext-page .case-detail-header[data-stage228r9-wide-header="true"] {
+    padding: 16px !important;
+  }
+
+  .case-detail-vnext-page .case-detail-stage228r9-tabs-compact {
+    display: flex !important;
+    overflow-x: auto !important;
+    width: 100% !important;
+  }
+}
+
+/* STAGE228R10A_CASE_TABS_CARD_AND_RAIL_NUDGE
+   Damian requested the Obsługa / Checklisty / Historia group back inside a card.
+   The card spans the left content column until the right rail, centers the tabs,
+   and the right rail is nudged slightly upward without changing the page grid. */
+.case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-main-column[data-stage228r9-main-column="true"] > .case-detail-stage228r9-tabs-compact {
+  align-items: center !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid rgba(226, 232, 240, 0.98) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.055) !important;
+  display: flex !important;
+  justify-content: center !important;
+  margin: 0 0 14px !important;
+  min-height: 46px !important;
+  padding: 8px 14px !important;
+  width: 100% !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-main-column[data-stage228r9-main-column="true"] > .case-detail-stage228r9-tabs-compact .case-detail-stage220a10-tabs {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-right-rail {
+  margin-top: -12px !important;
+  top: 10px !important;
+}
+
+@media (max-width: 1220px) {
+  .case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-right-rail {
+    margin-top: 0 !important;
+    top: auto !important;
+  }
+}
+
+/* STAGE228R10B_CASE_TABS_TRUE_CENTER_AND_RAIL_PULLUP
+   R10A created the card but did not truly center the inner tabs and did not lift the right rail enough.
+   This is still CSS-only: no DOM move, no page-grid rewrite. */
+.case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-main-column[data-stage228r9-main-column="true"] > .case-detail-stage228r9-tabs-compact,
+.case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-main-column[data-stage228r9-main-column="true"] > .case-detail-stage220a10-tabs-wrap.case-detail-stage228r9-tabs-compact {
+  align-items: center !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  border: 1px solid rgba(226, 232, 240, 0.98) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.06) !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  justify-content: center !important;
+  margin: 0 0 14px !important;
+  max-width: none !important;
+  min-height: 48px !important;
+  padding: 8px 16px !important;
+  text-align: center !important;
+  width: 100% !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-tabs-compact .case-detail-stage220a10-tabs,
+.case-detail-vnext-page .case-detail-stage220a10-tabs-wrap.case-detail-stage228r9-tabs-compact .case-detail-stage220a10-tabs {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  justify-content: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  max-width: max-content !important;
+  width: auto !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-tabs-compact [data-stage220a11-case-tab-trigger] {
+  flex: 0 0 auto !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-right-rail {
+  margin-top: -42px !important;
+  top: 4px !important;
+}
+
+@media (max-width: 1220px) {
+  .case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-right-rail {
+    margin-top: 0 !important;
+    top: auto !important;
+  }
+
+  .case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-main-column[data-stage228r9-main-column="true"] > .case-detail-stage228r9-tabs-compact,
+  .case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-main-column[data-stage228r9-main-column="true"] > .case-detail-stage220a10-tabs-wrap.case-detail-stage228r9-tabs-compact {
+    justify-content: center !important;
+    overflow-x: auto !important;
+  }
+}
+
+/* STAGE228R10C_CASE_RAIL_FUNNEL_SPACING
+   R10B pulled the right rail too high. Damian requested spacing closer to the funnel card rhythm.
+   This final override keeps the centered tabs from R10B but lowers the right rail a bit. */
+.case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-right-rail {
+  margin-top: -24px !important;
+  top: 12px !important;
+}
+
+@media (max-width: 1220px) {
+  .case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-right-rail {
+    margin-top: 0 !important;
+    top: auto !important;
+  }
+}
+
+/* STAGE228R10D_CASE_TABS_EXPLICIT_CENTER_CARD
+   Final explicit card for Obsługa / Checklisty / Historia.
+   The wrapper owns the card, spans the left content column, centers the inner pills
+   and keeps the right rail offsets from R10C unchanged. */
+.case-detail-vnext-page {
+  --stage228r10d-case-card-gap: 16px;
+  --stage228r10d-case-card-radius: 22px;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-main-column[data-stage228r9-main-column="true"] > .case-detail-stage228r10d-tabs-card[data-stage228r10d-tabs-card="true"] {
+  align-items: center !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  border: 1px solid rgba(226, 232, 240, 0.98) !important;
+  border-radius: var(--stage228r10d-case-card-radius) !important;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.06) !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  justify-content: center !important;
+  margin: 0 0 var(--stage228r10d-case-card-gap) !important;
+  min-height: 48px !important;
+  padding: 8px 16px !important;
+  text-align: center !important;
+  width: 100% !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r10d-tabs-card[data-stage228r10d-tabs-card="true"] > .case-detail-stage228r9-tabs-compact,
+.case-detail-vnext-page .case-detail-stage228r10d-tabs-card[data-stage228r10d-tabs-card="true"] > .case-detail-stage220a10-tabs-wrap.case-detail-stage228r9-tabs-compact {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  max-width: max-content !important;
+  width: auto !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r10d-tabs-card[data-stage228r10d-tabs-card="true"] .case-detail-stage220a10-tabs {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  justify-content: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  max-width: max-content !important;
+  width: auto !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r10d-tabs-card[data-stage228r10d-tabs-card="true"] [data-stage220a11-case-tab-trigger] {
+  flex: 0 0 auto !important;
+}
+
+
+/* STAGE231D2_R6_CASE_DETAIL_TOP_STRIP_RAIL_LIFT
+   Damian requested the top case/name card to stop spanning the full width.
+   The title strip becomes the left card and the existing right rail is pulled upward into the freed top-right area.
+   CSS-only: no new API function, no route change, no finance/cost logic change. */
+.case-detail-vnext-page .case-detail-header[data-stage231d2-r6-top-strip-left-card="true"] {
+  box-sizing: border-box !important;
+  margin-bottom: 16px !important;
+  max-width: calc(100% - 342px) !important;
+  min-height: 62px !important;
+  padding: 14px 18px !important;
+  width: calc(100% - 342px) !important;
+}
+
+.case-detail-vnext-page .case-detail-header[data-stage231d2-r6-top-strip-left-card="true"] .case-detail-header-copy,
+.case-detail-vnext-page .case-detail-header[data-stage231d2-r6-top-strip-left-card="true"] .client-detail-header-copy {
+  min-width: 0 !important;
+}
+
+.case-detail-vnext-page .case-detail-header[data-stage231d2-r6-top-strip-left-card="true"] .case-detail-header-composed-title {
+  align-items: center !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+}
+
+.case-detail-vnext-page .case-detail-header[data-stage231d2-r6-top-strip-left-card="true"] .case-detail-header-client-name,
+.case-detail-vnext-page .case-detail-header[data-stage231d2-r6-top-strip-left-card="true"] .case-detail-header-case-name {
+  display: inline-block !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.case-detail-vnext-page .case-detail-header[data-stage231d2-r6-top-strip-left-card="true"] .case-detail-header-client-name {
+  flex: 0 1 auto !important;
+  max-width: 36% !important;
+}
+
+.case-detail-vnext-page .case-detail-header[data-stage231d2-r6-top-strip-left-card="true"] .case-detail-header-case-name {
+  flex: 1 1 auto !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-shell[data-stage231d2-r6-side-rail-top-lift="true"] .case-detail-right-rail {
+  margin-top: -96px !important;
+  top: 8px !important;
+}
+
+@media (max-width: 1220px) {
+  .case-detail-vnext-page .case-detail-header[data-stage231d2-r6-top-strip-left-card="true"] {
+    max-width: none !important;
+    width: 100% !important;
+  }
+
+  .case-detail-vnext-page .case-detail-stage228r9-shell[data-stage231d2-r6-side-rail-top-lift="true"] .case-detail-right-rail {
+    margin-top: 0 !important;
+    top: auto !important;
+  }
+}
+
+/* STAGE231D0D_R5_RIGHT_RAIL_MICRO_LIFT
+   Delicate lift only; keep global card rhythm and reset on smaller screens. */
+.case-detail-vnext-page .case-detail-stage228r9-shell[data-stage231d2-r6-side-rail-top-lift="true"] .case-detail-right-rail {
+  margin-top: -8px !important;
+}
+
+@media (max-width: 1220px) {
+  .case-detail-vnext-page .case-detail-stage228r9-shell[data-stage231d2-r6-side-rail-top-lift="true"] .case-detail-right-rail {
+    margin-top: 0 !important;
+  }
+}
+
+/* STAGE231D0D_R6_RIGHT_RAIL_ALIGN_TO_TRUE_GRID
+   Right rail follows the same top axis as the true service grid.
+   No random extra lift; use shared card gap for rhythm. */
+.case-detail-vnext-page .case-detail-stage228r9-shell[data-stage231d2-r6-side-rail-top-lift="true"] .case-detail-right-rail {
+  margin-top: 0 !important;
+  gap: var(--cf-case-detail-card-gap, 14px) !important;
+}
+
+@media (max-width: 1220px) {
+  .case-detail-vnext-page .case-detail-stage228r9-shell[data-stage231d2-r6-side-rail-top-lift="true"] .case-detail-right-rail {
+    margin-top: 0 !important;
+  }
+}
+
+/* STAGE231D0D_R8_RIGHT_RAIL_ALIGN_TO_CASE_HEADER
+   Visual-only fix: lift the right finance/actions rail to the same top axis
+   as the case data header card. Do not alter finance logic or quick actions. */
+.case-detail-vnext-page .case-detail-stage228r9-shell[data-stage231d2-r6-side-rail-top-lift="true"] .case-detail-right-rail {
+  margin-top: -96px !important;
+  gap: var(--cf-case-detail-card-gap, 14px) !important;
+}
+
+@media (max-width: 1220px) {
+  .case-detail-vnext-page .case-detail-stage228r9-shell[data-stage231d2-r6-side-rail-top-lift="true"] .case-detail-right-rail {
+    margin-top: 0 !important;
+  }
+}
+
+/* STAGE231D0D_R9_MIDDLE_AND_RIGHT_AXIS_MICRO_LIFT
+   Visual-only: lift the middle service section slightly and pull the right finance/action rail
+   to the same visual axis. Do not alter finance logic, quick actions or data handlers. */
+.case-detail-vnext-page .case-detail-stage228r9-shell {
+  margin-top: -10px !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-shell[data-stage231d2-r6-side-rail-top-lift="true"] .case-detail-right-rail {
+  margin-top: -112px !important;
+  gap: var(--cf-case-detail-card-gap, 14px) !important;
+}
+
+@media (max-width: 1220px) {
+  .case-detail-vnext-page .case-detail-stage228r9-shell {
+    margin-top: 0 !important;
+  }
+
+  .case-detail-vnext-page .case-detail-stage228r9-shell[data-stage231d2-r6-side-rail-top-lift="true"] .case-detail-right-rail {
+    margin-top: 0 !important;
+  }
+}

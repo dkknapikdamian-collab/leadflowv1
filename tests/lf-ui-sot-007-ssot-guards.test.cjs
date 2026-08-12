@@ -6,43 +6,138 @@ const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 
 const root = path.resolve(__dirname, '..');
-const guard = path.join(root, 'scripts', 'check-closeflow-ui-ssot.cjs');
+const guardPath = path.join(root, 'scripts', 'check-closeflow-ui-ssot.cjs');
+const { validateCssArchitecture } = require(guardPath);
 
-function run(mode, contents) {
-  const fixture = fs.mkdtempSync(path.join(os.tmpdir(), 'lf-ui-sot-007-'));
-  const fixturePath = path.join(fixture, 'fixture.ts');
-  fs.writeFileSync(fixturePath, contents, 'utf8');
-  const result = spawnSync(process.execPath, [guard, mode, '--fixture', fixturePath], { cwd: root, encoding: 'utf8' });
-  fs.rmSync(fixture, { recursive: true, force: true });
+function metadata({ ownerId, concerns = [], scope = 'global', role, boundary, whyNotGlobal, whyNotDuplicate, consumerRoots = ['src/consumer.ts'] }) {
+  return `/* LF-UI-SOT-007_OWNER ${JSON.stringify({
+    schema: 'LF-UI-SOT-007.owner.v1',
+    ownerId,
+    concerns,
+    scope,
+    consumerRoots,
+    role,
+    boundary,
+    whyNotGlobal,
+    whyNotDuplicate,
+    activePatchLayer: false,
+    historicalImplementationHooks: [],
+  })} */`;
+}
+
+function fixture({ ownerSource, extraFiles = {}, concerns = ['TYPOGRAPHY'], forbiddenRuntimeTokens = ['LF-UI-SOT-007_CANONICAL_CSS_OWNER_BEGIN', 'LF-UI-SOT-007_CANONICAL_CSS_OWNER_END'] }) {
+  const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'lf-ui-sot-007-semantic-'));
+  const files = {
+    'src/owners/typography.css': ownerSource,
+    'src/consumer.ts': 'export const consumer = true;',
+    ...extraFiles,
+  };
+  for (const [relative, source] of Object.entries(files)) {
+    const absolute = path.join(fixtureRoot, relative);
+    fs.mkdirSync(path.dirname(absolute), { recursive: true });
+    fs.writeFileSync(absolute, source, 'utf8');
+  }
+  const graphFiles = new Set(Object.keys(files).map((relative) => path.join(fixtureRoot, relative)));
+  const consumerAbsolute = path.join(fixtureRoot, 'src/consumer.ts');
+  const graph = {
+    files: graphFiles,
+    edges: [...graphFiles]
+      .filter((file) => file.endsWith('.css'))
+      .map((file) => ({ from: 'src/consumer.ts', to: path.relative(fixtureRoot, file).replaceAll('\\', '/'), specifier: `./${path.relative(path.dirname(consumerAbsolute), file).replaceAll('\\', '/')}` })),
+  };
+  const registry = {
+    schema: 'LF-UI-SOT-007.semantic-visual-owner-registry.test.v1',
+    requiredConcerns: concerns,
+    concerns: Object.fromEntries(concerns.map((concern) => [concern, {
+      owner: `src/owners/${concern === 'MODALS' ? 'modals' : 'typography'}.css`,
+      scope: 'global',
+      consumerRoots: ['src/consumer.ts'],
+    }])),
+    entryOnly: [],
+    ownerModel: {
+      canonicalRole: 'canonical-owner',
+      scopedRole: 'scoped-adapter',
+      entryRole: 'entrypoint',
+      metadataEvidenceRequired: ['role', 'boundary', 'whyNotGlobal', 'whyNotDuplicate'],
+    },
+    scopedOwnerPolicy: { allowedScopes: ['global', 'component-scoped', 'route-scoped', 'entry'] },
+    forbiddenRuntimeTokens,
+  };
+  if (concerns.includes('MODALS') && !files['src/owners/modals.css']) {
+    const absolute = path.join(fixtureRoot, 'src/owners/modals.css');
+    fs.mkdirSync(path.dirname(absolute), { recursive: true });
+    fs.writeFileSync(absolute, metadata({ ownerId: 'semantic:modals', concerns: ['MODALS'], role: 'canonical-owner', boundary: 'global-semantic', whyNotGlobal: 'Registered modal owner.', whyNotDuplicate: 'Only modal owner.' }), 'utf8');
+    graph.files.add(absolute);
+    graph.edges.push({ from: 'src/consumer.ts', to: 'src/owners/modals.css', specifier: './owners/modals.css' });
+  }
+  const result = validateCssArchitecture({ rootDir: fixtureRoot, registry, graph });
+  fs.rmSync(fixtureRoot, { recursive: true, force: true });
   return result;
 }
 
-test('icons guard rejects a local icon map fixture', () => {
-  const result = run('icons', 'const LOCAL_ICON_MAP = { add: Plus };');
-  assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /LOCAL_ICON_MAP/);
+function canonical(concerns = ['TYPOGRAPHY'], body = '') {
+  return `${metadata({ ownerId: `semantic:${concerns.join('-').toLowerCase()}`, concerns, role: 'canonical-owner', boundary: 'global-semantic', whyNotGlobal: 'This file is the registered semantic owner for its declared concerns.', whyNotDuplicate: 'The registry maps each declared concern to this single reachable owner.' })}\n${body}`;
+}
+
+function scoped(body = '') {
+  return `${metadata({ ownerId: 'scoped:dialog-adapter', concerns: [], scope: 'component-scoped', role: 'scoped-adapter', boundary: 'component', whyNotGlobal: 'This stylesheet is limited to the dialog consumer boundary.', whyNotDuplicate: 'It claims no semantic concern.' })}\n${body}`;
+}
+
+test('the CSS guard is import-safe and does not execute on require', () => {
+  const result = spawnSync(process.execPath, ['-e', `require(${JSON.stringify(guardPath)})`], { cwd: root, encoding: 'utf8' });
+  assert.equal(result.status, 0);
+  assert.equal(result.stdout, '');
+  assert.equal(result.stderr, '');
 });
 
-test('colors guard rejects a local tone map fixture', () => {
-  const result = run('colors', 'const LOCAL_TONE_MAP = { warning: "amber" };');
-  assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /LOCAL_TONE_MAP/);
+test('negative A: marker-wrapped copied stage CSS is rejected', () => {
+  const result = fixture({ ownerSource: canonical(['TYPOGRAPHY'], '/* LF-UI-SOT-007_CANONICAL_CSS_OWNER_BEGIN */\n.stage-copied { font-size: 1rem; }\n/* LF-UI-SOT-007_CANONICAL_CSS_OWNER_END */') });
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /marker text is not ownership proof/);
 });
 
-test('typography guard rejects a local typography map fixture', () => {
-  const result = run('typography', 'const LOCAL_TYPOGRAPHY_MAP = { body: "text-sm" };');
-  assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /LOCAL_TYPOGRAPHY_MAP/);
+test('negative B: a renamed hotfix copied into a canonical owner is rejected', () => {
+  const result = fixture({ ownerSource: canonical(['TYPOGRAPHY'], '.hotfix-copied { font-size: 1rem; }') });
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /historical stage\/hotfix authority/);
 });
 
-test('css owner guard rejects an unknown owner fixture', () => {
-  const result = run('css-owners', 'UNKNOWN_CSS_OWNER');
-  assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /UNKNOWN_CSS_OWNER/);
+test('negative C: a second conceptual typography owner is rejected', () => {
+  const result = fixture({
+    ownerSource: canonical(),
+    extraFiles: {
+      'src/scoped/duplicate.css': metadata({ ownerId: 'semantic:duplicate-typography', concerns: ['TYPOGRAPHY'], role: 'scoped-adapter', boundary: 'component', whyNotGlobal: 'duplicate', whyNotDuplicate: 'duplicate' }) + '\n.duplicate { font-size: 1rem; }',
+    },
+  });
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /DUPLICATE_SEMANTIC_OWNER|competing semantic owners/);
 });
 
-test('component clone guard rejects a page-local button clone fixture', () => {
-  const result = run('component-clones', 'function LocalButton() { return null; }');
-  assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /page-local canonical clone/);
+test('negative D: a second conceptual modal owner is rejected', () => {
+  const result = fixture({
+    concerns: ['TYPOGRAPHY', 'MODALS'],
+    ownerSource: canonical(),
+    extraFiles: {
+      'src/scoped/duplicate-modal.css': metadata({ ownerId: 'semantic:duplicate-modal', concerns: ['MODALS'], role: 'scoped-adapter', boundary: 'component', whyNotGlobal: 'duplicate', whyNotDuplicate: 'duplicate' }) + '\n.duplicate-modal { display: grid; }',
+    },
+  });
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /DUPLICATE_SEMANTIC_OWNER|competing semantic owners/);
+});
+
+test('negative E control: legitimate scoped CSS with an evidence boundary passes', () => {
+  const result = fixture({
+    ownerSource: canonical(),
+    extraFiles: {
+      'src/scoped/dialog-adapter.css': scoped('.dialog-local { display: grid; }'),
+    },
+  });
+  assert.equal(result.ok, true, result.failures.join('\n'));
+  assert.equal(result.summary.ONE_OWNER_PER_VISUAL_CONCERN, 'PASS');
+});
+
+test('negative F control: a legitimate semantic canonical owner passes', () => {
+  const result = fixture({ ownerSource: canonical(['TYPOGRAPHY'], ':root { --cf-font-body: 1rem; }') });
+  assert.equal(result.ok, true, result.failures.join('\n'));
+  assert.equal(result.summary.DUPLICATE_SEMANTIC_OWNERS, 0);
 });

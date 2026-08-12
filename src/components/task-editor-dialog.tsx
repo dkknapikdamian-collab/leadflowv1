@@ -6,7 +6,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { TASK_TYPES, toDateTimeLocalValue, type EditableTaskRecord } from '../lib/tasks';
 import type { RecurrenceEndType, RecurrenceRule } from '../lib/scheduling';
-import '../styles/visual-stage21-task-form-vnext.css';
+import '../styles/closeflow-task-form.css';
 
 type TaskEditorDialogProps = {
   open: boolean;

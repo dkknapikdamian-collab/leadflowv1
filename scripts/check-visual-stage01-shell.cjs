@@ -34,7 +34,7 @@ const badPatterns = [
 ];
 
 expect('src/components/Layout.tsx', 'VISUAL_STAGE_01_SHELL_SIDEBAR', 'Stage01 shell trace marker');
-expect('src/components/Layout.tsx', 'className="app closeflow-visual-stage01 cf-html-shell"', 'current root shell classes');
+expect('src/components/Layout.tsx', 'className="app closeflow-visual-semantic01 cf-html-shell"', 'current root shell classes');
 expect('src/components/Layout.tsx', 'data-visual-stage="01-shell-sidebar"', 'Stage01 data attribute');
 expect('src/components/Layout.tsx', "caption: 'Start pracy'", 'Start pracy group');
 expect('src/components/Layout.tsx', "caption: 'Czas i obowiązki'", 'Czas i obowiązki group');
@@ -54,9 +54,11 @@ reject('src/components/Layout.tsx', "label: 'Szkice AI'", 'obsolete Szkice AI na
 reject('src/components/Layout.tsx', "label: 'Pomoc'", 'obsolete Pomoc navigation item');
 
 reject('src/index.css', 'visual-stage01-shell.css', 'inactive Stage01 shell CSS import');
-expect('src/components/Layout.tsx', "../styles/closeflow-compact-top-shell-source-truth.css", 'current compact top shell source');
-expect('src/components/Layout.tsx', "../styles/closeflow-operator-top-trim-source-truth.css", 'current operator top trim source');
-expect('src/components/Layout.tsx', "../styles/closeflow-unified-page-canvas-stage211c.css", 'current Stage211C canvas source');
+expect('src/App.tsx', "./styles/closeflow-visual-source-truth.css", 'canonical visual source-truth entrypoint');
+expect('src/styles/closeflow-visual-source-truth.css', './owners/closeflow-page-adapters.css', 'shell semantic owner');
+expect('src/styles/closeflow-visual-source-truth.css', './owners/closeflow-page-header-responsive.css', 'header semantic owner');
+expect('src/styles/closeflow-visual-source-truth.css', './owners/closeflow-responsive-adapters.css', 'responsive semantic owner');
+reject('src/styles/closeflow-visual-source-truth.css', 'visual-stage01-shell.css', 'historical Stage01 CSS in active graph');
 expect('src/components/Layout.tsx', 'OperatorTopBarRuntime', 'operator top bar runtime');
 expect('src/components/Layout.tsx', 'VisualFoundationRuntimeStage212M', 'visual foundation runtime');
 expect('src/components/Layout.tsx', 'ContextActionDialogsHost', 'shared context action host');
@@ -75,16 +77,10 @@ expect('src/components/GlobalQuickActions.tsx', 'data-global-task-direct-modal-t
 expect('src/components/GlobalQuickActions.tsx', "rememberGlobalQuickAction('event')", 'event quick action bridge');
 expect('src/components/GlobalQuickActions.tsx', 'ClientCreateDialog', 'client create dialog host');
 expect('src/components/GlobalQuickActions.tsx', 'TaskCreateDialog', 'task create dialog host');
-expect('src/components/GlobalQuickActions.tsx', "../styles/closeflow-command-actions-source-truth.css", 'current command actions visual source');
+expect('src/App.tsx', "./styles/closeflow-visual-source-truth.css", 'global command-actions entrypoint');
+expect('src/styles/closeflow-visual-source-truth.css', './owners/closeflow-actions.css', 'command-actions semantic owner');
 
-expect('src/styles/visual-stage01-shell.css', 'VISUAL_STAGE_01_SHELL_CSS', 'Stage01 reference CSS marker');
-expect('src/styles/visual-stage01-shell.css', '.closeflow-visual-stage01.app', 'historical scoped app class');
-expect('src/styles/visual-stage01-shell.css', '.closeflow-visual-stage01 .sidebar', 'historical scoped sidebar class');
-expect('src/styles/visual-stage01-shell.css', '.closeflow-visual-stage01 .global-bar', 'historical scoped global-bar class');
-expect('src/styles/visual-stage01-shell.css', '.closeflow-visual-stage01 .mobile-nav', 'historical scoped mobile-nav class');
-expect('src/styles/visual-stage01-shell.css', '@media (max-width: 760px)', 'historical mobile breakpoint');
-
-for (const file of ['src/components/Layout.tsx', 'src/components/GlobalQuickActions.tsx', 'src/styles/visual-stage01-shell.css', 'src/index.css']) {
+for (const file of ['src/components/Layout.tsx', 'src/components/GlobalQuickActions.tsx', 'src/index.css', 'src/styles/closeflow-visual-source-truth.css']) {
   const content = read(file);
   for (const pattern of badPatterns) {
     if (content.includes(pattern)) throw new Error(`${file}: mojibake pattern detected`);

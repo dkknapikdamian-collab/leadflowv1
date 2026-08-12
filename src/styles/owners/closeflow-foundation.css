@@ -1,0 +1,994 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:foundation","concerns":["TOKENS","SEMANTIC_COLORS","TYPOGRAPHY","SPACING"],"scope":"global","consumerRoots":["src/styles/closeflow-visual-source-truth.css"],"role":"canonical-owner","boundary":"global-semantic","whyNotGlobal":"This file is the registered semantic owner for its declared concerns.","whyNotDuplicate":"The registry maps each declared concern to this single reachable owner.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+:root {
+  /* Brand / primary */
+  --cf-vst-color-primary: #2563eb;
+  --cf-vst-color-primary-strong: #1d4ed8;
+  --cf-vst-color-primary-soft: #eff6ff;
+  --cf-vst-color-primary-border: #bfdbfe;
+
+  /* Repeated action kinds */
+  --cf-vst-color-note: #2563eb;
+  --cf-vst-color-note-soft: #eff6ff;
+  --cf-vst-color-note-border: #bfdbfe;
+
+  --cf-vst-color-task: #16a34a;
+  --cf-vst-color-task-soft: #ecfdf3;
+  --cf-vst-color-task-border: #bbf7d0;
+
+  --cf-vst-color-event: #d97706;
+  --cf-vst-color-event-soft: #fffbeb;
+  --cf-vst-color-event-border: #fed7aa;
+
+  --cf-vst-color-payment: #7c3aed;
+  --cf-vst-color-payment-soft: #f5f3ff;
+  --cf-vst-color-payment-border: #ddd6fe;
+
+  --cf-vst-color-status: #475569;
+  --cf-vst-color-status-soft: #f1f5f9;
+  --cf-vst-color-status-border: #cbd5e1;
+
+  --cf-vst-color-case-item: #0f766e;
+  --cf-vst-color-case-item-soft: #f0fdfa;
+  --cf-vst-color-case-item-border: #99f6e4;
+
+  /* Delete / destructive */
+  --cf-vst-color-delete: #dc2626;
+  --cf-vst-color-delete-strong: #991b1b;
+  --cf-vst-color-delete-soft: #fef2f2;
+  --cf-vst-color-delete-border: #fecaca;
+
+  /* States */
+  --cf-vst-color-success: #16a34a;
+  --cf-vst-color-success-soft: #ecfdf3;
+  --cf-vst-color-warning: #d97706;
+  --cf-vst-color-warning-soft: #fffbeb;
+  --cf-vst-color-danger: var(--cf-vst-color-delete);
+  --cf-vst-color-danger-soft: var(--cf-vst-color-delete-soft);
+
+  /* Surfaces */
+  --cf-vst-surface-page: #f8fafc;
+  --cf-vst-surface-card: rgba(255, 255, 255, 0.94);
+  --cf-vst-surface-card-solid: #ffffff;
+  --cf-vst-surface-soft: #f8fafc;
+  --cf-vst-surface-border: #e2e8f0;
+  --cf-vst-surface-border-strong: #cbd5e1;
+  --cf-vst-shadow-card: 0 14px 34px rgba(15, 23, 42, 0.06);
+  --cf-vst-shadow-modal: 0 24px 70px rgba(15, 23, 42, 0.14);
+
+  /* Text */
+  --cf-vst-text-strong: #0f172a;
+  --cf-vst-text-main: #334155;
+  --cf-vst-text-muted: #64748b;
+  --cf-vst-text-faint: #94a3b8;
+
+  /* Shape */
+  --cf-vst-radius-card: 20px;
+  --cf-vst-radius-panel: 24px;
+  --cf-vst-radius-pill: 999px;
+  --cf-vst-radius-button: 14px;
+
+  /* Metrics */
+  --cf-vst-metric-number-color: var(--cf-vst-color-primary);
+  --cf-vst-metric-number-weight: 950;
+}
+
+/* Semantic action color utilities */
+.cf-vst-kind-note,
+[data-cf-vst-kind="note"] {
+  --cf-vst-kind-color: var(--cf-vst-color-note);
+  --cf-vst-kind-bg: var(--cf-vst-color-note-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-note-border);
+}
+
+.cf-vst-kind-task,
+[data-cf-vst-kind="task"] {
+  --cf-vst-kind-color: var(--cf-vst-color-task);
+  --cf-vst-kind-bg: var(--cf-vst-color-task-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-task-border);
+}
+
+.cf-vst-kind-event,
+[data-cf-vst-kind="event"],
+[data-cf-vst-kind="calendar"] {
+  --cf-vst-kind-color: var(--cf-vst-color-event);
+  --cf-vst-kind-bg: var(--cf-vst-color-event-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-event-border);
+}
+
+.cf-vst-kind-payment,
+[data-cf-vst-kind="payment"],
+[data-cf-vst-kind="finance"] {
+  --cf-vst-kind-color: var(--cf-vst-color-payment);
+  --cf-vst-kind-bg: var(--cf-vst-color-payment-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-payment-border);
+}
+
+.cf-vst-kind-status,
+[data-cf-vst-kind="status"],
+[data-cf-vst-kind="system"] {
+  --cf-vst-kind-color: var(--cf-vst-color-status);
+  --cf-vst-kind-bg: var(--cf-vst-color-status-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-status-border);
+}
+
+.cf-vst-kind-case-item,
+[data-cf-vst-kind="case-item"],
+[data-cf-vst-kind="missing"],
+[data-cf-vst-kind="document"] {
+  --cf-vst-kind-color: var(--cf-vst-color-case-item);
+  --cf-vst-kind-bg: var(--cf-vst-color-case-item-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-case-item-border);
+}
+
+.cf-vst-kind-delete,
+[data-cf-vst-kind="delete"],
+[data-cf-vst-kind="destructive"] {
+  --cf-vst-kind-color: var(--cf-vst-color-delete);
+  --cf-vst-kind-bg: var(--cf-vst-color-delete-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-delete-border);
+}
+
+/* Shared primitives for later wiring */
+.cf-vst-card {
+  background: var(--cf-vst-surface-card) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-pill {
+  align-items: center;
+  border: 1px solid var(--cf-vst-kind-border, var(--cf-vst-surface-border));
+  border-radius: var(--cf-vst-radius-pill);
+  background: var(--cf-vst-kind-bg, var(--cf-vst-surface-soft));
+  color: var(--cf-vst-kind-color, var(--cf-vst-text-main));
+  display: inline-flex;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.cf-vst-icon {
+  align-items: center;
+  background: var(--cf-vst-kind-bg, var(--cf-vst-surface-soft));
+  border: 1px solid var(--cf-vst-kind-border, var(--cf-vst-surface-border));
+  border-radius: var(--cf-vst-radius-pill);
+  color: var(--cf-vst-kind-color, var(--cf-vst-text-main));
+  display: inline-flex;
+  justify-content: center;
+}
+
+.cf-vst-button-primary {
+  background: var(--cf-vst-color-primary) !important;
+  border-color: var(--cf-vst-color-primary) !important;
+  color: #fff !important;
+}
+
+.cf-vst-button-delete {
+  background: var(--cf-vst-color-delete-soft) !important;
+  border: 1px solid var(--cf-vst-color-delete-border) !important;
+  color: var(--cf-vst-color-delete-strong) !important;
+}
+
+.cf-vst-dialog {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-panel) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+}
+
+.cf-vst-dialog--delete {
+  border-color: var(--cf-vst-color-delete-border) !important;
+}
+
+.cf-vst-metric-number {
+  color: var(--cf-vst-metric-number-color) !important;
+  font-weight: var(--cf-vst-metric-number-weight) !important;
+}
+
+
+
+:root {
+  /* Typography families */
+  --cf-vst-font-family-app: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --cf-vst-font-family-number: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* Typography scale */
+  --cf-vst-font-size-micro: 10px;
+  --cf-vst-font-size-meta: 11px;
+  --cf-vst-font-size-label: 12px;
+  --cf-vst-font-size-body-sm: 13px;
+  --cf-vst-font-size-body: 14px;
+  --cf-vst-font-size-card-title: 15px;
+  --cf-vst-font-size-section-title: 18px;
+  --cf-vst-font-size-page-title: 28px;
+  --cf-vst-font-size-page-title-lg: 34px;
+  --cf-vst-font-size-metric: 22px;
+  --cf-vst-font-size-metric-lg: 28px;
+
+  /* Typography weight */
+  --cf-vst-font-weight-regular: 500;
+  --cf-vst-font-weight-medium: 650;
+  --cf-vst-font-weight-semibold: 750;
+  --cf-vst-font-weight-bold: 850;
+  --cf-vst-font-weight-heavy: 950;
+
+  /* Typography rhythm */
+  --cf-vst-line-height-tight: 1.12;
+  --cf-vst-line-height-title: 1.18;
+  --cf-vst-line-height-body: 1.45;
+  --cf-vst-line-height-button: 1.2;
+  --cf-vst-letter-spacing-tight: -0.03em;
+  --cf-vst-letter-spacing-label: -0.01em;
+
+  /* Spacing scale */
+  --cf-vst-space-2xs: 4px;
+  --cf-vst-space-xs: 6px;
+  --cf-vst-space-sm: 8px;
+  --cf-vst-space-md: 12px;
+  --cf-vst-space-lg: 16px;
+  --cf-vst-space-xl: 20px;
+  --cf-vst-space-2xl: 28px;
+  --cf-vst-space-3xl: 36px;
+
+  /* Layout widths */
+  --cf-vst-layout-page-max: 1480px;
+  --cf-vst-layout-content-max: 1120px;
+  --cf-vst-layout-right-rail: 320px;
+  --cf-vst-layout-sidebar: 280px;
+  --cf-vst-layout-gap: 18px;
+  --cf-vst-layout-gap-lg: 24px;
+
+  /* Cards and panels */
+  --cf-vst-card-padding: 16px;
+  --cf-vst-card-padding-compact: 12px;
+  --cf-vst-panel-padding: 18px;
+  --cf-vst-panel-padding-lg: 22px;
+  --cf-vst-row-padding-y: 10px;
+  --cf-vst-row-padding-x: 12px;
+  --cf-vst-row-min-height: 44px;
+
+  /* Buttons */
+  --cf-vst-button-height-sm: 32px;
+  --cf-vst-button-height-md: 38px;
+  --cf-vst-button-height-lg: 44px;
+  --cf-vst-button-padding-x-sm: 10px;
+  --cf-vst-button-padding-x-md: 12px;
+  --cf-vst-button-padding-x-lg: 16px;
+  --cf-vst-button-gap: 8px;
+
+  /* Inputs and forms */
+  --cf-vst-input-height: 40px;
+  --cf-vst-input-radius: 14px;
+  --cf-vst-input-border: var(--cf-vst-surface-border);
+  --cf-vst-input-focus-border: var(--cf-vst-color-primary-border);
+  --cf-vst-input-focus-ring: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  --cf-vst-label-color: var(--cf-vst-text-main);
+  --cf-vst-placeholder-color: var(--cf-vst-text-faint);
+
+  /* Modals and overlays */
+  --cf-vst-modal-width-sm: 420px;
+  --cf-vst-modal-width-md: 560px;
+  --cf-vst-modal-width-lg: 760px;
+  --cf-vst-modal-padding: 22px;
+  --cf-vst-modal-header-gap: 8px;
+  --cf-vst-modal-footer-gap: 10px;
+  --cf-vst-overlay-backdrop: rgba(15, 23, 42, 0.34);
+  --cf-vst-z-overlay: 50;
+  --cf-vst-z-modal: 60;
+  --cf-vst-z-toast: 80;
+
+  /* Icons */
+  --cf-vst-icon-size-xs: 14px;
+  --cf-vst-icon-size-sm: 16px;
+  --cf-vst-icon-size-md: 18px;
+  --cf-vst-icon-size-lg: 22px;
+  --cf-vst-icon-box-sm: 28px;
+  --cf-vst-icon-box-md: 32px;
+  --cf-vst-icon-box-lg: 38px;
+
+  /* Tabs, badges, chips */
+  --cf-vst-tab-height: 38px;
+  --cf-vst-tab-padding-x: 12px;
+  --cf-vst-badge-height: 24px;
+  --cf-vst-badge-padding-x: 8px;
+  --cf-vst-chip-height: 28px;
+  --cf-vst-chip-padding-x: 10px;
+
+  /* Metrics */
+  --cf-vst-metric-label-size: var(--cf-vst-font-size-meta);
+  --cf-vst-metric-label-color: var(--cf-vst-text-muted);
+  --cf-vst-metric-value-size: var(--cf-vst-font-size-metric);
+  --cf-vst-metric-value-weight: var(--cf-vst-font-weight-heavy);
+  --cf-vst-metric-card-bg: var(--cf-vst-surface-card);
+
+  /* States */
+  --cf-vst-disabled-opacity: 0.52;
+  --cf-vst-hover-lift: translateY(-1px);
+  --cf-vst-transition-fast: 120ms ease-out;
+  --cf-vst-transition-normal: 180ms ease-out;
+}
+
+/* Global foundation utilities */
+.cf-vst-text-page-title {
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-page-title) !important;
+  font-weight: var(--cf-vst-font-weight-heavy) !important;
+  letter-spacing: var(--cf-vst-letter-spacing-tight) !important;
+  line-height: var(--cf-vst-line-height-title) !important;
+}
+
+.cf-vst-text-section-title {
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-section-title) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-title) !important;
+}
+
+.cf-vst-text-card-title {
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-card-title) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-title) !important;
+}
+
+.cf-vst-text-body {
+  color: var(--cf-vst-text-main) !important;
+  font-size: var(--cf-vst-font-size-body) !important;
+  font-weight: var(--cf-vst-font-weight-regular) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+}
+
+.cf-vst-text-meta {
+  color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+}
+
+.cf-vst-text-label {
+  color: var(--cf-vst-text-main) !important;
+  font-size: var(--cf-vst-font-size-label) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+}
+
+.cf-vst-text-metric {
+  color: var(--cf-vst-metric-number-color) !important;
+  font-size: var(--cf-vst-font-size-metric) !important;
+  font-weight: var(--cf-vst-metric-number-weight) !important;
+  line-height: var(--cf-vst-line-height-tight) !important;
+}
+
+.cf-vst-text-button {
+  font-weight: var(--cf-vst-font-weight-medium) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+}
+
+.cf-vst-shell {
+  max-width: var(--cf-vst-layout-page-max);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cf-vst-right-rail {
+  width: min(100%, var(--cf-vst-layout-right-rail));
+}
+
+.cf-vst-row {
+  min-height: var(--cf-vst-row-min-height);
+  padding: var(--cf-vst-row-padding-y) var(--cf-vst-row-padding-x);
+}
+
+.cf-vst-button {
+  align-items: center;
+  border-radius: var(--cf-vst-radius-button);
+  display: inline-flex;
+  gap: var(--cf-vst-button-gap);
+  font-size: var(--cf-vst-font-size-label);
+  font-weight: var(--cf-vst-font-weight-bold);
+  justify-content: center;
+  line-height: var(--cf-vst-line-height-button);
+  min-height: var(--cf-vst-button-height-md);
+  padding-left: var(--cf-vst-button-padding-x-md);
+  padding-right: var(--cf-vst-button-padding-x-md);
+}
+
+.cf-vst-input {
+  border: 1px solid var(--cf-vst-input-border);
+  border-radius: var(--cf-vst-input-radius);
+  min-height: var(--cf-vst-input-height);
+}
+
+.cf-vst-input:focus,
+.cf-vst-input:focus-visible {
+  border-color: var(--cf-vst-input-focus-border);
+  box-shadow: var(--cf-vst-input-focus-ring);
+  outline: none;
+}
+
+
+
+.cf-case-detail-delete-action {
+  border-color: var(--cf-vst-color-delete-border) !important;
+  color: var(--cf-vst-color-delete-strong) !important;
+}
+
+.cf-case-detail-delete-action:hover {
+  background: var(--cf-vst-color-delete-soft) !important;
+  border-color: var(--cf-vst-color-delete) !important;
+  color: var(--cf-vst-color-delete-strong) !important;
+}
+
+.cf-confirm-dialog {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-panel) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+}
+
+.cf-confirm-dialog--destructive {
+  border-color: var(--cf-vst-color-delete-border) !important;
+}
+
+.case-detail-semantic220a17-history-row {
+  border-left: 3px solid var(--cf-vst-kind-color, var(--cf-vst-color-status)) !important;
+}
+
+.case-detail-semantic220a17-history-row .case-detail-semantic220a10-history-icon {
+  background: var(--cf-vst-kind-bg, var(--cf-vst-color-status-soft)) !important;
+  border-color: var(--cf-vst-kind-border, var(--cf-vst-color-status-border)) !important;
+  color: var(--cf-vst-kind-color, var(--cf-vst-color-status)) !important;
+  min-height: var(--cf-vst-icon-box-sm) !important;
+  min-width: var(--cf-vst-icon-box-sm) !important;
+}
+
+.case-detail-semantic220a17-history-row .case-detail-semantic220a10-history-icon svg {
+  height: var(--cf-vst-icon-size-sm) !important;
+  width: var(--cf-vst-icon-size-sm) !important;
+}
+
+.case-detail-semantic220a17-history-row .case-detail-semantic220a10-history-title-row strong {
+  color: var(--cf-vst-kind-color, var(--cf-vst-text-strong)) !important;
+}
+
+
+
+.cf-vst-overlay {
+  background: var(--cf-vst-overlay-backdrop) !important;
+}
+
+.cf-vst-dialog {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-panel) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+  color: var(--cf-vst-text-strong) !important;
+  padding: var(--cf-vst-modal-padding) !important;
+}
+
+.cf-vst-dialog-header {
+  gap: var(--cf-vst-modal-header-gap) !important;
+}
+
+.cf-vst-dialog-footer {
+  gap: var(--cf-vst-modal-footer-gap) !important;
+}
+
+.cf-vst-dialog-title {
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-dialog-description {
+  color: var(--cf-vst-text-muted) !important;
+}
+
+.cf-vst-dialog-close {
+  color: var(--cf-vst-text-muted) !important;
+}
+
+.cf-vst-dialog-close:hover {
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-input {
+  min-height: var(--cf-vst-input-height) !important;
+  border-color: var(--cf-vst-input-border) !important;
+  border-radius: var(--cf-vst-input-radius) !important;
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+}
+
+.cf-vst-input::placeholder {
+  color: var(--cf-vst-placeholder-color) !important;
+}
+
+.cf-vst-input:focus,
+.cf-vst-input:focus-visible,
+.cf-vst-select-trigger:focus,
+.cf-vst-select-trigger:focus-visible {
+  border-color: var(--cf-vst-input-focus-border) !important;
+  box-shadow: var(--cf-vst-input-focus-ring) !important;
+  outline: none !important;
+}
+
+.cf-vst-textarea {
+  min-height: 96px !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+}
+
+.cf-vst-select-trigger {
+  min-height: var(--cf-vst-input-height) !important;
+}
+
+.cf-vst-select-content {
+  border-color: var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+}
+
+.cf-vst-button {
+  min-height: var(--cf-vst-button-height-md) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  gap: var(--cf-vst-button-gap) !important;
+  font-size: var(--cf-vst-font-size-label) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+}
+
+.cf-vst-button-primary {
+  background: var(--cf-vst-color-primary) !important;
+  border-color: var(--cf-vst-color-primary) !important;
+  color: #fff !important;
+}
+
+.cf-vst-button-primary:hover {
+  background: var(--cf-vst-color-primary-strong) !important;
+}
+
+.cf-vst-button-delete {
+  background: var(--cf-vst-color-delete-soft) !important;
+  border-color: var(--cf-vst-color-delete-border) !important;
+  color: var(--cf-vst-color-delete-strong) !important;
+}
+
+.cf-vst-button-delete:hover {
+  background: var(--cf-vst-color-delete-soft) !important;
+  border-color: var(--cf-vst-color-delete) !important;
+  color: var(--cf-vst-color-delete-strong) !important;
+}
+
+
+
+.cf-vst-kind-primary,
+[data-cf-vst-kind="primary"] {
+  --cf-vst-kind-color: var(--cf-vst-color-primary);
+  --cf-vst-kind-bg: var(--cf-vst-color-primary-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-primary-border);
+}
+
+.cf-vst-card {
+  background: var(--cf-vst-surface-card) !important;
+  border-color: var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-card-header {
+  padding: var(--cf-vst-card-padding) var(--cf-vst-card-padding) var(--cf-vst-space-sm) !important;
+}
+
+.cf-vst-card-content {
+  padding-left: var(--cf-vst-card-padding) !important;
+  padding-right: var(--cf-vst-card-padding) !important;
+}
+
+.cf-vst-card-footer {
+  padding: var(--cf-vst-space-sm) var(--cf-vst-card-padding) var(--cf-vst-card-padding) !important;
+}
+
+.cf-vst-card-title {
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-card-description {
+  color: var(--cf-vst-text-muted) !important;
+}
+
+.cf-vst-badge,
+.cf-vst-chip {
+  min-height: var(--cf-vst-badge-height) !important;
+  border-color: var(--cf-vst-kind-border, var(--cf-vst-surface-border)) !important;
+  border-radius: var(--cf-vst-radius-pill) !important;
+  background: var(--cf-vst-kind-bg, var(--cf-vst-surface-soft)) !important;
+  color: var(--cf-vst-kind-color, var(--cf-vst-text-main)) !important;
+  gap: var(--cf-vst-space-xs) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+  padding-left: var(--cf-vst-badge-padding-x) !important;
+  padding-right: var(--cf-vst-badge-padding-x) !important;
+}
+
+.cf-vst-metric-card {
+  background: var(--cf-vst-metric-card-bg) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+  padding: var(--cf-vst-card-padding) !important;
+}
+
+.cf-vst-metric-label {
+  color: var(--cf-vst-metric-label-color) !important;
+  font-size: var(--cf-vst-metric-label-size) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+}
+
+.cf-vst-metric-number {
+  color: var(--cf-vst-metric-number-color) !important;
+  font-family: var(--cf-vst-font-family-number) !important;
+  font-size: var(--cf-vst-metric-value-size) !important;
+  font-weight: var(--cf-vst-metric-value-weight) !important;
+  letter-spacing: var(--cf-vst-letter-spacing-tight) !important;
+  line-height: var(--cf-vst-line-height-tight) !important;
+}
+
+
+
+.cf-vst-kind-success,
+[data-cf-vst-kind="success"] {
+  --cf-vst-kind-color: var(--cf-vst-color-success);
+  --cf-vst-kind-bg: var(--cf-vst-color-success-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-task-border);
+}
+
+.cf-vst-kind-warning,
+[data-cf-vst-kind="warning"] {
+  --cf-vst-kind-color: var(--cf-vst-color-warning);
+  --cf-vst-kind-bg: var(--cf-vst-color-warning-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-event-border);
+}
+
+.cf-vst-kind-danger,
+[data-cf-vst-kind="danger"] {
+  --cf-vst-kind-color: var(--cf-vst-color-danger);
+  --cf-vst-kind-bg: var(--cf-vst-color-danger-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-delete-border);
+}
+
+.cf-vst-calendar-entry-card {
+  border-left: 3px solid var(--cf-vst-kind-color, var(--cf-vst-color-event)) !important;
+}
+
+.cf-vst-calendar-entry-card[data-cf-vst-calendar-status="success"] {
+  opacity: 0.72;
+}
+
+.cf-vst-calendar-entry-card[data-cf-vst-calendar-status="danger"] {
+  border-left-color: var(--cf-vst-color-danger) !important;
+}
+
+.cf-vst-calendar-entry-card .cf-calendar-week-plan-entry-title,
+.cf-vst-calendar-entry-card .cf-selected-day-v9-entry-title {
+  color: var(--cf-vst-text-strong) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+}
+
+.cf-vst-calendar-entry-card[data-calendar-entry-completed="true"] .cf-calendar-week-plan-entry-title,
+.cf-vst-calendar-entry-card[data-calendar-entry-completed="true"] .cf-selected-day-v9-entry-title {
+  color: var(--cf-vst-text-muted) !important;
+  text-decoration: line-through !important;
+}
+
+.cf-calendar-week-plan-entry-type,
+.cf-calendar-week-plan-entry-time,
+.cf-calendar-week-plan-entry-status,
+.cf-selected-day-v9-type,
+.cf-selected-day-v9-time,
+.cf-selected-day-v9-status {
+  border-color: var(--cf-vst-kind-border, var(--cf-vst-surface-border)) !important;
+  background: var(--cf-vst-kind-bg, var(--cf-vst-surface-soft)) !important;
+  color: var(--cf-vst-kind-color, var(--cf-vst-text-main)) !important;
+}
+
+.cf-calendar-week-plan-action,
+.cf-selected-day-v9-action {
+  min-height: var(--cf-vst-button-height-sm) !important;
+  border-radius: var(--cf-vst-radius-pill) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+}
+
+.cf-calendar-week-plan-action-done,
+.cf-selected-day-v9-action-done {
+  border-color: var(--cf-vst-color-task-border) !important;
+  background: var(--cf-vst-color-task-soft) !important;
+  color: var(--cf-vst-color-success) !important;
+}
+
+.cf-calendar-week-plan-action-danger,
+.cf-selected-day-v9-action-danger {
+  border-color: var(--cf-vst-color-delete-border) !important;
+  background: var(--cf-vst-color-delete-soft) !important;
+  color: var(--cf-vst-color-delete-strong) !important;
+}
+
+
+
+.cf-vst-record-list-card {
+  background: var(--cf-vst-surface-card) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+}
+
+.cf-vst-record-row {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-record-index {
+  background: var(--cf-vst-color-primary-soft) !important;
+  border: 1px solid var(--cf-vst-color-primary-border) !important;
+  color: var(--cf-vst-color-primary-strong) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-heavy) !important;
+}
+
+.cf-vst-record-title {
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-title) !important;
+}
+
+.cf-vst-record-meta {
+  color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+}
+
+.cf-vst-right-rail-card {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-right-rail-row {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-right-rail-title {
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-title) !important;
+}
+
+.cf-vst-right-rail-meta {
+  color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-medium) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+}
+
+
+
+.task-next-step-dialog-semantic220a23 {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-panel) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.task-next-step-dialog-semantic220a23-description {
+  color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+  margin-top: var(--cf-vst-space-sm) !important;
+}
+
+.task-next-step-dialog-semantic220a23-body {
+  display: grid !important;
+  gap: var(--cf-vst-space-lg) !important;
+  padding-top: var(--cf-vst-space-lg) !important;
+}
+
+.task-next-step-dialog-semantic220a23-grid {
+  display: grid !important;
+  gap: var(--cf-vst-space-md) !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+}
+
+.task-next-step-dialog-semantic220a23-footer {
+  border-top: 1px solid var(--cf-vst-surface-border) !important;
+  padding-top: var(--cf-vst-space-lg) !important;
+}
+
+@media (max-width: 640px) {
+  .task-next-step-dialog-semantic220a23-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+
+.tasks-stable-dialog-semantic220a23b,
+.task-next-step-dialog-semantic220a23b {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-panel) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.tasks-stable-dialog-semantic220a23b :is(label, p, span, h2, h3),
+.task-next-step-dialog-semantic220a23b :is(label, p, span, h2, h3) {
+  color: var(--cf-vst-text-main) !important;
+}
+
+.tasks-stable-dialog-semantic220a23b [data-radix-dialog-title],
+.task-next-step-dialog-semantic220a23b [data-radix-dialog-title],
+.tasks-stable-dialog-semantic220a23b h2,
+.task-next-step-dialog-semantic220a23b h2 {
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-section-title) !important;
+  font-weight: var(--cf-vst-font-weight-heavy) !important;
+}
+
+.tasks-stable-dialog-semantic220a23b input,
+.tasks-stable-dialog-semantic220a23b select,
+.task-next-step-dialog-semantic220a23b input,
+.task-next-step-dialog-semantic220a23b select {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border-color: var(--cf-vst-input-border) !important;
+  border-radius: var(--cf-vst-input-radius) !important;
+  color: var(--cf-vst-text-strong) !important;
+  min-height: var(--cf-vst-input-height) !important;
+}
+
+.tasks-stable-dialog-semantic220a23b input:focus,
+.tasks-stable-dialog-semantic220a23b select:focus,
+.task-next-step-dialog-semantic220a23b input:focus,
+.task-next-step-dialog-semantic220a23b select:focus {
+  border-color: var(--cf-vst-input-focus-border) !important;
+  box-shadow: var(--cf-vst-input-focus-ring) !important;
+  outline: none !important;
+}
+
+.tasks-stable-dialog-semantic220a23b-footer {
+  border-top: 1px solid var(--cf-vst-surface-border) !important;
+  padding-top: var(--cf-vst-space-lg) !important;
+}
+
+.tasks-stable-dialog-semantic220a23b-primary {
+  background: var(--cf-vst-color-primary) !important;
+  border-color: var(--cf-vst-color-primary) !important;
+  color: #fff !important;
+}
+
+.tasks-stable-dialog-semantic220a23b-primary:hover {
+  background: var(--cf-vst-color-primary-strong) !important;
+  border-color: var(--cf-vst-color-primary-strong) !important;
+}
+
+.tasks-stable-dialog-semantic220a23b button[variant="outline"],
+.task-next-step-dialog-semantic220a23b button[variant="outline"] {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border-color: var(--cf-vst-surface-border) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+
+
+[role="dialog"],
+[data-radix-dialog-content],
+[data-cf-vst-dialog="true"],
+.cf-vst-dialog,
+.cf-modal-surface {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-panel) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+[role="dialog"] :is(h1, h2, h3, h4, label, strong),
+[data-radix-dialog-content] :is(h1, h2, h3, h4, label, strong),
+.cf-vst-dialog :is(h1, h2, h3, h4, label, strong),
+.cf-modal-surface :is(h1, h2, h3, h4, label, strong) {
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+}
+
+[role="dialog"] :is(p, small, span),
+[data-radix-dialog-content] :is(p, small, span),
+.cf-vst-dialog :is(p, small, span),
+.cf-modal-surface :is(p, small, span) {
+  color: var(--cf-vst-text-main) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-main) !important;
+}
+
+[role="dialog"] :is(input, textarea, select),
+[data-radix-dialog-content] :is(input, textarea, select),
+.cf-vst-dialog :is(input, textarea, select),
+.cf-modal-surface :is(input, textarea, select) {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border-color: var(--cf-vst-input-border) !important;
+  border-radius: var(--cf-vst-input-radius) !important;
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+  caret-color: var(--cf-vst-color-primary) !important;
+}
+
+[role="dialog"] textarea::selection,
+[data-radix-dialog-content] textarea::selection,
+.cf-vst-dialog textarea::selection,
+.cf-modal-surface textarea::selection,
+[role="dialog"] input::selection,
+[data-radix-dialog-content] input::selection,
+.cf-vst-dialog input::selection,
+.cf-modal-surface input::selection {
+  background: var(--cf-vst-color-primary-soft) !important;
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+}
+
+[role="dialog"] :is(input, textarea, select):focus,
+[data-radix-dialog-content] :is(input, textarea, select):focus,
+.cf-vst-dialog :is(input, textarea, select):focus,
+.cf-modal-surface :is(input, textarea, select):focus {
+  border-color: var(--cf-vst-input-focus-border) !important;
+  box-shadow: var(--cf-vst-input-focus-ring) !important;
+  outline: none !important;
+}
+
+[role="dialog"] :is(.bg-green-600, .bg-emerald-600, .text-green-700, .text-emerald-700),
+[data-radix-dialog-content] :is(.bg-green-600, .bg-emerald-600, .text-green-700, .text-emerald-700),
+.cf-vst-dialog :is(.bg-green-600, .bg-emerald-600, .text-green-700, .text-emerald-700),
+.cf-modal-surface :is(.bg-green-600, .bg-emerald-600, .text-green-700, .text-emerald-700) {
+  background: var(--cf-vst-color-primary) !important;
+  border-color: var(--cf-vst-color-primary) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+[role="dialog"] button[type="submit"]:not([data-cf-vst-kind="delete"]):not(.cf-vst-button-delete),
+[data-radix-dialog-content] button[type="submit"]:not([data-cf-vst-kind="delete"]):not(.cf-vst-button-delete),
+.cf-vst-dialog button[type="submit"]:not([data-cf-vst-kind="delete"]):not(.cf-vst-button-delete),
+.cf-modal-surface button[type="submit"]:not([data-cf-vst-kind="delete"]):not(.cf-vst-button-delete) {
+  background: var(--cf-vst-color-primary) !important;
+  border-color: var(--cf-vst-color-primary) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+[role="dialog"] button[type="submit"]:hover:not([data-cf-vst-kind="delete"]):not(.cf-vst-button-delete),
+[data-radix-dialog-content] button[type="submit"]:hover:not([data-cf-vst-kind="delete"]):not(.cf-vst-button-delete),
+.cf-vst-dialog button[type="submit"]:hover:not([data-cf-vst-kind="delete"]):not(.cf-vst-button-delete),
+.cf-modal-surface button[type="submit"]:hover:not([data-cf-vst-kind="delete"]):not(.cf-vst-button-delete) {
+  background: var(--cf-vst-color-primary-strong) !important;
+  border-color: var(--cf-vst-color-primary-strong) !important;
+}
+
+[role="dialog"] button[aria-label="Close"],
+[data-radix-dialog-content] button[aria-label="Close"],
+.cf-vst-dialog button[aria-label="Close"],
+.cf-modal-surface button[aria-label="Close"] {
+  background: var(--cf-vst-surface-soft) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  color: var(--cf-vst-text-main) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-main) !important;
+}

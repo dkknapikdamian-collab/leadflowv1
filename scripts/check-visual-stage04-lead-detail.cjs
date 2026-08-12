@@ -38,12 +38,11 @@ expect('src/components/Layout.tsx', 'main-lead-detail', 'main-lead-detail class'
 expect('src/components/Layout.tsx', "data-visual-stage-lead-detail={isLeadDetailRoute ? '04-lead-detail' : undefined}", 'Stage04 data marker');
 
 reject('src/index.css', 'visual-stage04-lead-detail.css', 'inactive Stage04 LeadDetail CSS import');
-expect('src/pages/LeadDetail.tsx', "../styles/visual-stage14-lead-detail-vnext.css", 'current Stage14 LeadDetail visual import');
-expect('src/pages/LeadDetail.tsx', "../styles/closeflow-unified-page-canvas-stage211c.css", 'current Stage211C canvas import');
-expect('src/pages/LeadDetail.tsx', "../styles/closeflow-shared-quick-actions-bar-stage227e3.css", 'current shared quick actions visual import');
-expect('src/pages/LeadDetail.tsx', "../styles/closeflow-lead-detail-sales-signal-stage227e4.css", 'current sales signal visual import');
-expect('src/pages/LeadDetail.tsx', 'STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD', 'current no-static-AI-card source marker');
-expect('src/pages/LeadDetail.tsx', 'STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_RAIL', 'current no-static-AI-rail source marker');
+expect('src/App.tsx', "./styles/closeflow-visual-source-truth.css", 'canonical visual owner entrypoint');
+expect('src/styles/owners/closeflow-page-adapters.css', 'main-lead-detail', 'canonical LeadDetail page scope');
+expect('src/styles/owners/closeflow-page-adapters.css', 'layout-detail', 'canonical LeadDetail layout adapter');
+expect('src/styles/owners/closeflow-rails-and-detail.css', 'lead-detail-action-accordion', 'canonical LeadDetail action adapter');
+expect('src/styles/owners/closeflow-responsive-adapters.css', '@media (max-width: 760px)', 'canonical mobile adapter');
 rejectPattern('src/pages/LeadDetail.tsx', /<LeadAiFollowupDraft\b/, 'rendered static AI follow-up component');
 rejectPattern('src/pages/LeadDetail.tsx', /<LeadAiNextAction\b/, 'rendered static AI next-action component');
 
@@ -70,10 +69,4 @@ expect('src/pages/LeadDetail.tsx', 'getActivityTimelineTitle', 'activity timelin
 expect('src/pages/LeadDetail.tsx', 'getActivityTimelineDescription', 'activity timeline description remains');
 expect('src/pages/LeadDetail.tsx', 'TabsTrigger', 'tabs remain');
 
-expect('src/styles/visual-stage04-lead-detail.css', 'VISUAL_STAGE_04_LEAD_DETAIL_UI_SYSTEM', 'Stage04 reference CSS marker');
-expect('src/styles/visual-stage04-lead-detail.css', '.main-lead-detail', 'historical scoped CSS');
-expect('src/styles/visual-stage04-lead-detail.css', 'layout-detail', 'historical layout-detail styling');
-expect('src/styles/visual-stage04-lead-detail.css', 'person-card', 'historical person-card styling');
-expect('src/styles/visual-stage04-lead-detail.css', 'hero.light', 'historical hero light styling');
-expect('src/styles/visual-stage04-lead-detail.css', '@media (max-width: 760px)', 'historical mobile polish');
 console.log('OK: Visual Stage04 LeadDetail guard reconciled with current LeadDetail source truth.');

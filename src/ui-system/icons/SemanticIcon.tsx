@@ -1,3 +1,4 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:icon-geometry","concerns":["ICON_GEOMETRY"],"scope":"global","consumerRoots":["src/components/ui-system/ActionIcon.tsx","src/components/ui-system/EntityIcon.tsx"],"role":"canonical-owner","boundary":"global-semantic","whyNotGlobal":"This component is the registered geometry owner for semantic icons.","whyNotDuplicate":"The registry maps ICON_GEOMETRY to this single reachable component.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 // CLOSEFLOW_UI2_SEMANTIC_ICON_GUARD_V1
 // Jedno źródło prawdy dla standardowych ikon CloseFlow.
 // Ten komponent jest fundamentem UI-2. Runtime migracja widoków idzie etapami.

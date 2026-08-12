@@ -1,13 +1,8 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/index.css","concerns":[],"scope":"entry","consumerRoots":["src/index.css"],"role":"entrypoint","boundary":"runtime-entrypoint","whyNotGlobal":"This file is an import boundary, not a semantic visual owner.","whyNotDuplicate":"Only the runtime entry imports this boundary.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
 @import "tailwindcss" source("./");
-/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-visual-foundation-stage212m.css; content merged above. */
 @import './styles/design-system/index.css';
-/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-operator-semantic-tones.css; content merged above. */
 @import './styles/core/core-contracts.css';
 @import './styles/page-adapters/page-adapters.css';
-@import './styles/legacy/legacy-imports.css';
-@import './styles/temporary/temporary-overrides.css';
-/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/emergency/emergency-hotfixes.css; content merged above. */
-/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage232a-r10-r2-lead-action-groups-visual-polish.css; content merged above. */
 /* STAGE212J_INDEX_IMPORT_ORDER_LOCK */
 /* STAGE212I_INDEX_CSS_IMPORT_ORDER_SOURCE_TRUTH */
 
@@ -18,21 +13,6 @@
 /* 2. Design system */
 /* 3. Core contracts */
 /* 4. Page adapters */
-/* 5. Legacy imports */
-/* 6. Temporary overrides */
-/* 7. Emergency hotfixes */
-
-/* 2. Visual foundation source truth */
-
-/* 3. Design system */
-
-/* 4. Core contracts */
-
-/* 5. Page adapters */
-
-/* 6. Legacy imports */
-
-/* 7. Temporary overrides */
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -115,7 +95,6 @@
   body {
     @apply font-sans;
     background-color: var(--app-bg);
-    /* LF-UI-SOT-007 canonical owner marker: body visual color is owned by closeflow-visual-source-truth.css. */
     transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
   }
 }

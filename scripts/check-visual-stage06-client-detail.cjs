@@ -29,20 +29,10 @@ expectIncludes('src/components/Layout.tsx', 'main-client-detail', 'main-client-d
 expectIncludes('src/components/Layout.tsx', "data-visual-stage-client-detail={isClientDetailRoute ? '06-client-detail' : undefined}", 'client detail visual data marker');
 
 rejectIncludes('src/index.css', 'visual-stage06-client-detail.css', 'inactive Stage06 ClientDetail CSS import');
-expectIncludes('src/pages/ClientDetail.tsx', "../styles/visual-stage12-client-detail-vnext.css", 'current Stage12 ClientDetail visual import');
-expectIncludes('src/pages/ClientDetail.tsx', "../styles/closeflow-unified-page-canvas-stage211c.css", 'current Stage211C canvas import');
-expectIncludes('src/pages/ClientDetail.tsx', 'STAGE231D0_CLIENT_WORKSPACE_UX_CLEANUP', 'current Client workspace cleanup marker');
-expectIncludes('src/pages/ClientDetail.tsx', 'STAGE231B0_R15_R2_CLIENT_DETAIL_SHARED_CANVAS_WIDTH_TRIAL', 'current shared canvas marker');
-expectIncludes('src/pages/ClientDetail.tsx', 'STAGE216L_CLIENT_DETAIL_LEAD_LAYOUT_SOURCE', 'current ClientDetail layout source marker');
-expectIncludes('src/pages/ClientDetail.tsx', 'STAGE232I4_R16O_CLIENT_SHARED_MISSING_MANAGER_NO_MARKER_ANCHOR_FINAL', 'current shared missing manager source marker');
-
-expectIncludes('src/styles/visual-stage06-client-detail.css', 'VISUAL_STAGE_06_CLIENT_DETAIL', 'Stage06 reference CSS marker');
-expectIncludes('src/styles/visual-stage06-client-detail.css', '.main-client-detail', 'historical scoped ClientDetail selector');
-expectIncludes('src/styles/visual-stage06-client-detail.css', 'layout-detail', 'historical layout-detail pattern');
-expectIncludes('src/styles/visual-stage06-client-detail.css', 'person-card', 'historical person-card pattern');
-expectIncludes('src/styles/visual-stage06-client-detail.css', 'hero-grid', 'historical hero-grid pattern');
-expectIncludes('src/styles/visual-stage06-client-detail.css', 'right-card', 'historical right-card pattern');
-expectIncludes('src/styles/visual-stage06-client-detail.css', '@media (max-width: 760px)', 'historical mobile polish');
+expectIncludes('src/App.tsx', "./styles/closeflow-visual-source-truth.css", 'canonical visual owner entrypoint');
+expectIncludes('src/styles/owners/closeflow-client-detail.css', 'client-detail-right-card', 'canonical ClientDetail adapter');
+expectIncludes('src/styles/owners/closeflow-page-adapters.css', 'main-client-detail', 'canonical ClientDetail page scope');
+expectIncludes('src/styles/owners/closeflow-responsive-adapters.css', '@media (max-width: 760px)', 'canonical mobile adapter');
 
 expectIncludes('src/pages/ClientDetail.tsx', 'fetchClientByIdFromSupabase', 'client fetch remains present');
 expectIncludes('src/pages/ClientDetail.tsx', 'fetchLeadsFromSupabase', 'linked leads remain present');

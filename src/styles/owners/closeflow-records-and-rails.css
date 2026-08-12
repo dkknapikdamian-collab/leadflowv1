@@ -1,0 +1,2279 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:records-rails","concerns":["LIST_ROWS","BADGES","RIGHT_RAIL"],"scope":"global","consumerRoots":["src/styles/closeflow-visual-source-truth.css"],"role":"canonical-owner","boundary":"global-semantic","whyNotGlobal":"This file is the registered semantic owner for its declared concerns.","whyNotDuplicate":"The registry maps each declared concern to this single reachable owner.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+/* CLOSEFLOW_LIST_ROW_CONTRACT
+   One source of truth for record rows, contact/value fields, status and progress.
+*/
+:root {
+  --cf-list-row-contact-text: #0369a1;
+  --cf-list-row-contact-bg: #f0f9ff;
+  --cf-list-row-contact-border: #bae6fd;
+  --cf-list-row-value-text: #047857;
+  --cf-list-row-value-bg: #ecfdf3;
+  --cf-list-row-value-border: #a7f3d0;
+  --cf-list-row-client-text: #334155;
+  --cf-list-row-client-bg: #f8fafc;
+  --cf-list-row-client-border: #e2e8f0;
+  --cf-status-blue-text: #1d4ed8;
+  --cf-status-blue-bg: #eff6ff;
+  --cf-status-blue-border: #bfdbfe;
+  --cf-status-green-text: #047857;
+  --cf-status-green-bg: #ecfdf3;
+  --cf-status-green-border: #a7f3d0;
+  --cf-status-amber-text: #b45309;
+  --cf-status-amber-bg: #fffbeb;
+  --cf-status-amber-border: #fde68a;
+  --cf-status-red-text: #be123c;
+  --cf-status-red-bg: #fff1f2;
+  --cf-status-red-border: #fecdd3;
+  --cf-status-neutral-text: #475569;
+  --cf-status-neutral-bg: #f8fafc;
+  --cf-status-neutral-border: #e2e8f0;
+  --cf-progress-track: #e2e8f0;
+  --cf-progress-fill: #2563eb;
+}
+
+.cf-list-row-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.cf-list-row-contact,
+.cf-list-row-value,
+.cf-list-row-client,
+.cf-status-pill,
+.cf-progress-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 24px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0 9px;
+  font-size: 11px;
+  font-weight: 850;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.cf-list-row-contact {
+  border-color: var(--cf-list-row-contact-border);
+  background: var(--cf-list-row-contact-bg);
+  color: var(--cf-list-row-contact-text);
+}
+
+.cf-list-row-value {
+  border-color: var(--cf-list-row-value-border);
+  background: var(--cf-list-row-value-bg);
+  color: var(--cf-list-row-value-text);
+}
+
+.cf-list-row-client {
+  border-color: var(--cf-list-row-client-border);
+  background: var(--cf-list-row-client-bg);
+  color: var(--cf-list-row-client-text);
+}
+
+.cf-status-pill,
+.cf-progress-pill {
+  border-color: var(--cf-status-neutral-border);
+  background: var(--cf-status-neutral-bg);
+  color: var(--cf-status-neutral-text);
+}
+
+.cf-status-pill[data-cf-status-tone="blue"],
+.cf-progress-pill[data-cf-status-tone="blue"] {
+  border-color: var(--cf-status-blue-border);
+  background: var(--cf-status-blue-bg);
+  color: var(--cf-status-blue-text);
+}
+
+.cf-status-pill[data-cf-status-tone="green"],
+.cf-progress-pill[data-cf-status-tone="green"] {
+  border-color: var(--cf-status-green-border);
+  background: var(--cf-status-green-bg);
+  color: var(--cf-status-green-text);
+}
+
+.cf-status-pill[data-cf-status-tone="amber"],
+.cf-progress-pill[data-cf-status-tone="amber"] {
+  border-color: var(--cf-status-amber-border);
+  background: var(--cf-status-amber-bg);
+  color: var(--cf-status-amber-text);
+}
+
+.cf-status-pill[data-cf-status-tone="red"],
+.cf-progress-pill[data-cf-status-tone="red"] {
+  border-color: var(--cf-status-red-border);
+  background: var(--cf-status-red-bg);
+  color: var(--cf-status-red-text);
+}
+
+.cf-progress-bar {
+  width: 100%;
+  min-width: 76px;
+  height: 7px;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--cf-progress-track);
+}
+
+.cf-progress-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--cf-progress-fill);
+}
+
+.cf-progress-bar[data-cf-status-tone="green"] > span {
+  background: var(--cf-status-green-text);
+}
+
+.cf-progress-bar[data-cf-status-tone="amber"] > span {
+  background: var(--cf-status-amber-text);
+}
+
+.cf-progress-bar[data-cf-status-tone="red"] > span {
+  background: var(--cf-status-red-text);
+}
+
+.cf-progress-bar[data-cf-status-tone="blue"] > span {
+  background: var(--cf-status-blue-text);
+}
+
+/* CLOSEFLOW_FB2_LEADS_LIST_RIGHT_RAIL_CLEANUP
+   Right rail lead value rows: lead-only list, stable text fit, no short-word breaking.
+*/
+.main-leads-html .right-card,
+.main-leads-html .right-card *,
+.main-leads-html [data-fb2-leads-right-rail],
+.main-leads-html [data-fb2-leads-right-rail] * {
+  min-width: 0;
+}
+
+.main-leads-html .right-card a,
+.main-leads-html .right-card button,
+.main-leads-html .right-card article,
+.main-leads-html [data-fb2-leads-right-rail] a,
+.main-leads-html [data-fb2-leads-right-rail] button,
+.main-leads-html [data-fb2-leads-right-rail] article {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.main-leads-html .right-card h3,
+.main-leads-html .right-card strong,
+.main-leads-html .right-card p,
+.main-leads-html [data-fb2-leads-right-rail] h3,
+.main-leads-html [data-fb2-leads-right-rail] strong,
+.main-leads-html [data-fb2-leads-right-rail] p {
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: manual;
+}
+
+.main-leads-html .right-card h3,
+.main-leads-html .right-card p,
+.main-leads-html [data-fb2-leads-right-rail-name],
+.main-leads-html .fb2-lead-right-rail-name {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.main-leads-html [data-fb2-leads-right-rail-amount],
+.main-leads-html .fb2-lead-right-rail-amount {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+:root {
+  --cf-alert-error-text: #9f1239;
+  --cf-alert-error-bg: #fff1f3;
+  --cf-alert-error-border: #fecdd3;
+  --cf-alert-warning-text: #92400e;
+  --cf-alert-warning-bg: #fffbeb;
+  --cf-alert-warning-border: #fde68a;
+  --cf-alert-info-text: #1d4ed8;
+  --cf-alert-info-bg: #eff6ff;
+  --cf-alert-info-border: #bfdbfe;
+  --cf-alert-success-text: #047857;
+  --cf-alert-success-bg: #ecfdf5;
+  --cf-alert-success-border: #a7f3d0;
+  --cf-alert-muted-text: #667085;
+}
+
+.cf-alert {
+  border: 1px solid var(--cf-alert-info-border);
+  border-radius: 1rem;
+  background: var(--cf-alert-info-bg);
+  color: var(--cf-alert-info-text);
+  padding: 1.5rem;
+}
+
+.cf-alert-error {
+  border-color: var(--cf-alert-error-border);
+  background: var(--cf-alert-error-bg);
+  color: var(--cf-alert-error-text);
+}
+
+.cf-alert-warning {
+  border-color: var(--cf-alert-warning-border);
+  background: var(--cf-alert-warning-bg);
+  color: var(--cf-alert-warning-text);
+}
+
+.cf-alert-info {
+  border-color: var(--cf-alert-info-border);
+  background: var(--cf-alert-info-bg);
+  color: var(--cf-alert-info-text);
+}
+
+.cf-alert-success {
+  border-color: var(--cf-alert-success-border);
+  background: var(--cf-alert-success-bg);
+  color: var(--cf-alert-success-text);
+}
+
+.cf-alert-title {
+  color: inherit;
+}
+
+.cf-alert-muted {
+  color: var(--cf-alert-muted-text);
+}
+
+.cf-severity-panel {
+  border-color: var(--cf-alert-info-border);
+  background: var(--cf-alert-info-bg);
+  color: var(--cf-alert-info-text);
+}
+
+.cf-severity-panel[data-cf-severity="error"] {
+  border-color: var(--cf-alert-error-border);
+  background: var(--cf-alert-error-bg);
+  color: var(--cf-alert-error-text);
+}
+
+.cf-severity-panel[data-cf-severity="warning"] {
+  border-color: var(--cf-alert-warning-border);
+  background: var(--cf-alert-warning-bg);
+  color: var(--cf-alert-warning-text);
+}
+
+.cf-severity-panel[data-cf-severity="info"] {
+  border-color: var(--cf-alert-info-border);
+  background: var(--cf-alert-info-bg);
+  color: var(--cf-alert-info-text);
+}
+
+.cf-severity-panel[data-cf-severity="success"] {
+  border-color: var(--cf-alert-success-border);
+  background: var(--cf-alert-success-bg);
+  color: var(--cf-alert-success-text);
+}
+
+.cf-severity-pill {
+  width: fit-content;
+  border: 1px solid var(--cf-alert-info-border);
+  border-radius: 999px;
+  background: var(--cf-alert-info-bg);
+  color: var(--cf-alert-info-text);
+  padding: 0.4375rem 0.625rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 850;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.cf-severity-pill[data-cf-severity="error"] {
+  border-color: var(--cf-alert-error-border);
+  background: var(--cf-alert-error-bg);
+  color: var(--cf-alert-error-text);
+}
+
+.cf-severity-pill[data-cf-severity="warning"] {
+  border-color: var(--cf-alert-warning-border);
+  background: var(--cf-alert-warning-bg);
+  color: var(--cf-alert-warning-text);
+}
+
+.cf-severity-pill[data-cf-severity="info"] {
+  border-color: var(--cf-alert-info-border);
+  background: var(--cf-alert-info-bg);
+  color: var(--cf-alert-info-text);
+}
+
+.cf-severity-pill[data-cf-severity="success"] {
+  border-color: var(--cf-alert-success-border);
+  background: var(--cf-alert-success-bg);
+  color: var(--cf-alert-success-text);
+}
+
+.cf-severity-dot {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.cf-severity-dot[data-cf-severity="error"] {
+  background: var(--cf-alert-error-bg);
+  color: var(--cf-alert-error-text);
+}
+
+.cf-severity-dot[data-cf-severity="warning"] {
+  background: var(--cf-alert-warning-bg);
+  color: var(--cf-alert-warning-text);
+}
+
+.cf-severity-dot[data-cf-severity="info"] {
+  background: var(--cf-alert-info-bg);
+  color: var(--cf-alert-info-text);
+}
+
+.cf-severity-dot[data-cf-severity="success"] {
+  background: var(--cf-alert-success-bg);
+  color: var(--cf-alert-success-text);
+}
+
+.cf-severity-text-error {
+  color: var(--cf-alert-error-text);
+}
+
+.cf-severity-text-warning {
+  color: var(--cf-alert-warning-text);
+}
+
+.cf-severity-text-info {
+  color: var(--cf-alert-info-text);
+}
+
+.cf-severity-text-success {
+  color: var(--cf-alert-success-text);
+}
+
+.cf-severity-hover-error:hover {
+  border-color: var(--cf-alert-error-border);
+}
+
+.cf-severity-hover-warning:hover {
+  border-color: var(--cf-alert-warning-border);
+}
+
+/* FIN-8_FINANCE_VISUAL_INTEGRATION_REPAIR5 */
+/* FIN-8_FINANCE_VISUAL_INTEGRATION_REPAIR1: finance surfaces use SurfaceCard, StatusPill and FormFooter design-system primitives. */
+/* FIN-8_FINANCE_VISUAL_INTEGRATION_REPAIR2 */
+/* Finance visuals are layout-only here. SurfaceCard and StatusPill own visual tone. */
+.cf-finance-snapshot {
+  display: grid;
+  gap: var(--cf-space-3, 14px);
+  margin: 0;
+}
+
+.cf-finance-mini-summary {
+  display: grid;
+  gap: var(--cf-space-3, 14px);
+}
+
+/* FIN-7_CLIENT_FINANCE_SUMMARY_STYLE */
+.cf-finance-client-summary {
+  margin: 0 0 var(--cf-space-4, 16px);
+}
+
+.cf-finance-mini-summary__header,
+.cf-finance-section-header,
+.cf-finance-settlement-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--cf-space-4, 16px);
+}
+
+.cf-finance-kicker {
+  margin: 0;
+  color: var(--cf-text-muted, currentColor);
+  font-size: var(--cf-font-size-xs, 0.84rem);
+  font-weight: var(--cf-font-weight-bold, 700);
+  letter-spacing: var(--cf-letter-spacing-tight, 0.02em);
+}
+
+.cf-finance-mini-summary__value {
+  color: var(--cf-text-strong, currentColor);
+  font-size: clamp(1.1rem, 2vw, 1.55rem);
+  line-height: 1.15;
+  text-align: right;
+}
+
+.cf-finance-client-summary .cf-finance-mini-summary__value {
+  font-size: 18px;
+}
+
+.cf-finance-mini-summary__grid,
+.cf-finance-settlement-grid {
+  display: grid;
+  gap: var(--cf-space-2, 10px);
+  margin: 0;
+}
+
+.cf-finance-mini-summary__grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.cf-finance-settlement-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.cf-finance-metric,
+.cf-finance-settlement-metric,
+.cf-finance-payment-row,
+.cf-finance-settlement-preview,
+.cf-finance-empty {
+  border: 1px solid var(--cf-border-subtle, var(--border));
+  border-radius: var(--cf-radius-lg, 16px);
+  background: var(--cf-surface-muted, var(--background));
+  color: var(--cf-text-main, currentColor);
+}
+
+.cf-finance-metric,
+.cf-finance-settlement-metric {
+  min-width: 0;
+  padding: var(--cf-space-3, 12px);
+}
+
+.cf-finance-metric--wide {
+  grid-column: 1 / -1;
+}
+
+.cf-finance-metric dt,
+.cf-finance-settlement-metric dt {
+  margin: 0 0 var(--cf-space-1, 6px);
+  color: var(--cf-text-muted, currentColor);
+  font-size: var(--cf-font-size-xs, 0.76rem);
+  font-weight: var(--cf-font-weight-bold, 700);
+}
+
+.cf-finance-settlement-metric dt {
+  letter-spacing: var(--cf-letter-spacing-wide, 0.04em);
+  text-transform: uppercase;
+}
+
+.cf-finance-metric dd,
+.cf-finance-settlement-metric dd {
+  margin: 0;
+  color: var(--cf-text-strong, currentColor);
+  font-size: var(--cf-font-size-sm, 0.96rem);
+  font-weight: var(--cf-font-weight-black, 800);
+  word-break: break-word;
+}
+
+.cf-finance-status {
+  display: inline-flex;
+}
+
+.cf-finance-actions,
+.cf-finance-settlement-actions,
+.cf-finance-lead-value-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cf-space-2, 8px);
+}
+
+.cf-finance-settlement-actions,
+.cf-finance-lead-value-panel__actions {
+  justify-content: flex-end;
+}
+
+.cf-finance-section-header h3,
+.cf-finance-settlement-header h2 {
+  margin: 0;
+  color: var(--cf-text-strong, currentColor);
+  font-weight: var(--cf-font-weight-black, 850);
+}
+
+.cf-finance-section-header h3 {
+  font-size: var(--cf-font-size-sm, 0.95rem);
+}
+
+.cf-finance-settlement-header h2 {
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.cf-finance-section-header span,
+.cf-finance-settlement-header span,
+.cf-finance-settlement-footnote,
+.cf-finance-payment-row__main span,
+.cf-finance-payment-row__side span,
+.cf-finance-lead-value-panel__toggle small {
+  color: var(--cf-text-muted, currentColor);
+  font-size: var(--cf-font-size-xs, 0.82rem);
+  font-weight: var(--cf-font-weight-bold, 700);
+}
+
+.cf-finance-empty {
+  margin: 0;
+  border-style: dashed;
+  padding: var(--cf-space-3, 12px);
+}
+
+.cf-finance-payment-list,
+.cf-finance-payment-list__items,
+.cf-finance-payment-row__main,
+.cf-finance-payment-row__side {
+  display: grid;
+  gap: var(--cf-space-1, 6px);
+}
+
+.cf-finance-payment-list__items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cf-finance-payment-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cf-space-3, 12px);
+  padding: var(--cf-space-3, 12px);
+}
+
+.cf-finance-payment-row__main strong,
+.cf-finance-payment-row__side strong {
+  color: var(--cf-text-strong, currentColor);
+  font-size: var(--cf-font-size-sm, 0.9rem);
+}
+
+.cf-finance-payment-row__side {
+  justify-items: end;
+  text-align: right;
+}
+
+.cf-finance-dialog {
+  max-width: min(680px, calc(100vw - 24px));
+}
+
+.cf-finance-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--cf-space-3, 12px);
+}
+
+.cf-finance-field {
+  display: grid;
+  gap: var(--cf-space-1, 6px);
+  color: var(--cf-text-main, currentColor);
+  font-size: var(--cf-font-size-xs, 0.84rem);
+  font-weight: var(--cf-font-weight-bold, 750);
+}
+
+.cf-finance-field--wide,
+.cf-finance-dialog__footer,
+.cf-finance-settlement-preview {
+  grid-column: 1 / -1;
+}
+
+.cf-finance-input,
+.cf-finance-textarea {
+  width: 100%;
+  border: 1px solid var(--cf-border-input, var(--border));
+  border-radius: var(--cf-radius-md, 10px);
+  background: var(--cf-surface-input, var(--background));
+  color: var(--cf-text-main, currentColor);
+  padding: var(--cf-space-2, 10px);
+  font-size: var(--cf-font-size-sm, 0.88rem);
+}
+
+.cf-finance-input {
+  min-height: 36px;
+}
+
+.cf-finance-textarea {
+  min-height: 88px;
+  outline: none;
+  resize: vertical;
+}
+
+.cf-finance-dialog__footer {
+  margin-top: var(--cf-space-1, 4px);
+}
+
+.cf-finance-lead-value-panel {
+  overflow: hidden;
+}
+
+.cf-finance-lead-value-panel__toggle {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--cf-text-strong, currentColor);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cf-space-4, 16px);
+  padding: var(--cf-space-4, 16px);
+  text-align: left;
+  cursor: pointer;
+}
+
+.cf-finance-lead-value-panel__toggle strong {
+  display: block;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+
+.cf-finance-lead-value-panel__preview {
+  flex: 0 0 auto;
+  color: var(--cf-text-main, currentColor);
+  font-size: var(--cf-font-size-xs, 12px);
+  font-weight: var(--cf-font-weight-bold, 700);
+  background: var(--cf-surface-muted, var(--background));
+  border: 1px solid var(--cf-border-subtle, var(--border));
+  border-radius: var(--cf-radius-pill, 999px);
+  padding: 7px 10px;
+}
+
+.cf-finance-lead-value-panel__body {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--cf-space-3, 14px);
+  padding: var(--cf-space-4, 16px);
+}
+
+.cf-finance-settlement-panel {
+  margin: 0 0 var(--cf-space-4, 18px);
+}
+
+.cf-finance-settlement-footnote {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cf-space-2, 10px);
+  justify-content: space-between;
+  margin-top: var(--cf-space-3, 14px);
+}
+
+.cf-finance-settlement-preview {
+  border-style: dashed;
+  padding: var(--cf-space-3, 12px);
+}
+
+@media (max-width: 960px) {
+  .cf-finance-settlement-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .cf-finance-mini-summary__grid,
+  .cf-finance-form,
+  .cf-finance-lead-value-panel__body,
+  .cf-finance-settlement-grid,
+  .cf-finance-settlement-dialog .cf-finance-form {
+    grid-template-columns: 1fr;
+  }
+
+  .cf-finance-payment-row,
+  .cf-finance-mini-summary__header,
+  .cf-finance-settlement-header,
+  .cf-finance-lead-value-panel__toggle {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .cf-finance-payment-row__side,
+  .cf-finance-mini-summary__value {
+    justify-items: start;
+    text-align: left;
+  }
+
+  .cf-finance-settlement-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .cf-finance-settlement-actions > * {
+    flex: 1 1 100%;
+  }
+
+  .cf-finance-lead-value-panel__preview {
+    width: 100%;
+  }
+}
+
+/* FIN-9_FINANCE_DUPLICATE_SAFETY_STYLE */
+.cf-finance-duplicate-warning {
+  display: grid;
+  gap: var(--cf-space-1, 0.25rem);
+  padding: var(--cf-space-3, 0.75rem);
+  border: 1px solid var(--cf-warning-border, var(--border));
+  border-radius: var(--cf-radius-lg, 0.875rem);
+  background: var(--cf-warning-surface, var(--muted));
+  color: var(--cf-warning-text, var(--foreground));
+}
+
+.cf-finance-duplicate-warning strong {
+  font-size: var(--cf-text-sm, 0.875rem);
+  font-weight: var(--cf-font-semibold, 700);
+}
+
+.cf-finance-duplicate-warning span {
+  font-size: var(--cf-text-xs, 0.75rem);
+  color: var(--cf-text-muted, var(--muted-foreground));
+}
+
+/* CLOSEFLOW_CASE_SETTLEMENT_EDIT_VALUES_V1 */
+.cf-finance-settlement-empty-value {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 14px 0 16px;
+  padding: 14px;
+  border: 1px solid rgba(34, 197, 94, 0.32);
+  border-radius: 18px;
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.cf-finance-settlement-empty-value > div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.cf-finance-settlement-empty-value strong {
+  color: var(--cf-text-strong, #f8fafc);
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.cf-finance-settlement-empty-value span,
+.cf-finance-settlement-help {
+  color: var(--cf-text-muted, #94a3b8);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.cf-finance-settlement-help {
+  margin: -4px 0 4px;
+}
+
+@media (max-width: 720px) {
+  .cf-finance-settlement-empty-value {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .cf-finance-settlement-empty-value button {
+    width: 100%;
+  }
+}
+
+/* FIN-13_CLIENT_CASE_FINANCES_STYLES */
+.cf-case-finance-action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.cf-case-finance-action-buttons--compact {
+  align-items: stretch;
+}
+.cf-case-finance-action-buttons--compact > * {
+  min-height: 34px;
+}
+.cf-finance-editor-dialog__subtitle,
+.cf-fin13-client-finance-header span {
+  display: block;
+  margin-top: 4px;
+  color: rgba(71, 85, 105, 0.86);
+  font-size: 13px;
+  line-height: 1.35;
+}
+.cf-finance-editor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.cf-finance-editor-preview {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 16px;
+  background: rgba(248, 250, 252, 0.82);
+}
+.cf-finance-editor-preview div,
+.cf-fin13-client-case-finance-row__metrics div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.cf-finance-editor-preview span,
+.cf-fin13-client-case-finance-row__metrics dt {
+  color: rgba(71, 85, 105, 0.82);
+  font-size: 12px;
+  font-weight: 700;
+}
+.cf-finance-editor-preview strong,
+.cf-fin13-client-case-finance-row__metrics dd {
+  margin: 0;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 800;
+}
+.cf-fin13-client-case-finance-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+.cf-fin13-client-case-finance-list__title {
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 900;
+}
+.cf-fin13-client-case-finance-empty {
+  margin: 0;
+  color: rgba(71, 85, 105, 0.82);
+  font-size: 13px;
+}
+.cf-fin13-client-case-finance-row {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+}
+.cf-fin13-client-case-finance-row__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+.cf-fin13-client-case-finance-row__head p {
+  margin: 0;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 900;
+}
+.cf-fin13-client-case-finance-row__head span {
+  color: rgba(71, 85, 105, 0.72);
+  font-size: 12px;
+}
+.cf-fin13-client-case-finance-row__metrics {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+@media (max-width: 900px) {
+  .cf-finance-editor-grid,
+  .cf-finance-editor-preview,
+  .cf-fin13-client-case-finance-row__metrics {
+    grid-template-columns: 1fr;
+  }
+  .cf-case-finance-action-buttons,
+  .cf-case-finance-action-buttons > * {
+    width: 100%;
+  }
+}
+
+/* FIN-14_PAYMENT_TYPE_ACTIONS_STYLES */
+.cf-case-finance-action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.cf-case-finance-action-buttons--compact {
+  gap: 6px;
+}
+.cf-finance-payment-dialog .cf-finance-editor-dialog__subtitle {
+  margin: 0;
+  color: rgba(71, 85, 105, 0.92);
+  font-size: 13px;
+}
+
+
+
+.cf-finance-scope-card {
+  width: 100%;
+  border: 1px solid rgba(139, 92, 246, 0.14) !important;
+  border-radius: 20px !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06) !important;
+  color: #0f172a !important;
+  display: grid !important;
+  gap: 12px !important;
+  padding: 14px !important;
+}
+
+.cf-finance-scope-card__head {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  min-width: 0;
+}
+
+.cf-finance-scope-card__head strong {
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.cf-finance-scope-card__icon {
+  align-items: center;
+  background: rgba(124, 58, 237, 0.08);
+  border-radius: 999px;
+  color: #7c3aed;
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 28px;
+  justify-content: center;
+  width: 28px;
+}
+
+.cf-finance-scope-card__metrics {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.cf-finance-scope-card__metrics div {
+  align-items: center;
+  background: rgba(248, 250, 252, 0.92);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 999px;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  min-height: 30px;
+  padding: 7px 10px;
+}
+
+.cf-finance-scope-card__metrics dt,
+.cf-finance-scope-card__metrics dd {
+  margin: 0;
+}
+
+.cf-finance-scope-card__metrics dt {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.cf-finance-scope-card__metrics dd {
+  color: #7c3aed;
+  font-size: 13px;
+  font-weight: 950;
+  line-height: 1.2;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cf-finance-scope-card__actions {
+  display: grid !important;
+  gap: 8px !important;
+  grid-template-columns: 1fr !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.cf-finance-scope-card__actions button,
+.cf-finance-scope-card__main-action {
+  min-height: 34px !important;
+  border-radius: 999px !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  line-height: 1.2 !important;
+}
+
+.cf-finance-scope-card__main-action {
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  background: #fff;
+  color: #0f172a;
+  cursor: pointer;
+  padding: 8px 12px;
+}
+
+.case-detail-right-rail .cf-finance-scope-card {
+  margin: 0 !important;
+}
+
+.client-detail-today-info-tile.cf-finance-scope-card {
+  min-height: 0 !important;
+}
+
+.client-detail-today-info-tile.cf-finance-scope-card .cf-finance-scope-card__metrics {
+  width: 100%;
+}
+
+/* Shared semantic finance tone contract. Change finance colors here, not per page. */
+[data-cf-finance-tone="transaction"],
+[data-cf-finance-tone="earned"] {
+  --cf-finance-tone-bg: #eff6ff;
+  --cf-finance-tone-border: #bfdbfe;
+  --cf-finance-tone-text: #1d4ed8;
+}
+
+[data-cf-finance-tone="commission"] {
+  --cf-finance-tone-bg: #f5f3ff;
+  --cf-finance-tone-border: #ddd6fe;
+  --cf-finance-tone-text: #7c3aed;
+}
+
+[data-cf-finance-tone="paid"],
+[data-cf-finance-tone="reimbursed"] {
+  --cf-finance-tone-bg: #ecfdf5;
+  --cf-finance-tone-border: #a7f3d0;
+  --cf-finance-tone-text: #047857;
+}
+
+[data-cf-finance-tone="remaining"] {
+  --cf-finance-tone-bg: #fff7ed;
+  --cf-finance-tone-border: #fed7aa;
+  --cf-finance-tone-text: #c2410c;
+}
+
+[data-cf-finance-tone="cost"] {
+  --cf-finance-tone-bg: #fffbeb;
+  --cf-finance-tone-border: #fde68a;
+  --cf-finance-tone-text: #b45309;
+}
+
+[data-cf-finance-tone="total"] {
+  --cf-finance-tone-bg: #fff7ed;
+  --cf-finance-tone-border: #fdba74;
+  --cf-finance-tone-text: #9a3412;
+}
+
+:is(
+  .cf-finance-metric,
+  .cf-finance-settlement-metric,
+  .cf-finance-scope-card__metrics > div,
+  .client-detail-finance-metrics > div,
+  .client-detail-finance-inline-metrics > small,
+  .entity-overview-metric-row
+)[data-cf-finance-tone] {
+  background: var(--cf-finance-tone-bg) !important;
+  border-color: var(--cf-finance-tone-border) !important;
+}
+
+[data-cf-finance-tone] :is(dd, strong, b),
+[data-cf-finance-tone]:is(dd, strong, b, small, span) {
+  color: var(--cf-finance-tone-text) !important;
+}
+
+#root .cf-html-view.main-clients-html :is(.cf-client-active-commission, .cf-client-lifetime-earned)[data-cf-finance-tone] {
+  background: var(--cf-finance-tone-bg) !important;
+  border-color: var(--cf-finance-tone-border) !important;
+  color: var(--cf-finance-tone-text) !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-value {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-value > [data-cf-finance-tone] {
+  background: var(--cf-finance-tone-bg) !important;
+  border: 1px solid var(--cf-finance-tone-border) !important;
+  border-radius: 9px !important;
+  color: var(--cf-finance-tone-text) !important;
+  padding: 3px 7px !important;
+}
+
+
+.cf-finance-dialog[data-semantic220a36r2-commission-field-order="true"] {
+  max-width: min(920px, calc(100vw - 24px));
+}
+
+.cf-finance-editor-grid[data-semantic220a36r2-commission-grid="true"] {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--cf-space-3, 14px);
+}
+
+.cf-finance-editor-grid[data-semantic220a36r2-commission-grid="true"] .cf-finance-field--wide {
+  grid-column: span 2;
+}
+
+@media (max-width: 900px) {
+  .cf-finance-editor-grid[data-semantic220a36r2-commission-grid="true"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .cf-finance-editor-grid[data-semantic220a36r2-commission-grid="true"] {
+    grid-template-columns: 1fr;
+  }
+
+  .cf-finance-editor-grid[data-semantic220a36r2-commission-grid="true"] .cf-finance-field--wide {
+    grid-column: auto;
+  }
+}
+
+
+
+:root {
+  --cf-right-rail-card-bg: #ffffff;
+  --cf-right-rail-card-bg-muted: #f8fafc;
+  --cf-right-rail-card-border: #e2e8f0;
+  --cf-right-rail-card-text: #0f172a;
+  --cf-right-rail-card-muted: #64748b;
+  --cf-right-rail-card-shadow: 0 16px 38px rgba(15, 23, 42, 0.07);
+}
+
+/* Top-value labels always reserve a shrinkable column and expose full text via title. */
+#root .cf-html-view.main-leads-html [data-testid="leads-top-value-records-card"] .cf-rail-top-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html [data-testid="leads-top-value-records-card"] :is(.cf-top-value-label-wrap, .cf-top-value-line, .cf-top-value-label) {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(.lead-right-rail, .clients-right-rail, .cases-right-rail) {
+  align-self: start !important;
+  min-width: 0 !important;
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card),
+#root .cf-html-view.main-leads-html aside.right-card.lead-right-card,
+#root .cf-html-view.main-leads-html aside.right-card.operator-top-value-card,
+#root .cf-html-view.main-clients-html aside.right-card,
+#root .cf-html-view.main-cases-html aside.right-card.cases-shortcuts-rail-card,
+#root .cf-html-view.main-cases-html aside.right-card.cases-risk-rail-card {
+  background: var(--cf-right-rail-card-bg) !important;
+  color: var(--cf-right-rail-card-text) !important;
+  border: 1px solid var(--cf-right-rail-card-border) !important;
+  box-shadow: var(--cf-right-rail-card-shadow) !important;
+  -webkit-text-fill-color: var(--cf-right-rail-card-text) !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(h1, h2, h3, h4, p, li, small, strong),
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(.title, .right-card-title, .rail-title) {
+  color: var(--cf-right-rail-card-text) !important;
+  -webkit-text-fill-color: var(--cf-right-rail-card-text) !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(.sub, .mini, .description, .helper, .muted, .right-card-subtitle, .rail-subtitle) {
+  color: var(--cf-right-rail-card-muted) !important;
+  -webkit-text-fill-color: var(--cf-right-rail-card-muted) !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(.pill, .cf-status-pill, .badge, [data-cf-status-tone], [data-cf-severity]) {
+  -webkit-text-fill-color: currentColor !important;
+}
+
+#root .cf-html-view.main-leads-html .lead-right-rail .operator-top-value-card {
+  margin-top: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .layout-list:has(.lead-right-rail),
+#root .cf-html-view.main-clients-html .layout-list:has(.clients-right-rail),
+#root .cf-html-view.main-cases-html .layout-list:has(.cases-right-rail) {
+  align-items: start !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(a, button) {
+  -webkit-text-fill-color: currentColor !important;
+}
+
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.62rem !important;
+  margin-top: 0.72rem !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-row {
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.48rem !important;
+  padding: 0.72rem 0.78rem !important;
+  border-radius: 0.95rem !important;
+  border: 1px solid rgba(148, 163, 184, 0.24) !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  color: rgb(15 23 42) !important;
+  -webkit-text-fill-color: rgb(15 23 42) !important;
+  text-decoration: none !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.035) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-row:hover {
+  border-color: rgba(59, 130, 246, 0.36) !important;
+  background: rgb(248 250 252) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-row-main {
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.16rem !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-title {
+  display: block !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  font-size: 0.86rem !important;
+  font-weight: 850 !important;
+  line-height: 1.18 !important;
+  color: rgb(15 23 42) !important;
+  -webkit-text-fill-color: rgb(15 23 42) !important;
+  overflow-wrap: anywhere !important;
+  white-space: normal !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-meta {
+  display: block !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  font-size: 0.74rem !important;
+  font-weight: 650 !important;
+  line-height: 1.3 !important;
+  color: rgb(100 116 139) !important;
+  -webkit-text-fill-color: rgb(100 116 139) !important;
+  overflow-wrap: anywhere !important;
+  white-space: normal !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-badges {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 0.34rem !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-pill {
+  min-height: 1.35rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0.22rem 0.48rem !important;
+  border-radius: 999px !important;
+  font-size: 0.66rem !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-pill-ok {
+  border: 1px solid rgb(134 239 172) !important;
+  background: rgb(220 252 231) !important;
+  color: rgb(22 101 52) !important;
+  -webkit-text-fill-color: rgb(22 101 52) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-pill-warn {
+  border: 1px solid rgb(252 165 165) !important;
+  background: rgb(254 242 242) !important;
+  color: rgb(153 27 27) !important;
+  -webkit-text-fill-color: rgb(153 27 27) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-empty {
+  margin: 0 !important;
+  padding: 0.72rem 0.78rem !important;
+  border-radius: 0.95rem !important;
+  border: 1px dashed rgba(148, 163, 184, 0.38) !important;
+  background: rgb(248 250 252) !important;
+  color: rgb(100 116 139) !important;
+  -webkit-text-fill-color: rgb(100 116 139) !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  line-height: 1.35 !important;
+}
+
+
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .operator-top-value-card .quick-list {
+  display: grid !important;
+  gap: 0.55rem !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .operator-top-value-card .quick-list a,
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .operator-top-value-card .quick-list button {
+  background: #ffffff !important;
+  color: var(--cf-right-rail-card-text) !important;
+}
+
+
+:root {
+  --cf-right-rail-width-min: 300px;
+  --cf-right-rail-width-preferred: 320px;
+  --cf-right-rail-width-max: 340px;
+  --cf-right-rail-gap: 18px;
+}
+
+@media (min-width: 1221px) {
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .layout-list:has(:is(.lead-right-rail, .clients-right-rail)) {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(var(--cf-right-rail-width-min), var(--cf-right-rail-width-max)) !important;
+    align-items: start !important;
+    column-gap: var(--cf-right-rail-gap) !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) :is(.lead-right-rail, .clients-right-rail, .cf-operator-right-rail) {
+    width: 100% !important;
+    min-width: var(--cf-right-rail-width-min) !important;
+    max-width: var(--cf-right-rail-width-max) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-self: start !important;
+    align-content: start !important;
+    gap: 14px !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) :is(.operator-simple-filters-card, [data-testid="leads-simple-filters-card"], [data-testid="clients-simple-filters-card"]) {
+  order: 0 !important;
+  width: 100% !important;
+  align-self: stretch !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .operator-top-value-card {
+  order: 10 !important;
+  width: 100% !important;
+  align-self: stretch !important;
+}
+
+@media (max-width: 1220px) {
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) :is(.lead-right-rail, .clients-right-rail, .cf-operator-right-rail) {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+}
+
+
+:root {
+  --cf-mobile-simple-filter-row-min-height: 42px;
+  --cf-mobile-simple-filter-row-radius: 14px;
+  --cf-mobile-simple-filter-row-padding-y: 9px;
+  --cf-mobile-simple-filter-row-padding-x: 12px;
+  --cf-mobile-simple-filter-label-size: 12px;
+  --cf-mobile-simple-filter-label-weight: 900;
+  --cf-mobile-simple-filter-value-size: 13px;
+  --cf-mobile-simple-filter-value-weight: 950;
+}
+
+@media (max-width: 760px) {
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-simple-filters-card"], [data-testid="clients-simple-filters-card"], .operator-simple-filters-card) .panel-head {
+    margin-bottom: 14px !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-simple-filters-card"], [data-testid="clients-simple-filters-card"], .operator-simple-filters-card) .panel-head h3 {
+    margin: 0 !important;
+    font-size: 15px !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.03em !important;
+    font-weight: 950 !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-simple-filters-card"], [data-testid="clients-simple-filters-card"], .operator-simple-filters-card) .panel-head p {
+    margin: 4px 0 0 !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+    font-weight: 850 !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-simple-filters-card"], [data-testid="clients-simple-filters-card"], .operator-simple-filters-card) .quick-list {
+    display: grid !important;
+    gap: 8px !important;
+    margin: 0 !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-simple-filters-card"], [data-testid="clients-simple-filters-card"], .operator-simple-filters-card) .quick-list > :is(a, button) {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    width: 100% !important;
+    min-height: var(--cf-mobile-simple-filter-row-min-height) !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    padding: var(--cf-mobile-simple-filter-row-padding-y) var(--cf-mobile-simple-filter-row-padding-x) !important;
+    border-radius: var(--cf-mobile-simple-filter-row-radius) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    text-align: left !important;
+    cursor: pointer !important;
+    line-height: 1.15 !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-simple-filters-card"], [data-testid="clients-simple-filters-card"], .operator-simple-filters-card) .quick-list > :is(a, button) > span {
+    min-width: 0 !important;
+    display: block !important;
+    font-size: var(--cf-mobile-simple-filter-label-size) !important;
+    font-weight: var(--cf-mobile-simple-filter-label-weight) !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-simple-filters-card"], [data-testid="clients-simple-filters-card"], .operator-simple-filters-card) .quick-list > :is(a, button) > strong {
+    flex: 0 0 auto !important;
+    min-width: 1.4rem !important;
+    text-align: right !important;
+    font-size: var(--cf-mobile-simple-filter-value-size) !important;
+    font-weight: var(--cf-mobile-simple-filter-value-weight) !important;
+    line-height: 1 !important;
+  }
+}
+
+
+
+@media (max-width: 760px) {
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .quick-list {
+    display: grid !important;
+    gap: 8px !important;
+    margin: 0 !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .quick-list > a {
+    width: 100% !important;
+    min-height: 50px !important;
+    box-sizing: border-box !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 9px 12px !important;
+    border-radius: 14px !important;
+    border: 1px solid #e4e7ec !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+    text-decoration: none !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-label-wrap {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    display: block !important;
+    overflow: hidden !important;
+    border-radius: 12px !important;
+    background: #f8fafc !important;
+    padding: 7px 12px !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-label {
+    display: block !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    color: #111827 !important;
+    font-size: 13px !important;
+    font-weight: 950 !important;
+    line-height: 1.15 !important;
+    text-align: center !important;
+    letter-spacing: -0.015em !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-description {
+    display: none !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-money {
+    min-width: max-content !important;
+    white-space: nowrap !important;
+    color: #111827 !important;
+    font-size: 13px !important;
+    font-weight: 950 !important;
+    line-height: 1 !important;
+    text-align: right !important;
+  }
+}
+
+
+@media (max-width: 760px) {
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .quick-list {
+    display: grid !important;
+    gap: 8px !important;
+    margin: 0 !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .quick-list > a {
+    width: 100% !important;
+    min-height: 50px !important;
+    box-sizing: border-box !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 9px 12px !important;
+    border-radius: 14px !important;
+    border: 1px solid #e4e7ec !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+    text-decoration: none !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-label-wrap {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    display: block !important;
+    overflow: hidden !important;
+    border-radius: 12px !important;
+    background: #f8fafc !important;
+    padding: 7px 12px !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-line {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    display: flex !important;
+    align-items: baseline !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    overflow: hidden !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-line-single .cf-top-value-label {
+    max-width: 100% !important;
+    text-align: center !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-line-with-description .cf-top-value-label {
+    flex: 0 1 auto !important;
+    min-width: 0 !important;
+    max-width: 48% !important;
+    text-align: right !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-label,
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-description {
+    display: block !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    color: #111827 !important;
+    font-size: 13px !important;
+    font-weight: 950 !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.015em !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-description {
+    flex: 1 1 auto !important;
+    max-width: 52% !important;
+    text-align: left !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-separator {
+    flex: 0 0 auto !important;
+    color: #94a3b8 !important;
+    font-size: 12px !important;
+    font-weight: 950 !important;
+    line-height: 1 !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-money {
+    min-width: max-content !important;
+    white-space: nowrap !important;
+    color: #111827 !important;
+    font-size: 13px !important;
+    font-weight: 950 !important;
+    line-height: 1 !important;
+    text-align: right !important;
+  }
+}
+
+
+
+:root {
+  --cf-right-rail-card-bg: var(--cf-vst-surface-card-solid);
+  --cf-right-rail-card-bg-muted: var(--cf-vst-surface-soft);
+  --cf-right-rail-card-border: var(--cf-vst-surface-border);
+  --cf-right-rail-card-text: var(--cf-vst-text-strong);
+  --cf-right-rail-card-muted: var(--cf-vst-text-muted);
+  --cf-right-rail-card-shadow: var(--cf-vst-shadow-card);
+  --cf-right-rail-width-min: var(--cf-vst-layout-right-rail);
+  --cf-right-rail-width-preferred: var(--cf-vst-layout-right-rail);
+  --cf-right-rail-width-max: calc(var(--cf-vst-layout-right-rail) + 20px);
+  --cf-right-rail-gap: var(--cf-vst-layout-gap);
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card),
+#root .cf-html-view.main-leads-html aside.right-card.lead-right-card,
+#root .cf-html-view.main-leads-html aside.right-card.operator-top-value-card,
+#root .cf-html-view.main-clients-html aside.right-card,
+#root .cf-html-view.main-cases-html aside.right-card.cases-shortcuts-rail-card,
+#root .cf-html-view.main-cases-html aside.right-card.cases-risk-rail-card {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border-color: var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(h1, h2, h3, h4, p, li, small, strong),
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(.title, .right-card-title, .rail-title) {
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(.sub, .mini, .description, .helper, .muted, .right-card-subtitle, .rail-subtitle) {
+  color: var(--cf-vst-text-muted) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-row {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border-color: var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.035) !important;
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-row:hover {
+  border-color: var(--cf-vst-color-primary-border) !important;
+  background: var(--cf-vst-surface-soft) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-title {
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-title) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-meta {
+  color: var(--cf-vst-text-muted) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-medium) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-pill {
+  min-height: var(--cf-vst-badge-height) !important;
+  border-radius: var(--cf-vst-radius-pill) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-pill-ok {
+  border: 1px solid var(--cf-vst-color-task-border) !important;
+  background: var(--cf-vst-color-success-soft) !important;
+  color: var(--cf-vst-color-success) !important;
+  -webkit-text-fill-color: var(--cf-vst-color-success) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-pill-warn {
+  border: 1px solid var(--cf-vst-color-delete-border) !important;
+  background: var(--cf-vst-color-delete-soft) !important;
+  color: var(--cf-vst-color-delete-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-color-delete-strong) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-empty {
+  background: var(--cf-vst-surface-soft) !important;
+  border-color: var(--cf-vst-surface-border) !important;
+  color: var(--cf-vst-text-muted) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+}
+
+
+
+:root {
+  /* One blue used by the top command bar and page-header buttons. */
+  --cf-command-action-blue: #2563eb;
+  --cf-command-action-blue-hover: #1d4ed8;
+
+  /* One neutral button skin. This is intentionally white for all header/toolbar actions. */
+  --cf-command-action-bg: #ffffff;
+  --cf-command-action-bg-hover: #eff6ff;
+  --cf-command-action-border: #bfdbfe;
+  --cf-command-action-border-hover: #93c5fd;
+  --cf-command-action-shadow: 0 8px 18px rgba(37, 99, 235, 0.10);
+  --cf-command-action-shadow-hover: 0 10px 22px rgba(37, 99, 235, 0.14);
+  --cf-command-action-radius: 14px;
+  --cf-command-action-height: 38px;
+  --cf-command-action-padding-x: 14px;
+  --cf-command-action-gap: 8px;
+
+  /* Action placement source of truth. */
+  --cf-command-actions-row-gap: 10px;
+  --cf-command-actions-justify: flex-end;
+  --cf-command-actions-align: flex-start;
+}
+
+/* -------------------------------------------------------------------------- */
+/* GLOBAL QUICK ACTIONS BAR                                                   */
+/* -------------------------------------------------------------------------- */
+
+#root .cf-html-shell [data-global-quick-actions="true"].global-actions,
+#root [data-global-quick-actions="true"].global-actions,
+[data-global-quick-actions="true"].global-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: var(--cf-command-actions-row-gap) !important;
+  overflow-x: auto !important;
+  padding: 8px 12px !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-bottom: 1px solid rgba(191, 219, 254, 0.55) !important;
+}
+
+/* Force every global-toolbar action to use the same white/blue skin.
+   This includes QuickAiCapture trigger because it renders only a Button, not a stable custom class. */
+#root .cf-html-shell [data-global-quick-actions="true"] :is(button, a, .btn),
+#root [data-global-quick-actions="true"] :is(button, a, .btn),
+[data-global-quick-actions="true"] :is(button, a, .btn) {
+  min-height: var(--cf-command-action-height) !important;
+  height: var(--cf-command-action-height) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--cf-command-action-gap) !important;
+  flex: 0 0 auto !important;
+
+  padding-left: var(--cf-command-action-padding-x) !important;
+  padding-right: var(--cf-command-action-padding-x) !important;
+  border-radius: var(--cf-command-action-radius) !important;
+  border: 1px solid var(--cf-command-action-border) !important;
+  background: var(--cf-command-action-bg) !important;
+  background-color: var(--cf-command-action-bg) !important;
+  background-image: none !important;
+  color: var(--cf-command-action-blue) !important;
+  -webkit-text-fill-color: var(--cf-command-action-blue) !important;
+  box-shadow: var(--cf-command-action-shadow) !important;
+
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  opacity: 1 !important;
+}
+
+/* The previous dark QuickAiCapture state used local component/variant styling.
+   In the toolbar it must never become dark, even when it has rounded-xl only. */
+#root [data-global-quick-actions="true"] button.rounded-xl,
+#root .cf-html-shell [data-global-quick-actions="true"] button.rounded-xl,
+[data-global-quick-actions="true"] button.rounded-xl {
+  background: var(--cf-command-action-bg) !important;
+  background-color: var(--cf-command-action-bg) !important;
+  background-image: none !important;
+  color: var(--cf-command-action-blue) !important;
+  -webkit-text-fill-color: var(--cf-command-action-blue) !important;
+  border-color: var(--cf-command-action-border) !important;
+}
+
+#root .cf-html-shell [data-global-quick-actions="true"] :is(button, a, .btn):hover,
+#root [data-global-quick-actions="true"] :is(button, a, .btn):hover,
+[data-global-quick-actions="true"] :is(button, a, .btn):hover {
+  background: var(--cf-command-action-bg-hover) !important;
+  background-color: var(--cf-command-action-bg-hover) !important;
+  color: var(--cf-command-action-blue-hover) !important;
+  -webkit-text-fill-color: var(--cf-command-action-blue-hover) !important;
+  border-color: var(--cf-command-action-border-hover) !important;
+  box-shadow: var(--cf-command-action-shadow-hover) !important;
+}
+
+#root .cf-html-shell [data-global-quick-actions="true"] :is(button, a, .btn) svg,
+#root [data-global-quick-actions="true"] :is(button, a, .btn) svg,
+[data-global-quick-actions="true"] :is(button, a, .btn) svg {
+  width: 1rem !important;
+  height: 1rem !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* TOP PAGE HEADER ACTION PLACEMENT                                           */
+/* -------------------------------------------------------------------------- */
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) max-content !important;
+  align-items: start !important;
+  column-gap: 18px !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) max-content !important;
+  align-items: start !important;
+  column-gap: 18px !important;
+  width: 100% !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child {
+  grid-column: 1 !important;
+  min-width: 0 !important;
+  justify-self: start !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .settings-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .billing-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .support-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child {
+  grid-column: 2 !important;
+  justify-self: end !important;
+  align-self: var(--cf-command-actions-align) !important;
+  margin-left: auto !important;
+
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: var(--cf-command-actions-justify) !important;
+  gap: var(--cf-command-actions-row-gap) !important;
+  min-width: max-content !important;
+}
+
+/* Flatten nested action stacks in headers. */
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside > *,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions > *,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions > *,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"] > * {
+  flex: 0 0 auto !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside :is(.head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .notifications-header-actions, .cf-section-head-action-stack) {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: var(--cf-command-actions-row-gap) !important;
+}
+
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action),
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).primary,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).soft-blue,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).bg-blue-600,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).bg-green-600,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).bg-emerald-600 {
+  min-height: var(--cf-command-action-height) !important;
+  height: var(--cf-command-action-height) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--cf-command-action-gap) !important;
+  flex: 0 0 auto !important;
+
+  padding-left: var(--cf-command-action-padding-x) !important;
+  padding-right: var(--cf-command-action-padding-x) !important;
+  border-radius: var(--cf-command-action-radius) !important;
+  border: 1px solid var(--cf-command-action-border) !important;
+  background: var(--cf-command-action-bg) !important;
+  background-color: var(--cf-command-action-bg) !important;
+  background-image: none !important;
+  color: var(--cf-command-action-blue) !important;
+  -webkit-text-fill-color: var(--cf-command-action-blue) !important;
+  box-shadow: var(--cf-command-action-shadow) !important;
+
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  opacity: 1 !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action):hover {
+  background: var(--cf-command-action-bg-hover) !important;
+  background-color: var(--cf-command-action-bg-hover) !important;
+  color: var(--cf-command-action-blue-hover) !important;
+  -webkit-text-fill-color: var(--cf-command-action-blue-hover) !important;
+  border-color: var(--cf-command-action-border-hover) !important;
+  box-shadow: var(--cf-command-action-shadow-hover) !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action) svg {
+  width: 1rem !important;
+  height: 1rem !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* TODAY STABLE HEADER ACTION STACK                                           */
+/* -------------------------------------------------------------------------- */
+
+/* This directly overrides the old column stack in closeflow-action-tokens.css:
+   .cf-section-head-actions and .cf-section-head-action-stack were explicitly set to flex-direction: column. */
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-actions,
+#root .cf-section-head-actions.cf-today-section-head-actions,
+[data-p0-today-stable-rebuild="true"] .cf-section-head-actions,
+.cf-section-head-actions.cf-today-section-head-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: var(--cf-command-actions-row-gap) !important;
+  min-width: max-content !important;
+}
+
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack,
+#root .cf-section-head-action-stack,
+[data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack,
+.cf-section-head-action-stack {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: var(--cf-command-actions-row-gap) !important;
+}
+
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack > *,
+#root .cf-section-head-action-stack > *,
+[data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack > *,
+.cf-section-head-action-stack > * {
+  width: auto !important;
+  flex: 0 0 auto !important;
+}
+
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack :is(button, a.btn, a[role="button"], .btn),
+#root .cf-section-head-action-stack :is(button, a.btn, a[role="button"], .btn),
+[data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack :is(button, a.btn, a[role="button"], .btn),
+.cf-section-head-action-stack :is(button, a.btn, a[role="button"], .btn) {
+  min-height: var(--cf-command-action-height) !important;
+  height: var(--cf-command-action-height) !important;
+  border-radius: var(--cf-command-action-radius) !important;
+  border: 1px solid var(--cf-command-action-border) !important;
+  background: var(--cf-command-action-bg) !important;
+  background-color: var(--cf-command-action-bg) !important;
+  background-image: none !important;
+  color: var(--cf-command-action-blue) !important;
+  -webkit-text-fill-color: var(--cf-command-action-blue) !important;
+  box-shadow: var(--cf-command-action-shadow) !important;
+}
+
+@media (max-width: 900px) {
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child {
+    grid-column: auto !important;
+    justify-self: stretch !important;
+    align-self: stretch !important;
+    margin-left: 0 !important;
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+    min-width: 0 !important;
+  }
+
+  #root [data-p0-today-stable-rebuild="true"] .cf-section-head-actions,
+  #root .cf-section-head-actions.cf-today-section-head-actions,
+  #root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack,
+  #root .cf-section-head-action-stack {
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+    min-width: 0 !important;
+  }
+}
+
+
+:root {
+  --cf-page-header-copy-max-width: 760px;
+  --cf-page-header-copy-align: flex-start;
+  --cf-page-header-copy-justify: center;
+  --cf-page-header-copy-text-align: left;
+  --cf-page-header-copy-top-offset: 0px;
+
+  --cf-page-header-kicker-margin-bottom: 9px;
+  --cf-page-header-title-margin-top: 0;
+  --cf-page-header-title-max-width: 760px;
+  --cf-page-header-description-margin-top: 8px;
+  --cf-page-header-description-max-width: 760px;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: var(--cf-page-header-copy-align) !important;
+  justify-content: var(--cf-page-header-copy-justify) !important;
+  min-width: 0 !important;
+  max-width: var(--cf-page-header-copy-max-width) !important;
+  text-align: var(--cf-page-header-copy-text-align) !important;
+  transform: translateY(var(--cf-page-header-copy-top-offset)) !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="kicker"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .kicker,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-kicker,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [class*="kicker"] {
+  margin: 0 0 var(--cf-page-header-kicker-margin-bottom) 0 !important;
+  align-self: flex-start !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="title"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header h1,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-title {
+  margin: var(--cf-page-header-title-margin-top) 0 0 0 !important;
+  max-width: var(--cf-page-header-title-max-width) !important;
+  text-align: left !important;
+  align-self: flex-start !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="description"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-header-description,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header p,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .lead-copy,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .subtitle,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .hint {
+  margin: var(--cf-page-header-description-margin-top) 0 0 0 !important;
+  max-width: var(--cf-page-header-description-max-width) !important;
+  text-align: left !important;
+  align-self: flex-start !important;
+}
+
+/* Duplicate descriptions started appearing after source-truth + local-page copy mixed together.
+   First packet hides repeated sibling descriptions inside the same header copy area.
+*/
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"] > p + p,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"] > .cf-page-header-description + .cf-page-header-description,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child > p + p,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child > p + p {
+  display: none !important;
+}
+
+/* Some legacy pages center their copy container or text. Force left alignment. */
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header * {
+  text-align: inherit;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --cf-page-header-copy-max-width: 100%;
+  }
+}
+
+
+:root {
+  --cf-page-header-neutral-text: #2563eb;
+  --cf-page-header-neutral-text-hover: #1d4ed8;
+  --cf-page-header-neutral-bg: #ffffff;
+  --cf-page-header-neutral-bg-hover: #eff6ff;
+  --cf-page-header-neutral-border: #bfdbfe;
+  --cf-page-header-neutral-border-hover: #93c5fd;
+  --cf-page-header-neutral-shadow: 0 8px 18px rgba(37, 99, 235, 0.10);
+
+  --cf-page-header-ai-text: #7c3aed;
+  --cf-page-header-ai-text-hover: #6d28d9;
+  --cf-page-header-ai-bg: #ffffff;
+  --cf-page-header-ai-bg-hover: #f5f3ff;
+  --cf-page-header-ai-border: #ddd6fe;
+  --cf-page-header-ai-border-hover: #c4b5fd;
+  --cf-page-header-ai-shadow: 0 8px 18px rgba(124, 58, 237, 0.12);
+
+  --cf-page-header-danger-text: var(--cf-trash-icon-color, #dc2626);
+  --cf-page-header-danger-text-hover: var(--cf-trash-icon-hover-color, #b91c1c);
+  --cf-page-header-danger-bg: #ffffff;
+  --cf-page-header-danger-bg-hover: #fef2f2;
+  --cf-page-header-danger-border: var(--cf-trash-icon-border, rgba(220, 38, 38, 0.22));
+  --cf-page-header-danger-border-hover: var(--cf-trash-icon-hover-border, rgba(220, 38, 38, 0.34));
+  --cf-page-header-danger-shadow: 0 8px 18px rgba(220, 38, 38, 0.08);
+
+  --cf-page-header-action-height: 38px;
+  --cf-page-header-action-radius: 14px;
+  --cf-page-header-action-gap: 8px;
+  --cf-page-header-actions-gap: 10px;
+}
+
+/* Base action layout for top page headers and Today header actions */
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .settings-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .billing-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .support-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child,
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-actions,
+#root .cf-section-head-actions.cf-today-section-head-actions,
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack,
+#root .cf-section-head-action-stack {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: var(--cf-page-header-actions-gap) !important;
+}
+
+/* Base button skin */
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button,a.btn,a[role="button"],.btn,.cf-header-action),
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack :is(button,a.btn,a[role="button"],.btn),
+#root .cf-section-head-actions.cf-today-section-head-actions :is(button,a.btn,a[role="button"],.btn),
+#root [data-global-quick-actions="true"] :is(button,a.btn,a[role="button"],.btn) {
+  min-height: var(--cf-page-header-action-height) !important;
+  height: var(--cf-page-header-action-height) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--cf-page-header-action-gap) !important;
+  border-radius: var(--cf-page-header-action-radius) !important;
+  border: 1px solid var(--cf-page-header-neutral-border) !important;
+  background: var(--cf-page-header-neutral-bg) !important;
+  background-color: var(--cf-page-header-neutral-bg) !important;
+  background-image: none !important;
+  color: var(--cf-page-header-neutral-text) !important;
+  -webkit-text-fill-color: var(--cf-page-header-neutral-text) !important;
+  box-shadow: var(--cf-page-header-neutral-shadow) !important;
+}
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button,a.btn,a[role="button"],.btn,.cf-header-action):hover,
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack :is(button,a.btn,a[role="button"],.btn):hover,
+#root .cf-section-head-actions.cf-today-section-head-actions :is(button,a.btn,a[role="button"],.btn):hover,
+#root [data-global-quick-actions="true"] :is(button,a.btn,a[role="button"],.btn):hover {
+  background: var(--cf-page-header-neutral-bg-hover) !important;
+  color: var(--cf-page-header-neutral-text-hover) !important;
+  -webkit-text-fill-color: var(--cf-page-header-neutral-text-hover) !important;
+  border-color: var(--cf-page-header-neutral-border-hover) !important;
+}
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button,a.btn,a[role="button"],.btn,.cf-header-action) svg,
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack :is(button,a.btn,a[role="button"],.btn) svg,
+#root .cf-section-head-actions.cf-today-section-head-actions :is(button,a.btn,a[role="button"],.btn) svg,
+#root [data-global-quick-actions="true"] :is(button,a.btn,a[role="button"],.btn) svg {
+  color: currentColor !important;
+  stroke: currentColor !important;
+}
+
+/* AI semantic */
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="ai"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .btn.soft-blue,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header a[href="/ai-drafts"],
+#root [data-global-quick-actions="true"] [data-cf-command-action="ai"],
+#root [data-global-quick-actions="true"] .cf-command-action--ai {
+  border-color: var(--cf-page-header-ai-border) !important;
+  background: var(--cf-page-header-ai-bg) !important;
+  background-color: var(--cf-page-header-ai-bg) !important;
+  color: var(--cf-page-header-ai-text) !important;
+  -webkit-text-fill-color: var(--cf-page-header-ai-text) !important;
+  box-shadow: var(--cf-page-header-ai-shadow) !important;
+}
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="ai"]:hover,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .btn.soft-blue:hover,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header a[href="/ai-drafts"]:hover,
+#root [data-global-quick-actions="true"] [data-cf-command-action="ai"]:hover,
+#root [data-global-quick-actions="true"] .cf-command-action--ai:hover {
+  border-color: var(--cf-page-header-ai-border-hover) !important;
+  background: var(--cf-page-header-ai-bg-hover) !important;
+  color: var(--cf-page-header-ai-text-hover) !important;
+  -webkit-text-fill-color: var(--cf-page-header-ai-text-hover) !important;
+}
+
+/* Danger semantic follows trash tokens */
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="danger"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-entity-action-danger,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-trash-action-button,
+#root [data-global-quick-actions="true"] [data-cf-command-action="danger"] {
+  border-color: var(--cf-page-header-danger-border) !important;
+  background: var(--cf-page-header-danger-bg) !important;
+  background-color: var(--cf-page-header-danger-bg) !important;
+  color: var(--cf-page-header-danger-text) !important;
+  -webkit-text-fill-color: var(--cf-page-header-danger-text) !important;
+  box-shadow: var(--cf-page-header-danger-shadow) !important;
+}
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="danger"]:hover,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-entity-action-danger:hover,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-trash-action-button:hover,
+#root [data-global-quick-actions="true"] [data-cf-command-action="danger"]:hover {
+  border-color: var(--cf-page-header-danger-border-hover) !important;
+  background: var(--cf-page-header-danger-bg-hover) !important;
+  color: var(--cf-page-header-danger-text-hover) !important;
+  -webkit-text-fill-color: var(--cf-page-header-danger-text-hover) !important;
+}
+
+@media (max-width: 900px) {
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child,
+  #root [data-p0-today-stable-rebuild="true"] .cf-section-head-actions,
+  #root .cf-section-head-actions.cf-today-section-head-actions,
+  #root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack,
+  #root .cf-section-head-action-stack {
+    justify-content: flex-start !important;
+  }
+}

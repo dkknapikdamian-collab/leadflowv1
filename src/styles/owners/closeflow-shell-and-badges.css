@@ -1,0 +1,2035 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:shell-badges","concerns":[],"scope":"route-scoped","consumerRoots":["src/styles/closeflow-visual-source-truth.css"],"role":"scoped-adapter","boundary":"route-component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
+.context-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.25rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: rgba(255, 255, 255, 0.92);
+  color: #111827;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.context-action-button:hover {
+  border-color: rgba(15, 23, 42, 0.2);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.context-action-button:active {
+  transform: translateY(1px);
+}
+
+.context-action-button--event {
+  background: rgba(239, 246, 255, 0.96);
+}
+
+.context-action-button--task {
+  background: rgba(240, 253, 244, 0.96);
+}
+
+.context-action-button--note {
+  background: rgba(255, 251, 235, 0.96);
+}
+
+/* CLOSEFLOW_STAGE95_DESTRUCTIVE_ACTION_SOURCE_OF_TRUTH
+   One visual source for destructive icon/text actions.
+   Rule: red icon/border, white or nearly-white background, no solid red plaque.
+*/
+:root {
+  --cf-trash-icon-color: #dc2626;
+  --cf-trash-border-color: #fecaca;
+  --cf-trash-border-hover-color: #fca5a5;
+  --cf-trash-bg: rgba(255, 255, 255, 0.96);
+  --cf-trash-bg-hover: rgba(254, 242, 242, 0.72);
+  --cf-trash-text-color: #334155;
+}
+
+.cf-trash-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.42rem;
+  min-height: 2rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--cf-trash-border-color) !important;
+  background: var(--cf-trash-bg) !important;
+  color: var(--cf-trash-text-color) !important;
+  box-shadow: none !important;
+}
+
+.cf-trash-action-button:hover {
+  border-color: var(--cf-trash-border-hover-color) !important;
+  background: var(--cf-trash-bg-hover) !important;
+  color: #991b1b !important;
+  box-shadow: 0 8px 18px rgba(153, 27, 27, 0.06) !important;
+}
+
+.cf-trash-action-button:focus-visible {
+  outline: 2px solid rgba(220, 38, 38, 0.22);
+  outline-offset: 2px;
+}
+
+.cf-trash-action-icon,
+.cf-trash-action-button svg {
+  color: var(--cf-trash-icon-color) !important;
+  stroke: currentColor !important;
+  fill: none !important;
+}
+
+/* STAGE105_CASE_ROW_DELETE_NO_RED_BLOB
+   Case list delete action uses the shared trash source: red border/icon, light background, no solid red plaque.
+*/
+#root .main-cases-html .cf-case-row-delete-text-action.cf-trash-action-button,
+#root .main-cases-html .cf-case-row-delete-text-action[data-cf-trash-action="true"] {
+  min-height: 1.75rem !important;
+  border: 1px solid var(--cf-trash-border-color) !important;
+  border-radius: 999px !important;
+  background: #ffffff !important;
+  color: #b91c1c !important;
+  padding: 0 0.55rem !important;
+  box-shadow: none !important;
+}
+
+#root .main-cases-html .cf-case-row-delete-text-action.cf-trash-action-button:hover,
+#root .main-cases-html .cf-case-row-delete-text-action[data-cf-trash-action="true"]:hover {
+  border-color: var(--cf-trash-border-hover-color) !important;
+  background: #fff7f7 !important;
+  color: #991b1b !important;
+  box-shadow: 0 8px 18px rgba(153, 27, 27, 0.06) !important;
+}
+
+/* STAGE105_CASE_DELETE_NO_RED_BLOB_START */
+#root .cf-case-row-delete-text-action.cf-trash-action-button,
+#root .cf-case-row-delete-text-action {
+  min-height: 1.75rem !important;
+  padding: 0.18rem 0.48rem !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--cf-trash-border-color) !important;
+  background: #ffffff !important;
+  color: #b91c1c !important;
+  box-shadow: none !important;
+}
+
+#root .cf-case-row-delete-text-action.cf-trash-action-button:hover,
+#root .cf-case-row-delete-text-action:hover {
+  border-color: var(--cf-trash-border-hover-color) !important;
+  background: #fff7f7 !important;
+  color: #991b1b !important;
+  box-shadow: 0 8px 18px rgba(153, 27, 27, 0.06) !important;
+}
+/* STAGE105_CASE_DELETE_NO_RED_BLOB_END */
+
+/* STAGE105_CASE_DELETE_NO_RED_PLAQUE_START */
+#root .cf-html-view.main-cases-html .cf-case-row-delete-text-action,
+#root .cf-html-view.main-cases-html .cf-case-row-delete-text-action.cf-trash-action-button {
+  border: 1px solid var(--cf-trash-border-color) !important;
+  background: var(--cf-trash-bg) !important;
+  color: var(--cf-trash-text-color) !important;
+  box-shadow: none !important;
+  min-height: 2rem !important;
+  border-radius: 0.75rem !important;
+  padding: 0.42rem 0.68rem !important;
+}
+
+#root .cf-html-view.main-cases-html .cf-case-row-delete-text-action:hover,
+#root .cf-html-view.main-cases-html .cf-case-row-delete-text-action.cf-trash-action-button:hover {
+  border-color: var(--cf-trash-border-hover-color) !important;
+  background: var(--cf-trash-bg-hover) !important;
+  color: #991b1b !important;
+}
+
+#root .cf-html-view.main-cases-html .cf-case-row-delete-text-action svg {
+  color: var(--cf-trash-icon-color) !important;
+  stroke: currentColor !important;
+}
+/* STAGE105_CASE_DELETE_NO_RED_PLAQUE_END */
+
+/* CLOSEFLOW_DESIGN_SYSTEM_TOKENS_VS1
+   Foundation only. Do not remove legacy visual-stage/hotfix CSS in this step.
+   New tokens reference current app variables where possible to avoid visual jumps.
+*/
+:root {
+  /* spacing */
+  --cf-space-0: 0;
+  --cf-space-1: 0.25rem;
+  --cf-space-2: 0.5rem;
+  --cf-space-3: 0.75rem;
+  --cf-space-4: 1rem;
+  --cf-space-5: 1.25rem;
+  --cf-space-6: 1.5rem;
+  --cf-space-8: 2rem;
+  --cf-space-10: 2.5rem;
+  --cf-space-12: 3rem;
+  --cf-space-16: 4rem;
+
+  /* radius */
+  --cf-radius-xs: 0.375rem;
+  --cf-radius-sm: 0.5rem;
+  --cf-radius-md: 0.75rem;
+  --cf-radius-lg: 1rem;
+  --cf-radius-xl: 1.25rem;
+  --cf-radius-2xl: 1.5rem;
+  --cf-radius-full: 999px;
+
+  /* shadows */
+  --cf-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --cf-shadow-sm: 0 8px 20px rgba(15, 23, 42, 0.07);
+  --cf-shadow-md: 0 16px 36px rgba(15, 23, 42, 0.09);
+  --cf-shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.12);
+  --cf-shadow-focus: 0 0 0 3px color-mix(in srgb, var(--color-primary, #2563eb) 22%, transparent);
+
+  /* text */
+  --cf-text-primary: var(--app-text, #0f172a);
+  --cf-text-secondary: var(--app-muted, #475569);
+  --cf-text-muted: var(--app-muted-soft, #94a3b8);
+  --cf-text-inverse: #ffffff;
+  --cf-text-link: var(--color-primary, #2563eb);
+  --cf-text-danger: #be123c;
+
+  /* surfaces */
+  --cf-surface-canvas: var(--app-bg, #f8fafc);
+  --cf-surface-page: var(--app-surface, #f8fafc);
+  --cf-surface-card: var(--app-surface-strong, #ffffff);
+  --cf-surface-muted: var(--app-surface-muted, #f1f5f9);
+  --cf-surface-elevated: #ffffff;
+  --cf-surface-hover: #f8fafc;
+  --cf-surface-selected: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #ffffff);
+
+  /* borders */
+  --cf-border-subtle: var(--app-border, #e2e8f0);
+  --cf-border-strong: #cbd5e1;
+  --cf-border-focus: var(--color-primary, #2563eb);
+  --cf-border-danger: #fecdd3;
+
+  /* metrics */
+  --cf-metric-bg: var(--cf-surface-card);
+  --cf-metric-bg-active: var(--cf-surface-selected);
+  --cf-metric-border: var(--cf-border-subtle);
+  --cf-metric-text: var(--cf-text-primary);
+  --cf-metric-muted: var(--cf-text-secondary);
+  --cf-metric-radius: var(--cf-radius-2xl);
+  --cf-metric-shadow: var(--cf-shadow-sm);
+
+  /* icons */
+  --cf-icon-size-xs: 0.875rem;
+  --cf-icon-size-sm: 1rem;
+  --cf-icon-size-md: 1.25rem;
+  --cf-icon-size-lg: 1.5rem;
+  --cf-icon-color: var(--cf-text-secondary);
+  --cf-icon-bg: var(--cf-surface-muted);
+  --cf-icon-radius: var(--cf-radius-lg);
+
+  /* forms */
+  --cf-form-bg: var(--cf-surface-card);
+  --cf-form-text: var(--cf-text-primary);
+  --cf-form-placeholder: var(--cf-text-muted);
+  --cf-form-border: var(--cf-border-strong);
+  --cf-form-border-focus: var(--cf-border-focus);
+  --cf-form-radius: var(--cf-radius-md);
+  --cf-form-height: 2.5rem;
+  --cf-form-shadow-focus: var(--cf-shadow-focus);
+
+  /* modals */
+  --cf-modal-bg: var(--cf-surface-card);
+  --cf-modal-text: var(--cf-text-primary);
+  --cf-modal-muted: var(--cf-text-secondary);
+  --cf-modal-border: var(--cf-border-subtle);
+  --cf-modal-radius: var(--cf-radius-2xl);
+  --cf-modal-shadow: var(--cf-shadow-lg);
+  --cf-modal-backdrop: rgba(15, 23, 42, 0.48);
+
+  /* lists */
+  --cf-list-bg: var(--cf-surface-card);
+  --cf-list-row-bg: var(--cf-surface-card);
+  --cf-list-row-bg-hover: var(--cf-surface-hover);
+  --cf-list-row-border: var(--cf-border-subtle);
+  --cf-list-row-radius: var(--cf-radius-xl);
+  --cf-list-row-text: var(--cf-text-primary);
+  --cf-list-row-muted: var(--cf-text-secondary);
+
+  /* status */
+  --cf-status-info-bg: #eff6ff;
+  --cf-status-info-text: #1d4ed8;
+  --cf-status-info-border: #bfdbfe;
+  --cf-status-success-bg: #ecfdf5;
+  --cf-status-success-text: #047857;
+  --cf-status-success-border: #a7f3d0;
+  --cf-status-warning-bg: #fffbeb;
+  --cf-status-warning-text: #b45309;
+  --cf-status-warning-border: #fde68a;
+  --cf-status-danger-bg: #fff1f2;
+  --cf-status-danger-text: #be123c;
+  --cf-status-danger-border: #fecdd3;
+  --cf-status-neutral-bg: #f1f5f9;
+  --cf-status-neutral-text: #475569;
+  --cf-status-neutral-border: #cbd5e1;
+
+  /* finance */
+  --cf-finance-income-bg: #ecfdf5;
+  --cf-finance-income-text: #047857;
+  --cf-finance-income-border: #a7f3d0;
+  --cf-finance-pending-bg: #fffbeb;
+  --cf-finance-pending-text: #92400e;
+  --cf-finance-pending-border: #fde68a;
+  --cf-finance-overdue-bg: #fff1f2;
+  --cf-finance-overdue-text: #be123c;
+  --cf-finance-overdue-border: #fecdd3;
+  --cf-finance-neutral-bg: #f8fafc;
+  --cf-finance-neutral-text: #334155;
+  --cf-finance-neutral-border: #cbd5e1;
+
+  /* legacy bridge aliases: old contracts can opt in without screen rewrites */
+  --cf-legacy-app-bg: var(--cf-surface-canvas);
+  --cf-legacy-app-surface: var(--cf-surface-page);
+  --cf-legacy-app-surface-strong: var(--cf-surface-card);
+  --cf-legacy-app-border: var(--cf-border-subtle);
+  --cf-legacy-action-neutral-text: var(--cf-text-secondary);
+  --cf-legacy-action-danger-text: var(--cf-status-danger-text);
+  --cf-legacy-metric-surface: var(--cf-metric-bg);
+}
+
+[data-skin="forteca-dark"],
+[data-skin="midnight"] {
+  --cf-surface-elevated: var(--app-surface-strong, #111827);
+  --cf-surface-hover: color-mix(in srgb, var(--app-surface-muted, #334155) 72%, transparent);
+  --cf-surface-selected: color-mix(in srgb, var(--color-primary, #60a5fa) 22%, var(--app-surface-strong, #111827));
+  --cf-shadow-xs: 0 1px 2px rgba(2, 6, 23, 0.28);
+  --cf-shadow-sm: 0 8px 24px rgba(2, 6, 23, 0.32);
+  --cf-shadow-md: 0 16px 40px rgba(2, 6, 23, 0.38);
+  --cf-shadow-lg: 0 28px 70px rgba(2, 6, 23, 0.48);
+}
+
+/* STAGE216M_R8_CLIENT_LEFT_RAIL_HISTORY_SOURCE_TRUTH
+   Cel: domknac lewa szyne ClientDetail wzgledem LeadDetail:
+   - Dane klienta o jeden takt wyzej,
+   - Historia aktywnosci klienta 1:1 do historii aktywnosci leada,
+   - jeden wizualny kontrakt dla dolnego kafelka historii.
+   Zakres: tylko CSS lewej szyny i TSX copy/ikonka historii klienta. Bez API, Supabase, platnosci, prawej szyny i danych.
+*/
+
+:root {
+  --cf-entity-left-rail-width: var(--cf-entity-data-card-width, 300px);
+  --cf-entity-left-rail-gap: 18px;
+  --cf-entity-left-rail-client-nudge-y: -18px;
+  --cf-entity-history-purple: #7c3aed;
+  --cf-entity-history-purple-soft: #f5f3ff;
+  --cf-entity-history-purple-border: #ddd6fe;
+  --cf-entity-history-card-shadow: 0 8px 22px rgba(124, 58, 237, 0.08);
+}
+
+/* 1) ClientDetail: lewa szyna ma zaczynac sie o jeden takt wyzej wzgledem panelu bocznego/LeadDetail. */
+.client-detail-vnext-page .client-detail-left-rail {
+  margin-top: var(--cf-entity-left-rail-client-nudge-y) !important;
+  width: var(--cf-entity-left-rail-width) !important;
+  min-width: var(--cf-entity-left-rail-width) !important;
+  max-width: var(--cf-entity-left-rail-width) !important;
+  gap: var(--cf-entity-left-rail-gap) !important;
+}
+
+/* 2) Wspolny kontrakt dolnej karty historii w lewym railu. */
+.lead-detail-vnext-page .lead-detail-left-activity-history-card,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"],
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] {
+  box-sizing: border-box !important;
+  width: var(--cf-entity-left-rail-width) !important;
+  min-width: var(--cf-entity-left-rail-width) !important;
+  max-width: var(--cf-entity-left-rail-width) !important;
+  padding: 20px !important;
+  border: 1px solid var(--cf-entity-history-purple-border) !important;
+  border-radius: 28px !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  background-image: none !important;
+  box-shadow: var(--cf-entity-history-card-shadow) !important;
+  color: #111827 !important;
+  overflow: hidden !important;
+  backdrop-filter: none !important;
+  filter: none !important;
+}
+
+.lead-detail-vnext-page .lead-detail-left-activity-history-card .lead-detail-card-title-row,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-card-title-row,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-card-title-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+  margin: 0 0 8px !important;
+  color: var(--cf-entity-history-purple) !important;
+}
+
+.lead-detail-vnext-page .lead-detail-left-activity-history-card .lead-detail-card-title-row > svg,
+.lead-detail-vnext-page .lead-detail-left-activity-history-card .lead-detail-card-title-row .lucide,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-card-title-row > svg,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-card-title-row .lucide,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-card-title-row > svg,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-card-title-row .lucide {
+  width: 16px !important;
+  height: 16px !important;
+  color: var(--cf-entity-history-purple) !important;
+  stroke: var(--cf-entity-history-purple) !important;
+  flex: 0 0 auto !important;
+}
+
+.lead-detail-vnext-page .lead-detail-left-activity-history-card .lead-detail-card-title-row h2,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-card-title-row h2,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-card-title-row h2 {
+  margin: 0 !important;
+  color: #111827 !important;
+  font-size: 16px !important;
+  line-height: 1.2 !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.03em !important;
+}
+
+.lead-detail-vnext-page .lead-detail-left-activity-history-card .lead-detail-left-card-intro,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-left-card-intro,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-left-card-intro {
+  margin: 0 0 14px !important;
+  color: #667085 !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+  font-weight: 500 !important;
+}
+
+/* 3) Wspolny rytm listy historii. */
+.lead-detail-vnext-page .lead-detail-activity-history-rail-list,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-recent-moves-list,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-recent-moves-list {
+  display: grid !important;
+  gap: 10px !important;
+}
+
+.lead-detail-vnext-page .lead-detail-activity-history-rail-row,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-recent-move-row,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-recent-move-row {
+  display: grid !important;
+  grid-template-columns: 38px minmax(0, 1fr) !important;
+  gap: 12px !important;
+  align-items: start !important;
+  min-height: 58px !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  padding: 13px !important;
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-recent-move-row::before,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-recent-move-row::before {
+  content: '' !important;
+  display: block !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 15px !important;
+  background: var(--cf-entity-history-purple-soft) !important;
+  border: 1px solid var(--cf-entity-history-purple-border) !important;
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+}
+
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-recent-move-row > span,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-recent-move-row > span {
+  grid-column: 2 !important;
+  min-width: 0 !important;
+}
+
+.lead-detail-vnext-page .lead-detail-activity-history-rail-row strong,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-recent-move-row strong,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-recent-move-row strong {
+  display: block !important;
+  margin: 0 !important;
+  color: #7c3aed !important;
+  font-size: 14px !important;
+  line-height: 1.25 !important;
+  font-weight: 850 !important;
+  overflow-wrap: anywhere !important;
+}
+
+.lead-detail-vnext-page .lead-detail-activity-history-rail-row p,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-recent-move-row small,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-recent-move-row small {
+  display: block !important;
+  margin: 4px 0 0 !important;
+  color: #667085 !important;
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+  font-weight: 600 !important;
+}
+
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-recent-move-row em,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-recent-move-row em {
+  grid-column: 2 !important;
+  margin-top: 2px !important;
+  color: #667085 !important;
+  font-size: 11px !important;
+  font-style: normal !important;
+  font-weight: 800 !important;
+}
+
+.lead-detail-vnext-page .lead-detail-light-empty,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-light-empty,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-light-empty,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-action-empty {
+  border: 1px dashed #d0d5dd !important;
+  border-radius: 20px !important;
+  background: #f9fafb !important;
+  color: #667085 !important;
+  padding: 18px !important;
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+}
+
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-recent-moves-link,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-recent-moves-link,
+.lead-detail-vnext-page .lead-detail-activity-history-rail-more summary {
+  display: inline-flex !important;
+  width: fit-content !important;
+  min-height: 30px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-top: 12px !important;
+  border: 1px solid #bfdbfe !important;
+  border-radius: 999px !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  padding: 6px 10px !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  text-decoration: none !important;
+}
+
+@media (max-width: 1120px) {
+  .client-detail-vnext-page .client-detail-left-rail {
+    margin-top: 0 !important;
+  }
+
+  .lead-detail-vnext-page .lead-detail-left-activity-history-card,
+  .client-detail-vnext-page [data-client-recent-moves-panel="true"],
+  .client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Marker for automated guard. */
+.lead-detail-vnext-page[data-stage216m-r8-left-rail-history-source-truth-marker="true"],
+.client-detail-vnext-page[data-stage216m-r8-left-rail-history-source-truth-marker="true"] {
+  --stage216m-r8-left-rail-history-source-truth: 1;
+}
+
+/*
+ * Case detail visual simplification layer.
+ * Scope is intentionally narrow: it restyles only the existing CaseDetail V1 command center
+ * through the current app skin tokens instead of hardcoded mockup colors.
+ */
+
+section[data-testid="case-detail-v1-command-center"] {
+  --case-shell-radius: 1.75rem;
+  --case-tile-radius: 1.25rem;
+  --case-soft-border: color-mix(in srgb, var(--app-border) 74%, transparent);
+  --case-soft-surface: color-mix(in srgb, var(--app-surface-strong) 88%, var(--color-primary) 12%);
+  --case-muted-surface: color-mix(in srgb, var(--app-surface-muted) 86%, transparent);
+  --case-primary-soft: color-mix(in srgb, var(--color-primary) 14%, var(--app-surface-strong));
+  --case-primary-line: color-mix(in srgb, var(--color-primary) 28%, var(--app-border));
+}
+
+section[data-testid="case-detail-v1-command-center"] > div,
+section[data-testid="case-detail-v1-command-center"] .bg-slate-950 {
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--color-primary) 12%, transparent), transparent 34rem),
+    var(--app-surface-strong) !important;
+  color: var(--app-text) !important;
+  border: 1px solid var(--case-soft-border) !important;
+  border-radius: var(--case-shell-radius) !important;
+  box-shadow: 0 22px 70px var(--app-shadow-color) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] .text-white,
+section[data-testid="case-detail-v1-command-center"] .text-slate-950 {
+  color: var(--app-text) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] .text-slate-400,
+section[data-testid="case-detail-v1-command-center"] .text-slate-300,
+section[data-testid="case-detail-v1-command-center"] .text-\[11px\] {
+  color: var(--app-muted) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] .border-white\/10,
+section[data-testid="case-detail-v1-command-center"] .border-white\/20,
+section[data-testid="case-detail-v1-command-center"] .border-white\/30 {
+  border-color: var(--case-soft-border) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] .bg-white\/5,
+section[data-testid="case-detail-v1-command-center"] .bg-white\/10 {
+  background-color: var(--case-muted-surface) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] .rounded-2xl {
+  border-radius: var(--case-tile-radius) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] .grid.grid-cols-3 > div {
+  background: var(--case-soft-surface) !important;
+  border-color: var(--case-primary-line) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] .grid.grid-cols-3 p:first-child {
+  color: var(--color-primary) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] .tracking-\[0\.2em\],
+section[data-testid="case-detail-v1-command-center"] .tracking-\[0\.18em\] {
+  color: var(--app-muted) !important;
+  letter-spacing: 0.14em !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] h2 {
+  color: var(--app-text) !important;
+  letter-spacing: -0.035em;
+}
+
+section[data-testid="case-detail-v1-command-center"] [role="progressbar"],
+section[data-testid="case-detail-v1-command-center"] .bg-white\/20 {
+  background-color: color-mix(in srgb, var(--app-border) 64%, transparent) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] button.bg-white {
+  background-color: var(--color-primary) !important;
+  color: var(--color-primary-foreground) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 14px 32px color-mix(in srgb, var(--color-primary) 24%, transparent) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] button.bg-white:hover,
+section[data-testid="case-detail-v1-command-center"] button.hover\:bg-slate-100:hover {
+  background-color: color-mix(in srgb, var(--color-primary) 88%, black) !important;
+  color: var(--color-primary-foreground) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] button.bg-transparent {
+  background-color: transparent !important;
+  color: var(--app-text) !important;
+  border-color: var(--case-soft-border) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] button.bg-transparent:hover {
+  background-color: var(--case-primary-soft) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] button:not(.bg-white):not(.bg-transparent) {
+  border-radius: 1rem;
+}
+
+section[data-testid="case-detail-v1-command-center"] .grid.grid-cols-2 button {
+  min-height: 2.75rem;
+  justify-content: flex-start;
+}
+
+@media (max-width: 768px) {
+  section[data-testid="case-detail-v1-command-center"] {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  section[data-testid="case-detail-v1-command-center"] > div,
+  section[data-testid="case-detail-v1-command-center"] .bg-slate-950 {
+    border-radius: 1.35rem !important;
+  }
+
+  section[data-testid="case-detail-v1-command-center"] .grid.grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  section[data-testid="case-detail-v1-command-center"] .grid.grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/*
+ * CloseFlow CaseDetail visual stage 2.
+ * This layer upgrades the top CaseDetail command center into the 5-second layout:
+ * blocker / nearest action / progress.
+ */
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 {
+  --case-stage2-radius-xl: 1.75rem;
+  --case-stage2-radius-lg: 1.25rem;
+  --case-stage2-radius-md: 1rem;
+  --case-stage2-border: color-mix(in srgb, var(--app-border) 76%, transparent);
+  --case-stage2-surface: color-mix(in srgb, var(--app-surface-strong) 94%, var(--color-primary) 6%);
+  --case-stage2-muted: color-mix(in srgb, var(--app-surface-muted) 88%, transparent);
+  --case-stage2-primary-soft: color-mix(in srgb, var(--color-primary) 13%, var(--app-surface-strong));
+  --case-stage2-primary-line: color-mix(in srgb, var(--color-primary) 32%, var(--app-border));
+  --case-stage2-warning-bg: color-mix(in srgb, #f59e0b 14%, var(--app-surface-strong));
+  --case-stage2-warning-line: color-mix(in srgb, #f59e0b 34%, var(--app-border));
+  --case-stage2-danger-bg: color-mix(in srgb, #ef4444 12%, var(--app-surface-strong));
+  --case-stage2-danger-line: color-mix(in srgb, #ef4444 34%, var(--app-border));
+  --case-stage2-success-bg: color-mix(in srgb, #22c55e 12%, var(--app-surface-strong));
+  --case-stage2-success-line: color-mix(in srgb, #22c55e 34%, var(--app-border));
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-shell {
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--color-primary) 10%, transparent), transparent 34rem),
+    var(--app-surface-strong) !important;
+  color: var(--app-text) !important;
+  border: 1px solid var(--case-stage2-border) !important;
+  border-radius: var(--case-stage2-radius-xl) !important;
+  box-shadow: 0 20px 60px var(--app-shadow-color) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-kicker {
+  margin: 0;
+  color: var(--app-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-title {
+  margin-top: 0.35rem;
+  color: var(--app-text) !important;
+  font-size: clamp(1.35rem, 2.2vw, 2rem);
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-subtitle {
+  margin-top: 0.4rem;
+  max-width: 48rem;
+  color: var(--app-muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-grid {
+  display: grid;
+  grid-template-columns: 1.12fr 1fr 0.9fr;
+  gap: 0.85rem;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile {
+  min-height: 10.5rem;
+  border: 1px solid var(--case-stage2-border);
+  border-radius: var(--case-stage2-radius-lg);
+  background: var(--case-stage2-surface);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  overflow: hidden;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile.is-warning {
+  background: var(--case-stage2-warning-bg);
+  border-color: var(--case-stage2-warning-line);
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile.is-danger {
+  background: var(--case-stage2-danger-bg);
+  border-color: var(--case-stage2-danger-line);
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile.is-success {
+  background: var(--case-stage2-success-bg);
+  border-color: var(--case-stage2-success-line);
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile.is-primary {
+  background: var(--case-stage2-primary-soft);
+  border-color: var(--case-stage2-primary-line);
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-eyebrow {
+  color: var(--app-muted);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile-title {
+  margin-top: 0.35rem;
+  color: var(--app-text) !important;
+  font-size: 1.15rem;
+  line-height: 1.1;
+  font-weight: 850;
+  letter-spacing: -0.035em;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile-text {
+  color: var(--app-muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile-footer {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-progress-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--app-muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-progress-wrap {
+  margin-top: 0.15rem;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-progress-wrap [role="progressbar"] {
+  height: 0.55rem;
+  overflow: hidden;
+  background-color: color-mix(in srgb, var(--app-border) 62%, transparent) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-metric {
+  border: 1px solid var(--case-stage2-border);
+  border-radius: 0.95rem;
+  background: color-mix(in srgb, var(--app-surface-strong) 76%, transparent);
+  padding: 0.65rem;
+  text-align: center;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-metric strong {
+  display: block;
+  color: var(--color-primary);
+  font-size: 1.15rem;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-metric span {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--app-muted);
+  font-size: 0.68rem;
+  line-height: 1.15;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-actions {
+  margin-top: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-actions-left,
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-actions-right {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 button {
+  border-radius: 0.95rem !important;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-primary-button {
+  background: var(--color-primary) !important;
+  color: var(--color-primary-foreground) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--color-primary) 22%, transparent);
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-primary-button:hover {
+  background: color-mix(in srgb, var(--color-primary) 86%, black) !important;
+  color: var(--color-primary-foreground) !important;
+}
+
+@media (max-width: 1120px) {
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-grid {
+    grid-template-columns: 1fr;
+  }
+
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-header {
+    flex-direction: column;
+  }
+
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-actions,
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-actions-left,
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-actions-right {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-actions button,
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile-footer button {
+    width: 100%;
+  }
+
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* CLOSEFLOW_STAGE16C_TASKS_CASES_VISUAL_MOBILE_REPAIR
+   Scoped repair for /tasks and /cases only.
+   Uses existing contracts: metric tiles, page hero, action/form/mobile layout.
+   No data/API/routing behavior changes.
+*/
+
+:root {
+  --cf-stage16c-page-max-width: 72rem;
+  --cf-stage16c-page-gap: 1.25rem;
+  --cf-stage16c-mobile-page-padding: 1rem;
+  --cf-stage16c-desktop-page-padding: 1.5rem;
+}
+
+main[data-p0-tasks-stable-rebuild="true"],
+.cf-html-view.main-cases-html {
+  width: 100%;
+  max-width: var(--cf-stage16c-page-max-width) !important;
+  margin-inline: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: var(--cf-stage16c-page-gap) !important;
+  padding: var(--cf-stage16c-mobile-page-padding) !important;
+  overflow-x: clip;
+}
+
+@media (min-width: 640px) {
+  main[data-p0-tasks-stable-rebuild="true"],
+  .cf-html-view.main-cases-html {
+    padding: var(--cf-stage16c-desktop-page-padding) !important;
+  }
+}
+
+main[data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+.cf-html-view.main-cases-html > .page-head {
+  width: 100%;
+  min-width: 0;
+  min-height: 126px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 18px !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-layout,
+.cf-html-view.main-cases-html > .page-head {
+  width: 100%;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-layout > div:first-child,
+.cf-html-view.main-cases-html > .page-head > div:first-child {
+  min-width: 0;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-title,
+.cf-html-view.main-cases-html > .page-head h1 {
+  max-width: 100%;
+  overflow-wrap: normal;
+  word-break: keep-all;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-actions,
+main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-layout > div:last-child,
+.cf-html-view.main-cases-html > .page-head .head-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: var(--cf-page-head-action-gap, 8px) !important;
+  min-width: 0;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"],
+.cf-html-view.main-cases-html > .grid-4 {
+  width: 100%;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: var(--cf-metric-tile-gap) !important;
+  align-items: stretch !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card],
+.cf-html-view.main-cases-html > .grid-4 > [data-stat-shortcut-card] {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-content,
+.cf-html-view.main-cases-html > .grid-4 .cf-top-metric-tile-content {
+  min-height: var(--cf-metric-tile-min-height) !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-label,
+.cf-html-view.main-cases-html > .grid-4 .cf-top-metric-tile-label {
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: keep-all !important;
+  hyphens: none !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] .tasks-semantic48-task-card,
+.cf-html-view.main-cases-html .table-card,
+.cf-html-view.main-cases-html .row,
+.cf-html-view.main-cases-html .case-row {
+  min-width: 0;
+  max-width: 100%;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] .tasks-semantic48-task-card h2,
+.cf-html-view.main-cases-html .case-row .title,
+.cf-html-view.main-cases-html .case-row .sub,
+.cf-html-view.main-cases-html .case-row .cf-list-row-client {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] .tasks-semantic48-task-action-button,
+.cf-html-view.main-cases-html .head-actions .btn {
+  min-height: 2.75rem;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] .tasks-semantic48-danger-action,
+.cf-html-view.main-cases-html [data-cf-action-tone="danger"],
+.cf-html-view.main-cases-html .cf-entity-action-danger {
+  margin-inline-start: 0.25rem;
+}
+
+@media (max-width: 1180px) {
+  main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"],
+  .cf-html-view.main-cases-html > .grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 720px) {
+  main[data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+  main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-layout,
+  .cf-html-view.main-cases-html > .page-head {
+    min-height: 0;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-actions,
+  main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-layout > div:last-child,
+  .cf-html-view.main-cases-html > .page-head .head-actions {
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+
+  main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-actions > *,
+  main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-layout > div:last-child > *,
+  .cf-html-view.main-cases-html > .page-head .head-actions > * {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"],
+  .cf-html-view.main-cases-html > .grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  main[data-p0-tasks-stable-rebuild="true"] .tasks-semantic48-task-card [class*="lg:flex-row"],
+  .cf-html-view.main-cases-html .case-row {
+    min-width: 0;
+  }
+
+  main[data-p0-tasks-stable-rebuild="true"] .tasks-semantic48-task-card .flex.flex-wrap.gap-2,
+  .cf-html-view.main-cases-html .row-actions,
+  .cf-html-view.main-cases-html .actions {
+    width: 100%;
+  }
+
+  main[data-p0-tasks-stable-rebuild="true"] .tasks-semantic48-task-action-button {
+    flex: 1 1 auto;
+  }
+}
+
+/* CLOSEFLOW_STAGE16D_TASKS_METRIC_TILE_FINAL_LOCK
+   Screenshot-driven repair for /tasks top metric tiles only.
+   Fixes: too-large labels, broken AKTYWNE/ZROBIONE words, oversized/kanciasty tile look.
+   No data/API/routing changes.
+*/
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] {
+  --cf-stage16d-task-metric-radius: 16px;
+  --cf-stage16d-task-metric-min-height: 56px;
+  --cf-stage16d-task-metric-padding-y: 10px;
+  --cf-stage16d-task-metric-padding-x: 14px;
+  --cf-stage16d-task-metric-gap: 10px;
+  --cf-stage16d-task-metric-label-size: 11px;
+  --cf-stage16d-task-metric-value-size: 20px;
+  --cf-stage16d-task-metric-icon-size: 26px;
+  --cf-stage16d-task-metric-icon-svg-size: 12px;
+  --cf-stage16d-task-metric-shadow: 0 10px 24px rgba(15, 23, 42, 0.055);
+  --cf-stage16d-task-metric-active-shadow: 0 0 0 2px rgba(59, 130, 246, 0.11), 0 10px 24px rgba(15, 23, 42, 0.065);
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  align-items: stretch !important;
+  width: 100% !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card] {
+  min-width: 0 !important;
+  width: 100% !important;
+  display: block !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: var(--cf-stage16d-task-metric-radius) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card] > .cf-top-metric-tile-content {
+  min-height: var(--cf-stage16d-task-metric-min-height) !important;
+  height: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: var(--cf-stage16d-task-metric-gap) !important;
+  padding: var(--cf-stage16d-task-metric-padding-y) var(--cf-stage16d-task-metric-padding-x) !important;
+  border-radius: var(--cf-stage16d-task-metric-radius) !important;
+  border: 1px solid rgba(226, 232, 240, 0.95) !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  box-shadow: var(--cf-stage16d-task-metric-shadow) !important;
+  transform: none !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card].is-active > .cf-top-metric-tile-content,
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card] > .cf-top-metric-tile-content.is-active {
+  border-color: rgba(59, 130, 246, 0.22) !important;
+  box-shadow: var(--cf-stage16d-task-metric-active-shadow) !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-left {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  overflow: hidden !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-label {
+  display: block !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  font-size: var(--cf-stage16d-task-metric-label-size) !important;
+  line-height: 1 !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.018em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: keep-all !important;
+  hyphens: none !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-value-row {
+  min-width: max-content !important;
+  flex: 0 0 auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 7px !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-value {
+  margin: 0 !important;
+  font-size: var(--cf-stage16d-task-metric-value-size) !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.035em !important;
+  text-align: right !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-icon {
+  width: var(--cf-stage16d-task-metric-icon-size) !important;
+  height: var(--cf-stage16d-task-metric-icon-size) !important;
+  min-width: var(--cf-stage16d-task-metric-icon-size) !important;
+  max-width: var(--cf-stage16d-task-metric-icon-size) !important;
+  padding: 0 !important;
+  border-radius: 11px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-icon svg {
+  width: var(--cf-stage16d-task-metric-icon-svg-size) !important;
+  height: var(--cf-stage16d-task-metric-icon-svg-size) !important;
+  stroke-width: 2.5 !important;
+}
+
+@media (max-width: 1180px) {
+  main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card] > .cf-top-metric-tile-content {
+    min-height: 54px !important;
+    padding: 10px 12px !important;
+  }
+}
+
+/* STAGE211C_UNIFIED_APP_CANVAS
+   Source of truth for the neutral app canvas.
+   Goal: every operator tab uses one consistent background behind, between and around cards.
+   This intentionally removes old page-local radial/linear canvas gradients without changing card surfaces.
+*/
+
+:root {
+  --closeflow-unified-canvas: #f8fafc;
+}
+
+html,
+body,
+#root {
+  background: var(--closeflow-unified-canvas) !important;
+  background-color: var(--closeflow-unified-canvas) !important;
+  background-image: none !important;
+}
+
+body::before,
+body::after,
+#root::before,
+#root::after {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+.app.closeflow-visual-semantic01,
+.cf-html-shell,
+main.main,
+[data-shell-main="true"],
+[data-shell-content="true"],
+.view.active {
+  background: var(--closeflow-unified-canvas) !important;
+  background-color: var(--closeflow-unified-canvas) !important;
+  background-image: none !important;
+}
+
+[data-shell-main="true"]::before,
+[data-shell-main="true"]::after,
+[data-shell-content="true"]::before,
+[data-shell-content="true"]::after,
+.view.active::before,
+.view.active::after {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+/* Route page canvases. This catches Activity, AI drafts, Notifications, Billing,
+   Support/Reports, Settings and future *-vnext pages. */
+:where(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page,
+  .tasks-vnext-page,
+  .calendar-vnext-page,
+  .templates-vnext-page,
+  .response-templates-vnext-page,
+  .admin-ai-settings-vnext-page,
+  [class$="-vnext-page"],
+  [class*="-vnext-page "]
+) {
+  background: var(--closeflow-unified-canvas) !important;
+  background-color: var(--closeflow-unified-canvas) !important;
+  background-image: none !important;
+}
+
+:where(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page,
+  [class$="-vnext-page"],
+  [class*="-vnext-page "]
+)::before,
+:where(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page,
+  [class$="-vnext-page"],
+  [class*="-vnext-page "]
+)::after {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+/* Layout-only containers should not add a second canvas layer. */
+:where(
+  .activity-vnext-shell,
+  .ai-drafts-vnext-shell,
+  .notifications-vnext-shell,
+  .billing-vnext-shell,
+  .support-vnext-shell,
+  .settings-vnext-shell,
+  .activity-main-column,
+  .ai-drafts-main-column,
+  .notifications-main-column,
+  .billing-main-column,
+  .support-main-column,
+  .settings-main-column,
+  .activity-stats-grid,
+  .ai-drafts-stats-grid,
+  .notifications-stats-grid,
+  .billing-plans-grid,
+  .support-shell,
+  .settings-shell
+) {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+/* Keep cards white/glass as cards, but remove any page-sized wash from adapter wrappers. */
+:where(
+  [data-cf-main-search-source],
+  [data-cf-main-search-semantic175]
+) {
+  background-image: none !important;
+}
+
+/* Marker for automated guard. */
+:root {
+  --stage211c-unified-app-canvas: 1;
+}
+/* STAGE227E0_DETAIL_SHELL_WIDTH_AUDIT
+   One shared shell-width contract for detail pages.
+   Goal: remove growing side moats caused by nested max-width + mx-auto wrappers.
+   Scope: LeadDetail, ClientDetail, CaseDetail. No data/model/runtime logic changes.
+*/
+:root {
+  --stage227e0-detail-shell-width-audit: 1;
+  --cf-detail-shell-gutter-x: clamp(16px, 1.6vw, 24px);
+  --cf-detail-shell-gutter-y: 24px;
+}
+
+:where(.lead-detail-vnext-page, .client-detail-vnext-page, .case-detail-vnext-page) {
+  width: 100% !important;
+  max-width: none !important;
+  padding-left: var(--cf-detail-shell-gutter-x) !important;
+  padding-right: var(--cf-detail-shell-gutter-x) !important;
+}
+
+:where(
+  .lead-detail-header,
+  .lead-detail-service-box,
+  .lead-detail-shell,
+  .client-detail-header,
+  .client-detail-shell,
+  .case-detail-header,
+  .case-detail-top-grid,
+  .case-detail-shell
+) {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+:where(.lead-detail-shell, .client-detail-shell, .case-detail-shell) {
+  box-sizing: border-box;
+}
+
+@media (max-width: 1100px) {
+  :where(.lead-detail-vnext-page, .client-detail-vnext-page, .case-detail-vnext-page) {
+    --cf-detail-shell-gutter-x: 16px;
+  }
+}
+
+/* STAGE227F2_SHARED_DETAIL_SHELL_AND_CLIENT_CASE_WIDTH_POLISH_START */
+/* Shared detail layout polish for ClientDetail and CaseDetail.
+   Scope: width/gutter/card readability only. LeadDetail layout logic is not changed. */
+:root {
+  --stage227f2-shared-detail-shell-and-lead-copy-polish: 1;
+  --cf-detail-shell-gutter-x: clamp(12px, 1.1vw, 18px);
+  --cf-detail-shell-gutter-y: 20px;
+  --cf-detail-shell-gap: 18px;
+  --cf-detail-left-rail-width: minmax(240px, 280px);
+  --cf-detail-right-rail-width: minmax(260px, 300px);
+  --cf-case-right-rail-width: minmax(270px, 300px);
+}
+
+:where(.client-detail-vnext-page, .case-detail-vnext-page) {
+  padding-left: var(--cf-detail-shell-gutter-x) !important;
+  padding-right: var(--cf-detail-shell-gutter-x) !important;
+}
+
+:where(
+  .client-detail-header,
+  .client-detail-shell,
+  .case-detail-header,
+  .case-detail-top-grid,
+  .case-detail-shell
+) {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+@media (min-width: 1280px) {
+  .client-detail-shell {
+    grid-template-columns: var(--cf-detail-left-rail-width) minmax(0, 1fr) var(--cf-detail-right-rail-width) !important;
+    gap: var(--cf-detail-shell-gap) !important;
+  }
+
+  .case-detail-shell {
+    grid-template-columns: minmax(0, 1fr) var(--cf-case-right-rail-width) !important;
+    gap: var(--cf-detail-shell-gap) !important;
+  }
+
+  .case-detail-top-grid {
+    gap: 12px !important;
+  }
+}
+
+:where(.client-detail-left-rail, .client-detail-right-rail, .case-detail-right-rail) {
+  min-width: 0 !important;
+}
+
+:where(
+  .client-detail-side-card,
+  .client-detail-profile-card,
+  .client-detail-right-card,
+  .client-detail-section-card,
+  .client-detail-summary-card,
+  .case-detail-right-card,
+  .case-detail-section-card,
+  .case-detail-top-card,
+  .case-detail-tabs
+) {
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 1180px) {
+  .client-detail-shell,
+  .case-detail-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  .client-detail-left-rail,
+  .client-detail-right-rail,
+  .case-detail-right-rail {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .client-detail-left-rail,
+  .client-detail-right-rail,
+  .case-detail-right-rail {
+    grid-template-columns: 1fr !important;
+  }
+}
+/* STAGE227F2_SHARED_DETAIL_SHELL_AND_CLIENT_CASE_WIDTH_POLISH_END */
+
+/* STAGE227F2R1_SHARED_DETAIL_HEADER_STRETCH_START */
+:root {
+  --stage227f2r1-shared-detail-header-stretch: 1;
+}
+
+:where(.client-detail-header, .case-detail-header) {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box !important;
+}
+
+:where(.client-detail-shell, .case-detail-shell) {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+/* STAGE227F2R1_SHARED_DETAIL_HEADER_STRETCH_END */
+
+
+/* STAGE227F3_CASE_HEADER_FULL_WIDTH_START */
+:root {
+  --stage227f3-lead-history-top-strip-case-header-width: 1;
+}
+
+.case-detail-vnext-page > .case-detail-header.client-detail-header,
+.case-detail-vnext-page > .case-detail-stage220a10-tabs-wrap,
+.case-detail-vnext-page > .case-detail-shell {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.case-detail-vnext-page > .case-detail-header.client-detail-header {
+  align-self: stretch !important;
+}
+
+.case-detail-stage220a10-tabs-wrap,
+.case-detail-stage220a10-tabs {
+  width: 100% !important;
+  max-width: none !important;
+}
+/* STAGE227F3_CASE_HEADER_FULL_WIDTH_END */
+
+/* STAGE227F3_CASE_HEADER_WIDTH_CONTRACT_START */
+:root {
+  --stage227f3-lead-history-top-strip-case-header-width: 1;
+}
+
+.case-detail-vnext-page {
+  overflow-x: hidden !important;
+}
+
+:where(
+  .case-detail-header.client-detail-header,
+  .case-detail-stage220a10-tabs-wrap,
+  .case-detail-tabs,
+  .case-detail-shell,
+  .case-detail-stage220a10-service-panel,
+  .stage217-case-operation-workspace
+) {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box !important;
+}
+/* STAGE227F3_CASE_HEADER_WIDTH_CONTRACT_END */
+
+/* STAGE227F3_CASE_HEADER_WIDTH_REPAIR_START */
+:root { --stage227f3-case-header-width-repair: 1; }
+:where(.case-detail-header, .case-detail-stage220a10-tabs-wrap, .case-detail-tabs, .case-detail-top-grid, .case-detail-shell) {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box !important;
+}
+.case-detail-vnext-page {
+  overflow-x: clip;
+}
+/* STAGE227F3_CASE_HEADER_WIDTH_REPAIR_END */
+
+
+/* STAGE227F3_CASE_DETAIL_HEADER_WIDTH_R8 */
+[data-closeflow-route="case-detail"] .case-detail-header,
+[data-closeflow-route="case-detail"] .case-detail-stage220a10-tabs-wrap,
+[data-closeflow-route="case-detail"] .case-detail-top-grid,
+[data-closeflow-route="case-detail"] .case-detail-shell {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+
+/* STAGE227F3_CASE_DETAIL_HEADER_WIDTH_START */
+[data-closeflow-route="case-detail"] .case-detail-header,
+[data-closeflow-route="case-detail"] .case-detail-top-grid,
+[data-closeflow-route="case-detail"] .case-detail-stage220a10-tabs-wrap,
+[data-closeflow-route="case-detail"] .case-detail-shell {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+/* STAGE227F3_CASE_DETAIL_HEADER_WIDTH_END */
+
+/* STAGE227F6_CONTACT_CADENCE_AND_FUNNEL_WIDTH_START */
+.cf-contact-cadence-strip {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.cf-contact-cadence-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+}
+
+.cf-contact-cadence-pills .pill,
+.cf-contact-cadence-pills .cf-status-pill {
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.sales-funnel-stage227f6-page {
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: var(--cf-detail-shell-gutter-x, 18px) !important;
+  padding-right: var(--cf-detail-shell-gutter-x, 18px) !important;
+  overflow-x: clip;
+}
+
+.sales-funnel-stage227f6-canvas {
+  width: 100%;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+@media (max-width: 1100px) {
+  .sales-funnel-stage227f6-page {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+/* STAGE227F6_CONTACT_CADENCE_AND_FUNNEL_WIDTH_END */
+
+/* STAGE231B0_R15_R2_CLIENT_DETAIL_SHARED_CANVAS_WIDTH_TRIAL
+   Shared source of truth for full-width app pages.
+   Use this when a route must fill the available workspace from the sidebar edge to the right viewport edge.
+*/
+:root {
+  --cf-page-canvas-full-width: 100%;
+  --cf-page-canvas-full-max-width: none;
+  --cf-page-canvas-full-margin-inline: 0;
+  --cf-page-canvas-padding-x: clamp(20px, 1.7vw, 32px);
+  --cf-page-canvas-padding-y: 30px;
+  --cf-page-canvas-bottom: 64px;
+  --cf-page-canvas-gap: 22px;
+  --cf-page-canvas-left-rail: minmax(280px, 320px);
+  --cf-page-canvas-right-rail: minmax(300px, 340px);
+}
+
+.cf-page-canvas,
+[data-cf-page-canvas="full"] {
+  width: var(--cf-page-canvas-full-width) !important;
+  max-width: var(--cf-page-canvas-full-max-width) !important;
+  min-width: 0 !important;
+  margin-left: var(--cf-page-canvas-full-margin-inline) !important;
+  margin-right: var(--cf-page-canvas-full-margin-inline) !important;
+  margin-inline: var(--cf-page-canvas-full-margin-inline) !important;
+  box-sizing: border-box !important;
+}
+
+.cf-page-canvas--full,
+[data-cf-page-canvas="full"] {
+  padding-left: var(--cf-page-canvas-padding-x) !important;
+  padding-right: var(--cf-page-canvas-padding-x) !important;
+  padding-top: var(--cf-page-canvas-padding-y) !important;
+  padding-bottom: var(--cf-page-canvas-bottom) !important;
+}
+
+
+/* STAGE232J_R1_LEADS_SCROLL_TOP_CUT_RUNTIME_FIX
+   Route-scoped /leads shell scroll contract.
+   It does not create a second scrollbar: html/body/root remain locked by Layout on desktop,
+   while div.view.active[data-shell-content] stays the single content scroll owner.
+*/
+#root main[data-current-section="leads"][data-shell-main="true"] {
+  overflow: hidden !important;
+}
+
+#root main[data-current-section="leads"][data-shell-main="true"] > div.view.active[data-shell-content="true"][data-stage232j-r1-leads-scroll-owner="true"] {
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior-y: contain !important;
+  scroll-padding-top: 0 !important;
+  padding-top: 0 !important;
+  overflow-anchor: none !important;
+  scrollbar-gutter: stable both-edges !important;
+}
+
+html[data-stage232j-r1-document-scroll-locked="true"],
+body[data-stage232j-r1-document-scroll-locked="true"] {
+  overflow: hidden !important;
+  scroll-behavior: auto !important;
+}
+
+/* ELITEFLOW_DESKTOP_COMPACT_SCALE_2026_05_07
+   Desktop-only app scale. Goal: make the app open closer to the user's preferred 80-85% browser zoom,
+   without changing browser zoom and without triggering responsive breakpoints.
+   This is a fast product test layer. If sticky/modals feel wrong, replace with a real density system.
+*/
+
+@media (min-width: 1024px) and (min-height: 640px) {
+  :root {
+    --eliteflow-desktop-scale: 0.84;
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    overflow-x: hidden !important;
+    background: #f4f6f8;
+  }
+
+  #root {
+    width: 100vw;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .closeflow-visual-semantic01.app {
+    width: calc(100vw / var(--eliteflow-desktop-scale)) !important;
+    min-height: calc(100vh / var(--eliteflow-desktop-scale)) !important;
+    transform: scale(var(--eliteflow-desktop-scale)) !important;
+    transform-origin: top left !important;
+    will-change: transform;
+  }
+
+  .closeflow-visual-semantic01 .global-bar {
+    top: 0;
+  }
+}
+
+/* Never scale mobile/tablet. They need real responsive layout, not desktop shrinking. */
+@media (max-width: 1023px), (max-height: 639px) {
+  .closeflow-visual-semantic01.app {
+    width: auto !important;
+    min-height: 100vh !important;
+    transform: none !important;
+  }
+}
+
+/* ELITEFLOW_SEMANTIC_BADGES_AND_TODAY_SECTIONS_2026_05_07
+   Central semantic color tokens for small badges / pills and Today collapsed section behavior.
+   Source of truth for status colors:
+   - danger / trash / overdue = red
+   - event / calendar = blue
+   - task / done / active = green
+   - note / draft / waiting = amber
+   - lead = indigo
+   - case = violet
+   - client = cyan
+*/
+
+:root {
+  --cf-semantic-danger-bg: #fff1f2;
+  --cf-semantic-danger-border: #fecdd3;
+  --cf-semantic-danger-text: #be123c;
+
+  --cf-semantic-event-bg: #eff6ff;
+  --cf-semantic-event-border: #bfdbfe;
+  --cf-semantic-event-text: #1d4ed8;
+
+  --cf-semantic-task-bg: #ecfdf5;
+  --cf-semantic-task-border: #a7f3d0;
+  --cf-semantic-task-text: #047857;
+
+  --cf-semantic-note-bg: #fffbeb;
+  --cf-semantic-note-border: #fde68a;
+  --cf-semantic-note-text: #b45309;
+
+  --cf-semantic-lead-bg: #eef2ff;
+  --cf-semantic-lead-border: #c7d2fe;
+  --cf-semantic-lead-text: #4338ca;
+
+  --cf-semantic-case-bg: #f5f3ff;
+  --cf-semantic-case-border: #ddd6fe;
+  --cf-semantic-case-text: #6d28d9;
+
+  --cf-semantic-client-bg: #ecfeff;
+  --cf-semantic-client-border: #a5f3fc;
+  --cf-semantic-client-text: #0e7490;
+
+  --cf-semantic-neutral-bg: #f8fafc;
+  --cf-semantic-neutral-border: #e2e8f0;
+  --cf-semantic-neutral-text: #475569;
+}
+
+html body #root .cf-semantic-badge,
+html body #root [data-cf-semantic-badge="true"] {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-radius: 999px !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.01em !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  white-space: nowrap !important;
+}
+
+html body #root .cf-semantic-badge-danger,
+html body #root [data-cf-semantic-tone="danger"] {
+  background: var(--cf-semantic-danger-bg) !important;
+  border-color: var(--cf-semantic-danger-border) !important;
+  color: var(--cf-semantic-danger-text) !important;
+  -webkit-text-fill-color: var(--cf-semantic-danger-text) !important;
+}
+
+html body #root .cf-semantic-badge-event,
+html body #root [data-cf-semantic-tone="event"] {
+  background: var(--cf-semantic-event-bg) !important;
+  border-color: var(--cf-semantic-event-border) !important;
+  color: var(--cf-semantic-event-text) !important;
+  -webkit-text-fill-color: var(--cf-semantic-event-text) !important;
+}
+
+html body #root .cf-semantic-badge-task,
+html body #root [data-cf-semantic-tone="task"] {
+  background: var(--cf-semantic-task-bg) !important;
+  border-color: var(--cf-semantic-task-border) !important;
+  color: var(--cf-semantic-task-text) !important;
+  -webkit-text-fill-color: var(--cf-semantic-task-text) !important;
+}
+
+html body #root .cf-semantic-badge-note,
+html body #root [data-cf-semantic-tone="note"] {
+  background: var(--cf-semantic-note-bg) !important;
+  border-color: var(--cf-semantic-note-border) !important;
+  color: var(--cf-semantic-note-text) !important;
+  -webkit-text-fill-color: var(--cf-semantic-note-text) !important;
+}
+
+html body #root .cf-semantic-badge-lead,
+html body #root [data-cf-semantic-tone="lead"] {
+  background: var(--cf-semantic-lead-bg) !important;
+  border-color: var(--cf-semantic-lead-border) !important;
+  color: var(--cf-semantic-lead-text) !important;
+  -webkit-text-fill-color: var(--cf-semantic-lead-text) !important;
+}
+
+html body #root .cf-semantic-badge-case,
+html body #root [data-cf-semantic-tone="case"] {
+  background: var(--cf-semantic-case-bg) !important;
+  border-color: var(--cf-semantic-case-border) !important;
+  color: var(--cf-semantic-case-text) !important;
+  -webkit-text-fill-color: var(--cf-semantic-case-text) !important;
+}
+
+html body #root .cf-semantic-badge-client,
+html body #root [data-cf-semantic-tone="client"] {
+  background: var(--cf-semantic-client-bg) !important;
+  border-color: var(--cf-semantic-client-border) !important;
+  color: var(--cf-semantic-client-text) !important;
+  -webkit-text-fill-color: var(--cf-semantic-client-text) !important;
+}
+
+html body #root .cf-semantic-badge-neutral,
+html body #root [data-cf-semantic-tone="neutral"] {
+  background: var(--cf-semantic-neutral-bg) !important;
+  border-color: var(--cf-semantic-neutral-border) !important;
+  color: var(--cf-semantic-neutral-text) !important;
+  -webkit-text-fill-color: var(--cf-semantic-neutral-text) !important;
+}
+
+/* Today sections are compact by default; the user opens the needed section from the section header or top metric tile. */
+html body #root [data-p0-today-stable-rebuild="true"] [aria-expanded="false"] {
+  cursor: pointer;
+}
+
+html body #root [data-p0-today-stable-rebuild="true"] [aria-expanded="false"] h2 {
+  color: #334155 !important;
+}
+
+/* ELITEFLOW_SIDEBAR_FOOTER_CONTRAST_REPAIR_2026_05_07
+   Fix bottom sidebar footer after desktop compact/scaled views:
+   - keep footer on the same dark panel background,
+   - restore readable user card,
+   - keep logout visible,
+   - do not affect mobile drawer.
+*/
+
+html body #root .closeflow-visual-semantic01 .sidebar[data-shell-sidebar="true"] {
+  background-color: #0b1220 !important;
+  background-image:
+    radial-gradient(circle at 0% 0%, rgba(37, 99, 235, 0.26), transparent 35%),
+    linear-gradient(180deg, #101828 0%, #0b1220 100%) !important;
+  overflow: hidden !important;
+}
+
+html body #root .closeflow-visual-semantic01 .sidebar[data-shell-sidebar="true"] .nav-scroll {
+  min-height: 0 !important;
+  background: transparent !important;
+}
+
+html body #root .closeflow-visual-semantic01 .sidebar[data-shell-sidebar="true"] .sidebar-footer {
+  position: relative !important;
+  z-index: 2 !important;
+  flex: 0 0 auto !important;
+  margin-top: auto !important;
+  margin-left: -4px !important;
+  margin-right: -4px !important;
+  padding: 12px 4px 0 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.10) !important;
+  background:
+    linear-gradient(180deg, rgba(11, 18, 32, 0.00) 0%, rgba(11, 18, 32, 0.74) 18%, rgba(11, 18, 32, 0.98) 100%) !important;
+  box-shadow: 0 -18px 34px rgba(11, 18, 32, 0.34) !important;
+}
+
+html body #root .closeflow-visual-semantic01 .sidebar[data-shell-sidebar="true"] .sidebar-footer::before {
+  content: "" !important;
+  position: absolute !important;
+  left: -18px !important;
+  right: -18px !important;
+  top: -20px !important;
+  height: 42px !important;
+  pointer-events: none !important;
+  background: linear-gradient(180deg, rgba(11, 18, 32, 0.00), rgba(11, 18, 32, 0.86)) !important;
+  z-index: -1 !important;
+}
+
+html body #root .closeflow-visual-semantic01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"],
+html body #root .closeflow-visual-semantic01 .sidebar[data-shell-sidebar="true"] .sidebar-footer .user-card[data-shell-user-card="true"] {
+  min-height: 58px !important;
+  padding: 9px !important;
+  border-radius: 18px !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.115), rgba(255, 255, 255, 0.055)) !important;
+  background-color: rgba(15, 23, 42, 0.72) !important;
+  color: #ffffff !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 12px 26px rgba(0, 0, 0, 0.20) !important;
+  opacity: 1 !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+}
+
+html body #root .closeflow-visual-semantic01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] .user-avatar {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 14px !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.10) !important;
+  opacity: 1 !important;
+}
+
+html body #root .closeflow-visual-semantic01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] strong,
+html body #root .closeflow-visual-semantic01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] span {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+html body #root .closeflow-visual-semantic01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] strong {
+  color: rgba(255, 255, 255, 0.94) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.94) !important;
+  font-weight: 900 !important;
+}
+
+html body #root .closeflow-visual-semantic01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] span {
+  color: rgba(255, 255, 255, 0.68) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.68) !important;
+  font-weight: 700 !important;
+}
+
+html body #root .closeflow-visual-semantic01 .sidebar[data-shell-sidebar="true"] .sidebar-logout {
+  min-height: 42px !important;
+  border-radius: 15px !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.060), rgba(255, 255, 255, 0.028)) !important;
+  color: rgba(255, 255, 255, 0.78) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.78) !important;
+  box-shadow: none !important;
+}
+
+html body #root .closeflow-visual-semantic01 .sidebar[data-shell-sidebar="true"] .sidebar-logout:hover {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: rgba(180, 35, 24, 0.24) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+html body #root .closeflow-visual-semantic01 .sidebar[data-shell-sidebar="true"] .sidebar-logout svg {
+  color: currentColor !important;
+  opacity: 1 !important;
+}
+
+@media (max-width: 1220px) {
+  html body #root .closeflow-visual-semantic01 .sidebar[data-shell-sidebar="true"] .sidebar-footer {
+    display: none !important;
+  }
+}
+
+@media (max-width: 760px) {
+  html body #root .closeflow-visual-semantic01 .sidebar[data-shell-sidebar="true"] {
+    display: none !important;
+  }
+}

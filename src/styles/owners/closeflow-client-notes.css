@@ -1,0 +1,381 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:client-notes","concerns":[],"scope":"component-scoped","consumerRoots":["src/styles/closeflow-visual-source-truth.css"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
+/* STAGE216M_R15_R5_CLIENT_NOTES_SOURCE_TRUTH_FINAL_REPAIR
+   One center source of truth for ClientDetail notes.
+   Voice dictation writes into composer, not client data edit mode.
+*/
+
+.client-detail-notes-center-section[data-stage216m-r15-r5-client-notes-source="true"] {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.client-detail-note-composer[data-stage216m-r15-r5-client-note-composer="true"] {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.42);
+}
+
+.client-detail-note-composer[data-stage216m-r15-r5-client-note-composer="true"] textarea {
+  min-height: 92px;
+  resize: vertical;
+  border-color: rgba(148, 163, 184, 0.22);
+  background: rgba(2, 6, 23, 0.56);
+  color: #e5e7eb;
+}
+
+.client-detail-note-composer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.client-detail-note-dictation-preview {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(191, 219, 254, 0.88);
+}
+
+.client-detail-notes-center-section[data-stage216m-r15-r5-client-notes-source="true"] .client-detail-notes-center-list {
+  margin-top: 0;
+}
+
+/* STAGE216M_R16_R2_CLIENT_NOTE_MODAL_SOURCE_TRUTH
+   Client notes follow LeadDetail modal behavior: button opens modal, dictation writes to the same modal draft. */
+
+.client-detail-note-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.client-note-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.62);
+  backdrop-filter: blur(4px);
+}
+
+.client-note-modal-card {
+  position: relative;
+  width: min(680px, calc(100vw - 32px));
+  border-radius: 22px;
+  border: 1px solid rgba(148, 163, 184, 0.26);
+  background: #0f172a;
+  color: #e5e7eb;
+  box-shadow: 0 28px 90px rgba(15, 23, 42, 0.42);
+  padding: 22px 24px 20px;
+}
+
+.client-note-modal-header h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.client-note-modal-header p {
+  margin: 6px 0 18px;
+  font-size: 13px;
+  color: #cbd5e1;
+}
+
+.client-note-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: rgba(255, 255, 255, 0.88);
+  color: #0f172a;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.client-note-modal-textarea {
+  min-height: 112px;
+  width: 100%;
+  resize: vertical;
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 12px;
+  border: 1px solid #93c5fd;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.16);
+}
+
+.client-note-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(148, 163, 184, 0.24);
+}
+
+.client-detail-note-dictation-preview {
+  margin-top: 10px;
+  color: #bfdbfe;
+  font-size: 12px;
+}
+
+/* STAGE211E_CANVAS_SOURCE_TRUTH_HARD_MOUNT
+   Owner: CloseFlow Visual System
+   Purpose: one app canvas color for every operator route.
+   Reference route: / (Today) admin feedback: canvas is the model.
+   This file is intentionally imported globally and by route pages so it wins against old lazy CSS chunks.
+*/
+
+:root,
+html[data-skin="forteca-light"] {
+  --cf-canvas-bg: #f8fafc;
+  --cf-canvas-bg-rgb: 248 250 252;
+  --cf-canvas-surface: #ffffff;
+  --cf-canvas-border: #e4e7ec;
+}
+
+html,
+body,
+#root {
+  background: var(--cf-canvas-bg) !important;
+  background-color: var(--cf-canvas-bg) !important;
+  background-image: none !important;
+}
+
+body::before,
+body::after,
+#root::before,
+#root::after {
+  background-image: none !important;
+}
+
+.app.closeflow-visual-semantic01,
+.app.closeflow-visual-semantic01.cf-html-shell,
+.cf-html-shell,
+.cf-html-shell .main,
+.cf-html-shell main.main,
+.cf-html-shell [data-shell-main="true"],
+.cf-html-shell .view,
+.cf-html-shell .view.active,
+.cf-html-shell [data-shell-content="true"] {
+  background: var(--cf-canvas-bg) !important;
+  background-color: var(--cf-canvas-bg) !important;
+  background-image: none !important;
+}
+
+/* Route roots: Today model + every legacy/html/vnext page root. */
+.cf-html-shell .cf-route-work-root,
+.cf-html-shell .cf-html-view,
+.cf-html-shell [class~="cf-html-view"],
+.cf-html-shell [class*="-vnext-page"],
+.cf-html-shell .main-calendar-html,
+.cf-html-shell .main-leads-html,
+.cf-html-shell .main-clients-html,
+.cf-html-shell .main-cases-html,
+.cf-html-shell .main-templates-html,
+.cf-html-shell .main-response-templates-html,
+.cf-html-shell .main-ai-drafts-html,
+.cf-html-shell .main-activity-html,
+.cf-html-shell .main-billing-html,
+.cf-html-shell .activity-vnext-page,
+.cf-html-shell .ai-drafts-vnext-page,
+.cf-html-shell .notifications-vnext-page,
+.cf-html-shell .billing-vnext-page,
+.cf-html-shell .support-vnext-page,
+.cf-html-shell .settings-vnext-page {
+  background: var(--cf-canvas-bg) !important;
+  background-color: var(--cf-canvas-bg) !important;
+  background-image: none !important;
+}
+
+/* Known inner route wrappers where the old canvas leaked between cards. */
+.cf-html-shell .calendar-week-layout,
+.cf-html-shell .calendar-dashboard,
+.cf-html-shell .calendar-main,
+.cf-html-shell .calendar-page,
+.cf-html-shell .activity-vnext-shell,
+.cf-html-shell .ai-drafts-vnext-shell,
+.cf-html-shell .notifications-vnext-shell,
+.cf-html-shell .billing-shell,
+.cf-html-shell .support-shell,
+.cf-html-shell .settings-shell,
+.cf-html-shell .settings-vnext-shell {
+  background: var(--cf-canvas-bg) !important;
+  background-color: var(--cf-canvas-bg) !important;
+  background-image: none !important;
+}
+
+/* Prevent old page-level gradient layers from painting on pseudo elements. */
+.cf-html-shell [class*="-vnext-page"]::before,
+.cf-html-shell [class*="-vnext-page"]::after,
+.cf-html-shell .cf-html-view::before,
+.cf-html-shell .cf-html-view::after,
+.cf-html-shell .cf-route-work-root::before,
+.cf-html-shell .cf-route-work-root::after,
+.cf-html-shell [data-shell-content="true"]::before,
+.cf-html-shell [data-shell-content="true"]::after {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+/* Keep actual cards/surfaces white; only the canvas underneath is unified. */
+.cf-html-shell .right-card,
+.cf-html-shell [class*="-card"],
+.cf-html-shell .card,
+.cf-html-shell [data-card="true"] {
+  background-image: none;
+}
+
+/* QUICK_LEAD_CAPTURE_STAGE27_UI */
+.quick-lead-stage27-modal {
+  width: min(760px, calc(100vw - 32px));
+  max-width: 760px;
+  border-radius: 28px;
+  border: 1px solid #e4e7ec;
+  background: #ffffff;
+  color: #111827;
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.18);
+}
+
+.quick-lead-stage27-header {
+  gap: 8px;
+}
+
+.quick-lead-stage27-kicker {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid #dbeafe;
+  background: #eff6ff;
+  padding: 4px 10px;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.quick-lead-stage27-header p,
+.quick-lead-stage27-hint {
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.quick-lead-stage27-body {
+  display: grid;
+  gap: 10px;
+  padding-top: 8px;
+}
+
+.quick-lead-stage27-textarea,
+.quick-lead-stage27-select {
+  width: 100%;
+  border-radius: 18px;
+  border: 1px solid #d0d5dd;
+  background: #ffffff;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.quick-lead-stage27-textarea {
+  min-height: 170px;
+  resize: vertical;
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.quick-lead-stage27-select {
+  height: 40px;
+  padding: 0 12px;
+  font-size: 14px;
+}
+
+.quick-lead-stage27-textarea:focus,
+.quick-lead-stage27-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.quick-lead-stage27-review-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding-top: 8px;
+}
+
+.quick-lead-stage27-field {
+  display: grid;
+  gap: 7px;
+}
+
+.quick-lead-stage27-field-wide {
+  grid-column: 1 / -1;
+}
+
+.quick-lead-stage27-footer {
+  gap: 10px;
+}
+
+@media (max-width: 720px) {
+  .quick-lead-stage27-modal {
+    width: calc(100vw - 20px);
+    border-radius: 22px;
+  }
+
+  .quick-lead-stage27-review-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-lead-stage27-footer {
+    flex-direction: column-reverse;
+  }
+
+  .quick-lead-stage27-footer button {
+    width: 100%;
+  }
+}
+
+/* STAGE216M_R17_CLIENT_NOTE_DIALOG_MATCH_LEAD
+   Client note dialog uses the same visual primitives/classes as LeadDetail note dialog. */
+
+.client-detail-note-dialog[data-stage216m-r17-client-note-dialog-source="lead-detail"] {
+  width: min(680px, calc(100vw - 32px));
+}
+
+.client-detail-add-note-dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.client-detail-note-input {
+  min-height: 112px;
+  resize: vertical;
+}
+
+.client-detail-note-dictation-preview {
+  margin: 0;
+}
+
+.client-detail-note-actions-row [data-stage216m-r17-client-note-dictate-lead-pattern="true"] {
+  white-space: nowrap;
+}

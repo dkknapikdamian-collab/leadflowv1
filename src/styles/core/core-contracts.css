@@ -1,19 +1,10 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/core/core-contracts.css","concerns":[],"scope":"entry","consumerRoots":["src/styles/core/core-contracts.css"],"role":"entrypoint","boundary":"runtime-entrypoint","whyNotGlobal":"This file is an import boundary, not a semantic visual owner.","whyNotDuplicate":"Only the runtime entry imports this boundary.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
 /* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_CORE_CONTRACTS
    owner: CloseFlow Visual System
    reason: keep stable shell, token and component-contract CSS before page adapters.
    scope: core shell/theme primitives, form actions, action/entity tokens and shared metric contracts.
-   remove_after_stage: never; individual legacy imports below can be removed only after their component contract replacement ships.
+   remove_after_stage: never; shared contract imports remain stable runtime dependencies.
 */
 
-/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage01-shell.css; content merged above. */
-/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-html-theme-v14.css; content merged above. */
 @import '../closeflow-vnext-ui-contract.css';
-/* LF-UI-SOT-007 canonical owner marker: @import '../closeflow-form-actions.css'; */
-/* LF-UI-SOT-007 canonical owner marker: @import '../closeflow-action-tokens.css'; */
-/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/context-action-button-source-truth.css; content merged above. */
 @import '../closeflow-entity-type-tokens.css';
-/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-stage16c-tasks-cases-parity.css; content merged above. */
-/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-stage16d-tasks-metric-final-lock.css; content merged above. */
-/* LF-UI-SOT-007 canonical owner marker: @import '../closeflow-metric-tiles.css'; */
-/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-operator-metric-tiles.css; content merged above. */
-/* LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-operator-semantic-tones.css; content merged above. */
