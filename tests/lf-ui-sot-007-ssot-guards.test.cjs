@@ -29,7 +29,7 @@ function fixture({ ownerSource, extraFiles = {}, concerns = ['TYPOGRAPHY'], forb
   const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'lf-ui-sot-007-semantic-'));
   const files = {
     'src/owners/typography.css': ownerSource,
-    'src/consumer.ts': 'export const consumer = true;',
+    'src/consumer.ts': "export const consumer = 'dialog-local';",
     ...extraFiles,
   };
   for (const [relative, source] of Object.entries(files)) {
@@ -47,6 +47,7 @@ function fixture({ ownerSource, extraFiles = {}, concerns = ['TYPOGRAPHY'], forb
   };
   const registry = {
     schema: 'LF-UI-SOT-007.semantic-visual-owner-registry.test.v1',
+    visualEntry: 'src/styles/closeflow-visual-source-truth.css',
     requiredConcerns: concerns,
     concerns: Object.fromEntries(concerns.map((concern) => [concern, {
       owner: `src/owners/${concern === 'MODALS' ? 'modals' : 'typography'}.css`,
@@ -79,8 +80,8 @@ function canonical(concerns = ['TYPOGRAPHY'], body = '') {
   return `${metadata({ ownerId: `semantic:${concerns.join('-').toLowerCase()}`, concerns, role: 'canonical-owner', boundary: 'global-semantic', whyNotGlobal: 'This file is the registered semantic owner for its declared concerns.', whyNotDuplicate: 'The registry maps each declared concern to this single reachable owner.' })}\n${body}`;
 }
 
-function scoped(body = '') {
-  return `${metadata({ ownerId: 'scoped:dialog-adapter', concerns: [], scope: 'component-scoped', role: 'scoped-adapter', boundary: 'component', whyNotGlobal: 'This stylesheet is limited to the dialog consumer boundary.', whyNotDuplicate: 'It claims no semantic concern.' })}\n${body}`;
+function scoped(body = '', consumerRoots = ['src/consumer.ts']) {
+  return `${metadata({ ownerId: 'scoped:dialog-adapter', concerns: [], scope: 'component-scoped', role: 'scoped-adapter', boundary: 'component', whyNotGlobal: 'This stylesheet is limited to the dialog consumer boundary.', whyNotDuplicate: 'It claims no semantic concern.', consumerRoots })}\n${body}`;
 }
 
 test('the CSS guard is import-safe and does not execute on require', () => {
@@ -140,4 +141,60 @@ test('negative F control: a legitimate semantic canonical owner passes', () => {
   const result = fixture({ ownerSource: canonical(['TYPOGRAPHY'], ':root { --cf-font-body: 1rem; }') });
   assert.equal(result.ok, true, result.failures.join('\n'));
   assert.equal(result.summary.DUPLICATE_SEMANTIC_OWNERS, 0);
+});
+
+test('negative G: a scoped adapter carrying STAGE216L authority is rejected', () => {
+  const result = fixture({
+    ownerSource: canonical(),
+    extraFiles: {
+      'src/scoped/client-detail.css': scoped('/* STAGE216L copied semantic contract */\n.dialog-local { display: grid; }'),
+    },
+  });
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /historical stage\/hotfix authority/);
+});
+
+test('negative H: a scoped adapter carrying a --stage216l-* token is rejected', () => {
+  const result = fixture({
+    ownerSource: canonical(),
+    extraFiles: {
+      'src/scoped/client-detail.css': scoped('.dialog-local { --stage216l-surface: #fff; }'),
+    },
+  });
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /historical stage\/hotfix authority/);
+});
+
+test('negative I: a scoped adapter carrying a data-stage216m-* selector is rejected', () => {
+  const result = fixture({
+    ownerSource: canonical(),
+    extraFiles: {
+      'src/scoped/client-notes.css': scoped('.dialog-local[data-stage216m-notes-source="true"] { display: grid; }'),
+    },
+  });
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /historical stage\/hotfix authority/);
+});
+
+test('negative J: a route-scoped owner whose only consumer is the global visual entry is rejected', () => {
+  const result = fixture({
+    ownerSource: canonical(),
+    extraFiles: {
+      'src/styles/closeflow-visual-source-truth.css': metadata({ ownerId: 'entry:visual', concerns: [], scope: 'entry', role: 'entrypoint', boundary: 'runtime-entrypoint', whyNotGlobal: 'Import boundary only.', whyNotDuplicate: 'Import boundary only.' }),
+      'src/scoped/route-adapter.css': scoped('.dialog-local { display: grid; }', ['src/styles/closeflow-visual-source-truth.css']),
+    },
+  });
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /real route\/component consumer|global visual entry/);
+});
+
+test('negative K: a scoped adapter defining :root/body/global shell semantics is rejected', () => {
+  const result = fixture({
+    ownerSource: canonical(),
+    extraFiles: {
+      'src/scoped/global-shell.css': scoped(':root { --shell-color: #fff; }\nbody { background: #fff; }'),
+    },
+  });
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /global shell semantics/);
 });

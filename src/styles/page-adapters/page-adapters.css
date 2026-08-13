@@ -1,9 +1,3 @@
 /* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/page-adapters/page-adapters.css","concerns":[],"scope":"entry","consumerRoots":["src/styles/page-adapters/page-adapters.css"],"role":"entrypoint","boundary":"runtime-entrypoint","whyNotGlobal":"This file is an import boundary, not a semantic visual owner.","whyNotDuplicate":"Only the runtime entry imports this boundary.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
-/* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_PAGE_ADAPTERS
-   owner: CloseFlow Visual System
-   reason: keep route-scoped adapters behind one registered import boundary.
-   scope: page-level route adapters for Today, Leads, Clients, Cases, Tasks and Calendar.
-   remove_after_stage: none; ownership is registered in the LF-UI-SOT-007 semantic owner registry.
-*/
 
 @import '../closeflow-entity-data-card.css';

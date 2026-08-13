@@ -1,17 +1,7 @@
-/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/clients-next-action-layout.css","concerns":[],"scope":"component","consumerRoots":["src/styles/clients-next-action-layout.css"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
-/* STAGE231D0B-R9_DEPRECATE_LEGACY_CLIENT_ROW_GRID
-   rule: legacy .client-row grid must not target .cf-client-row-two-line.
-*/
-
-/* CLOSEFLOW_ETAP10_CLIENT_CARD_NEXT_ACTION_LAYOUT
-   owner: CloseFlow UI system
-   reason: nearest client action was squeezed next to action buttons
-   scope: /clients client cards only
-   remove_after_stage: never, this is the client card layout contract
-*/
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/clients-next-action-layout.css","concerns":[],"scope":"component","consumerRoots":["src/pages/Clients.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 
 .main-clients-html .client-row:not(.cf-client-row-two-line) {
-  display: grid !important;
+  display: grid;
   grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr) minmax(7.5rem, auto);
   grid-template-areas:
     "index main value"
@@ -41,7 +31,7 @@
   grid-area: next;
   width: 100%;
   min-width: 0;
-  display: flex !important;
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.2rem;
@@ -77,7 +67,7 @@
   justify-self: end;
   width: 100%;
   min-width: 0;
-  display: flex !important;
+  display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 0.5rem;
@@ -140,29 +130,22 @@
     justify-content: flex-start;
   }
 }
-
-/* CLOSEFLOW_ETAP3_CLIENTS_WIDE_LAYOUT
-   owner: CloseFlow UI system
-   reason: /clients client card regressed into a narrow column on wide desktop screens
-   scope: /clients list only
-   rule: use available content width, never fixed desktop width or transform scale
-*/
 .main-clients-html .layout-list {
-  width: 100% !important;
-  max-width: none !important;
+  width: 100%;
+  max-width: none;
   min-width: 0;
   display: block;
 }
 
 .main-clients-html .layout-list > .stack {
-  width: 100% !important;
-  max-width: none !important;
+  width: 100%;
+  max-width: none;
   min-width: 0;
 }
 
 .main-clients-html .table-card {
-  width: 100% !important;
-  max-width: none !important;
+  width: 100%;
+  max-width: none;
   min-width: 0;
   box-sizing: border-box;
 }
@@ -170,8 +153,8 @@
 .main-clients-html .table-card > .relative,
 .main-clients-html .group\/client-card,
 .main-clients-html [class*="group/client-card"] {
-  width: 100% !important;
-  max-width: none !important;
+  width: 100%;
+  max-width: none;
   min-width: 0;
   box-sizing: border-box;
 }
@@ -186,8 +169,8 @@
 }
 
 .main-clients-html .client-row:not(.cf-client-row-two-line) {
-  width: 100% !important;
-  max-width: none !important;
+  width: 100%;
+  max-width: none;
   min-width: 0;
   box-sizing: border-box;
 }
@@ -228,7 +211,7 @@
 
 @media (min-width: 901px) {
   .main-clients-html .client-row:not(.cf-client-row-two-line) {
-    grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr) minmax(260px, 360px) !important;
+    grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr) minmax(260px, 360px);
   }
 
   .main-clients-html .client-row:not(.cf-client-row-two-line) > .lead-value-cell {
@@ -242,7 +225,7 @@
   }
 
   .main-clients-html .client-row:not(.cf-client-row-two-line) {
-    grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr) !important;
+    grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr);
   }
 }
 
@@ -251,21 +234,14 @@
   .main-clients-html .layout-list > .stack,
   .main-clients-html .table-card,
   .main-clients-html [class*="group/client-card"] {
-    width: 100% !important;
-    max-width: 100% !important;
+    width: 100%;
+    max-width: 100%;
   }
 }
-
-/* CLOSEFLOW_ETAP4_CLIENT_NEXT_ACTION_ACCENT
-   owner: CloseFlow UI system
-   reason: /clients nearest action panel needs a subtle separate slate-blue surface
-   scope: /clients client card nearest action panel only
-   rule: calm neutral accent, status-free color, no full-card color change
-*/
 .main-clients-html .client-row:not(.cf-client-row-two-line) > .cf-client-next-action-panel {
-  border: 1px solid rgba(37, 99, 235, 0.18) !important;
+  border: 1px solid rgba(37, 99, 235, 0.18);
   background:
-    linear-gradient(180deg, rgba(239, 246, 255, 0.92), rgba(248, 250, 252, 0.98)) !important;
+    linear-gradient(180deg, rgba(239, 246, 255, 0.92), rgba(248, 250, 252, 0.98));
   border-radius: 1rem;
   padding: 0.875rem;
   color: #0f172a;
@@ -275,13 +251,13 @@
 .main-clients-html .client-row:not(.cf-client-row-two-line) > .cf-client-next-action-panel .cf-muted,
 .main-clients-html .client-row:not(.cf-client-row-two-line) > .cf-client-next-action-panel small,
 .main-clients-html .client-row:not(.cf-client-row-two-line) > .cf-client-next-action-panel .mini {
-  color: #475569 !important;
-  -webkit-text-fill-color: #475569 !important;
+  color: #475569;
+  -webkit-text-fill-color: #475569;
 }
 
 .main-clients-html .client-row:not(.cf-client-row-two-line) > .cf-client-next-action-panel strong {
-  color: #1e293b !important;
-  -webkit-text-fill-color: #1e293b !important;
+  color: #1e293b;
+  -webkit-text-fill-color: #1e293b;
 }
 
 @media (max-width: 520px) {
@@ -290,8 +266,6 @@
     border-radius: 0.9rem;
   }
 }
-
-/* CLOSEFLOW_ETAP8_CLIENT_CARD_INLINE_ROW */
 .main-clients-html .client-row:not(.cf-client-row-two-line).cf-client-row-inline {
   display: grid;
   grid-template-columns:

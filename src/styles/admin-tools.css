@@ -1,4 +1,4 @@
-/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/admin-tools.css","concerns":[],"scope":"component","consumerRoots":["src/styles/admin-tools.css"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/admin-tools.css","concerns":[],"scope":"component","consumerRoots":["src/components/admin-tools/AdminDebugToolbar.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 .admin-debug-toolbar {
   position: relative;
   z-index: 2147483000;
@@ -111,8 +111,6 @@
   background: rgba(15, 23, 42, 0.52);
   overflow: auto;
   pointer-events: auto;
-  /* ADMIN_DIALOG_DRAG_LOWER_STAGE87B */
-  /* ADMIN_DIALOG_STACK_FIX_STAGE87C */
 }
 
 .admin-tool-dialog {
@@ -226,8 +224,6 @@
     max-height: calc(100vh - 64px);
   }
 }
-
-/* ADMIN_CLICK_TO_ANNOTATE_STAGE87D */
 .admin-tool-mode-hint {
   position: fixed;
   right: 24px;
@@ -317,18 +313,6 @@
   cursor: not-allowed;
 }
 
-[data-admin-debug-selected-stage87d="true"] {
-  outline: 3px solid rgba(37, 99, 235, 0.92) !important;
-  outline-offset: 3px !important;
-  box-shadow: 0 0 0 7px rgba(37, 99, 235, 0.16) !important;
-}
-
-[data-admin-debug-saved-stage87d="true"] {
-  outline: 3px solid rgba(34, 197, 94, 0.95) !important;
-  outline-offset: 3px !important;
-  box-shadow: 0 0 0 7px rgba(34, 197, 94, 0.18) !important;
-}
-
 @media (max-width: 760px) {
   .admin-tool-quick-editor,
   .admin-tool-mode-hint,
@@ -339,8 +323,6 @@
     max-width: calc(100vw - 24px);
   }
 }
-
-/* ADMIN_QUICK_EDITOR_PORTAL_DRAG_STAGE87F */
 .admin-tool-quick-editor {
   top: 136px;
   right: 24px;
@@ -377,8 +359,6 @@
     bottom: auto;
   }
 }
-
-/* ADMIN_TOOLBAR_UTF8_PORTAL_FORCE_STAGE87G */
 .admin-tool-quick-editor {
   top: 136px;
   bottom: auto;
@@ -387,40 +367,35 @@
 .admin-tool-quick-editor-head {
   cursor: grab;
 }
-
-/* STAGE212M_ADMIN_DEBUG_TOOLBAR_CONTRAST */
 .admin-debug-toolbar {
-  background: rgba(15, 23, 42, 0.96) !important;
-  border-color: rgba(148, 163, 184, 0.42) !important;
-  color: #f8fafc !important;
-  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.28) !important;
-  backdrop-filter: blur(12px) !important;
+  background: rgba(15, 23, 42, 0.96);
+  border-color: rgba(148, 163, 184, 0.42);
+  color: #f8fafc;
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.28);
+  backdrop-filter: blur(12px);
 }
 .admin-debug-toolbar > button,
 .admin-debug-toolbar button {
-  background: rgba(255, 255, 255, 0.10) !important;
-  border-color: rgba(226, 232, 240, 0.34) !important;
-  color: #f8fafc !important;
-  opacity: 1 !important;
+  background: rgba(255, 255, 255, 0.10);
+  border-color: rgba(226, 232, 240, 0.34);
+  color: #f8fafc;
+  opacity: 1;
 }
 .admin-debug-toolbar button:disabled,
 .admin-debug-toolbar > button:disabled,
 .admin-debug-toolbar button[aria-disabled="true"],
 .admin-debug-toolbar > button[aria-disabled="true"] {
-  background: rgba(255, 255, 255, 0.08) !important;
-  color: rgba(248, 250, 252, 0.74) !important;
-  border-color: rgba(226, 232, 240, 0.22) !important;
-  opacity: 0.78 !important;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(248, 250, 252, 0.74);
+  border-color: rgba(226, 232, 240, 0.22);
+  opacity: 0.78;
 }
-
-
-/* STAGE212O_ADMIN_DEBUG_DARK_SOURCE_TRUTH */
 .admin-debug-toolbar {
-  background: rgba(15, 23, 42, 0.92) !important;
-  color: #f8fafc !important;
+  background: rgba(15, 23, 42, 0.92);
+  color: #f8fafc;
 }
 .admin-debug-toolbar > button,
 .admin-debug-toolbar button {
-  background: rgba(255, 255, 255, 0.08) !important;
-  color: #f8fafc !important;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
 }

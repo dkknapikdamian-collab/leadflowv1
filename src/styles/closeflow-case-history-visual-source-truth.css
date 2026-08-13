@@ -1,10 +1,4 @@
-/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-case-history-visual-source-truth.css","concerns":[],"scope":"component","consumerRoots":["src/styles/closeflow-case-history-visual-source-truth.css"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
-/* CLOSEFLOW_CASE_HISTORY_VISUAL_SOURCE_TRUTH_2026_05_12
-   owner: CloseFlow Visual System
-   scope: CaseDetail history surfaces only
-   goal: lower history/work rows must match the compact visual rhythm of the upper "Historia sprawy" card
-   rule: visual-only; no Supabase/write/history data changes
-*/
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-case-history-visual-source-truth.css","concerns":[],"scope":"component","consumerRoots":["src/pages/CaseDetail.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 
 .case-detail-vnext-page {
   --cf-case-history-bg: #ffffff;
@@ -14,100 +8,94 @@
   --cf-case-history-blue: #2563eb;
   --cf-case-history-blue-soft: #eff6ff;
 }
-
-/* The history tab/list is a compact ledger, not a stack of large cards. */
 .case-detail-vnext-page .case-detail-history-list {
-  display: grid !important;
-  gap: 0.48rem !important;
-  padding: 0 !important;
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
+  display: grid;
+  gap: 0.48rem;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
-
-/* Native history rows: same pill-row rhythm as the compact history card above. */
 .case-detail-vnext-page .case-detail-history-row {
-  min-height: 2.85rem !important;
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) !important;
-  align-items: center !important;
-  gap: 0 !important;
-  padding: 0.46rem 0.72rem !important;
-  border: 1px solid var(--cf-case-history-line) !important;
-  border-radius: 1rem !important;
-  background: var(--cf-case-history-bg) !important;
-  box-shadow: none !important;
+  min-height: 2.85rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: 0;
+  padding: 0.46rem 0.72rem;
+  border: 1px solid var(--cf-case-history-line);
+  border-radius: 1rem;
+  background: var(--cf-case-history-bg);
+  box-shadow: none;
 }
 
 .case-detail-vnext-page .case-detail-history-row > span {
-  display: none !important;
+  display: none;
 }
 
 .case-detail-vnext-page .case-detail-history-row > div {
-  min-width: 0 !important;
-  display: grid !important;
-  grid-template-columns: 7.75rem minmax(0, 1fr) !important;
-  align-items: center !important;
-  gap: 0.72rem !important;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 7.75rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.72rem;
 }
 
 .case-detail-vnext-page .case-detail-history-row .case-detail-kind-pill {
-  grid-column: 1 !important;
-  grid-row: 1 !important;
-  width: fit-content !important;
-  min-height: 1.42rem !important;
-  padding: 0.16rem 0.5rem !important;
-  border-radius: 999px !important;
-  border-color: #dbeafe !important;
-  background: var(--cf-case-history-blue-soft) !important;
-  color: #1d4ed8 !important;
-  -webkit-text-fill-color: #1d4ed8 !important;
-  font-size: 0.68rem !important;
-  font-weight: 920 !important;
-  line-height: 1 !important;
+  grid-column: 1;
+  grid-row: 1;
+  width: fit-content;
+  min-height: 1.42rem;
+  padding: 0.16rem 0.5rem;
+  border-radius: 999px;
+  border-color: #dbeafe;
+  background: var(--cf-case-history-blue-soft);
+  color: #1d4ed8;
+  -webkit-text-fill-color: #1d4ed8;
+  font-size: 0.68rem;
+  font-weight: 920;
+  line-height: 1;
 }
 
 .case-detail-vnext-page .case-detail-history-row h3 {
-  grid-column: 2 !important;
-  grid-row: 1 !important;
-  margin: 0 !important;
-  min-width: 0 !important;
-  color: var(--cf-case-history-text) !important;
-  -webkit-text-fill-color: var(--cf-case-history-text) !important;
-  font-size: 0.82rem !important;
-  font-weight: 900 !important;
-  line-height: 1.22 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  min-width: 0;
+  color: var(--cf-case-history-text);
+  -webkit-text-fill-color: var(--cf-case-history-text);
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.22;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .case-detail-vnext-page .case-detail-history-row p {
-  grid-column: 2 !important;
-  grid-row: 2 !important;
-  margin: 0.12rem 0 0 !important;
-  min-width: 0 !important;
-  color: var(--cf-case-history-muted) !important;
-  -webkit-text-fill-color: var(--cf-case-history-muted) !important;
-  font-size: 0.72rem !important;
-  line-height: 1.25 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
+  grid-column: 2;
+  grid-row: 2;
+  margin: 0.12rem 0 0;
+  min-width: 0;
+  color: var(--cf-case-history-muted);
+  -webkit-text-fill-color: var(--cf-case-history-muted);
+  font-size: 0.72rem;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-
-/* Some history entries are rendered through the generic work-row contract. In history context they must stop looking like task cards. */
 .case-detail-vnext-page .case-detail-history-list .case-detail-work-row {
-  min-height: 2.85rem !important;
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) 8.5rem !important;
-  align-items: center !important;
-  gap: 0.72rem !important;
-  padding: 0.46rem 0.72rem !important;
-  border: 1px solid var(--cf-case-history-line) !important;
-  border-radius: 1rem !important;
-  background: var(--cf-case-history-bg) !important;
-  box-shadow: none !important;
+  min-height: 2.85rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 8.5rem;
+  align-items: center;
+  gap: 0.72rem;
+  padding: 0.46rem 0.72rem;
+  border: 1px solid var(--cf-case-history-line);
+  border-radius: 1rem;
+  background: var(--cf-case-history-bg);
+  box-shadow: none;
 }
 
 .case-detail-vnext-page .case-detail-history-list .case-detail-work-icon,
@@ -115,126 +103,119 @@
 .case-detail-vnext-page .case-detail-history-list .case-detail-row-actions,
 .case-detail-vnext-page .case-detail-history-list .case-detail-work-row > .case-detail-pill,
 .case-detail-vnext-page .case-detail-history-list .case-detail-work-row > [class*="pill"]:not(.case-detail-kind-pill) {
-  display: none !important;
+  display: none;
 }
 
 .case-detail-vnext-page .case-detail-history-list .case-detail-work-main {
-  min-width: 0 !important;
-  display: grid !important;
-  grid-template-columns: 7.75rem minmax(0, 1fr) !important;
-  align-items: center !important;
-  gap: 0.72rem !important;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 7.75rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.72rem;
 }
 
 .case-detail-vnext-page .case-detail-history-list .case-detail-work-main .case-detail-kind-pill {
-  grid-column: 1 !important;
-  grid-row: 1 !important;
-  width: fit-content !important;
-  min-height: 1.42rem !important;
-  padding: 0.16rem 0.5rem !important;
-  border-radius: 999px !important;
-  font-size: 0.68rem !important;
-  font-weight: 920 !important;
-  line-height: 1 !important;
+  grid-column: 1;
+  grid-row: 1;
+  width: fit-content;
+  min-height: 1.42rem;
+  padding: 0.16rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 920;
+  line-height: 1;
 }
 
 .case-detail-vnext-page .case-detail-history-list .case-detail-work-main h3 {
-  grid-column: 2 !important;
-  grid-row: 1 !important;
-  margin: 0 !important;
-  min-width: 0 !important;
-  color: var(--cf-case-history-text) !important;
-  -webkit-text-fill-color: var(--cf-case-history-text) !important;
-  font-size: 0.82rem !important;
-  font-weight: 900 !important;
-  line-height: 1.22 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  min-width: 0;
+  color: var(--cf-case-history-text);
+  -webkit-text-fill-color: var(--cf-case-history-text);
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.22;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .case-detail-vnext-page .case-detail-history-list .case-detail-work-main p {
-  display: none !important;
+  display: none;
 }
 
 .case-detail-vnext-page .case-detail-history-list .case-detail-work-date {
-  justify-self: end !important;
-  min-width: 0 !important;
-  text-align: right !important;
+  justify-self: end;
+  min-width: 0;
+  text-align: right;
 }
 
 .case-detail-vnext-page .case-detail-history-list .case-detail-work-date small {
-  display: none !important;
+  display: none;
 }
 
 .case-detail-vnext-page .case-detail-history-list .case-detail-work-date strong {
-  display: block !important;
-  margin: 0 !important;
-  color: var(--cf-case-history-muted) !important;
-  -webkit-text-fill-color: var(--cf-case-history-muted) !important;
-  font-size: 0.72rem !important;
-  font-weight: 820 !important;
-  line-height: 1.15 !important;
-  white-space: nowrap !important;
+  display: block;
+  margin: 0;
+  color: var(--cf-case-history-muted);
+  -webkit-text-fill-color: var(--cf-case-history-muted);
+  font-size: 0.72rem;
+  font-weight: 820;
+  line-height: 1.15;
+  white-space: nowrap;
 }
-
-/* Keep the compact summary card clean if older CSS tries to inflate it. */
 .case-detail-vnext-page [data-case-history-summary="true"],
 .case-detail-vnext-page .case-detail-history-summary-card {
-  max-width: 44rem !important;
+  max-width: 44rem;
 }
 
 @media (max-width: 760px) {
   .case-detail-vnext-page .case-detail-history-row > div,
   .case-detail-vnext-page .case-detail-history-list .case-detail-work-main {
-    grid-template-columns: 1fr !important;
-    gap: 0.28rem !important;
+    grid-template-columns: 1fr;
+    gap: 0.28rem;
   }
 
   .case-detail-vnext-page .case-detail-history-list .case-detail-work-row {
-    grid-template-columns: 1fr !important;
-    align-items: start !important;
+    grid-template-columns: 1fr;
+    align-items: start;
   }
 
   .case-detail-vnext-page .case-detail-history-row h3,
   .case-detail-vnext-page .case-detail-history-row p,
   .case-detail-vnext-page .case-detail-history-list .case-detail-work-main h3 {
-    white-space: normal !important;
+    white-space: normal;
   }
 
   .case-detail-vnext-page .case-detail-history-list .case-detail-work-date {
-    justify-self: start !important;
-    text-align: left !important;
+    justify-self: start;
+    text-align: left;
   }
 }
-/* CLOSEFLOW_P1_CASE_DETAIL_HISTORY_VISUAL_UNIFIED_2026_05_13
-   Admin feedback: CaseDetail history had two visual systems at once.
-   The history section that contains the compact summary must force every lower history/work row into the same compact ledger rhythm.
-   Visual-only: no history data/write logic changes.
-*/
 
 .case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) {
-  max-width: 44rem !important;
+  max-width: 44rem;
 }
 
 .case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-history-list,
 .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-history-list {
-  display: grid !important;
-  gap: 0.48rem !important;
+  display: grid;
+  gap: 0.48rem;
 }
 
 .case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-row,
 .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-row {
-  min-height: 2.85rem !important;
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) 8.25rem !important;
-  align-items: center !important;
-  gap: 0.72rem !important;
-  padding: 0.46rem 0.72rem !important;
-  border: 1px solid var(--cf-case-history-line) !important;
-  border-radius: 1rem !important;
-  background: var(--cf-case-history-bg) !important;
-  box-shadow: none !important;
+  min-height: 2.85rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 8.25rem;
+  align-items: center;
+  gap: 0.72rem;
+  padding: 0.46rem 0.72rem;
+  border: 1px solid var(--cf-case-history-line);
+  border-radius: 1rem;
+  background: var(--cf-case-history-bg);
+  box-shadow: none;
 }
 
 .case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-icon,
@@ -245,107 +226,101 @@
 .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-row-actions,
 .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-row > .case-detail-pill,
 .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-row > [class*="pill"]:not(.case-detail-kind-pill) {
-  display: none !important;
+  display: none;
 }
 
 .case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-main,
 .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-main {
-  min-width: 0 !important;
-  display: grid !important;
-  grid-template-columns: 7.75rem minmax(0, 1fr) !important;
-  align-items: center !important;
-  gap: 0.72rem !important;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 7.75rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.72rem;
 }
 
 .case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-main .case-detail-kind-pill,
 .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-main .case-detail-kind-pill {
-  grid-column: 1 !important;
-  grid-row: 1 !important;
-  width: fit-content !important;
-  min-height: 1.42rem !important;
-  padding: 0.16rem 0.5rem !important;
-  border-radius: 999px !important;
-  border-color: #dbeafe !important;
-  background: var(--cf-case-history-blue-soft) !important;
-  color: #1d4ed8 !important;
-  -webkit-text-fill-color: #1d4ed8 !important;
-  font-size: 0.68rem !important;
-  font-weight: 920 !important;
-  line-height: 1 !important;
+  grid-column: 1;
+  grid-row: 1;
+  width: fit-content;
+  min-height: 1.42rem;
+  padding: 0.16rem 0.5rem;
+  border-radius: 999px;
+  border-color: #dbeafe;
+  background: var(--cf-case-history-blue-soft);
+  color: #1d4ed8;
+  -webkit-text-fill-color: #1d4ed8;
+  font-size: 0.68rem;
+  font-weight: 920;
+  line-height: 1;
 }
 
 .case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-main h3,
 .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-main h3 {
-  grid-column: 2 !important;
-  grid-row: 1 !important;
-  margin: 0 !important;
-  min-width: 0 !important;
-  color: var(--cf-case-history-text) !important;
-  -webkit-text-fill-color: var(--cf-case-history-text) !important;
-  font-size: 0.82rem !important;
-  font-weight: 900 !important;
-  line-height: 1.22 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  min-width: 0;
+  color: var(--cf-case-history-text);
+  -webkit-text-fill-color: var(--cf-case-history-text);
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.22;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-main p,
 .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-main p,
 .case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-date small,
 .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-date small {
-  display: none !important;
+  display: none;
 }
 
 .case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-date,
 .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-date {
-  justify-self: end !important;
-  min-width: 0 !important;
-  text-align: right !important;
+  justify-self: end;
+  min-width: 0;
+  text-align: right;
 }
 
 .case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-date strong,
 .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-date strong {
-  display: block !important;
-  margin: 0 !important;
-  color: var(--cf-case-history-muted) !important;
-  -webkit-text-fill-color: var(--cf-case-history-muted) !important;
-  font-size: 0.72rem !important;
-  font-weight: 820 !important;
-  line-height: 1.15 !important;
-  white-space: nowrap !important;
+  display: block;
+  margin: 0;
+  color: var(--cf-case-history-muted);
+  -webkit-text-fill-color: var(--cf-case-history-muted);
+  font-size: 0.72rem;
+  font-weight: 820;
+  line-height: 1.15;
+  white-space: nowrap;
 }
 
 @media (max-width: 760px) {
   .case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-row,
   .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-row {
-    grid-template-columns: 1fr !important;
-    align-items: start !important;
+    grid-template-columns: 1fr;
+    align-items: start;
   }
 
   .case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-main,
   .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-main {
-    grid-template-columns: 1fr !important;
-    gap: 0.28rem !important;
+    grid-template-columns: 1fr;
+    gap: 0.28rem;
   }
 
   .case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-main h3,
   .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-main h3 {
-    white-space: normal !important;
+    white-space: normal;
   }
 
   .case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-date,
   .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-date {
-    justify-self: start !important;
-    text-align: left !important;
+    justify-self: start;
+    text-align: left;
   }
 }
-
-/* CLOSEFLOW_CASE_DETAIL_HISTORY_VISUAL_P1_REPAIR3_2026_05_13
-   Real fix: CaseDetail.tsx marks the exact Historia sprawy section with .case-detail-history-unified-panel.
-   This block forces every history/work row inside that section into one compact ledger visual system.
-   Visual-only: no Supabase/write/history data changes.
-*/
 
 .case-detail-vnext-page .case-detail-history-unified-panel {
   --cf-case-history-bg: #ffffff;
@@ -358,29 +333,29 @@
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-list,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-list,
 .case-detail-vnext-page .case-detail-history-unified-panel [data-case-history-list="true"] {
-  display: grid !important;
-  gap: 0.5rem !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
+  display: grid;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-row,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-row,
 .case-detail-vnext-page .case-detail-history-unified-panel article[class*="case-detail-work"],
 .case-detail-vnext-page .case-detail-history-unified-panel article[class*="history"] {
-  min-height: 2.9rem !important;
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) 8.5rem !important;
-  align-items: center !important;
-  gap: 0.72rem !important;
-  padding: 0.5rem 0.75rem !important;
-  border: 1px solid var(--cf-case-history-line) !important;
-  border-radius: 1rem !important;
-  background: var(--cf-case-history-bg) !important;
-  box-shadow: none !important;
+  min-height: 2.9rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 8.5rem;
+  align-items: center;
+  gap: 0.72rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--cf-case-history-line);
+  border-radius: 1rem;
+  background: var(--cf-case-history-bg);
+  box-shadow: none;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-row > span,
@@ -390,98 +365,98 @@
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-row > [class*="pill"]:not(.case-detail-kind-pill),
 .case-detail-vnext-page .case-detail-history-unified-panel article[class*="case-detail-work"] > [class*="icon"],
 .case-detail-vnext-page .case-detail-history-unified-panel article[class*="case-detail-work"] > [class*="actions"] {
-  display: none !important;
+  display: none;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-row > div,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-main,
 .case-detail-vnext-page .case-detail-history-unified-panel article[class*="case-detail-work"] > div:first-of-type {
-  min-width: 0 !important;
-  display: grid !important;
-  grid-template-columns: 7.75rem minmax(0, 1fr) !important;
-  align-items: center !important;
-  gap: 0.72rem !important;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 7.75rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.72rem;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-kind-pill,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-main .case-detail-kind-pill {
-  grid-column: 1 !important;
-  grid-row: 1 !important;
-  width: fit-content !important;
-  min-height: 1.42rem !important;
-  padding: 0.16rem 0.5rem !important;
-  border-radius: 999px !important;
-  border: 1px solid #dbeafe !important;
-  background: var(--cf-case-history-blue-soft) !important;
-  color: #1d4ed8 !important;
-  -webkit-text-fill-color: #1d4ed8 !important;
-  font-size: 0.68rem !important;
-  font-weight: 920 !important;
-  line-height: 1 !important;
+  grid-column: 1;
+  grid-row: 1;
+  width: fit-content;
+  min-height: 1.42rem;
+  padding: 0.16rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid #dbeafe;
+  background: var(--cf-case-history-blue-soft);
+  color: #1d4ed8;
+  -webkit-text-fill-color: #1d4ed8;
+  font-size: 0.68rem;
+  font-weight: 920;
+  line-height: 1;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-row h3,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-main h3,
 .case-detail-vnext-page .case-detail-history-unified-panel article[class*="case-detail-work"] h3 {
-  grid-column: 2 !important;
-  grid-row: 1 !important;
-  margin: 0 !important;
-  min-width: 0 !important;
-  color: var(--cf-case-history-text) !important;
-  -webkit-text-fill-color: var(--cf-case-history-text) !important;
-  font-size: 0.82rem !important;
-  font-weight: 900 !important;
-  line-height: 1.22 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  min-width: 0;
+  color: var(--cf-case-history-text);
+  -webkit-text-fill-color: var(--cf-case-history-text);
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.22;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-row p {
-  grid-column: 2 !important;
-  grid-row: 2 !important;
-  margin: 0.12rem 0 0 !important;
-  min-width: 0 !important;
-  color: var(--cf-case-history-muted) !important;
-  -webkit-text-fill-color: var(--cf-case-history-muted) !important;
-  font-size: 0.72rem !important;
-  line-height: 1.25 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
+  grid-column: 2;
+  grid-row: 2;
+  margin: 0.12rem 0 0;
+  min-width: 0;
+  color: var(--cf-case-history-muted);
+  -webkit-text-fill-color: var(--cf-case-history-muted);
+  font-size: 0.72rem;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-main p,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-date small {
-  display: none !important;
+  display: none;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-date {
-  justify-self: end !important;
-  min-width: 0 !important;
-  text-align: right !important;
+  justify-self: end;
+  min-width: 0;
+  text-align: right;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-date strong {
-  display: block !important;
-  margin: 0 !important;
-  color: var(--cf-case-history-muted) !important;
-  -webkit-text-fill-color: var(--cf-case-history-muted) !important;
-  font-size: 0.72rem !important;
-  font-weight: 820 !important;
-  line-height: 1.15 !important;
-  white-space: nowrap !important;
+  display: block;
+  margin: 0;
+  color: var(--cf-case-history-muted);
+  -webkit-text-fill-color: var(--cf-case-history-muted);
+  font-size: 0.72rem;
+  font-weight: 820;
+  line-height: 1.15;
+  white-space: nowrap;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-row > button,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-row > .case-detail-action-button,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-row .case-detail-row-actions {
-  display: none !important;
+  display: none;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-summary-card,
 .case-detail-vnext-page .case-detail-history-unified-panel [data-case-history-summary="true"] {
-  margin-bottom: 0.65rem !important;
+  margin-bottom: 0.65rem;
 }
 
 @media (max-width: 760px) {
@@ -489,33 +464,29 @@
   .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-row,
   .case-detail-vnext-page .case-detail-history-unified-panel article[class*="case-detail-work"],
   .case-detail-vnext-page .case-detail-history-unified-panel article[class*="history"] {
-    grid-template-columns: 1fr !important;
-    align-items: start !important;
+    grid-template-columns: 1fr;
+    align-items: start;
   }
 
   .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-row > div,
   .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-main,
   .case-detail-vnext-page .case-detail-history-unified-panel article[class*="case-detail-work"] > div:first-of-type {
-    grid-template-columns: 1fr !important;
-    gap: 0.28rem !important;
+    grid-template-columns: 1fr;
+    gap: 0.28rem;
   }
 
   .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-row h3,
   .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-row p,
   .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-main h3,
   .case-detail-vnext-page .case-detail-history-unified-panel article[class*="case-detail-work"] h3 {
-    white-space: normal !important;
+    white-space: normal;
   }
 
   .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-date {
-    justify-self: start !important;
-    text-align: left !important;
+    justify-self: start;
+    text-align: left;
   }
 }
-
-/* CLOSEFLOW_CASE_DETAIL_HISTORY_VISUAL_P1_REPAIR4_2026_05_13
-   Explicit history section scope. Repair4 keeps the visual fix and adds quiet-gate build stabilization separately.
-*/
 
 .case-detail-vnext-page .case-detail-history-unified-panel {
   --cf-case-history-bg: #ffffff;
@@ -528,29 +499,29 @@
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-list,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-list,
 .case-detail-vnext-page .case-detail-history-unified-panel [data-case-history-list="true"] {
-  display: grid !important;
-  gap: 0.5rem !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
+  display: grid;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-row,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-row,
 .case-detail-vnext-page .case-detail-history-unified-panel article[class*="case-detail-work"],
 .case-detail-vnext-page .case-detail-history-unified-panel article[class*="history"] {
-  min-height: 2.9rem !important;
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) 8.5rem !important;
-  align-items: center !important;
-  gap: 0.72rem !important;
-  padding: 0.5rem 0.75rem !important;
-  border: 1px solid var(--cf-case-history-line) !important;
-  border-radius: 1rem !important;
-  background: var(--cf-case-history-bg) !important;
-  box-shadow: none !important;
+  min-height: 2.9rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 8.5rem;
+  align-items: center;
+  gap: 0.72rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--cf-case-history-line);
+  border-radius: 1rem;
+  background: var(--cf-case-history-bg);
+  box-shadow: none;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-row > span,
@@ -560,103 +531,99 @@
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-row > [class*="pill"]:not(.case-detail-kind-pill),
 .case-detail-vnext-page .case-detail-history-unified-panel article[class*="case-detail-work"] > [class*="icon"],
 .case-detail-vnext-page .case-detail-history-unified-panel article[class*="case-detail-work"] > [class*="actions"] {
-  display: none !important;
+  display: none;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-row > div,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-main,
 .case-detail-vnext-page .case-detail-history-unified-panel article[class*="case-detail-work"] > div:first-of-type {
-  min-width: 0 !important;
-  display: grid !important;
-  grid-template-columns: 7.75rem minmax(0, 1fr) !important;
-  align-items: center !important;
-  gap: 0.72rem !important;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 7.75rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.72rem;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-kind-pill,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-main .case-detail-kind-pill {
-  grid-column: 1 !important;
-  grid-row: 1 !important;
-  width: fit-content !important;
-  min-height: 1.42rem !important;
-  padding: 0.16rem 0.5rem !important;
-  border-radius: 999px !important;
-  border: 1px solid #dbeafe !important;
-  background: var(--cf-case-history-blue-soft) !important;
-  color: #1d4ed8 !important;
-  -webkit-text-fill-color: #1d4ed8 !important;
-  font-size: 0.68rem !important;
-  font-weight: 920 !important;
-  line-height: 1 !important;
+  grid-column: 1;
+  grid-row: 1;
+  width: fit-content;
+  min-height: 1.42rem;
+  padding: 0.16rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid #dbeafe;
+  background: var(--cf-case-history-blue-soft);
+  color: #1d4ed8;
+  -webkit-text-fill-color: #1d4ed8;
+  font-size: 0.68rem;
+  font-weight: 920;
+  line-height: 1;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-row h3,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-main h3,
 .case-detail-vnext-page .case-detail-history-unified-panel article[class*="case-detail-work"] h3 {
-  grid-column: 2 !important;
-  grid-row: 1 !important;
-  margin: 0 !important;
-  min-width: 0 !important;
-  color: var(--cf-case-history-text) !important;
-  -webkit-text-fill-color: var(--cf-case-history-text) !important;
-  font-size: 0.82rem !important;
-  font-weight: 900 !important;
-  line-height: 1.22 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  min-width: 0;
+  color: var(--cf-case-history-text);
+  -webkit-text-fill-color: var(--cf-case-history-text);
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.22;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-row p {
-  grid-column: 2 !important;
-  grid-row: 2 !important;
-  margin: 0.12rem 0 0 !important;
-  min-width: 0 !important;
-  color: var(--cf-case-history-muted) !important;
-  -webkit-text-fill-color: var(--cf-case-history-muted) !important;
-  font-size: 0.72rem !important;
-  line-height: 1.25 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
+  grid-column: 2;
+  grid-row: 2;
+  margin: 0.12rem 0 0;
+  min-width: 0;
+  color: var(--cf-case-history-muted);
+  -webkit-text-fill-color: var(--cf-case-history-muted);
+  font-size: 0.72rem;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-main p,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-date small {
-  display: none !important;
+  display: none;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-date {
-  justify-self: end !important;
-  min-width: 0 !important;
-  text-align: right !important;
+  justify-self: end;
+  min-width: 0;
+  text-align: right;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-date strong {
-  display: block !important;
-  margin: 0 !important;
-  color: var(--cf-case-history-muted) !important;
-  -webkit-text-fill-color: var(--cf-case-history-muted) !important;
-  font-size: 0.72rem !important;
-  font-weight: 820 !important;
-  line-height: 1.15 !important;
-  white-space: nowrap !important;
+  display: block;
+  margin: 0;
+  color: var(--cf-case-history-muted);
+  -webkit-text-fill-color: var(--cf-case-history-muted);
+  font-size: 0.72rem;
+  font-weight: 820;
+  line-height: 1.15;
+  white-space: nowrap;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-row > button,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-row > .case-detail-action-button,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-row .case-detail-row-actions {
-  display: none !important;
+  display: none;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-summary-card,
 .case-detail-vnext-page .case-detail-history-unified-panel [data-case-history-summary="true"] {
-  margin-bottom: 0.65rem !important;
+  margin-bottom: 0.65rem;
 }
-
-/* CLOSEFLOW_CASE_DETAIL_HISTORY_VISUAL_P1_REPAIR5_2026_05_13
-   Keeps explicit history section scope after repairing the quiet release gate contract.
-*/
 
 .case-detail-vnext-page .case-detail-history-unified-panel {
   --cf-case-history-bg: #ffffff;
@@ -669,29 +636,29 @@
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-list,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-list,
 .case-detail-vnext-page .case-detail-history-unified-panel [data-case-history-list="true"] {
-  display: grid !important;
-  gap: 0.5rem !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
+  display: grid;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-row,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-row,
 .case-detail-vnext-page .case-detail-history-unified-panel article[class*="case-detail-work"],
 .case-detail-vnext-page .case-detail-history-unified-panel article[class*="history"] {
-  min-height: 2.9rem !important;
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) 8.5rem !important;
-  align-items: center !important;
-  gap: 0.72rem !important;
-  padding: 0.5rem 0.75rem !important;
-  border: 1px solid var(--cf-case-history-line) !important;
-  border-radius: 1rem !important;
-  background: var(--cf-case-history-bg) !important;
-  box-shadow: none !important;
+  min-height: 2.9rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 8.5rem;
+  align-items: center;
+  gap: 0.72rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--cf-case-history-line);
+  border-radius: 1rem;
+  background: var(--cf-case-history-bg);
+  box-shadow: none;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-row > span,
@@ -701,91 +668,91 @@
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-row > [class*="pill"]:not(.case-detail-kind-pill),
 .case-detail-vnext-page .case-detail-history-unified-panel article[class*="case-detail-work"] > [class*="icon"],
 .case-detail-vnext-page .case-detail-history-unified-panel article[class*="case-detail-work"] > [class*="actions"] {
-  display: none !important;
+  display: none;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-row > div,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-main,
 .case-detail-vnext-page .case-detail-history-unified-panel article[class*="case-detail-work"] > div:first-of-type {
-  min-width: 0 !important;
-  display: grid !important;
-  grid-template-columns: 7.75rem minmax(0, 1fr) !important;
-  align-items: center !important;
-  gap: 0.72rem !important;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 7.75rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.72rem;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-kind-pill,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-main .case-detail-kind-pill {
-  grid-column: 1 !important;
-  grid-row: 1 !important;
-  width: fit-content !important;
-  min-height: 1.42rem !important;
-  padding: 0.16rem 0.5rem !important;
-  border-radius: 999px !important;
-  border: 1px solid #dbeafe !important;
-  background: var(--cf-case-history-blue-soft) !important;
-  color: #1d4ed8 !important;
-  -webkit-text-fill-color: #1d4ed8 !important;
-  font-size: 0.68rem !important;
-  font-weight: 920 !important;
-  line-height: 1 !important;
+  grid-column: 1;
+  grid-row: 1;
+  width: fit-content;
+  min-height: 1.42rem;
+  padding: 0.16rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid #dbeafe;
+  background: var(--cf-case-history-blue-soft);
+  color: #1d4ed8;
+  -webkit-text-fill-color: #1d4ed8;
+  font-size: 0.68rem;
+  font-weight: 920;
+  line-height: 1;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-row h3,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-main h3,
 .case-detail-vnext-page .case-detail-history-unified-panel article[class*="case-detail-work"] h3 {
-  grid-column: 2 !important;
-  grid-row: 1 !important;
-  margin: 0 !important;
-  min-width: 0 !important;
-  color: var(--cf-case-history-text) !important;
-  -webkit-text-fill-color: var(--cf-case-history-text) !important;
-  font-size: 0.82rem !important;
-  font-weight: 900 !important;
-  line-height: 1.22 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  min-width: 0;
+  color: var(--cf-case-history-text);
+  -webkit-text-fill-color: var(--cf-case-history-text);
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.22;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-history-row p {
-  grid-column: 2 !important;
-  grid-row: 2 !important;
-  margin: 0.12rem 0 0 !important;
-  min-width: 0 !important;
-  color: var(--cf-case-history-muted) !important;
-  -webkit-text-fill-color: var(--cf-case-history-muted) !important;
-  font-size: 0.72rem !important;
-  line-height: 1.25 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
+  grid-column: 2;
+  grid-row: 2;
+  margin: 0.12rem 0 0;
+  min-width: 0;
+  color: var(--cf-case-history-muted);
+  -webkit-text-fill-color: var(--cf-case-history-muted);
+  font-size: 0.72rem;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-main p,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-date small {
-  display: none !important;
+  display: none;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-date {
-  justify-self: end !important;
-  min-width: 0 !important;
-  text-align: right !important;
+  justify-self: end;
+  min-width: 0;
+  text-align: right;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-date strong {
-  display: block !important;
-  margin: 0 !important;
-  color: var(--cf-case-history-muted) !important;
-  -webkit-text-fill-color: var(--cf-case-history-muted) !important;
-  font-size: 0.72rem !important;
-  font-weight: 820 !important;
-  line-height: 1.15 !important;
-  white-space: nowrap !important;
+  display: block;
+  margin: 0;
+  color: var(--cf-case-history-muted);
+  -webkit-text-fill-color: var(--cf-case-history-muted);
+  font-size: 0.72rem;
+  font-weight: 820;
+  line-height: 1.15;
+  white-space: nowrap;
 }
 
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-row > button,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-row > .case-detail-action-button,
 .case-detail-vnext-page .case-detail-history-unified-panel .case-detail-work-row .case-detail-row-actions {
-  display: none !important;
+  display: none;
 }

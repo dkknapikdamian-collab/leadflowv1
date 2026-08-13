@@ -1,4 +1,5 @@
 /* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:metrics","concerns":["CARDS_TILES"],"scope":"global","consumerRoots":["src/styles/closeflow-visual-source-truth.css"],"role":"canonical-owner","boundary":"global-semantic","whyNotGlobal":"This file is the registered semantic owner for its declared concerns.","whyNotDuplicate":"The registry maps each declared concern to this single reachable owner.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+/* LF-UI-IMPORTANT_BOUNDARY: SEMANTIC_OWNER_CASCADE */
 
 
 
@@ -473,7 +474,6 @@ main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid=
     grid-template-columns: 1fr !important;
   }
 }
-/* CLOSEFLOW_VS5R_REAL_METRIC_TILE_PARITY_END */
 
 
 html body #root [data-cf-metric-grid-contract="final-vs5"],
@@ -577,7 +577,6 @@ html body #root [data-cf-metric-tile-contract="final-vs5"] .cf-top-metric-tile-i
     grid-template-columns: 1fr !important;
   }
 }
-/* CLOSEFLOW_METRIC_TILE_SINGLE_SOURCE_TRUTH_VS5S_END */
 
 
 

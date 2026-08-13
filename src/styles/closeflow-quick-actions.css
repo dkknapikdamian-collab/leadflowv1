@@ -1,6 +1,4 @@
-/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-quick-actions.css","concerns":[],"scope":"component","consumerRoots":["src/styles/closeflow-quick-actions.css"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
-/* STAGE227E3_SHARED_QUICK_ACTIONS_BAR
-   One visual source of truth for LeadDetail and CaseDetail quick actions. */
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-quick-actions.css","concerns":[],"scope":"component","consumerRoots":["src/components/detail/QuickActionsBar.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 .cf-shared-quick-actions-bar {
   background: rgba(255, 255, 255, 0.94);
   border: 1px solid #e4e7ec;
@@ -74,9 +72,6 @@
 .cf-shared-quick-actions-bar__button--lost .cf-shared-quick-actions-bar__icon { color: #b91c1c; background: #fef2f2; }
 .cf-shared-quick-actions-bar__button--service .cf-shared-quick-actions-bar__icon { color: #7c3aed; background: #f5f3ff; }
 .cf-shared-quick-actions-bar__button--payment .cf-shared-quick-actions-bar__icon { color: #16a34a; background: #ecfdf3; }
-/* STAGE228R7_R8_QUICK_ACTIONS_CARD_SOURCE_TRUTH
-   Rail quick actions must look like the other right-rail action cards:
-   vertical white tiles, icon on the left, label on the right, full width. */
 .cf-shared-quick-actions-bar--rail {
   background: rgba(255, 255, 255, 0.96);
   border: 1px solid rgba(226, 232, 240, 0.96);

@@ -1,17 +1,16 @@
-/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:task-form","concerns":[],"scope":"component","consumerRoots":["src/components/task-editor-dialog.tsx","src/pages/Tasks.tsx"],"role":"scoped-adapter","boundary":"task-form","whyNotGlobal":"This stylesheet is limited to the task form consumers and does not define shared semantic primitives.","whyNotDuplicate":"The task form is a route/component adapter; shared form and modal semantics remain owned by the registered semantic owner.","activePatchLayer":false,"historicalImplementationHooks":[]} */
-/* TASK_FORM_VISUAL_REBUILD_STAGE21 */
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:task-form","concerns":[],"scope":"component","consumerRoots":["src/components/task-editor-dialog.tsx"],"role":"scoped-adapter","boundary":"task-form","whyNotGlobal":"This stylesheet is limited to the task form consumers and does not define shared semantic primitives.","whyNotDuplicate":"The task form is a route/component adapter; shared form and modal semantics remain owned by the registered semantic owner.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 
 .task-form-vnext-content {
-  width: min(760px, calc(100vw - 24px)) !important;
-  max-width: 760px !important;
+  width: min(760px, calc(100vw - 24px));
+  max-width: 760px;
   max-height: min(92vh, 900px);
   overflow: hidden;
-  border: 1px solid #e4e7ec !important;
-  border-radius: 28px !important;
-  background: rgba(255, 255, 255, 0.96) !important;
-  color: #111827 !important;
-  box-shadow: 0 24px 70px rgba(16, 24, 40, 0.16) !important;
-  padding: 0 !important;
+  border: 1px solid #e4e7ec;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.96);
+  color: #111827;
+  box-shadow: 0 24px 70px rgba(16, 24, 40, 0.16);
+  padding: 0;
 }
 
 .task-form-vnext-content::before,
@@ -20,11 +19,11 @@
 .task-form-vnext::after,
 .task-form-section::before,
 .task-form-section::after {
-  content: none !important;
-  display: none !important;
-  background: transparent !important;
-  background-image: none !important;
-  box-shadow: none !important;
+  content: none;
+  display: none;
+  background: transparent;
+  background-image: none;
+  box-shadow: none;
 }
 
 .task-form-vnext-header,
@@ -80,12 +79,12 @@
 .task-form-section,
 .task-form-vnext > .rounded-2xl,
 .task-form-vnext [data-task-edit-reminder-panel="true"] {
-  border: 1px solid #e4e7ec !important;
-  border-radius: 24px !important;
-  background: #ffffff !important;
-  color: #111827 !important;
-  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05) !important;
-  padding: 16px !important;
+  border: 1px solid #e4e7ec;
+  border-radius: 24px;
+  background: #ffffff;
+  color: #111827;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05);
+  padding: 16px;
 }
 
 .task-form-section-head {
@@ -121,8 +120,8 @@
 }
 
 .task-form-field {
-  display: grid !important;
-  gap: 7px !important;
+  display: grid;
+  gap: 7px;
 }
 
 .task-form-field-wide {
@@ -142,10 +141,10 @@
 .task-form-vnext textarea {
   width: 100%;
   min-height: 42px;
-  border: 1px solid #e4e7ec !important;
-  border-radius: 18px !important;
-  background: #ffffff !important;
-  color: #111827 !important;
+  border: 1px solid #e4e7ec;
+  border-radius: 18px;
+  background: #ffffff;
+  color: #111827;
   padding: 10px 13px;
   font-size: 14px;
   outline: none;
@@ -156,12 +155,12 @@
 .task-form-select:focus,
 .task-form-vnext select:focus,
 .task-form-vnext textarea:focus {
-  border-color: #93c5fd !important;
+  border-color: #93c5fd;
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
 .task-form-details {
-  padding: 0 !important;
+  padding: 0;
   overflow: hidden;
 }
 
@@ -204,7 +203,7 @@
 }
 
 .task-form-footer button {
-  width: auto !important;
+  width: auto;
   min-height: 42px;
   border-radius: 16px;
   font-weight: 800;
@@ -237,9 +236,9 @@
 
 @media (max-width: 640px) {
   .task-form-vnext-content {
-    width: calc(100vw - 16px) !important;
+    width: calc(100vw - 16px);
     max-height: 94vh;
-    border-radius: 24px !important;
+    border-radius: 24px;
   }
 
   .task-form-vnext-header,
@@ -262,12 +261,12 @@
   }
 
   .task-form-footer {
-    display: grid !important;
+    display: grid;
     grid-template-columns: 1fr;
   }
 
   .task-form-footer button {
-    width: 100% !important;
+    width: 100%;
   }
 }
 
@@ -277,16 +276,14 @@
   font-size: 13px;
   line-height: 1.5;
 }
-
-/* TASK_FORM_VISUAL_REBUILD_STAGE21_CSS_COMPAT */
 .task-form-vnext-content {
-  background: rgba(255, 255, 255, 0.96) !important;
-  border: 1px solid #e4e7ec !important;
-  border-radius: 28px !important;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #e4e7ec;
+  border-radius: 28px;
 }
 .task-form-vnext-content::before,
 .task-form-vnext-content::after {
-  content: none !important;
+  content: none;
 }
 .task-form-section {
   border-radius: 20px;
@@ -295,57 +292,55 @@
   display: flex;
   justify-content: flex-end;
 }
-/* STAGE_A18_TASK_ACTION_CONTRAST
-   Małe akcje w wierszach zadań muszą być czytelne na białym tle. */
 .task-row button,
 .task-row .task-action-chip,
 .task-row .task-form-action-chip,
 .task-row [role="button"],
 .task-form-action-chip {
-  border-color: #cbd5e1 !important;
-  background: #ffffff !important;
-  color: #334155 !important;
-  opacity: 1 !important;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06) !important;
+  border-color: #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  opacity: 1;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
 }
 
 .task-row button svg,
 .task-row [role="button"] svg,
 .task-form-action-chip svg {
-  color: #475569 !important;
-  stroke: #475569 !important;
-  stroke-width: 2.25 !important;
-  opacity: 1 !important;
+  color: #475569;
+  stroke: #475569;
+  stroke-width: 2.25;
+  opacity: 1;
 }
 
 .task-row button:disabled,
 .task-row button[disabled],
 .task-row .task-action-chip:disabled,
 .task-row .task-form-action-chip:disabled {
-  border-color: #d1d5db !important;
-  background: #f8fafc !important;
-  color: #475569 !important;
-  opacity: 1 !important;
+  border-color: #d1d5db;
+  background: #f8fafc;
+  color: #475569;
+  opacity: 1;
 }
 
 .task-row button:not(:disabled):hover,
 .task-row .task-action-chip:not(:disabled):hover,
 .task-row .task-form-action-chip:not(:disabled):hover {
-  border-color: #94a3b8 !important;
-  background: #f1f5f9 !important;
-  color: #0f172a !important;
+  border-color: #94a3b8;
+  background: #f1f5f9;
+  color: #0f172a;
 }
 
 .task-row .text-slate-300,
 .task-row .text-slate-400,
 .task-row .text-gray-300,
 .task-row .text-gray-400 {
-  color: #475569 !important;
+  color: #475569;
 }
 
 .task-row .border-slate-100,
 .task-row .border-slate-200,
 .task-row .border-gray-100,
 .task-row .border-gray-200 {
-  border-color: #cbd5e1 !important;
+  border-color: #cbd5e1;
 }

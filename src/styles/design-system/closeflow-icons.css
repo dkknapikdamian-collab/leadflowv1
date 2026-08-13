@@ -1,5 +1,4 @@
 /* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:icons","concerns":["ICONS"],"scope":"global","consumerRoots":["src/components/ui-system/icon-registry.ts","src/ui-system/icons/SemanticIcon.tsx"],"role":"canonical-owner","boundary":"global-semantic","whyNotGlobal":"This file is the registered semantic owner for its declared concerns.","whyNotDuplicate":"The registry maps each declared concern to this single reachable owner.","activePatchLayer":false,"historicalImplementationHooks":[]} */
-/* CLOSEFLOW_ENTITY_ICON_REGISTRY_VS2B */
 :root {
   --cf-entity-icon-size-sm: 1rem;
   --cf-entity-icon-size-md: 1.25rem;

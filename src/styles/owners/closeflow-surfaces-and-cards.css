@@ -1,9 +1,5 @@
 /* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:surfaces-cards","concerns":["SURFACES","RADII","SHADOWS"],"scope":"global","consumerRoots":["src/styles/closeflow-visual-source-truth.css"],"role":"canonical-owner","boundary":"global-semantic","whyNotGlobal":"This file is the registered semantic owner for its declared concerns.","whyNotDuplicate":"The registry maps each declared concern to this single reachable owner.","activePatchLayer":false,"historicalImplementationHooks":[]} */
-/* CLOSEFLOW_CARD_READABILITY_CONTRACT
-   One source of truth for readable cards, content panels and empty states.
-   Scope: card/content readability only. It does not replace right-rail, list row,
-   page header, metric tile, danger/action or form footer contracts.
-*/
+/* LF-UI-IMPORTANT_BOUNDARY: SEMANTIC_OWNER_CASCADE */
 
 :root {
   --cf-readable-card-bg: #ffffff;

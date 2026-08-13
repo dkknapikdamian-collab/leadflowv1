@@ -1,4 +1,4 @@
-/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-notifications.css","concerns":[],"scope":"component","consumerRoots":["src/styles/closeflow-notifications.css"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-notifications.css","concerns":[],"scope":"component","consumerRoots":["src/pages/NotificationsCenter.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 .notifications-vnext-page {
   min-height: 100%;
   padding: 28px clamp(16px, 3vw, 36px) 40px;
@@ -74,11 +74,6 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
 }
-
-/* CLOSEFLOW_VS5R_NOTIFICATIONS_STATS_GRID_ONLY
-   Stats cards on /notifications are rendered by StatShortcutCard -> MetricTile.
-   This file may own only page grid placement, never tile internals.
-*/
 
 .notifications-vnext-shell {
   max-width: 1440px;
@@ -811,15 +806,13 @@
     padding-left: 0;
   }
 }
-
-/* STAGE10A_RIGHT_RAIL_LIGHT_HOTFIX_START */
 .notifications-vnext-page .notifications-right-rail,
 .notifications-vnext-page [aria-label="Panel powiadomien"] {
-  background: transparent !important;
-  background-image: none !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  padding: 0 !important;
+  background: transparent;
+  background-image: none;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
 }
 
 .notifications-vnext-page .notifications-right-rail::before,
@@ -830,11 +823,11 @@
 .notifications-vnext-page .right-card.notifications-right-card::after,
 .notifications-vnext-page .notifications-right-card::before,
 .notifications-vnext-page .notifications-right-card::after {
-  content: none !important;
-  display: none !important;
-  background: transparent !important;
-  background-image: none !important;
-  box-shadow: none !important;
+  content: none;
+  display: none;
+  background: transparent;
+  background-image: none;
+  box-shadow: none;
 }
 
 .notifications-vnext-page .right-card.notifications-right-card,
@@ -842,124 +835,110 @@
 .notifications-vnext-page .notifications-right-card {
   position: relative;
   isolation: isolate;
-  background: #ffffff !important;
-  background-image: none !important;
-  border: 1px solid #e4e7ec !important;
-  border-radius: 28px !important;
-  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05) !important;
-  color: #111827 !important;
+  background: #ffffff;
+  background-image: none;
+  border: 1px solid #e4e7ec;
+  border-radius: 28px;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05);
+  color: #111827;
   overflow: hidden;
-  backdrop-filter: none !important;
-  filter: none !important;
+  backdrop-filter: none;
+  filter: none;
 }
-/* STAGE10A_RIGHT_RAIL_LIGHT_HOTFIX_END */
-
-/* STAGE180U_NOTIFICATIONS_METRICS_WIDTH_PARITY
-   /notifications top metric tiles must span the same page width as the main shell.
-   This is page-level placement only. Tile internals remain in closeflow-metric-tiles.css.
-*/
 .notifications-vnext-page .notifications-stats-grid,
 .notifications-vnext-page .notifications-vnext-shell {
-  width: 100% !important;
-  max-width: none !important;
+  width: 100%;
+  max-width: none;
 }
 
 .notifications-vnext-page .notifications-stats-grid {
-  margin: 0 0 22px !important;
-  display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: 12px !important;
-  align-items: stretch !important;
+  margin: 0 0 22px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
 }
 
 .notifications-vnext-page .notifications-stats-grid > * {
-  width: 100% !important;
-  min-width: 0 !important;
+  width: 100%;
+  min-width: 0;
 }
 
 .notifications-vnext-page .notifications-stats-grid .cf-top-metric-tile,
 .notifications-vnext-page .notifications-stats-grid .cf-top-metric-tile-content {
-  width: 100% !important;
+  width: 100%;
 }
 
 @media (max-width: 1100px) {
   .notifications-vnext-page .notifications-stats-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 640px) {
   .notifications-vnext-page .notifications-stats-grid {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: 1fr;
   }
 }
-/* END_STAGE180U_NOTIFICATIONS_METRICS_WIDTH_PARITY */
-
-/* STAGE180V_NOTIFICATIONS_METRIC_WIDTH_LIKE_TODAY
-   Powiadomienia: top metric tiles must span the same content width as the main notification shell / Today metric row.
-   This overrides the shared OperatorMetricTiles default max-width that compressed this grid to about 1080px.
-*/
 .notifications-vnext-page > .cf-operator-metric-grid.notifications-stats-grid,
 .notifications-vnext-page > .notifications-stats-grid[data-notifications-metric-grid="true"] {
-  width: 100% !important;
-  max-width: 1440px !important;
-  margin: 0 auto 22px !important;
-  padding: 0 !important;
-  display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: 18px !important;
-  align-items: stretch !important;
-  justify-content: stretch !important;
-  justify-items: stretch !important;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto 22px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  align-items: stretch;
+  justify-content: stretch;
+  justify-items: stretch;
 }
 
 .notifications-vnext-page > .cf-operator-metric-grid.notifications-stats-grid > *,
 .notifications-vnext-page > .notifications-stats-grid[data-notifications-metric-grid="true"] > * {
-  min-width: 0 !important;
-  width: 100% !important;
-  max-width: none !important;
+  min-width: 0;
+  width: 100%;
+  max-width: none;
 }
 
 .notifications-vnext-page > .cf-operator-metric-grid.notifications-stats-grid .cf-top-metric-tile,
 .notifications-vnext-page > .cf-operator-metric-grid.notifications-stats-grid .cf-top-metric-tile-content,
 .notifications-vnext-page > .notifications-stats-grid[data-notifications-metric-grid="true"] .cf-top-metric-tile,
 .notifications-vnext-page > .notifications-stats-grid[data-notifications-metric-grid="true"] .cf-top-metric-tile-content {
-  width: 100% !important;
-  max-width: none !important;
+  width: 100%;
+  max-width: none;
 }
 
 @media (max-width: 1180px) {
   .notifications-vnext-page > .cf-operator-metric-grid.notifications-stats-grid,
   .notifications-vnext-page > .notifications-stats-grid[data-notifications-metric-grid="true"] {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 700px) {
   .notifications-vnext-page > .cf-operator-metric-grid.notifications-stats-grid,
   .notifications-vnext-page > .notifications-stats-grid[data-notifications-metric-grid="true"] {
-    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
-
-/* STAGE180X_NOTIFICATIONS_METRIC_RENDERER_CLEANUP: /notifications top tiles use the Today-style renderer, not OperatorMetricTiles. */
 .notifications-vnext-page .notifications-stats-grid.notifications-today-parity-grid {
-  width: 100% !important;
-  max-width: 1440px !important;
-  margin: 0 auto 22px !important;
-  display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: 12px !important;
-  align-items: stretch !important;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto 22px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
 }
 
 .notifications-today-parity-tile {
-  width: 100% !important;
-  min-width: 0 !important;
-  border: 0 !important;
-  background: transparent !important;
-  padding: 0 !important;
-  text-align: left !important;
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
   cursor: pointer;
 }
 
@@ -1043,158 +1022,44 @@
 
 @media (max-width: 1024px) {
   .notifications-vnext-page .notifications-stats-grid.notifications-today-parity-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 640px) {
   .notifications-vnext-page .notifications-stats-grid.notifications-today-parity-grid {
-    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr);
   }
-}
-
-
-
-/* STAGE181D_NOTIFICATIONS_RENDERER_FINAL_GUARD
-   /notifications top metric tiles use the Today-style renderer and fill the same content row.
-   This final block intentionally wins over older Stage180U/V/X experiments.
-*/
-.notifications-vnext-page > .notifications-stats-grid.notifications-today-parity-grid[data-stage181d-notifications-metric-renderer-final="true"] {
-  width: 100% !important;
-  max-width: 1440px !important;
-  margin: 0 auto 22px !important;
-  padding: 0 !important;
-  display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: 12px !important;
-  align-items: stretch !important;
-  justify-items: stretch !important;
-}
-
-.notifications-vnext-page > .notifications-stats-grid.notifications-today-parity-grid[data-stage181d-notifications-metric-renderer-final="true"] > .notifications-today-parity-tile {
-  width: 100% !important;
-  min-width: 0 !important;
 }
 
 .notifications-vnext-page .notifications-today-parity-tile {
-  border: 0 !important;
-  background: transparent !important;
-  padding: 0 !important;
-  text-align: left !important;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
 }
 
 .notifications-vnext-page .notifications-today-parity-card {
-  min-height: 72px !important;
+  min-height: 72px;
 }
-
-@media (max-width: 1024px) {
-  .notifications-vnext-page > .notifications-stats-grid.notifications-today-parity-grid[data-stage181d-notifications-metric-renderer-final="true"] {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-}
-
-@media (max-width: 640px) {
-  .notifications-vnext-page > .notifications-stats-grid.notifications-today-parity-grid[data-stage181d-notifications-metric-renderer-final="true"] {
-    grid-template-columns: minmax(0, 1fr) !important;
-  }
-}
-
-/* STAGE211A_SECONDARY_PAGES_WHITE_CANVAS: Notifications uses a clean white canvas instead of the old blue/gray gradient surface. */
 .notifications-vnext-page {
-  background: #ffffff !important;
-  background-image: none !important;
+  background: #ffffff;
+  background-image: none;
 }
-
-/* STAGE212U_NOTIFICATIONS_METRIC_WIDTH_SOURCE_TRUTH
-   /notifications top metrics use the same full working width as other operator tabs.
-*/
-body #root .notifications-vnext-page {
-  width: 100% !important;
-  max-width: none !important;
-  box-sizing: border-box !important;
-}
-
-body #root .notifications-stats-grid {
-  width: 100% !important;
-  max-width: none !important;
-  margin: 0 0 22px !important;
-  display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: 12px !important;
-}
-
-body #root .notifications-vnext-shell {
-  width: 100% !important;
-  max-width: none !important;
-  margin: 0 !important;
-}
-
-@media (max-width: 1180px) {
-  body #root .notifications-stats-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-}
-
-@media (max-width: 640px) {
-  body #root .notifications-stats-grid {
-    grid-template-columns: 1fr !important;
-  }
-}
-
-/* STAGE212V_NOTIFICATIONS_METRIC_WIDTH_RUNTIME_REPAIR
-   /notifications top metrics use the same full working width as other operator tabs.
-*/
-body #root .notifications-vnext-page {
-  width: 100% !important;
-  max-width: none !important;
-  box-sizing: border-box !important;
-}
-
-body #root .notifications-stats-grid {
-  width: 100% !important;
-  max-width: none !important;
-  margin: 0 0 22px !important;
-  display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: 12px !important;
-}
-
-body #root .notifications-vnext-shell {
-  width: 100% !important;
-  max-width: none !important;
-  margin: 0 !important;
-}
-
-@media (max-width: 1180px) {
-  body #root .notifications-stats-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-}
-
-@media (max-width: 640px) {
-  body #root .notifications-stats-grid {
-    grid-template-columns: 1fr !important;
-  }
-}
-
-/* STAGE231D0H_N1_R3_NOTIFICATIONS_VISUAL_SOURCE_CLEANUP_SECTION_BOUNDS
-   Notifications use CloseFlowMetricTileV2 for top tiles.
-   Local notifications-today-parity-card/classes are deprecated in JSX and must not be active source truth.
-*/
 
 .notifications-stats-grid.cf-metric-grid {
-  display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: var(--cf-metric-tile-gap, 18px) !important;
-  align-items: stretch !important;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--cf-metric-tile-gap, 18px);
+  align-items: stretch;
 }
 
 .notifications-stats-grid .cf-top-metric-tile {
-  min-width: 0 !important;
+  min-width: 0;
 }
 
 .notifications-stats-grid .cf-top-metric-tile-content {
-  min-height: var(--cf-metric-tile-min-height, 72px) !important;
+  min-height: var(--cf-metric-tile-min-height, 72px);
 }
 
 .notifications-list-title {
@@ -1228,37 +1093,37 @@ body #root .notifications-vnext-shell {
 }
 
 .notifications-row-icon {
-  width: 30px !important;
-  height: 30px !important;
-  min-width: 30px !important;
-  border-radius: 12px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .notifications-row-icon svg {
-  width: 15px !important;
-  height: 15px !important;
-  stroke: currentColor !important;
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
 }
 
 .notifications-row-icon[data-cf-notification-row-tone="info"] {
-  background: rgba(37, 99, 235, 0.08) !important;
-  color: #2563eb !important;
+  background: rgba(37, 99, 235, 0.08);
+  color: #2563eb;
 }
 
 .notifications-row-icon[data-cf-notification-row-tone="warning"] {
-  background: rgba(217, 119, 6, 0.10) !important;
-  color: #b45309 !important;
+  background: rgba(217, 119, 6, 0.10);
+  color: #b45309;
 }
 
 .notifications-row-icon[data-cf-notification-row-tone="error"] {
-  background: rgba(225, 29, 72, 0.10) !important;
-  color: #e11d48 !important;
+  background: rgba(225, 29, 72, 0.10);
+  color: #e11d48;
 }
 
 .notifications-row-icon[data-cf-notification-row-tone="success"] {
-  background: rgba(5, 150, 105, 0.10) !important;
-  color: #059669 !important;
+  background: rgba(5, 150, 105, 0.10);
+  color: #059669;
 }

@@ -101,17 +101,17 @@
     "SEARCH": {
       "owner": "src/styles/owners/closeflow-search-and-density.css",
       "scope": "route-scoped",
-      "consumerRoots": ["src/styles/closeflow-visual-source-truth.css", "src/pages/Leads.tsx", "src/pages/Clients.tsx"]
+      "consumerRoots": ["src/pages/Leads.tsx", "src/pages/Clients.tsx"]
     },
     "RESPONSIVE_DENSITY": {
       "owner": "src/styles/owners/closeflow-responsive-adapters.css",
       "scope": "route-scoped",
-      "consumerRoots": ["src/styles/closeflow-visual-source-truth.css", "src/pages/Calendar.tsx"]
+      "consumerRoots": ["src/pages/Today.tsx", "src/pages/Leads.tsx", "src/pages/Clients.tsx", "src/pages/Cases.tsx", "src/pages/Calendar.tsx", "src/pages/LeadDetail.tsx", "src/pages/ClientDetail.tsx", "src/pages/CaseDetail.tsx"]
     },
     "CALENDAR": {
       "owner": "src/styles/owners/closeflow-calendar.css",
       "scope": "route-scoped",
-      "consumerRoots": ["src/styles/closeflow-visual-source-truth.css", "src/pages/Calendar.tsx"]
+      "consumerRoots": ["src/pages/Calendar.tsx"]
     }
   },
   "entryOnly": [

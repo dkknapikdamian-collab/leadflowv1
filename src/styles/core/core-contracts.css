@@ -1,10 +1,4 @@
 /* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/core/core-contracts.css","concerns":[],"scope":"entry","consumerRoots":["src/styles/core/core-contracts.css"],"role":"entrypoint","boundary":"runtime-entrypoint","whyNotGlobal":"This file is an import boundary, not a semantic visual owner.","whyNotDuplicate":"Only the runtime entry imports this boundary.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
-/* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_CORE_CONTRACTS
-   owner: CloseFlow Visual System
-   reason: keep stable shell, token and component-contract CSS before page adapters.
-   scope: core shell/theme primitives, form actions, action/entity tokens and shared metric contracts.
-   remove_after_stage: never; shared contract imports remain stable runtime dependencies.
-*/
 
 @import '../closeflow-vnext-ui-contract.css';
 @import '../closeflow-entity-type-tokens.css';

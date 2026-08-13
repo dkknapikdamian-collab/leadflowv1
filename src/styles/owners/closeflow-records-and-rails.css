@@ -1,7 +1,15 @@
 /* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:records-rails","concerns":["LIST_ROWS","BADGES","RIGHT_RAIL"],"scope":"global","consumerRoots":["src/styles/closeflow-visual-source-truth.css"],"role":"canonical-owner","boundary":"global-semantic","whyNotGlobal":"This file is the registered semantic owner for its declared concerns.","whyNotDuplicate":"The registry maps each declared concern to this single reachable owner.","activePatchLayer":false,"historicalImplementationHooks":[]} */
-/* CLOSEFLOW_LIST_ROW_CONTRACT
-   One source of truth for record rows, contact/value fields, status and progress.
+/* LF-UI-IMPORTANT_BOUNDARY: SEMANTIC_OWNER_CASCADE */
+
+/*
+  reason: hide empty client warning strip that only renders an icon.
+  scope: client panel empty amber warning strip only; real alerts with text/actions stay visible.
+  remove_after_stage: after client warning strip rendering is fixed in JSX.
 */
+#root .border-amber-200.bg-amber-50:has(> svg:only-child) {
+  display: none !important;
+}
+
 :root {
   --cf-list-row-contact-text: #0369a1;
   --cf-list-row-contact-bg: #f0f9ff;
@@ -142,10 +150,6 @@
 .cf-progress-bar[data-cf-status-tone="blue"] > span {
   background: var(--cf-status-blue-text);
 }
-
-/* CLOSEFLOW_FB2_LEADS_LIST_RIGHT_RAIL_CLEANUP
-   Right rail lead value rows: lead-only list, stable text fit, no short-word breaking.
-*/
 .main-leads-html .right-card,
 .main-leads-html .right-card *,
 .main-leads-html [data-fb2-leads-right-rail],
@@ -370,11 +374,6 @@
 .cf-severity-hover-warning:hover {
   border-color: var(--cf-alert-warning-border);
 }
-
-/* FIN-8_FINANCE_VISUAL_INTEGRATION_REPAIR5 */
-/* FIN-8_FINANCE_VISUAL_INTEGRATION_REPAIR1: finance surfaces use SurfaceCard, StatusPill and FormFooter design-system primitives. */
-/* FIN-8_FINANCE_VISUAL_INTEGRATION_REPAIR2 */
-/* Finance visuals are layout-only here. SurfaceCard and StatusPill own visual tone. */
 .cf-finance-snapshot {
   display: grid;
   gap: var(--cf-space-3, 14px);
@@ -385,8 +384,6 @@
   display: grid;
   gap: var(--cf-space-3, 14px);
 }
-
-/* FIN-7_CLIENT_FINANCE_SUMMARY_STYLE */
 .cf-finance-client-summary {
   margin: 0 0 var(--cf-space-4, 16px);
 }
@@ -710,8 +707,6 @@
     width: 100%;
   }
 }
-
-/* FIN-9_FINANCE_DUPLICATE_SAFETY_STYLE */
 .cf-finance-duplicate-warning {
   display: grid;
   gap: var(--cf-space-1, 0.25rem);
@@ -731,8 +726,6 @@
   font-size: var(--cf-text-xs, 0.75rem);
   color: var(--cf-text-muted, var(--muted-foreground));
 }
-
-/* CLOSEFLOW_CASE_SETTLEMENT_EDIT_VALUES_V1 */
 .cf-finance-settlement-empty-value {
   display: flex;
   align-items: center;
@@ -778,8 +771,6 @@
     width: 100%;
   }
 }
-
-/* FIN-13_CLIENT_CASE_FINANCES_STYLES */
 .cf-case-finance-action-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -891,8 +882,6 @@
     width: 100%;
   }
 }
-
-/* FIN-14_PAYMENT_TYPE_ACTIONS_STYLES */
 .cf-case-finance-action-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -1022,8 +1011,6 @@
 .client-detail-today-info-tile.cf-finance-scope-card .cf-finance-scope-card__metrics {
   width: 100%;
 }
-
-/* Shared semantic finance tone contract. Change finance colors here, not per page. */
 [data-cf-finance-tone="transaction"],
 [data-cf-finance-tone="earned"] {
   --cf-finance-tone-bg: #eff6ff;
@@ -1139,8 +1126,6 @@
   --cf-right-rail-card-muted: #64748b;
   --cf-right-rail-card-shadow: 0 16px 38px rgba(15, 23, 42, 0.07);
 }
-
-/* Top-value labels always reserve a shrinkable column and expose full text via title. */
 #root .cf-html-view.main-leads-html [data-testid="leads-top-value-records-card"] .cf-rail-top-row {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto !important;
@@ -1739,11 +1724,8 @@
 
 
 :root {
-  /* One blue used by the top command bar and page-header buttons. */
   --cf-command-action-blue: #2563eb;
   --cf-command-action-blue-hover: #1d4ed8;
-
-  /* One neutral button skin. This is intentionally white for all header/toolbar actions. */
   --cf-command-action-bg: #ffffff;
   --cf-command-action-bg-hover: #eff6ff;
   --cf-command-action-border: #bfdbfe;
@@ -1754,16 +1736,10 @@
   --cf-command-action-height: 38px;
   --cf-command-action-padding-x: 14px;
   --cf-command-action-gap: 8px;
-
-  /* Action placement source of truth. */
   --cf-command-actions-row-gap: 10px;
   --cf-command-actions-justify: flex-end;
   --cf-command-actions-align: flex-start;
 }
-
-/* -------------------------------------------------------------------------- */
-/* GLOBAL QUICK ACTIONS BAR                                                   */
-/* -------------------------------------------------------------------------- */
 
 #root .cf-html-shell [data-global-quick-actions="true"].global-actions,
 #root [data-global-quick-actions="true"].global-actions,
@@ -1778,9 +1754,6 @@
   background: rgba(255, 255, 255, 0.96) !important;
   border-bottom: 1px solid rgba(191, 219, 254, 0.55) !important;
 }
-
-/* Force every global-toolbar action to use the same white/blue skin.
-   This includes QuickAiCapture trigger because it renders only a Button, not a stable custom class. */
 #root .cf-html-shell [data-global-quick-actions="true"] :is(button, a, .btn),
 #root [data-global-quick-actions="true"] :is(button, a, .btn),
 [data-global-quick-actions="true"] :is(button, a, .btn) {
@@ -1809,9 +1782,6 @@
   text-decoration: none !important;
   opacity: 1 !important;
 }
-
-/* The previous dark QuickAiCapture state used local component/variant styling.
-   In the toolbar it must never become dark, even when it has rounded-xl only. */
 #root [data-global-quick-actions="true"] button.rounded-xl,
 #root .cf-html-shell [data-global-quick-actions="true"] button.rounded-xl,
 [data-global-quick-actions="true"] button.rounded-xl {
@@ -1843,10 +1813,6 @@
   stroke: currentColor !important;
   -webkit-text-fill-color: currentColor !important;
 }
-
-/* -------------------------------------------------------------------------- */
-/* TOP PAGE HEADER ACTION PLACEMENT                                           */
-/* -------------------------------------------------------------------------- */
 
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header {
   display: grid !important;
@@ -1895,8 +1861,6 @@
   gap: var(--cf-command-actions-row-gap) !important;
   min-width: max-content !important;
 }
-
-/* Flatten nested action stacks in headers. */
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside > *,
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions > *,
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions > *,
@@ -1961,13 +1925,6 @@
   color: currentColor !important;
   stroke: currentColor !important;
 }
-
-/* -------------------------------------------------------------------------- */
-/* TODAY STABLE HEADER ACTION STACK                                           */
-/* -------------------------------------------------------------------------- */
-
-/* This directly overrides the old column stack in closeflow-action-tokens.css:
-   .cf-section-head-actions and .cf-section-head-action-stack were explicitly set to flex-direction: column. */
 #root [data-p0-today-stable-rebuild="true"] .cf-section-head-actions,
 #root .cf-section-head-actions.cf-today-section-head-actions,
 [data-p0-today-stable-rebuild="true"] .cf-section-head-actions,
@@ -2105,18 +2062,12 @@
   text-align: left !important;
   align-self: flex-start !important;
 }
-
-/* Duplicate descriptions started appearing after source-truth + local-page copy mixed together.
-   First packet hides repeated sibling descriptions inside the same header copy area.
-*/
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"] > p + p,
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"] > .cf-page-header-description + .cf-page-header-description,
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child > p + p,
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child > p + p {
   display: none !important;
 }
-
-/* Some legacy pages center their copy container or text. Force left alignment. */
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header * {
   text-align: inherit;
 }
@@ -2158,8 +2109,6 @@
   --cf-page-header-action-gap: 8px;
   --cf-page-header-actions-gap: 10px;
 }
-
-/* Base action layout for top page headers and Today header actions */
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
@@ -2181,8 +2130,6 @@
   justify-content: flex-end !important;
   gap: var(--cf-page-header-actions-gap) !important;
 }
-
-/* Base button skin */
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button,a.btn,a[role="button"],.btn,.cf-header-action),
 #root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack :is(button,a.btn,a[role="button"],.btn),
 #root .cf-section-head-actions.cf-today-section-head-actions :is(button,a.btn,a[role="button"],.btn),
@@ -2218,8 +2165,6 @@
   color: currentColor !important;
   stroke: currentColor !important;
 }
-
-/* AI semantic */
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="ai"],
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .btn.soft-blue,
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header a[href="/ai-drafts"],
@@ -2242,8 +2187,6 @@
   color: var(--cf-page-header-ai-text-hover) !important;
   -webkit-text-fill-color: var(--cf-page-header-ai-text-hover) !important;
 }
-
-/* Danger semantic follows trash tokens */
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="danger"],
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-entity-action-danger,
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-trash-action-button,

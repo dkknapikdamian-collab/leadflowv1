@@ -1,4 +1,4 @@
-/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-public-landing.css","concerns":[],"scope":"component","consumerRoots":["src/styles/closeflow-public-landing.css"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-public-landing.css","concerns":[],"scope":"component","consumerRoots":["src/pages/PublicLanding.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 .public-landing-page {
   min-height: 100vh;
   background:
@@ -671,9 +671,6 @@
     padding: 26px;
   }
 }
-
-
-/* STAGE127B_LEGAL_FOOTER_START */
 .public-landing-footer {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto 28px;
@@ -741,4 +738,3 @@
     justify-content: flex-start;
   }
 }
-/* STAGE127B_LEGAL_FOOTER_END */

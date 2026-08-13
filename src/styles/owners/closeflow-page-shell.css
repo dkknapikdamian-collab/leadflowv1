@@ -1,7 +1,5 @@
 /* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:page-shell","concerns":["PAGE_SHELL"],"scope":"global","consumerRoots":["src/styles/closeflow-visual-source-truth.css"],"role":"canonical-owner","boundary":"global-semantic","whyNotGlobal":"This file is the registered semantic owner for its declared concerns.","whyNotDuplicate":"The registry maps each declared concern to this single reachable owner.","activePatchLayer":false,"historicalImplementationHooks":[]} */
-/* CLOSEFLOW_PAGE_HEADER_CONTRACT
-   One source of truth for page-head, page headers and compact section headers.
-*/
+/* LF-UI-IMPORTANT_BOUNDARY: SEMANTIC_OWNER_CASCADE */
 
 
 
@@ -152,11 +150,6 @@
     width: 100%;
   }
 }
-
-/* CLOSEFLOW_PAGE_HEADER_CARD_SKIN_2026_05_11_START
-   Skin-only contract for top page header cards/kafelki.
-   Do not mutate DOM. Do not move modal positions. Do not change business logic.
-*/
 :root {
   --cf-page-header-card-bg:
     radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.075), transparent 32%),
@@ -450,4 +443,3 @@
     width: 100% !important;
   }
 }
-/* CLOSEFLOW_PAGE_HEADER_CARD_SKIN_2026_05_11_END */

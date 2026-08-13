@@ -1,8 +1,5 @@
 /* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:actions","concerns":["BUTTONS_ACTIONS"],"scope":"global","consumerRoots":["src/styles/closeflow-visual-source-truth.css"],"role":"canonical-owner","boundary":"global-semantic","whyNotGlobal":"This file is the registered semantic owner for its declared concerns.","whyNotDuplicate":"The registry maps each declared concern to this single reachable owner.","activePatchLayer":false,"historicalImplementationHooks":[]} */
-/* CLOSEFLOW_DANGER_STYLE_CONTRACT
-   One source of truth for delete / trash / destructive action styling.
-   Change these tokens to update Trash2, Usuń and destructive entity actions globally.
-*/
+/* LF-UI-IMPORTANT_BOUNDARY: SEMANTIC_OWNER_CASCADE */
 :root {
   --cf-action-danger-text: #be123c;
   --cf-action-danger-text-hover: #9f1239;
@@ -89,10 +86,6 @@
 .cf-session-action-danger:focus-visible {
   box-shadow: 0 0 0 3px var(--cf-session-action-danger-focus) !important;
 }
-
-/* FB5_TOAST_DANGER_SOURCE_OF_TRUTH
-   Toasts stay top-center. Delete/trash/destructive UI uses entity action danger tokens.
-*/
 .client-detail-note-delete-action {
   color: var(--cf-action-danger-text) !important;
   background: transparent !important;
@@ -110,9 +103,6 @@
   color: var(--cf-action-danger-text) !important;
   stroke: currentColor !important;
 }
-
-
-/* ADMIN_FEEDBACK_P1_TODAY_HEADER_ACTION_STACK_FIX_CSS */
 [data-p0-today-stable-rebuild="true"] .cf-section-head-actions,
 .cf-section-head-actions.cf-today-section-head-actions {
   display: flex;
@@ -160,11 +150,6 @@
     width: 100%;
   }
 }
-
-
-/* CLOSEFLOW_CASE_TRASH_ACTION_TOKENS_2026_05_11
- * Shared trash icon source of truth. Change these variables once and all trash actions follow.
- */
 :root {
   --cf-trash-icon-color: #dc2626;
   --cf-trash-icon-hover-color: #b91c1c;
@@ -228,11 +213,6 @@
     width: 100%;
   }
 }
-
-/* CLOSEFLOW_HEADER_ACTION_TOKENS_2026_05_11_START
-   Source of truth for header/page-card action colors.
-   Primary CTA is blue/indigo. AI is violet/indigo. Green is reserved for success states only.
-*/
 :root {
   --cf-header-action-primary-bg: #2563eb;
   --cf-header-action-primary-bg-hover: #1d4ed8;
@@ -255,12 +235,6 @@
   --cf-header-action-secondary-text: #334155;
   --cf-header-action-secondary-shadow: 0 6px 14px rgba(15, 23, 42, 0.05);
 }
-/* CLOSEFLOW_HEADER_ACTION_TOKENS_2026_05_11_END */
-
-/* CLOSEFLOW_ENTITY_ACTION_CLUSTER_CONTRACT
-   One source of truth for entity detail action cluster placement.
-   Same function = same logical action region across LeadDetail, ClientDetail and CaseDetail.
-*/
 
 .cf-entity-action-cluster,
 .cf-panel-header-actions,
@@ -340,12 +314,6 @@
     flex: 1 1 auto;
   }
 }
-/* CLOSEFLOW_ACTION_CLUSTERS_FINAL_CONTRACT_VS6_END */
-
-/* CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT
-   One source of truth for form and modal footer actions.
-   Covers save/cancel/close/delete/refresh layout on desktop and mobile.
-*/
 
 :root {
   --cf-form-actions-gap: 0.625rem;

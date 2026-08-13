@@ -134,14 +134,118 @@ function addFailure(failures, message) {
   failures.push(message);
 }
 
-const HISTORICAL_OWNER_PATTERN = /(?:^|[^a-z])(?:stage\d+[a-z0-9_-]*|hotfix[a-z0-9_-]*|final[-_]?lock|packet\d+)(?:$|[^a-z])/i;
+// Historical names are semantic authority markers, not harmless comments. Keep
+// this check role-independent: an adapter can bypass SSOT just as easily as a
+// canonical owner when it carries a copied stage/final-lock contract.
+const HISTORICAL_OWNER_PATTERN = /(?:\bstage\d+[a-z0-9_-]*\b|\bvisual[-_]?stage[a-z0-9_-]*\b|\bhotfix[a-z0-9_-]*\b|\bfinal[-_]?lock\b|\bpacket\d+[a-z0-9_-]*\b|--stage\d+[a-z0-9_-]*|data-stage\d+[a-z0-9_-]*)/i;
 const EXPLICIT_PATCH_PATTERN = /(?:activePatchLayer\s*:\s*true|PATCH_LAYER|specificity[-_ ]patch|runtime[-_ ]hotfix)/i;
+const EXPLICIT_IMPORTANT_BOUNDARY_PATTERN = /LF-UI-IMPORTANT_BOUNDARY\s*:\s*([A-Z0-9_]+)/i;
+// Match exact shell primitives only. Route classes such as `.main-clients` and
+// `.app-surface-card` are legitimate scoped anchors and must not be mistaken
+// for the global shell itself.
+const SCOPED_GLOBAL_SELECTOR_PATTERN = /(?:^|[,{]\s*)(?::root\b|html\b|body\b|#root\s*(?:[,{]|$))|(?:^|[,{]\s*)[^{}]*(?:\.(?:app|cf-html-shell|sidebar|global-bar|nav-btn|brand|view|main)(?![-\w])|\[data-shell-[^=\]]+|\[data-visual-stage)/i;
+
+function cssSelectors(source) {
+  const withoutComments = stripComments(String(source || ''));
+  return [...withoutComments.matchAll(/([^{}]+)\{/g)]
+    .map((match) => match[1].trim())
+    .filter((selector) => selector && !selector.startsWith('@'));
+}
+
+function scopedGlobalAuthority(source) {
+  return cssSelectors(source).filter((selector) => SCOPED_GLOBAL_SELECTOR_PATTERN.test(selector));
+}
+
+function consumerAnchors(source) {
+  const anchors = new Set();
+  for (const match of String(source || '').matchAll(/\.([A-Za-z_][A-Za-z0-9_-]{3,})/g)) anchors.add(match[1]);
+  for (const match of String(source || '').matchAll(/\[(data-[A-Za-z0-9_-]+)/g)) anchors.add(match[1]);
+  return [...anchors].filter((anchor) => !/^(?:app|main|view|card|button|input|textarea|select|page|root|html|body)$/i.test(anchor));
+}
+
+function consumerRootHasUsage({ ownerSource, consumerSource, ownerPath, consumerPath }) {
+  if (!consumerSource) return false;
+  if (consumerSource.includes(ownerPath)) return true;
+  const source = String(consumerSource);
+  const anchors = consumerAnchors(ownerSource);
+  return anchors.some((anchor) => source.includes(anchor)) || source.includes(path.basename(ownerPath, path.extname(ownerPath)));
+}
+
+function validateConsumerRoots({
+  rootDir,
+  file,
+  metadata,
+  registry,
+  entryOnly,
+  reachable,
+  read,
+  failures,
+}) {
+  const scoped = metadata.role === (registry.ownerModel || {}).scopedRole;
+  const entry = registry.visualEntry;
+  const roots = Array.isArray(metadata.consumerRoots) ? metadata.consumerRoots : [];
+  if (!roots.length) return;
+  if (scoped && !roots.some((rootPath) => rootPath !== entry && !entryOnly.has(rootPath) && !rootPath.endsWith('.css'))) {
+    addFailure(failures, `scoped owner consumerRoots must include a real route/component consumer: ${file}`);
+  }
+  for (const consumer of roots) {
+    const consumerAbsolute = path.join(rootDir, consumer);
+    if (!fs.existsSync(consumerAbsolute)) {
+      addFailure(failures, `consumer path missing: ${consumer}`);
+      continue;
+    }
+    if (!reachable.has(consumer)) addFailure(failures, `consumer unreachable from runtime graph: ${consumer}`);
+    if (scoped && consumer === entry) {
+      addFailure(failures, `scoped owner cannot use the global visual entry as its only consumer boundary: ${file}`);
+      continue;
+    }
+    if (scoped && !consumer.endsWith('.css') && !consumerRootHasUsage({
+      ownerSource: read(file),
+      consumerSource: read(consumer),
+      ownerPath: file,
+      consumerPath: consumer,
+    })) {
+      addFailure(failures, `scoped owner consumer relationship is not proven by import/usage graph: ${file} -> ${consumer}`);
+    }
+  }
+}
+
+function auditImportantDeclarations(reachableCss, read) {
+  const byFile = {};
+  const byFamily = {};
+  const findings = [];
+  for (const file of reachableCss) {
+    const source = read(file);
+    const fileBoundary = source.match(EXPLICIT_IMPORTANT_BOUNDARY_PATTERN);
+    const lines = source.split(/\r?\n/);
+    for (let index = 0; index < lines.length; index += 1) {
+      if (!/!important\b/.test(lines[index])) continue;
+      const context = lines.slice(Math.max(0, index - 4), index + 1).join('\n');
+      const explicitBoundary = context.match(EXPLICIT_IMPORTANT_BOUNDARY_PATTERN) || fileBoundary;
+      const family = explicitBoundary ? explicitBoundary[1].toUpperCase() : 'UNCLASSIFIED_IMPORTANT';
+      const classification = explicitBoundary ? 'LEGITIMATE_BOUNDARY' : 'UNCLASSIFIED_IMPORTANT';
+      const record = { file, line: index + 1, family, classification, text: lines[index].trim() };
+      findings.push(record);
+      byFile[file] = (byFile[file] || 0) + 1;
+      byFamily[family] = (byFamily[family] || 0) + 1;
+    }
+  }
+  const specificityPatch = findings.filter((finding) => EXPLICIT_PATCH_PATTERN.test(finding.text) || /(?:stage\d+|hotfix|final[-_]?lock|specificity|patch)/i.test(finding.text));
+  return {
+    total: findings.length,
+    byFile,
+    byFamily,
+    findings,
+    UNCLASSIFIED_IMPORTANT: findings.filter((finding) => finding.classification === 'UNCLASSIFIED_IMPORTANT').length,
+    SPECIFICITY_PATCH_IMPORTANT: specificityPatch.length,
+  };
+}
 
 /**
  * Validate the semantic owner registry against the active import graph.
  * Ownership is proven by registry + metadata + reachable consumers. Marker text
  * is intentionally never treated as proof and historical semantic authorities
- * are rejected for canonical owners.
+ * are rejected for every runtime CSS role.
  */
 function validateCssArchitecture({
   rootDir = root,
@@ -264,7 +368,8 @@ function validateCssArchitecture({
       continue;
     }
     metadataByFile.set(file, metadata);
-    if (markerTokens.some((token) => read(file).includes(token))) {
+    const source = read(file);
+    if (markerTokens.some((token) => source.includes(token))) {
       addFailure(failures, `marker text is not ownership proof: ${file}`);
       historicalOwners.add(file);
     }
@@ -272,22 +377,21 @@ function validateCssArchitecture({
       addFailure(failures, `historical runtime path is reachable: ${file}`);
       historicalOwners.add(file);
     }
+    if (HISTORICAL_OWNER_PATTERN.test(source)) {
+      addFailure(failures, `historical stage/hotfix authority remains in runtime CSS role ${metadata.role || '<missing>'}: ${file}`);
+      historicalOwners.add(file);
+    }
     if (metadata.role === ownerModel.canonicalRole) {
       if (!allCanonicalPaths.has(file)) {
         addFailure(failures, `canonical role is not registered: ${file}`);
         unknownOwners.add(file);
-      }
-      const source = read(file);
-      if (HISTORICAL_OWNER_PATTERN.test(source)) {
-        addFailure(failures, `historical stage/hotfix authority remains in canonical owner: ${file}`);
-        historicalOwners.add(file);
       }
       if (EXPLICIT_PATCH_PATTERN.test(source) || metadata.activePatchLayer === true) {
         addFailure(failures, `active runtime patch layer remains in canonical owner: ${file}`);
         activePatchLayers.add(file);
       }
     } else if (metadata.role === ownerModel.scopedRole || metadata.role === ownerModel.entryRole) {
-      if (metadata.concerns && metadata.concerns.length) {
+      if (metadata.role === ownerModel.scopedRole && metadata.concerns && metadata.concerns.length) {
         addFailure(failures, `DUPLICATE_SEMANTIC_OWNER: scoped file claims concerns: ${file}`);
         duplicateOwners.add(file);
       }
@@ -301,7 +405,12 @@ function validateCssArchitecture({
         addFailure(failures, `scoped owner has no consumer graph: ${file}`);
         unknownOwners.add(file);
       }
-      if (metadata.activePatchLayer === true || EXPLICIT_PATCH_PATTERN.test(read(file))) activePatchLayers.add(file);
+      if (metadata.role === ownerModel.scopedRole && scopedGlobalAuthority(source).length) {
+        addFailure(failures, `scoped adapter owns global shell semantics: ${file}`);
+        unknownOwners.add(file);
+      }
+      validateConsumerRoots({ rootDir, file, metadata, registry, entryOnly: new Set(registry.entryOnly || []), reachable, read, failures });
+      if (metadata.activePatchLayer === true || EXPLICIT_PATCH_PATTERN.test(source)) activePatchLayers.add(file);
     } else {
       addFailure(failures, `UNKNOWN_VISUAL_OWNER: unsupported role ${metadata.role || '<missing>'} in ${file}`);
       unknownOwners.add(file);
@@ -325,8 +434,13 @@ function validateCssArchitecture({
     if (metadata && metadata.role !== ownerModel.entryRole) addFailure(failures, `entry-only stylesheet must use entrypoint role: ${entryPath}`);
   }
 
-  const importantDeclarationsAudited = reachableCss.reduce((count, file) => count + (read(file).match(/!important\b/g) || []).length, 0);
-  const specificityPatchDeclarations = reachableCss.reduce((count, file) => count + (read(file).match(/!important\b/g) || []).filter(() => EXPLICIT_PATCH_PATTERN.test(read(file))).length, 0);
+  const importantAudit = auditImportantDeclarations(reachableCss, read);
+  if (importantAudit.UNCLASSIFIED_IMPORTANT > 0) {
+    addFailure(failures, `UNCLASSIFIED_IMPORTANT=${importantAudit.UNCLASSIFIED_IMPORTANT}; byFile=${JSON.stringify(importantAudit.byFile)}`);
+  }
+  if (importantAudit.SPECIFICITY_PATCH_IMPORTANT > 0) {
+    addFailure(failures, `SPECIFICITY_PATCH_IMPORTANT=${importantAudit.SPECIFICITY_PATCH_IMPORTANT}`);
+  }
   const summary = {
     activeCssFiles: reachableCss.length,
     ACTIVE_RUNTIME_PATCH_LAYERS: activePatchLayers.size,
@@ -341,10 +455,15 @@ function validateCssArchitecture({
     unknownOwners: unknownOwners.size,
     consumerlessRuntimeCss: consumerlessRuntimeCss.length,
     concerns: requiredConcerns.length,
-    importantDeclarationsAudited,
-    specificityPatchDeclarations,
+    importantDeclarationsAudited: importantAudit.total,
+    specificityPatchDeclarations: importantAudit.SPECIFICITY_PATCH_IMPORTANT,
+    TOTAL_IMPORTANT: importantAudit.total,
+    UNCLASSIFIED_IMPORTANT: importantAudit.UNCLASSIFIED_IMPORTANT,
+    SPECIFICITY_PATCH_IMPORTANT: importantAudit.SPECIFICITY_PATCH_IMPORTANT,
+    IMPORTANT_FAMILIES: importantAudit.byFamily,
+    IMPORTANT_BY_FILE: importantAudit.byFile,
   };
-  return { ok: failures.length === 0, failures, summary, reachableCss, metadataByFile };
+  return { ok: failures.length === 0, failures, summary, reachableCss, metadataByFile, importantAudit };
 }
 
 function diffAddedLines() {

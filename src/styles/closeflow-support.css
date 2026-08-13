@@ -1,5 +1,4 @@
-/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-support.css","concerns":[],"scope":"component","consumerRoots":["src/styles/closeflow-support.css"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
-/* SUPPORT_VISUAL_REBUILD_STAGE17 */
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-support.css","concerns":[],"scope":"component","consumerRoots":["src/pages/SupportCenter.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 
 .support-vnext-page {
   min-height: 100%;
@@ -72,14 +71,14 @@
 .support-ticket-detail,
 .right-card.support-right-card,
 .support-right-card {
-  background: rgba(255, 255, 255, 0.92) !important;
-  background-image: none !important;
-  border: 1px solid #e4e7ec !important;
-  border-radius: 28px !important;
-  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05) !important;
-  color: #111827 !important;
-  backdrop-filter: none !important;
-  filter: none !important;
+  background: rgba(255, 255, 255, 0.92);
+  background-image: none;
+  border: 1px solid #e4e7ec;
+  border-radius: 28px;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05);
+  color: #111827;
+  backdrop-filter: none;
+  filter: none;
 }
 
 .support-hero-card {
@@ -117,8 +116,8 @@
 }
 
 .support-hero-card-blue {
-  background: #eff6ff !important;
-  border-color: #bfdbfe !important;
+  background: #eff6ff;
+  border-color: #bfdbfe;
 }
 
 .support-shell {
@@ -288,9 +287,9 @@
 }
 
 .support-filter-active {
-  border-color: #bfdbfe !important;
-  background: #eff6ff !important;
-  color: #1d4ed8 !important;
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
 }
 
 .support-ticket-tools {
@@ -547,11 +546,11 @@
 }
 
 .support-right-rail {
-  background: transparent !important;
-  background-image: none !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  padding: 0 !important;
+  background: transparent;
+  background-image: none;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -564,11 +563,11 @@
 .right-card.support-right-card::after,
 .support-right-card::before,
 .support-right-card::after {
-  content: none !important;
-  display: none !important;
-  background: transparent !important;
-  background-image: none !important;
-  box-shadow: none !important;
+  content: none;
+  display: none;
+  background: transparent;
+  background-image: none;
+  box-shadow: none;
 }
 
 .support-right-card {
@@ -699,8 +698,6 @@
     flex-direction: column;
   }
 }
-
-/* SUPPORT_REQUESTS_OPERATIONAL_PAGE_STAGE180 */
 .support-hero-card-button {
   appearance: none;
   text-align: left;
@@ -710,8 +707,8 @@
 .support-hero-card-button:hover,
 .support-kind-card:hover,
 .support-filter-row button:hover {
-  border-color: #bfdbfe !important;
-  background: #eff6ff !important;
+  border-color: #bfdbfe;
+  background: #eff6ff;
 }
 
 .support-right-list button {
@@ -738,44 +735,32 @@
     grid-template-columns: 1fr;
   }
 }
-
-/* STAGE180H_SUPPORT_RIGHT_RAIL_REMOVED */
 .support-shell {
-  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .support-main-column {
-  width: 100% !important;
-  max-width: none !important;
+  width: 100%;
+  max-width: none;
 }
-/* END_STAGE180H_SUPPORT_RIGHT_RAIL_REMOVED */
-
-
-/* STAGE180I_SUPPORT_SINGLE_COLUMN_AFTER_RIGHT_RAIL_REMOVAL */
 .support-shell {
-  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-columns: minmax(0, 1fr);
 }
 .support-main-column {
-  width: 100% !important;
+  width: 100%;
 }
-
-
-/* STAGE180J_SUPPORT_SINGLE_COLUMN */
 .support-shell {
-  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .support-right-rail,
 .support-right-card {
-  display: none !important;
+  display: none;
 }
 
 .support-main-column {
-  width: 100% !important;
+  width: 100%;
 }
-
-
-/* STAGE180L_SUPPORT_ADMIN_RAIL_ANCHORLESS */
 .support-shell-admin {
   grid-template-columns: minmax(0, 1fr) 320px;
 }
@@ -903,9 +888,7 @@
     grid-template-columns: 1fr;
   }
 }
-
-/* STAGE211A_SECONDARY_PAGES_WHITE_CANVAS: Support uses a clean white canvas instead of the old blue/gray gradient surface. */
 .support-vnext-page {
-  background: #ffffff !important;
-  background-image: none !important;
+  background: #ffffff;
+  background-image: none;
 }

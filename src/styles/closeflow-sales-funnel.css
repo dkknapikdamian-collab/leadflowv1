@@ -1,23 +1,4 @@
-/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-sales-funnel.css","concerns":[],"scope":"component","consumerRoots":["src/styles/closeflow-sales-funnel.css"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
-/* STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT
-   owner: CloseFlow Visual System
-   scope: /funnel SalesFunnel owner dashboard
-   rule: Lejek is an owner decision list, not a kanban.
-*/
-
-:root {
-  --cf-funnel-card-bg: #ffffff;
-  --cf-funnel-card-border: #e2e8f0;
-  --cf-funnel-card-shadow: 0 14px 32px rgba(15, 23, 42, 0.055);
-  --cf-funnel-card-shadow-hover: 0 18px 40px rgba(15, 23, 42, 0.085);
-  --cf-funnel-muted: #64748b;
-  --cf-funnel-strong: #0f172a;
-  --cf-funnel-open-link-width: 156px;
-}
-
-#root .main-funnel-html.sales-funnel-stage227f6-page {
-  color: var(--cf-funnel-strong);
-}
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-sales-funnel.css","concerns":[],"scope":"component","consumerRoots":["src/pages/SalesFunnel.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 
 #root .main-funnel-html .cf-funnel-owner-decision-grid {
   align-items: stretch;
@@ -28,20 +9,20 @@
 }
 
 #root .main-funnel-html .cf-funnel-owner-decision-tile .cf-top-metric-tile-content {
-  min-height: 76px !important;
-  padding: 14px 15px !important;
-  border-radius: 22px !important;
+  min-height: 76px;
+  padding: 14px 15px;
+  border-radius: 22px;
 }
 
 #root .main-funnel-html .cf-funnel-owner-decision-tile .cf-top-metric-tile-value {
-  font-size: clamp(1.1rem, 1.6vw, 1.55rem) !important;
-  letter-spacing: -0.035em !important;
+  font-size: clamp(1.1rem, 1.6vw, 1.55rem);
+  letter-spacing: -0.035em;
   white-space: nowrap;
 }
 
 #root .main-funnel-html .cf-funnel-owner-decision-tile .cf-top-metric-tile-helper {
   max-width: 13rem;
-  white-space: normal !important;
+  white-space: normal;
 }
 
 #root .main-funnel-html .cf-funnel-stage-filter-strip {
@@ -266,10 +247,10 @@
 #root .main-funnel-html .cf-funnel-owner-priority-rail > .border-slate-200.bg-white,
 #root .main-funnel-html .cf-funnel-priority-card,
 #root .main-funnel-html .cf-funnel-rule-card {
-  border: 1px solid var(--cf-funnel-card-border) !important;
-  border-radius: 1.25rem !important;
-  background: #ffffff !important;
-  box-shadow: var(--cf-funnel-card-shadow) !important;
+  border: 1px solid var(--cf-funnel-card-border);
+  border-radius: 1.25rem;
+  background: #ffffff;
+  box-shadow: var(--cf-funnel-card-shadow);
 }
 
 #root .main-funnel-html .cf-funnel-priority-reason {
@@ -308,22 +289,17 @@
   }
 
   #root .main-funnel-html .cf-funnel-owner-decision-tile .cf-top-metric-tile-content {
-    align-items: flex-start !important;
+    align-items: flex-start;
   }
 }
 
-/* STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY
-   Scope: color/icon/filter parity for /funnel only.
-   Rule: owner tiles use the shared metric tone system; stage filters use shared filter/pill language.
-*/
-
 #root .main-funnel-html .cf-funnel-owner-decision-tile .cf-top-metric-tile-icon {
-  opacity: 1 !important;
-  visibility: visible !important;
+  opacity: 1;
+  visibility: visible;
 }
 
 #root .main-funnel-html .cf-funnel-owner-decision-tile .cf-top-metric-tile-icon svg {
-  stroke: currentColor !important;
+  stroke: currentColor;
 }
 
 #root .main-funnel-html .cf-funnel-stage-filter-strip.cf-contact-cadence-strip,
@@ -394,8 +370,6 @@
   opacity: 0.76;
 }
 
-/* STAGE231D0F_R3_FUNNEL_RECORDS_HEADER_ROW */
-
 #root .main-funnel-html .cf-funnel-records-header-row {
   display: flex;
   align-items: center;
@@ -438,55 +412,51 @@
   }
 }
 
-/* STAGE231D0F_R13_FUNNEL_VISUAL_COLOR_DENSITY
-   Layout frozen. Adds semantic tone density to signals and prevents open button wrapping.
-*/
-
 #root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="blue"] {
-  border-color: rgba(37, 99, 235, 0.18) !important;
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.06), #fff 70%) !important;
+  border-color: rgba(37, 99, 235, 0.18);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.06), #fff 70%);
 }
 
 #root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="blue"] .cf-funnel-decision-signal-label,
 #root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="blue"] .cf-funnel-decision-signal-value.is-strong {
-  color: #1d4ed8 !important;
+  color: #1d4ed8;
 }
 
 #root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="amber"] {
-  border-color: rgba(217, 119, 6, 0.18) !important;
-  background: linear-gradient(135deg, rgba(217, 119, 6, 0.065), #fff 70%) !important;
+  border-color: rgba(217, 119, 6, 0.18);
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.065), #fff 70%);
 }
 
 #root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="amber"] .cf-funnel-decision-signal-label,
 #root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="amber"] .cf-funnel-decision-signal-value.is-strong {
-  color: #b45309 !important;
+  color: #b45309;
 }
 
 #root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="purple"] {
-  border-color: rgba(124, 58, 237, 0.18) !important;
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.06), #fff 70%) !important;
+  border-color: rgba(124, 58, 237, 0.18);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.06), #fff 70%);
 }
 
 #root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="purple"] .cf-funnel-decision-signal-label,
 #root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="purple"] .cf-funnel-decision-signal-value.is-strong {
-  color: #6d28d9 !important;
+  color: #6d28d9;
 }
 
 #root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="green"] {
-  border-color: rgba(5, 150, 105, 0.18) !important;
-  background: linear-gradient(135deg, rgba(5, 150, 105, 0.06), #fff 70%) !important;
+  border-color: rgba(5, 150, 105, 0.18);
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.06), #fff 70%);
 }
 
 #root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="green"] .cf-funnel-decision-signal-label,
 #root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="green"] .cf-funnel-decision-signal-value.is-strong {
-  color: #047857 !important;
+  color: #047857;
 }
 
 #root .main-funnel-html .cf-funnel-decision-open-link {
-  white-space: nowrap !important;
-  line-height: 1 !important;
+  white-space: nowrap;
+  line-height: 1;
 }
 
 #root .main-funnel-html .cf-funnel-decision-open-link svg {
-  flex: 0 0 auto !important;
+  flex: 0 0 auto;
 }

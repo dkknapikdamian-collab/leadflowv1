@@ -1,305 +1,245 @@
-/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-ai-drafts-rail.css","concerns":[],"scope":"component","consumerRoots":["src/styles/closeflow-ai-drafts-rail.css"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
-/* CLOSEFLOW_STAGE181W_AI_DRAFTS_RAIL_FORCE_COLORS
-   LOCAL ONLY
-   Scope: /ai-drafts.
-   Visual taxonomy:
-   draft / AI = violet,
-   lead = indigo,
-   task = amber,
-   event = sky,
-   errors = red,
-   converted = emerald,
-   help = slate.
-*/
-
-:root {
-  --cf-ai-draft-violet-bg: #f5f3ff;
-  --cf-ai-draft-violet-border: #ddd6fe;
-  --cf-ai-draft-violet-text: #6d28d9;
-
-  --cf-ai-draft-indigo-bg: #eef2ff;
-  --cf-ai-draft-indigo-border: #c7d2fe;
-  --cf-ai-draft-indigo-text: #4f46e5;
-
-  --cf-ai-draft-amber-bg: #fffbeb;
-  --cf-ai-draft-amber-border: #fde68a;
-  --cf-ai-draft-amber-text: #b45309;
-
-  --cf-ai-draft-sky-bg: #f0f9ff;
-  --cf-ai-draft-sky-border: #bae6fd;
-  --cf-ai-draft-sky-text: #0369a1;
-
-  --cf-ai-draft-red-bg: #fef2f2;
-  --cf-ai-draft-red-border: #fecaca;
-  --cf-ai-draft-red-text: #dc2626;
-
-  --cf-ai-draft-emerald-bg: #ecfdf5;
-  --cf-ai-draft-emerald-border: #bbf7d0;
-  --cf-ai-draft-emerald-text: #047857;
-
-  --cf-ai-draft-slate-bg: #f8fafc;
-  --cf-ai-draft-slate-border: #e2e8f0;
-  --cf-ai-draft-slate-text: #475569;
-}
-
-/* Top filter pills */
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-ai-drafts-rail.css","concerns":[],"scope":"component","consumerRoots":["src/pages/AiDrafts.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 .ai-drafts-vnext-page .ai-drafts-filter-pill[data-ai-draft-filter-kind="all"],
 .ai-drafts-vnext-page .ai-drafts-filter-pill:nth-child(1) {
-  border-color: var(--cf-ai-draft-slate-border) !important;
-  background: var(--cf-ai-draft-slate-bg) !important;
-  color: var(--cf-ai-draft-slate-text) !important;
+  border-color: var(--cf-ai-draft-slate-border);
+  background: var(--cf-ai-draft-slate-bg);
+  color: var(--cf-ai-draft-slate-text);
 }
 
 .ai-drafts-vnext-page .ai-drafts-filter-pill[data-ai-draft-filter-kind="draft"],
 .ai-drafts-vnext-page .ai-drafts-filter-pill:nth-child(2) {
-  border-color: var(--cf-ai-draft-violet-border) !important;
-  background: var(--cf-ai-draft-violet-bg) !important;
-  color: var(--cf-ai-draft-violet-text) !important;
+  border-color: var(--cf-ai-draft-violet-border);
+  background: var(--cf-ai-draft-violet-bg);
+  color: var(--cf-ai-draft-violet-text);
 }
 
 .ai-drafts-vnext-page .ai-drafts-filter-pill[data-ai-draft-filter-kind="lead"],
 .ai-drafts-vnext-page .ai-drafts-filter-pill:nth-child(3) {
-  border-color: var(--cf-ai-draft-indigo-border) !important;
-  background: var(--cf-ai-draft-indigo-bg) !important;
-  color: var(--cf-ai-draft-indigo-text) !important;
+  border-color: var(--cf-ai-draft-indigo-border);
+  background: var(--cf-ai-draft-indigo-bg);
+  color: var(--cf-ai-draft-indigo-text);
 }
 
 .ai-drafts-vnext-page .ai-drafts-filter-pill[data-ai-draft-filter-kind="task"],
 .ai-drafts-vnext-page .ai-drafts-filter-pill:nth-child(4) {
-  border-color: var(--cf-ai-draft-amber-border) !important;
-  background: var(--cf-ai-draft-amber-bg) !important;
-  color: var(--cf-ai-draft-amber-text) !important;
+  border-color: var(--cf-ai-draft-amber-border);
+  background: var(--cf-ai-draft-amber-bg);
+  color: var(--cf-ai-draft-amber-text);
 }
 
 .ai-drafts-vnext-page .ai-drafts-filter-pill[data-ai-draft-filter-kind="event"],
 .ai-drafts-vnext-page .ai-drafts-filter-pill:nth-child(5) {
-  border-color: var(--cf-ai-draft-sky-border) !important;
-  background: var(--cf-ai-draft-sky-bg) !important;
-  color: var(--cf-ai-draft-sky-text) !important;
+  border-color: var(--cf-ai-draft-sky-border);
+  background: var(--cf-ai-draft-sky-bg);
+  color: var(--cf-ai-draft-sky-text);
 }
 
 .ai-drafts-vnext-page .ai-drafts-filter-pill[data-ai-draft-filter-kind="note"],
 .ai-drafts-vnext-page .ai-drafts-filter-pill:nth-child(6) {
-  border-color: #e9d5ff !important;
-  background: #faf5ff !important;
-  color: #7e22ce !important;
+  border-color: #e9d5ff;
+  background: #faf5ff;
+  color: #7e22ce;
 }
 
 .ai-drafts-vnext-page .ai-drafts-filter-pill[data-ai-draft-filter-kind="errors"],
 .ai-drafts-vnext-page .ai-drafts-filter-pill:nth-child(7) {
-  border-color: var(--cf-ai-draft-red-border) !important;
-  background: var(--cf-ai-draft-red-bg) !important;
-  color: var(--cf-ai-draft-red-text) !important;
+  border-color: var(--cf-ai-draft-red-border);
+  background: var(--cf-ai-draft-red-bg);
+  color: var(--cf-ai-draft-red-text);
 }
 
 .ai-drafts-vnext-page .ai-drafts-filter-pill[data-ai-draft-filter-kind="converted"],
 .ai-drafts-vnext-page .ai-drafts-filter-pill:nth-child(8) {
-  border-color: var(--cf-ai-draft-emerald-border) !important;
-  background: var(--cf-ai-draft-emerald-bg) !important;
-  color: var(--cf-ai-draft-emerald-text) !important;
+  border-color: var(--cf-ai-draft-emerald-border);
+  background: var(--cf-ai-draft-emerald-bg);
+  color: var(--cf-ai-draft-emerald-text);
 }
 
 .ai-drafts-vnext-page .ai-drafts-filter-pill[data-ai-draft-filter-kind="archived"],
 .ai-drafts-vnext-page .ai-drafts-filter-pill:nth-child(9) {
-  border-color: #e2e8f0 !important;
-  background: #f1f5f9 !important;
-  color: #64748b !important;
+  border-color: #e2e8f0;
+  background: #f1f5f9;
+  color: #64748b;
 }
 
 .ai-drafts-vnext-page .ai-drafts-filter-pill strong {
-  background: rgba(255,255,255,0.82) !important;
-  border: 1px solid currentColor !important;
-  color: currentColor !important;
+  background: rgba(255,255,255,0.82);
+  border: 1px solid currentColor;
+  color: currentColor;
 }
 
 .ai-drafts-vnext-page .ai-drafts-filter-pill-active {
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08) !important;
-  transform: translateY(-1px) !important;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
 }
-
-/* Right rail base */
 .ai-drafts-vnext-page .ai-drafts-right-rail {
-  gap: 18px !important;
+  gap: 18px;
 }
 
 .ai-drafts-vnext-page .ai-drafts-right-rail .ai-drafts-right-card,
 .ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card {
-  position: relative !important;
-  overflow: hidden !important;
-  border-radius: 24px !important;
-  border-width: 1px !important;
-  background: #ffffff !important;
-  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08) !important;
-  padding: 18px !important;
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  border-width: 1px;
+  background: #ffffff;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+  padding: 18px;
 }
 
 .ai-drafts-vnext-page .ai-drafts-right-rail .ai-drafts-right-card::before,
 .ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card::before {
-  content: "" !important;
-  position: absolute !important;
-  left: 0 !important;
-  top: 14px !important;
-  bottom: 14px !important;
-  width: 5px !important;
-  border-radius: 999px !important;
-  background: var(--cf-ai-draft-violet-text) !important;
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 5px;
+  border-radius: 999px;
+  background: var(--cf-ai-draft-violet-text);
 }
-
-/* Card 1: quick filters / AI violet */
 .ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="filters"],
 .ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card:nth-of-type(1) {
-  border-color: var(--cf-ai-draft-violet-border) !important;
+  border-color: var(--cf-ai-draft-violet-border);
   background:
     radial-gradient(circle at top right, rgba(109, 40, 217, 0.13), transparent 34%),
-    #ffffff !important;
+    #ffffff;
 }
 
 .ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="filters"]::before,
 .ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card:nth-of-type(1)::before {
-  background: var(--cf-ai-draft-violet-text) !important;
+  background: var(--cf-ai-draft-violet-text);
 }
-
-/* Card 2: errors red */
 .ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="errors"],
 .ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card:nth-of-type(2) {
-  border-color: var(--cf-ai-draft-red-border) !important;
+  border-color: var(--cf-ai-draft-red-border);
   background:
     radial-gradient(circle at top right, rgba(220, 38, 38, 0.11), transparent 34%),
-    #ffffff !important;
+    #ffffff;
 }
 
 .ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="errors"]::before,
 .ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card:nth-of-type(2)::before {
-  background: var(--cf-ai-draft-red-text) !important;
+  background: var(--cf-ai-draft-red-text);
 }
-
-/* Card 3: converted emerald */
 .ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="converted"],
 .ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card:nth-of-type(3) {
-  border-color: var(--cf-ai-draft-emerald-border) !important;
+  border-color: var(--cf-ai-draft-emerald-border);
   background:
     radial-gradient(circle at top right, rgba(4, 120, 87, 0.12), transparent 34%),
-    #ffffff !important;
+    #ffffff;
 }
 
 .ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="converted"]::before,
 .ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card:nth-of-type(3)::before {
-  background: var(--cf-ai-draft-emerald-text) !important;
+  background: var(--cf-ai-draft-emerald-text);
 }
-
-/* Card 4: help slate/blue */
 .ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="help"],
 .ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card:nth-of-type(4) {
-  border-color: #bfdbfe !important;
+  border-color: #bfdbfe;
   background:
     radial-gradient(circle at top right, rgba(37, 99, 235, 0.10), transparent 34%),
-    #ffffff !important;
+    #ffffff;
 }
 
 .ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="help"]::before,
 .ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card:nth-of-type(4)::before {
-  background: #2563eb !important;
+  background: #2563eb;
 }
-
-/* Header icon chips */
 .ai-drafts-vnext-page .ai-drafts-right-card .ai-drafts-right-card-head {
-  margin-left: 2px !important;
-  gap: 10px !important;
-  color: var(--cf-ai-draft-violet-text) !important;
+  margin-left: 2px;
+  gap: 10px;
+  color: var(--cf-ai-draft-violet-text);
 }
 
 .ai-drafts-vnext-page .ai-drafts-right-card:nth-of-type(2) .ai-drafts-right-card-head,
 .ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="errors"] .ai-drafts-right-card-head {
-  color: var(--cf-ai-draft-red-text) !important;
+  color: var(--cf-ai-draft-red-text);
 }
 
 .ai-drafts-vnext-page .ai-drafts-right-card:nth-of-type(3) .ai-drafts-right-card-head,
 .ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="converted"] .ai-drafts-right-card-head {
-  color: var(--cf-ai-draft-emerald-text) !important;
+  color: var(--cf-ai-draft-emerald-text);
 }
 
 .ai-drafts-vnext-page .ai-drafts-right-card:nth-of-type(4) .ai-drafts-right-card-head,
 .ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="help"] .ai-drafts-right-card-head {
-  color: #2563eb !important;
+  color: #2563eb;
 }
 
 .ai-drafts-vnext-page .ai-drafts-right-card-head > svg {
-  width: 26px !important;
-  height: 26px !important;
-  padding: 6px !important;
-  border-radius: 10px !important;
-  background: currentColor !important;
-  color: #ffffff !important;
-  stroke: #ffffff !important;
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.10) !important;
+  width: 26px;
+  height: 26px;
+  padding: 6px;
+  border-radius: 10px;
+  background: currentColor;
+  color: #ffffff;
+  stroke: #ffffff;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.10);
 }
 
 .ai-drafts-vnext-page .ai-drafts-right-card-head h2 {
-  color: #111827 !important;
-  font-weight: 950 !important;
+  color: #111827;
+  font-weight: 950;
 }
-
-/* Quick rail buttons */
 .ai-drafts-vnext-page .ai-drafts-rail-button {
-  min-height: 46px !important;
-  border-radius: 16px !important;
-  font-weight: 900 !important;
+  min-height: 46px;
+  border-radius: 16px;
+  font-weight: 900;
 }
 
 .ai-drafts-vnext-page .ai-drafts-rail-button[data-ai-draft-rail-button="draft"],
 .ai-drafts-vnext-page .ai-drafts-right-card:nth-of-type(1) .ai-drafts-rail-button:nth-of-type(1) {
-  border-color: var(--cf-ai-draft-violet-border) !important;
-  background: var(--cf-ai-draft-violet-bg) !important;
-  color: var(--cf-ai-draft-violet-text) !important;
+  border-color: var(--cf-ai-draft-violet-border);
+  background: var(--cf-ai-draft-violet-bg);
+  color: var(--cf-ai-draft-violet-text);
 }
 
 .ai-drafts-vnext-page .ai-drafts-rail-button[data-ai-draft-rail-button="errors"],
 .ai-drafts-vnext-page .ai-drafts-right-card:nth-of-type(1) .ai-drafts-rail-button:nth-of-type(2) {
-  border-color: var(--cf-ai-draft-red-border) !important;
-  background: var(--cf-ai-draft-red-bg) !important;
-  color: var(--cf-ai-draft-red-text) !important;
+  border-color: var(--cf-ai-draft-red-border);
+  background: var(--cf-ai-draft-red-bg);
+  color: var(--cf-ai-draft-red-text);
 }
 
 .ai-drafts-vnext-page .ai-drafts-rail-button[data-ai-draft-rail-button="converted"],
 .ai-drafts-vnext-page .ai-drafts-right-card:nth-of-type(1) .ai-drafts-rail-button:nth-of-type(3) {
-  border-color: var(--cf-ai-draft-emerald-border) !important;
-  background: var(--cf-ai-draft-emerald-bg) !important;
-  color: var(--cf-ai-draft-emerald-text) !important;
+  border-color: var(--cf-ai-draft-emerald-border);
+  background: var(--cf-ai-draft-emerald-bg);
+  color: var(--cf-ai-draft-emerald-text);
 }
 
 .ai-drafts-vnext-page .ai-drafts-rail-button strong {
-  min-width: 30px !important;
-  height: 26px !important;
-  border: 1px solid currentColor !important;
-  background: rgba(255,255,255,0.82) !important;
-  color: currentColor !important;
-  font-weight: 950 !important;
+  min-width: 30px;
+  height: 26px;
+  border: 1px solid currentColor;
+  background: rgba(255,255,255,0.82);
+  color: currentColor;
+  font-weight: 950;
 }
-
-/* Empty states */
 .ai-drafts-vnext-page .ai-drafts-right-card:nth-of-type(2) .ai-drafts-rail-empty,
 .ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="errors"] .ai-drafts-rail-empty {
-  border: 1px dashed rgba(220, 38, 38, 0.28) !important;
-  background: var(--cf-ai-draft-red-bg) !important;
-  color: var(--cf-ai-draft-red-text) !important;
+  border: 1px dashed rgba(220, 38, 38, 0.28);
+  background: var(--cf-ai-draft-red-bg);
+  color: var(--cf-ai-draft-red-text);
 }
 
 .ai-drafts-vnext-page .ai-drafts-right-card:nth-of-type(3) .ai-drafts-rail-empty,
 .ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="converted"] .ai-drafts-rail-empty {
-  border: 1px dashed rgba(4, 120, 87, 0.28) !important;
-  background: var(--cf-ai-draft-emerald-bg) !important;
-  color: var(--cf-ai-draft-emerald-text) !important;
+  border: 1px dashed rgba(4, 120, 87, 0.28);
+  background: var(--cf-ai-draft-emerald-bg);
+  color: var(--cf-ai-draft-emerald-text);
 }
 
 .ai-drafts-vnext-page .ai-drafts-right-card:nth-of-type(4) .ai-drafts-rail-empty,
 .ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="help"] .ai-drafts-rail-empty {
-  border: 1px dashed rgba(37, 99, 235, 0.24) !important;
-  background: var(--cf-ai-draft-sky-bg) !important;
-  color: #1e3a8a !important;
+  border: 1px dashed rgba(37, 99, 235, 0.24);
+  background: var(--cf-ai-draft-sky-bg);
+  color: #1e3a8a;
 }
 
 .ai-drafts-vnext-page .ai-drafts-rail-empty {
-  border-radius: 16px !important;
-  padding: 12px !important;
-  font-weight: 750 !important;
+  border-radius: 16px;
+  padding: 12px;
+  font-weight: 750;
 }

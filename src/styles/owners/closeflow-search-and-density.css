@@ -1,4 +1,5 @@
-/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:search-density","concerns":["SEARCH"],"scope":"route-scoped","consumerRoots":["src/styles/closeflow-visual-source-truth.css"],"role":"canonical-owner","boundary":"route-semantic","whyNotGlobal":"This file is the registered semantic owner for its declared concerns.","whyNotDuplicate":"The registry maps each declared concern to this single reachable owner.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:search-density","concerns":["SEARCH"],"scope":"route-scoped","consumerRoots":["src/pages/Leads.tsx","src/pages/Clients.tsx"],"role":"canonical-owner","boundary":"route-semantic","whyNotGlobal":"This file is the registered semantic owner for search composition used by Leads and Clients.","whyNotDuplicate":"The registry maps SEARCH to this single reachable owner.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+/* LF-UI-IMPORTANT_BOUNDARY: SEMANTIC_OWNER_CASCADE */
 
 :root {
   --cf-search-bg: #ffffff;
@@ -73,8 +74,6 @@
   border-color: var(--cf-search-border-focus);
   box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.32), var(--cf-search-shadow);
 }
-
-/* Leads value card should follow the same neutral operator-card rhythm as Clients. */
 .lead-right-rail .operator-top-value-card[data-testid="leads-top-value-records-card"] {
   border-color: #e2e8f0;
   background: #ffffff;
@@ -313,8 +312,6 @@
     contain: none !important;
     clip-path: none !important;
   }
-
-  /* Eliminate old route islands in the actual app work slot. */
   #root .view.active[data-shell-content="true"] :is(
     .mx-auto.max-w-3xl,
     .mx-auto.max-w-5xl,
@@ -343,8 +340,6 @@
     margin-left: 0 !important;
     margin-right: 0 !important;
   }
-
-  /* Leads/Clients/Cases use one real app-shell layout: main list + right rail. */
   #root .view.active[data-shell-content="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
     .grid-4,
     .grid-5,
@@ -405,8 +400,6 @@
 
   
   --cf150-width-source-truth: "semantic149-clean-desktop-app-shell-canvas";
-
-  /* Typography source truth. Small reduction, not a redesign. */
   --cf150-font-scale-note: "slight-minus";
   --cf150-font-ui: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
@@ -437,8 +430,6 @@
   #root .view.active[data-shell-content="true"] {
     font-family: var(--cf150-font-ui) !important;
   }
-
-  /* Topbar / page identity */
   #root .global-bar {
     font-size: var(--cf150-text-control) !important;
     line-height: var(--cf150-line-normal) !important;
@@ -453,8 +444,6 @@
     font-size: var(--cf150-text-page-title) !important;
     line-height: var(--cf150-line-tight) !important;
   }
-
-  /* Sidebar */
   #root .sidebar {
     font-size: var(--cf150-text-nav) !important;
     line-height: var(--cf150-line-normal) !important;
@@ -469,8 +458,6 @@
     font-size: var(--cf150-text-meta) !important;
     line-height: var(--cf150-line-tight) !important;
   }
-
-  /* Shared route text */
   #root .view.active[data-shell-content="true"] {
     font-size: var(--cf150-text-body) !important;
     line-height: var(--cf150-line-normal) !important;
@@ -523,8 +510,6 @@
     font-size: var(--cf150-text-card-title) !important;
     line-height: var(--cf150-line-tight) !important;
   }
-
-  /* HTML-style pages used by Leads/Clients/Cases and activity panels */
   #root .view.active[data-shell-content="true"] :is(
     .cf-html-view,
     .main-leads-html,
@@ -595,8 +580,6 @@
 :root {
   --closeflow-semantic151-compact-cards-source-truth: "active";
   --cf151-card-source-truth: "global-panel-cards";
-
-  /* Gentle size reduction, not a redesign. */
   --cf151-card-radius: 20px;
   --cf151-card-radius-small: 16px;
 
@@ -619,7 +602,6 @@
 
 
 @media (hover: hover) and (pointer: fine) {
-  /* Global route spacing. */
   #root .view.active[data-shell-content="true"] :is(
     .cf-route-work-root,
     .cf-html-view,
@@ -645,8 +627,6 @@
   ) {
     gap: var(--cf151-card-gap) !important;
   }
-
-  /* KPI / stat cards. */
   #root .view.active[data-shell-content="true"] :is(
     .kpi,
     .stat,
@@ -664,8 +644,6 @@
     border-radius: var(--cf151-card-radius) !important;
     box-sizing: border-box !important;
   }
-
-  /* Main panels / section cards / accordion rows. */
   #root .view.active[data-shell-content="true"] :is(
     .panel-card,
     .section-card,
@@ -685,8 +663,6 @@
     border-radius: var(--cf151-card-radius) !important;
     box-sizing: border-box !important;
   }
-
-  /* HTML-list rows used by Leads / Clients / Cases. */
   #root .view.active[data-shell-content="true"] .cf-html-view:is(
     .main-leads-html,
     .main-clients-html,
@@ -704,8 +680,6 @@
     padding-bottom: var(--cf151-card-pad-y) !important;
     border-radius: var(--cf151-card-radius) !important;
   }
-
-  /* Today / Tasks Tailwind-like card islands, limited to route roots. */
   #root .view.active[data-shell-content="true"] :is(
     [data-p0-today-stable-rebuild="true"],
     [data-p0-tasks-stable-rebuild="true"]
@@ -730,8 +704,6 @@
   ) {
     min-height: var(--cf151-panel-min-height) !important;
   }
-
-  /* Right rail cards. */
   #root .view.active[data-shell-content="true"] :is(
     .lead-right-rail,
     .clients-right-rail,
@@ -753,8 +725,6 @@
     border-radius: var(--cf151-card-radius-small) !important;
     box-sizing: border-box !important;
   }
-
-  /* Icons inside card chips/tiles should not force oversized cards. */
   #root .view.active[data-shell-content="true"] :is(
     .kpi,
     .stat,
@@ -802,8 +772,6 @@
 :root {
   --closeflow-semantic152-dense-cards-80-percent-target: "active";
   --cf152-density-target: "80-percent-visual-density-without-browser-zoom";
-
-  /* Stronger but still controlled reduction. */
   --cf152-card-radius: 16px;
   --cf152-card-radius-small: 14px;
 
@@ -829,7 +797,6 @@
 
 
 @media (hover: hover) and (pointer: fine) {
-  /* Route-level vertical rhythm. */
   #root .view.active[data-shell-content="true"] :is(
     .cf-route-work-root,
     .cf-html-view,
@@ -855,8 +822,6 @@
   ) {
     gap: var(--cf152-card-gap) !important;
   }
-
-  /* KPI/stat cards: visibly smaller. */
   #root .view.active[data-shell-content="true"] :is(
     .kpi,
     .stat,
@@ -874,8 +839,6 @@
     border-radius: var(--cf152-card-radius) !important;
     box-sizing: border-box !important;
   }
-
-  /* General card/panel tiles. */
   #root .view.active[data-shell-content="true"] :is(
     .panel-card,
     .section-card,
@@ -896,8 +859,6 @@
     border-radius: var(--cf152-card-radius) !important;
     box-sizing: border-box !important;
   }
-
-  /* Controls inside panels should not keep cards tall. */
   #root .view.active[data-shell-content="true"] :is(
     input,
     select,
@@ -915,8 +876,6 @@
   ) {
     min-height: var(--cf152-control-height) !important;
   }
-
-  /* HTML list pages: Leads / Clients / Cases. */
   #root .view.active[data-shell-content="true"] .cf-html-view:is(
     .main-leads-html,
     .main-clients-html,
@@ -934,8 +893,6 @@
     padding-bottom: var(--cf152-card-pad-y) !important;
     border-radius: var(--cf152-card-radius) !important;
   }
-
-  /* Today / Tasks Tailwind-like card islands, scoped to route roots. */
   #root .view.active[data-shell-content="true"] :is(
     [data-p0-today-stable-rebuild="true"],
     [data-p0-tasks-stable-rebuild="true"]
@@ -960,8 +917,6 @@
   ) {
     min-height: var(--cf152-panel-min-height) !important;
   }
-
-  /* Right rail cards. */
   #root .view.active[data-shell-content="true"] :is(
     .lead-right-rail,
     .clients-right-rail,
@@ -983,8 +938,6 @@
     border-radius: var(--cf152-card-radius-small) !important;
     box-sizing: border-box !important;
   }
-
-  /* Icons must not preserve the oversized tile height. */
   #root .view.active[data-shell-content="true"] :is(
     .kpi,
     .stat,
@@ -1032,15 +985,11 @@
 :root {
   --closeflow-semantic156-real-density-tokens-no-zoom: "active";
   --cf156-density-source-truth: "real-css-density-tokens-no-zoom";
-
-  /* App route spacing */
   --cf156-route-pad-y: 18px;
   --cf156-route-pad-x: 20px;
   --cf156-section-gap: 12px;
   --cf156-grid-gap: 12px;
   --cf156-card-gap: 10px;
-
-  /* Cards/panels */
   --cf156-card-radius-xl: 18px;
   --cf156-card-radius-lg: 16px;
   --cf156-card-radius-md: 14px;
@@ -1054,14 +1003,10 @@
   --cf156-panel-height: 48px;
   --cf156-row-height: 58px;
   --cf156-rail-row-height: 42px;
-
-  /* Controls */
   --cf156-control-height: 32px;
   --cf156-control-height-sm: 28px;
   --cf156-control-pad-x: 12px;
   --cf156-control-radius: 12px;
-
-  /* Icons/badges */
   --cf156-icon-box: 30px;
   --cf156-icon-box-sm: 26px;
   --cf156-chip-height: 20px;
@@ -1077,7 +1022,6 @@
 
 
 @media (hover: hover) and (pointer: fine) {
-  /* Hard guard against the rejected paths. */
   html,
   body,
   #root,
@@ -1091,8 +1035,6 @@
     contain: none !important;
     clip-path: none !important;
   }
-
-  /* Route slot stays full width. We only reduce inner density. */
   #root .view.active[data-shell-content="true"] {
     width: 100% !important;
     max-width: none !important;
@@ -1102,8 +1044,6 @@
     font-size: var(--cf156-font-body) !important;
     line-height: 1.22 !important;
   }
-
-  /* Route root rhythm: all primary tabs share the same density contract. */
   #root .view.active[data-shell-content="true"] :is(
     .cf-route-work-root,
     .cf-page-shell,
@@ -1138,8 +1078,6 @@
   ) {
     gap: var(--cf156-grid-gap) !important;
   }
-
-  /* Top KPI / stat / summary tiles. */
   #root .view.active[data-shell-content="true"] :is(
     .kpi,
     .stat,
@@ -1157,8 +1095,6 @@
     border-radius: var(--cf156-card-radius-xl) !important;
     box-sizing: border-box !important;
   }
-
-  /* Generic app cards/panels. */
   #root .view.active[data-shell-content="true"] :is(
     .panel-card,
     .section-card,
@@ -1181,8 +1117,6 @@
     border-radius: var(--cf156-card-radius-lg) !important;
     box-sizing: border-box !important;
   }
-
-  /* HTML-list rows used by Leads / Clients / Cases. */
   #root .view.active[data-shell-content="true"] .cf-html-view:is(
     .main-leads-html,
     .main-clients-html,
@@ -1200,8 +1134,6 @@
     padding-bottom: var(--cf156-card-pad-y) !important;
     border-radius: var(--cf156-card-radius-lg) !important;
   }
-
-  /* Right rail panels. */
   #root .view.active[data-shell-content="true"] :is(
     .lead-right-rail,
     .clients-right-rail,
@@ -1223,8 +1155,6 @@
     border-radius: var(--cf156-card-radius-md) !important;
     box-sizing: border-box !important;
   }
-
-  /* Today/Tasks Tailwind-heavy screens: density without scaling. */
   #root .view.active[data-shell-content="true"] :is(
     [data-p0-today-stable-rebuild="true"],
     [data-p0-tasks-stable-rebuild="true"]
@@ -1240,8 +1170,6 @@
     padding-bottom: var(--cf156-card-pad-y) !important;
     border-radius: var(--cf156-card-radius-lg) !important;
   }
-
-  /* Tailwind padding/gap patterns scoped to the app content only. */
   #root .view.active[data-shell-content="true"] :is(
     .p-6,
     .sm\:p-6,
@@ -1275,8 +1203,6 @@
     padding-top: var(--cf156-card-pad-y) !important;
     padding-bottom: var(--cf156-card-pad-y) !important;
   }
-
-  /* Controls inside cards and route toolbar/search. */
   #root .view.active[data-shell-content="true"] :is(
     input,
     select,
@@ -1299,8 +1225,6 @@
   ) {
     min-height: var(--cf156-control-height) !important;
   }
-
-  /* Text hierarchy inside panel. */
   #root .view.active[data-shell-content="true"] :is(
     h1,
     h2,
@@ -1340,8 +1264,6 @@
     font-size: var(--cf156-font-kpi) !important;
     line-height: 1.08 !important;
   }
-
-  /* Chips/badges. */
   #root .view.active[data-shell-content="true"] :is(
     .badge,
     .chip,
@@ -1355,8 +1277,6 @@
     font-size: var(--cf156-font-meta) !important;
     line-height: 1.05 !important;
   }
-
-  /* Icons should not keep the old card height alive. */
   #root .view.active[data-shell-content="true"] :is(
     .icon,
     .icon-box,
@@ -1381,15 +1301,6 @@
   }
 }
 
-/* Tuning:
-   If still too large, change only variables above:
-   - route/card padding
-   - gaps
-   - min-heights
-   - font sizes
-   Never add zoom/scale/transform here.
-*/
-
 
 
 :root {
@@ -1411,11 +1322,7 @@
   --cf158-overlay-font-label: 12px;
   --cf158-overlay-control-height: 36px;
 }
-
-/* Desktop/operator overlays. */
 @media (hover: hover) and (pointer: fine) {
-  /* Radix Dialog/AlertDialog and custom app modals.
-     Important: we scale the content, not the overlay backdrop. */
   body :is(
     [role="dialog"],
     [data-radix-dialog-content],
@@ -1438,8 +1345,6 @@
     font-size: var(--cf158-overlay-font-body) !important;
     line-height: 1.25 !important;
   }
-
-  /* Modal inner rhythm. */
   body :is(
     [role="dialog"],
     [data-radix-dialog-content],
@@ -1532,8 +1437,6 @@
     line-height: 1.15 !important;
     border-radius: 12px !important;
   }
-
-  /* Popovers/dropdowns/menus are usually portaled too. */
   body :is(
     [data-radix-popper-content-wrapper],
     [data-radix-popover-content],
@@ -1554,8 +1457,6 @@
     font-size: var(--cf158-overlay-font-body) !important;
     line-height: 1.2 !important;
   }
-
-  /* Toasts, PWA prompts, bug recorder, command palette style overlays. */
   body :is(
     [data-sonner-toaster],
     [data-sonner-toast],
@@ -1574,8 +1475,6 @@
     font-size: var(--cf158-overlay-font-body) !important;
     line-height: 1.2 !important;
   }
-
-  /* Keep full-screen backdrops full-screen and unscaled. */
   body :is(
     [data-radix-dialog-overlay],
     [data-radix-alert-dialog-overlay],
@@ -1618,10 +1517,7 @@
   --cf159-footer-height: 58px;
   --cf159-footer-pad-y: 10px;
 }
-
-/* Desktop/operator overlays. */
 @media (hover: hover) and (pointer: fine) {
-  /* Backdrops stay full-screen. Never scale them. */
   body :is(
     [data-radix-dialog-overlay],
     [data-radix-alert-dialog-overlay],
@@ -1633,8 +1529,6 @@
     zoom: 1 !important;
     transform: none !important;
   }
-
-  /* Dialog/modals: no zoom. Real size reduction only. */
   body :is(
     [role="dialog"],
     [data-radix-dialog-content],
@@ -1668,8 +1562,6 @@
     font-size: var(--cf159-font-body) !important;
     line-height: 1.22 !important;
   }
-
-  /* Dialog header: compact and non-scrollable. */
   body :is(
     [role="dialog"],
     [data-radix-dialog-content],
@@ -1725,8 +1617,6 @@
     font-size: var(--cf159-font-small) !important;
     line-height: 1.18 !important;
   }
-
-  /* Scroll-safe main body. This is what prevents footer/action bars from covering text. */
   body :is(
     [role="dialog"],
     [data-radix-dialog-content],
@@ -1754,8 +1644,6 @@
     scrollbar-gutter: stable !important;
     padding-bottom: 0 !important;
   }
-
-  /* If the dialog's direct inner wrapper is the scroll body, make it behave too. */
   body :is(
     [role="dialog"],
     [data-radix-dialog-content],
@@ -1768,8 +1656,6 @@
     overflow-x: hidden !important;
     box-sizing: border-box !important;
   }
-
-  /* Form cards/sections compacted. */
   body :is(
     [role="dialog"],
     [data-radix-dialog-content],
@@ -1791,8 +1677,6 @@
     border-radius: calc(var(--cf159-dialog-radius) - 4px) !important;
     box-sizing: border-box !important;
   }
-
-  /* Labels/fields compacted enough to reduce lead/task scrolling. */
   body :is(
     [role="dialog"],
     [data-radix-dialog-content],
@@ -1838,8 +1722,6 @@
     font-size: var(--cf159-font-body) !important;
     line-height: 1.2 !important;
   }
-
-  /* Footer/action bars. Move them to the bottom of a flex form and prevent covering text. */
   body :is(
     [role="dialog"],
     [data-radix-dialog-content],
@@ -1868,8 +1750,6 @@
     border-top: 1px solid rgba(148, 163, 184, 0.22) !important;
     box-sizing: border-box !important;
   }
-
-  /* Generic action row detection for custom footer divs with submit button. */
   body :is(
     [role="dialog"],
     [data-radix-dialog-content],
@@ -1890,8 +1770,6 @@
     border-top: 1px solid rgba(148, 163, 184, 0.22) !important;
     box-sizing: border-box !important;
   }
-
-  /* Close button should stay in the corner, not inherit form footer logic. */
   body :is(
     [role="dialog"],
     [data-radix-dialog-content],
@@ -1915,8 +1793,6 @@
     padding: 0 !important;
     border-radius: 999px !important;
   }
-
-  /* Popovers/dropdowns: keep them smaller, but do not force dialog centering. */
   body :is(
     [data-radix-popper-content-wrapper],
     [data-radix-popover-content],
@@ -1937,14 +1813,6 @@
     line-height: 1.18 !important;
   }
 }
-
-/* If a single dialog remains too large:
-   reduce only these:
-   --cf159-dialog-width
-   --cf159-dialog-pad-x
-   --cf159-dialog-pad-y
-   --cf159-control-height
-*/
 
 
 
@@ -1977,10 +1845,7 @@
   --cf160-modal-control-pad-x: 10px;
   --cf160-modal-footer-height: 50px;
 }
-
-/* Desktop/operator overlays only. */
 @media (hover: hover) and (pointer: fine) {
-  /* Backdrops always cover the viewport and must not be scaled or centered as a dialog. */
   body :is(
     [data-radix-dialog-overlay],
     [data-radix-alert-dialog-overlay],
@@ -1996,8 +1861,6 @@
     height: 100vh !important;
     transform: none !important;
   }
-
-  /* Shared compact dialog styling. */
   body :is(
     [role="dialog"],
     [data-radix-dialog-content],
@@ -2085,8 +1948,6 @@
     max-width: min(var(--cf160-modal-visual-width), var(--cf160-modal-visual-max-width)) !important;
     max-height: var(--cf160-modal-visual-max-height) !important;
   }
-
-  /* Header/title density. */
   body :is(
     [role="dialog"],
     [data-radix-dialog-content],
@@ -2126,8 +1987,6 @@
     font-size: var(--cf160-modal-font-small) !important;
     line-height: 1.15 !important;
   }
-
-  /* Compact the main modal content. */
   body :is(
     [role="dialog"],
     [data-radix-dialog-content],
@@ -2221,8 +2080,6 @@
     font-size: var(--cf160-modal-font-body) !important;
     line-height: 1.16 !important;
   }
-
-  /* Footer/action rows: keep visible, but do not cover content. */
   body :is(
     [role="dialog"],
     [data-radix-dialog-content],
@@ -2259,8 +2116,6 @@
     border-top: 1px solid rgba(148, 163, 184, 0.22) !important;
     box-sizing: border-box !important;
   }
-
-  /* Close button stable in corner. */
   body :is(
     [role="dialog"],
     [data-radix-dialog-content],
@@ -2284,8 +2139,6 @@
     padding: 0 !important;
     border-radius: 999px !important;
   }
-
-  /* Popovers/dropdowns should stay compact but not receive dialog centering. */
   body :is(
     [data-radix-popper-content-wrapper],
     [data-radix-popover-content],
@@ -2306,14 +2159,6 @@
     line-height: 1.14 !important;
   }
 }
-
-/* Tuning:
-   One source of truth:
-   --cf160-modal-visual-width
-   --cf160-modal-visual-max-height
-   --cf160-modal-pad-x/y
-   --cf160-modal-control-height
-*/
 
 
 :root {
@@ -2475,13 +2320,9 @@
 
 :root {
   --closeflow-semantic162-cf-modal-surface-lower-smaller-source-truth: "active";
-
-  /* One source of truth for all cf-modal-surface subwindows. */
   --cf162-modal-visual-width: 620px;
   --cf162-modal-visual-max-width: calc(100vw - 72px);
   --cf162-modal-visual-max-height: 76vh;
-
-  /* Lower than strict center. 56vh is intentional, not accidental drift. */
   --cf162-modal-center-y-vh: 56vh;
 
   
@@ -2625,30 +2466,14 @@
   }
 }
 
-/*
-  Tuning source truth:
-  - Lower/higher: --cf162-modal-center-y-vh: 55vh / 56vh / 57vh
-  - Smaller/wider: --cf162-modal-visual-width: 600px / 620px / 640px
-  - Less/more vertical: --cf162-modal-visual-max-height: 72vh / 76vh / 80vh
-*/
-
 
 
 :root {
   --closeflow-semantic163-cf-modal-main-center-tall-compact: "active";
-
-  /* One source of truth for horizontal modal target. */
   --cf163-modal-visual-width: 560px;
   --cf163-modal-visual-max-width: calc(100vw - 96px);
-
-  /* Work-area center shift: full viewport center + half-ish sidebar/chrome offset.
-     This is why the modal moves right, toward the center of the actual app work panel. */
   --cf163-modal-main-center-shift-x: clamp(72px, 6.5vw, 118px);
-
-  /* Slightly lower than strict vertical center, but not bottom-heavy. */
   --cf163-modal-center-y-vh: 55vh;
-
-  /* Taller capacity. Event modal gets a fixed taller viewport envelope below. */
   --cf163-modal-visual-max-height: 88vh;
   --cf163-event-visual-height: 84vh;
 
@@ -2700,8 +2525,6 @@
     overflow: hidden !important;
     box-sizing: border-box !important;
   }
-
-  /* Event modal: narrower, but taller. This avoids the "wide sheet" feeling and gives vertical room. */
   body .cf-modal-surface[role="dialog"]:has(.event-form-vnext),
   body [role="dialog"].cf-modal-surface:has(.event-form-vnext) {
     height: min(var(--cf163-event-logical-height), var(--cf163-modal-logical-max-height)) !important;
@@ -2738,8 +2561,6 @@
     box-sizing: border-box !important;
     scrollbar-gutter: stable !important;
   }
-
-  /* Add safe space so sticky submit/footer cannot cover the last fields. */
   body .cf-modal-surface[role="dialog"] .event-form-vnext,
   body [role="dialog"].cf-modal-surface .event-form-vnext {
     padding-bottom: var(--cf163-footer-safe-space) !important;
@@ -2814,14 +2635,6 @@
   }
 }
 
-/*
-  Source-truth tuning:
-  - more right: --cf163-modal-main-center-shift-x
-  - narrower/wider: --cf163-modal-visual-width
-  - higher/lower: --cf163-modal-center-y-vh
-  - event taller/shorter: --cf163-event-visual-height
-*/
-
 
 
 :root {
@@ -2831,13 +2644,9 @@
   --cf164-modal-visual-width: 560px;
   --cf164-modal-visual-max-width: calc(100vw - 96px);
   --cf164-modal-main-center-shift-x: clamp(72px, 6.5vw, 118px);
-
-  /* Vertical source truth: top-anchored, not center-anchored. */
   --cf164-modal-top-offset: 86px;
   --cf164-modal-bottom-safe: 54px;
   --cf164-modal-visual-max-height: calc(100vh - var(--cf164-modal-top-offset) - var(--cf164-modal-bottom-safe));
-
-  /* Event gets the tallest safe envelope, but starts from the same top line. */
   --cf164-event-visual-height: calc(100vh - var(--cf164-modal-top-offset) - var(--cf164-modal-bottom-safe));
 
   
@@ -2865,8 +2674,6 @@
   --cf164-textarea-max: 72px;
   --cf164-footer-min-height: 42px;
   --cf164-footer-safe-space: 46px;
-
-  /* Light modal source truth. */
   --cf164-modal-bg: #ffffff;
   --cf164-modal-fg: #111827;
   --cf164-modal-muted: #64748b;
@@ -3054,30 +2861,16 @@
   }
 }
 
-/*
-  Source-truth tuning:
-  - further down: --cf164-modal-top-offset 94px / 102px
-  - less down: --cf164-modal-top-offset 72px
-  - narrower/wider: --cf164-modal-visual-width
-  - event height: --cf164-event-visual-height
-*/
-
 
 
 :root {
   --closeflow-semantic165-modal-unified-event-motif-source-truth: "active";
-
-  /* Position and size source truth */
   --cf165-modal-visual-width: 600px;
   --cf165-modal-visual-max-width: calc(100vw - 96px);
   --cf165-modal-top-offset: 88px;
   --cf165-modal-bottom-safe: 72px;
   --cf165-modal-max-height: calc(100vh - var(--cf165-modal-top-offset) - var(--cf165-modal-bottom-safe));
-
-  /* Work-area center: viewport center plus sidebar/work-area correction. */
   --cf165-modal-work-center-shift-x: clamp(72px, 6.25vw, 112px);
-
-  /* Unified event-motif colors */
   --cf165-modal-bg: #0b1220;
   --cf165-modal-bg-2: #0f172a;
   --cf165-modal-panel: #111827;
@@ -3093,8 +2886,6 @@
   --cf165-modal-input-placeholder: #8ea0b8;
   --cf165-modal-primary: #16a34a;
   --cf165-modal-primary-hover: #15803d;
-
-  /* Density source truth */
   --cf165-modal-radius: 16px;
   --cf165-modal-header-pad-y: 12px;
   --cf165-modal-header-pad-x: 16px;
@@ -3199,8 +2990,6 @@
     line-height: 1.16 !important;
     color: var(--cf165-modal-muted) !important;
   }
-
-  /* Main body: scroll inside the modal, never behind the footer. */
   body [data-closeflow-modal-visual-system="true"].cf-modal-surface > :is(form, .event-form-vnext, .dialog-body, .modal-body),
   body .cf-modal-surface[data-closeflow-modal-visual-system="true"] > :is(form, .event-form-vnext, .dialog-body, .modal-body),
   body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(form.event-form-vnext, .event-form-vnext),
@@ -3333,8 +3122,6 @@
     color: #334155 !important;
     border: 1px solid var(--cf165-modal-border) !important;
   }
-
-  /* Mobile: keep normal sheet behavior and avoid desktop work-area offset. */
   @media (max-width: 900px) {
     body [data-closeflow-modal-visual-system="true"].cf-modal-surface,
     body .cf-modal-surface[data-closeflow-modal-visual-system="true"] {
@@ -3346,14 +3133,6 @@
     }
   }
 }
-
-/*
-  Tuning only here:
-  - width: --cf165-modal-visual-width
-  - position: --cf165-modal-work-center-shift-x, --cf165-modal-top-offset
-  - height: --cf165-modal-bottom-safe
-  Do not tune Lead/Task/Event separately.
-*/
 
 
 
@@ -3541,11 +3320,6 @@
     color: #94a3b8 !important;
     stroke: currentColor !important;
   }
-
-  /*
-    Native select dropdown fallback. Some browser/Windows dropdowns ignore parent colors.
-    This prevents white-on-white in "Źródło", "Typ", "Status", "Priorytet" select panels.
-  */
   body [data-closeflow-modal-visual-system="true"].cf-modal-surface select,
   body .cf-modal-surface[data-closeflow-modal-visual-system="true"] select,
   body [data-closeflow-modal-visual-system="true"].cf-modal-surface select option,
@@ -3668,8 +3442,6 @@
     box-shadow: none !important;
   }
 }
-
-/* Mobile: task quick modal keeps natural sheet height. */
 @media (max-width: 900px) {
   body [data-closeflow-modal-visual-system="true"].cf-modal-surface[data-task-create-dialog-semantic170="true"] {
     width: calc(100vw - 24px) !important;
@@ -3702,16 +3474,12 @@
 :root {
   --closeflow-semantic172-global-client-button-picker-icon-cleanup: "active";
 }
-
-/* TopicContactPicker after icon removal: restore normal left padding. */
 body [data-closeflow-modal-visual-system="true"].cf-modal-surface [data-topic-contact-picker-input="true"],
 body .cf-modal-surface[data-closeflow-modal-visual-system="true"] [data-topic-contact-picker-input="true"],
 body [data-topic-contact-picker-input="true"].cf-topic-contact-picker-input,
 body .cf-topic-contact-picker-input {
   padding-left: 12px !important;
 }
-
-/* New client dialog: same lead-form motif, but compact and no copy-heavy sections. */
 body [data-closeflow-modal-visual-system="true"].cf-modal-surface[data-client-create-dialog-semantic172="true"],
 body .cf-modal-surface[data-closeflow-modal-visual-system="true"][data-client-create-dialog-semantic172="true"] {
   width: min(600px, calc(100vw - 96px)) !important;
@@ -3773,16 +3541,12 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   gap: 0 !important;
   margin-right: auto !important;
 }
-
-/* Remove old decorative icons that collide with text. */
 #root .cf-html-view .cf-main-search > span[aria-hidden="true"],
 #root .cf-html-view .cf-main-search > svg,
 #root .cf-html-view [data-cf-main-search-source="semantic173"] > span[aria-hidden="true"],
 #root .cf-html-view [data-cf-main-search-source="semantic173"] > svg {
   display: none !important;
 }
-
-/* One input rule for native input and shadcn Input inside main search bars. */
 #root .cf-html-view .cf-main-search :is(input, [role="combobox"]),
 #root .cf-html-view [data-cf-main-search-source="semantic173"] :is(input, [role="combobox"]) {
   width: 100% !important;
@@ -3811,8 +3575,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   -webkit-text-fill-color: var(--cf173-main-search-placeholder) !important;
   opacity: 1 !important;
 }
-
-/* Search suggestions should inherit the same desktop width as the search bar. */
 #root .cf-html-view .cf-main-search + .suggestions,
 #root .cf-html-view [data-cf-main-search-source="semantic173"] + .suggestions {
   width: min(100%, var(--cf173-main-search-max-width)) !important;
@@ -3862,11 +3624,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   --cf174-main-search-placeholder: #64748b;
   --cf174-main-search-shadow: 0 10px 24px rgba(15, 23, 42, 0.045);
 }
-
-/*
-  The wrapper must not draw a second card. Only the input is the visual surface.
-  This kills the ugly "two layers" effect.
-*/
 #root .cf-html-view .cf-main-search,
 #root .cf-html-view [data-cf-main-search-source="semantic173"] {
   width: 100% !important;
@@ -3889,11 +3646,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   border-radius: var(--cf174-main-search-radius) !important;
   overflow: visible !important;
 }
-
-/*
-  Direct decorative icons/old symbols are not part of the source truth.
-  They previously collided with placeholder text.
-*/
 #root .cf-html-view .cf-main-search > span[aria-hidden="true"],
 #root .cf-html-view .cf-main-search > svg,
 #root .cf-html-view .cf-main-search > .search-icon,
@@ -3945,11 +3697,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   letter-spacing: var(--cf174-main-search-letter-spacing) !important;
   opacity: 1 !important;
 }
-
-/*
-  In pages with layout-list, the search should occupy the left work stack all the way
-  to the right rail / grey boundary. This is the real "ends at dark grey start" behaviour.
-*/
 #root .cf-html-view .layout-list > .stack > .cf-main-search,
 #root .cf-html-view .layout-list > .stack > [data-cf-main-search-source="semantic173"],
 #root .cf-html-view .stack > .cf-main-search,
@@ -3957,8 +3704,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   width: 100% !important;
   max-width: 100% !important;
 }
-
-/* Suggestions follow the same width, with no separate misaligned surface. */
 #root .cf-html-view .cf-main-search + .suggestions,
 #root .cf-html-view [data-cf-main-search-source="semantic173"] + .suggestions,
 #root .cf-html-view .cf-main-search + .lead-search-suggestions,
@@ -3967,8 +3712,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   max-width: 100% !important;
   margin: 6px 0 0 !important;
 }
-
-/* If the page has no right rail and the search is directly below metrics, cap it softly. */
 @media (min-width: 1280px) {
   #root .cf-html-view > .cf-main-search,
   #root .cf-html-view > [data-cf-main-search-source="semantic173"] {
@@ -4001,8 +3744,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   --cf175-main-search-placeholder: var(--cf174-main-search-placeholder, #64748b);
   --cf175-main-search-shadow: var(--cf174-main-search-shadow, 0 10px 24px rgba(15, 23, 42, 0.045));
 }
-
-/* All secondary-page main search wrappers become a pure layout shell. */
 #root .cf-main-search[data-cf-main-search-semantic175="true"],
 #root .activity-search-box.cf-main-search,
 #root .ai-drafts-search-box.cf-main-search,
@@ -4029,8 +3770,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   border-radius: var(--cf175-main-search-radius) !important;
   overflow: visible !important;
 }
-
-/* Search icons are decorative and must not collide with text. */
 #root .cf-main-search[data-cf-main-search-semantic175="true"] > svg,
 #root .cf-main-search[data-cf-main-search-semantic175="true"] > span[aria-hidden="true"],
 #root .activity-search-box.cf-main-search > svg,
@@ -4044,8 +3783,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   opacity: 0 !important;
   pointer-events: none !important;
 }
-
-/* Native inputs and shadcn inputs share the same surface. */
 #root .cf-main-search[data-cf-main-search-semantic175="true"] :is(input, [role="combobox"]),
 #root .activity-search-box.cf-main-search input,
 #root .ai-drafts-search-box.cf-main-search input,
@@ -4076,8 +3813,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   box-shadow: var(--cf175-main-search-shadow) !important;
   outline: none !important;
 }
-
-/* Normalize placeholders. */
 #root .cf-main-search[data-cf-main-search-semantic175="true"] :is(input, [role="combobox"])::placeholder,
 #root .activity-search-box.cf-main-search input::placeholder,
 #root .ai-drafts-search-box.cf-main-search input::placeholder,
@@ -4107,8 +3842,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
 #root [data-p0-tasks-stable-rebuild="true"] .cf-main-search[data-cf-main-search-semantic175="true"] {
   max-width: 100% !important;
 }
-
-/* Keep status/select side controls from crushing the search. */
 #root .support-ticket-tools {
   align-items: stretch !important;
 }
@@ -4116,8 +3849,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
 #root .support-ticket-tools .support-select {
   min-height: var(--cf175-main-search-height) !important;
 }
-
-/* On narrow screens every search is full width and stacked naturally. */
 @media (max-width: 900px) {
   :root {
     --cf175-main-search-height: 40px;
@@ -4145,8 +3876,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   --cf177-rail-card-padding-x: 16px;
   --cf177-rail-card-gap: 14px;
 }
-
-/* The work frame for leads and clients must be the same grid. */
 @media (min-width: 1221px) {
   #root .cf-html-view:is(.main-leads-html, .main-clients-html) .layout-list:has(:is(.lead-right-rail, .clients-right-rail)) {
     width: 100% !important;
@@ -4173,8 +3902,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
     gap: var(--cf177-rail-card-gap) !important;
   }
 }
-
-/* Search must fill the left stack only, not the full route and not a tiny pill. */
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .layout-list > .stack > :is(.search, .cf-main-search, [data-cf-main-search-source="semantic173"]) {
   width: 100% !important;
   max-width: 100% !important;
@@ -4182,8 +3909,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   height: var(--cf177-record-search-height) !important;
   box-sizing: border-box !important;
 }
-
-/* The list card is the same physical width in Leads and Clients. */
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .layout-list > .stack > .table-card {
   width: 100% !important;
   max-width: none !important;
@@ -4191,8 +3916,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   padding: var(--cf177-record-table-padding) !important;
   box-sizing: border-box !important;
 }
-
-/* Lead rows now use the same row skeleton as client rows. */
 #root .cf-html-view.main-leads-html .lead-table-card .lead-row,
 #root .cf-html-view.main-leads-html .lead-table-card .cf-lead-row-inline,
 #root .cf-html-view.main-clients-html .client-row.cf-client-row-inline {
@@ -4203,11 +3926,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   box-sizing: border-box !important;
   border-radius: var(--cf177-record-row-radius) !important;
 }
-
-/*
-  Same columns as the shared record-list source, with a slightly more disciplined first column.
-  The goal is not to make Leads copy Clients text, but to make both cards occupy equal geometry.
-*/
 #root .cf-html-view.main-leads-html .lead-table-card .lead-row:not(.row-empty),
 #root .cf-html-view.main-clients-html .client-row.cf-client-row-inline:not(.row-empty) {
   display: grid !important;
@@ -4221,8 +3939,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   gap: 0.55rem 0.8rem !important;
   padding: 0.68rem 0.82rem !important;
 }
-
-/* Keep lead content from spilling visually into the right-rail area. */
 #root .cf-html-view.main-leads-html .lead-row :is(.lead-main-cell, .lead-value-cell, .lead-action-cell) {
   min-width: 0 !important;
   max-width: 100% !important;
@@ -4238,8 +3954,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   overflow: hidden !important;
   text-overflow: ellipsis !important;
 }
-
-/* Clients and Leads right rails share the same compact card density. */
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) :is(.lead-right-rail, .clients-right-rail) :is(aside.right-card, .right-card, .operator-simple-filters-card, .operator-top-value-card) {
   width: 100% !important;
   max-width: 100% !important;
@@ -4247,8 +3961,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   padding: var(--cf177-rail-card-padding-y) var(--cf177-rail-card-padding-x) !important;
   border-radius: 22px !important;
 }
-
-/* Tighten rail typography without making it cramped. */
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) :is(.lead-right-rail, .clients-right-rail) :is(.operator-simple-filters-card, .operator-top-value-card) :is(h2, h3, .right-card-title, .rail-title) {
   font-size: 14px !important;
   line-height: 1.16 !important;
@@ -4260,8 +3972,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   line-height: 1.25 !important;
   font-weight: 650 !important;
 }
-
-/* Simple filters rows should match Client rail readability. */
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) :is(.operator-simple-filters-card, [data-testid="leads-simple-filters-card"], [data-testid="clients-simple-filters-card"]) :is(button, a, .filter-row, [role="button"]) {
   min-height: 36px !important;
   padding: 8px 12px !important;
@@ -4270,8 +3980,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   font-weight: 800 !important;
   line-height: 1.15 !important;
 }
-
-/* Top value rows: same structure, no glued name/value text. */
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .operator-top-value-card :is(a, button, .quick-list-row, .right-list-row) {
   min-height: 42px !important;
   padding: 9px 12px !important;
@@ -4286,13 +3994,9 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
 }
-
-/* Defensive: lead rail class should not have a separate width island. */
 #root .cf-html-view.main-leads-html .lead-right-rail.cf-operator-right-rail {
   flex-shrink: 0 !important;
 }
-
-/* Tablet/mobile keeps a single column, same as existing source truth. */
 @media (max-width: 1220px) {
   #root .cf-html-view:is(.main-leads-html, .main-clients-html) .layout-list:has(:is(.lead-right-rail, .clients-right-rail)) {
     display: flex !important;
@@ -4341,8 +4045,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   width: 100% !important;
   max-width: none !important;
 }
-
-/* Main /tasks frame: left stack plus right rail. */
 #root .tasks-semantic178-workspace {
   width: 100% !important;
   max-width: none !important;
@@ -4391,8 +4093,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   width: 100% !important;
   max-width: 100% !important;
 }
-
-/* Task grouped list. */
 #root .tasks-semantic178-grouped-list {
   display: flex !important;
   flex-direction: column !important;
@@ -4449,8 +4149,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   font-size: 12px !important;
   font-weight: 850 !important;
 }
-
-/* Task cards fill the left stack like client/lead cards. */
 #root .tasks-semantic178-main-stack .tasks-semantic48-task-card {
   width: 100% !important;
   max-width: none !important;
@@ -4479,8 +4177,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   font-size: 12px !important;
   font-weight: 850 !important;
 }
-
-/* Right rail cards. */
 #root .tasks-semantic178-rail-card {
   width: 100% !important;
   border-radius: var(--cf178-tasks-card-radius) !important;
@@ -4608,8 +4304,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   background: var(--cf178-tone-neutral-bg) !important;
   border-color: var(--cf178-tone-neutral-border) !important;
 }
-
-/* Urgent items. */
 #root .tasks-semantic178-urgent-button {
   appearance: none !important;
   cursor: pointer !important;
@@ -4632,8 +4326,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   line-height: 1.35 !important;
   padding: 12px !important;
 }
-
-/* Responsive: rail goes under list, never squeezes cards. */
 @media (max-width: 1220px) {
   #root .tasks-semantic178-workspace {
     display: flex !important;
@@ -4771,8 +4463,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
   .cf-html-shell [data-admin-ai-settings-page="true"] > * {
     max-width: none !important;
   }
-
-  /* Page-specific shells that were visually narrowing the working area */
   .cf-html-shell .activity-shell,
   .cf-html-shell .ai-drafts-shell,
   .cf-html-shell .notifications-shell,
@@ -4786,8 +4476,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
     margin-right: 0 !important;
     box-sizing: border-box !important;
   }
-
-  /* Header/metric/filter groups should stretch like Dziś */
   .cf-html-shell .activity-vnext-page .closeflow-page-header-v2,
   .cf-html-shell .ai-drafts-vnext-page .closeflow-page-header-v2,
   .cf-html-shell .notifications-vnext-page .closeflow-page-header-v2,
@@ -4808,8 +4496,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
     width: 100% !important;
     max-width: none !important;
   }
-
-  /* Main + right rail grids should consume the available canvas */
   .cf-html-shell .activity-shell,
   .cf-html-shell .ai-drafts-shell,
   .cf-html-shell .notifications-shell,
@@ -4840,8 +4526,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
     max-width: 360px !important;
   }
 }
-
-/* Middle widths: avoid crushing right rail into content */
 @media (min-width: 1024px) and (max-width: 1380px) {
   .cf-html-shell .activity-shell,
   .cf-html-shell .ai-drafts-shell,
@@ -4861,8 +4545,6 @@ body [data-client-create-dialog-semantic172="true"] .cf-semantic172-client-creat
     max-width: 320px !important;
   }
 }
-
-/* Mobile/tablet: keep existing stacked behavior */
 @media (max-width: 1023px) {
   .cf-html-shell .activity-vnext-page,
   .cf-html-shell .ai-drafts-vnext-page,
