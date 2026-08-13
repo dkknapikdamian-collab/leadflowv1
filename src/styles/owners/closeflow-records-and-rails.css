@@ -1086,32 +1086,32 @@
 }
 
 
-.cf-finance-dialog[data-semantic220a36r2-commission-field-order="true"] {
+.cf-finance-dialog[data-cf-finance-commission-field-order="true"] {
   max-width: min(920px, calc(100vw - 24px));
 }
 
-.cf-finance-editor-grid[data-semantic220a36r2-commission-grid="true"] {
+.cf-finance-editor-grid[data-cf-finance-commission-grid="true"] {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--cf-space-3, 14px);
 }
 
-.cf-finance-editor-grid[data-semantic220a36r2-commission-grid="true"] .cf-finance-field--wide {
+.cf-finance-editor-grid[data-cf-finance-commission-grid="true"] .cf-finance-field--wide {
   grid-column: span 2;
 }
 
 @media (max-width: 900px) {
-  .cf-finance-editor-grid[data-semantic220a36r2-commission-grid="true"] {
+  .cf-finance-editor-grid[data-cf-finance-commission-grid="true"] {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 720px) {
-  .cf-finance-editor-grid[data-semantic220a36r2-commission-grid="true"] {
+  .cf-finance-editor-grid[data-cf-finance-commission-grid="true"] {
     grid-template-columns: 1fr;
   }
 
-  .cf-finance-editor-grid[data-semantic220a36r2-commission-grid="true"] .cf-finance-field--wide {
+  .cf-finance-editor-grid[data-cf-finance-commission-grid="true"] .cf-finance-field--wide {
     grid-column: auto;
   }
 }
@@ -2219,4 +2219,113 @@
   #root .cf-section-head-action-stack {
     justify-content: flex-start !important;
   }
+}
+
+
+/* LF-UI-SOT-007 semantic ownership migration: rules moved from foundation. */
+.cf-vst-pill {
+  align-items: center;
+  border: 1px solid var(--cf-vst-kind-border, var(--cf-vst-surface-border));
+  border-radius: var(--cf-vst-radius-pill);
+  background: var(--cf-vst-kind-bg, var(--cf-vst-surface-soft));
+  color: var(--cf-vst-kind-color, var(--cf-vst-text-main));
+  display: inline-flex;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.cf-vst-icon {
+  align-items: center;
+  background: var(--cf-vst-kind-bg, var(--cf-vst-surface-soft));
+  border: 1px solid var(--cf-vst-kind-border, var(--cf-vst-surface-border));
+  border-radius: var(--cf-vst-radius-pill);
+  color: var(--cf-vst-kind-color, var(--cf-vst-text-main));
+  display: inline-flex;
+  justify-content: center;
+}
+.cf-vst-right-rail {
+  width: min(100%, var(--cf-vst-layout-right-rail));
+}
+
+.cf-vst-row {
+  min-height: var(--cf-vst-row-min-height);
+  padding: var(--cf-vst-row-padding-y) var(--cf-vst-row-padding-x);
+}
+.cf-vst-badge,
+.cf-vst-chip {
+  min-height: var(--cf-vst-badge-height) !important;
+  border-color: var(--cf-vst-kind-border, var(--cf-vst-surface-border)) !important;
+  border-radius: var(--cf-vst-radius-pill) !important;
+  background: var(--cf-vst-kind-bg, var(--cf-vst-surface-soft)) !important;
+  color: var(--cf-vst-kind-color, var(--cf-vst-text-main)) !important;
+  gap: var(--cf-vst-space-xs) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+  padding-left: var(--cf-vst-badge-padding-x) !important;
+  padding-right: var(--cf-vst-badge-padding-x) !important;
+}
+.cf-vst-record-list-card {
+  background: var(--cf-vst-surface-card) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+}
+
+.cf-vst-record-row {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-record-index {
+  background: var(--cf-vst-color-primary-soft) !important;
+  border: 1px solid var(--cf-vst-color-primary-border) !important;
+  color: var(--cf-vst-color-primary-strong) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-heavy) !important;
+}
+
+.cf-vst-record-title {
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-title) !important;
+}
+
+.cf-vst-record-meta {
+  color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+}
+
+.cf-vst-right-rail-card {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-right-rail-row {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-right-rail-title {
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-title) !important;
+}
+
+.cf-vst-right-rail-meta {
+  color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-medium) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
 }

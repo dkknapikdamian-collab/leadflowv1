@@ -490,3 +490,317 @@
 [data-closeflow-modal-visual-system="true"] .lead-form-details summary::after {
   color: var(--cf-modal-accent) !important;
 }
+
+
+/* LF-UI-SOT-007 semantic ownership migration: rules moved from foundation. */
+.cf-vst-dialog {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-panel) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+}
+
+.cf-vst-dialog--delete {
+  border-color: var(--cf-vst-color-delete-border) !important;
+}
+.cf-vst-input {
+  border: 1px solid var(--cf-vst-input-border);
+  border-radius: var(--cf-vst-input-radius);
+  min-height: var(--cf-vst-input-height);
+}
+
+.cf-vst-input:focus,
+.cf-vst-input:focus-visible {
+  border-color: var(--cf-vst-input-focus-border);
+  box-shadow: var(--cf-vst-input-focus-ring);
+  outline: none;
+}
+.cf-confirm-dialog {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-panel) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+}
+
+.cf-confirm-dialog--destructive {
+  border-color: var(--cf-vst-color-delete-border) !important;
+}
+.cf-vst-overlay {
+  background: var(--cf-vst-overlay-backdrop) !important;
+}
+
+.cf-vst-dialog {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-panel) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+  color: var(--cf-vst-text-strong) !important;
+  padding: var(--cf-vst-modal-padding) !important;
+}
+
+.cf-vst-dialog-header {
+  gap: var(--cf-vst-modal-header-gap) !important;
+}
+
+.cf-vst-dialog-footer {
+  gap: var(--cf-vst-modal-footer-gap) !important;
+}
+
+.cf-vst-dialog-title {
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-dialog-description {
+  color: var(--cf-vst-text-muted) !important;
+}
+
+.cf-vst-dialog-close {
+  color: var(--cf-vst-text-muted) !important;
+}
+
+.cf-vst-dialog-close:hover {
+  color: var(--cf-vst-text-strong) !important;
+}
+.cf-vst-input {
+  min-height: var(--cf-vst-input-height) !important;
+  border-color: var(--cf-vst-input-border) !important;
+  border-radius: var(--cf-vst-input-radius) !important;
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+}
+
+.cf-vst-input::placeholder {
+  color: var(--cf-vst-placeholder-color) !important;
+}
+
+.cf-vst-input:focus,
+.cf-vst-input:focus-visible,
+.cf-vst-select-trigger:focus,
+.cf-vst-select-trigger:focus-visible {
+  border-color: var(--cf-vst-input-focus-border) !important;
+  box-shadow: var(--cf-vst-input-focus-ring) !important;
+  outline: none !important;
+}
+
+.cf-vst-textarea {
+  min-height: 96px !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+}
+
+.cf-vst-select-trigger {
+  min-height: var(--cf-vst-input-height) !important;
+}
+
+.cf-vst-select-content {
+  border-color: var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+}
+.task-next-step-dialog {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-panel) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.task-next-step-dialog-description {
+  color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+  margin-top: var(--cf-vst-space-sm) !important;
+}
+
+.task-next-step-dialog-body {
+  display: grid !important;
+  gap: var(--cf-vst-space-lg) !important;
+  padding-top: var(--cf-vst-space-lg) !important;
+}
+
+.task-next-step-dialog-grid {
+  display: grid !important;
+  gap: var(--cf-vst-space-md) !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+}
+
+.task-next-step-dialog-footer {
+  border-top: 1px solid var(--cf-vst-surface-border) !important;
+  padding-top: var(--cf-vst-space-lg) !important;
+}
+
+@media (max-width: 640px) {
+  .task-next-step-dialog-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+
+.tasks-stable-dialog,
+.task-next-step-dialog {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-panel) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.tasks-stable-dialog :is(label, p, span, h2, h3),
+.task-next-step-dialog :is(label, p, span, h2, h3) {
+  color: var(--cf-vst-text-main) !important;
+}
+
+.tasks-stable-dialog [data-radix-dialog-title],
+.task-next-step-dialog [data-radix-dialog-title],
+.tasks-stable-dialog h2,
+.task-next-step-dialog h2 {
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-section-title) !important;
+  font-weight: var(--cf-vst-font-weight-heavy) !important;
+}
+
+.tasks-stable-dialog input,
+.tasks-stable-dialog select,
+.task-next-step-dialog input,
+.task-next-step-dialog select {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border-color: var(--cf-vst-input-border) !important;
+  border-radius: var(--cf-vst-input-radius) !important;
+  color: var(--cf-vst-text-strong) !important;
+  min-height: var(--cf-vst-input-height) !important;
+}
+
+.tasks-stable-dialog input:focus,
+.tasks-stable-dialog select:focus,
+.task-next-step-dialog input:focus,
+.task-next-step-dialog select:focus {
+  border-color: var(--cf-vst-input-focus-border) !important;
+  box-shadow: var(--cf-vst-input-focus-ring) !important;
+  outline: none !important;
+}
+
+.tasks-stable-dialog-footer {
+  border-top: 1px solid var(--cf-vst-surface-border) !important;
+  padding-top: var(--cf-vst-space-lg) !important;
+}
+
+.tasks-stable-dialog-primary {
+  background: var(--cf-vst-color-primary) !important;
+  border-color: var(--cf-vst-color-primary) !important;
+  color: #fff !important;
+}
+
+.tasks-stable-dialog-primary:hover {
+  background: var(--cf-vst-color-primary-strong) !important;
+  border-color: var(--cf-vst-color-primary-strong) !important;
+}
+
+.tasks-stable-dialog button[variant="outline"],
+.task-next-step-dialog button[variant="outline"] {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border-color: var(--cf-vst-surface-border) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+
+
+[role="dialog"],
+[data-radix-dialog-content],
+[data-cf-vst-dialog="true"],
+.cf-vst-dialog,
+.cf-modal-surface {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-panel) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+[role="dialog"] :is(h1, h2, h3, h4, label, strong),
+[data-radix-dialog-content] :is(h1, h2, h3, h4, label, strong),
+.cf-vst-dialog :is(h1, h2, h3, h4, label, strong),
+.cf-modal-surface :is(h1, h2, h3, h4, label, strong) {
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+}
+
+[role="dialog"] :is(p, small, span),
+[data-radix-dialog-content] :is(p, small, span),
+.cf-vst-dialog :is(p, small, span),
+.cf-modal-surface :is(p, small, span) {
+  color: var(--cf-vst-text-main) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-main) !important;
+}
+
+[role="dialog"] :is(input, textarea, select),
+[data-radix-dialog-content] :is(input, textarea, select),
+.cf-vst-dialog :is(input, textarea, select),
+.cf-modal-surface :is(input, textarea, select) {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border-color: var(--cf-vst-input-border) !important;
+  border-radius: var(--cf-vst-input-radius) !important;
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+  caret-color: var(--cf-vst-color-primary) !important;
+}
+
+[role="dialog"] textarea::selection,
+[data-radix-dialog-content] textarea::selection,
+.cf-vst-dialog textarea::selection,
+.cf-modal-surface textarea::selection,
+[role="dialog"] input::selection,
+[data-radix-dialog-content] input::selection,
+.cf-vst-dialog input::selection,
+.cf-modal-surface input::selection {
+  background: var(--cf-vst-color-primary-soft) !important;
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+}
+
+[role="dialog"] :is(input, textarea, select):focus,
+[data-radix-dialog-content] :is(input, textarea, select):focus,
+.cf-vst-dialog :is(input, textarea, select):focus,
+.cf-modal-surface :is(input, textarea, select):focus {
+  border-color: var(--cf-vst-input-focus-border) !important;
+  box-shadow: var(--cf-vst-input-focus-ring) !important;
+  outline: none !important;
+}
+
+[role="dialog"] :is(.bg-green-600, .bg-emerald-600, .text-green-700, .text-emerald-700),
+[data-radix-dialog-content] :is(.bg-green-600, .bg-emerald-600, .text-green-700, .text-emerald-700),
+.cf-vst-dialog :is(.bg-green-600, .bg-emerald-600, .text-green-700, .text-emerald-700),
+.cf-modal-surface :is(.bg-green-600, .bg-emerald-600, .text-green-700, .text-emerald-700) {
+  background: var(--cf-vst-color-primary) !important;
+  border-color: var(--cf-vst-color-primary) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+[role="dialog"] button[type="submit"]:not([data-cf-vst-kind="delete"]):not(.cf-vst-button-delete),
+[data-radix-dialog-content] button[type="submit"]:not([data-cf-vst-kind="delete"]):not(.cf-vst-button-delete),
+.cf-vst-dialog button[type="submit"]:not([data-cf-vst-kind="delete"]):not(.cf-vst-button-delete),
+.cf-modal-surface button[type="submit"]:not([data-cf-vst-kind="delete"]):not(.cf-vst-button-delete) {
+  background: var(--cf-vst-color-primary) !important;
+  border-color: var(--cf-vst-color-primary) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+[role="dialog"] button[type="submit"]:hover:not([data-cf-vst-kind="delete"]):not(.cf-vst-button-delete),
+[data-radix-dialog-content] button[type="submit"]:hover:not([data-cf-vst-kind="delete"]):not(.cf-vst-button-delete),
+.cf-vst-dialog button[type="submit"]:hover:not([data-cf-vst-kind="delete"]):not(.cf-vst-button-delete),
+.cf-modal-surface button[type="submit"]:hover:not([data-cf-vst-kind="delete"]):not(.cf-vst-button-delete) {
+  background: var(--cf-vst-color-primary-strong) !important;
+  border-color: var(--cf-vst-color-primary-strong) !important;
+}
+
+[role="dialog"] button[aria-label="Close"],
+[data-radix-dialog-content] button[aria-label="Close"],
+.cf-vst-dialog button[aria-label="Close"],
+.cf-modal-surface button[aria-label="Close"] {
+  background: var(--cf-vst-surface-soft) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  color: var(--cf-vst-text-main) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-main) !important;
+}

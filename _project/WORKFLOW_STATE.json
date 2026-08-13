@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 67,
+  "state_revision": 69,
   "last_accepted": {
     "id": "LF-SSOT-002_SUPABASE_AUTH_SINGLE_SESSION_OWNER_REPAIR",
     "status": "ACCEPTED_AND_CLOSED",
@@ -9,17 +9,17 @@
     "evidence": "LF-SSOT-002 accepted: Supabase Auth is the sole active session/identity owner in scoped production paths; Firebase Auth call sites and legacy Google identity-header fallbacks removed; client auth snapshot is cache-only; canonical Stage 01 migration guard repaired; focused negative tests, direct regressions, TSC/lint/build and bounded Guardian PASS recorded in audit/evidence/LF-V1-PR-001_provider-acl-repair-20260811.md; OpenCode timeout recorded; terminal SSOT deep audit passed at 65b28dfd920977be0ff254a6844359e82dc9efbc with zero active SSOT findings; production untouched"
   },
   "current_workflow": {
-    "id": null,
-    "kind": "SSOT_PROGRAM",
-    "contract_path": null,
-    "status": "SSOT_PROGRAM_ACCEPTED_AND_CLOSED",
-    "base_sha": "65b28dfd920977be0ff254a6844359e82dc9efbc",
+    "id": "LF-UI-SOT-007",
+    "kind": "TECHNICAL_IMPLEMENTATION_STAGE_DESIGN",
+    "contract_path": "_project/contracts/LF-UI-SOT-007_TRUE_VISUAL_DESIGN_SYSTEM_RUNTIME_CONSOLIDATION.md",
+    "status": "BLOCKED_EXTERNAL_OWNER_ACTION",
+    "base_sha": "1c14ff31b4c3e65ed101bb037eadfcc883cde599",
     "base_branch": "codex/closeflow-v1-e2e-roadmap",
     "target_branch": "codex/closeflow-v1-e2e-roadmap",
-    "blocker": null,
+    "blocker": "BLOCKED_EXTERNAL_OWNER_ACTION",
     "ssot_open_findings": 0,
-    "active_stage_count": 0,
-    "terminal_audit": "PASS"
+    "active_stage_count": 1,
+    "terminal_audit": "TECHNICAL_PASS_BLOCKED_EXTERNAL_OWNER_ACTION"
   },
   "next_workflow": {"id": null, "status": "NO_CANONICAL_NEXT_CONTRACT_IN_ACTIVE_WORKFLOW_STATE"},
   "source_evidence": [
@@ -218,6 +218,13 @@
     "ssot-audit-round-1:b2e18253:active-firebase-auth-and-legacy-header-identity-conflict-confirmed",
     "ssot-audit-round-1:b2e18253:historical-stage01-guard-filename-drift-and-p15-storage-guard-drift-registered",
     "ssot-002:f1339e51cb7cc5002572760c094fc5ad504134ca:supabase-auth-single-session-owner-accepted",
-    "ssot-final-deep-audit:65b28dfd920977be0ff254a6844359e82dc9efbc:PASS;zero-active-ssot-findings;no-active-stage"
+    "ssot-final-deep-audit:65b28dfd920977be0ff254a6844359e82dc9efbc:PASS;zero-active-ssot-findings;no-active-stage",
+    "LF-UI-SOT-007:CONTROL_PLANE_DRIFT_FOUND=YES:current_workflow_was_missing_and_was_repaired_before_continuation",
+    "LF-UI-SOT-007:CONTROL_PLANE_DRIFT_REPAIRED=YES:current_workflow=ACTIVE:active_stage_count=1:contract_path=_project/contracts/LF-UI-SOT-007_TRUE_VISUAL_DESIGN_SYSTEM_RUNTIME_CONSOLIDATION.md",
+    "LF-UI-SOT-007:TECHNICAL_PASS=YES:SSOT_NEGATIVE_TESTS=21/21:CSS_TERMINAL_COUNTERS_ZERO:ONE_OWNER_PER_VISUAL_CONCERN=PASS",
+    "LF-UI-SOT-007:TECHNICAL_PASS=YES:TSC=PASS:LINT=PASS:BUILD=PASS:GIT_DIFF_CHECK=PASS",
+    "LF-UI-SOT-007:GUARDIAN_FINAL=PASS:SHA_BOUND:coverage_complete:no_partial_pass_claim",
+    "LF-UI-SOT-007:BROWSER_PREVIEW_DESKTOP=PASS:BROWSER_PREVIEW_MOBILE=PASS:populated_views_detail_navigation_rails_and_mobile_no_overflow_verified",
+    "LF-UI-SOT-007:AUTHENTICATED_RUNTIME=BLOCKED_EXTERNAL_OWNER_ACTION:/today_redirected_to_login:owner_credentials_or_otp_not_available"
   ]
 }

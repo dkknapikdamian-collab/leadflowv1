@@ -415,3 +415,70 @@
     margin-top: 0.25rem;
   }
 }
+
+
+/* LF-UI-SOT-007 semantic ownership migration: rules moved from foundation. */
+.cf-vst-button-primary {
+  background: var(--cf-vst-color-primary) !important;
+  border-color: var(--cf-vst-color-primary) !important;
+  color: #fff !important;
+}
+
+.cf-vst-button-delete {
+  background: var(--cf-vst-color-delete-soft) !important;
+  border: 1px solid var(--cf-vst-color-delete-border) !important;
+  color: var(--cf-vst-color-delete-strong) !important;
+}
+.cf-vst-button {
+  align-items: center;
+  border-radius: var(--cf-vst-radius-button);
+  display: inline-flex;
+  gap: var(--cf-vst-button-gap);
+  font-size: var(--cf-vst-font-size-label);
+  font-weight: var(--cf-vst-font-weight-bold);
+  justify-content: center;
+  line-height: var(--cf-vst-line-height-button);
+  min-height: var(--cf-vst-button-height-md);
+  padding-left: var(--cf-vst-button-padding-x-md);
+  padding-right: var(--cf-vst-button-padding-x-md);
+}
+.cf-case-detail-delete-action {
+  border-color: var(--cf-vst-color-delete-border) !important;
+  color: var(--cf-vst-color-delete-strong) !important;
+}
+
+.cf-case-detail-delete-action:hover {
+  background: var(--cf-vst-color-delete-soft) !important;
+  border-color: var(--cf-vst-color-delete) !important;
+  color: var(--cf-vst-color-delete-strong) !important;
+}
+.cf-vst-button {
+  min-height: var(--cf-vst-button-height-md) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  gap: var(--cf-vst-button-gap) !important;
+  font-size: var(--cf-vst-font-size-label) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+}
+
+.cf-vst-button-primary {
+  background: var(--cf-vst-color-primary) !important;
+  border-color: var(--cf-vst-color-primary) !important;
+  color: #fff !important;
+}
+
+.cf-vst-button-primary:hover {
+  background: var(--cf-vst-color-primary-strong) !important;
+}
+
+.cf-vst-button-delete {
+  background: var(--cf-vst-color-delete-soft) !important;
+  border-color: var(--cf-vst-color-delete-border) !important;
+  color: var(--cf-vst-color-delete-strong) !important;
+}
+
+.cf-vst-button-delete:hover {
+  background: var(--cf-vst-color-delete-soft) !important;
+  border-color: var(--cf-vst-color-delete) !important;
+  color: var(--cf-vst-color-delete-strong) !important;
+}

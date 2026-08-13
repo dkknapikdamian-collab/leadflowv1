@@ -88,36 +88,39 @@ pre.cf-readable-panel {
   --cf-surface-shadow: 0 14px 32px rgba(15, 23, 42, 0.055);
 }
 
-.right-card,
-[class$="-right-card"],
-.settings-right-card,
-.billing-right-card,
-.activity-right-card,
-.lead-right-card,
-.cases-shortcuts-rail-card,
-.calendar-week-filter,
-.calendar-week-plan {
-  background: var(--cf-surface-card) !important;
-  background-color: var(--cf-surface-card) !important;
-  color: var(--cf-surface-text) !important;
-  border-color: var(--cf-surface-border) !important;
-  box-shadow: var(--cf-surface-shadow);
+/* LF-UI-SOT-007 semantic ownership migration: rules moved from foundation. */
+.cf-vst-card {
+  background: var(--cf-vst-surface-card) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+.cf-vst-card {
+  background: var(--cf-vst-surface-card) !important;
+  border-color: var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+  color: var(--cf-vst-text-strong) !important;
 }
 
-[class$="-right-rail"],
-.support-right-rail,
-.notifications-right-rail,
-.ai-drafts-right-rail {
-  background: transparent;
-  background-color: transparent;
-  color: var(--cf-surface-text);
+.cf-vst-card-header {
+  padding: var(--cf-vst-card-padding) var(--cf-vst-card-padding) var(--cf-vst-space-sm) !important;
 }
 
-.right-card p,
-.right-card small,
-.right-card [class*="text-slate-500"],
-.right-card [class*="text-slate-600"],
-[class$="-right-card"] p,
-[class$="-right-card"] small {
-  color: var(--cf-surface-muted);
+.cf-vst-card-content {
+  padding-left: var(--cf-vst-card-padding) !important;
+  padding-right: var(--cf-vst-card-padding) !important;
+}
+
+.cf-vst-card-footer {
+  padding: var(--cf-vst-space-sm) var(--cf-vst-card-padding) var(--cf-vst-card-padding) !important;
+}
+
+.cf-vst-card-title {
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-card-description {
+  color: var(--cf-vst-text-muted) !important;
 }

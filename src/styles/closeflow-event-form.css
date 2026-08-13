@@ -240,13 +240,13 @@
   }
 }
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"],
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] {
+.event-form-vnext-content[data-task-create-dialog-layout="true"] {
   background: #ffffff;
   color: #111827;
 }
 
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-vnext,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] .event-form-vnext {
+.event-form-vnext-content[data-task-create-dialog-layout="true"] .event-form-vnext {
   background: #f9fafb;
   color: #111827;
 }
@@ -254,9 +254,9 @@
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input,
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select,
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] input,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] select,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] textarea {
+.event-form-vnext-content[data-task-create-dialog-layout="true"] input,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] select,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] textarea {
   background: #ffffff;
   color: #111827;
   border-color: #e4e7ec;
@@ -266,30 +266,30 @@
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input:focus,
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select:focus,
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea:focus,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] input:focus,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] select:focus,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] textarea:focus {
+.event-form-vnext-content[data-task-create-dialog-layout="true"] input:focus,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] select:focus,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] textarea:focus {
   border-color: #93c5fd;
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
   outline: none;
 }
 
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-footer,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] .event-form-footer,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] .cf-modal-footer {
+.event-form-vnext-content[data-task-create-dialog-layout="true"] .event-form-footer,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] .cf-modal-footer {
   border-top: 1px solid #e4e7ec;
   background: rgba(255, 255, 255, 0.96);
   color: #111827;
   box-shadow: 0 -10px 24px rgba(16, 24, 40, 0.05);
 }
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"],
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] {
+.event-form-vnext-content[data-task-create-dialog-layout="true"] {
   background: #ffffff;
   color: #111827;
 }
 
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-vnext,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] .event-form-vnext {
+.event-form-vnext-content[data-task-create-dialog-layout="true"] .event-form-vnext {
   background: #f9fafb;
   color: #111827;
 }
@@ -297,9 +297,9 @@
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input,
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select,
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] input,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] select,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] textarea {
+.event-form-vnext-content[data-task-create-dialog-layout="true"] input,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] select,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] textarea {
   background: #ffffff;
   color: #111827;
   border-color: #e4e7ec;
@@ -309,9 +309,9 @@
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input:focus,
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select:focus,
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea:focus,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] input:focus,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] select:focus,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] textarea:focus {
+.event-form-vnext-content[data-task-create-dialog-layout="true"] input:focus,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] select:focus,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] textarea:focus {
   border-color: #93c5fd;
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
   outline: none;
@@ -319,21 +319,21 @@
 
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-footer,
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .cf-modal-footer,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] .event-form-footer,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] .cf-modal-footer {
+.event-form-vnext-content[data-task-create-dialog-layout="true"] .event-form-footer,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] .cf-modal-footer {
   border-top: 1px solid #e4e7ec;
   background: #ffffff;
   color: #111827;
   box-shadow: 0 -10px 24px rgba(16, 24, 40, 0.05);
 }
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"],
+.event-form-vnext-content[data-task-create-dialog-layout="true"],
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] {
   background: rgba(255, 255, 255, 0.98);
   color: #111827;
   border-color: #e4e7ec;
 }
 
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] .event-form-vnext,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] .event-form-vnext,
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-vnext {
   background: #f9fafb;
   color: #111827;
@@ -342,9 +342,9 @@
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input,
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select,
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] input,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] select,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] textarea {
+.event-form-vnext-content[data-task-create-dialog-layout="true"] input,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] select,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] textarea {
   background: #ffffff;
   color: #111827;
   border-color: #e4e7ec;
@@ -354,17 +354,17 @@
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input:focus,
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select:focus,
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea:focus,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] input:focus,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] select:focus,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] textarea:focus {
+.event-form-vnext-content[data-task-create-dialog-layout="true"] input:focus,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] select:focus,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] textarea:focus {
   border-color: #93c5fd;
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
   outline: none;
 }
 
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-footer,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] .event-form-footer,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] .cf-modal-footer {
+.event-form-vnext-content[data-task-create-dialog-layout="true"] .event-form-footer,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] .cf-modal-footer {
   border-top: 1px solid #e4e7ec;
   background: rgba(255, 255, 255, 0.96);
   color: #111827;
@@ -399,13 +399,13 @@
   box-shadow: 0 8px 18px rgba(153, 27, 27, 0.06);
 }
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"],
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] {
+.event-form-vnext-content[data-task-create-dialog-layout="true"] {
   background: rgba(255, 255, 255, 0.98);
   color: #111827;
 }
 
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-vnext,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] .event-form-vnext {
+.event-form-vnext-content[data-task-create-dialog-layout="true"] .event-form-vnext {
   background: #f9fafb;
   color: #111827;
 }
@@ -413,9 +413,9 @@
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input,
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select,
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] input,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] select,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] textarea {
+.event-form-vnext-content[data-task-create-dialog-layout="true"] input,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] select,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] textarea {
   background: #ffffff;
   color: #111827;
   border-color: #e4e7ec;
@@ -426,9 +426,9 @@
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input:focus,
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select:focus,
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea:focus,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] input:focus,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] select:focus,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] textarea:focus {
+.event-form-vnext-content[data-task-create-dialog-layout="true"] input:focus,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] select:focus,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] textarea:focus {
   border-color: #93c5fd;
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
   outline: none;
@@ -436,8 +436,8 @@
 
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-footer,
 .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .cf-modal-footer,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] .event-form-footer,
-.event-form-vnext-content[data-task-create-dialog-semantic45m="true"] .cf-modal-footer {
+.event-form-vnext-content[data-task-create-dialog-layout="true"] .event-form-footer,
+.event-form-vnext-content[data-task-create-dialog-layout="true"] .cf-modal-footer {
   border-top: 1px solid #e4e7ec;
   background: rgba(255, 255, 255, 0.96);
   color: #111827;

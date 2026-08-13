@@ -1,13 +1,13 @@
 /* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-settings-tabs.css","concerns":[],"scope":"component","consumerRoots":["src/pages/Settings.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 
-.settings-vnext-page .settings-tabs-semantic181ac {
+.settings-vnext-page .settings-tabs {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 12px;
   margin: 14px 0 18px;
 }
 
-.settings-vnext-page .settings-tab-semantic181ac {
+.settings-vnext-page .settings-tab {
   min-height: 88px;
   display: grid;
   align-content: start;
@@ -22,12 +22,12 @@
   transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease, background 120ms ease;
 }
 
-.settings-vnext-page .settings-tab-semantic181ac:hover {
+.settings-vnext-page .settings-tab:hover {
   transform: translateY(-1px);
   box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
 }
 
-.settings-vnext-page .settings-tab-semantic181ac span {
+.settings-vnext-page .settings-tab span {
   font-size: 10px;
   line-height: 1.1;
   font-weight: 950;
@@ -37,97 +37,97 @@
   opacity: 0.72;
 }
 
-.settings-vnext-page .settings-tab-semantic181ac strong {
+.settings-vnext-page .settings-tab strong {
   font-size: 14px;
   line-height: 1.15;
   font-weight: 950;
   color: #111827;
 }
 
-.settings-vnext-page .settings-tab-semantic181ac small {
+.settings-vnext-page .settings-tab small {
   font-size: 11px;
   line-height: 1.35;
   font-weight: 650;
   color: #64748b;
 }
 
-.settings-vnext-page .settings-tab-semantic181ac-active {
+.settings-vnext-page .settings-tab-active {
   transform: translateY(-1px);
   box-shadow: 0 16px 34px rgba(37, 99, 235, 0.11);
 }
 
-.settings-vnext-page .settings-tab-semantic181ac[data-settings-tab-kind="account"] {
+.settings-vnext-page .settings-tab[data-settings-tab-kind="account"] {
   border-color: #bfdbfe;
   background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.10), transparent 38%), #ffffff;
   color: #1d4ed8;
 }
 
-.settings-vnext-page .settings-tab-semantic181ac[data-settings-tab-kind="notifications"] {
+.settings-vnext-page .settings-tab[data-settings-tab-kind="notifications"] {
   border-color: #ddd6fe;
   background: radial-gradient(circle at top right, rgba(109, 40, 217, 0.10), transparent 38%), #ffffff;
   color: #6d28d9;
 }
 
-.settings-vnext-page .settings-tab-semantic181ac[data-settings-tab-kind="integrations"] {
+.settings-vnext-page .settings-tab[data-settings-tab-kind="integrations"] {
   border-color: #bbf7d0;
   background: radial-gradient(circle at top right, rgba(4, 120, 87, 0.11), transparent 38%), #ffffff;
   color: #047857;
 }
 
-.settings-vnext-page .settings-tab-semantic181ac[data-settings-tab-kind="app"] {
+.settings-vnext-page .settings-tab[data-settings-tab-kind="app"] {
   border-color: #bae6fd;
   background: radial-gradient(circle at top right, rgba(3, 105, 161, 0.10), transparent 38%), #ffffff;
   color: #0369a1;
 }
 
-.settings-vnext-page .settings-tab-semantic181ac[data-settings-tab-kind="security"] {
+.settings-vnext-page .settings-tab[data-settings-tab-kind="security"] {
   border-color: #fecaca;
   background: radial-gradient(circle at top right, rgba(220, 38, 38, 0.09), transparent 38%), #ffffff;
   color: #dc2626;
 }
 
-.settings-vnext-page .settings-tab-semantic181ac[data-settings-tab-kind="data"] {
+.settings-vnext-page .settings-tab[data-settings-tab-kind="data"] {
   border-color: #e2e8f0;
   background: radial-gradient(circle at top right, rgba(71, 85, 105, 0.08), transparent 38%), #ffffff;
   color: #475569;
 }
 
-.settings-vnext-page .settings-tab-semantic181ac-active[data-settings-tab-kind="account"] { border-color: #60a5fa; }
-.settings-vnext-page .settings-tab-semantic181ac-active[data-settings-tab-kind="notifications"] { border-color: #a78bfa; }
-.settings-vnext-page .settings-tab-semantic181ac-active[data-settings-tab-kind="integrations"] { border-color: #34d399; }
-.settings-vnext-page .settings-tab-semantic181ac-active[data-settings-tab-kind="app"] { border-color: #38bdf8; }
-.settings-vnext-page .settings-tab-semantic181ac-active[data-settings-tab-kind="security"] { border-color: #f87171; }
-.settings-vnext-page .settings-tab-semantic181ac-active[data-settings-tab-kind="data"] { border-color: #94a3b8; }
+.settings-vnext-page .settings-tab-active[data-settings-tab-kind="account"] { border-color: #60a5fa; }
+.settings-vnext-page .settings-tab-active[data-settings-tab-kind="notifications"] { border-color: #a78bfa; }
+.settings-vnext-page .settings-tab-active[data-settings-tab-kind="integrations"] { border-color: #34d399; }
+.settings-vnext-page .settings-tab-active[data-settings-tab-kind="app"] { border-color: #38bdf8; }
+.settings-vnext-page .settings-tab-active[data-settings-tab-kind="security"] { border-color: #f87171; }
+.settings-vnext-page .settings-tab-active[data-settings-tab-kind="data"] { border-color: #94a3b8; }
 
 .settings-vnext-page .settings-section-card[data-settings-tab-panel] {
-  animation: cf-settings-tab-in-semantic181ac 140ms ease-out;
+  animation: cf-settings-tab-in 140ms ease-out;
 }
 
-.settings-vnext-page .settings-tab-empty-semantic181ac {
+.settings-vnext-page .settings-tab-empty {
   border-color: #bbf7d0;
   background: radial-gradient(circle at top right, rgba(4, 120, 87, 0.10), transparent 38%), #ffffff;
 }
 
-@keyframes cf-settings-tab-in-semantic181ac {
+@keyframes cf-settings-tab-in {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 1180px) {
-  .settings-vnext-page .settings-tabs-semantic181ac {
+  .settings-vnext-page .settings-tabs {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 760px) {
-  .settings-vnext-page .settings-tabs-semantic181ac {
+  .settings-vnext-page .settings-tabs {
     display: flex;
     overflow-x: auto;
     padding-bottom: 4px;
     scroll-snap-type: x mandatory;
   }
 
-  .settings-vnext-page .settings-tab-semantic181ac {
+  .settings-vnext-page .settings-tab {
     min-width: 210px;
     scroll-snap-align: start;
   }

@@ -28,7 +28,7 @@ if (indexCss.includes('visual-stage17-today-hard-1to1.css')) {
 }
 console.log('OK: src/index.css keeps Stage17 broad CSS unimported.');
 expect('src/App.tsx', "./styles/closeflow-visual-source-truth.css", 'canonical visual owner entrypoint');
-expect('src/styles/owners/closeflow-calendar.css', 'main-today .grid-4', 'canonical Today metric-grid owner');
+expect('src/styles/owners/closeflow-metrics.css', '.cf-metric-grid', 'canonical Today metric-grid owner');
 expect('src/styles/owners/closeflow-page-adapters.css', 'main-today', 'canonical Today page adapter');
 expect('src/styles/owners/closeflow-records-and-rails.css', '.right-card', 'canonical semantic rail owner');
 expect('src/styles/owners/closeflow-responsive-adapters.css', '@media (max-width: 760px)', 'canonical mobile adapter');

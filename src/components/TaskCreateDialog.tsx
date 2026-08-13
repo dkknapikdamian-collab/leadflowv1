@@ -30,7 +30,7 @@ import {
   resolveTopicContactLink,
   type TopicContactOption,
 } from '../lib/topic-contact';
-import '../styles/visual-stage22-event-form-vnext.css';
+import '../styles/closeflow-event-form.css';
 
 type TaskCreateFormState = {
   title: string;
@@ -196,9 +196,9 @@ export default function TaskCreateDialog({ open, onOpenChange, onSaved, context 
         className="event-form-vnext-content sm:max-w-2xl"
         data-calendar-entry-form-source={TASK_CREATE_DIALOG_STAGE105_FORM_SOURCE}
         data-calendar-entry-form-mode="quick-task"
-        data-task-create-dialog-stage45m="true"
+        data-task-create-dialog-layout="true"
         data-task-create-dialog-stage105="event-form-vnext"
-        data-task-create-dialog-stage170="true"
+        data-task-create-dialog-form="true"
         data-event-form-stage22="true"
       >
         <DialogHeader>
@@ -215,7 +215,7 @@ export default function TaskCreateDialog({ open, onOpenChange, onSaved, context 
           data-calendar-entry-form-source={TASK_CREATE_DIALOG_STAGE105_FORM_SOURCE}
           data-calendar-entry-form-mode="quick-task"
           data-task-create-dialog-stage105="event-form-vnext"
-          data-task-create-dialog-stage170="true"
+          data-task-create-dialog-form="true"
         >
           <div className="event-form-field">
             <Label>Tytuł</Label>

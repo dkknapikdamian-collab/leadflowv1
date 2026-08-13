@@ -775,3 +775,33 @@ html body #root [data-cf-metric-tile-contract="final-vs5"] .cf-top-metric-tile-i
   font-size: clamp(1rem, 1.15vw, 1.34rem) !important;
   letter-spacing: -0.035em !important;
 }
+
+
+/* LF-UI-SOT-007 semantic ownership migration: rules moved from foundation. */
+.cf-vst-metric-number {
+  color: var(--cf-vst-metric-number-color) !important;
+  font-weight: var(--cf-vst-metric-number-weight) !important;
+}
+.cf-vst-metric-card {
+  background: var(--cf-vst-metric-card-bg) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+  padding: var(--cf-vst-card-padding) !important;
+}
+
+.cf-vst-metric-label {
+  color: var(--cf-vst-metric-label-color) !important;
+  font-size: var(--cf-vst-metric-label-size) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+}
+
+.cf-vst-metric-number {
+  color: var(--cf-vst-metric-number-color) !important;
+  font-family: var(--cf-vst-font-family-number) !important;
+  font-size: var(--cf-vst-metric-value-size) !important;
+  font-weight: var(--cf-vst-metric-value-weight) !important;
+  letter-spacing: var(--cf-vst-letter-spacing-tight) !important;
+  line-height: var(--cf-vst-line-height-tight) !important;
+}

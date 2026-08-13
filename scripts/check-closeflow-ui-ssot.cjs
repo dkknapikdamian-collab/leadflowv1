@@ -137,7 +137,7 @@ function addFailure(failures, message) {
 // Historical names are semantic authority markers, not harmless comments. Keep
 // this check role-independent: an adapter can bypass SSOT just as easily as a
 // canonical owner when it carries a copied stage/final-lock contract.
-const HISTORICAL_OWNER_PATTERN = /(?:\bstage\d+[a-z0-9_-]*\b|\bvisual[-_]?stage[a-z0-9_-]*\b|\bhotfix[a-z0-9_-]*\b|\bfinal[-_]?lock\b|\bpacket\d+[a-z0-9_-]*\b|--stage\d+[a-z0-9_-]*|data-stage\d+[a-z0-9_-]*)/i;
+const HISTORICAL_OWNER_PATTERN = /(?:\bstage\d+[a-z0-9_-]*\b|\bvisual[-_]?stage[a-z0-9_-]*\b|\bhotfix[a-z0-9_-]*\b|\bfinal[-_]?lock\b|\bpacket\d+[a-z0-9_-]*\b|\bsemantic\d+[a-z0-9_-]*\b|--stage\d+[a-z0-9_-]*|data-stage\d+[a-z0-9_-]*|--(?:cf|closeflow-semantic)\d+[a-z0-9_-]*|data-cf-main-search-[a-z0-9_-]*semantic\d+[a-z0-9_-]*|data-cf-main-search-source\s*=\s*[\"']semantic\d+[a-z0-9_-]*[\"'])/i;
 const EXPLICIT_PATCH_PATTERN = /(?:activePatchLayer\s*:\s*true|PATCH_LAYER|specificity[-_ ]patch|runtime[-_ ]hotfix)/i;
 const EXPLICIT_IMPORTANT_BOUNDARY_PATTERN = /LF-UI-IMPORTANT_BOUNDARY\s*:\s*([A-Z0-9_]+)/i;
 // Match exact shell primitives only. Route classes such as `.main-clients` and
@@ -154,6 +154,162 @@ function cssSelectors(source) {
 
 function scopedGlobalAuthority(source) {
   return cssSelectors(source).filter((selector) => SCOPED_GLOBAL_SELECTOR_PATTERN.test(selector));
+}
+
+function cssRuleBlocks(source) {
+  const cleaned = stripComments(String(source || ''));
+  const blocks = [];
+  const pattern = /([^{}]+)\{([^{}]*)\}/g;
+  for (const match of cleaned.matchAll(pattern)) {
+    const selector = match[1].trim().replace(/\s+/g, ' ');
+    if (!selector || selector.startsWith('@')) continue;
+    blocks.push({
+      selector,
+      body: match[2],
+      offset: match.index || 0,
+    });
+  }
+  return blocks;
+}
+
+function cssDeclarations(body) {
+  return [...String(body || '').matchAll(/([\w-]+)\s*:\s*([^;{}]+)/g)].map((match) => ({
+    property: match[1].toLowerCase(),
+    value: match[2].trim(),
+  }));
+}
+
+function hasLiteralValue(value) {
+  return !/var\(--[^)]+\)/i.test(value) && !/^inherit$|^initial$|^unset$|^revert$|^currentcolor$/i.test(value.trim());
+}
+
+function isGenericScopedSemanticSelector(selector) {
+  const normalized = selector.trim();
+  const genericClass = /(?:^|[\s>,])\.(?:button|card|metric|metrics|tile|action|sidebar|global-bar|icon)(?=$|[\s>:#.[,])/i.test(normalized);
+  const bareControl = /^(?:button|input|textarea|select|form)(?=$|[\s>:#.[,])/i.test(normalized);
+  const bareRole = /^\[role=["']button["']\]/i.test(normalized);
+  return genericClass || bareControl || bareRole;
+}
+
+function ownerConcernMismatches({ file, metadata, source }) {
+  const declared = new Set(Array.isArray(metadata.concerns) ? metadata.concerns : []);
+  const rules = cssRuleBlocks(source);
+  const mismatches = [];
+  const add = (code, detail) => mismatches.push({ file, code, detail });
+  const scoped = metadata.role === 'scoped-adapter';
+
+  if (scoped) {
+    const globalSelectors = scopedGlobalAuthority(source);
+    if (globalSelectors.length) add('SCOPED_GLOBAL_AUTHORITY', `global shell semantics: ${globalSelectors.slice(0, 3).join(' | ')}`);
+    const genericSelectors = rules.filter(({ selector }) => isGenericScopedSemanticSelector(selector));
+    if (genericSelectors.length) add('SCOPED_GENERIC_SEMANTIC_AUTHORITY', `generic semantic selectors: ${genericSelectors.slice(0, 3).map(({ selector }) => selector).join(' | ')}`);
+  }
+
+  if (declared.has('CALENDAR')) {
+    const calendarGenericRules = rules.filter(({ selector, body }) => {
+      const calendarContext = /calendar|schedule|agenda|month|week|day|event/i.test(selector);
+      const genericMetric = /(?:^|[\s>,.])(?:metric|metrics|metric-card|stat-card|summary-card|dashboard-stat-card|stats-grid|stat-grid|metric-grid|summary-grid|tile|card)(?=$|[\s>:#.[,])/i.test(selector);
+      const declarations = cssDeclarations(body);
+      const metricToken = declarations.some(({ property }) => /^(?:--eliteflow-metric-|--cf-metric-source-)/i.test(property));
+      return (!calendarContext && genericMetric) || metricToken;
+    });
+    if (calendarGenericRules.length || /--(?:eliteflow-metric-|cf-metric-source-)/i.test(source)) {
+      add('CALENDAR_GENERIC_METRICS', `CALENDAR owner contains generic metric/card authority: ${calendarGenericRules.slice(0, 3).map(({ selector }) => selector).join(' | ') || 'metric custom properties'}`);
+    }
+  }
+
+  if (declared.has('RESPONSIVE_DENSITY')) {
+    const semanticDeclarations = rules.filter(({ body }) => cssDeclarations(body).some(({ property }) => /^(?:color|background|background-color|border-color|fill|stroke|box-shadow)$/i.test(property)));
+    const semanticSelectors = rules.filter(({ selector }) => /(?:^|[\s>,])(?:button|svg|img)(?=$|[\s>:#.[,])|(?:^|[\s>,])\.(?:icon|button|action)(?=$|[\s>:#.[,])|\[data-(?:icon|action)-/i.test(selector));
+    const shellSelectors = rules.filter(({ selector }) => /(?:^|[\s>,])(?::root|html|body|#root)(?=$|[\s>:#.[,])|\.cf-html-shell|\.sidebar|\.global-bar/i.test(selector));
+    if (semanticDeclarations.length) add('RESPONSIVE_SEMANTIC_PROPERTIES', `RESPONSIVE_DENSITY owns semantic properties in ${file}`);
+    if (semanticSelectors.length) add('RESPONSIVE_SEMANTIC_SELECTORS', `RESPONSIVE_DENSITY owns action/icon selectors: ${semanticSelectors.slice(0, 3).map(({ selector }) => selector).join(' | ')}`);
+    if (shellSelectors.length) add('RESPONSIVE_BASE_SHELL', `RESPONSIVE_DENSITY owns base shell selectors: ${shellSelectors.slice(0, 3).map(({ selector }) => selector).join(' | ')}`);
+  }
+
+  if (declared.has('BUTTONS_ACTIONS')) {
+    const modalRules = rules.filter(({ selector }) => /(?:^|[\s>,])(?:\.?(?:modal|dialog)|\.form-footer|\.modal-footer)(?=$|[\s>:#.[,])|\[role=["']dialog["']\]|data-radix-dialog/i.test(selector));
+    if (modalRules.length) add('ACTIONS_MODAL_AUTHORITY', `BUTTONS_ACTIONS owns modal/form-footer selectors: ${modalRules.slice(0, 3).map(({ selector }) => selector).join(' | ')}`);
+  }
+
+  if (declared.has('SEARCH')) {
+    const nonSearchSelectors = rules.filter(({ selector }) => {
+      const normalized = selector.toLowerCase();
+      const searchContext = /search|query|suggestion|combobox/.test(normalized);
+      const unrelatedAuthority = /(?:right[-_]?rail|right[-_]?card|sidebar|global-bar|html-shell|page-shell|modal|dialog|form-footer|task|notification|billing|settings|lead|client|case|activity|card|metric|tile|record|list-row)/i.test(normalized);
+      return !searchContext && unrelatedAuthority;
+    });
+    const globalShellSelectors = rules.filter(({ selector, body }) => {
+      const normalized = selector.toLowerCase();
+      const declarations = cssDeclarations(body);
+      const tokenOnlyRoot = /^(?::root|\[data-[^\]]+\])$/i.test(normalized)
+        && declarations.length > 0
+        && declarations.every(({ property }) => property.startsWith('--'));
+      return !tokenOnlyRoot
+        && /(?:^|[\s>,])(?::root|html|body|#root)(?=$|[\s>:#.[,])|\.cf-html-shell|\.sidebar|\.global-bar/i.test(normalized)
+        && !/search|query|suggestion|combobox/.test(normalized);
+    });
+    if (nonSearchSelectors.length) add('SEARCH_UNRELATED_AUTHORITY', `SEARCH owner contains unrelated route/component authority: ${nonSearchSelectors.slice(0, 4).map(({ selector }) => selector).join(' | ')}`);
+    if (globalShellSelectors.length) add('SEARCH_BASE_SHELL_AUTHORITY', `SEARCH owner contains base shell selectors: ${globalShellSelectors.slice(0, 3).map(({ selector }) => selector).join(' | ')}`);
+  }
+
+  if (declared.has('SURFACES') || declared.has('RADII') || declared.has('SHADOWS')) {
+    const routeSurfaceRules = rules.filter(({ selector }) => /(?:right[-_]?card|right[-_]?rail|calendar[-_]?week[-_]?filter|calendar[-_]?week[-_]?plan|settings[-_]?right|billing[-_]?right|activity[-_]?right|lead[-_]?right|cases[-_]?shortcuts)/i.test(selector));
+    if (routeSurfaceRules.length) add('SURFACES_ROUTE_AUTHORITY', `SURFACES owner contains route/right-rail authority: ${routeSurfaceRules.slice(0, 4).map(({ selector }) => selector).join(' | ')}`);
+  }
+
+  if (declared.has('TOKENS') || declared.has('SEMANTIC_COLORS') || declared.has('TYPOGRAPHY') || declared.has('SPACING')) {
+    const componentRules = rules.filter(({ selector }) => /(?:^|[\s>,])\.cf-vst-(?:card|dialog|button|pill|icon|metric)(?:$|[-_:#.[\s>,])|(?:^|[\s>,])\.cf-confirm-dialog(?:$|[-_:#.[\s>,])/i.test(selector));
+    if (componentRules.length) add('FOUNDATION_COMPONENT_AUTHORITY', `foundation owner contains generic component selectors: ${componentRules.slice(0, 5).map(({ selector }) => selector).join(' | ')}`);
+  }
+
+  return mismatches;
+}
+
+function detectActualConcerns(source) {
+  const actual = new Set();
+  const rules = cssRuleBlocks(source);
+  const text = stripComments(String(source || ''));
+  if (/:root\s*\{|--[\w-]+\s*:/i.test(text)) actual.add('TOKENS');
+  if (/@media|(?:min|max)-(?:width|height)\s*:|grid-template|clamp\(/i.test(text)) actual.add('RESPONSIVE_DENSITY');
+  for (const { selector, body } of rules) {
+    const normalized = selector.toLowerCase();
+    const declarations = cssDeclarations(body);
+    if (/(?:button|action)/i.test(normalized)) actual.add('BUTTONS_ACTIONS');
+    if (/(?:^|[\s>,.])(?:card|tile|metric|stats-grid|summary-grid)(?=$|[\s>:#.[,])/i.test(normalized)) actual.add('CARDS_TILES');
+    if (/(?:list-row|record-row|quick-list-row|right-list-row)/i.test(normalized)) actual.add('LIST_ROWS');
+    if (/(?:badge|pill|chip|status)/i.test(normalized)) actual.add('BADGES');
+    if (/(?:right-rail|operator-rail|sidebar|rail)/i.test(normalized)) actual.add('RIGHT_RAIL');
+    if (/(?:form|input|textarea|select|combobox)/i.test(normalized)) actual.add('FORMS');
+    if (/(?:modal|dialog|role=["']dialog|data-radix-dialog)/i.test(normalized)) actual.add('MODALS');
+    if (/(?:html-shell|page-shell|#root|sidebar|global-bar)/i.test(normalized)) actual.add('PAGE_SHELL');
+    if (/(?:search|query)/i.test(normalized)) actual.add('SEARCH');
+    if (/(?:calendar|schedule|agenda|event)/i.test(normalized)) actual.add('CALENDAR');
+    if (/(?:icon|svg|stroke|fill)/i.test(normalized)) actual.add('ICONS');
+    if (/(?:text-page-title|text-section-title|text-card-title|text-body|text-meta|text-label|text-metric|text-button|font)/i.test(normalized)) actual.add('TYPOGRAPHY');
+    if (/:root|^html|^body|^#root/i.test(normalized)) actual.add('PAGE_SHELL');
+    for (const declaration of declarations) {
+      const { property, value } = declaration;
+      if (property.startsWith('--cf-vst-')) {
+        if (/(?:color|surface|text|kind|tone|bg|border)/i.test(property)) actual.add('SEMANTIC_COLORS');
+        if (/(?:font|line-height|text-)/i.test(property)) actual.add('TYPOGRAPHY');
+        if (/(?:space|padding|gap|layout)/i.test(property)) actual.add('SPACING');
+        if (/radius/i.test(property)) actual.add('RADII');
+        if (/shadow/i.test(property)) actual.add('SHADOWS');
+      }
+      if (!hasLiteralValue(value)) continue;
+      if (/^(?:font-family|font-size|font-weight|line-height|letter-spacing)$/i.test(property)) actual.add('TYPOGRAPHY');
+      if (/^(?:margin|padding|gap|inset)$/i.test(property)) actual.add('SPACING');
+      if (/^border-radius$/i.test(property)) actual.add('RADII');
+      if (/^box-shadow$/i.test(property)) actual.add('SHADOWS');
+      if (/^(?:color|background|background-color|border-color|fill|stroke)$/i.test(property) && !/(?:button|action|badge|pill|status|calendar|dialog|modal)/i.test(normalized)) actual.add('SEMANTIC_COLORS');
+    }
+  }
+  return [...actual];
+}
+
+function lineNumberAt(source, offset) {
+  return String(source).slice(0, offset).split(/\r?\n/).length;
 }
 
 function consumerAnchors(source) {
@@ -178,25 +334,34 @@ function validateConsumerRoots({
   registry,
   entryOnly,
   reachable,
+  graph,
   read,
   failures,
+  invalidScopedConsumerBoundaries,
 }) {
   const scoped = metadata.role === (registry.ownerModel || {}).scopedRole;
   const entry = registry.visualEntry;
   const roots = Array.isArray(metadata.consumerRoots) ? metadata.consumerRoots : [];
   if (!roots.length) return;
-  if (scoped && !roots.some((rootPath) => rootPath !== entry && !entryOnly.has(rootPath) && !rootPath.endsWith('.css'))) {
+  const realRoots = roots.filter((rootPath) => rootPath !== entry && !entryOnly.has(rootPath) && !rootPath.endsWith('.css'));
+  if (scoped && !realRoots.length) {
     addFailure(failures, `scoped owner consumerRoots must include a real route/component consumer: ${file}`);
+    invalidScopedConsumerBoundaries.add(file);
   }
   for (const consumer of roots) {
     const consumerAbsolute = path.join(rootDir, consumer);
     if (!fs.existsSync(consumerAbsolute)) {
       addFailure(failures, `consumer path missing: ${consumer}`);
+      if (scoped) invalidScopedConsumerBoundaries.add(file);
       continue;
     }
-    if (!reachable.has(consumer)) addFailure(failures, `consumer unreachable from runtime graph: ${consumer}`);
+    if (!reachable.has(consumer)) {
+      addFailure(failures, `consumer unreachable from runtime graph: ${consumer}`);
+      if (scoped) invalidScopedConsumerBoundaries.add(file);
+    }
     if (scoped && consumer === entry) {
       addFailure(failures, `scoped owner cannot use the global visual entry as its only consumer boundary: ${file}`);
+      invalidScopedConsumerBoundaries.add(file);
       continue;
     }
     if (scoped && !consumer.endsWith('.css') && !consumerRootHasUsage({
@@ -206,38 +371,91 @@ function validateConsumerRoots({
       consumerPath: consumer,
     })) {
       addFailure(failures, `scoped owner consumer relationship is not proven by import/usage graph: ${file} -> ${consumer}`);
+      invalidScopedConsumerBoundaries.add(file);
+      continue;
+    }
+    if (scoped && !consumer.endsWith('.css')) {
+      const directEdge = (graph.edges || []).some((edge) => edge.from === consumer && edge.to === file);
+      const transitiveEvidence = consumerRootHasUsage({
+        ownerSource: read(file),
+        consumerSource: read(consumer),
+        ownerPath: file,
+        consumerPath: consumer,
+      });
+      if (!directEdge && !transitiveEvidence) {
+        addFailure(failures, `scoped owner import/usage graph has no consumer edge: ${file} -> ${consumer}`);
+        invalidScopedConsumerBoundaries.add(file);
+      }
     }
   }
 }
 
-function auditImportantDeclarations(reachableCss, read) {
+function normalizeSelectorFamily(selector) {
+  return selector.replace(/\s+/g, ' ').trim().slice(0, 240);
+}
+
+function auditImportantDeclarations(reachableCss, read, metadataByFile = new Map()) {
   const byFile = {};
   const byFamily = {};
+  const familyRows = new Map();
   const findings = [];
   for (const file of reachableCss) {
     const source = read(file);
     const fileBoundary = source.match(EXPLICIT_IMPORTANT_BOUNDARY_PATTERN);
-    const lines = source.split(/\r?\n/);
-    for (let index = 0; index < lines.length; index += 1) {
-      if (!/!important\b/.test(lines[index])) continue;
-      const context = lines.slice(Math.max(0, index - 4), index + 1).join('\n');
-      const explicitBoundary = context.match(EXPLICIT_IMPORTANT_BOUNDARY_PATTERN) || fileBoundary;
-      const family = explicitBoundary ? explicitBoundary[1].toUpperCase() : 'UNCLASSIFIED_IMPORTANT';
-      const classification = explicitBoundary ? 'LEGITIMATE_BOUNDARY' : 'UNCLASSIFIED_IMPORTANT';
-      const record = { file, line: index + 1, family, classification, text: lines[index].trim() };
-      findings.push(record);
-      byFile[file] = (byFile[file] || 0) + 1;
-      byFamily[family] = (byFamily[family] || 0) + 1;
+    const metadata = metadataByFile.get(file) || parseOwnerMetadata(source) || {};
+    const canUseBoundary = Boolean(fileBoundary && metadata.role === 'canonical-owner');
+    for (const block of cssRuleBlocks(source)) {
+      const importantMatches = [...block.body.matchAll(/!important\b/gi)];
+      if (!importantMatches.length) continue;
+      const selectorFamily = normalizeSelectorFamily(block.selector);
+      const line = lineNumberAt(source, block.offset);
+      const highSpecificity = /#[-\w]+|html\s+body|:root|\b(?:stage\d+|hotfix|final[-_]?lock|specificity|patch)\b/i.test(block.selector) || EXPLICIT_PATCH_PATTERN.test(block.body);
+      const classification = canUseBoundary
+        ? 'LEGITIMATE_BOUNDARY'
+        : highSpecificity
+          ? 'SPECIFICITY_PATCH'
+          : 'UNCLASSIFIED_IMPORTANT';
+      const familyKey = `${file}::${selectorFamily}`;
+      const existing = familyRows.get(familyKey) || {
+        FILE: file,
+        SELECTOR_FAMILY: selectorFamily,
+        OWNER_ROLE: metadata.role || '<missing>',
+        BOUNDARY: fileBoundary ? fileBoundary[1].toUpperCase() : null,
+        IMPORTANT_COUNT: 0,
+        CLASSIFICATION: classification,
+        WHY_IMPORTANT: canUseBoundary ? 'Explicit LF-UI-IMPORTANT_BOUNDARY on a canonical owner.' : 'No explicit justified boundary was found.',
+      };
+      existing.IMPORTANT_COUNT += importantMatches.length;
+      if (existing.CLASSIFICATION !== classification) existing.CLASSIFICATION = 'UNCLASSIFIED_IMPORTANT';
+      familyRows.set(familyKey, existing);
+      byFile[file] = (byFile[file] || 0) + importantMatches.length;
+      byFamily[selectorFamily] = (byFamily[selectorFamily] || 0) + importantMatches.length;
+      for (let index = 0; index < importantMatches.length; index += 1) {
+        findings.push({
+          file,
+          line,
+          family: selectorFamily,
+          boundary: fileBoundary ? fileBoundary[1].toUpperCase() : null,
+          classification,
+          text: block.body.trim().slice(0, 240),
+        });
+      }
     }
   }
-  const specificityPatch = findings.filter((finding) => EXPLICIT_PATCH_PATTERN.test(finding.text) || /(?:stage\d+|hotfix|final[-_]?lock|specificity|patch)/i.test(finding.text));
+  const counts = {
+    LEGITIMATE_BOUNDARY: findings.filter((finding) => finding.classification === 'LEGITIMATE_BOUNDARY').length,
+    SPECIFICITY_PATCH: findings.filter((finding) => finding.classification === 'SPECIFICITY_PATCH').length,
+    UNCLASSIFIED_IMPORTANT: findings.filter((finding) => finding.classification === 'UNCLASSIFIED_IMPORTANT').length,
+  };
   return {
     total: findings.length,
     byFile,
     byFamily,
     findings,
-    UNCLASSIFIED_IMPORTANT: findings.filter((finding) => finding.classification === 'UNCLASSIFIED_IMPORTANT').length,
-    SPECIFICITY_PATCH_IMPORTANT: specificityPatch.length,
+    familyRows: [...familyRows.values()],
+    LEGITIMATE_BOUNDARY_IMPORTANT: counts.LEGITIMATE_BOUNDARY,
+    UNCLASSIFIED_IMPORTANT: counts.UNCLASSIFIED_IMPORTANT,
+    SPECIFICITY_PATCH_IMPORTANT: counts.SPECIFICITY_PATCH,
   };
 }
 
@@ -265,6 +483,9 @@ function validateCssArchitecture({
   const duplicateOwners = new Set();
   const unknownOwners = new Set();
   const activePatchLayers = new Set();
+  const concernMismatchFiles = new Set();
+  const concernMismatches = [];
+  const invalidScopedConsumerBoundaries = new Set();
   const markerTokens = registry.forbiddenRuntimeTokens || [];
   const ownerModel = registry.ownerModel || {};
   const policy = registry.scopedOwnerPolicy || {};
@@ -381,6 +602,12 @@ function validateCssArchitecture({
       addFailure(failures, `historical stage/hotfix authority remains in runtime CSS role ${metadata.role || '<missing>'}: ${file}`);
       historicalOwners.add(file);
     }
+    const mismatches = ownerConcernMismatches({ file, metadata, source });
+    for (const mismatch of mismatches) {
+      concernMismatches.push(mismatch);
+      concernMismatchFiles.add(file);
+      addFailure(failures, `CONCERN_MISMATCH ${mismatch.code}: ${mismatch.detail}`);
+    }
     if (metadata.role === ownerModel.canonicalRole) {
       if (!allCanonicalPaths.has(file)) {
         addFailure(failures, `canonical role is not registered: ${file}`);
@@ -409,7 +636,7 @@ function validateCssArchitecture({
         addFailure(failures, `scoped adapter owns global shell semantics: ${file}`);
         unknownOwners.add(file);
       }
-      validateConsumerRoots({ rootDir, file, metadata, registry, entryOnly: new Set(registry.entryOnly || []), reachable, read, failures });
+      validateConsumerRoots({ rootDir, file, metadata, registry, entryOnly: new Set(registry.entryOnly || []), reachable, graph, read, failures, invalidScopedConsumerBoundaries });
       if (metadata.activePatchLayer === true || EXPLICIT_PATCH_PATTERN.test(source)) activePatchLayers.add(file);
     } else {
       addFailure(failures, `UNKNOWN_VISUAL_OWNER: unsupported role ${metadata.role || '<missing>'} in ${file}`);
@@ -434,14 +661,67 @@ function validateCssArchitecture({
     if (metadata && metadata.role !== ownerModel.entryRole) addFailure(failures, `entry-only stylesheet must use entrypoint role: ${entryPath}`);
   }
 
-  const importantAudit = auditImportantDeclarations(reachableCss, read);
+  const importantAudit = auditImportantDeclarations(reachableCss, read, metadataByFile);
   if (importantAudit.UNCLASSIFIED_IMPORTANT > 0) {
     addFailure(failures, `UNCLASSIFIED_IMPORTANT=${importantAudit.UNCLASSIFIED_IMPORTANT}; byFile=${JSON.stringify(importantAudit.byFile)}`);
   }
   if (importantAudit.SPECIFICITY_PATCH_IMPORTANT > 0) {
     addFailure(failures, `SPECIFICITY_PATCH_IMPORTANT=${importantAudit.SPECIFICITY_PATCH_IMPORTANT}`);
   }
+  const sourceCssFiles = [];
+  const sourceStylesRoot = path.join(rootDir, 'src', 'styles');
+  const collectSourceCss = (directory) => {
+    if (!fs.existsSync(directory)) return;
+    for (const entryItem of fs.readdirSync(directory, { withFileTypes: true })) {
+      const candidate = path.join(directory, entryItem.name);
+      if (entryItem.isDirectory()) collectSourceCss(candidate);
+      else if (entryItem.name.endsWith('.css') && !entryItem.name.includes('.sync-conflict-')) sourceCssFiles.push(rel(candidate, rootDir));
+    }
+  };
+  collectSourceCss(sourceStylesRoot);
+  const ownerModuleFiles = reachableCss.filter((file) => /^src\/styles\/owners\/[^/]+\.css$/i.test(file));
+  const ownerModuleAudit = ownerModuleFiles.map((file) => {
+    const source = read(file);
+    const metadata = metadataByFile.get(file) || parseOwnerMetadata(source) || {};
+    const consumers = [...(incomingCssConsumers.get(file) || new Set())].sort();
+    const selectors = cssSelectors(source);
+    const globalSelectors = selectors.filter((selector) => SCOPED_GLOBAL_SELECTOR_PATTERN.test(selector));
+    const routeSelectors = selectors.filter((selector) => /(?:route|page|main-|detail|calendar|leads|clients|cases|today|tasks|billing|settings)/i.test(selector));
+    const componentSelectors = selectors.filter((selector) => /(?:component|dialog|modal|card|button|form|row|rail|icon|badge)/i.test(selector));
+    const historicalMarkers = (source.match(new RegExp(HISTORICAL_OWNER_PATTERN.source, 'gi')) || []).length;
+    const historicalCustomProperties = [...source.matchAll(/--stage\d+[a-z0-9_-]*/gi)].map((match) => match[0]);
+    const historicalDataAttributes = [...source.matchAll(/data-stage\d+[a-z0-9_-]*/gi)].map((match) => match[0]);
+    const importantCount = importantAudit.byFile[file] || 0;
+    const mismatches = concernMismatches.filter((mismatch) => mismatch.file === file);
+    const realConsumerBoundary = metadata.role === ownerModel.scopedRole
+      ? !invalidScopedConsumerBoundaries.has(file)
+      : consumers.length > 0;
+    return {
+      FILE: file,
+      ROLE: metadata.role || '<missing>',
+      DECLARED_CONCERNS: metadata.concerns || [],
+      ACTUAL_CONCERNS: detectActualConcerns(source),
+      GLOBAL_SELECTORS: globalSelectors,
+      ROUTE_SELECTORS: routeSelectors,
+      COMPONENT_SELECTORS: componentSelectors,
+      HISTORICAL_MARKERS: historicalMarkers,
+      HISTORICAL_CUSTOM_PROPERTIES: historicalCustomProperties,
+      HISTORICAL_DATA_ATTRIBUTES: historicalDataAttributes,
+      IMPORTANT_COUNT: importantCount,
+      CONSUMERS: consumers,
+      CONSUMER_BOUNDARY_PROVEN: realConsumerBoundary,
+      CONCERN_MISMATCH: mismatches.length > 0,
+      DISPOSITION: mismatches.length === 0 ? 'PASS' : 'FAIL',
+      MISMATCHES: mismatches,
+    };
+  });
   const summary = {
+    SOURCE_CSS_FILES: sourceCssFiles.length,
+    ACTIVE_RUNTIME_CSS_FILES: reachableCss.length,
+    OWNER_MODULES: ownerModuleFiles.length,
+    SEMANTIC_CONCERNS: requiredConcerns.length,
+    CONCERN_MISMATCH_FILES: concernMismatchFiles.size,
+    INVALID_SCOPED_CONSUMER_BOUNDARIES: invalidScopedConsumerBoundaries.size,
     activeCssFiles: reachableCss.length,
     ACTIVE_RUNTIME_PATCH_LAYERS: activePatchLayers.size,
     HISTORICAL_STAGE_RUNTIME_OWNERS: historicalOwners.size,
@@ -460,10 +740,13 @@ function validateCssArchitecture({
     TOTAL_IMPORTANT: importantAudit.total,
     UNCLASSIFIED_IMPORTANT: importantAudit.UNCLASSIFIED_IMPORTANT,
     SPECIFICITY_PATCH_IMPORTANT: importantAudit.SPECIFICITY_PATCH_IMPORTANT,
+    LEGITIMATE_BOUNDARY_IMPORTANT: importantAudit.LEGITIMATE_BOUNDARY_IMPORTANT,
     IMPORTANT_FAMILIES: importantAudit.byFamily,
+    IMPORTANT_FAMILY_ROWS: importantAudit.familyRows,
     IMPORTANT_BY_FILE: importantAudit.byFile,
+    OWNER_MODULE_AUDIT: ownerModuleAudit,
   };
-  return { ok: failures.length === 0, failures, summary, reachableCss, metadataByFile, importantAudit };
+  return { ok: failures.length === 0, failures, summary, reachableCss, metadataByFile, importantAudit, ownerModuleAudit, concernMismatches, invalidScopedConsumerBoundaries };
 }
 
 function diffAddedLines() {

@@ -35,7 +35,7 @@ expect('src/pages/Leads.tsx', "../styles/closeflow-record-list-source-truth.css"
 expect('src/App.tsx', "./styles/closeflow-visual-source-truth.css", 'canonical visual owner entrypoint');
 expect('src/styles/closeflow-record-list-source-truth.css', 'main-leads-html', 'scoped Leads record-list adapter');
 expect('src/styles/owners/closeflow-records-and-rails.css', 'main-leads-html .right-card', 'canonical Leads right-rail owner');
-expect('src/styles/owners/closeflow-calendar.css', '.grid-5', 'canonical metric-grid owner');
+expect('src/styles/owners/closeflow-metrics.css', '.grid-5', 'canonical metric-grid owner');
 expect('src/pages/Leads.tsx', 'VISUAL_STAGE25_LEADS_FULL_JSX_HTML_REBUILD', 'retained Leads structure contract');
 expect('src/pages/Leads.tsx', 'className="grid-5"', 'Leads metric grid structure');
 expect('src/pages/Leads.tsx', 'className="layout-list"', 'Leads list structure');

@@ -443,3 +443,11 @@
     width: 100% !important;
   }
 }
+
+
+/* LF-UI-SOT-007 semantic ownership migration: rules moved from foundation. */
+.cf-vst-shell {
+  max-width: var(--cf-vst-layout-page-max);
+  margin-left: auto;
+  margin-right: auto;
+}

@@ -314,20 +314,20 @@
   -webkit-text-fill-color: rgb(100 116 139);
   font-weight: 850;
 }
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-semantic48-task-card) .cf-trash-action-button {
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-button {
   border-color: var(--cf-trash-border-color, #fecaca);
   background: var(--cf-trash-bg, #ffffff);
   color: var(--cf-trash-text-color, #334155);
   box-shadow: none;
 }
 
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-semantic48-task-card) .cf-trash-action-button:hover {
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-button:hover {
   border-color: var(--cf-trash-border-hover-color, #fca5a5);
   background: var(--cf-trash-bg-hover, rgba(254, 242, 242, 0.72));
 }
 
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-semantic48-task-card) .cf-trash-action-icon,
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-semantic48-task-card) .cf-trash-action-button svg {
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-icon,
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-button svg {
   color: var(--cf-trash-icon-color, #dc2626);
 }
 #root .cf-html-view.main-templates-html [data-cf-template-card-source="record-list-source-truth"] {
@@ -504,19 +504,19 @@
   -webkit-text-fill-color: var(--cf-vst-color-primary-strong);
 }
 
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-semantic48-task-card) .cf-trash-action-button {
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-button {
   border-color: var(--cf-vst-color-delete-border);
   background: var(--cf-vst-surface-card-solid);
   color: var(--cf-vst-color-delete-strong);
 }
 
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-semantic48-task-card) .cf-trash-action-button:hover {
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-button:hover {
   border-color: var(--cf-vst-color-delete);
   background: var(--cf-vst-color-delete-soft);
 }
 
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-semantic48-task-card) .cf-trash-action-icon,
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-semantic48-task-card) .cf-trash-action-button svg {
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-icon,
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-button svg {
   color: var(--cf-vst-color-delete);
 }
 
