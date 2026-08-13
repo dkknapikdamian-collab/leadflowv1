@@ -71,16 +71,13 @@ import {
 } from '../lib/owner-control/last-contact-intake';
 import { isActiveClientCase } from '../lib/client-cases';
 import { getCaseFinanceSummary, getClientCasesFinanceSummary } from '../lib/finance/case-finance-source';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage23-client-case-forms-vnext.css; content merged above.
 // LF-UI-SOT-007 shared-source contract: import '../styles/visual-stage23-client-case-forms-vnext.css'; is provided once by App.tsx.
 import '../styles/clients-next-action-layout.css';
 
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
-import '../styles/closeflow-page-header-v2.css';
+import '../styles/closeflow-page-header-runtime.css';
 import '../styles/closeflow-record-list-source-truth.css';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
 // LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css'; is provided once by App.tsx.
-// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
 // LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-canvas-source-truth-stage211e.css'; is provided once by App.tsx.
 const CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS = 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS';
 const STAGE30_CLIENTS_TRASH_COPY_REMOVED = 'STAGE30_CLIENTS_TRASH_COPY_REMOVED';
@@ -1033,7 +1030,7 @@ export default function Clients() {
 
         <div className="layout-list w-full max-w-none" data-clients-wide-layout="true">
           <div className="stack">
-            <div className="search cf-main-search" data-cf-main-search="true" data-clients-search="true" data-cf-main-search-source="stage173">
+            <div className="search cf-main-search" data-cf-main-search="true" data-clients-search="true" data-cf-main-search-source="semantic173">
               <span aria-hidden="true"><Search className="w-4 h-4" /></span>
               <Input placeholder={showArchived ? CLOSEFLOW_STAGE134_TRASH_SEARCH_PLACEHOLDER : CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER} value={search} onChange={(event) => setSearch(event.target.value)} aria-label="Szukaj w klientach" />
             </div>

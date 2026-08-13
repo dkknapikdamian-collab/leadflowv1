@@ -4146,10 +4146,10 @@ async function handleConfirmDeleteCaseRecord() {
                     <div className="case-detail-light-empty">Brak historii sprawy.</div>
                   ) : (
                     caseHistoryItems.slice(0, 40).map((item) => (
-                      <article className="case-detail-stage220a10-history-row case-detail-semantic220a17-history-row" key={'stage220a10-history-' + item.id} data-history-kind={item.kind} data-cf-vst-kind={getCaseHistoryVstKindStage220A17(item.kind)} data-stage220a17-history-kind-row={item.kind}>
-                        <span className="case-detail-semantic220a10-history-icon cf-vst-icon" aria-label={getCaseHistoryKindLabelStage220A17(item.kind)}><CaseHistoryKindIconStage220A17 kind={item.kind} /></span>
+                      <article className="case-detail-history-row" key={'stage220a10-history-' + item.id} data-history-kind={item.kind} data-cf-vst-kind={getCaseHistoryVstKindStage220A17(item.kind)} data-stage220a17-history-kind-row={item.kind}>
+                        <span className="case-detail-history-icon cf-vst-icon" aria-label={getCaseHistoryKindLabelStage220A17(item.kind)}><CaseHistoryKindIconStage220A17 kind={item.kind} /></span>
                         <div className="case-detail-stage220a10-history-main">
-                          <div className="case-detail-semantic220a10-history-title-row">
+                          <div className="case-detail-history-title-row">
                             <strong>{item.title}</strong>
                             <small>{formatDateTime(item.occurredAt, 'Bez daty')}</small>
                           </div>

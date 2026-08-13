@@ -1,5 +1,4 @@
 import * as React from 'react';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/context-action-button-source-truth.css; content merged above.
 export type ContextActionKind = "task" | "event" | "note" | string;
 export type ContextRecordType = "lead" | "client" | "case" | string;
 

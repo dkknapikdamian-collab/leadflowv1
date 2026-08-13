@@ -57,15 +57,12 @@ import {
   fetchLeadsFromSupabase,
   fetchCasesFromSupabase
 } from '../lib/supabase-fallback';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage20-lead-form-vnext.css; content merged above.
-import '../styles/visual-stage9-ai-drafts-vnext.css';
-import '../styles/hotfix-right-rail-dark-wrappers.css';
-import '../styles/closeflow-ai-drafts-rail-force-colors-stage181w.css';
+import '../styles/closeflow-ai-drafts.css';
+import '../styles/closeflow-right-rail-wrappers.css';
+import '../styles/closeflow-ai-drafts-rail.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
-import '../styles/closeflow-page-header-v2.css';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
-// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
-import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
+import '../styles/closeflow-page-header-runtime.css';
+import '../styles/closeflow-canvas-runtime.css';
 type DraftFilter =
   | 'all'
   | 'draft'
@@ -1277,7 +1274,7 @@ useEffect(() => {
                 ))}
               </div>
 
-              <label className="ai-drafts-search-box cf-main-search cf-main-search-stage175" data-cf-main-search-source="stage173" data-cf-main-search-stage175="true">
+              <label className="ai-drafts-search-box cf-main-search cf-main-search-semantic175" data-cf-main-search-source="semantic173" data-cf-main-search-semantic175="true">
                 <Search className="h-4 w-4" />
                 <input
                   value={searchQuery}

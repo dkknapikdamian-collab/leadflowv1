@@ -99,14 +99,11 @@ import { buildRelationFunnelValue, buildRelationValueEntries, formatRelationValu
 import { LEAD_SOURCE_OPTIONS, getLeadSourceLabel } from '../lib/source-of-truth/lead-options';
 import { LEAD_STATUS_OPTIONS, getLeadStatusLabel, getLeadStatusTone } from '../lib/config/lead-status';
 
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage20-lead-form-vnext.css; content merged above.
 // LF-UI-SOT-007 shared-source contract: import '../styles/visual-stage20-lead-form-vnext.css' is provided once by App.tsx.
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
-import '../styles/closeflow-page-header-v2.css';
+import '../styles/closeflow-page-header-runtime.css';
 import '../styles/closeflow-record-list-source-truth.css';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
 // LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css' is provided once by App.tsx.
-// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
 const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadów jest pusty';
 const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'Przywróć leada';
 const STAGE_PANEL_DELETE_LEADS_CONFIRM_GUARD = '\\\\n\\\\nTen lead ma powiązaną sprawę';
@@ -1014,11 +1011,11 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
           data-stage177-leads-clients-layout-source="true"
           data-cf-right-rail-layout-source="shared"
           data-stage25-leads-layout-list="true"
-          data-stage32-leads-value-layout="true"
+          data-semantic32-leads-value-layout="true"
           data-stage96-leads-right-rail-source-truth="true"
         >
           <div className="stack">
-            <div className="search cf-main-search cf-main-search-stage177" data-cf-main-search="true" data-leads-search="true" data-stage117-leads-search-anchor="true" data-cf-main-search-source="stage173">
+            <div className="search cf-main-search cf-main-search-stage177" data-cf-main-search="true" data-leads-search="true" data-stage117-leads-search-anchor="true" data-cf-main-search-source="semantic173">
               <span aria-hidden="true"><Search className="w-4 h-4" /></span>
               <Input
                 placeholder={showTrash ? CLOSEFLOW_STAGE134_TRASH_SEARCH_PLACEHOLDER : CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER}
@@ -1036,7 +1033,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
 
             {searchQuery.trim() ? (
               leadSearchSuggestions.length ? (
-                <div className="suggestions lead-search-suggestions-stage31 cf-main-search" data-stage31-lead-search-suggestions="true" data-stage117-leads-search-suggestions="true" data-cf-main-search-source="stage173">
+                <div className="suggestions lead-search-suggestions-stage31 cf-main-search" data-stage31-lead-search-suggestions="true" data-stage117-leads-search-suggestions="true" data-cf-main-search-source="semantic173">
                   {leadSearchSuggestions.map((suggestion, index) => (
                     <Link key={suggestion.id} to={`/leads/${suggestion.id}`}>
                       <span>{index + 1}. {suggestion.name}</span>
@@ -1046,7 +1043,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   ))}
                 </div>
               ) : (
-                <div className="suggestions lead-search-suggestions-stage31 cf-main-search" data-stage31-lead-search-suggestions="true" data-stage117-leads-search-suggestions="true" data-cf-main-search-source="stage173">
+                <div className="suggestions lead-search-suggestions-stage31 cf-main-search" data-stage31-lead-search-suggestions="true" data-stage117-leads-search-suggestions="true" data-cf-main-search-source="semantic173">
                   <span className="sub">Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.</span>
                 </div>
               )
@@ -1250,8 +1247,8 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
             </div>
           </div>
 
-          <div className="lead-right-rail cf-operator-right-rail" data-stage117-leads-right-rail="true" data-stage177-leads-rail-source="clients-aligned" data-stage25-leads-right-rail="true" data-stage32-leads-value-rail="true" data-stage96-leads-right-rail-source-truth="true" data-cf-right-rail-source="shared">
-            {/* STAGE32_OPERATOR_RAIL_GUARD_COMPAT: data-stage32-valuable-relation-row="true" to={entry.href || '/leads'} formatRelationValue(entry.value) */}
+          <div className="lead-right-rail cf-operator-right-rail" data-stage117-leads-right-rail="true" data-stage177-leads-rail-source="clients-aligned" data-stage25-leads-right-rail="true" data-semantic32-leads-value-rail="true" data-stage96-leads-right-rail-source-truth="true" data-cf-right-rail-source="shared">
+            {/* STAGE32_OPERATOR_RAIL_GUARD_COMPAT: data-semantic32-valuable-relation-row="true" to={entry.href || '/leads'} formatRelationValue(entry.value) */}
             {/* STAGE117_RAIL_ORDER_SIMPLE_FILTERS_FIRST */}
             <SimpleFiltersCard
               className="lead-right-card operator-simple-filters-card"
@@ -1317,7 +1314,7 @@ items={mostValuableRelations.map((entry) => ({
                 title: entry.label + ' - ' + formatRelationValue(entry.value),
                 dataAttrs: {
                   'data-stage25-valuable-relation-row': true,
-                  'data-stage32-valuable-relation-row': true,
+                  'data-semantic32-valuable-relation-row': true,
                 },
               }))}
               emptyLabel="Brak relacji z wyliczoną wartością."

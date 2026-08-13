@@ -9,7 +9,6 @@ import { parseQuickLeadNote, type QuickLeadDraft } from '../../lib/quick-lead-pa
 import { archiveAiLeadDraftAsync, saveAiLeadDraftAsync, updateAiLeadDraftAsync } from '../../lib/ai-drafts';
 import { confirmAiDraftInSupabase } from '../../lib/supabase-fallback';
 import { requireWorkspaceId } from '../../lib/workspace-context';
-// LF-UI-SOT-007 canonical owner marker: disabled merged import ../../styles/quick-lead-capture-stage27.css; content is provided once by App.tsx.
 
 export const QUICK_LEAD_CAPTURE_MODAL_STAGE27 = 'QUICK_LEAD_CAPTURE_MODAL_STAGE27';
 

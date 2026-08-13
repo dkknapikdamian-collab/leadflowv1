@@ -70,13 +70,11 @@ import {
   createBillingCheckoutSessionInSupabase,
   getBillingCheckoutConfigurationInSupabase,
 } from '../lib/supabase-fallback';
-import '../styles/visual-stage16-billing-vnext.css';
+import '../styles/closeflow-billing.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
-import '../styles/closeflow-page-header-v2.css';
-import '../styles/closeflow-billing-visual-taxonomy-stage181z.css';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
-// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
-import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
+import '../styles/closeflow-page-header-runtime.css';
+import '../styles/closeflow-billing-taxonomy.css';
+import '../styles/closeflow-canvas-runtime.css';
 type BillingTab = 'plan' | 'settlements';
 
 const UI_TRUTH_BADGE_LABELS_STAGE14E = ['Gotowe', 'Beta', 'Wymaga konfiguracji', 'Niedostępne w Twoim planie', 'W przygotowaniu'] as const;

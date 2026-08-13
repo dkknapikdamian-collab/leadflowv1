@@ -1,339 +1,213 @@
 #!/usr/bin/env node
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
+/*
+ * STAGE231D0A is a historical inventory gate. The runtime architecture it
+ * documented was retired by LF-UI-SOT-007, so this compatibility checker must
+ * validate the current registry rather than resurrecting old stage CSS.
+ */
+const fs = require('node:fs');
+const path = require('node:path');
+const { spawnSync } = require('node:child_process');
 
 const MARKER = 'STAGE231D0A_VISUAL_SOURCE_TRUTH_CONSISTENCY';
 const repoRoot = process.cwd();
 const failures = [];
-const warnings = [];
 
-function relPath(...parts) {
-  return path.join(repoRoot, ...parts);
+function absolute(relativePath) {
+  return path.join(repoRoot, ...relativePath.split('/'));
 }
 
-function exists(rel) {
-  return fs.existsSync(relPath(...rel.split('/')));
+function exists(relativePath) {
+  return fs.existsSync(absolute(relativePath));
 }
 
-function read(rel) {
-  const full = relPath(...rel.split('/'));
-  if (!fs.existsSync(full)) {
-    failures.push(`missing file: ${rel}`);
+function read(relativePath) {
+  const filePath = absolute(relativePath);
+  if (!fs.existsSync(filePath)) {
+    failures.push(`missing file: ${relativePath}`);
     return '';
   }
-  return fs.readFileSync(full, 'utf8');
+  return fs.readFileSync(filePath, 'utf8');
 }
 
-function mustContain(rel, tokens, reason) {
-  const content = read(rel);
+function fail(message) {
+  failures.push(message);
+}
+
+function requireText(relativePath, tokens, reason) {
+  const source = read(relativePath);
   for (const token of tokens) {
-    if (!content.includes(token)) {
-      failures.push(`${rel}: missing token ${JSON.stringify(token)} (${reason})`);
-    }
+    if (!source.includes(token)) fail(`${relativePath}: missing ${JSON.stringify(token)} (${reason})`);
   }
-  return content;
+  return source;
 }
 
-function warnIfContains(rel, patterns, reason) {
-  const content = read(rel);
-  for (const pattern of patterns) {
-    if (pattern.test(content)) {
-      warnings.push(`${rel}: ${reason}: ${pattern}`);
-    }
-  }
-}
-
-function failIfContains(rel, patterns, reason) {
-  const content = read(rel);
-  for (const pattern of patterns) {
-    if (pattern.test(content)) {
-      failures.push(`${rel}: ${reason}: ${pattern}`);
-    }
+function parseJson(relativePath) {
+  const source = read(relativePath);
+  try {
+    return JSON.parse(source);
+  } catch (error) {
+    fail(`${relativePath}: invalid JSON: ${error.message}`);
+    return null;
   }
 }
 
-function literalFromCodes(codes) {
-  return String.fromCharCode(...codes);
-}
-
-const mojibakeTokens = [
-  literalFromCodes([0x0102]),
-  literalFromCodes([0x0139]),
-  literalFromCodes([0x00c4]),
-  literalFromCodes([0x00c5]),
-  literalFromCodes([0x00c2]),
-  literalFromCodes([0xfffd]),
-  'd' + literalFromCodes([0x00ef, 0x00bf, 0x00bd]) + 'z' + literalFromCodes([0x00ef, 0x00bf, 0x00bd]),
-].filter(Boolean);
-
-function checkNoMojibake(rel) {
-  const content = read(rel);
-  for (const token of mojibakeTokens) {
-    if (content.includes(token)) {
-      failures.push(`${rel}: contains mojibake/replacement token`);
-    }
+function parseOwnerMetadata(source, relativePath) {
+  const match = String(source).match(/LF-UI-SOT-007_OWNER\s+(\{[^\n]*\})/);
+  if (!match) {
+    fail(`${relativePath}: missing LF-UI-SOT-007_OWNER metadata`);
+    return null;
+  }
+  try {
+    return JSON.parse(match[1]);
+  } catch (error) {
+    fail(`${relativePath}: invalid owner metadata: ${error.message}`);
+    return null;
   }
 }
 
 function checkPackageScripts() {
-  const pkgRaw = read('package.json');
-  let pkg;
-  try {
-    pkg = JSON.parse(pkgRaw);
-  } catch (error) {
-    failures.push(`package.json: invalid JSON: ${error.message}`);
-    return;
-  }
-  const scripts = pkg.scripts || {};
+  const packageJson = parseJson('package.json');
+  const scripts = packageJson?.scripts || {};
   const expected = {
     'check:stage231d0a-visual-source-truth-consistency': 'node scripts/check-stage231d0a-visual-source-truth-consistency.cjs',
     'test:stage231d0a-visual-source-truth-consistency': 'node --test tests/stage231d0a-visual-source-truth-consistency.test.cjs',
   };
   for (const [name, command] of Object.entries(expected)) {
-    if (scripts[name] !== command) {
-      failures.push(`package.json: missing or changed script ${name}`);
-    }
+    if (scripts[name] !== command) fail(`package.json: missing or changed script ${name}`);
   }
 }
 
-function checkInventoryReport() {
-  const report = '_project/runs/STAGE231D0A_VISUAL_SOURCE_TRUTH_INVENTORY_RUN.md';
-  const map = '_project/VISUAL_SOURCE_OF_TRUTH.md';
-  for (const rel of [report, map]) {
-    mustContain(rel, [
-      MARKER,
-      'VISUAL SOURCE OF TRUTH MAP',
-      'Cards:',
-      'Buttons:',
-      'Badges:',
-      'Icons:',
-      'Finance rows:',
-      'Typography:',
-      'Spacing:',
-      'Colors:',
-      'Ryzyka:',
-    ], 'D0A report must include the visual source of truth map');
-    checkNoMojibake(rel);
+function checkHistoricalInventoryArtifacts() {
+  // These are retained records of the older D0A inventory, not runtime source
+  // of truth. Keep only existence/identity checks here; current ownership is
+  // proved by the LF-UI-SOT-007 registry and guard below.
+  requireText('_project/VISUAL_SOURCE_OF_TRUTH.md', [
+    'STAGE231D0A_VISUAL_SOURCE_TRUTH_CONSISTENCY',
+    'VISUAL SOURCE OF TRUTH MAP',
+    'Ryzyka:',
+  ], 'retained historical inventory identity');
+  requireText('_project/runs/STAGE231D0A_VISUAL_SOURCE_TRUTH_INVENTORY_RUN.md', [
+    'STAGE231D0A_VISUAL_SOURCE_TRUTH_CONSISTENCY',
+    'VISUAL SOURCE OF TRUTH MAP',
+  ], 'retained historical inventory run identity');
+  requireText('_project/obsidian_payloads/STAGE231D0A_VISUAL_SOURCE_TRUTH_OBSIDIAN_PAYLOAD.md', [
+    'STAGE231D0A_VISUAL_SOURCE_TRUTH_CONSISTENCY',
+    'Zapis do Obsidiana',
+    'Visual Source of Truth',
+  ], 'retained historical Obsidian payload identity');
+}
+
+function checkCurrentRegistry() {
+  const registry = parseJson('src/lib/source-of-truth/visual-owner-registry.json');
+  if (!registry) return;
+
+  if (registry.stage !== 'LF-UI-SOT-007') fail('registry: unexpected stage');
+  if (registry.runtimeEntry !== 'src/main.tsx') fail('registry: runtimeEntry must be src/main.tsx');
+  if (registry.visualEntry !== 'src/styles/closeflow-visual-source-truth.css') {
+    fail('registry: visualEntry must be the canonical CloseFlow visual entry');
   }
-}
+  if (registry.ownerModel?.oneOwnerPerConcern !== true) fail('registry: oneOwnerPerConcern must be true');
+  if (!exists(registry.visualEntry)) fail(`registry visualEntry missing: ${registry.visualEntry}`);
+  if (!read('src/App.tsx').includes("./styles/closeflow-visual-source-truth.css")) {
+    fail('src/App.tsx: canonical visual entry is not imported by the runtime app');
+  }
 
-function checkExistingVisualSources() {
-  mustContain('src/components/ui/button.tsx', [
-    'buttonVariants',
-    'data-cf-vst-button',
-    'cf-vst-button',
-    'cf-vst-button-primary',
-    'cf-vst-button-delete',
-  ], 'button source of truth');
-
-  mustContain('src/components/entity-actions.tsx', [
-    'CLOSEFLOW_ACTION_CLUSTERS_FINAL_CONTRACT_VS6',
-    'ENTITY_DETAIL_ACTION_PLACEMENT_CONTRACT',
-    'CLOSEFLOW_TRASH_ACTION_SOURCE_OF_TRUTH',
-    'EntityActionButton',
-    'EntityTrashButton',
-    'actionButtonClass',
-    'trashActionButtonClass',
-    'trashActionIconClass',
-  ], 'entity action source of truth');
-
-  mustContain('src/components/ui-system/index.ts', [
-    "export * from './SurfaceCard'",
-    "export * from './StatusPill'",
-    "export * from './MetricTile'",
-    "export * from './EntityIcon'",
-    "export * from './icon-registry'",
-    "export * from './OperatorMetricTiles'",
-  ], 'ui-system registry exports');
-
-  mustContain('src/components/ui-system/icon-registry.ts', [
-    'CLOSEFLOW_ENTITY_ICON_REGISTRY_VS2B',
-    'ENTITY_ICON_MAP',
-    'client:',
-    'lead:',
-    'case:',
-    'task:',
-    'event:',
-    'payment:',
-    'commission:',
-    'ai:',
-    'CLOSEFLOW_ENTITY_ICON_MAP_SINGLE_SOURCE_OF_TRUTH',
-  ], 'entity icon map source of truth');
-
-  mustContain('src/components/ui-system/EntityIcon.tsx', [
-    'resolveEntityIcon',
-    'data-cf-entity-icon',
-    'data-cf-entity-icon-size',
-    'data-cf-entity-icon-tone',
-    'ClientEntityIcon',
-    'LeadEntityIcon',
-    'CaseEntityIcon',
-  ], 'EntityIcon component contract');
-
-  mustContain('src/components/ui-system/SurfaceCard.tsx', [
-    'data-cf-ui-component="SurfaceCard"',
-    'data-standard-surface-card="true"',
-    'data-cf-surface-card-contract',
-  ], 'card surface source of truth');
-
-  mustContain('src/components/ui-system/StatusPill.tsx', [
-    'data-cf-ui-component="StatusPill"',
-    'data-cf-status-tone',
-    'data-cf-status-pill-contract',
-    'StatusPillTone',
-  ], 'badge/status source of truth');
-
-  mustContain('src/components/ui-system/MetricTile.tsx', [
-    'data-cf-ui-component="MetricTile"',
-    'data-cf-metric-tile-contract',
-    'OperatorMetricTile',
-  ], 'metric tile source of truth');
-
-  mustContain('src/components/finance/FinanceMiniSummary.tsx', [
-    'SurfaceCard',
-    'StatusPill',
-    'cf-finance-metric',
-    'Prowizja należna',
-    'Wpłacono prowizji',
-    'Do zapłaty prowizji',
-  ], 'finance rows source of truth');
-
-  mustContain('src/styles/closeflow-record-list-source-truth.css', [
-    'CLOSEFLOW_RECORD_LIST_SOURCE_TRUTH_2026_05_12',
-    'owner: CloseFlow Visual System',
-    'goal: one visual source of truth for operator record cards',
-    'main-leads-html',
-    'main-clients-html',
-  ], 'record list visual source of truth');
-
-  mustContain('src/styles/closeflow-unified-page-canvas-stage211c.css', [
-    'STAGE211C_UNIFIED_APP_CANVAS',
-    '--cf-page-canvas-full-width',
-    '--cf-page-canvas-padding-x',
-    '.cf-page-canvas',
-    'data-cf-page-canvas',
-  ], 'page canvas source of truth');
-
-  mustContain('src/pages/ClientDetail.tsx', [
-    "import { EntityIcon } from '../components/ui-system'",
-    "import { actionButtonClass } from '../components/entity-actions'",
-    "import { Button } from '../components/ui/button'",
-    "import { ClientFinanceRelationSummary } from '../components/finance/FinanceMiniSummary'",
-    "import '../styles/closeflow-unified-page-canvas-stage211c.css'",
-    'data-cf-page-canvas="full"',
-  ], 'ClientDetail must consume shared visual sources');
-
-  mustContain('src/pages/Cases.tsx', [
-    "import { EntityIcon } from '../components/ui-system/EntityIcon'",
-    'EntityTrashButton',
-    'trashActionIconClass',
-    "import '../styles/closeflow-record-list-source-truth.css'",
-    "import '../styles/closeflow-unified-page-canvas-stage211c.css'",
-  ], 'Cases must consume shared visual sources');
-
-  mustContain('src/pages/Clients.tsx', [
-    "from '../components/ui-system'",
-    'actionIconClass',
-    'StatShortcutCard',
-    'SimpleFiltersCard',
-    "import '../styles/closeflow-record-list-source-truth.css'",
-    "import '../styles/closeflow-unified-page-canvas-stage211c.css'",
-  ], 'Clients must consume shared visual sources');
-}
-
-function checkD0ADoesNotIntroduceRuntimeLocalStyles() {
-  const d0aFiles = [
-    'scripts/check-stage231d0a-visual-source-truth-consistency.cjs',
-    'tests/stage231d0a-visual-source-truth-consistency.test.cjs',
-    '_project/VISUAL_SOURCE_OF_TRUTH.md',
-    '_project/runs/STAGE231D0A_VISUAL_SOURCE_TRUTH_INVENTORY_RUN.md',
-  ];
-  for (const rel of d0aFiles) {
-    if (!exists(rel)) {
-      failures.push(`missing D0A file: ${rel}`);
+  const concerns = registry.concerns || {};
+  const ownersByConcern = new Map();
+  for (const [concern, definition] of Object.entries(concerns)) {
+    if (!definition?.owner) {
+      fail(`registry: concern has no owner: ${concern}`);
       continue;
     }
-    checkNoMojibake(rel);
+    if (ownersByConcern.has(concern)) fail(`registry: duplicate concern: ${concern}`);
+    ownersByConcern.set(concern, definition.owner);
+    if (!exists(definition.owner)) fail(`registry owner missing: ${definition.owner}`);
   }
+  if (ownersByConcern.size < 1) fail('registry: no semantic concerns registered');
 
-  // D0A is inventory/guard only. It must not add a runtime CSS file that becomes a new local card style source.
-  const suspiciousD0ARuntimeCss = 'src/styles/visual-source-truth.css';
-  if (exists(suspiciousD0ARuntimeCss)) {
-    failures.push(`${suspiciousD0ARuntimeCss}: D0A must not add a runtime style file unless a later UI stage proves it is needed`);
-  }
-
-  const localStylePatterns = [
-    /width\s*:\s*7\d\dpx/i,
-    /height\s*:\s*1\d\dpx/i,
-    /font-size\s*:\s*(13|17|19)px/i,
-    /border-radius\s*:\s*(23|27|29)px/i,
-  ];
-  for (const rel of d0aFiles) {
-    warnIfContains(rel, localStylePatterns, 'D0A artifact contains a suspicious hard-coded visual value');
-  }
-}
-
-function checkRoadmapOrder() {
-  const next = read('_project/07_NEXT_STEPS.md');
-  const stage = read('_project/03_CURRENT_STAGE.md');
-  const combined = `${next}\n${stage}`;
-  const required = [
-    'STAGE231D0A',
-    'Visual Source of Truth Inventory + UI Consistency Guard',
-    'R10',
-    'D0A',
-    'D0',
-    'D1',
-    'D2',
-    'D3',
-    'D4',
-    'D5',
-  ];
-  for (const token of required) {
-    if (!combined.includes(token)) {
-      failures.push(`roadmap docs: missing ${JSON.stringify(token)} in _project/07_NEXT_STEPS.md or _project/03_CURRENT_STAGE.md`);
+  const ownerDirectory = absolute('src/styles/owners');
+  for (const entry of fs.readdirSync(ownerDirectory, { withFileTypes: true })) {
+    if (!entry.isFile() || !entry.name.endsWith('.css') || entry.name.includes('.sync-conflict-')) continue;
+    const relativePath = `src/styles/owners/${entry.name}`;
+    const metadata = parseOwnerMetadata(read(relativePath), relativePath);
+    if (!metadata) continue;
+    if (!metadata.role) fail(`${relativePath}: missing runtime role`);
+    if (!Array.isArray(metadata.consumerRoots) || metadata.consumerRoots.length === 0) {
+      fail(`${relativePath}: missing consumerRoots`);
+    }
+    if (metadata.role === 'canonical-owner') {
+      const declaredOwner = [...ownersByConcern.values()].find((owner) => owner === relativePath);
+      if (!declaredOwner) fail(`${relativePath}: canonical owner is not registered for a concern`);
+    }
+    if (metadata.role === 'scoped-adapter') {
+      const realRoots = (metadata.consumerRoots || []).filter((root) =>
+        root !== registry.visualEntry && !String(root).endsWith('.css'));
+      if (!realRoots.length) fail(`${relativePath}: scoped adapter has no route/component consumer root`);
     }
   }
 }
 
-function checkObsidianPayload() {
-  const rel = '_project/obsidian_payloads/STAGE231D0A_VISUAL_SOURCE_TRUTH_OBSIDIAN_PAYLOAD.md';
-  mustContain(rel, [
-    MARKER,
-    'Zapis do Obsidiana',
-    'CloseFlow / LeadFlow',
-    '10_PROJEKTY/CloseFlow_Lead_App',
-    'STAGE231D0A',
-    'Visual Source of Truth',
-    'audyt ryzyk',
-    'następny krok',
-  ], 'Obsidian payload must exist in repo for later copy');
-  checkNoMojibake(rel);
+function metricIsZero(output, metric) {
+  const jsonPattern = new RegExp(`"${metric}"\\s*:\\s*0`);
+  const textPattern = new RegExp(`${metric}\\s+0`);
+  return jsonPattern.test(output) || textPattern.test(output);
+}
+
+function checkCurrentRuntimeGuard() {
+  const result = spawnSync(process.execPath, [
+    path.join(repoRoot, 'scripts', 'check-closeflow-ui-ssot.cjs'),
+    'css-owners',
+  ], { cwd: repoRoot, encoding: 'utf8' });
+  const output = `${result.stdout || ''}\n${result.stderr || ''}`;
+  if (result.status !== 0) {
+    fail(`current LF-UI-SOT-007 css-owner guard failed:\n${output.trim()}`);
+    return;
+  }
+  for (const metric of [
+    'ACTIVE_RUNTIME_PATCH_LAYERS',
+    'HISTORICAL_STAGE_RUNTIME_OWNERS',
+    'COMPETING_VISUAL_OWNERS',
+    'UNKNOWN_VISUAL_OWNERS',
+    'DUPLICATE_SEMANTIC_OWNERS',
+    'UNCLASSIFIED_IMPORTANT',
+    'SPECIFICITY_PATCH_IMPORTANT',
+  ]) {
+    if (!metricIsZero(output, metric)) fail(`current LF-UI-SOT-007 guard: ${metric} is not zero`);
+  }
+  if (!/"ONE_OWNER_PER_VISUAL_CONCERN"\s*:\s*"PASS"/.test(output)) {
+    fail('current LF-UI-SOT-007 guard: ONE_OWNER_PER_VISUAL_CONCERN is not PASS');
+  }
+}
+
+function checkD0ADoesNotCreateRuntimeSource() {
+  if (exists('src/styles/visual-source-truth.css')) {
+    fail('src/styles/visual-source-truth.css: retired D0A artifact must not become a second runtime source');
+  }
+  for (const relativePath of [
+    'scripts/check-stage231d0a-visual-source-truth-consistency.cjs',
+    'tests/stage231d0a-visual-source-truth-consistency.test.cjs',
+  ]) {
+    if (!exists(relativePath)) fail(`missing D0A compatibility artifact: ${relativePath}`);
+  }
 }
 
 function main() {
   console.log(`${MARKER}: start`);
   checkPackageScripts();
-  checkInventoryReport();
-  checkExistingVisualSources();
-  checkD0ADoesNotIntroduceRuntimeLocalStyles();
-  checkRoadmapOrder();
-  checkObsidianPayload();
-
-  for (const warning of warnings) {
-    console.warn(`WARN: ${warning}`);
-  }
+  checkHistoricalInventoryArtifacts();
+  checkCurrentRegistry();
+  checkCurrentRuntimeGuard();
+  checkD0ADoesNotCreateRuntimeSource();
 
   if (failures.length) {
     console.error(`${MARKER}: FAIL`);
-    for (const failure of failures) {
-      console.error(`- ${failure}`);
-    }
+    for (const failure of failures) console.error(`- ${failure}`);
     process.exit(1);
   }
 
+  console.log(`${MARKER}: CURRENT_REGISTRY=LF-UI-SOT-007`);
   console.log(`${MARKER}: PASS`);
 }
 

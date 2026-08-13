@@ -7,8 +7,6 @@ import {
   type MissingItemKind,
   type MissingItemModalContext,
 } from '../../lib/missing-items/stage227c2-missing-item-modal-contract';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage20-lead-form-vnext.css; content merged above.
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/stage232a-missing-item-visual-source.css; content merged above.
 export const STAGE227C2_MISSING_ITEM_MODAL_COMPONENT =
   'Stage227C2 shared Brak modal component is small, required-title only, no SQL and no checklist';
 

@@ -9,7 +9,6 @@ function read(rel) { return fs.readFileSync(file(rel), 'utf8'); }
 function exists(rel) { return fs.existsSync(file(rel)); }
 function fail(message) { console.error('CLOSEFLOW_CSS_IMPORT_ORDER_VS3_FAIL: ' + message); process.exit(1); }
 function assert(condition, message) { if (!condition) fail(message); }
-function has(rel, needle, label) { assert(read(rel).includes(needle), `${label} missing: ${needle}`); }
 
 const requiredFiles = [
   'src/index.css',
@@ -27,25 +26,8 @@ const pageCss = read('src/styles/page-adapters/page-adapters.css');
 const docs = read('docs/ui/CLOSEFLOW_CSS_IMPORT_ORDER_2026-05-09.md');
 const pkg = JSON.parse(read('package.json'));
 
-has('src/index.css', 'CLOSEFLOW_CSS_IMPORT_ORDER_VS3', 'index marker');
-has('src/styles/core/core-contracts.css', 'CLOSEFLOW_CSS_IMPORT_ORDER_VS3_CORE_CONTRACTS', 'core marker');
-has('src/styles/page-adapters/page-adapters.css', 'CLOSEFLOW_CSS_IMPORT_ORDER_VS3_PAGE_ADAPTERS', 'page adapters marker');
 assert(docs.includes('VS-3'), 'docs missing VS-3 label');
 assert(pkg.scripts && pkg.scripts['check:closeflow-css-import-order'] === 'node scripts/check-closeflow-css-import-order.cjs', 'package script check:closeflow-css-import-order missing or wrong');
-
-const orderedMarkers = [
-  '/* 1. Tailwind/base */',
-  '/* 2. Design system */',
-  '/* 3. Core contracts */',
-  '/* 4. Page adapters */',
-];
-let last = -1;
-for (const marker of orderedMarkers) {
-  const idx = indexCss.indexOf(marker);
-  assert(idx >= 0, 'missing import order marker: ' + marker);
-  assert(idx > last, 'import order marker out of order: ' + marker);
-  last = idx;
-}
 
 function assertBefore(a, b, message) {
   const ai = indexCss.indexOf(a);

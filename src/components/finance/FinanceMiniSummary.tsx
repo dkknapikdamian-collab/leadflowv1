@@ -16,7 +16,6 @@ import { StatusPill, SurfaceCard } from '../ui-system';
 import { CaseFinanceActionButtons } from './CaseFinanceActionButtons';
 import { CaseFinanceEditorDialog, formatCaseFinanceMoney, parseCaseFinanceNumber, type CaseFinancePatch } from './CaseFinanceEditorDialog';
 import { CaseFinancePaymentDialog, type CaseFinancePaymentInput } from './CaseFinancePaymentDialog';
-// LF-UI-SOT-007 canonical owner marker: import '../../styles/finance/closeflow-finance.css';
 
 export const CLOSEFLOW_FIN13_CLIENT_CASE_FINANCES = 'CLOSEFLOW_FIN13_CLIENT_CASE_FINANCES_V1' as const;
 export const STAGE228R7_CLIENT_FINANCE_COMMISSION_BALANCE_TRUTH = 'client finance summary shows commission paid and remaining as main balance' as const;

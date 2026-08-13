@@ -6,10 +6,8 @@ import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { PaymentEntityIcon, SemanticIcon, resolveCloseflowMetricIconTone } from '../components/ui-system';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
-// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-metric-tiles.css';
 import '../styles/closeflow-record-list-source-truth.css';
-import '../styles/sales-funnel-stage231d0f-visual-alignment.css';
+import '../styles/closeflow-sales-funnel.css';
 import {
   fetchCasesFromSupabase,
   fetchClientsFromSupabase,

@@ -40,7 +40,6 @@ import { getCaseStatusLabel, getCaseStatusTone } from '../lib/config/case-status
 import { getOwnerRiskLabel } from '../lib/config/funnel-stages';
 import { caseDetailPath } from '../lib/routes';
 import { requireWorkspaceId } from '../lib/workspace-context';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage23-client-case-forms-vnext.css; content merged above.
 import {
   createCaseInSupabase,
   fetchCasesFromSupabase,
@@ -51,11 +50,9 @@ import {
   fetchClientsFromSupabase,
 } from '../lib/supabase-fallback';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
-import '../styles/closeflow-page-header-v2.css';
+import '../styles/closeflow-page-header-runtime.css';
 import '../styles/closeflow-record-list-source-truth.css';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
 // LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css' is provided once by App.tsx.
-// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
 const CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES = 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES';
 const CLIENT_CASE_FORMS_STAGE23_HUMAN_COPY = 'Podaj nazwę klienta. Podaj tytuł sprawy. Wybierz klienta albo utwórz nowego. Nie udało się zapisać. Spróbuj ponownie. Rozpocznij obsługę.';
 const CASES_LIFECYCLE_NEEDS_NEXT_STEP_GUARD = 'Bez kroku';
@@ -774,7 +771,7 @@ const toggleCaseView = (view: CaseView) => {
 
         <div className="layout-list">
           <div className="stack">
-            <div className="search cf-main-search" data-cf-main-search-source="stage173">
+            <div className="search cf-main-search" data-cf-main-search-source="semantic173">
               <span aria-hidden="true"><Search className="h-4 w-4" /></span>
               <Input
                 placeholder="Szukaj po nazwie, telefonie, e-mailu, firmie albo sprawie..."

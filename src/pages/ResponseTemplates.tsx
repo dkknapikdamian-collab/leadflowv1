@@ -24,11 +24,9 @@ import {
 } from '../lib/supabase-fallback';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import { PageShell } from '../components/layout/page-shell';
-import '../styles/closeflow-page-header-v2.css';
-import '../styles/visual-stage22-event-form-vnext.css';
-import '../styles/closeflow-response-template-modal-source-truth-stage181r.css';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
-// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
+import '../styles/closeflow-page-header-runtime.css';
+import '../styles/closeflow-event-form.css';
+import '../styles/closeflow-response-template-modal.css';
 type ResponseTemplate = {
   id: string;
   name: string;
@@ -209,7 +207,7 @@ export default function ResponseTemplates() {
 
         <Card className="cf-readable-card border-none app-surface-strong app-shadow">
           <CardContent className="flex flex-col gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="relative flex-1 cf-main-search cf-main-search-stage175" data-cf-main-search-source="stage173" data-cf-main-search-stage175="true">
+            <div className="relative flex-1 cf-main-search cf-main-search-semantic175" data-cf-main-search-source="semantic173" data-cf-main-search-semantic175="true">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 app-muted" />
               <Input value={query} onChange={(event) => setQuery(event.target.value)} className="" placeholder="Szukaj po nazwie, kategorii, tagach, zmiennych albo treści..." />
             </div>

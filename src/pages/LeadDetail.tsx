@@ -177,13 +177,7 @@ import {
   softDeleteTaskInSupabase,
   updateCaseInSupabase,
 } from '../lib/supabase-fallback';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/visual-stage14-lead-detail-vnext.css; content merged above.
-// LF-UI-SOT-007 shared-source contract: import '../styles/visual-stage14-lead-detail-vnext.css' is provided once by App.tsx.
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
-// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css' is provided once by App.tsx.
-import '../styles/closeflow-shared-quick-actions-bar-stage227e3.css';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-lead-detail-sales-signal-stage227e4.css; content merged above.
-// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-lead-detail-sales-signal-stage227e4.css' is provided once by App.tsx.
+import '../styles/closeflow-quick-actions.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 
 

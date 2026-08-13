@@ -1,8 +1,17 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-08-12T10:11:26.833Z
+Generated: 2026-08-13T05:37:50.104Z
 
 ## CSS variables
+- --cf-canvas: src/components/VisualFoundationRuntime.sync-conflict-20260812-220821-AQZURIM.tsx:11
+- --cf-surface: src/components/VisualFoundationRuntime.sync-conflict-20260812-220821-AQZURIM.tsx:12
+- --cf-surface-soft: src/components/VisualFoundationRuntime.sync-conflict-20260812-220821-AQZURIM.tsx:13
+- --cf-border: src/components/VisualFoundationRuntime.sync-conflict-20260812-220821-AQZURIM.tsx:14
+- --app-bg: src/components/VisualFoundationRuntime.sync-conflict-20260812-220821-AQZURIM.tsx:15
+- --app-surface: src/components/VisualFoundationRuntime.sync-conflict-20260812-220821-AQZURIM.tsx:16
+- --app-surface-strong: src/components/VisualFoundationRuntime.sync-conflict-20260812-220821-AQZURIM.tsx:17
+- --cf-operator-bg: src/components/VisualFoundationRuntime.sync-conflict-20260812-220821-AQZURIM.tsx:18
+- --cf-operator-bg-soft: src/components/VisualFoundationRuntime.sync-conflict-20260812-220821-AQZURIM.tsx:19
 - --cf-canvas: src/components/VisualFoundationRuntime.tsx:11
 - --cf-surface: src/components/VisualFoundationRuntime.tsx:12
 - --cf-surface-soft: src/components/VisualFoundationRuntime.tsx:13
@@ -12,6 +21,19 @@ Generated: 2026-08-12T10:11:26.833Z
 - --app-surface-strong: src/components/VisualFoundationRuntime.tsx:17
 - --cf-operator-bg: src/components/VisualFoundationRuntime.tsx:18
 - --cf-operator-bg-soft: src/components/VisualFoundationRuntime.tsx:19
+- --cf-canvas: src/components/VisualFoundationRuntimeStage212B.sync-conflict-20260812-220821-AQZURIM.tsx:7
+- --cf-surface: src/components/VisualFoundationRuntimeStage212B.sync-conflict-20260812-220821-AQZURIM.tsx:8
+- --cf-surface-soft: src/components/VisualFoundationRuntimeStage212B.sync-conflict-20260812-220821-AQZURIM.tsx:9
+- --cf-border: src/components/VisualFoundationRuntimeStage212B.sync-conflict-20260812-220821-AQZURIM.tsx:10
+- --cf-operator-bg: src/components/VisualFoundationRuntimeStage212B.sync-conflict-20260812-220821-AQZURIM.tsx:11
+- --cf-operator-bg-soft: src/components/VisualFoundationRuntimeStage212B.sync-conflict-20260812-220821-AQZURIM.tsx:12
+- --cf-vs-bg: src/components/VisualFoundationRuntimeStage212B.sync-conflict-20260812-220821-AQZURIM.tsx:13
+- --cf-vs-bg-2: src/components/VisualFoundationRuntimeStage212B.sync-conflict-20260812-220821-AQZURIM.tsx:14
+- --app-bg: src/components/VisualFoundationRuntimeStage212B.sync-conflict-20260812-220821-AQZURIM.tsx:15
+- --app-surface: src/components/VisualFoundationRuntimeStage212B.sync-conflict-20260812-220821-AQZURIM.tsx:16
+- --app-surface-strong: src/components/VisualFoundationRuntimeStage212B.sync-conflict-20260812-220821-AQZURIM.tsx:17
+- --app-surface-muted: src/components/VisualFoundationRuntimeStage212B.sync-conflict-20260812-220821-AQZURIM.tsx:18
+- --app-border: src/components/VisualFoundationRuntimeStage212B.sync-conflict-20260812-220821-AQZURIM.tsx:19
 - --cf-canvas: src/components/VisualFoundationRuntimeStage212B.tsx:7
 - --cf-surface: src/components/VisualFoundationRuntimeStage212B.tsx:8
 - --cf-surface-soft: src/components/VisualFoundationRuntimeStage212B.tsx:9
@@ -25,6 +47,19 @@ Generated: 2026-08-12T10:11:26.833Z
 - --app-surface-strong: src/components/VisualFoundationRuntimeStage212B.tsx:17
 - --app-surface-muted: src/components/VisualFoundationRuntimeStage212B.tsx:18
 - --app-border: src/components/VisualFoundationRuntimeStage212B.tsx:19
+- --cf-canvas: src/components/VisualFoundationRuntimeStage212G.sync-conflict-20260812-220821-AQZURIM.tsx:7
+- --cf-surface: src/components/VisualFoundationRuntimeStage212G.sync-conflict-20260812-220821-AQZURIM.tsx:8
+- --cf-surface-soft: src/components/VisualFoundationRuntimeStage212G.sync-conflict-20260812-220821-AQZURIM.tsx:9
+- --cf-border: src/components/VisualFoundationRuntimeStage212G.sync-conflict-20260812-220821-AQZURIM.tsx:10
+- --cf-operator-bg: src/components/VisualFoundationRuntimeStage212G.sync-conflict-20260812-220821-AQZURIM.tsx:11
+- --cf-operator-bg-soft: src/components/VisualFoundationRuntimeStage212G.sync-conflict-20260812-220821-AQZURIM.tsx:12
+- --cf-vs-bg: src/components/VisualFoundationRuntimeStage212G.sync-conflict-20260812-220821-AQZURIM.tsx:13
+- --cf-vs-bg-2: src/components/VisualFoundationRuntimeStage212G.sync-conflict-20260812-220821-AQZURIM.tsx:14
+- --app-bg: src/components/VisualFoundationRuntimeStage212G.sync-conflict-20260812-220821-AQZURIM.tsx:15
+- --app-surface: src/components/VisualFoundationRuntimeStage212G.sync-conflict-20260812-220821-AQZURIM.tsx:16
+- --app-surface-strong: src/components/VisualFoundationRuntimeStage212G.sync-conflict-20260812-220821-AQZURIM.tsx:17
+- --app-surface-muted: src/components/VisualFoundationRuntimeStage212G.sync-conflict-20260812-220821-AQZURIM.tsx:18
+- --app-border: src/components/VisualFoundationRuntimeStage212G.sync-conflict-20260812-220821-AQZURIM.tsx:19
 - --cf-canvas: src/components/VisualFoundationRuntimeStage212G.tsx:7
 - --cf-surface: src/components/VisualFoundationRuntimeStage212G.tsx:8
 - --cf-surface-soft: src/components/VisualFoundationRuntimeStage212G.tsx:9
@@ -38,67 +73,127 @@ Generated: 2026-08-12T10:11:26.833Z
 - --app-surface-strong: src/components/VisualFoundationRuntimeStage212G.tsx:17
 - --app-surface-muted: src/components/VisualFoundationRuntimeStage212G.tsx:18
 - --app-border: src/components/VisualFoundationRuntimeStage212G.tsx:19
+- --cf-canvas: src/components/VisualFoundationRuntimeStage212M.sync-conflict-20260812-220823-AQZURIM.tsx:7
+- --cf-surface: src/components/VisualFoundationRuntimeStage212M.sync-conflict-20260812-220823-AQZURIM.tsx:8
+- --cf-surface-soft: src/components/VisualFoundationRuntimeStage212M.sync-conflict-20260812-220823-AQZURIM.tsx:9
+- --cf-border: src/components/VisualFoundationRuntimeStage212M.sync-conflict-20260812-220823-AQZURIM.tsx:10
+- --cf-admin-dark: src/components/VisualFoundationRuntimeStage212M.sync-conflict-20260812-220823-AQZURIM.tsx:11
 - --cf-canvas: src/components/VisualFoundationRuntimeStage212M.tsx:7
 - --cf-surface: src/components/VisualFoundationRuntimeStage212M.tsx:8
 - --cf-surface-soft: src/components/VisualFoundationRuntimeStage212M.tsx:9
 - --cf-border: src/components/VisualFoundationRuntimeStage212M.tsx:10
 - --cf-admin-dark: src/components/VisualFoundationRuntimeStage212M.tsx:11
-- --font-sans: src/index.css:29
-- --color-primary: src/index.css:30
-- --color-primary-foreground: src/index.css:31
-- --color-primary: src/index.css:37
-- --color-primary-foreground: src/index.css:38
-- --app-bg: src/index.css:39
-- --app-surface: src/index.css:40
-- --app-surface-strong: src/index.css:41
-- --app-surface-muted: src/index.css:42
-- --app-border: src/index.css:43
-- --app-text: src/index.css:44
-- --app-muted: src/index.css:45
-- --app-muted-soft: src/index.css:46
-- --app-primary-chip-bg: src/index.css:47
-- --app-primary-chip-text: src/index.css:48
-- --app-shadow-color: src/index.css:49
-- --color-primary: src/index.css:53
-- --color-primary-foreground: src/index.css:54
-- --app-bg: src/index.css:55
-- --app-surface: src/index.css:56
-- --app-surface-strong: src/index.css:57
-- --app-surface-muted: src/index.css:58
-- --app-border: src/index.css:59
-- --app-text: src/index.css:60
-- --app-muted: src/index.css:61
-- --app-muted-soft: src/index.css:62
-- --app-primary-chip-bg: src/index.css:63
-- --app-primary-chip-text: src/index.css:64
-- --app-shadow-color: src/index.css:65
-- --color-primary: src/index.css:69
-- --color-primary-foreground: src/index.css:70
-- --app-bg: src/index.css:71
-- --app-surface: src/index.css:72
-- --app-surface-strong: src/index.css:73
-- --app-surface-muted: src/index.css:74
-- --app-border: src/index.css:75
-- --app-text: src/index.css:76
-- --app-muted: src/index.css:77
-- --app-muted-soft: src/index.css:78
-- --app-primary-chip-bg: src/index.css:79
-- --app-primary-chip-text: src/index.css:80
-- --app-shadow-color: src/index.css:81
-- --color-primary: src/index.css:85
-- --color-primary-foreground: src/index.css:86
-- --app-bg: src/index.css:87
-- --app-surface: src/index.css:88
-- --app-surface-strong: src/index.css:89
-- --app-surface-muted: src/index.css:90
-- --app-border: src/index.css:91
-- --app-text: src/index.css:92
-- --app-muted: src/index.css:93
-- --app-muted-soft: src/index.css:94
-- --app-primary-chip-bg: src/index.css:95
-- --app-primary-chip-text: src/index.css:96
-- --app-shadow-color: src/index.css:97
-- ---: src/pages/ClientDetail.tsx:779
+- --font-sans: src/index.css:18
+- --color-primary: src/index.css:19
+- --color-primary-foreground: src/index.css:20
+- --color-primary: src/index.css:26
+- --color-primary-foreground: src/index.css:27
+- --app-bg: src/index.css:28
+- --app-surface: src/index.css:29
+- --app-surface-strong: src/index.css:30
+- --app-surface-muted: src/index.css:31
+- --app-border: src/index.css:32
+- --app-text: src/index.css:33
+- --app-muted: src/index.css:34
+- --app-muted-soft: src/index.css:35
+- --app-primary-chip-bg: src/index.css:36
+- --app-primary-chip-text: src/index.css:37
+- --app-shadow-color: src/index.css:38
+- --color-primary: src/index.css:42
+- --color-primary-foreground: src/index.css:43
+- --app-bg: src/index.css:44
+- --app-surface: src/index.css:45
+- --app-surface-strong: src/index.css:46
+- --app-surface-muted: src/index.css:47
+- --app-border: src/index.css:48
+- --app-text: src/index.css:49
+- --app-muted: src/index.css:50
+- --app-muted-soft: src/index.css:51
+- --app-primary-chip-bg: src/index.css:52
+- --app-primary-chip-text: src/index.css:53
+- --app-shadow-color: src/index.css:54
+- --color-primary: src/index.css:58
+- --color-primary-foreground: src/index.css:59
+- --app-bg: src/index.css:60
+- --app-surface: src/index.css:61
+- --app-surface-strong: src/index.css:62
+- --app-surface-muted: src/index.css:63
+- --app-border: src/index.css:64
+- --app-text: src/index.css:65
+- --app-muted: src/index.css:66
+- --app-muted-soft: src/index.css:67
+- --app-primary-chip-bg: src/index.css:68
+- --app-primary-chip-text: src/index.css:69
+- --app-shadow-color: src/index.css:70
+- --color-primary: src/index.css:74
+- --color-primary-foreground: src/index.css:75
+- --app-bg: src/index.css:76
+- --app-surface: src/index.css:77
+- --app-surface-strong: src/index.css:78
+- --app-surface-muted: src/index.css:79
+- --app-border: src/index.css:80
+- --app-text: src/index.css:81
+- --app-muted: src/index.css:82
+- --app-muted-soft: src/index.css:83
+- --app-primary-chip-bg: src/index.css:84
+- --app-primary-chip-text: src/index.css:85
+- --app-shadow-color: src/index.css:86
+- --font-sans: src/index.sync-conflict-20260812-220826-AQZURIM.css:33
+- --color-primary: src/index.sync-conflict-20260812-220826-AQZURIM.css:34
+- --color-primary-foreground: src/index.sync-conflict-20260812-220826-AQZURIM.css:35
+- --color-primary: src/index.sync-conflict-20260812-220826-AQZURIM.css:41
+- --color-primary-foreground: src/index.sync-conflict-20260812-220826-AQZURIM.css:42
+- --app-bg: src/index.sync-conflict-20260812-220826-AQZURIM.css:43
+- --app-surface: src/index.sync-conflict-20260812-220826-AQZURIM.css:44
+- --app-surface-strong: src/index.sync-conflict-20260812-220826-AQZURIM.css:45
+- --app-surface-muted: src/index.sync-conflict-20260812-220826-AQZURIM.css:46
+- --app-border: src/index.sync-conflict-20260812-220826-AQZURIM.css:47
+- --app-text: src/index.sync-conflict-20260812-220826-AQZURIM.css:48
+- --app-muted: src/index.sync-conflict-20260812-220826-AQZURIM.css:49
+- --app-muted-soft: src/index.sync-conflict-20260812-220826-AQZURIM.css:50
+- --app-primary-chip-bg: src/index.sync-conflict-20260812-220826-AQZURIM.css:51
+- --app-primary-chip-text: src/index.sync-conflict-20260812-220826-AQZURIM.css:52
+- --app-shadow-color: src/index.sync-conflict-20260812-220826-AQZURIM.css:53
+- --color-primary: src/index.sync-conflict-20260812-220826-AQZURIM.css:57
+- --color-primary-foreground: src/index.sync-conflict-20260812-220826-AQZURIM.css:58
+- --app-bg: src/index.sync-conflict-20260812-220826-AQZURIM.css:59
+- --app-surface: src/index.sync-conflict-20260812-220826-AQZURIM.css:60
+- --app-surface-strong: src/index.sync-conflict-20260812-220826-AQZURIM.css:61
+- --app-surface-muted: src/index.sync-conflict-20260812-220826-AQZURIM.css:62
+- --app-border: src/index.sync-conflict-20260812-220826-AQZURIM.css:63
+- --app-text: src/index.sync-conflict-20260812-220826-AQZURIM.css:64
+- --app-muted: src/index.sync-conflict-20260812-220826-AQZURIM.css:65
+- --app-muted-soft: src/index.sync-conflict-20260812-220826-AQZURIM.css:66
+- --app-primary-chip-bg: src/index.sync-conflict-20260812-220826-AQZURIM.css:67
+- --app-primary-chip-text: src/index.sync-conflict-20260812-220826-AQZURIM.css:68
+- --app-shadow-color: src/index.sync-conflict-20260812-220826-AQZURIM.css:69
+- --color-primary: src/index.sync-conflict-20260812-220826-AQZURIM.css:73
+- --color-primary-foreground: src/index.sync-conflict-20260812-220826-AQZURIM.css:74
+- --app-bg: src/index.sync-conflict-20260812-220826-AQZURIM.css:75
+- --app-surface: src/index.sync-conflict-20260812-220826-AQZURIM.css:76
+- --app-surface-strong: src/index.sync-conflict-20260812-220826-AQZURIM.css:77
+- --app-surface-muted: src/index.sync-conflict-20260812-220826-AQZURIM.css:78
+- --app-border: src/index.sync-conflict-20260812-220826-AQZURIM.css:79
+- --app-text: src/index.sync-conflict-20260812-220826-AQZURIM.css:80
+- --app-muted: src/index.sync-conflict-20260812-220826-AQZURIM.css:81
+- --app-muted-soft: src/index.sync-conflict-20260812-220826-AQZURIM.css:82
+- --app-primary-chip-bg: src/index.sync-conflict-20260812-220826-AQZURIM.css:83
+- --app-primary-chip-text: src/index.sync-conflict-20260812-220826-AQZURIM.css:84
+- --app-shadow-color: src/index.sync-conflict-20260812-220826-AQZURIM.css:85
+- --color-primary: src/index.sync-conflict-20260812-220826-AQZURIM.css:89
+- --color-primary-foreground: src/index.sync-conflict-20260812-220826-AQZURIM.css:90
+- --app-bg: src/index.sync-conflict-20260812-220826-AQZURIM.css:91
+- --app-surface: src/index.sync-conflict-20260812-220826-AQZURIM.css:92
+- --app-surface-strong: src/index.sync-conflict-20260812-220826-AQZURIM.css:93
+- --app-surface-muted: src/index.sync-conflict-20260812-220826-AQZURIM.css:94
+- --app-border: src/index.sync-conflict-20260812-220826-AQZURIM.css:95
+- --app-text: src/index.sync-conflict-20260812-220826-AQZURIM.css:96
+- --app-muted: src/index.sync-conflict-20260812-220826-AQZURIM.css:97
+- --app-muted-soft: src/index.sync-conflict-20260812-220826-AQZURIM.css:98
+- --app-primary-chip-bg: src/index.sync-conflict-20260812-220826-AQZURIM.css:99
+- --app-primary-chip-text: src/index.sync-conflict-20260812-220826-AQZURIM.css:100
+- --app-shadow-color: src/index.sync-conflict-20260812-220826-AQZURIM.css:101
+- ---: src/pages/ClientDetail.tsx:777
 - --bg: src/pages/UiPreviewVNextFull.tsx:20
 - --bg-2: src/pages/UiPreviewVNextFull.tsx:20
 - --sidebar: src/pages/UiPreviewVNextFull.tsx:20
@@ -126,317 +221,92 @@ Generated: 2026-08-12T10:11:26.833Z
 - --radius-xl: src/pages/UiPreviewVNextFull.tsx:20
 - --radius-lg: src/pages/UiPreviewVNextFull.tsx:20
 - --radius-md: src/pages/UiPreviewVNextFull.tsx:20
-- --cf-action-task: src/styles/action-color-taxonomy-v1.css:4
-- --cf-action-event: src/styles/action-color-taxonomy-v1.css:5
-- --cf-action-note: src/styles/action-color-taxonomy-v1.css:6
-- --cf-action-followup: src/styles/action-color-taxonomy-v1.css:7
-- --cf-action-deadline: src/styles/action-color-taxonomy-v1.css:8
-- --cf-action-meeting: src/styles/action-color-taxonomy-v1.css:9
-- --cf-action-call: src/styles/action-color-taxonomy-v1.css:10
-- --cf-action-email: src/styles/action-color-taxonomy-v1.css:11
-- --cf-action-payment: src/styles/action-color-taxonomy-v1.css:12
-- --cf-action-system: src/styles/action-color-taxonomy-v1.css:13
-- --cf-action-default: src/styles/action-color-taxonomy-v1.css:14
-- --cf-action-accent: src/styles/action-color-taxonomy-v1.css:17
-- --cf-action-accent: src/styles/action-color-taxonomy-v1.css:18
-- --cf-action-accent: src/styles/action-color-taxonomy-v1.css:19
-- --cf-action-accent: src/styles/action-color-taxonomy-v1.css:20
-- --cf-action-accent: src/styles/action-color-taxonomy-v1.css:21
-- --cf-action-accent: src/styles/action-color-taxonomy-v1.css:22
-- --cf-action-accent: src/styles/action-color-taxonomy-v1.css:23
-- --cf-action-accent: src/styles/action-color-taxonomy-v1.css:24
-- --cf-action-accent: src/styles/action-color-taxonomy-v1.css:25
-- --cf-action-accent: src/styles/action-color-taxonomy-v1.css:26
-- --cf-action-accent: src/styles/action-color-taxonomy-v1.css:27
-- --cf-action-accent: src/styles/action-color-taxonomy-v1.css:44
-- --cf-action-accent: src/styles/action-color-taxonomy-v1.css:45
-- --cf-action-accent: src/styles/action-color-taxonomy-v1.css:46
-- --cf-action-accent: src/styles/action-color-taxonomy-v1.css:47
-- --cf-action-accent: src/styles/action-color-taxonomy-v1.css:48
-- --case-shell-radius: src/styles/case-detail-simplified.css:8
-- --case-tile-radius: src/styles/case-detail-simplified.css:9
-- --case-soft-border: src/styles/case-detail-simplified.css:10
-- --case-soft-surface: src/styles/case-detail-simplified.css:11
-- --case-muted-surface: src/styles/case-detail-simplified.css:12
-- --case-primary-soft: src/styles/case-detail-simplified.css:13
-- --case-primary-line: src/styles/case-detail-simplified.css:14
-- --case-stage2-radius-xl: src/styles/case-detail-stage2.css:8
-- --case-stage2-radius-lg: src/styles/case-detail-stage2.css:9
-- --case-stage2-radius-md: src/styles/case-detail-stage2.css:10
-- --case-stage2-border: src/styles/case-detail-stage2.css:11
-- --case-stage2-surface: src/styles/case-detail-stage2.css:12
-- --case-stage2-muted: src/styles/case-detail-stage2.css:13
-- --case-stage2-primary-soft: src/styles/case-detail-stage2.css:14
-- --case-stage2-primary-line: src/styles/case-detail-stage2.css:15
-- --case-stage2-warning-bg: src/styles/case-detail-stage2.css:16
-- --case-stage2-warning-line: src/styles/case-detail-stage2.css:17
-- --case-stage2-danger-bg: src/styles/case-detail-stage2.css:18
-- --case-stage2-danger-line: src/styles/case-detail-stage2.css:19
-- --case-stage2-success-bg: src/styles/case-detail-stage2.css:20
-- --case-stage2-success-line: src/styles/case-detail-stage2.css:21
-- --stage228r10d-case-card-gap: src/styles/case-detail-stage228r9-shell-rail-lift.css:218
-- --stage228r10d-case-card-radius: src/styles/case-detail-stage228r9-shell-rail-lift.css:219
-- --cf-action-cluster-gap: src/styles/closeflow-action-clusters.css:66
-- --cf-action-cluster-gap: src/styles/closeflow-action-clusters.css:71
-- --cf-action-danger-text: src/styles/closeflow-action-tokens.css:6
-- --cf-action-danger-text-hover: src/styles/closeflow-action-tokens.css:7
-- --cf-action-danger-bg: src/styles/closeflow-action-tokens.css:8
-- --cf-action-danger-bg-hover: src/styles/closeflow-action-tokens.css:9
-- --cf-action-danger-border: src/styles/closeflow-action-tokens.css:10
-- --cf-action-danger-border-hover: src/styles/closeflow-action-tokens.css:11
-- --cf-action-danger-focus: src/styles/closeflow-action-tokens.css:12
-- --cf-action-neutral-text: src/styles/closeflow-action-tokens.css:13
-- --cf-action-neutral-bg: src/styles/closeflow-action-tokens.css:14
-- --cf-action-neutral-border: src/styles/closeflow-action-tokens.css:15
-- --cf-action-neutral-bg-hover: src/styles/closeflow-action-tokens.css:16
-- --cf-action-neutral-border-hover: src/styles/closeflow-action-tokens.css:17
-- --cf-session-action-danger-text: src/styles/closeflow-action-tokens.css:71
-- --cf-session-action-danger-text-hover: src/styles/closeflow-action-tokens.css:72
-- --cf-session-action-danger-bg-hover: src/styles/closeflow-action-tokens.css:73
-- --cf-session-action-danger-focus: src/styles/closeflow-action-tokens.css:74
-- --cf-trash-icon-color: src/styles/closeflow-action-tokens.css:171
-- --cf-trash-icon-hover-color: src/styles/closeflow-action-tokens.css:172
-- --cf-trash-icon-bg: src/styles/closeflow-action-tokens.css:173
-- --cf-trash-icon-hover-bg: src/styles/closeflow-action-tokens.css:174
-- --cf-trash-icon-border: src/styles/closeflow-action-tokens.css:175
-- --cf-trash-icon-hover-border: src/styles/closeflow-action-tokens.css:176
-- --cf-header-action-primary-bg: src/styles/closeflow-action-tokens.css:239
-- --cf-header-action-primary-bg-hover: src/styles/closeflow-action-tokens.css:240
-- --cf-header-action-primary-border: src/styles/closeflow-action-tokens.css:241
-- --cf-header-action-primary-border-hover: src/styles/closeflow-action-tokens.css:242
-- --cf-header-action-primary-text: src/styles/closeflow-action-tokens.css:243
-- --cf-header-action-primary-shadow: src/styles/closeflow-action-tokens.css:244
-- --cf-header-action-ai-bg: src/styles/closeflow-action-tokens.css:246
-- --cf-header-action-ai-bg-hover: src/styles/closeflow-action-tokens.css:247
-- --cf-header-action-ai-border: src/styles/closeflow-action-tokens.css:248
-- --cf-header-action-ai-border-hover: src/styles/closeflow-action-tokens.css:249
-- --cf-header-action-ai-text: src/styles/closeflow-action-tokens.css:250
-- --cf-header-action-ai-shadow: src/styles/closeflow-action-tokens.css:251
-- --cf-header-action-secondary-bg: src/styles/closeflow-action-tokens.css:253
-- --cf-header-action-secondary-bg-hover: src/styles/closeflow-action-tokens.css:254
-- --cf-header-action-secondary-border: src/styles/closeflow-action-tokens.css:255
-- --cf-header-action-secondary-border-hover: src/styles/closeflow-action-tokens.css:256
-- --cf-header-action-secondary-text: src/styles/closeflow-action-tokens.css:257
-- --cf-header-action-secondary-shadow: src/styles/closeflow-action-tokens.css:258
-- --cf-activity-all-bg: src/styles/closeflow-activity-visual-source-truth-stage181u.css:9
-- --cf-activity-all-border: src/styles/closeflow-activity-visual-source-truth-stage181u.css:10
-- --cf-activity-all-text: src/styles/closeflow-activity-visual-source-truth-stage181u.css:11
-- --cf-activity-today-bg: src/styles/closeflow-activity-visual-source-truth-stage181u.css:13
-- --cf-activity-today-border: src/styles/closeflow-activity-visual-source-truth-stage181u.css:14
-- --cf-activity-today-text: src/styles/closeflow-activity-visual-source-truth-stage181u.css:15
-- --cf-activity-lead-bg: src/styles/closeflow-activity-visual-source-truth-stage181u.css:17
-- --cf-activity-lead-border: src/styles/closeflow-activity-visual-source-truth-stage181u.css:18
-- --cf-activity-lead-text: src/styles/closeflow-activity-visual-source-truth-stage181u.css:19
-- --cf-activity-case-bg: src/styles/closeflow-activity-visual-source-truth-stage181u.css:21
-- --cf-activity-case-border: src/styles/closeflow-activity-visual-source-truth-stage181u.css:22
-- --cf-activity-case-text: src/styles/closeflow-activity-visual-source-truth-stage181u.css:23
-- --cf-activity-task-bg: src/styles/closeflow-activity-visual-source-truth-stage181u.css:25
-- --cf-activity-task-border: src/styles/closeflow-activity-visual-source-truth-stage181u.css:26
-- --cf-activity-task-text: src/styles/closeflow-activity-visual-source-truth-stage181u.css:27
-- --cf-activity-event-bg: src/styles/closeflow-activity-visual-source-truth-stage181u.css:29
-- --cf-activity-event-border: src/styles/closeflow-activity-visual-source-truth-stage181u.css:30
-- --cf-activity-event-text: src/styles/closeflow-activity-visual-source-truth-stage181u.css:31
-- --cf-activity-system-bg: src/styles/closeflow-activity-visual-source-truth-stage181u.css:33
-- --cf-activity-system-border: src/styles/closeflow-activity-visual-source-truth-stage181u.css:34
-- --cf-activity-system-text: src/styles/closeflow-activity-visual-source-truth-stage181u.css:35
-- --cf-activity-attention-bg: src/styles/closeflow-activity-visual-source-truth-stage181u.css:37
-- --cf-activity-attention-border: src/styles/closeflow-activity-visual-source-truth-stage181u.css:38
-- --cf-activity-attention-text: src/styles/closeflow-activity-visual-source-truth-stage181u.css:39
-- --cf-ai-draft-violet-bg: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:15
-- --cf-ai-draft-violet-border: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:16
-- --cf-ai-draft-violet-text: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:17
-- --cf-ai-draft-indigo-bg: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:19
-- --cf-ai-draft-indigo-border: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:20
-- --cf-ai-draft-indigo-text: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:21
-- --cf-ai-draft-amber-bg: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:23
-- --cf-ai-draft-amber-border: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:24
-- --cf-ai-draft-amber-text: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:25
-- --cf-ai-draft-sky-bg: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:27
-- --cf-ai-draft-sky-border: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:28
-- --cf-ai-draft-sky-text: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:29
-- --cf-ai-draft-red-bg: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:31
-- --cf-ai-draft-red-border: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:32
-- --cf-ai-draft-red-text: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:33
-- --cf-ai-draft-emerald-bg: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:35
-- --cf-ai-draft-emerald-border: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:36
-- --cf-ai-draft-emerald-text: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:37
-- --cf-ai-draft-slate-bg: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:39
-- --cf-ai-draft-slate-border: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:40
-- --cf-ai-draft-slate-text: src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css:41
-- --cf-alert-error-text: src/styles/closeflow-alert-severity.css:2
-- --cf-alert-error-bg: src/styles/closeflow-alert-severity.css:3
-- --cf-alert-error-border: src/styles/closeflow-alert-severity.css:4
-- --cf-alert-warning-text: src/styles/closeflow-alert-severity.css:5
-- --cf-alert-warning-bg: src/styles/closeflow-alert-severity.css:6
-- --cf-alert-warning-border: src/styles/closeflow-alert-severity.css:7
-- --cf-alert-info-text: src/styles/closeflow-alert-severity.css:8
-- --cf-alert-info-bg: src/styles/closeflow-alert-severity.css:9
-- --cf-alert-info-border: src/styles/closeflow-alert-severity.css:10
-- --cf-alert-success-text: src/styles/closeflow-alert-severity.css:11
-- --cf-alert-success-bg: src/styles/closeflow-alert-severity.css:12
-- --cf-alert-success-border: src/styles/closeflow-alert-severity.css:13
-- --cf-alert-muted-text: src/styles/closeflow-alert-severity.css:14
-- --cf-stage201-app-scale: src/styles/closeflow-app-viewport-scale-75-stage201.css:11
-- --cf-stage201-app-scale-inverse: src/styles/closeflow-app-viewport-scale-75-stage201.css:12
-- --cf-billing-slate-bg: src/styles/closeflow-billing-visual-taxonomy-stage181z.css:17
-- --cf-billing-slate-border: src/styles/closeflow-billing-visual-taxonomy-stage181z.css:18
-- --cf-billing-slate-text: src/styles/closeflow-billing-visual-taxonomy-stage181z.css:19
-- --cf-billing-blue-bg: src/styles/closeflow-billing-visual-taxonomy-stage181z.css:21
-- --cf-billing-blue-border: src/styles/closeflow-billing-visual-taxonomy-stage181z.css:22
-- --cf-billing-blue-text: src/styles/closeflow-billing-visual-taxonomy-stage181z.css:23
-- --cf-billing-emerald-bg: src/styles/closeflow-billing-visual-taxonomy-stage181z.css:25
-- --cf-billing-emerald-border: src/styles/closeflow-billing-visual-taxonomy-stage181z.css:26
-- --cf-billing-emerald-text: src/styles/closeflow-billing-visual-taxonomy-stage181z.css:27
-- --cf-billing-violet-bg: src/styles/closeflow-billing-visual-taxonomy-stage181z.css:29
-- --cf-billing-violet-border: src/styles/closeflow-billing-visual-taxonomy-stage181z.css:30
-- --cf-billing-violet-text: src/styles/closeflow-billing-visual-taxonomy-stage181z.css:31
-- --cf-billing-amber-bg: src/styles/closeflow-billing-visual-taxonomy-stage181z.css:33
-- --cf-billing-amber-border: src/styles/closeflow-billing-visual-taxonomy-stage181z.css:34
-- --cf-billing-amber-text: src/styles/closeflow-billing-visual-taxonomy-stage181z.css:35
-- --cf-cal-v2-text: src/styles/closeflow-calendar-color-tooltip-v2.css:14
-- --cf-cal-v2-muted: src/styles/closeflow-calendar-color-tooltip-v2.css:15
-- --cf-cal-v2-border: src/styles/closeflow-calendar-color-tooltip-v2.css:16
-- --cf-cal-v2-blue: src/styles/closeflow-calendar-color-tooltip-v2.css:17
-- --cf-cal-v2-blue-soft: src/styles/closeflow-calendar-color-tooltip-v2.css:18
-- --cf-cal-v2-blue-border: src/styles/closeflow-calendar-color-tooltip-v2.css:19
-- --cf-cal-v2-violet: src/styles/closeflow-calendar-color-tooltip-v2.css:20
-- --cf-cal-v2-violet-soft: src/styles/closeflow-calendar-color-tooltip-v2.css:21
-- --cf-cal-v2-violet-border: src/styles/closeflow-calendar-color-tooltip-v2.css:22
-- --cf-cal-v2-green: src/styles/closeflow-calendar-color-tooltip-v2.css:23
-- --cf-cal-v2-green-soft: src/styles/closeflow-calendar-color-tooltip-v2.css:24
-- --cf-cal-v2-green-border: src/styles/closeflow-calendar-color-tooltip-v2.css:25
-- --cf-cal-v2-red: src/styles/closeflow-calendar-color-tooltip-v2.css:26
-- --cf-cal-v2-red-soft: src/styles/closeflow-calendar-color-tooltip-v2.css:27
-- --cf-cal-v2-red-border: src/styles/closeflow-calendar-color-tooltip-v2.css:28
-- --cf-calendar-color-scope-v2: src/styles/closeflow-calendar-color-tooltip-v2.css:33
-- --cf-cal-month-chip-height-v1: src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css:9
-- --cf-cal-month-chip-gap-v1: src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css:10
-- --cf-cal-month-chip-radius-v1: src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css:11
-- --cf-cal-month-chip-border-v1: src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css:12
-- --cf-cal-month-chip-text-v1: src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css:13
-- --cf-cal-month-chip-muted-v1: src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css:14
-- --cf-cal-month-chip-blue-v1: src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css:15
-- --cf-cal-month-chip-violet-v1: src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css:16
-- --cf-cal-month-chip-violet-bg-v1: src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css:17
-- --cf-cal-month-chip-violet-border-v1: src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css:18
-- --cf-cal-month-chip-green-v1: src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css:19
-- --cf-cal-month-chip-green-bg-v1: src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css:20
-- --cf-cal-month-chip-green-border-v1: src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css:21
-- --cf-calendar-month-chip-overlap-fix-v1: src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css:26
-- --cf-month-entry-height-v3: src/styles/closeflow-calendar-month-entry-structural-fix-v3.css:15
-- --cf-month-entry-gap-v3: src/styles/closeflow-calendar-month-entry-structural-fix-v3.css:16
-- --cf-month-entry-radius-v3: src/styles/closeflow-calendar-month-entry-structural-fix-v3.css:17
-- --cf-month-entry-border-v3: src/styles/closeflow-calendar-month-entry-structural-fix-v3.css:18
-- --cf-month-entry-text-v3: src/styles/closeflow-calendar-month-entry-structural-fix-v3.css:19
-- --cf-month-entry-muted-v3: src/styles/closeflow-calendar-month-entry-structural-fix-v3.css:20
-- --cf-month-entry-event-v3: src/styles/closeflow-calendar-month-entry-structural-fix-v3.css:21
-- --cf-month-entry-event-bg-v3: src/styles/closeflow-calendar-month-entry-structural-fix-v3.css:22
-- --cf-month-entry-event-border-v3: src/styles/closeflow-calendar-month-entry-structural-fix-v3.css:23
-- --cf-month-entry-task-v3: src/styles/closeflow-calendar-month-entry-structural-fix-v3.css:24
-- --cf-month-entry-task-bg-v3: src/styles/closeflow-calendar-month-entry-structural-fix-v3.css:25
-- --cf-month-entry-task-border-v3: src/styles/closeflow-calendar-month-entry-structural-fix-v3.css:26
-- --cf-month-entry-phone-v3: src/styles/closeflow-calendar-month-entry-structural-fix-v3.css:27
-- --cf-month-entry-phone-bg-v3: src/styles/closeflow-calendar-month-entry-structural-fix-v3.css:28
-- --cf-month-entry-phone-border-v3: src/styles/closeflow-calendar-month-entry-structural-fix-v3.css:29
-- --cf-month-entry-lead-v3: src/styles/closeflow-calendar-month-entry-structural-fix-v3.css:30
-- --cf-month-entry-lead-bg-v3: src/styles/closeflow-calendar-month-entry-structural-fix-v3.css:31
-- --cf-month-entry-lead-border-v3: src/styles/closeflow-calendar-month-entry-structural-fix-v3.css:32
-- --cf-cal-month-line-height-v4: src/styles/closeflow-calendar-month-plain-text-rows-v4.css:14
-- --cf-cal-month-line-gap-v4: src/styles/closeflow-calendar-month-plain-text-rows-v4.css:15
-- --cf-cal-month-line-text-v4: src/styles/closeflow-calendar-month-plain-text-rows-v4.css:16
-- --cf-cal-month-line-muted-v4: src/styles/closeflow-calendar-month-plain-text-rows-v4.css:17
-- --cf-cal-month-line-event-v4: src/styles/closeflow-calendar-month-plain-text-rows-v4.css:18
-- --cf-cal-month-line-task-v4: src/styles/closeflow-calendar-month-plain-text-rows-v4.css:19
-- --cf-cal-month-line-phone-v4: src/styles/closeflow-calendar-month-plain-text-rows-v4.css:20
-- --cf-cal-month-line-lead-v4: src/styles/closeflow-calendar-month-plain-text-rows-v4.css:21
-- --cf-cal-month-row-height-r2: src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css:21
-- --cf-cal-month-row-gap-r2: src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css:22
-- --cf-cal-month-row-radius-r2: src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css:23
-- --cf-cal-month-row-border-r2: src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css:24
-- --cf-cal-month-row-text-r2: src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css:25
-- --cf-cal-month-row-muted-r2: src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css:26
-- --cf-cal-month-row-bg-r2: src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css:27
-- --cf-cal-month-badge-width-r2: src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css:29
-- --cf-cal-month-badge-height-r2: src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css:30
-- --cf-cal-month-event-r2: src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css:32
-- --cf-cal-month-event-bg-r2: src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css:33
-- --cf-cal-month-event-border-r2: src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css:34
-- --cf-cal-month-task-r2: src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css:36
-- --cf-cal-month-task-bg-r2: src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css:37
-- --cf-cal-month-task-border-r2: src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css:38
-- --cf-cal-month-phone-r2: src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css:40
-- --cf-cal-month-phone-bg-r2: src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css:41
-- --cf-cal-month-phone-border-r2: src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css:42
-- --cf-calendar-month-rows-no-overlap-repair2: src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css:47
-- --cf-cal-page-bg: src/styles/closeflow-calendar-skin-only-v1.css:16
-- --cf-cal-page-glow: src/styles/closeflow-calendar-skin-only-v1.css:17
-- --cf-cal-surface: src/styles/closeflow-calendar-skin-only-v1.css:19
-- --cf-cal-surface-soft: src/styles/closeflow-calendar-skin-only-v1.css:20
-- --cf-cal-surface-muted: src/styles/closeflow-calendar-skin-only-v1.css:21
-- --cf-cal-surface-selected: src/styles/closeflow-calendar-skin-only-v1.css:22
-- --cf-cal-border: src/styles/closeflow-calendar-skin-only-v1.css:24
-- --cf-cal-border-strong: src/styles/closeflow-calendar-skin-only-v1.css:25
-- --cf-cal-border-selected: src/styles/closeflow-calendar-skin-only-v1.css:26
-- --cf-cal-shadow: src/styles/closeflow-calendar-skin-only-v1.css:28
-- --cf-cal-shadow-soft: src/styles/closeflow-calendar-skin-only-v1.css:29
-- --cf-cal-text: src/styles/closeflow-calendar-skin-only-v1.css:31
-- --cf-cal-text-muted: src/styles/closeflow-calendar-skin-only-v1.css:32
-- --cf-cal-text-soft: src/styles/closeflow-calendar-skin-only-v1.css:33
-- --cf-cal-blue: src/styles/closeflow-calendar-skin-only-v1.css:35
-- --cf-cal-blue-soft: src/styles/closeflow-calendar-skin-only-v1.css:36
-- --cf-cal-violet: src/styles/closeflow-calendar-skin-only-v1.css:38
-- --cf-cal-violet-soft: src/styles/closeflow-calendar-skin-only-v1.css:39
-- --cf-cal-green: src/styles/closeflow-calendar-skin-only-v1.css:41
-- --cf-cal-green-soft: src/styles/closeflow-calendar-skin-only-v1.css:42
-- --cf-cal-red: src/styles/closeflow-calendar-skin-only-v1.css:44
-- --cf-cal-red-soft: src/styles/closeflow-calendar-skin-only-v1.css:45
-- --cf-cal-phone: src/styles/closeflow-calendar-skin-only-v1.css:47
-- --cf-cal-phone-soft: src/styles/closeflow-calendar-skin-only-v1.css:48
-- --cf-cal-radius-xl: src/styles/closeflow-calendar-skin-only-v1.css:50
-- --cf-cal-radius-lg: src/styles/closeflow-calendar-skin-only-v1.css:51
-- --cf-cal-radius-md: src/styles/closeflow-calendar-skin-only-v1.css:52
-- --cf-cal-radius-sm: src/styles/closeflow-calendar-skin-only-v1.css:53
-- --cf-cal-radius-pill: src/styles/closeflow-calendar-skin-only-v1.css:54
-- --cf-cal-button-height: src/styles/closeflow-calendar-skin-only-v1.css:56
-- --cf-cal-button-radius: src/styles/closeflow-calendar-skin-only-v1.css:57
-- --cf-cal-event-chip-height: src/styles/closeflow-calendar-skin-only-v1.css:59
-- --cf-canvas-bg: src/styles/closeflow-canvas-edge-color-source-truth-stage211f.css:12
-- --cf-operator-bg: src/styles/closeflow-canvas-edge-color-source-truth-stage211f.css:13
-- --cf-operator-bg-soft: src/styles/closeflow-canvas-edge-color-source-truth-stage211f.css:14
-- --app-bg: src/styles/closeflow-canvas-edge-color-source-truth-stage211f.css:15
-- --app-surface: src/styles/closeflow-canvas-edge-color-source-truth-stage211f.css:16
-- --cf-canvas-bg: src/styles/closeflow-canvas-final-source-truth-stage211k.css:12
-- --cf-operator-bg: src/styles/closeflow-canvas-final-source-truth-stage211k.css:13
-- --cf-operator-bg-soft: src/styles/closeflow-canvas-final-source-truth-stage211k.css:14
-- --cf-canvas-surface-bg: src/styles/closeflow-canvas-final-source-truth-stage211k.css:15
-- --cf-canvas-bg: src/styles/closeflow-canvas-layer-source-truth-stage211h.css:11
-- --cf-page-bg: src/styles/closeflow-canvas-layer-source-truth-stage211h.css:12
-- --cf-operator-bg: src/styles/closeflow-canvas-layer-source-truth-stage211h.css:13
-- --cf-operator-bg-soft: src/styles/closeflow-canvas-layer-source-truth-stage211h.css:14
-- --cf-route-bg: src/styles/closeflow-canvas-layer-source-truth-stage211h.css:15
-- --cf-shell-bg: src/styles/closeflow-canvas-layer-source-truth-stage211h.css:16
-- --app-bg: src/styles/closeflow-canvas-layer-source-truth-stage211h.css:17
-- --app-surface: src/styles/closeflow-canvas-layer-source-truth-stage211h.css:18
-- --cf-canvas-bg: src/styles/closeflow-canvas-runtime-source-truth-stage211j.css:12
-- --cf-operator-bg: src/styles/closeflow-canvas-runtime-source-truth-stage211j.css:13
-- --cf-operator-bg-soft: src/styles/closeflow-canvas-runtime-source-truth-stage211j.css:14
-- --app-bg: src/styles/closeflow-canvas-runtime-source-truth-stage211j.css:15
-- --app-surface: src/styles/closeflow-canvas-runtime-source-truth-stage211j.css:16
-- --stage232t-r1c-today-card-gap: src/styles/closeflow-canvas-runtime-source-truth-stage211j.css:96
-- --stage232t-r1c-today-card-min-height: src/styles/closeflow-canvas-runtime-source-truth-stage211j.css:97
-- --cf-canvas-bg: src/styles/closeflow-canvas-source-truth-stage211d.css:10
-- --cf-canvas-bg-rgb: src/styles/closeflow-canvas-source-truth-stage211d.css:11
-- --cf-canvas-surface: src/styles/closeflow-canvas-source-truth-stage211d.css:12
-- --cf-canvas-bg: src/styles/closeflow-canvas-source-truth-stage211e.css:10
-- --cf-canvas-bg-rgb: src/styles/closeflow-canvas-source-truth-stage211e.css:11
-- --cf-canvas-surface: src/styles/closeflow-canvas-source-truth-stage211e.css:12
-- --cf-canvas-border: src/styles/closeflow-canvas-source-truth-stage211e.css:13
-- --cf-readable-card-bg: src/styles/closeflow-card-readability.css:8
-- --cf-readable-card-border: src/styles/closeflow-card-readability.css:9
-- --cf-readable-title: src/styles/closeflow-card-readability.css:10
-- --cf-readable-text: src/styles/closeflow-card-readability.css:11
-- --cf-readable-muted: src/styles/closeflow-card-readability.css:12
-- --cf-readable-empty-bg: src/styles/closeflow-card-readability.css:13
+- --cf-ai-draft-violet-bg: src/styles/closeflow-ai-drafts-rail.css:16
+- --cf-ai-draft-violet-border: src/styles/closeflow-ai-drafts-rail.css:17
+- --cf-ai-draft-violet-text: src/styles/closeflow-ai-drafts-rail.css:18
+- --cf-ai-draft-indigo-bg: src/styles/closeflow-ai-drafts-rail.css:20
+- --cf-ai-draft-indigo-border: src/styles/closeflow-ai-drafts-rail.css:21
+- --cf-ai-draft-indigo-text: src/styles/closeflow-ai-drafts-rail.css:22
+- --cf-ai-draft-amber-bg: src/styles/closeflow-ai-drafts-rail.css:24
+- --cf-ai-draft-amber-border: src/styles/closeflow-ai-drafts-rail.css:25
+- --cf-ai-draft-amber-text: src/styles/closeflow-ai-drafts-rail.css:26
+- --cf-ai-draft-sky-bg: src/styles/closeflow-ai-drafts-rail.css:28
+- --cf-ai-draft-sky-border: src/styles/closeflow-ai-drafts-rail.css:29
+- --cf-ai-draft-sky-text: src/styles/closeflow-ai-drafts-rail.css:30
+- --cf-ai-draft-red-bg: src/styles/closeflow-ai-drafts-rail.css:32
+- --cf-ai-draft-red-border: src/styles/closeflow-ai-drafts-rail.css:33
+- --cf-ai-draft-red-text: src/styles/closeflow-ai-drafts-rail.css:34
+- --cf-ai-draft-emerald-bg: src/styles/closeflow-ai-drafts-rail.css:36
+- --cf-ai-draft-emerald-border: src/styles/closeflow-ai-drafts-rail.css:37
+- --cf-ai-draft-emerald-text: src/styles/closeflow-ai-drafts-rail.css:38
+- --cf-ai-draft-slate-bg: src/styles/closeflow-ai-drafts-rail.css:40
+- --cf-ai-draft-slate-border: src/styles/closeflow-ai-drafts-rail.css:41
+- --cf-ai-draft-slate-text: src/styles/closeflow-ai-drafts-rail.css:42
+- --cf-ai-draft-violet-bg: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:16
+- --cf-ai-draft-violet-border: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:17
+- --cf-ai-draft-violet-text: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:18
+- --cf-ai-draft-indigo-bg: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:20
+- --cf-ai-draft-indigo-border: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:21
+- --cf-ai-draft-indigo-text: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:22
+- --cf-ai-draft-amber-bg: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:24
+- --cf-ai-draft-amber-border: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:25
+- --cf-ai-draft-amber-text: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:26
+- --cf-ai-draft-sky-bg: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:28
+- --cf-ai-draft-sky-border: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:29
+- --cf-ai-draft-sky-text: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:30
+- --cf-ai-draft-red-bg: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:32
+- --cf-ai-draft-red-border: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:33
+- --cf-ai-draft-red-text: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:34
+- --cf-ai-draft-emerald-bg: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:36
+- --cf-ai-draft-emerald-border: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:37
+- --cf-ai-draft-emerald-text: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:38
+- --cf-ai-draft-slate-bg: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:40
+- --cf-ai-draft-slate-border: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:41
+- --cf-ai-draft-slate-text: src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css:42
+- --cf-billing-slate-bg: src/styles/closeflow-billing-taxonomy.css:18
+- --cf-billing-slate-border: src/styles/closeflow-billing-taxonomy.css:19
+- --cf-billing-slate-text: src/styles/closeflow-billing-taxonomy.css:20
+- --cf-billing-blue-bg: src/styles/closeflow-billing-taxonomy.css:22
+- --cf-billing-blue-border: src/styles/closeflow-billing-taxonomy.css:23
+- --cf-billing-blue-text: src/styles/closeflow-billing-taxonomy.css:24
+- --cf-billing-emerald-bg: src/styles/closeflow-billing-taxonomy.css:26
+- --cf-billing-emerald-border: src/styles/closeflow-billing-taxonomy.css:27
+- --cf-billing-emerald-text: src/styles/closeflow-billing-taxonomy.css:28
+- --cf-billing-violet-bg: src/styles/closeflow-billing-taxonomy.css:30
+- --cf-billing-violet-border: src/styles/closeflow-billing-taxonomy.css:31
+- --cf-billing-violet-text: src/styles/closeflow-billing-taxonomy.css:32
+- --cf-billing-amber-bg: src/styles/closeflow-billing-taxonomy.css:34
+- --cf-billing-amber-border: src/styles/closeflow-billing-taxonomy.css:35
+- --cf-billing-amber-text: src/styles/closeflow-billing-taxonomy.css:36
+- --cf-billing-slate-bg: src/styles/closeflow-billing-taxonomy.sync-conflict-20260812-220825-AQZURIM.css:18
+- --cf-billing-slate-border: src/styles/closeflow-billing-taxonomy.sync-conflict-20260812-220825-AQZURIM.css:19
+- --cf-billing-slate-text: src/styles/closeflow-billing-taxonomy.sync-conflict-20260812-220825-AQZURIM.css:20
+- --cf-billing-blue-bg: src/styles/closeflow-billing-taxonomy.sync-conflict-20260812-220825-AQZURIM.css:22
+- --cf-billing-blue-border: src/styles/closeflow-billing-taxonomy.sync-conflict-20260812-220825-AQZURIM.css:23
+- --cf-billing-blue-text: src/styles/closeflow-billing-taxonomy.sync-conflict-20260812-220825-AQZURIM.css:24
+- --cf-billing-emerald-bg: src/styles/closeflow-billing-taxonomy.sync-conflict-20260812-220825-AQZURIM.css:26
+- --cf-billing-emerald-border: src/styles/closeflow-billing-taxonomy.sync-conflict-20260812-220825-AQZURIM.css:27
+- --cf-billing-emerald-text: src/styles/closeflow-billing-taxonomy.sync-conflict-20260812-220825-AQZURIM.css:28
+- --cf-billing-violet-bg: src/styles/closeflow-billing-taxonomy.sync-conflict-20260812-220825-AQZURIM.css:30
+- --cf-billing-violet-border: src/styles/closeflow-billing-taxonomy.sync-conflict-20260812-220825-AQZURIM.css:31
+- --cf-billing-violet-text: src/styles/closeflow-billing-taxonomy.sync-conflict-20260812-220825-AQZURIM.css:32
+- --cf-billing-amber-bg: src/styles/closeflow-billing-taxonomy.sync-conflict-20260812-220825-AQZURIM.css:34
+- --cf-billing-amber-border: src/styles/closeflow-billing-taxonomy.sync-conflict-20260812-220825-AQZURIM.css:35
+- --cf-billing-amber-text: src/styles/closeflow-billing-taxonomy.sync-conflict-20260812-220825-AQZURIM.css:36
+- --cf-canvas-bg: src/styles/closeflow-canvas-runtime.css:13
+- --cf-operator-bg: src/styles/closeflow-canvas-runtime.css:14
+- --cf-operator-bg-soft: src/styles/closeflow-canvas-runtime.css:15
+- --app-bg: src/styles/closeflow-canvas-runtime.css:16
+- --app-surface: src/styles/closeflow-canvas-runtime.css:17
+- --stage232t-r1c-today-card-gap: src/styles/closeflow-canvas-runtime.css:97
+- --stage232t-r1c-today-card-min-height: src/styles/closeflow-canvas-runtime.css:98
+- --cf-canvas-bg: src/styles/closeflow-canvas-runtime.sync-conflict-20260812-220825-AQZURIM.css:13
+- --cf-operator-bg: src/styles/closeflow-canvas-runtime.sync-conflict-20260812-220825-AQZURIM.css:14
+- --cf-operator-bg-soft: src/styles/closeflow-canvas-runtime.sync-conflict-20260812-220825-AQZURIM.css:15
+- --app-bg: src/styles/closeflow-canvas-runtime.sync-conflict-20260812-220825-AQZURIM.css:16
+- --app-surface: src/styles/closeflow-canvas-runtime.sync-conflict-20260812-220825-AQZURIM.css:17
+- --stage232t-r1c-today-card-gap: src/styles/closeflow-canvas-runtime.sync-conflict-20260812-220825-AQZURIM.css:97
+- --stage232t-r1c-today-card-min-height: src/styles/closeflow-canvas-runtime.sync-conflict-20260812-220825-AQZURIM.css:98
 - --cf-case-bg: src/styles/closeflow-case-detail-focus.css:2
 - --cf-case-surface: src/styles/closeflow-case-detail-focus.css:3
 - --cf-case-surface-soft: src/styles/closeflow-case-detail-focus.css:4
@@ -456,53 +326,183 @@ Generated: 2026-08-12T10:11:26.833Z
 - --cf-case-info: src/styles/closeflow-case-detail-focus.css:18
 - --cf-case-info-bg: src/styles/closeflow-case-detail-focus.css:19
 - --cf-case-shadow: src/styles/closeflow-case-detail-focus.css:20
-- --next: src/styles/closeflow-case-detail-stage217-operation-workspace.css:326
-- --blockers: src/styles/closeflow-case-detail-stage217-operation-workspace.css:331
-- --workload: src/styles/closeflow-case-detail-stage217-operation-workspace.css:336
-- --cf-finance-modal-safe-inset: src/styles/closeflow-case-finance-modal-stage220a30.css:305
-- --cf-case-history-bg: src/styles/closeflow-case-history-visual-source-truth.css:9
-- --cf-case-history-line: src/styles/closeflow-case-history-visual-source-truth.css:10
-- --cf-case-history-text: src/styles/closeflow-case-history-visual-source-truth.css:11
-- --cf-case-history-muted: src/styles/closeflow-case-history-visual-source-truth.css:12
-- --cf-case-history-blue: src/styles/closeflow-case-history-visual-source-truth.css:13
-- --cf-case-history-blue-soft: src/styles/closeflow-case-history-visual-source-truth.css:14
-- --cf-case-history-bg: src/styles/closeflow-case-history-visual-source-truth.css:350
-- --cf-case-history-line: src/styles/closeflow-case-history-visual-source-truth.css:351
-- --cf-case-history-text: src/styles/closeflow-case-history-visual-source-truth.css:352
-- --cf-case-history-muted: src/styles/closeflow-case-history-visual-source-truth.css:353
-- --cf-case-history-blue-soft: src/styles/closeflow-case-history-visual-source-truth.css:354
-- --cf-case-history-bg: src/styles/closeflow-case-history-visual-source-truth.css:520
-- --cf-case-history-line: src/styles/closeflow-case-history-visual-source-truth.css:521
-- --cf-case-history-text: src/styles/closeflow-case-history-visual-source-truth.css:522
-- --cf-case-history-muted: src/styles/closeflow-case-history-visual-source-truth.css:523
-- --cf-case-history-blue-soft: src/styles/closeflow-case-history-visual-source-truth.css:524
-- --cf-case-history-bg: src/styles/closeflow-case-history-visual-source-truth.css:661
-- --cf-case-history-line: src/styles/closeflow-case-history-visual-source-truth.css:662
-- --cf-case-history-text: src/styles/closeflow-case-history-visual-source-truth.css:663
-- --cf-case-history-muted: src/styles/closeflow-case-history-visual-source-truth.css:664
-- --cf-case-history-blue-soft: src/styles/closeflow-case-history-visual-source-truth.css:665
-- --closeflow-stage163-cf-modal-main-center-tall-compact: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:20
-- --cf163-modal-visual-width: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:23
-- --cf163-modal-visual-max-width: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:24
-- --cf163-modal-main-center-shift-x: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:28
-- --cf163-modal-center-y-vh: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:31
-- --cf163-modal-visual-max-height: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:34
-- --cf163-event-visual-height: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:35
-- --cf163-modal-logical-width: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:38
-- --cf163-modal-logical-max-width: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:39
-- --cf163-modal-logical-max-height: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:40
-- --cf163-event-logical-height: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:41
-- --cf163-modal-logical-center-x: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:43
-- --cf163-modal-logical-center-y: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:44
-- --cf163-radius: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:46
-- --cf163-section-pad-y: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:47
-- --cf163-section-pad-x: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:48
-- --cf163-gap: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:49
-- --cf163-font-title: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:51
-- --cf163-font-body: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:52
-- --cf163-font-label: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:53
-- --cf163-font-small: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:54
-- --cf163-control-height: src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css:56
+- --stage228r10d-case-card-gap: src/styles/closeflow-case-detail-shell-rail.css:219
+- --stage228r10d-case-card-radius: src/styles/closeflow-case-detail-shell-rail.css:220
+- --stage228r10d-case-card-gap: src/styles/closeflow-case-detail-shell-rail.sync-conflict-20260812-220825-AQZURIM.css:219
+- --stage228r10d-case-card-radius: src/styles/closeflow-case-detail-shell-rail.sync-conflict-20260812-220825-AQZURIM.css:220
+- --cf-case-history-bg: src/styles/closeflow-case-history-visual-source-truth.css:10
+- --cf-case-history-line: src/styles/closeflow-case-history-visual-source-truth.css:11
+- --cf-case-history-text: src/styles/closeflow-case-history-visual-source-truth.css:12
+- --cf-case-history-muted: src/styles/closeflow-case-history-visual-source-truth.css:13
+- --cf-case-history-blue: src/styles/closeflow-case-history-visual-source-truth.css:14
+- --cf-case-history-blue-soft: src/styles/closeflow-case-history-visual-source-truth.css:15
+- --cf-case-history-bg: src/styles/closeflow-case-history-visual-source-truth.css:351
+- --cf-case-history-line: src/styles/closeflow-case-history-visual-source-truth.css:352
+- --cf-case-history-text: src/styles/closeflow-case-history-visual-source-truth.css:353
+- --cf-case-history-muted: src/styles/closeflow-case-history-visual-source-truth.css:354
+- --cf-case-history-blue-soft: src/styles/closeflow-case-history-visual-source-truth.css:355
+- --cf-case-history-bg: src/styles/closeflow-case-history-visual-source-truth.css:521
+- --cf-case-history-line: src/styles/closeflow-case-history-visual-source-truth.css:522
+- --cf-case-history-text: src/styles/closeflow-case-history-visual-source-truth.css:523
+- --cf-case-history-muted: src/styles/closeflow-case-history-visual-source-truth.css:524
+- --cf-case-history-blue-soft: src/styles/closeflow-case-history-visual-source-truth.css:525
+- --cf-case-history-bg: src/styles/closeflow-case-history-visual-source-truth.css:662
+- --cf-case-history-line: src/styles/closeflow-case-history-visual-source-truth.css:663
+- --cf-case-history-text: src/styles/closeflow-case-history-visual-source-truth.css:664
+- --cf-case-history-muted: src/styles/closeflow-case-history-visual-source-truth.css:665
+- --cf-case-history-blue-soft: src/styles/closeflow-case-history-visual-source-truth.css:666
+- --cf-case-history-bg: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:10
+- --cf-case-history-line: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:11
+- --cf-case-history-text: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:12
+- --cf-case-history-muted: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:13
+- --cf-case-history-blue: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:14
+- --cf-case-history-blue-soft: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:15
+- --cf-case-history-bg: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:351
+- --cf-case-history-line: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:352
+- --cf-case-history-text: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:353
+- --cf-case-history-muted: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:354
+- --cf-case-history-blue-soft: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:355
+- --cf-case-history-bg: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:521
+- --cf-case-history-line: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:522
+- --cf-case-history-text: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:523
+- --cf-case-history-muted: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:524
+- --cf-case-history-blue-soft: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:525
+- --cf-case-history-bg: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:662
+- --cf-case-history-line: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:663
+- --cf-case-history-text: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:664
+- --cf-case-history-muted: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:665
+- --cf-case-history-blue-soft: src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css:666
+- --cf-desktop-density-page-max: src/styles/closeflow-desktop-density-source-truth.css:16
+- --cf-desktop-density-page-gap: src/styles/closeflow-desktop-density-source-truth.css:17
+- --cf-desktop-density-card-radius: src/styles/closeflow-desktop-density-source-truth.css:18
+- --cf-entity-data-card-width: src/styles/closeflow-entity-data-card.css:8
+- --cf-entity-data-card-padding: src/styles/closeflow-entity-data-card.css:9
+- --cf-entity-data-card-radius: src/styles/closeflow-entity-data-card.css:10
+- --cf-entity-data-card-border: src/styles/closeflow-entity-data-card.css:11
+- --cf-entity-data-card-bg: src/styles/closeflow-entity-data-card.css:12
+- --cf-entity-data-card-shadow: src/styles/closeflow-entity-data-card.css:13
+- --cf-entity-data-card-title-height: src/styles/closeflow-entity-data-card.css:14
+- --cf-entity-data-card-title-gap: src/styles/closeflow-entity-data-card.css:15
+- --cf-entity-data-card-list-gap: src/styles/closeflow-entity-data-card.css:16
+- --cf-entity-data-card-row-height: src/styles/closeflow-entity-data-card.css:17
+- --cf-entity-data-card-total-min-height: src/styles/closeflow-entity-data-card.css:18
+- --cf-entity-data-action-blue: src/styles/closeflow-entity-data-card.css:19
+- --cf-entity-data-action-blue-hover: src/styles/closeflow-entity-data-card.css:20
+- --stage216m-r7-entity-data-card-source-truth: src/styles/closeflow-entity-data-card.css:250
+- --cf-entity-data-card-width: src/styles/closeflow-entity-data-card.sync-conflict-20260812-220824-AQZURIM.css:8
+- --cf-entity-data-card-padding: src/styles/closeflow-entity-data-card.sync-conflict-20260812-220824-AQZURIM.css:9
+- --cf-entity-data-card-radius: src/styles/closeflow-entity-data-card.sync-conflict-20260812-220824-AQZURIM.css:10
+- --cf-entity-data-card-border: src/styles/closeflow-entity-data-card.sync-conflict-20260812-220824-AQZURIM.css:11
+- --cf-entity-data-card-bg: src/styles/closeflow-entity-data-card.sync-conflict-20260812-220824-AQZURIM.css:12
+- --cf-entity-data-card-shadow: src/styles/closeflow-entity-data-card.sync-conflict-20260812-220824-AQZURIM.css:13
+- --cf-entity-data-card-title-height: src/styles/closeflow-entity-data-card.sync-conflict-20260812-220824-AQZURIM.css:14
+- --cf-entity-data-card-title-gap: src/styles/closeflow-entity-data-card.sync-conflict-20260812-220824-AQZURIM.css:15
+- --cf-entity-data-card-list-gap: src/styles/closeflow-entity-data-card.sync-conflict-20260812-220824-AQZURIM.css:16
+- --cf-entity-data-card-row-height: src/styles/closeflow-entity-data-card.sync-conflict-20260812-220824-AQZURIM.css:17
+- --cf-entity-data-card-total-min-height: src/styles/closeflow-entity-data-card.sync-conflict-20260812-220824-AQZURIM.css:18
+- --cf-entity-data-action-blue: src/styles/closeflow-entity-data-card.sync-conflict-20260812-220824-AQZURIM.css:19
+- --cf-entity-data-action-blue-hover: src/styles/closeflow-entity-data-card.sync-conflict-20260812-220824-AQZURIM.css:20
+- --stage216m-r7-entity-data-card-source-truth: src/styles/closeflow-entity-data-card.sync-conflict-20260812-220824-AQZURIM.css:250
+- --cf-entity-type-event-border: src/styles/closeflow-entity-type-tokens.css:7
+- --cf-entity-type-event-bg: src/styles/closeflow-entity-type-tokens.css:8
+- --cf-entity-type-event-text: src/styles/closeflow-entity-type-tokens.css:9
+- --cf-entity-type-task-border: src/styles/closeflow-entity-type-tokens.css:10
+- --cf-entity-type-task-bg: src/styles/closeflow-entity-type-tokens.css:11
+- --cf-entity-type-task-text: src/styles/closeflow-entity-type-tokens.css:12
+- --cf-entity-type-lead-border: src/styles/closeflow-entity-type-tokens.css:13
+- --cf-entity-type-lead-bg: src/styles/closeflow-entity-type-tokens.css:14
+- --cf-entity-type-lead-text: src/styles/closeflow-entity-type-tokens.css:15
+- --cf-entity-type-event-border: src/styles/closeflow-entity-type-tokens.sync-conflict-20260812-220824-AQZURIM.css:7
+- --cf-entity-type-event-bg: src/styles/closeflow-entity-type-tokens.sync-conflict-20260812-220824-AQZURIM.css:8
+- --cf-entity-type-event-text: src/styles/closeflow-entity-type-tokens.sync-conflict-20260812-220824-AQZURIM.css:9
+- --cf-entity-type-task-border: src/styles/closeflow-entity-type-tokens.sync-conflict-20260812-220824-AQZURIM.css:10
+- --cf-entity-type-task-bg: src/styles/closeflow-entity-type-tokens.sync-conflict-20260812-220824-AQZURIM.css:11
+- --cf-entity-type-task-text: src/styles/closeflow-entity-type-tokens.sync-conflict-20260812-220824-AQZURIM.css:12
+- --cf-entity-type-lead-border: src/styles/closeflow-entity-type-tokens.sync-conflict-20260812-220824-AQZURIM.css:13
+- --cf-entity-type-lead-bg: src/styles/closeflow-entity-type-tokens.sync-conflict-20260812-220824-AQZURIM.css:14
+- --cf-entity-type-lead-text: src/styles/closeflow-entity-type-tokens.sync-conflict-20260812-220824-AQZURIM.css:15
+- --cf-notif-amber-bg: src/styles/closeflow-notifications-rail.css:15
+- --cf-notif-amber-border: src/styles/closeflow-notifications-rail.css:16
+- --cf-notif-amber-text: src/styles/closeflow-notifications-rail.css:17
+- --cf-notif-blue-bg: src/styles/closeflow-notifications-rail.css:19
+- --cf-notif-blue-border: src/styles/closeflow-notifications-rail.css:20
+- --cf-notif-blue-text: src/styles/closeflow-notifications-rail.css:21
+- --cf-notif-red-bg: src/styles/closeflow-notifications-rail.css:23
+- --cf-notif-red-border: src/styles/closeflow-notifications-rail.css:24
+- --cf-notif-red-text: src/styles/closeflow-notifications-rail.css:25
+- --cf-notif-emerald-bg: src/styles/closeflow-notifications-rail.css:27
+- --cf-notif-emerald-border: src/styles/closeflow-notifications-rail.css:28
+- --cf-notif-emerald-text: src/styles/closeflow-notifications-rail.css:29
+- --cf-notif-violet-bg: src/styles/closeflow-notifications-rail.css:31
+- --cf-notif-violet-border: src/styles/closeflow-notifications-rail.css:32
+- --cf-notif-violet-text: src/styles/closeflow-notifications-rail.css:33
+- --cf-notif-sky-bg: src/styles/closeflow-notifications-rail.css:35
+- --cf-notif-sky-border: src/styles/closeflow-notifications-rail.css:36
+- --cf-notif-sky-text: src/styles/closeflow-notifications-rail.css:37
+- --cf-notif-slate-bg: src/styles/closeflow-notifications-rail.css:39
+- --cf-notif-slate-border: src/styles/closeflow-notifications-rail.css:40
+- --cf-notif-slate-text: src/styles/closeflow-notifications-rail.css:41
+- --cf-notif-amber-bg: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:15
+- --cf-notif-amber-border: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:16
+- --cf-notif-amber-text: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:17
+- --cf-notif-blue-bg: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:19
+- --cf-notif-blue-border: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:20
+- --cf-notif-blue-text: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:21
+- --cf-notif-red-bg: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:23
+- --cf-notif-red-border: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:24
+- --cf-notif-red-text: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:25
+- --cf-notif-emerald-bg: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:27
+- --cf-notif-emerald-border: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:28
+- --cf-notif-emerald-text: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:29
+- --cf-notif-violet-bg: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:31
+- --cf-notif-violet-border: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:32
+- --cf-notif-violet-text: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:33
+- --cf-notif-sky-bg: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:35
+- --cf-notif-sky-border: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:36
+- --cf-notif-sky-text: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:37
+- --cf-notif-slate-bg: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:39
+- --cf-notif-slate-border: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:40
+- --cf-notif-slate-text: src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css:41
+- --cf-ph-v2-card-bg: src/styles/closeflow-page-header-runtime.css:8
+- --cf-ph-v2-card-border: src/styles/closeflow-page-header-runtime.css:9
+- --cf-ph-v2-card-radius: src/styles/closeflow-page-header-runtime.css:10
+- --cf-ph-v2-card-shadow: src/styles/closeflow-page-header-runtime.css:11
+- --cf-ph-v2-card-padding-y: src/styles/closeflow-page-header-runtime.css:12
+- --cf-ph-v2-card-padding-x: src/styles/closeflow-page-header-runtime.css:13
+- --cf-ph-v2-card-min-height: src/styles/closeflow-page-header-runtime.css:14
+- --cf-ph-v2-copy-max: src/styles/closeflow-page-header-runtime.css:15
+- --cf-ph-v2-kicker-bg: src/styles/closeflow-page-header-runtime.css:18
+- --cf-ph-v2-kicker-border: src/styles/closeflow-page-header-runtime.css:19
+- --cf-ph-v2-kicker-text: src/styles/closeflow-page-header-runtime.css:20
+- --cf-ph-v2-title: src/styles/closeflow-page-header-runtime.css:22
+- --cf-ph-v2-title-size: src/styles/closeflow-page-header-runtime.css:23
+- --cf-ph-v2-title-weight: src/styles/closeflow-page-header-runtime.css:24
+- --cf-ph-v2-title-line: src/styles/closeflow-page-header-runtime.css:25
+- --cf-ph-v2-title-tracking: src/styles/closeflow-page-header-runtime.css:26
+- --cf-ph-v2-description: src/styles/closeflow-page-header-runtime.css:28
+- --cf-ph-v2-description-size: src/styles/closeflow-page-header-runtime.css:29
+- --cf-ph-v2-description-weight: src/styles/closeflow-page-header-runtime.css:30
+- --cf-ph-v2-description-line: src/styles/closeflow-page-header-runtime.css:31
+- --cf-ph-v2-action-height: src/styles/closeflow-page-header-runtime.css:33
+- --cf-ph-v2-action-radius: src/styles/closeflow-page-header-runtime.css:34
+- --cf-ph-v2-action-gap: src/styles/closeflow-page-header-runtime.css:35
+- --cf-ph-v2-neutral-bg: src/styles/closeflow-page-header-runtime.css:37
+- --cf-ph-v2-neutral-hover-bg: src/styles/closeflow-page-header-runtime.css:38
+- --cf-ph-v2-neutral-border: src/styles/closeflow-page-header-runtime.css:39
+- --cf-ph-v2-neutral-hover-border: src/styles/closeflow-page-header-runtime.css:40
+- --cf-ph-v2-neutral-text: src/styles/closeflow-page-header-runtime.css:41
+- --cf-ph-v2-neutral-hover-text: src/styles/closeflow-page-header-runtime.css:42
+- --cf-ph-v2-neutral-shadow: src/styles/closeflow-page-header-runtime.css:43
+- --cf-ph-v2-ai-bg: src/styles/closeflow-page-header-runtime.css:45
+- --cf-ph-v2-ai-hover-bg: src/styles/closeflow-page-header-runtime.css:46
+- --cf-ph-v2-ai-border: src/styles/closeflow-page-header-runtime.css:47
+- --cf-ph-v2-ai-hover-border: src/styles/closeflow-page-header-runtime.css:48
+- --cf-ph-v2-ai-text: src/styles/closeflow-page-header-runtime.css:49
+- --cf-ph-v2-ai-hover-text: src/styles/closeflow-page-header-runtime.css:50
+- --cf-ph-v2-ai-shadow: src/styles/closeflow-page-header-runtime.css:51
+- --cf-ph-v2-danger-bg: src/styles/closeflow-page-header-runtime.css:53
+- --cf-ph-v2-danger-hover-bg: src/styles/closeflow-page-header-runtime.css:54
+- --cf-ph-v2-danger-border: src/styles/closeflow-page-header-runtime.css:55
 
 ## Danger/red local classes
 - bg-red-100: src/components/ErrorBoundary.tsx:34
@@ -573,87 +573,95 @@ Generated: 2026-08-12T10:11:26.833Z
 - text-red-500: src/pages/ClientPortal.tsx:271
 - text-red-600: src/pages/ClientPortal.tsx:372
 - bg-red-50: src/pages/ClientPortal.tsx:372
-- border-red-200: src/pages/SalesFunnel.tsx:490
-- bg-red-50: src/pages/SalesFunnel.tsx:490
-- text-red-800: src/pages/SalesFunnel.tsx:490
-- border-red-100: src/pages/Today.tsx:1300
-- bg-red-50: src/pages/Today.tsx:1300
-- border-red-200: src/pages/Today.tsx:1300
-- bg-red-100: src/pages/Today.tsx:1300
+- border-red-200: src/pages/SalesFunnel.tsx:488
+- bg-red-50: src/pages/SalesFunnel.tsx:488
+- text-red-800: src/pages/SalesFunnel.tsx:488
+- border-red-100: src/pages/Today.tsx:1298
+- bg-red-50: src/pages/Today.tsx:1298
+- border-red-200: src/pages/Today.tsx:1298
+- bg-red-100: src/pages/Today.tsx:1298
+- text-red-700: src/pages/Today.tsx:1299
+- text-red-950: src/pages/Today.tsx:1300
 - text-red-700: src/pages/Today.tsx:1301
-- text-red-950: src/pages/Today.tsx:1302
-- text-red-700: src/pages/Today.tsx:1303
-- border-red-100: src/pages/Today.tsx:1318
-- bg-red-50: src/pages/Today.tsx:1318
-- text-red-800: src/pages/Today.tsx:1319
-- border-red-100: src/pages/Today.tsx:1328
-- border-red-200: src/pages/Today.tsx:1328
-- bg-red-50: src/pages/Today.tsx:1328
-- text-red-950: src/pages/Today.tsx:1330
-- text-red-700: src/pages/Today.tsx:1331
-- border-rose-200: src/pages/Today.tsx:2210
-- text-rose-700: src/pages/Today.tsx:2212
-- text-rose-600: src/pages/Today.tsx:2330
-- bg-rose-50: src/pages/Today.tsx:2331
-- border-rose-100: src/pages/Today.tsx:2450
-- bg-rose-50: src/pages/Today.tsx:2450
-- border-rose-100: src/pages/Today.tsx:2459
-- text-rose-500: src/pages/Today.tsx:2474
-- text-rose-600: src/pages/Today.tsx:2501
-- text-rose-500: src/pages/Today.tsx:2513
-- border-rose-100: src/pages/Today.tsx:2514
-- bg-rose-50: src/pages/Today.tsx:2514
-- border-rose-200: src/pages/Today.tsx:2826
-- bg-rose-50: src/pages/Today.tsx:2826
-- bg-rose-50: src/pages/Today.tsx:2826
-- text-rose-700: src/pages/Today.tsx:2828
-- text-rose-600: src/pages/Today.tsx:2877
-- border-rose-200: src/pages/Today.tsx:2878
-- text-rose-700: src/pages/Today.tsx:2878
-- text-red-600: src/styles/closeflow-modal-visual-system.css:274
-- text-rose-600: src/styles/closeflow-modal-visual-system.css:275
-- text-red-600: src/styles/closeflow-visual-source-truth.css:1888
-- text-rose-600: src/styles/closeflow-visual-source-truth.css:1889
-- text-rose-500: src/styles/closeflow-visual-source-truth.css:11673
-- text-rose-600: src/styles/closeflow-visual-source-truth.css:11673
-- text-rose-700: src/styles/closeflow-visual-source-truth.css:11673
-- text-red-500: src/styles/closeflow-visual-source-truth.css:11673
-- text-red-600: src/styles/closeflow-visual-source-truth.css:11673
-- text-red-700: src/styles/closeflow-visual-source-truth.css:11673
-- text-rose-500: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
-- text-rose-600: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
-- text-rose-700: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
-- text-red-500: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
-- text-red-600: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
-- text-red-700: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
-- bg-rose-50: src/styles/visual-stage20-tasks-safe-css.css:226
-- bg-red-50: src/styles/visual-stage20-tasks-safe-css.css:227
-- bg-red-50: src/styles/visual-stage21-today-final-lock.css:470
-- bg-rose-50: src/styles/visual-stage21-today-final-lock.css:471
-- bg-rose-50: src/styles/visual-stage22-leads-final-lock.css:459
-- bg-red-50: src/styles/visual-stage22-leads-final-lock.css:460
-- bg-rose-50: src/styles/visual-stage22-leads-final-lock.css:461
-- bg-red-50: src/styles/visual-stage22-leads-final-lock.css:462
-- bg-rose-50: src/styles/visual-stage22-leads-final-lock.css:463
-- bg-red-50: src/styles/visual-stage22-leads-final-lock.css:464
-- text-rose-600: src/ui-system/icons/SemanticIcon.tsx:150
+- border-red-100: src/pages/Today.tsx:1316
+- bg-red-50: src/pages/Today.tsx:1316
+- text-red-800: src/pages/Today.tsx:1317
+- border-red-100: src/pages/Today.tsx:1326
+- border-red-200: src/pages/Today.tsx:1326
+- bg-red-50: src/pages/Today.tsx:1326
+- text-red-950: src/pages/Today.tsx:1328
+- text-red-700: src/pages/Today.tsx:1329
+- border-rose-200: src/pages/Today.tsx:2208
+- text-rose-700: src/pages/Today.tsx:2210
+- text-rose-600: src/pages/Today.tsx:2328
+- bg-rose-50: src/pages/Today.tsx:2329
+- border-rose-100: src/pages/Today.tsx:2448
+- bg-rose-50: src/pages/Today.tsx:2448
+- border-rose-100: src/pages/Today.tsx:2457
+- text-rose-500: src/pages/Today.tsx:2472
+- text-rose-600: src/pages/Today.tsx:2499
+- text-rose-500: src/pages/Today.tsx:2511
+- border-rose-100: src/pages/Today.tsx:2512
+- bg-rose-50: src/pages/Today.tsx:2512
+- border-rose-200: src/pages/Today.tsx:2824
+- bg-rose-50: src/pages/Today.tsx:2824
+- bg-rose-50: src/pages/Today.tsx:2824
+- text-rose-700: src/pages/Today.tsx:2826
+- text-rose-600: src/pages/Today.tsx:2875
+- border-rose-200: src/pages/Today.tsx:2876
+- text-rose-700: src/pages/Today.tsx:2876
+- text-rose-500: src/styles/owners/closeflow-calendar.css:438
+- text-rose-600: src/styles/owners/closeflow-calendar.css:438
+- text-rose-700: src/styles/owners/closeflow-calendar.css:438
+- text-red-500: src/styles/owners/closeflow-calendar.css:438
+- text-red-600: src/styles/owners/closeflow-calendar.css:438
+- text-red-700: src/styles/owners/closeflow-calendar.css:438
+- text-red-600: src/styles/owners/closeflow-dialogs.css:275
+- text-rose-600: src/styles/owners/closeflow-dialogs.css:276
+- text-red-600: src/styles/owners/closeflow-dialogs.sync-conflict-20260812-220823-AQZURIM.css:275
+- text-rose-600: src/styles/owners/closeflow-dialogs.sync-conflict-20260812-220823-AQZURIM.css:276
+- bg-rose-50: src/styles/owners/closeflow-page-adapters.css:6461
+- bg-red-50: src/styles/owners/closeflow-page-adapters.css:6462
+- bg-red-50: src/styles/owners/closeflow-page-adapters.css:7011
+- bg-rose-50: src/styles/owners/closeflow-page-adapters.css:7012
+- text-rose-600: src/ui-system/icons/SemanticIcon.sync-conflict-20260812-220824-AQZURIM.tsx:151
+- text-rose-600: src/ui-system/icons/SemanticIcon.tsx:151
 
 ## Inline styles
 - src/components/ContextActionDialogs.tsx:455
-- src/components/Layout.tsx:176
-- src/components/Layout.tsx:580
-- src/components/Layout.tsx:602
-- src/components/Layout.tsx:614
+- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:171
+- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:575
+- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:597
+- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:609
+- src/components/Layout.tsx:174
+- src/components/Layout.tsx:578
+- src/components/Layout.tsx:600
+- src/components/Layout.tsx:612
 - src/components/ui/progress.tsx:19
-- src/pages/Activity.tsx:398
-- src/pages/Calendar.tsx:3367
-- src/pages/CaseDetail.tsx:3981
-- src/pages/CaseDetail.tsx:4057
-- src/pages/CaseDetail.tsx:4269
-- src/pages/Cases.tsx:864
-- src/pages/ClientDetail.tsx:3462
-- src/pages/NotificationsCenter.tsx:785
-- src/pages/Today.tsx:823
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:394
+- src/pages/Activity.tsx:394
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3357
+- src/pages/Calendar.tsx:3357
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3976
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4052
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4264
+- src/pages/CaseDetail.tsx:3979
+- src/pages/CaseDetail.tsx:4055
+- src/pages/CaseDetail.tsx:4267
+- src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:861
+- src/pages/Cases.tsx:862
+- src/pages/ClientDetail.tsx:3460
+- src/pages/NotificationsCenter.sync-conflict-20260812-220823-AQZURIM.tsx:783
+- src/pages/NotificationsCenter.tsx:783
+- src/pages/Today.tsx:821
+- src/pages/UiPreviewVNext.sync-conflict-20260812-220823-AQZURIM.tsx:8
+- src/pages/UiPreviewVNext.sync-conflict-20260812-220823-AQZURIM.tsx:9
+- src/pages/UiPreviewVNext.sync-conflict-20260812-220823-AQZURIM.tsx:14
+- src/pages/UiPreviewVNext.sync-conflict-20260812-220823-AQZURIM.tsx:31
+- src/pages/UiPreviewVNext.sync-conflict-20260812-220823-AQZURIM.tsx:32
+- src/pages/UiPreviewVNext.sync-conflict-20260812-220823-AQZURIM.tsx:47
+- src/pages/UiPreviewVNext.sync-conflict-20260812-220823-AQZURIM.tsx:49
+- src/pages/UiPreviewVNext.sync-conflict-20260812-220823-AQZURIM.tsx:52
 - src/pages/UiPreviewVNext.tsx:8
 - src/pages/UiPreviewVNext.tsx:9
 - src/pages/UiPreviewVNext.tsx:14
@@ -669,25 +677,33 @@ Generated: 2026-08-12T10:11:26.833Z
 - src/App.tsx
 - src/components/ActivityRoadmap.tsx
 - src/components/CaseQuickActions.tsx
+- src/components/ClientCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/components/ClientCreateDialog.tsx
 - src/components/EventCreateDialog.tsx
 - src/components/GlobalAiAssistant.tsx
 - src/components/GlobalQuickActions.tsx
+- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/components/Layout.tsx
 - src/components/OperatorTopBarRuntime.tsx
 - src/components/PwaInstallPrompt.tsx
 - src/components/StatShortcutCard.tsx
+- src/components/TaskCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/components/TaskCreateDialog.tsx
 - src/components/TodayAiAssistant.tsx
+- src/components/VisualFoundationRuntime.sync-conflict-20260812-220821-AQZURIM.tsx
 - src/components/VisualFoundationRuntime.tsx
+- src/components/VisualFoundationRuntimeStage212B.sync-conflict-20260812-220821-AQZURIM.tsx
 - src/components/VisualFoundationRuntimeStage212B.tsx
+- src/components/VisualFoundationRuntimeStage212G.sync-conflict-20260812-220821-AQZURIM.tsx
 - src/components/VisualFoundationRuntimeStage212G.tsx
+- src/components/VisualFoundationRuntimeStage212M.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/components/VisualFoundationRuntimeStage212M.tsx
 - src/components/admin-tools/AdminDebugToolbar.tsx
 - src/components/admin-tools/admin-tools-export.ts
 - src/components/admin-tools/admin-tools-storage.ts
 - src/components/detail/MissingItemQuickActionModal.tsx
 - src/components/detail/MissingItemsManagerDialog.tsx
+- src/components/finance/CaseFinanceEditorDialog.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/components/finance/CaseFinanceEditorDialog.tsx
 - src/components/finance/CaseSettlementPanel.tsx
 - src/components/finance/CommissionFormDialog.tsx
@@ -700,7 +716,7 @@ Generated: 2026-08-12T10:11:26.833Z
 - src/components/ui/dialog.tsx
 - src/hooks/useSupabaseSession.ts
 - src/hooks/useWorkspace.ts
-- src/index.css
+- src/index.sync-conflict-20260812-220826-AQZURIM.css
 - src/lib/action-visual-taxonomy.ts
 - src/lib/activity-roadmap.ts
 - src/lib/activity-timeline.ts
@@ -728,30 +744,40 @@ Generated: 2026-08-12T10:11:26.833Z
 - src/lib/source-of-truth/runtime-adoption-readonly.ts
 - src/lib/source-of-truth/today-readonly-bridge.ts
 - src/lib/source-of-truth/today-status-date-readonly-runtime-plan.ts
+- src/lib/source-of-truth/visual-repository.sync-conflict-20260812-220848-AJIKJ2G.ts
 - src/lib/source-of-truth/visual-repository.ts
 - src/lib/stage31-today-tiles-interaction.ts
 - src/lib/stage32-today-relations-loading-polish.ts
 - src/lib/supabase-fallback.ts
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/pages/Activity.tsx
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/pages/AiDrafts.tsx
 - src/pages/Billing.tsx
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/pages/Calendar.tsx
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/pages/CaseDetail.tsx
+- src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/pages/Cases.tsx
 - src/pages/ClientDetail.tsx
 - src/pages/Clients.tsx
 - src/pages/LeadDetail.tsx
+- src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/pages/Leads.tsx
+- src/pages/NotificationsCenter.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/pages/NotificationsCenter.tsx
-- src/pages/ResponseTemplates.tsx
 - src/pages/SalesFunnel.tsx
+- src/pages/Settings.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/pages/Settings.tsx
 - src/pages/SupportCenter.tsx
+- src/pages/Tasks.sync-conflict-20260812-220822-AQZURIM.tsx
 - src/pages/Tasks.tsx
+- src/pages/TasksStable.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/pages/TasksStable.tsx
-- src/pages/Templates.tsx
 - src/pages/Today.tsx
 - src/pages/TodayStable.tsx
+- src/pages/UiPreviewVNext.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/pages/UiPreviewVNext.tsx
 - src/pages/UiPreviewVNextFull.tsx
 - src/pwa/chunk-asset-reload-guard.ts
@@ -765,180 +791,91 @@ Generated: 2026-08-12T10:11:26.833Z
 - src/server/payments.ts
 - src/server/portal-upload.ts
 - src/server/records.ts
-- src/styles/action-color-taxonomy-v1.css
 - src/styles/admin-tools.css
-- src/styles/case-detail-stage228r9-shell-rail-lift.css
+- src/styles/admin-tools.sync-conflict-20260812-220824-AQZURIM.css
 - src/styles/clients-next-action-layout.css
-- src/styles/closeflow-action-tokens.css
-- src/styles/closeflow-activity-rail-force-colors-stage181v.css
-- src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css
-- src/styles/closeflow-billing-visual-taxonomy-stage181z.css
-- src/styles/closeflow-calendar-color-tooltip-v2.css
-- src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css
-- src/styles/closeflow-calendar-month-entry-structural-fix-v3.css
-- src/styles/closeflow-calendar-month-plain-text-rows-v4.css
-- src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css
-- src/styles/closeflow-calendar-selected-day-full-text-repair11.css
+- src/styles/clients-next-action-layout.sync-conflict-20260812-220825-AQZURIM.css
+- src/styles/closeflow-activity-rail.css
+- src/styles/closeflow-activity-rail.sync-conflict-20260812-220825-AQZURIM.css
+- src/styles/closeflow-ai-drafts-rail.css
+- src/styles/closeflow-ai-drafts-rail.sync-conflict-20260812-220825-AQZURIM.css
+- src/styles/closeflow-ai-drafts.css
+- src/styles/closeflow-ai-drafts.sync-conflict-20260812-220825-AQZURIM.css
+- src/styles/closeflow-billing-taxonomy.css
+- src/styles/closeflow-billing-taxonomy.sync-conflict-20260812-220825-AQZURIM.css
+- src/styles/closeflow-billing.css
+- src/styles/closeflow-billing.sync-conflict-20260812-220825-AQZURIM.css
 - src/styles/closeflow-calendar-selected-day-full-text-repair12.css
-- src/styles/closeflow-calendar-selected-day-new-tile-v9.css
-- src/styles/closeflow-calendar-skin-only-v1.css
-- src/styles/closeflow-canvas-edge-color-source-truth-stage211f.css
-- src/styles/closeflow-canvas-final-source-truth-stage211k.css
-- src/styles/closeflow-canvas-layer-source-truth-stage211h.css
-- src/styles/closeflow-canvas-runtime-source-truth-stage211j.css
-- src/styles/closeflow-canvas-source-truth-stage211d.css
-- src/styles/closeflow-canvas-source-truth-stage211e.css
-- src/styles/closeflow-case-detail-stage217-operation-workspace.css
-- src/styles/closeflow-case-detail-stage220a10-tabs-layout-repair.css
-- src/styles/closeflow-case-finance-modal-stage220a30.css
+- src/styles/closeflow-canvas-runtime.css
+- src/styles/closeflow-canvas-runtime.sync-conflict-20260812-220825-AQZURIM.css
+- src/styles/closeflow-case-detail-shell-rail.css
+- src/styles/closeflow-case-detail-shell-rail.sync-conflict-20260812-220825-AQZURIM.css
+- src/styles/closeflow-case-detail-tabs.css
+- src/styles/closeflow-case-detail-tabs.sync-conflict-20260812-220825-AQZURIM.css
 - src/styles/closeflow-case-history-visual-source-truth.css
-- src/styles/closeflow-center-content-scroll-owner-stage207.css
-- src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css
-- src/styles/closeflow-cf-modal-surface-center-fix-stage161.css
-- src/styles/closeflow-cf-modal-surface-lower-smaller-stage162.css
-- src/styles/closeflow-cf-modal-top-anchor-light-surface-stage164.css
-- src/styles/closeflow-clean-desktop-app-shell-canvas-stage149.css
-- src/styles/closeflow-client-event-modal-runtime-repair.css
-- src/styles/closeflow-command-actions-source-truth.css
-- src/styles/closeflow-compact-cards-source-truth-stage151.css
-- src/styles/closeflow-content-only-scroll-stage206.css
-- src/styles/closeflow-dense-cards-80-percent-target-stage152.css
-- src/styles/closeflow-desktop-content-shell-stage137.css
-- src/styles/closeflow-desktop-left-anchor-content-stage138.css
-- src/styles/closeflow-desktop-wide-content-stage136.css
-- src/styles/closeflow-detail-view-source-truth-stage219.css
-- src/styles/closeflow-extend-main-search-source-truth-secondary-pages-stage175.css
-- src/styles/closeflow-fluid-work-surface-stage146.css
-- src/styles/closeflow-global-client-create-dialog-stage172.css
-- src/styles/closeflow-hard-work-frame-width-stage143.css
-- src/styles/closeflow-leads-right-rail-layout-lock.css
-- src/styles/closeflow-main-only-scroll-stage205.css
-- src/styles/closeflow-main-search-surface-and-text-normalization-stage174.css
-- src/styles/closeflow-metric-tiles.css
-- src/styles/closeflow-modal-center-and-compact-all-stage160.css
-- src/styles/closeflow-modal-footer-in-flow-no-overlay-stage166.css
-- src/styles/closeflow-modal-unified-event-motif-source-truth-stage165.css
-- src/styles/closeflow-modal-visual-system.css
-- src/styles/closeflow-notifications-conflict-card-stage181aj.css
-- src/styles/closeflow-notifications-rail-force-colors-stage181x.css
-- src/styles/closeflow-operator-metric-tiles.css
-- src/styles/closeflow-operator-top-trim-source-truth.css
-- src/styles/closeflow-ops-badges-and-icons-stretch-stage204.css
-- src/styles/closeflow-overlay-real-density-and-footer-stage159.css
-- src/styles/closeflow-page-header-copy-left-only.css
-- src/styles/closeflow-page-header-final-lock.css
-- src/styles/closeflow-page-header-stage6-final-lock.css
-- src/styles/closeflow-page-header-structure-lock.css
-- src/styles/closeflow-page-header-v2.css
-- src/styles/closeflow-panel-typography-and-width-source-truth-stage150.css
-- src/styles/closeflow-real-density-tokens-no-zoom-stage156.css
+- src/styles/closeflow-case-history-visual-source-truth.sync-conflict-20260812-220825-AQZURIM.css
+- src/styles/closeflow-entity-data-card.css
+- src/styles/closeflow-entity-data-card.sync-conflict-20260812-220824-AQZURIM.css
+- src/styles/closeflow-event-form.css
+- src/styles/closeflow-event-form.sync-conflict-20260812-220822-AQZURIM.css
+- src/styles/closeflow-notification-conflict-card.css
+- src/styles/closeflow-notification-conflict-card.sync-conflict-20260812-220824-AQZURIM.css
+- src/styles/closeflow-notifications-rail.css
+- src/styles/closeflow-notifications-rail.sync-conflict-20260812-220825-AQZURIM.css
+- src/styles/closeflow-notifications.css
+- src/styles/closeflow-notifications.sync-conflict-20260812-220824-AQZURIM.css
+- src/styles/closeflow-page-header-runtime.css
+- src/styles/closeflow-page-header-runtime.sync-conflict-20260812-220825-AQZURIM.css
 - src/styles/closeflow-record-list-source-truth.css
-- src/styles/closeflow-repair-shared-work-width-frame-stage142.css
-- src/styles/closeflow-response-template-modal-source-truth-stage181r.css
-- src/styles/closeflow-right-rail-source-truth.css
-- src/styles/closeflow-route-root-width-normalization-stage145.css
-- src/styles/closeflow-scaled-desktop-shell-stage148.css
-- src/styles/closeflow-secondary-pages-full-width-stage181ad.css
-- src/styles/closeflow-settings-form-control-readability-stage179.css
-- src/styles/closeflow-settings-profile-readability-stage181af.css
-- src/styles/closeflow-settings-safe-copy-cleanup-stage181ai.css
-- src/styles/closeflow-settings-summary-right-rail-stage181ae.css
-- src/styles/closeflow-settings-tabs-stage181ac.css
-- src/styles/closeflow-shared-work-width-frame-stage141.css
-- src/styles/closeflow-shell-content-width-source-truth-stage144.css
-- src/styles/closeflow-shell-overflow-work-surface-stage147.css
-- src/styles/closeflow-stage16c-tasks-cases-parity.css
-- src/styles/closeflow-stage16d-tasks-metric-final-lock.css
-- src/styles/closeflow-task-dialog-relation-and-field-readability-stage170.css
-- src/styles/closeflow-template-modal-source-truth-stage181l.css
-- src/styles/closeflow-unified-desktop-canvas-stage139.css
-- src/styles/closeflow-unified-desktop-work-width-stage140.css
-- src/styles/closeflow-unified-page-canvas-stage211c.css
-- src/styles/closeflow-viewport-zoom-80-source-truth-stage157.css
-- src/styles/closeflow-visual-foundation-stage212m.css
-- src/styles/closeflow-visual-source-truth.css
+- src/styles/closeflow-record-list-source-truth.sync-conflict-20260812-220822-AQZURIM.css
+- src/styles/closeflow-response-template-modal.css
+- src/styles/closeflow-response-template-modal.sync-conflict-20260812-220824-AQZURIM.css
+- src/styles/closeflow-right-rail-wrappers.css
+- src/styles/closeflow-right-rail-wrappers.sync-conflict-20260812-220825-AQZURIM.css
+- src/styles/closeflow-settings-copy.css
+- src/styles/closeflow-settings-copy.sync-conflict-20260812-220825-AQZURIM.css
+- src/styles/closeflow-settings-form-controls.css
+- src/styles/closeflow-settings-form-controls.sync-conflict-20260812-220825-AQZURIM.css
+- src/styles/closeflow-settings-profile.css
+- src/styles/closeflow-settings-profile.sync-conflict-20260812-220825-AQZURIM.css
+- src/styles/closeflow-settings-summary-rail.css
+- src/styles/closeflow-settings-summary-rail.sync-conflict-20260812-220825-AQZURIM.css
+- src/styles/closeflow-settings-tabs.css
+- src/styles/closeflow-settings-tabs.sync-conflict-20260812-220822-AQZURIM.css
+- src/styles/closeflow-settings.css
+- src/styles/closeflow-settings.sync-conflict-20260812-220825-AQZURIM.css
+- src/styles/closeflow-support.css
+- src/styles/closeflow-support.sync-conflict-20260812-220825-AQZURIM.css
+- src/styles/closeflow-task-form.css
+- src/styles/closeflow-template-modal-layout.css
+- src/styles/closeflow-template-modal-layout.sync-conflict-20260812-220824-AQZURIM.css
 - src/styles/closeflow-vnext-ui-contract.css
+- src/styles/closeflow-vnext-ui-contract.sync-conflict-20260812-220824-AQZURIM.css
 - src/styles/core/core-contracts.css
-- src/styles/design-system/closeflow-tokens.css
-- src/styles/eliteflow-admin-feedback-p1-hotfix.css
-- src/styles/eliteflow-metric-text-clip-tasks-repair.css
-- src/styles/eliteflow-sidebar-footer-contrast-repair.css
-- src/styles/eliteflow-sidebar-user-footer-below-nav.css
-- src/styles/emergency/emergency-hotfixes.css
+- src/styles/core/core-contracts.sync-conflict-20260812-220822-AQZURIM.css
 - src/styles/finance/closeflow-finance.css
-- src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css
-- src/styles/hotfix-ai-drafts-right-rail-stage28.css
-- src/styles/hotfix-lead-client-right-rail-dark-wrappers.css
-- src/styles/hotfix-right-rail-dark-wrappers.css
-- src/styles/hotfix-task-stat-tiles-clean.css
-- src/styles/legacy/legacy-imports.css
-- src/styles/page-adapters/page-adapters.css
-- src/styles/stage216l-client-detail-lead-layout-cumulative.css
-- src/styles/stage216m-client-detail-lead-dimensions-sync.css
-- src/styles/stage216m-r1-client-detail-lead-grid-lock.css
-- src/styles/stage216m-r10-client-center-work-order.css
-- src/styles/stage216m-r10-r4-client-center-tabs-and-intro-lock.css
-- src/styles/stage216m-r11-client-finance-summary-right-rail-lock.css
-- src/styles/stage216m-r12-client-right-rail-finance-hard-render.css
-- src/styles/stage216m-r13-client-right-rail-finance-inline-refactor.css
-- src/styles/stage216m-r14-clean-copy-and-finance-mojibake.css
-- src/styles/stage216m-r15-r1-client-notes-source-truth-repair.css
-- src/styles/stage216m-r15-r2-client-notes-source-truth-actual-repair.css
-- src/styles/stage216m-r15-r4-client-notes-source-truth-hard-repair.css
-- src/styles/stage216m-r15-r5-client-notes-source-truth-final-repair.css
-- src/styles/stage216m-r16-r1-client-note-modal-source-truth.css
-- src/styles/stage216m-r16-r2-client-note-modal-source-truth.css
-- src/styles/stage216m-r16-r3-client-note-modal-portal-lock.css
-- src/styles/stage216m-r2-client-detail-card-1to1.css
-- src/styles/stage216m-r3-r1-header-actions-repair.css
-- src/styles/stage216m-r3-r2-header-clean-final.css
-- src/styles/stage216m-r4-client-right-rail-1to1.css
-- src/styles/stage216m-r5-client-right-rail-finance-colors-icons.css
-- src/styles/stage216m-r6-client-data-card-1to1.css
-- src/styles/stage216m-r6-r1-client-data-card-polish.css
-- src/styles/stage216m-r6-r2-client-data-card-button-size.css
-- src/styles/stage216m-r6-r3-client-data-card-visual-lock.css
-- src/styles/stage216m-r7-entity-data-card-source-truth.css
-- src/styles/stage216m-r8-client-left-rail-history-source-truth.css
-- src/styles/stage216m-r9-client-left-rail-final-lock.css
-- src/styles/stage231h-r1e-case-finance-correction-modal-final.css
-- src/styles/stage232a-missing-item-visual-source.css
-- src/styles/stage232a-r10-r2-lead-action-groups-visual-polish.css
-- src/styles/stage31-full-mobile-polish.css
-- src/styles/stage33a-ai-drafts-generated-text-contrast.css
-- src/styles/stage35-clients-value-detail-cleanup.css
-- src/styles/stage36-unified-light-pages.css
-- src/styles/stage7a-tasks-blue-outline-fix.css
-- src/styles/stage80-today-task-done-desktop-visibility.css
-- src/styles/stageA19v2-sidebar-nav-contrast-fix.css
-- src/styles/stageA20-sidebar-today-click-fix.css
-- src/styles/stageA20c-sidebar-today-hitbox-fix.css
-- src/styles/stageA20e-sidebar-today-tone-lock.css
-- src/styles/stageA25-today-relations-lead-badge-inline.css
-- src/styles/temporary/temporary-overrides.css
-- src/styles/visual-stage01-shell.css
-- src/styles/visual-stage05-clients.css
-- src/styles/visual-stage08-case-detail.css
-- src/styles/visual-stage10-notifications-vnext.css
-- src/styles/visual-stage12-client-detail-vnext.css
-- src/styles/visual-stage13-case-detail-vnext.css
-- src/styles/visual-stage14-lead-detail-vnext.css
-- src/styles/visual-stage16-billing-vnext.css
-- src/styles/visual-stage17-support-vnext.css
-- src/styles/visual-stage17-today-hard-1to1.css
-- src/styles/visual-stage19-settings-vnext.css
-- src/styles/visual-stage20-lead-form-vnext.css
-- src/styles/visual-stage21-task-form-vnext.css
-- src/styles/visual-stage22-event-form-vnext.css
-- src/styles/visual-stage23-client-case-forms-vnext.css
-- src/styles/visual-stage23-leads-html-parity-fix.css
-- src/styles/visual-stage24-leads-html-dom-parity-hardfix.css
-- src/styles/visual-stage26-leads-visual-alignment-fix.css
-- src/styles/visual-stage27-cases-vnext.css
-- src/styles/visual-stage28-tasks-vnext.css
-- src/styles/visual-stage29-calendar-vnext.css
-- src/styles/visual-stage3-pipeline-and-case.css
-- src/styles/visual-stage8-activity-vnext.css
-- src/styles/visual-stage9-ai-drafts-vnext.css
+- src/styles/owners/closeflow-actions.css
+- src/styles/owners/closeflow-actions.sync-conflict-20260812-220824-AQZURIM.css
+- src/styles/owners/closeflow-calendar.css
+- src/styles/owners/closeflow-client-detail.css
+- src/styles/owners/closeflow-client-notes.css
+- src/styles/owners/closeflow-client-notes.sync-conflict-20260812-220822-AQZURIM.css
+- src/styles/owners/closeflow-dialogs.css
+- src/styles/owners/closeflow-dialogs.sync-conflict-20260812-220823-AQZURIM.css
+- src/styles/owners/closeflow-foundation-operator.css
+- src/styles/owners/closeflow-foundation.sync-conflict-20260812-220822-AQZURIM.css
+- src/styles/owners/closeflow-metrics.sync-conflict-20260812-220824-AQZURIM.css
+- src/styles/owners/closeflow-page-adapters.css
+- src/styles/owners/closeflow-page-header-responsive.css
+- src/styles/owners/closeflow-rails-and-detail.css
+- src/styles/owners/closeflow-rails-and-detail.sync-conflict-20260812-220822-AQZURIM.css
+- src/styles/owners/closeflow-records-and-rails.css
+- src/styles/owners/closeflow-records-and-rails.sync-conflict-20260812-220822-AQZURIM.css
+- src/styles/owners/closeflow-responsive-adapters.css
+- src/styles/owners/closeflow-search-and-density.css
+- src/styles/owners/closeflow-search-and-density.sync-conflict-20260812-220821-AQZURIM.css
+- src/styles/owners/closeflow-shell-and-badges.css
 - src/styles/work-item-card.css
+- src/styles/work-item-card.sync-conflict-20260812-220824-AQZURIM.css
+- src/ui-system/icons/SemanticIcon.sync-conflict-20260812-220824-AQZURIM.tsx
 - src/ui-system/icons/SemanticIcon.tsx

@@ -14,12 +14,10 @@ import {
   replyToSupportRequestInSupabase,
   updateSupportRequestStatusInSupabase,
 } from '../lib/supabase-fallback';
-import '../styles/visual-stage17-support-vnext.css';
+import '../styles/closeflow-support.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
-import '../styles/closeflow-page-header-v2.css';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
-// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
-import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
+import '../styles/closeflow-page-header-runtime.css';
+import '../styles/closeflow-canvas-runtime.css';
 
 type TicketKind = 'suggestion' | 'problem' | 'support';
 type TicketKindFilter = 'all' | TicketKind;

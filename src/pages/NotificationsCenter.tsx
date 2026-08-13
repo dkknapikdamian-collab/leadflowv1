@@ -47,15 +47,13 @@ import {
   type NotificationSnoozeMode,
 } from '../lib/notifications';
 import { buildReminderCustomDate } from '../lib/reminders';
-import '../styles/visual-stage10-notifications-vnext.css';
-import '../styles/hotfix-right-rail-dark-wrappers.css';
-import '../styles/closeflow-notifications-rail-force-colors-stage181x.css';
-import '../styles/closeflow-notifications-conflict-card-stage181aj.css';
+import '../styles/closeflow-notifications.css';
+import '../styles/closeflow-right-rail-wrappers.css';
+import '../styles/closeflow-notifications-rail.css';
+import '../styles/closeflow-notification-conflict-card.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
-import '../styles/closeflow-page-header-v2.css';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
-// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
-import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
+import '../styles/closeflow-page-header-runtime.css';
+import '../styles/closeflow-canvas-runtime.css';
 
 const CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W = 'CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W';
 const STAGE180R_NOTIFICATIONS_CHANNELS_CARD_REMOVED = 'STAGE180R_NOTIFICATIONS_CHANNELS_CARD_REMOVED';
@@ -741,7 +739,7 @@ export default function NotificationsCenter() {
                 ))}
               </div>
 
-              <label className="notifications-search-box cf-main-search cf-main-search-stage175" data-cf-main-search-source="stage173" data-cf-main-search-stage175="true">
+              <label className="notifications-search-box cf-main-search cf-main-search-semantic175" data-cf-main-search-source="semantic173" data-cf-main-search-semantic175="true">
                 <Search className="h-4 w-4" />
                 <input
                   value={searchQuery}

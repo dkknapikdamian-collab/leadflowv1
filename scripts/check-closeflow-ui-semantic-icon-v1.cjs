@@ -32,6 +32,9 @@ function walk(dir, acc = []) {
       if (!skipDirs.has(entry.name)) walk(path.join(dir, entry.name), acc);
       continue;
     }
+    // Synchronization conflict copies are preserved outside the runtime source
+    // set and must never alter the canonical icon baseline.
+    if (entry.name.includes('.sync-conflict-')) continue;
     if (codeExt.has(path.extname(entry.name))) acc.push(path.join(dir, entry.name));
   }
   return acc;

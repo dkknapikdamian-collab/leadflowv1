@@ -56,12 +56,9 @@ import {
   isTodayWorkItemOverdue as isSotTodayWorkItemOverdue,
 } from '../lib/source-of-truth/today-work-item-status';
 import { EVENT_TYPES, PRIORITY_OPTIONS, TASK_TYPES } from '../lib/options';
-import '../styles/closeflow-page-header-v2.css';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
-// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css' is provided once by App.tsx.
-// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
+import '../styles/closeflow-page-header-runtime.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
-import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';import {
+import '../styles/closeflow-canvas-runtime.css';import {
   getTodayEventMomentRaw,
   getTodayLeadMomentRaw,
   getTodayOperationalDayKey,

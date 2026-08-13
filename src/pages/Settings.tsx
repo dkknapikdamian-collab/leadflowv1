@@ -60,17 +60,15 @@ import {
 } from '../lib/google-calendar-reminder-preferences';
 import { DEFAULT_HIGH_VALUE_THRESHOLD_PLN, DEFAULT_OWNER_CONTROL_CRITICAL_DAYS, DEFAULT_OWNER_CONTROL_WARNING_DAYS } from '../lib/owner-control/owner-risk-rules';
 import { readOwnerRiskSettings, writeOwnerRiskSettings, getOwnerRiskSettingsStorageNote } from '../lib/owner-control/owner-risk-settings';
-import '../styles/visual-stage19-settings-vnext.css';
+import '../styles/closeflow-settings.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
-import '../styles/closeflow-page-header-v2.css';
-import '../styles/closeflow-settings-form-control-readability-stage179.css';
-import '../styles/closeflow-settings-tabs-stage181ac.css';
-import '../styles/closeflow-settings-summary-right-rail-stage181ae.css';
-import '../styles/closeflow-settings-profile-readability-stage181af.css';
-import '../styles/closeflow-settings-safe-copy-cleanup-stage181ai.css';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
-// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
-import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
+import '../styles/closeflow-page-header-runtime.css';
+import '../styles/closeflow-settings-form-controls.css';
+import '../styles/closeflow-settings-tabs.css';
+import '../styles/closeflow-settings-summary-rail.css';
+import '../styles/closeflow-settings-profile.css';
+import '../styles/closeflow-settings-copy.css';
+import '../styles/closeflow-canvas-runtime.css';
 const SETTINGS_VISUAL_REBUILD_STAGE19 = 'SETTINGS_VISUAL_REBUILD_STAGE19';
 const DAILY_DIGEST_EMAIL_UI_VISIBLE = false;
 const DAILY_DIGEST_EMAIL_TEST_COPY_GUARD = 'Wyślij test teraz';
@@ -853,12 +851,12 @@ useEffect(() => {
           ))}
         </section>
 
-        <nav className="settings-tabs-stage181ac" data-settings-tabs-stage181ac="true" aria-label="Kategorie ustawień">
+        <nav className="settings-tabs" data-settings-tabs="true" aria-label="Kategorie ustawień">
           {SETTINGS_TAB_ITEMS.map((tab) => (
             <button
               key={tab.id}
               type="button"
-              className={activeSettingsTab === tab.id ? 'settings-tab-stage181ac settings-tab-stage181ac-active' : 'settings-tab-stage181ac'}
+              className={activeSettingsTab === tab.id ? 'settings-tab settings-tab-active' : 'settings-tab'}
               data-settings-tab-kind={tab.id}
               onClick={() => setActiveSettingsTab(tab.id)}
               aria-pressed={activeSettingsTab === tab.id}
@@ -872,7 +870,7 @@ useEffect(() => {
 
         <div className="settings-shell">
           <section className="settings-main-column">
-                            <section hidden={activeSettingsTab !== 'integrations' || canUseGoogleCalendarByPlan} className="settings-section-card settings-tab-empty-stage181ac" data-settings-tab-panel="integrations" data-settings-integrations-empty-stage181ac="true">
+                            <section hidden={activeSettingsTab !== 'integrations' || canUseGoogleCalendarByPlan} className="settings-section-card settings-tab-empty" data-settings-tab-panel="integrations" data-settings-integrations-empty="true">
                 <div className="settings-section-head">
                   <div>
                     <span><CalendarDays className="h-4 w-4" /> Integracje</span>

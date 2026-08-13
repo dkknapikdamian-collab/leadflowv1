@@ -12,9 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { useWorkspace } from '../hooks/useWorkspace';
 import { fetchAiConfigDiagnostics, type AiConfigDiagnostics, type AiProviderDiagnostics } from '../lib/ai-config';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
-import '../styles/closeflow-page-header-v2.css';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
-// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
+import '../styles/closeflow-page-header-runtime.css';
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_ADMIN_AI
 
 function StatusBadge({ configured, available }: { configured: boolean; available?: boolean }) {

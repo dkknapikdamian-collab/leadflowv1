@@ -1,7 +1,7 @@
 # CloseFlow UI Map — generated
 
-Generated: 2026-08-12T10:11:25.138Z
-Source files scanned: 373
+Generated: 2026-08-13T05:37:47.780Z
+Source files scanned: 397
 
 ## Likely detail pages
 - src/pages/CaseDetail.tsx
@@ -11,14 +11,23 @@ Source files scanned: 373
 ## StatShortcutCard usage
 - src/components/StatShortcutCard.tsx
 - src/components/ui-system/OperatorMetricTiles.tsx
+- src/lib/source-of-truth/visual-repository.sync-conflict-20260812-220848-AJIKJ2G.ts
 - src/lib/source-of-truth/visual-repository.ts
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/pages/Activity.tsx
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/pages/AiDrafts.tsx
+- src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/pages/Cases.tsx
+- src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/pages/Clients.tsx
+- src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/pages/Leads.tsx
+- src/pages/ResponseTemplates.sync-conflict-20260812-220823-AQZURIM.tsx
 - src/pages/ResponseTemplates.tsx
+- src/pages/Tasks.sync-conflict-20260812-220822-AQZURIM.tsx
 - src/pages/Tasks.tsx
+- src/pages/Templates.sync-conflict-20260812-220822-AQZURIM.tsx
 - src/pages/Templates.tsx
 
 ## Action occurrences
@@ -38,14 +47,16 @@ Source files scanned: 373
 - Zapisz: src/components/admin-tools/AdminDebugToolbar.tsx:531
 - Zapisz: src/components/admin-tools/AdminDebugToolbar.tsx:551
 - Zapisz: src/components/admin-tools/AdminDebugToolbar.tsx:563
-- Zapisz: src/components/ClientCreateDialog.tsx:311
-- Anuluj: src/components/ClientCreateDialog.tsx:308
+- Zapisz: src/components/ClientCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx:309
+- Anuluj: src/components/ClientCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx:306
+- Zapisz: src/components/ClientCreateDialog.tsx:309
+- Anuluj: src/components/ClientCreateDialog.tsx:306
 - Anuluj: src/components/confirm-dialog.tsx:23
-- Dodaj notatkę: src/components/ContextActionButton.tsx:23
-- Dodaj zadanie: src/components/ContextActionButton.tsx:21
+- Dodaj notatkę: src/components/ContextActionButton.tsx:21
+- Dodaj zadanie: src/components/ContextActionButton.tsx:19
+- Dodaj: src/components/ContextActionButton.tsx:19
+- Dodaj: src/components/ContextActionButton.tsx:20
 - Dodaj: src/components/ContextActionButton.tsx:21
-- Dodaj: src/components/ContextActionButton.tsx:22
-- Dodaj: src/components/ContextActionButton.tsx:23
 - Dodaj notatkę: src/components/ContextNoteDialog.tsx:108
 - Zapisz: src/components/ContextNoteDialog.tsx:123
 - Anuluj: src/components/ContextNoteDialog.tsx:122
@@ -70,25 +81,27 @@ Source files scanned: 373
 - Dodaj: src/components/EntityConflictDialog.tsx:62
 - Zapisz: src/components/EventCreateDialog.tsx:216
 - Anuluj: src/components/EventCreateDialog.tsx:215
-- Edytuj: src/components/finance/CaseFinanceActionButtons.tsx:43
+- Edytuj: src/components/finance/CaseFinanceActionButtons.tsx:42
+- Dodaj: src/components/finance/CaseFinanceActionButtons.tsx:43
 - Dodaj: src/components/finance/CaseFinanceActionButtons.tsx:44
 - Dodaj: src/components/finance/CaseFinanceActionButtons.tsx:45
-- Dodaj: src/components/finance/CaseFinanceActionButtons.tsx:46
-- Zapisz: src/components/finance/CaseFinanceEditorDialog.tsx:255
-- Anuluj: src/components/finance/CaseFinanceEditorDialog.tsx:254
-- Zapisz: src/components/finance/CaseFinancePaymentDialog.tsx:195
-- Anuluj: src/components/finance/CaseFinancePaymentDialog.tsx:194
-- Dodaj: src/components/finance/CaseFinancePaymentDialog.tsx:13
-- Dodaj: src/components/finance/CaseFinancePaymentDialog.tsx:13
-- Dodaj: src/components/finance/CaseFinancePaymentDialog.tsx:13
+- Zapisz: src/components/finance/CaseFinanceEditorDialog.sync-conflict-20260812-220823-AQZURIM.tsx:254
+- Anuluj: src/components/finance/CaseFinanceEditorDialog.sync-conflict-20260812-220823-AQZURIM.tsx:253
+- Zapisz: src/components/finance/CaseFinanceEditorDialog.tsx:254
+- Anuluj: src/components/finance/CaseFinanceEditorDialog.tsx:253
+- Zapisz: src/components/finance/CaseFinancePaymentDialog.tsx:194
+- Anuluj: src/components/finance/CaseFinancePaymentDialog.tsx:193
+- Dodaj: src/components/finance/CaseFinancePaymentDialog.tsx:12
+- Dodaj: src/components/finance/CaseFinancePaymentDialog.tsx:12
+- Dodaj: src/components/finance/CaseFinancePaymentDialog.tsx:12
+- Dodaj: src/components/finance/CaseFinancePaymentDialog.tsx:84
 - Dodaj: src/components/finance/CaseFinancePaymentDialog.tsx:85
 - Dodaj: src/components/finance/CaseFinancePaymentDialog.tsx:86
-- Dodaj: src/components/finance/CaseFinancePaymentDialog.tsx:87
 - Edytuj: src/components/finance/CommissionFormDialog.tsx:93
 - Zapisz: src/components/finance/CommissionFormDialog.tsx:163
 - Anuluj: src/components/finance/CommissionFormDialog.tsx:162
-- Edytuj: src/components/finance/FinanceSnapshot.tsx:164
-- Dodaj: src/components/finance/FinanceSnapshot.tsx:161
+- Edytuj: src/components/finance/FinanceSnapshot.tsx:163
+- Dodaj: src/components/finance/FinanceSnapshot.tsx:160
 - Zapisz: src/components/finance/LeadValuePanel.tsx:190
 - Zapisz: src/components/finance/PaymentFormDialog.tsx:176
 - Anuluj: src/components/finance/PaymentFormDialog.tsx:174
@@ -99,21 +112,23 @@ Source files scanned: 373
 - Anuluj: src/components/LeadStartServiceDialog.tsx:28
 - Dodaj: src/components/PwaInstallPrompt.tsx:134
 - Dodaj: src/components/PwaInstallPrompt.tsx:148
-- Zapisz: src/components/quick-lead/QuickLeadCaptureModal.tsx:306
-- Anuluj: src/components/quick-lead/QuickLeadCaptureModal.tsx:237
-- Anuluj: src/components/quick-lead/QuickLeadCaptureModal.tsx:303
-- Dodaj: src/components/quick-lead/QuickLeadCaptureModal.tsx:214
+- Zapisz: src/components/quick-lead/QuickLeadCaptureModal.tsx:305
+- Anuluj: src/components/quick-lead/QuickLeadCaptureModal.tsx:236
+- Anuluj: src/components/quick-lead/QuickLeadCaptureModal.tsx:302
+- Dodaj: src/components/quick-lead/QuickLeadCaptureModal.tsx:213
 - Zapisz: src/components/QuickAiCapture.tsx:4
-- Zapisz: src/components/QuickAiCapture.tsx:311
-- Zapisz: src/components/QuickAiCapture.tsx:332
-- Zapisz: src/components/QuickAiCapture.tsx:336
-- Zapisz: src/components/QuickAiCapture.tsx:352
-- Zapisz: src/components/QuickAiCapture.tsx:368
-- Dyktuj: src/components/QuickAiCapture.tsx:315
-- Dyktuj: src/components/QuickAiCapture.tsx:359
+- Zapisz: src/components/QuickAiCapture.tsx:310
+- Zapisz: src/components/QuickAiCapture.tsx:331
+- Zapisz: src/components/QuickAiCapture.tsx:335
+- Zapisz: src/components/QuickAiCapture.tsx:351
+- Zapisz: src/components/QuickAiCapture.tsx:367
+- Dyktuj: src/components/QuickAiCapture.tsx:314
+- Dyktuj: src/components/QuickAiCapture.tsx:358
 - Edytuj: src/components/task-editor-dialog.tsx:108
 - Zapisz: src/components/task-editor-dialog.tsx:231
 - Anuluj: src/components/task-editor-dialog.tsx:230
+- Zapisz: src/components/TaskCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx:278
+- Anuluj: src/components/TaskCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx:277
 - Zapisz: src/components/TaskCreateDialog.tsx:278
 - Anuluj: src/components/TaskCreateDialog.tsx:277
 - Zapisz: src/components/TodayAiAssistant.tsx:9
@@ -188,155 +203,260 @@ Source files scanned: 373
 - Usuń: src/lib/source-of-truth/icon-registry.ts:84
 - Kopiuj: src/lib/source-of-truth/icon-registry.ts:44
 - Dodaj: src/lib/source-of-truth/icon-registry.ts:14
-- Usuń: src/pages/AiDrafts.tsx:1077
-- Edytuj: src/pages/AiDrafts.tsx:1070
-- Edytuj: src/pages/AiDrafts.tsx:1436
-- Zapisz: src/pages/AiDrafts.tsx:1088
-- Zapisz: src/pages/AiDrafts.tsx:1128
-- Zapisz: src/pages/AiDrafts.tsx:1247
-- Zapisz: src/pages/AiDrafts.tsx:1437
-- Anuluj: src/pages/AiDrafts.tsx:956
-- Anuluj: src/pages/AiDrafts.tsx:1072
-- Anuluj: src/pages/AiDrafts.tsx:1089
-- Kopiuj: src/pages/AiDrafts.tsx:1090
-- Kopiuj: src/pages/AiDrafts.tsx:1182
-- Kopiuj: src/pages/AiDrafts.tsx:1210
-- Kopiuj: src/pages/AiDrafts.tsx:1438
-- Anuluj: src/pages/Billing.tsx:430
-- Dodaj zadanie: src/pages/Calendar.tsx:3096
-- Dodaj zadanie: src/pages/Calendar.tsx:3288
-- Dodaj zadanie: src/pages/Calendar.tsx:3328
-- Usuń: src/pages/Calendar.tsx:615
-- Usuń: src/pages/Calendar.tsx:684
-- Edytuj: src/pages/Calendar.tsx:163
-- Edytuj: src/pages/Calendar.tsx:607
-- Edytuj: src/pages/Calendar.tsx:676
-- Edytuj: src/pages/Calendar.tsx:3527
-- Zapisz: src/pages/Calendar.tsx:163
-- Zapisz: src/pages/Calendar.tsx:3689
-- Dodaj: src/pages/Calendar.tsx:3092
-- Dodaj: src/pages/Calendar.tsx:3096
-- Dodaj: src/pages/Calendar.tsx:3288
-- Dodaj: src/pages/Calendar.tsx:3328
-- Dodaj notatkę: src/pages/CaseDetail.tsx:3881
-- Dodaj notatkę: src/pages/CaseDetail.tsx:4026
-- Dodaj notatkę: src/pages/CaseDetail.tsx:4365
-- Dodaj zadanie: src/pages/CaseDetail.tsx:3900
-- Usuń: src/pages/CaseDetail.tsx:3064
-- Usuń: src/pages/CaseDetail.tsx:3065
-- Usuń: src/pages/CaseDetail.tsx:3800
-- Usuń: src/pages/CaseDetail.tsx:4249
-- Usuń: src/pages/CaseDetail.tsx:4350
-- Usuń: src/pages/CaseDetail.tsx:4405
-- Usuń: src/pages/CaseDetail.tsx:4570
-- Usuń: src/pages/CaseDetail.tsx:4619
-- Usuń: src/pages/CaseDetail.tsx:4894
-- Usuń: src/pages/CaseDetail.tsx:5178
-- Usuń: src/pages/CaseDetail.tsx:5179
-- Edytuj: src/pages/CaseDetail.tsx:4191
-- Edytuj: src/pages/CaseDetail.tsx:4346
-- Zapisz: src/pages/CaseDetail.tsx:4337
-- Zapisz: src/pages/CaseDetail.tsx:4459
-- Zapisz: src/pages/CaseDetail.tsx:4501
-- Zapisz: src/pages/CaseDetail.tsx:4716
-- Zapisz: src/pages/CaseDetail.tsx:4881
-- Zapisz: src/pages/CaseDetail.tsx:5005
-- Zapisz: src/pages/CaseDetail.tsx:5052
-- Anuluj: src/pages/CaseDetail.tsx:3070
-- Anuluj: src/pages/CaseDetail.tsx:4250
-- Anuluj: src/pages/CaseDetail.tsx:4340
-- Anuluj: src/pages/CaseDetail.tsx:4379
-- Anuluj: src/pages/CaseDetail.tsx:4392
-- Anuluj: src/pages/CaseDetail.tsx:4406
-- Anuluj: src/pages/CaseDetail.tsx:4456
-- Anuluj: src/pages/CaseDetail.tsx:4497
-- Anuluj: src/pages/CaseDetail.tsx:4707
-- Anuluj: src/pages/CaseDetail.tsx:4873
-- Anuluj: src/pages/CaseDetail.tsx:4895
-- Anuluj: src/pages/CaseDetail.tsx:4999
-- Anuluj: src/pages/CaseDetail.tsx:5051
-- Anuluj: src/pages/CaseDetail.tsx:5214
-- Dyktuj: src/pages/CaseDetail.tsx:2800
-- Dyktuj: src/pages/CaseDetail.tsx:3888
-- Dyktuj: src/pages/CaseDetail.tsx:3891
-- Dyktuj: src/pages/CaseDetail.tsx:4033
-- Dyktuj: src/pages/CaseDetail.tsx:4036
-- Dodaj: src/pages/CaseDetail.tsx:193
-- Dodaj: src/pages/CaseDetail.tsx:3881
-- Dodaj: src/pages/CaseDetail.tsx:3900
-- Dodaj: src/pages/CaseDetail.tsx:3904
-- Dodaj: src/pages/CaseDetail.tsx:3919
-- Dodaj: src/pages/CaseDetail.tsx:4026
-- Dodaj: src/pages/CaseDetail.tsx:4055
-- Dodaj: src/pages/CaseDetail.tsx:4111
-- Dodaj: src/pages/CaseDetail.tsx:4116
-- Dodaj: src/pages/CaseDetail.tsx:4194
-- Dodaj: src/pages/CaseDetail.tsx:4204
-- Dodaj: src/pages/CaseDetail.tsx:4365
-- Dodaj: src/pages/CaseDetail.tsx:4419
-- Dodaj: src/pages/CaseDetail.tsx:4468
-- Dodaj: src/pages/CaseDetail.tsx:5014
-- Dodaj: src/pages/CaseDetail.tsx:5014
-- Dodaj: src/pages/CaseDetail.tsx:5205
-- Dodaj: src/pages/CaseDetail.tsx:5214
-- Usuń: src/pages/Cases.tsx:880
-- Usuń: src/pages/Cases.tsx:881
-- Usuń: src/pages/Cases.tsx:960
-- Zapisz: src/pages/Cases.tsx:728
-- Anuluj: src/pages/Cases.tsx:725
-- Nowa sprawa: src/pages/Cases.tsx:585
-- Nowa sprawa: src/pages/Cases.tsx:591
-- Dodaj: src/pages/Cases.tsx:638
-- Dodaj notatkę: src/pages/ClientDetail.tsx:3188
-- Dodaj notatkę: src/pages/ClientDetail.tsx:3367
-- Dodaj zadanie: src/pages/ClientDetail.tsx:1929
-- Dodaj zadanie: src/pages/ClientDetail.tsx:3630
-- Dodaj zadanie: src/pages/ClientDetail.tsx:3664
-- Dodaj sprawę: src/pages/ClientDetail.tsx:1311
+- Usuń: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1074
+- Edytuj: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1067
+- Edytuj: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1433
+- Zapisz: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1085
+- Zapisz: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1125
+- Zapisz: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1244
+- Zapisz: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1434
+- Anuluj: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:953
+- Anuluj: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1069
+- Anuluj: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1086
+- Kopiuj: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1087
+- Kopiuj: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1179
+- Kopiuj: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1207
+- Kopiuj: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1435
+- Usuń: src/pages/AiDrafts.tsx:1074
+- Edytuj: src/pages/AiDrafts.tsx:1067
+- Edytuj: src/pages/AiDrafts.tsx:1433
+- Zapisz: src/pages/AiDrafts.tsx:1085
+- Zapisz: src/pages/AiDrafts.tsx:1125
+- Zapisz: src/pages/AiDrafts.tsx:1244
+- Zapisz: src/pages/AiDrafts.tsx:1434
+- Anuluj: src/pages/AiDrafts.tsx:953
+- Anuluj: src/pages/AiDrafts.tsx:1069
+- Anuluj: src/pages/AiDrafts.tsx:1086
+- Kopiuj: src/pages/AiDrafts.tsx:1087
+- Kopiuj: src/pages/AiDrafts.tsx:1179
+- Kopiuj: src/pages/AiDrafts.tsx:1207
+- Kopiuj: src/pages/AiDrafts.tsx:1435
+- Anuluj: src/pages/Billing.tsx:428
+- Dodaj zadanie: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3086
+- Dodaj zadanie: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3278
+- Dodaj zadanie: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3318
+- Usuń: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:605
+- Usuń: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:674
+- Edytuj: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:153
+- Edytuj: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:597
+- Edytuj: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:666
+- Edytuj: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3517
+- Zapisz: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:153
+- Zapisz: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3679
+- Dodaj: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3082
+- Dodaj: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3086
+- Dodaj: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3278
+- Dodaj: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3318
+- Dodaj zadanie: src/pages/Calendar.tsx:3086
+- Dodaj zadanie: src/pages/Calendar.tsx:3278
+- Dodaj zadanie: src/pages/Calendar.tsx:3318
+- Usuń: src/pages/Calendar.tsx:605
+- Usuń: src/pages/Calendar.tsx:674
+- Edytuj: src/pages/Calendar.tsx:153
+- Edytuj: src/pages/Calendar.tsx:597
+- Edytuj: src/pages/Calendar.tsx:666
+- Edytuj: src/pages/Calendar.tsx:3517
+- Zapisz: src/pages/Calendar.tsx:153
+- Zapisz: src/pages/Calendar.tsx:3679
+- Dodaj: src/pages/Calendar.tsx:3082
+- Dodaj: src/pages/Calendar.tsx:3086
+- Dodaj: src/pages/Calendar.tsx:3278
+- Dodaj: src/pages/Calendar.tsx:3318
+- Dodaj notatkę: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3876
+- Dodaj notatkę: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4021
+- Dodaj notatkę: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4360
+- Dodaj zadanie: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3895
+- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3059
+- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3060
+- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3795
+- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4244
+- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4345
+- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4400
+- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4565
+- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4614
+- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4889
+- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5173
+- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5174
+- Edytuj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4186
+- Edytuj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4341
+- Zapisz: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4332
+- Zapisz: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4454
+- Zapisz: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4496
+- Zapisz: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4711
+- Zapisz: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4876
+- Zapisz: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5000
+- Zapisz: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5047
+- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3065
+- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4245
+- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4335
+- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4374
+- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4387
+- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4401
+- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4451
+- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4492
+- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4702
+- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4868
+- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4890
+- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4994
+- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5046
+- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5209
+- Dyktuj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:2795
+- Dyktuj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3883
+- Dyktuj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3886
+- Dyktuj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4028
+- Dyktuj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4031
+- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:188
+- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3876
+- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3895
+- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3899
+- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3914
+- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4021
+- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4050
+- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4106
+- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4111
+- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4189
+- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4199
+- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4360
+- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4414
+- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4463
+- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5009
+- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5009
+- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5200
+- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5209
+- Dodaj notatkę: src/pages/CaseDetail.tsx:3879
+- Dodaj notatkę: src/pages/CaseDetail.tsx:4024
+- Dodaj notatkę: src/pages/CaseDetail.tsx:4363
+- Dodaj zadanie: src/pages/CaseDetail.tsx:3898
+- Usuń: src/pages/CaseDetail.tsx:3062
+- Usuń: src/pages/CaseDetail.tsx:3063
+- Usuń: src/pages/CaseDetail.tsx:3798
+- Usuń: src/pages/CaseDetail.tsx:4247
+- Usuń: src/pages/CaseDetail.tsx:4348
+- Usuń: src/pages/CaseDetail.tsx:4403
+- Usuń: src/pages/CaseDetail.tsx:4568
+- Usuń: src/pages/CaseDetail.tsx:4617
+- Usuń: src/pages/CaseDetail.tsx:4892
+- Usuń: src/pages/CaseDetail.tsx:5176
+- Usuń: src/pages/CaseDetail.tsx:5177
+- Edytuj: src/pages/CaseDetail.tsx:4189
+- Edytuj: src/pages/CaseDetail.tsx:4344
+- Zapisz: src/pages/CaseDetail.tsx:4335
+- Zapisz: src/pages/CaseDetail.tsx:4457
+- Zapisz: src/pages/CaseDetail.tsx:4499
+- Zapisz: src/pages/CaseDetail.tsx:4714
+- Zapisz: src/pages/CaseDetail.tsx:4879
+- Zapisz: src/pages/CaseDetail.tsx:5003
+- Zapisz: src/pages/CaseDetail.tsx:5050
+- Anuluj: src/pages/CaseDetail.tsx:3068
+- Anuluj: src/pages/CaseDetail.tsx:4248
+- Anuluj: src/pages/CaseDetail.tsx:4338
+- Anuluj: src/pages/CaseDetail.tsx:4377
+- Anuluj: src/pages/CaseDetail.tsx:4390
+- Anuluj: src/pages/CaseDetail.tsx:4404
+- Anuluj: src/pages/CaseDetail.tsx:4454
+- Anuluj: src/pages/CaseDetail.tsx:4495
+- Anuluj: src/pages/CaseDetail.tsx:4705
+- Anuluj: src/pages/CaseDetail.tsx:4871
+- Anuluj: src/pages/CaseDetail.tsx:4893
+- Anuluj: src/pages/CaseDetail.tsx:4997
+- Anuluj: src/pages/CaseDetail.tsx:5049
+- Anuluj: src/pages/CaseDetail.tsx:5212
+- Dyktuj: src/pages/CaseDetail.tsx:2798
+- Dyktuj: src/pages/CaseDetail.tsx:3886
+- Dyktuj: src/pages/CaseDetail.tsx:3889
+- Dyktuj: src/pages/CaseDetail.tsx:4031
+- Dyktuj: src/pages/CaseDetail.tsx:4034
+- Dodaj: src/pages/CaseDetail.tsx:191
+- Dodaj: src/pages/CaseDetail.tsx:3879
+- Dodaj: src/pages/CaseDetail.tsx:3898
+- Dodaj: src/pages/CaseDetail.tsx:3902
+- Dodaj: src/pages/CaseDetail.tsx:3917
+- Dodaj: src/pages/CaseDetail.tsx:4024
+- Dodaj: src/pages/CaseDetail.tsx:4053
+- Dodaj: src/pages/CaseDetail.tsx:4109
+- Dodaj: src/pages/CaseDetail.tsx:4114
+- Dodaj: src/pages/CaseDetail.tsx:4192
+- Dodaj: src/pages/CaseDetail.tsx:4202
+- Dodaj: src/pages/CaseDetail.tsx:4363
+- Dodaj: src/pages/CaseDetail.tsx:4417
+- Dodaj: src/pages/CaseDetail.tsx:4466
+- Dodaj: src/pages/CaseDetail.tsx:5012
+- Dodaj: src/pages/CaseDetail.tsx:5012
+- Dodaj: src/pages/CaseDetail.tsx:5203
+- Dodaj: src/pages/CaseDetail.tsx:5212
+- Usuń: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:877
+- Usuń: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:878
+- Usuń: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:957
+- Zapisz: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:725
+- Anuluj: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:722
+- Nowa sprawa: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:582
+- Nowa sprawa: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:588
+- Dodaj: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:635
+- Usuń: src/pages/Cases.tsx:878
+- Usuń: src/pages/Cases.tsx:879
+- Usuń: src/pages/Cases.tsx:958
+- Zapisz: src/pages/Cases.tsx:726
+- Anuluj: src/pages/Cases.tsx:723
+- Nowa sprawa: src/pages/Cases.tsx:583
+- Nowa sprawa: src/pages/Cases.tsx:589
+- Dodaj: src/pages/Cases.tsx:636
+- Dodaj notatkę: src/pages/ClientDetail.tsx:3186
+- Dodaj notatkę: src/pages/ClientDetail.tsx:3365
+- Dodaj zadanie: src/pages/ClientDetail.tsx:1927
+- Dodaj zadanie: src/pages/ClientDetail.tsx:3628
+- Dodaj zadanie: src/pages/ClientDetail.tsx:3662
+- Dodaj sprawę: src/pages/ClientDetail.tsx:1309
+- Usuń: src/pages/ClientDetail.tsx:1117
+- Usuń: src/pages/ClientDetail.tsx:1117
 - Usuń: src/pages/ClientDetail.tsx:1119
-- Usuń: src/pages/ClientDetail.tsx:1119
-- Usuń: src/pages/ClientDetail.tsx:1121
-- Usuń: src/pages/ClientDetail.tsx:2670
-- Usuń: src/pages/ClientDetail.tsx:2670
-- Usuń: src/pages/ClientDetail.tsx:2728
-- Usuń: src/pages/ClientDetail.tsx:2729
-- Usuń: src/pages/ClientDetail.tsx:3158
-- Usuń: src/pages/ClientDetail.tsx:3230
-- Usuń: src/pages/ClientDetail.tsx:3230
+- Usuń: src/pages/ClientDetail.tsx:2668
+- Usuń: src/pages/ClientDetail.tsx:2668
+- Usuń: src/pages/ClientDetail.tsx:2726
+- Usuń: src/pages/ClientDetail.tsx:2727
+- Usuń: src/pages/ClientDetail.tsx:3156
+- Usuń: src/pages/ClientDetail.tsx:3228
+- Usuń: src/pages/ClientDetail.tsx:3228
 - Edytuj: src/pages/ClientDetail.tsx:59
-- Edytuj: src/pages/ClientDetail.tsx:1477
-- Edytuj: src/pages/ClientDetail.tsx:2669
-- Edytuj: src/pages/ClientDetail.tsx:2718
-- Edytuj: src/pages/ClientDetail.tsx:2945
-- Edytuj: src/pages/ClientDetail.tsx:3227
-- Edytuj: src/pages/ClientDetail.tsx:3227
+- Edytuj: src/pages/ClientDetail.tsx:1475
+- Edytuj: src/pages/ClientDetail.tsx:2667
+- Edytuj: src/pages/ClientDetail.tsx:2716
+- Edytuj: src/pages/ClientDetail.tsx:2943
+- Edytuj: src/pages/ClientDetail.tsx:3225
+- Edytuj: src/pages/ClientDetail.tsx:3225
 - Zapisz: src/pages/ClientDetail.tsx:59
-- Zapisz: src/pages/ClientDetail.tsx:2945
-- Zapisz: src/pages/ClientDetail.tsx:2976
-- Zapisz: src/pages/ClientDetail.tsx:3368
-- Zapisz: src/pages/ClientDetail.tsx:3405
-- Anuluj: src/pages/ClientDetail.tsx:2979
-- Anuluj: src/pages/ClientDetail.tsx:3402
-- Kopiuj: src/pages/ClientDetail.tsx:2997
-- Kopiuj: src/pages/ClientDetail.tsx:3004
-- Dyktuj: src/pages/ClientDetail.tsx:3203
-- Dyktuj: src/pages/ClientDetail.tsx:3390
+- Zapisz: src/pages/ClientDetail.tsx:2943
+- Zapisz: src/pages/ClientDetail.tsx:2974
+- Zapisz: src/pages/ClientDetail.tsx:3366
+- Zapisz: src/pages/ClientDetail.tsx:3403
+- Anuluj: src/pages/ClientDetail.tsx:2977
+- Anuluj: src/pages/ClientDetail.tsx:3400
+- Kopiuj: src/pages/ClientDetail.tsx:2995
+- Kopiuj: src/pages/ClientDetail.tsx:3002
+- Dyktuj: src/pages/ClientDetail.tsx:3201
+- Dyktuj: src/pages/ClientDetail.tsx:3388
 - Nowa sprawa: src/pages/ClientDetail.tsx:62
-- Dodaj: src/pages/ClientDetail.tsx:169
-- Dodaj: src/pages/ClientDetail.tsx:1100
-- Dodaj: src/pages/ClientDetail.tsx:1100
-- Dodaj: src/pages/ClientDetail.tsx:1311
-- Dodaj: src/pages/ClientDetail.tsx:1345
-- Dodaj: src/pages/ClientDetail.tsx:1929
-- Dodaj: src/pages/ClientDetail.tsx:3188
-- Dodaj: src/pages/ClientDetail.tsx:3286
-- Dodaj: src/pages/ClientDetail.tsx:3367
-- Dodaj: src/pages/ClientDetail.tsx:3630
-- Dodaj: src/pages/ClientDetail.tsx:3664
-- Dodaj: src/pages/ClientDetail.tsx:3683
+- Dodaj: src/pages/ClientDetail.tsx:167
+- Dodaj: src/pages/ClientDetail.tsx:1098
+- Dodaj: src/pages/ClientDetail.tsx:1098
+- Dodaj: src/pages/ClientDetail.tsx:1309
+- Dodaj: src/pages/ClientDetail.tsx:1343
+- Dodaj: src/pages/ClientDetail.tsx:1927
+- Dodaj: src/pages/ClientDetail.tsx:3186
+- Dodaj: src/pages/ClientDetail.tsx:3284
+- Dodaj: src/pages/ClientDetail.tsx:3365
+- Dodaj: src/pages/ClientDetail.tsx:3628
+- Dodaj: src/pages/ClientDetail.tsx:3662
+- Dodaj: src/pages/ClientDetail.tsx:3681
 - Anuluj: src/pages/ClientPortal.tsx:325
 - Anuluj: src/pages/ClientPortal.tsx:358
 - Dodaj: src/pages/ClientPortal.tsx:321
+- Zapisz: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx:970
+- Anuluj: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx:828
+- Anuluj: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx:967
+- Dodaj: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx:724
+- Dodaj: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx:840
+- Dodaj: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx:860
+- Dodaj: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx:866
 - Zapisz: src/pages/Clients.tsx:973
 - Anuluj: src/pages/Clients.tsx:831
 - Anuluj: src/pages/Clients.tsx:970
@@ -346,181 +466,71 @@ Source files scanned: 373
 - Dodaj: src/pages/Clients.tsx:869
 - Anuluj: src/pages/Dashboard.tsx:273
 - Nowa sprawa: src/pages/Dashboard.tsx:237
-- Dodaj notatkę: src/pages/LeadDetail.tsx:2878
-- Dodaj notatkę: src/pages/LeadDetail.tsx:3185
-- Dodaj zadanie: src/pages/LeadDetail.tsx:1683
-- Usuń: src/pages/LeadDetail.tsx:2749
-- Usuń: src/pages/LeadDetail.tsx:2751
-- Usuń: src/pages/LeadDetail.tsx:2837
-- Usuń: src/pages/LeadDetail.tsx:2849
-- Usuń: src/pages/LeadDetail.tsx:2851
-- Usuń: src/pages/LeadDetail.tsx:2907
-- Edytuj: src/pages/LeadDetail.tsx:2519
-- Edytuj: src/pages/LeadDetail.tsx:2639
-- Edytuj: src/pages/LeadDetail.tsx:2657
-- Edytuj: src/pages/LeadDetail.tsx:2739
-- Edytuj: src/pages/LeadDetail.tsx:2841
-- Edytuj: src/pages/LeadDetail.tsx:2906
-- Edytuj: src/pages/LeadDetail.tsx:2995
-- Edytuj: src/pages/LeadDetail.tsx:3137
-- Edytuj: src/pages/LeadDetail.tsx:3154
-- Edytuj: src/pages/LeadDetail.tsx:3169
-- Edytuj: src/pages/LeadDetail.tsx:3213
-- Zapisz: src/pages/LeadDetail.tsx:3093
-- Zapisz: src/pages/LeadDetail.tsx:3128
-- Zapisz: src/pages/LeadDetail.tsx:3148
-- Zapisz: src/pages/LeadDetail.tsx:3163
-- Zapisz: src/pages/LeadDetail.tsx:3178
-- Zapisz: src/pages/LeadDetail.tsx:3186
-- Zapisz: src/pages/LeadDetail.tsx:3205
-- Zapisz: src/pages/LeadDetail.tsx:3216
-- Anuluj: src/pages/LeadDetail.tsx:3052
-- Anuluj: src/pages/LeadDetail.tsx:3091
-- Anuluj: src/pages/LeadDetail.tsx:3126
-- Anuluj: src/pages/LeadDetail.tsx:3148
-- Anuluj: src/pages/LeadDetail.tsx:3163
-- Anuluj: src/pages/LeadDetail.tsx:3178
-- Anuluj: src/pages/LeadDetail.tsx:3203
-- Anuluj: src/pages/LeadDetail.tsx:3216
-- Kopiuj: src/pages/LeadDetail.tsx:2445
-- Kopiuj: src/pages/LeadDetail.tsx:2452
-- Kopiuj: src/pages/LeadDetail.tsx:2536
-- Kopiuj: src/pages/LeadDetail.tsx:2543
-- Dyktuj: src/pages/LeadDetail.tsx:2890
-- Dyktuj: src/pages/LeadDetail.tsx:3201
-- Dodaj: src/pages/LeadDetail.tsx:1683
-- Dodaj: src/pages/LeadDetail.tsx:2647
-- Dodaj: src/pages/LeadDetail.tsx:2689
-- Dodaj: src/pages/LeadDetail.tsx:2719
-- Dodaj: src/pages/LeadDetail.tsx:2720
-- Dodaj: src/pages/LeadDetail.tsx:2777
-- Dodaj: src/pages/LeadDetail.tsx:2878
-- Dodaj: src/pages/LeadDetail.tsx:2996
-- Dodaj: src/pages/LeadDetail.tsx:3014
-- Dodaj: src/pages/LeadDetail.tsx:3063
-- Dodaj: src/pages/LeadDetail.tsx:3185
+- Dodaj notatkę: src/pages/LeadDetail.tsx:2875
+- Dodaj notatkę: src/pages/LeadDetail.tsx:3182
+- Dodaj zadanie: src/pages/LeadDetail.tsx:1680
+- Usuń: src/pages/LeadDetail.tsx:2746
+- Usuń: src/pages/LeadDetail.tsx:2748
+- Usuń: src/pages/LeadDetail.tsx:2834
+- Usuń: src/pages/LeadDetail.tsx:2846
+- Usuń: src/pages/LeadDetail.tsx:2848
+- Usuń: src/pages/LeadDetail.tsx:2904
+- Edytuj: src/pages/LeadDetail.tsx:2516
+- Edytuj: src/pages/LeadDetail.tsx:2636
+- Edytuj: src/pages/LeadDetail.tsx:2654
+- Edytuj: src/pages/LeadDetail.tsx:2736
+- Edytuj: src/pages/LeadDetail.tsx:2838
+- Edytuj: src/pages/LeadDetail.tsx:2903
+- Edytuj: src/pages/LeadDetail.tsx:2992
+- Edytuj: src/pages/LeadDetail.tsx:3134
+- Edytuj: src/pages/LeadDetail.tsx:3151
+- Edytuj: src/pages/LeadDetail.tsx:3166
+- Edytuj: src/pages/LeadDetail.tsx:3210
+- Zapisz: src/pages/LeadDetail.tsx:3090
+- Zapisz: src/pages/LeadDetail.tsx:3125
+- Zapisz: src/pages/LeadDetail.tsx:3145
+- Zapisz: src/pages/LeadDetail.tsx:3160
+- Zapisz: src/pages/LeadDetail.tsx:3175
+- Zapisz: src/pages/LeadDetail.tsx:3183
+- Zapisz: src/pages/LeadDetail.tsx:3202
+- Zapisz: src/pages/LeadDetail.tsx:3213
+- Anuluj: src/pages/LeadDetail.tsx:3049
+- Anuluj: src/pages/LeadDetail.tsx:3088
+- Anuluj: src/pages/LeadDetail.tsx:3123
+- Anuluj: src/pages/LeadDetail.tsx:3145
+- Anuluj: src/pages/LeadDetail.tsx:3160
+- Anuluj: src/pages/LeadDetail.tsx:3175
+- Anuluj: src/pages/LeadDetail.tsx:3200
+- Anuluj: src/pages/LeadDetail.tsx:3213
+- Kopiuj: src/pages/LeadDetail.tsx:2442
+- Kopiuj: src/pages/LeadDetail.tsx:2449
+- Kopiuj: src/pages/LeadDetail.tsx:2533
+- Kopiuj: src/pages/LeadDetail.tsx:2540
+- Dyktuj: src/pages/LeadDetail.tsx:2887
+- Dyktuj: src/pages/LeadDetail.tsx:3198
+- Dodaj: src/pages/LeadDetail.tsx:1680
+- Dodaj: src/pages/LeadDetail.tsx:2644
+- Dodaj: src/pages/LeadDetail.tsx:2686
+- Dodaj: src/pages/LeadDetail.tsx:2716
+- Dodaj: src/pages/LeadDetail.tsx:2717
+- Dodaj: src/pages/LeadDetail.tsx:2774
+- Dodaj: src/pages/LeadDetail.tsx:2875
+- Dodaj: src/pages/LeadDetail.tsx:2993
+- Dodaj: src/pages/LeadDetail.tsx:3011
+- Dodaj: src/pages/LeadDetail.tsx:3060
+- Dodaj: src/pages/LeadDetail.tsx:3182
+- Usuń: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx:109
+- Usuń: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx:111
+- Usuń: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx:1045
+- Zapisz: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx:933
+- Anuluj: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx:930
+- Anuluj: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx:1339
+- Anuluj: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx:1355
+- Dodaj: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx:481
+- Dodaj: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx:1384
+- Usuń: src/pages/Leads.tsx:111
 - Usuń: src/pages/Leads.tsx:113
-- Usuń: src/pages/Leads.tsx:115
-- Usuń: src/pages/Leads.tsx:1049
-- Zapisz: src/pages/Leads.tsx:937
-- Anuluj: src/pages/Leads.tsx:934
-- Anuluj: src/pages/Leads.tsx:1343
-- Anuluj: src/pages/Leads.tsx:1359
-- Dodaj: src/pages/Leads.tsx:485
-- Dodaj: src/pages/Leads.tsx:1388
-- Kopiuj: src/pages/Login.tsx:19
-- Kopiuj: src/pages/Login.tsx:33
-- Kopiuj: src/pages/Login.tsx:254
-- Nowa sprawa: src/pages/PublicLanding.tsx:150
-- Dodaj: src/pages/PublicLanding.tsx:59
-- Dodaj: src/pages/PublicLanding.tsx:278
-- Edytuj: src/pages/ResponseTemplates.tsx:242
-- Edytuj: src/pages/ResponseTemplates.tsx:287
-- Edytuj: src/pages/ResponseTemplates.tsx:301
-- Zapisz: src/pages/ResponseTemplates.tsx:342
-- Anuluj: src/pages/ResponseTemplates.tsx:341
-- Kopiuj: src/pages/ResponseTemplates.tsx:240
-- Kopiuj: src/pages/ResponseTemplates.tsx:286
-- Dodaj: src/pages/ResponseTemplates.tsx:261
-- Dodaj: src/pages/ResponseTemplates.tsx:264
-- Zapisz: src/pages/Settings.tsx:971
-- Zapisz: src/pages/Settings.tsx:1010
-- Zapisz: src/pages/Settings.tsx:1131
-- Zapisz: src/pages/Settings.tsx:1315
-- Anuluj: src/pages/Settings.tsx:1370
-- Anuluj: src/pages/Settings.tsx:1406
-- Dodaj: src/pages/Settings.tsx:1327
-- Dodaj: src/pages/Settings.tsx:1335
-- Zapisz: src/pages/SupportCenter.tsx:638
-- Dodaj zadanie: src/pages/Tasks.tsx:1198
-- Usuń: src/pages/Tasks.tsx:1101
-- Usuń: src/pages/Tasks.tsx:1117
-- Edytuj: src/pages/Tasks.tsx:87
-- Edytuj: src/pages/Tasks.tsx:1086
-- Edytuj: src/pages/Tasks.tsx:1329
-- Zapisz: src/pages/Tasks.tsx:93
-- Zapisz: src/pages/Tasks.tsx:1317
-- Zapisz: src/pages/Tasks.tsx:1454
-- Anuluj: src/pages/Tasks.tsx:1118
-- Dodaj: src/pages/Tasks.tsx:1198
-- Dodaj: src/pages/Tasks.tsx:1502
-- Usuń: src/pages/TasksStable.tsx:596
-- Usuń: src/pages/TasksStable.tsx:687
-- Edytuj: src/pages/TasksStable.tsx:684
-- Edytuj: src/pages/TasksStable.tsx:749
-- Zapisz: src/pages/TasksStable.tsx:792
-- Anuluj: src/pages/TasksStable.tsx:597
-- Anuluj: src/pages/TasksStable.tsx:791
-- Usuń: src/pages/Templates.tsx:366
-- Usuń: src/pages/Templates.tsx:381
-- Usuń: src/pages/Templates.tsx:449
-- Usuń: src/pages/Templates.tsx:450
-- Edytuj: src/pages/Templates.tsx:355
-- Edytuj: src/pages/Templates.tsx:375
-- Edytuj: src/pages/Templates.tsx:417
-- Zapisz: src/pages/Templates.tsx:530
-- Anuluj: src/pages/Templates.tsx:528
-- Dodaj: src/pages/Templates.tsx:203
-- Dodaj: src/pages/Templates.tsx:327
-- Dodaj: src/pages/Templates.tsx:331
-- Dodaj: src/pages/Templates.tsx:522
-- Usuń: src/pages/Today.tsx:2487
-- Usuń: src/pages/Today.tsx:2620
-- Usuń: src/pages/Today.tsx:2688
-- Usuń: src/pages/Today.tsx:2980
-- Edytuj: src/pages/Today.tsx:847
-- Edytuj: src/pages/Today.tsx:849
-- Edytuj: src/pages/TodayStable.tsx:764
-- Edytuj: src/pages/TodayStable.tsx:2021
-- Edytuj: src/pages/TodayStable.tsx:2021
-- Zapisz: src/pages/TodayStable.tsx:2119
-- Anuluj: src/pages/TodayStable.tsx:2116
-- Dodaj notatkę: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj notatkę: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj notatkę: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj zadanie: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj zadanie: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj zadanie: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj zadanie: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj zadanie: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj zadanie: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj zadanie: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj zadanie: src/pages/UiPreviewVNextFull.tsx:20
-- Edytuj: src/pages/UiPreviewVNextFull.tsx:20
-- Zapisz: src/pages/UiPreviewVNextFull.tsx:20
-- Zapisz: src/pages/UiPreviewVNextFull.tsx:20
-- Zapisz: src/pages/UiPreviewVNextFull.tsx:20
-- Zapisz: src/pages/UiPreviewVNextFull.tsx:20
-- Kopiuj: src/pages/UiPreviewVNextFull.tsx:20
-- Kopiuj: src/pages/UiPreviewVNextFull.tsx:20
-- Nowa sprawa: src/pages/UiPreviewVNextFull.tsx:20
-- Nowa sprawa: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/pages/UiPreviewVNextFull.tsx:20
-- Dodaj: src/server/ai-next-action.ts:202
-- Usuń: src/ui-system/icons/SemanticIcon.tsx:107
-- Edytuj: src/ui-system/icons/SemanticIcon.tsx:108
-- Kopiuj: src/ui-system/icons/SemanticIcon.tsx:106
-- Dodaj: src/ui-system/icons/SemanticIcon.tsx:100
+- Usuń: src/pages/Leads.tsx:1047
 
 ## Lucide icon imports
 - useMemo: src/components/ActivityRoadmap.tsx
@@ -568,6 +578,32 @@ import { Loader2: src/components/EventCreateDialog.tsx
 - useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ClipboardList: src/components/GlobalQuickActions.tsx
+- type ReactNode: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- useMemo: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- useState: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- useEffect } from 'react';
+import { Link: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- useLocation: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- useNavigate } from 'react-router-dom';
+import { AlertTriangle: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- Bell: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- Briefcase: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- Calendar: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- CheckCircle2: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- CheckSquare: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- ChevronRight: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- CreditCard: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- FolderKanban: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- History: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- Home: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- LifeBuoy: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- LogOut: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- Menu: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- MessageSquareText: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- Settings: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- Sparkles: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- Users: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
+- X: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
 - type ReactNode: src/components/Layout.tsx
 - useMemo: src/components/Layout.tsx
 - useState: src/components/Layout.tsx
@@ -636,6 +672,11 @@ import { Loader2: src/components/QuickAiCapture.tsx
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft: src/components/sidebar-mini-calendar.tsx
 - ChevronRight: src/components/sidebar-mini-calendar.tsx
+- type FormEvent: src/components/TaskCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx
+- useEffect: src/components/TaskCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx
+- useMemo: src/components/TaskCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx
+- useState } from 'react';
+import { Loader2: src/components/TaskCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx
 - type FormEvent: src/components/TaskCreateDialog.tsx
 - useEffect: src/components/TaskCreateDialog.tsx
 - useMemo: src/components/TaskCreateDialog.tsx
@@ -706,6 +747,20 @@ import { CircleCheckIcon: src/components/ui/sonner.tsx
 - Loader2: src/components/work-item-card.tsx
 - Trash2: src/components/work-item-card.tsx
 - Calendar: src/lib/calendar-items.ts
+- useEffect: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
+- useMemo: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
+- useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Activity as ActivityIcon: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
+- ArrowUpRight: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
+- CalendarClock: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
+- CheckCircle2: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
+- Clock: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
+- Filter: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
+- Link2: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
+- ListChecks: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
+- Loader2: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
+- Search: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
 - useEffect: src/pages/Activity.tsx
 - useMemo: src/pages/Activity.tsx
 - useState } from 'react';
@@ -727,6 +782,18 @@ import { AlertTriangle: src/pages/AdminAiSettings.tsx
 - KeyRound: src/pages/AdminAiSettings.tsx
 - RefreshCw: src/pages/AdminAiSettings.tsx
 - ShieldCheck: src/pages/AdminAiSettings.tsx
+- useEffect: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
+- useMemo: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
+- useState } from 'react';
+import { AlertTriangle: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
+- CalendarClock: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
+- CheckCircle2: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
+- Clipboard: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
+- Clock: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
+- Loader2: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
+- Pencil: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
+- Search: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
+- Trash2: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
 - useEffect: src/pages/AiDrafts.tsx
 - useMemo: src/pages/AiDrafts.tsx
 - useState } from 'react';
@@ -751,6 +818,20 @@ import { AlertTriangle: src/pages/Billing.tsx
 - LockKeyhole: src/pages/Billing.tsx
 - RefreshCw: src/pages/Billing.tsx
 - Shield: src/pages/Billing.tsx
+- type FormEvent: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
+- type MouseEvent: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
+- useEffect: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
+- useMemo: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
+- useRef: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
+- useState } from 'react';
+import { Link: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
+- useSearchParams } from 'react-router-dom';
+import { CheckSquare: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
+- ChevronLeft: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
+- ChevronRight: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
+- Loader2: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
+- Repeat: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
+- Trash2: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
 - type FormEvent: src/pages/Calendar.tsx
 - type MouseEvent: src/pages/Calendar.tsx
 - useEffect: src/pages/Calendar.tsx
@@ -765,6 +846,33 @@ import { CheckSquare: src/pages/Calendar.tsx
 - Loader2: src/pages/Calendar.tsx
 - Repeat: src/pages/Calendar.tsx
 - Trash2: src/pages/Calendar.tsx
+- useCallback: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- useEffect: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- useMemo: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- useRef: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- useState } from 'react';
+import { Link: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- useNavigate: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- useParams } from 'react-router-dom';
+import { AlertCircle: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- ArrowLeft: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- ArrowRight: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- CalendarClock: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- Check: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- CheckCircle2: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- Clock: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- Copy: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- ExternalLink: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- History: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- ListChecks: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- Loader2: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- MessageSquare: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- Paperclip: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- Plus: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- Send: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- StickyNote: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- Trash2: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
+- X: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
 - useCallback: src/pages/CaseDetail.tsx
 - useEffect: src/pages/CaseDetail.tsx
 - useMemo: src/pages/CaseDetail.tsx
@@ -792,6 +900,24 @@ import { AlertCircle: src/pages/CaseDetail.tsx
 - StickyNote: src/pages/CaseDetail.tsx
 - Trash2: src/pages/CaseDetail.tsx
 - X: src/pages/CaseDetail.tsx
+- useEffect: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
+- useMemo: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
+- useRef: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
+- useState: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
+- type FormEvent } from 'react';
+import { Link: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
+- useSearchParams } from 'react-router-dom';
+import { AlertTriangle: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
+- CheckCircle2: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
+- ChevronRight: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
+- Clock: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
+- ExternalLink: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
+- FileText: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
+- Loader2: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
+- Plus: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
+- Search: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
+- Trash2: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
+- X: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
 - useEffect: src/pages/Cases.tsx
 - useMemo: src/pages/Cases.tsx
 - useRef: src/pages/Cases.tsx
@@ -845,6 +971,28 @@ import { AlertCircle: src/pages/ClientPortal.tsx
 - Paperclip: src/pages/ClientPortal.tsx
 - Upload: src/pages/ClientPortal.tsx
 - X: src/pages/ClientPortal.tsx
+- type FormEvent: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
+- type MouseEvent: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
+- useCallback: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
+- useEffect: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
+- useMemo: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
+- useState: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
+- } from 'react';
+import { Link: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
+- useNavigate } from 'react-router-dom';
+import {
+  CaseEntityIcon: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
+- LeadEntityIcon: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
+- PaymentEntityIcon: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
+- } from '../components/ui-system';
+import {
+  AlertTriangle: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
+- ChevronRight: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
+- Loader2: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
+- Plus: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
+- RotateCcw: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
+- Search: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
+- Trash2: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
 - type FormEvent: src/pages/Clients.tsx
 - type MouseEvent: src/pages/Clients.tsx
 - useCallback: src/pages/Clients.tsx
@@ -906,6 +1054,27 @@ import { ArrowLeft: src/pages/LeadDetail.tsx
 - Phone: src/pages/LeadDetail.tsx
 - Plus: src/pages/LeadDetail.tsx
 - Trash2: src/pages/LeadDetail.tsx
+- useCallback: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
+- useEffect: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
+- useMemo: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
+- useRef: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
+- useState: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
+- type FormEvent: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
+- type MouseEvent: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
+- } from 'react';
+import { Link: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
+- useSearchParams } from 'react-router-dom';
+import {
+  AlertTriangle: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
+- ChevronRight: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
+- Clock3: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
+- Filter: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
+- Loader2: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
+- Mail: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
+- RotateCcw: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
+- Search: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
+- Trash2: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
+- TrendingUp: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
 - useCallback: src/pages/Leads.tsx
 - useEffect: src/pages/Leads.tsx
 - useMemo: src/pages/Leads.tsx
@@ -938,163 +1107,8 @@ import { ArrowRight: src/pages/Login.tsx
 - LogIn: src/pages/Login.tsx
 - Mail: src/pages/Login.tsx
 - User: src/pages/Login.tsx
-- useCallback: src/pages/NotificationsCenter.tsx
-- useEffect: src/pages/NotificationsCenter.tsx
-- useMemo: src/pages/NotificationsCenter.tsx
-- useRef: src/pages/NotificationsCenter.tsx
-- useState: src/pages/NotificationsCenter.tsx
-- } from 'react';
-import { Link } from 'react-router-dom';
-import {
-  ArrowUpRight: src/pages/NotificationsCenter.tsx
-- CalendarClock: src/pages/NotificationsCenter.tsx
-- Check: src/pages/NotificationsCenter.tsx
-- CheckCircle2: src/pages/NotificationsCenter.tsx
-- Clock3: src/pages/NotificationsCenter.tsx
-- Filter: src/pages/NotificationsCenter.tsx
-- Link2: src/pages/NotificationsCenter.tsx
-- Loader2: src/pages/NotificationsCenter.tsx
-- Mail: src/pages/NotificationsCenter.tsx
-- RotateCcw: src/pages/NotificationsCenter.tsx
-- Search: src/pages/NotificationsCenter.tsx
-- Settings2: src/pages/NotificationsCenter.tsx
-- ShieldAlert: src/pages/NotificationsCenter.tsx
-- Trash2: src/pages/NotificationsCenter.tsx
-- Link } from 'react-router-dom';
-import { ArrowRight: src/pages/PublicLanding.tsx
-- BellRing: src/pages/PublicLanding.tsx
-- FileText: src/pages/PublicLanding.tsx
-- Mail: src/pages/PublicLanding.tsx
-- Mic: src/pages/PublicLanding.tsx
-- Users: src/pages/PublicLanding.tsx
-- type LucideIcon: src/pages/PublicLanding.tsx
-- useEffect: src/pages/ResponseTemplates.tsx
-- useMemo: src/pages/ResponseTemplates.tsx
-- useState } from 'react';
-import { Archive: src/pages/ResponseTemplates.tsx
-- Copy: src/pages/ResponseTemplates.tsx
-- MessageSquareText: src/pages/ResponseTemplates.tsx
-- Plus: src/pages/ResponseTemplates.tsx
-- Save: src/pages/ResponseTemplates.tsx
-- Search: src/pages/ResponseTemplates.tsx
-- ShieldAlert: src/pages/ResponseTemplates.tsx
-- Tags: src/pages/ResponseTemplates.tsx
-- useEffect: src/pages/SalesFunnel.tsx
-- useMemo: src/pages/SalesFunnel.tsx
-- useState: src/pages/SalesFunnel.tsx
-- type ComponentType: src/pages/SalesFunnel.tsx
-- type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight: src/pages/SalesFunnel.tsx
-- Filter: src/pages/SalesFunnel.tsx
-- Loader2: src/pages/SalesFunnel.tsx
-- RefreshCw: src/pages/SalesFunnel.tsx
-- Target: src/pages/SalesFunnel.tsx
-- useEffect: src/pages/Settings.tsx
-- useMemo: src/pages/Settings.tsx
-- useState } from 'react';
-import { Building2: src/pages/Settings.tsx
-- CalendarDays: src/pages/Settings.tsx
-- Database: src/pages/Settings.tsx
-- KeyRound: src/pages/Settings.tsx
-- LockKeyhole: src/pages/Settings.tsx
-- LogOut: src/pages/Settings.tsx
-- Mail: src/pages/Settings.tsx
-- Menu: src/pages/Settings.tsx
-- MonitorCog: src/pages/Settings.tsx
-- RefreshCw: src/pages/Settings.tsx
-- Save: src/pages/Settings.tsx
-- Settings as SettingsIcon: src/pages/Settings.tsx
-- Shield: src/pages/Settings.tsx
-- SlidersHorizontal: src/pages/Settings.tsx
-- Smartphone: src/pages/Settings.tsx
-- User: src/pages/Settings.tsx
-- Users: src/pages/Settings.tsx
-- WalletCards: src/pages/Settings.tsx
-- type FormEvent: src/pages/SupportCenter.tsx
-- useCallback: src/pages/SupportCenter.tsx
-- useEffect: src/pages/SupportCenter.tsx
-- useMemo: src/pages/SupportCenter.tsx
-- useState } from 'react';
-import { AlertTriangle: src/pages/SupportCenter.tsx
-- Archive: src/pages/SupportCenter.tsx
-- CheckCircle2: src/pages/SupportCenter.tsx
-- Clock3: src/pages/SupportCenter.tsx
-- HelpCircle: src/pages/SupportCenter.tsx
-- LifeBuoy: src/pages/SupportCenter.tsx
-- Lightbulb: src/pages/SupportCenter.tsx
-- Loader2: src/pages/SupportCenter.tsx
-- Mail: src/pages/SupportCenter.tsx
-- MessageSquare: src/pages/SupportCenter.tsx
-- Search: src/pages/SupportCenter.tsx
-- Send: src/pages/SupportCenter.tsx
-- ShieldCheck: src/pages/SupportCenter.tsx
-- Wrench: src/pages/SupportCenter.tsx
-- type FormEvent: src/pages/Tasks.tsx
-- useEffect: src/pages/Tasks.tsx
-- useMemo: src/pages/Tasks.tsx
-- useRef: src/pages/Tasks.tsx
-- useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { AlertTriangle: src/pages/Tasks.tsx
-- CheckCircle2: src/pages/Tasks.tsx
-- CheckSquare: src/pages/Tasks.tsx
-- Clock: src/pages/Tasks.tsx
-- Link2: src/pages/Tasks.tsx
-- Loader2: src/pages/Tasks.tsx
-- MoreVertical: src/pages/Tasks.tsx
-- Repeat: src/pages/Tasks.tsx
-- Search: src/pages/Tasks.tsx
-- Trash2: src/pages/Tasks.tsx
-- type FormEvent: src/pages/TasksStable.tsx
-- useCallback: src/pages/TasksStable.tsx
-- useEffect: src/pages/TasksStable.tsx
-- useMemo: src/pages/TasksStable.tsx
-- useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { AlertTriangle: src/pages/TasksStable.tsx
-- CheckCircle2: src/pages/TasksStable.tsx
-- CheckSquare: src/pages/TasksStable.tsx
-- Clock: src/pages/TasksStable.tsx
-- Loader2: src/pages/TasksStable.tsx
-- RefreshCcw: src/pages/TasksStable.tsx
-- Search: src/pages/TasksStable.tsx
-- Trash2: src/pages/TasksStable.tsx
-- useEffect: src/pages/Templates.tsx
-- useMemo: src/pages/Templates.tsx
-- useState } from 'react';
-import { AlertTriangle: src/pages/Templates.tsx
-- CheckCircle2: src/pages/Templates.tsx
-- Copy: src/pages/Templates.tsx
-- FolderKanban: src/pages/Templates.tsx
-- MoreVertical: src/pages/Templates.tsx
-- Plus: src/pages/Templates.tsx
-- Search: src/pages/Templates.tsx
-- ShieldAlert: src/pages/Templates.tsx
-- Trash2: src/pages/Templates.tsx
-- type FormEvent: src/pages/Today.tsx
-- type ReactNode: src/pages/Today.tsx
-- useEffect: src/pages/Today.tsx
-- useMemo: src/pages/Today.tsx
-- useRef: src/pages/Today.tsx
-- useState } from 'react';
-import { Link } from 'react-router-dom';
-import { AlertTriangle: src/pages/Today.tsx
-- ArrowRight: src/pages/Today.tsx
-- CheckSquare: src/pages/Today.tsx
-- ChevronDown: src/pages/Today.tsx
-- ChevronUp: src/pages/Today.tsx
-- Clock: src/pages/Today.tsx
-- Loader2: src/pages/Today.tsx
-- Plus: src/pages/Today.tsx
-- Repeat: src/pages/Today.tsx
-- ShieldAlert: src/pages/Today.tsx
-- TrendingUp: src/pages/Today.tsx
-- type FormEvent: src/pages/TodayStable.tsx
-- type ReactNode: src/pages/TodayStable.tsx
-- useCallback: src/pages/TodayStable.tsx
-- useEffect: src/pages/TodayStable.tsx
-- useMemo: src/pages/TodayStable.tsx
+- useCallback: src/pages/NotificationsCenter.sync-conflict-20260812-220823-AQZURIM.tsx
+- useEffect: src/pages/NotificationsCenter.sync-conflict-20260812-220823-AQZURIM.tsx
 
 ## Button/link snippets
 - src/components/ActivityItemPreviewDialog.tsx:64 <Button type="button" variant="outline" onClick={() =>
@@ -1106,13 +1120,14 @@ import { AlertTriangle: src/pages/Today.tsx
 - src/components/AddCaseMissingItemDialog.tsx:128 <Button type="button" variant="outline" onClick={() =>
 - src/components/AppChunkErrorBoundary.tsx:117 <button type="button" className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white" onClick={() =>
 - src/components/AppChunkErrorBoundary.tsx:134 <button type="button" className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white" onClick={() =>
-- src/components/ClientCreateDialog.tsx:307 <Button type="button" variant="outline" onClick={closeAndReset}>
+- src/components/ClientCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx:305 <Button type="button" variant="outline" onClick={closeAndReset}>
+- src/components/ClientCreateDialog.tsx:305 <Button type="button" variant="outline" onClick={closeAndReset}>
 - src/components/confirm-dialog.tsx:36 <Button type="button" variant="outline" className="rounded-xl" onClick={() =>
 - src/components/confirm-dialog.tsx:39 <Button type="button" className="rounded-xl" variant={confirmTone === 'destructive' ? 'destructive' : 'default'} onClick={() =>
 - src/components/ContextNoteDialog.tsx:122 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>
 - src/components/CreateClientCaseDialog.tsx:111 <Button type="button" variant="outline" onClick={() =>
-- src/components/detail/MissingItemQuickActionModal.tsx:151 <button type="button" className="missing-item-modal-secondary-action" onClick={props.onCancel}>
-- src/components/detail/MissingItemQuickActionModal.tsx:154 <button type="submit" className="missing-item-modal-primary-action" disabled={props.isSaving}>
+- src/components/detail/MissingItemQuickActionModal.tsx:148 <button type="button" className="missing-item-modal-secondary-action" onClick={props.onCancel}>
+- src/components/detail/MissingItemQuickActionModal.tsx:151 <button type="submit" className="missing-item-modal-primary-action" disabled={props.isSaving}>
 - src/components/detail/MissingItemsManagerDialog.tsx:144 <Button type="button" variant="outline" onClick={() =>
 - src/components/detail/MissingItemsManagerDialog.tsx:192 <Button type="button" variant="outline" size="sm" disabled={!canMutate || isSaving} onClick={() =>
 - src/components/detail/MissingItemsManagerDialog.tsx:195 <Button type="button" variant="outline" size="sm" disabled={!canMutate || isSaving} onClick={() =>
@@ -1127,226 +1142,225 @@ import { AlertTriangle: src/pages/Today.tsx
 - src/components/EntityConflictDialog.tsx:111 <Button type="button" variant="outline" size="sm" onClick={() =>
 - src/components/EntityConflictDialog.tsx:122 <Button type="button" variant="outline" onClick={onCancel} disabled={busy}>
 - src/components/EventCreateDialog.tsx:215 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>
-- src/components/finance/CaseFinanceActionButtons.tsx:43 <Button type="button" variant="outline" onClick={onEdit} disabled={disabled}>
-- src/components/finance/CaseFinanceActionButtons.tsx:44 <Button type="button" variant="outline" onClick={onAddDepositPayment} disabled={disabled}>
-- src/components/finance/CaseFinanceActionButtons.tsx:45 <Button type="button" variant="outline" onClick={onAddPayment} disabled={disabled}>
-- src/components/finance/CaseFinanceActionButtons.tsx:46 <Button type="button" variant="outline" onClick={onAddCommissionPayment} disabled={disabled} data-stage228r7-add-commission-payment-button="true">
-- src/components/finance/CaseFinanceEditorDialog.tsx:254 <Button type="button" variant="outline" onClick={() =>
-- src/components/finance/CaseFinancePaymentDialog.tsx:194 <Button type="button" variant="outline" onClick={() =>
+- src/components/finance/CaseFinanceActionButtons.tsx:42 <Button type="button" variant="outline" onClick={onEdit} disabled={disabled}>
+- src/components/finance/CaseFinanceActionButtons.tsx:43 <Button type="button" variant="outline" onClick={onAddDepositPayment} disabled={disabled}>
+- src/components/finance/CaseFinanceActionButtons.tsx:44 <Button type="button" variant="outline" onClick={onAddPayment} disabled={disabled}>
+- src/components/finance/CaseFinanceActionButtons.tsx:45 <Button type="button" variant="outline" onClick={onAddCommissionPayment} disabled={disabled} data-stage228r7-add-commission-payment-button="true">
+- src/components/finance/CaseFinanceEditorDialog.sync-conflict-20260812-220823-AQZURIM.tsx:253 <Button type="button" variant="outline" onClick={() =>
+- src/components/finance/CaseFinanceEditorDialog.tsx:253 <Button type="button" variant="outline" onClick={() =>
+- src/components/finance/CaseFinancePaymentDialog.tsx:193 <Button type="button" variant="outline" onClick={() =>
 - src/components/finance/CommissionFormDialog.tsx:162 <Button type="button" variant="outline" onClick={() =>
-- src/components/finance/FinanceSnapshot.tsx:163 <Button type="button" size="sm" variant="outline" onClick={() =>
+- src/components/finance/FinanceSnapshot.tsx:162 <Button type="button" size="sm" variant="outline" onClick={() =>
 - src/components/finance/LeadValuePanel.tsx:113 <button type="button" className="cf-finance-lead-value-panel__toggle" onClick={() =>
 - src/components/finance/PaymentFormDialog.tsx:174 <Button type="button" variant="outline" onClick={() =>
-- src/components/GlobalQuickActions.tsx:91 <Button asChild variant="outline" className="btn soft-blue cf-command-action cf-command-action--ai" data-global-quick-action="ai-drafts" data-cf-command-action="ai" data-feature-status="Beta" title="Beta">
-- src/components/GlobalQuickActions.tsx:92 <Link to="/ai-drafts" aria-label="Otwórz Inbox szkiców">
-- src/components/GlobalQuickActions.tsx:98 <Button asChild variant="outline" className="btn cf-command-action cf-command-action--neutral" data-global-quick-action="lead" data-cf-command-action="neutral" data-feature-status="Gotowe" title="Gotowe">
-- src/components/GlobalQuickActions.tsx:99 <Link to="/leads?quick=lead" aria-label="Otwórz leady lub dodaj leada" onClick={() =>
-- src/components/GlobalQuickActions.tsx:104 <Button type="button" variant="outline" className="btn cf-command-action cf-command-action--neutral" data-global-quick-action="client" data-cf-command-action="neutral" data-global-client-direct-modal-trigger="true" data-
-- src/components/GlobalQuickActions.tsx:109 <Button type="button" variant="outline" className="btn cf-command-action cf-command-action--neutral" data-global-quick-action="task" data-cf-command-action="neutral" data-global-task-direct-modal-trigger="true" data-feat
-- src/components/GlobalQuickActions.tsx:113 <Button asChild variant="outline" className="btn cf-command-action cf-command-action--neutral" data-global-quick-action="event" data-cf-command-action="neutral" data-feature-status="Gotowe" title="Gotowe">
-- src/components/GlobalQuickActions.tsx:114 <Link to="/calendar?quick=event" aria-label="Otwórz kalendarz lub dodaj wydarzenie" onClick={() =>
+- src/components/GlobalQuickActions.tsx:90 <Button asChild variant="outline" className="btn soft-blue cf-command-action cf-command-action--ai" data-global-quick-action="ai-drafts" data-cf-command-action="ai" data-feature-status="Beta" title="Beta">
+- src/components/GlobalQuickActions.tsx:91 <Link to="/ai-drafts" aria-label="Otwórz Inbox szkiców">
+- src/components/GlobalQuickActions.tsx:97 <Button asChild variant="outline" className="btn cf-command-action cf-command-action--neutral" data-global-quick-action="lead" data-cf-command-action="neutral" data-feature-status="Gotowe" title="Gotowe">
+- src/components/GlobalQuickActions.tsx:98 <Link to="/leads?quick=lead" aria-label="Otwórz leady lub dodaj leada" onClick={() =>
+- src/components/GlobalQuickActions.tsx:103 <Button type="button" variant="outline" className="btn cf-command-action cf-command-action--neutral" data-global-quick-action="client" data-cf-command-action="neutral" data-global-client-direct-modal-trigger="true" data-
+- src/components/GlobalQuickActions.tsx:108 <Button type="button" variant="outline" className="btn cf-command-action cf-command-action--neutral" data-global-quick-action="task" data-cf-command-action="neutral" data-global-task-direct-modal-trigger="true" data-feat
+- src/components/GlobalQuickActions.tsx:112 <Button asChild variant="outline" className="btn cf-command-action cf-command-action--neutral" data-global-quick-action="event" data-cf-command-action="neutral" data-feature-status="Gotowe" title="Gotowe">
+- src/components/GlobalQuickActions.tsx:113 <Link to="/calendar?quick=event" aria-label="Otwórz kalendarz lub dodaj wydarzenie" onClick={() =>
 - src/components/layout/sidebar-nav.tsx:54 <Button key={item.key} type="button" variant="ghost" aria-current={item.active ? 'page' : undefined} data-cf-sidebar-nav-item="true" data-cf-sidebar-nav-active={item.active ? 'true' : undefined} onClick={item.onClick}>
-- src/components/Layout.tsx:179 <Link to="/billing" className="trial-link">
-- src/components/Layout.tsx:590 <Link to="/" className="brand" aria-label="CloseFlow - przejdź do Dziś">
-- src/components/Layout.tsx:630 <button type="button" className="sidebar-logout" onClick={() =>
-- src/components/Layout.tsx:638 <Link to="/" className="mobile-brand" aria-label="CloseFlow - przejdź do Dziś">
-- src/components/Layout.tsx:642 <button type="button" className="mobile-menu-btn" onClick={() =>
-- src/components/Layout.tsx:649 <button type="button" className="mobile-drawer-backdrop" onClick={() =>
-- src/components/Layout.tsx:659 <button type="button" className="mobile-menu-btn" onClick={() =>
-- src/components/Layout.tsx:682 <button type="button" className="sidebar-logout" onClick={() =>
-- src/components/Layout.tsx:714 <Link to="/billing" className="access-warning-action">
+- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:174 <Link to="/billing" className="trial-link">
+- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:585 <Link to="/" className="brand" aria-label="CloseFlow - przejdź do Dziś">
+- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:625 <button type="button" className="sidebar-logout" onClick={() =>
+- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:633 <Link to="/" className="mobile-brand" aria-label="CloseFlow - przejdź do Dziś">
+- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:637 <button type="button" className="mobile-menu-btn" onClick={() =>
+- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:644 <button type="button" className="mobile-drawer-backdrop" onClick={() =>
+- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:654 <button type="button" className="mobile-menu-btn" onClick={() =>
+- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:677 <button type="button" className="sidebar-logout" onClick={() =>
+- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:709 <Link to="/billing" className="access-warning-action">
+- src/components/Layout.tsx:177 <Link to="/billing" className="trial-link">
+- src/components/Layout.tsx:588 <Link to="/" className="brand" aria-label="CloseFlow - przejdź do Dziś">
+- src/components/Layout.tsx:628 <button type="button" className="sidebar-logout" onClick={() =>
+- src/components/Layout.tsx:636 <Link to="/" className="mobile-brand" aria-label="CloseFlow - przejdź do Dziś">
+- src/components/Layout.tsx:640 <button type="button" className="mobile-menu-btn" onClick={() =>
+- src/components/Layout.tsx:647 <button type="button" className="mobile-drawer-backdrop" onClick={() =>
+- src/components/Layout.tsx:657 <button type="button" className="mobile-menu-btn" onClick={() =>
+- src/components/Layout.tsx:680 <button type="button" className="sidebar-logout" onClick={() =>
+- src/components/Layout.tsx:712 <Link to="/billing" className="access-warning-action">
 - src/components/lead-picker.tsx:70 <Button type="button" size="icon" variant="ghost" className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 rounded-lg" onClick={() =>
-- src/components/lead-picker.tsx:91 <button key={lead.id} type="button" className="flex w-full items-start justify-between gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-slate-
+- src/components/lead-picker.tsx:91 <button key={lead.id} type="button" className="flex w-full items-start justify-between gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-slate-50"
 - src/components/LeadAiFollowupDraft.tsx:96 <Button type="button" variant="outline" className="rounded-xl bg-white" disabled={disabled}>
 - src/components/LeadAiFollowupDraft.tsx:158 <Button type="button" variant="outline" onClick={handleCopy}>
 - src/components/LeadAiNextAction.tsx:151 <Button type="button" variant="outline" className="rounded-xl bg-white" disabled={disabled}>
 - src/components/LeadAiNextAction.tsx:194 <Button type="button" variant="outline" onClick={handleCopy}>
 - src/components/LeadStartServiceDialog.tsx:28 <Button type="button" variant="outline" onClick={() =>
-- src/components/operator-rail/TopValueRecordsCard.tsx:56 <Link key={item.key} to={item.href || '#'} title={fullTitle} {...(item.dataAttrs || {})} data-cf-operator-rail-item="true"
+- src/components/operator-rail/TopValueRecordsCard.tsx:56 <Link key={item.key} to={item.href || '#'} title={fullTitle} {...(item.dataAttrs || {})} data-cf-operator-rail-item="true" d
 - src/components/PwaInstallPrompt.tsx:140 <Button type="button" size="sm" className="min-h-10 rounded-xl px-3 text-xs font-bold" onClick={handleInstall} disabled={isInstalling}
-- src/components/PwaInstallPrompt.tsx:150 <Button type="button" size="sm" variant="ghost" className="min-h-10 rounded-xl px-3 text-xs font-bold text-slate-500" onClick={handleDi
-- src/components/PwaInstallPrompt.tsx:162 <button type="button" onClick={handleDismiss} className="flex min-h-10 min-w-10 items-center justify-center rounded-xl text-slate-400 transition hover:bg-slate-100 hover:text-slate-
-- src/components/quick-lead/QuickLeadCaptureModal.tsx:236 <Button type="button" variant="outline" onClick={handleCancel} disabled={processing}>
-- src/components/quick-lead/QuickLeadCaptureModal.tsx:302 <Button type="button" variant="outline" onClick={handleCancel} disabled={submitting}>
-- src/components/quick-lead/QuickLeadCaptureModal.tsx:305 <Button type="button" variant="outline" onClick={handleSaveDraftOnly} disabled={submitting} data-stage27-save-draft="true">
-- src/components/QuickAiCapture.tsx:280 <Button type="button" variant="outline" className="rounded-xl cf-command-action cf-command-action--ai" data-cf-command-action="ai" disabled={!workspaceReady}>
-- src/components/QuickAiCapture.tsx:310 <Button type="button" variant="outline" onClick={handleSaveRawDraft} disabled={!rawText.trim() || saving}>
-- src/components/QuickAiCapture.tsx:313 <Button type="button" variant="outline" onClick={handleToggleSpeech}>
-- src/components/QuickAiCapture.tsx:335 <Button type="button" variant="outline" onClick={handleSaveRawDraft} disabled={saving}>
+- src/components/PwaInstallPrompt.tsx:150 <Button type="button" size="sm" variant="ghost" className="min-h-10 rounded-xl px-3 text-xs font-bold text-slate-500" onClick={handleDismiss
+- src/components/PwaInstallPrompt.tsx:162 <button type="button" onClick={handleDismiss} className="flex min-h-10 min-w-10 items-center justify-center rounded-xl text-slate-400 transition hover:bg-slate-100 hover:text-slate-700
+- src/components/quick-lead/QuickLeadCaptureModal.tsx:235 <Button type="button" variant="outline" onClick={handleCancel} disabled={processing}>
+- src/components/quick-lead/QuickLeadCaptureModal.tsx:301 <Button type="button" variant="outline" onClick={handleCancel} disabled={submitting}>
+- src/components/quick-lead/QuickLeadCaptureModal.tsx:304 <Button type="button" variant="outline" onClick={handleSaveDraftOnly} disabled={submitting} data-stage27-save-draft="true">
+- src/components/QuickAiCapture.tsx:279 <Button type="button" variant="outline" className="rounded-xl cf-command-action cf-command-action--ai" data-cf-command-action="ai" disabled={!workspaceReady}>
+- src/components/QuickAiCapture.tsx:309 <Button type="button" variant="outline" onClick={handleSaveRawDraft} disabled={!rawText.trim() || saving}>
+- src/components/QuickAiCapture.tsx:312 <Button type="button" variant="outline" onClick={handleToggleSpeech}>
+- src/components/QuickAiCapture.tsx:334 <Button type="button" variant="outline" onClick={handleSaveRawDraft} disabled={saving}>
 - src/components/sidebar-mini-calendar.tsx:91 <Button variant="ghost" size="icon" className="h-5 w-5 rounded-md" onClick={() =>
 - src/components/sidebar-mini-calendar.tsx:99 <Button variant="ghost" size="icon" className="h-5 w-5 rounded-md" onClick={() =>
 - src/components/task-editor-dialog.tsx:230 <Button type="button" variant="outline" onClick={() =>
+- src/components/TaskCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx:277 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>
 - src/components/TaskCreateDialog.tsx:277 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>
 - src/components/topic-contact-picker.tsx:57 <Button type="button" size="icon" variant="ghost" className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 rounded-lg" onClick={() =>
 - src/components/ui/filter-chip-group.tsx:53 <Button key={option.value} type="button" variant="ghost" disabled={option.disabled} onClick={() =>
 - src/components/work-item-card.tsx:81 <Link to={href} className="cf-work-item-card-title" onClick={onOpen}>
 - src/components/work-item-card.tsx:85 <button type="button" className="cf-work-item-card-title cf-work-item-card-title-button" onClick={onOpen}>
-- src/components/work-item-card.tsx:114 <Button key={action.label} type="button" size="sm" variant="outline" className="cf-vst-button cf-selected-day-v9-action cf-work-item-card-shift"
-- src/components/work-item-card.tsx:132 <Button type="button" size="sm" variant="outline" className="cf-work-item-card-done" data-stage116-work-item-done-action="true" disabled={done
+- src/components/work-item-card.tsx:114 <Button key={action.label} type="button" size="sm" variant="outline" className="cf-vst-button cf-selected-day-v9-action cf-work-item-card-shift" dat
+- src/components/work-item-card.tsx:132 <Button type="button" size="sm" variant="outline" className="cf-work-item-card-done" data-stage116-work-item-done-action="true" disabled={doneBusy |
 - src/components/work-item-card.tsx:149 <Button type="button" size="sm" variant="outline" data-stage232t-r1d-work-item-edit-action="true" onClick={(event) =>
 - src/components/work-item-card.tsx:183 <Link to={href} className="cf-work-item-card-open" aria-label="Otwórz wpis">
-- src/pages/Activity.tsx:139 <button type="button" className="activity-payload-toggle" onClick={() =>
-- src/pages/Activity.tsx:150 <Link to={'/leads/' + leadId} className="activity-relation-link">
-- src/pages/Activity.tsx:155 <Link to={'/cases/' + caseId} className="activity-relation-link">
-- src/pages/Activity.tsx:168 <Link to={relation.href} className="activity-open-button" aria-label={'Otwórz ' + relation.label}>
-- src/pages/AiDrafts.tsx:955 <Button type="button" size="sm" variant="outline" onClick={closeDraftApproval} disabled={approvalSaving}>
-- src/pages/AiDrafts.tsx:1069 <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() =>
-- src/pages/AiDrafts.tsx:1070 <button type="button" className="ai-drafts-action" onClick={() =>
-- src/pages/AiDrafts.tsx:1071 <button type="button" className="ai-drafts-action ai-drafts-action-green" onClick={() =>
-- src/pages/AiDrafts.tsx:1072 <button type="button" className="ai-drafts-action ai-drafts-action-red" onClick={() =>
-- src/pages/AiDrafts.tsx:1076 <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() =>
-- src/pages/AiDrafts.tsx:1077 <button type="button" className="ai-drafts-action ai-drafts-action-red" onClick={() =>
-- src/pages/AiDrafts.tsx:1088 <button type="button" className="ai-drafts-action ai-drafts-action-green" onClick={() =>
-- src/pages/AiDrafts.tsx:1089 <button type="button" className="ai-drafts-action" onClick={handleCancelEdit}>
-- src/pages/AiDrafts.tsx:1090 <button type="button" className="ai-drafts-action" onClick={() =>
-- src/pages/AiDrafts.tsx:1112 <button type="button" className="ai-drafts-header-button" onClick={() =>
-- src/pages/AiDrafts.tsx:1346 <button key={draft.id} type="button" className="ai-drafts-rail-item" onClick={() =>
-- src/pages/AiDrafts.tsx:1365 <button key={draft.id} type="button" className="ai-drafts-rail-item" onClick={() =>
-- src/pages/AiDrafts.tsx:1417 <a href="/billing" className="mt-5 inline-flex rounded-2xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">
-- src/pages/Billing.tsx:299 <Button type="button" variant="outline" onClick={refresh}>
-- src/pages/Billing.tsx:423 <Button type="button" size="sm" variant="outline" disabled={Boolean(billingActionLoading) || workspace.cancelAtPeriodEnd}
-- src/pages/Calendar.tsx:607 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
-- src/pages/Calendar.tsx:608 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
-- src/pages/Calendar.tsx:609 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
-- src/pages/Calendar.tsx:610 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
-- src/pages/Calendar.tsx:611 <button type="button" className="cf-calendar-week-plan-action cf-calendar-week-plan-action-done" onClick={() =>
-- src/pages/Calendar.tsx:614 <button type="button" className="cf-vst-button cf-vst-button-delete cf-calendar-week-plan-action cf-calendar-week-plan-action-danger" data-cf-vst-kind="delete" data-cf-destructive-source="trash-action-source" onClick={()
-- src/pages/Calendar.tsx:676 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
-- src/pages/Calendar.tsx:677 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
-- src/pages/Calendar.tsx:678 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
-- src/pages/Calendar.tsx:679 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
-- src/pages/Calendar.tsx:680 <button type="button" className="cf-selected-day-v9-action cf-selected-day-v9-action-done" onClick={() =>
-- src/pages/Calendar.tsx:3098 <Link to="/ai-drafts" className="btn soft-blue" data-cf-header-action="ai">
-- src/pages/Calendar.tsx:3211 <Button type="submit" className="w-full" disabled={eventSubmitting || !workspaceReady}>
-- src/pages/Calendar.tsx:3246 <button type="button" className="nav-btn" onClick={() =>
-- src/pages/Calendar.tsx:3262 <button type="button" className="nav-today" onClick={() =>
-- src/pages/Calendar.tsx:3265 <button type="button" className="nav-btn" onClick={() =>
-- src/pages/Calendar.tsx:3328 <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>
-- src/pages/Calendar.tsx:3401 <button type="button" className="calendar-more cf-calendar-month-more" data-calendar-month-more-button="true" on
-- src/pages/CaseDetail.tsx:3721 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:3737 <button type="button" className="case-detail-back-button client-detail-back-button" onClick={() =>
-- src/pages/CaseDetail.tsx:3756 <Button type="button" variant="outline" className="cf-vst-button cf-case-detail-restore-action-stage231b0-r7 cf-case-detail-restore-action-stage231b0-r8" da
-- src/pages/CaseDetail.tsx:3771 <Button type="button" variant="outline" className="cf-vst-button cf-case-detail-close-action-stage231b0 cf-case-detail-close-action-stage231b0-r7 cf-case-detail-close-actio
-- src/pages/CaseDetail.tsx:3789 <Button type="button" variant="outline" className="cf-vst-button cf-vst-button-delete cf-case-detail-delete-emergency-action-stage231b0" data-case-detail-delete-act
-- src/pages/CaseDetail.tsx:3879 <Button type="button" variant="outline" onClick={openCaseNoteDialog}>
-- src/pages/CaseDetail.tsx:3883 <Button type="button" variant="outline" onClick={handleStartCaseNoteDictationStage231H_R1D2} data-stage231h-r1d2-voice-note-button="true"
-- src/pages/CaseDetail.tsx:3898 <Button type="button" variant="outline" onClick={openCaseTaskDialog}>
-- src/pages/CaseDetail.tsx:3902 <Button type="button" variant="outline" onClick={openCaseEventDialog}>
-- src/pages/CaseDetail.tsx:3906 <Button type="button" variant="outline" data-context-action-kind="blocker" data-context-record-type="case" data-context-
-- src/pages/CaseDetail.tsx:3932 <button type="button" className="stage220a8-show-all-button" onClick={() =>
-- src/pages/CaseDetail.tsx:3970 <button type="button" className="stage220a8-case-actions-group-trigger" onClick={() =>
-- src/pages/CaseDetail.tsx:4028 <Button type="button" variant="outline" onClick={handleStartCaseNoteDictationStage231H_R1D2} data-stage231h-r1d2-notes-panel-voice-note-butt
-- src/pages/CaseDetail.tsx:4043 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4081 <Button type="button" variant="ghost" onClick={closeNoteFollowUpPrompt} data-case-note-follow-up-dismiss="true">
-- src/pages/CaseDetail.tsx:4190 <Button type="button" size="sm" variant="outline" onClick={openCaseFinanceEditModal} disabled={isFinanceSaving}>
-- src/pages/CaseDetail.tsx:4193 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4196 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4205 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4339 <Button type="button" size="sm" variant="outline" onClick={closeCaseNoteEditStage231H_R1D2_R6} disabled={caseNoteEditSubmittingStage231H_R1D2_R6}>
-- src/pages/CaseDetail.tsx:4345 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4348 <Button type="button" size="sm" variant="outline" className="cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a30__delete" onClick={() =>
-- src/pages/CaseDetail.tsx:4362 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4456 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4496 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4550 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4560 <Button type="button" size="sm" variant="outline" className="cf-vst-button cf-vst-button-delete case-payment-history
-- src/pages/CaseDetail.tsx:4598 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4609 <Button type="button" size="sm" variant="outline" className="cf-vst-button cf-vst-button-delete case-payment-history-modal-s
-- src/pages/CaseDetail.tsx:4629 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4698 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4864 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4999 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:5051 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:5214 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:5214 <Button type="button" className="cf-btn-tone-gap" onClick={onSubmit}>
-- src/pages/Cases.tsx:574 <Button type="button" variant="outline" className="btn soft-blue" data-cf-header-action="ai">
-- src/pages/Cases.tsx:584 <Button className="btn primary" disabled={!workspaceReady}>
-- src/pages/Cases.tsx:724 <Button type="button" variant="outline" onClick={() =>
-- src/pages/Cases.tsx:839 <Link to={caseDetailPath(record.id)} className="title">
-- src/pages/Cases.tsx:872 <Button variant="outline" className="btn ghost cf-icon-action-button cf-case-row-open-indicator" asChild data-stage220a28-case-row-open-icon="true">
-- src/pages/Cases.tsx:934 <Link key={record.id} to={caseDetailPath(record.id)} title={riskTitle} data-cf-operator-rail-item="true" d
-- src/pages/ClientDetail.tsx:1095 <button type="button" className="client-detail-mini-button" onClick={addValue} data-client-contact-repeat-add={kind} aria-label={kind === 'email' ? 'Dodaj kolejny email k
-- src/pages/ClientDetail.tsx:1115 <button type="button" className="client-detail-mini-button client-detail-mini-button-muted" onClick={() =>
-- src/pages/ClientDetail.tsx:1259 <Link to={nextAction.to} className="entity-overview-tile-link">
-- src/pages/ClientDetail.tsx:1306 <button type="button" className="entity-overview-tile-link !mt-0" onClick={onOpenCases}>
-- src/pages/ClientDetail.tsx:1309 <Button type="button" size="sm" className="rounded-full" onClick={onAddCase}>
-- src/pages/ClientDetail.tsx:1344 <button type="button" className="lead-detail-inline-action" onClick={onAddMissing} disabled={!canAddMissing}>
-- src/pages/ClientDetail.tsx:1347 <button type="button" className="lead-detail-inline-action" onClick={onOpenMissing} data-stage232a-r9-view-all-missing-action="true">
-- src/pages/ClientDetail.tsx:2669 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/ClientDetail.tsx:2705 <Button type="button" size="sm" variant="outline" className="client-detail-case-restore-action-stage231b0-r8" data-stage231b0-r8-client-restore-case-b
-- src/pages/ClientDetail.tsx:2717 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/ClientDetail.tsx:2858 <button type="button" className="client-detail-back-button" onClick={() =>
-- src/pages/ClientDetail.tsx:2867 <Button type="button" variant="default" className="client-detail-header-action-soft" asChild>
-- src/pages/ClientDetail.tsx:2873 <Button type="button" className="client-detail-header-action-primary" onClick={openMainCase} disabled={!mainCase?.id}>
-- src/pages/ClientDetail.tsx:2895 <Button type="button" variant="outline" className="client-detail-today-info-tile-action" onClick={() =>
-- src/pages/ClientDetail.tsx:2921 <button type="button" className="cf-finance-scope-card__main-action" onClick={() =>
-- src/pages/ClientDetail.tsx:2932 <Button type="button" size="sm" variant="outline" className="client-detail-visible-edit-action client-detail-edit-main-button" dat
-- src/pages/ClientDetail.tsx:2978 <Button type="button" variant="outline" onClick={cancelClientPanelEdit} disabled={saving}>
-- src/pages/ClientDetail.tsx:3033 <Link key={move.id} to="/activity" className="client-detail-recent-move-row">
-- src/pages/ClientDetail.tsx:3045 <Link to="/activity" className="client-detail-recent-moves-link">
-- src/pages/ClientDetail.tsx:3091 <button type="button" className="lead-detail-inline-action client-detail-stage232i6-close-action" onClick={() =>
-- src/pages/ClientDetail.tsx:3150 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/ClientDetail.tsx:3154 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/ClientDetail.tsx:3157 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/ClientDetail.tsx:3190 <Button type="button" variant="outline" size="sm" onClick={() =>
-- src/pages/ClientDetail.tsx:3221 <button type="button" title="Przypnij notatkę" aria-label="Przypnij notatkę" onClick={() =>
-- src/pages/ClientDetail.tsx:3224 <button type="button" title="Podgląd całej notatki" aria-label="Podgląd całej notatki" onClick={() =>
-- src/pages/ClientDetail.tsx:3227 <button type="button" title="Edytuj notatkę" aria-label="Edytuj notatkę" onClick={() =>
-- src/pages/ClientDetail.tsx:3388 <Button type="button" variant="outline" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess || clientNoteSaving}>
-- src/pages/ClientDetail.tsx:3392 <Button type="button" variant="outline" onClick={() =>
-- src/pages/ClientDetail.tsx:3440 <Button type="button" className="client-detail-hero-cta" onClick={() =>
-- src/pages/ClientDetail.tsx:3500 <Button type="button" variant="outline" onClick={() =>
-- src/pages/ClientDetail.tsx:3518 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/ClientDetail.tsx:3693 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/ClientDetail.tsx:3707 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/ClientPortal.tsx:305 <Button size="sm" variant="outline" className="gap-2">
-- src/pages/ClientPortal.tsx:325 <Button variant="outline" onClick={() =>
-- src/pages/ClientPortal.tsx:339 <Button size="sm" variant="outline" className="gap-2">
-- src/pages/ClientPortal.tsx:358 <Button variant="outline" onClick={() =>
-- src/pages/ClientPortal.tsx:368 <Button size="sm" variant="outline" className="gap-2 text-green-600 hover:bg-green-50" onClick={() =>
-- src/pages/ClientPortal.tsx:372 <Button size="sm" variant="outline" className="gap-2 text-red-600 hover:bg-red-50" onClick={() =>
-- src/pages/Clients.tsx:855 <Button type="button" variant="outline" className="btn soft-blue" data-cf-header-action="ai">
-- src/pages/Clients.tsx:856 <Button type="button" variant="outline" className="btn" onClick={() =>
-- src/pages/Clients.tsx:863 <Button className="btn primary" disabled={!workspace?.id}>
-- src/pages/Clients.tsx:969 <Button type="button" variant="outline" onClick={() =>
-- src/pages/Clients.tsx:1093 <Link to={`/clients/${client.id}`} className="block">
-- src/pages/Dashboard.tsx:206 <Button variant="ghost" className="w-full justify-start gap-3 bg-slate-100 text-primary">
-- src/pages/Dashboard.tsx:210 <Button variant="ghost" className="w-full justify-start gap-3 text-slate-600">
-- src/pages/Dashboard.tsx:214 <Button variant="ghost" className="w-full justify-start gap-3 text-slate-600">
-- src/pages/Dashboard.tsx:220 <Button variant="ghost" className="cf-session-action-danger w-full justify-start gap-3" data-cf-session-action="logout" onClick={() =>
-- src/pages/Dashboard.tsx:235 <Button size="lg" className="gap-2 shadow-lg shadow-primary/20">
-- src/pages/Dashboard.tsx:273 <Button variant="outline" onClick={() =>
-- src/pages/Dashboard.tsx:358 <Button variant="outline" className="h-11 gap-2 bg-white">
-- src/pages/LeadDetail.tsx:2407 <Button type="button" variant="outline" onClick={() =>
-- src/pages/LeadDetail.tsx:2423 <button type="button" className="lead-detail-back-button" onClick={() =>
-- src/pages/LeadDetail.tsx:2466 <Button type="button" variant="outline" onClick={() =>
-- src/pages/LeadDetail.tsx:2517 <Button type="button" size="sm" variant="outline" onClick={handleStartLeadEditing}>
-- src/pages/LeadDetail.tsx:2639 <button type="button" className="lead-detail-inline-action" onClick={() =>
-- src/pages/LeadDetail.tsx:2647 <button type="button" className="lead-detail-inline-action" onClick={handleCreateQuickTask} disabled={!hasAccess}>
-- src/pages/LeadDetail.tsx:2657 <button type="button" className="lead-detail-inline-action" onClick={handleStartPotentialEditingStage231G} disabled={!hasAccess}>
-- src/pages/LeadDetail.tsx:2666 <button type="button" className="lead-detail-inline-action" onClick={handleCreateQuickTask} disabled={!hasAccess}>
-- src/pages/LeadDetail.tsx:2668 <button type="button" className="lead-detail-inline-action" onClick={() =>
-- src/pages/LeadDetail.tsx:2689 <button type="button" className="lead-detail-inline-action" onClick={() =>
-- src/pages/LeadDetail.tsx:2691 <button type="button" className="lead-detail-inline-action" data-stage232a-r9-view-all-missing-action="true" data-stage232i4
-- src/pages/LeadDetail.tsx:2720 <Button type="button" size="sm" variant="outline" onClick={handleCreateQuickEvent} disabled={!hasAccess}>
-- src/pages/LeadDetail.tsx:2807 <button type="button" className="lead-detail-action-accordion-trigger" onClick={() =>
-- src/pages/LeadDetail.tsx:2880 <Button type="button" variant="outline" onClick={() =>
-- src/pages/LeadDetail.tsx:3052 <Button type="button" variant="outline" onClick={() =>
-- src/pages/LeadDetail.tsx:3053 <Button type="button" variant="outline" onClick={handleLinkExistingCase} disabled={linkingCase}>
-- src/pages/LeadDetail.tsx:3091 <Button type="button" variant="outline" onClick={closeLeadPaymentDialog} disabled={leadPaymentSaving}>
-- src/pages/LeadDetail.tsx:3126 <Button type="button" variant="outline" onClick={handleCancelPotentialEditingStage231GR7} disabled={potentialSavingStage231GR7}>
-- src/pages/LeadDetail.tsx:3148 <Button type="button" variant="outline" onClick={() =>
-- src/pages/LeadDetail.tsx:3163 <Button type="button" variant="outline" onClick={() =>
-- src/pages/LeadDetail.tsx:3178 <Button type="button" variant="outline" onClick={() =>
-- src/pages/LeadDetail.tsx:3199 <Button type="button" variant="outline" onClick={handleToggleNoteSpeech} disabled={!hasAccess}>
-- src/pages/LeadDetail.tsx:3203 <Button type="button" variant="outline" onClick={() =>
-- src/pages/LeadDetail.tsx:3216 <Button type="button" variant="outline" onClick={() =>
-- src/pages/Leads.tsx:775 <Link to="/ai-drafts" className="btn soft-blue" data-stage26-leads-head-ai="true" data-cf-header-action="ai">
-- src/pages/Leads.tsx:779 <button type="button" className="btn" onClick={toggleTrashView} >
-- src/pages/Leads.tsx:933 <Button type="button" variant="outline" onClick={() =>
-- src/pages/Leads.tsx:1121 <Link to={row.href} className="btn ghost">
-- src/pages/Leads.tsx:1122 <button type="button" className="btn ghost" disabled title="Do potwierdzenia: bezpieczne tworzenie zadania z rescue">
-- src/pages/Leads.tsx:1123 <button type="button" className="btn ghost" disabled title="Do potwierdzenia: trwały snooze rescue">
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:135 <button type="button" className="activity-payload-toggle" onClick={() =>
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:146 <Link to={'/leads/' + leadId} className="activity-relation-link">
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:151 <Link to={'/cases/' + caseId} className="activity-relation-link">
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:164 <Link to={relation.href} className="activity-open-button" aria-label={'Otwórz ' + relation.label}>
+- src/pages/Activity.tsx:135 <button type="button" className="activity-payload-toggle" onClick={() =>
+- src/pages/Activity.tsx:146 <Link to={'/leads/' + leadId} className="activity-relation-link">
+- src/pages/Activity.tsx:151 <Link to={'/cases/' + caseId} className="activity-relation-link">
+- src/pages/Activity.tsx:164 <Link to={relation.href} className="activity-open-button" aria-label={'Otwórz ' + relation.label}>
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:952 <Button type="button" size="sm" variant="outline" onClick={closeDraftApproval} disabled={approvalSaving}>
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1066 <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() =>
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1067 <button type="button" className="ai-drafts-action" onClick={() =>
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1068 <button type="button" className="ai-drafts-action ai-drafts-action-green" onClick={() =>
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1069 <button type="button" className="ai-drafts-action ai-drafts-action-red" onClick={() =>
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1073 <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() =>
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1074 <button type="button" className="ai-drafts-action ai-drafts-action-red" onClick={() =>
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1085 <button type="button" className="ai-drafts-action ai-drafts-action-green" onClick={() =>
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1086 <button type="button" className="ai-drafts-action" onClick={handleCancelEdit}>
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1087 <button type="button" className="ai-drafts-action" onClick={() =>
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1109 <button type="button" className="ai-drafts-header-button" onClick={() =>
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1343 <button key={draft.id} type="button" className="ai-drafts-rail-item" onClick={() =>
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1362 <button key={draft.id} type="button" className="ai-drafts-rail-item" onClick={() =>
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1414 <a href="/billing" className="mt-5 inline-flex rounded-2xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">
+- src/pages/AiDrafts.tsx:952 <Button type="button" size="sm" variant="outline" onClick={closeDraftApproval} disabled={approvalSaving}>
+- src/pages/AiDrafts.tsx:1066 <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() =>
+- src/pages/AiDrafts.tsx:1067 <button type="button" className="ai-drafts-action" onClick={() =>
+- src/pages/AiDrafts.tsx:1068 <button type="button" className="ai-drafts-action ai-drafts-action-green" onClick={() =>
+- src/pages/AiDrafts.tsx:1069 <button type="button" className="ai-drafts-action ai-drafts-action-red" onClick={() =>
+- src/pages/AiDrafts.tsx:1073 <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() =>
+- src/pages/AiDrafts.tsx:1074 <button type="button" className="ai-drafts-action ai-drafts-action-red" onClick={() =>
+- src/pages/AiDrafts.tsx:1085 <button type="button" className="ai-drafts-action ai-drafts-action-green" onClick={() =>
+- src/pages/AiDrafts.tsx:1086 <button type="button" className="ai-drafts-action" onClick={handleCancelEdit}>
+- src/pages/AiDrafts.tsx:1087 <button type="button" className="ai-drafts-action" onClick={() =>
+- src/pages/AiDrafts.tsx:1109 <button type="button" className="ai-drafts-header-button" onClick={() =>
+- src/pages/AiDrafts.tsx:1343 <button key={draft.id} type="button" className="ai-drafts-rail-item" onClick={() =>
+- src/pages/AiDrafts.tsx:1362 <button key={draft.id} type="button" className="ai-drafts-rail-item" onClick={() =>
+- src/pages/AiDrafts.tsx:1414 <a href="/billing" className="mt-5 inline-flex rounded-2xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">
+- src/pages/Billing.tsx:297 <Button type="button" variant="outline" onClick={refresh}>
+- src/pages/Billing.tsx:421 <Button type="button" size="sm" variant="outline" disabled={Boolean(billingActionLoading) || workspace.cancelAtPeriodEnd}
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:597 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:598 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:599 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:600 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:601 <button type="button" className="cf-calendar-week-plan-action cf-calendar-week-plan-action-done" onClick={() =>
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:604 <button type="button" className="cf-vst-button cf-vst-button-delete cf-calendar-week-plan-action cf-calendar-week-plan-action-danger" data-cf-vst-kind="delete" data-cf-destructive-source="trash-action-source" onClick={()
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:666 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:667 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:668 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:669 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:670 <button type="button" className="cf-selected-day-v9-action cf-selected-day-v9-action-done" onClick={() =>
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3088 <Link to="/ai-drafts" className="btn soft-blue" data-cf-header-action="ai">
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3201 <Button type="submit" className="w-full" disabled={eventSubmitting || !workspaceReady}>
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3236 <button type="button" className="nav-btn" onClick={() =>
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3252 <button type="button" className="nav-today" onClick={() =>
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3255 <button type="button" className="nav-btn" onClick={() =>
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3318 <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3391 <button type="button" className="calendar-more cf-calendar-month-more" data-calendar-month-more-button="true" onClic
+- src/pages/Calendar.tsx:597 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
+- src/pages/Calendar.tsx:598 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
+- src/pages/Calendar.tsx:599 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
+- src/pages/Calendar.tsx:600 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
+- src/pages/Calendar.tsx:601 <button type="button" className="cf-calendar-week-plan-action cf-calendar-week-plan-action-done" onClick={() =>
+- src/pages/Calendar.tsx:604 <button type="button" className="cf-vst-button cf-vst-button-delete cf-calendar-week-plan-action cf-calendar-week-plan-action-danger" data-cf-vst-kind="delete" data-cf-destructive-source="trash-action-source" onClick={()
+- src/pages/Calendar.tsx:666 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
+- src/pages/Calendar.tsx:667 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
+- src/pages/Calendar.tsx:668 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
+- src/pages/Calendar.tsx:669 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
+- src/pages/Calendar.tsx:670 <button type="button" className="cf-selected-day-v9-action cf-selected-day-v9-action-done" onClick={() =>
+- src/pages/Calendar.tsx:3088 <Link to="/ai-drafts" className="btn soft-blue" data-cf-header-action="ai">
+- src/pages/Calendar.tsx:3201 <Button type="submit" className="w-full" disabled={eventSubmitting || !workspaceReady}>
+- src/pages/Calendar.tsx:3236 <button type="button" className="nav-btn" onClick={() =>
+- src/pages/Calendar.tsx:3252 <button type="button" className="nav-today" onClick={() =>
+- src/pages/Calendar.tsx:3255 <button type="button" className="nav-btn" onClick={() =>
+- src/pages/Calendar.tsx:3318 <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>
+- src/pages/Calendar.tsx:3391 <button type="button" className="calendar-more cf-calendar-month-more" data-calendar-month-more-button="true" on
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3716 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3732 <button type="button" className="case-detail-back-button client-detail-back-button" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3751 <Button type="button" variant="outline" className="cf-vst-button cf-case-detail-restore-action-stage231b0-r7 cf-case-detail-restore-action-stage231b0-r8" da
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3766 <Button type="button" variant="outline" className="cf-vst-button cf-case-detail-close-action-stage231b0 cf-case-detail-close-action-stage231b0-r7 cf-case-detail-close-actio
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3784 <Button type="button" variant="outline" className="cf-vst-button cf-vst-button-delete cf-case-detail-delete-emergency-action-stage231b0" data-case-detail-delete-act
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3874 <Button type="button" variant="outline" onClick={openCaseNoteDialog}>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3878 <Button type="button" variant="outline" onClick={handleStartCaseNoteDictationStage231H_R1D2} data-stage231h-r1d2-voice-note-button="true"
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3893 <Button type="button" variant="outline" onClick={openCaseTaskDialog}>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3897 <Button type="button" variant="outline" onClick={openCaseEventDialog}>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3901 <Button type="button" variant="outline" data-context-action-kind="blocker" data-context-record-type="case" data-context-
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3927 <button type="button" className="stage220a8-show-all-button" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3965 <button type="button" className="stage220a8-case-actions-group-trigger" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4023 <Button type="button" variant="outline" onClick={handleStartCaseNoteDictationStage231H_R1D2} data-stage231h-r1d2-notes-panel-voice-note-butt
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4038 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4076 <Button type="button" variant="ghost" onClick={closeNoteFollowUpPrompt} data-case-note-follow-up-dismiss="true">
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4185 <Button type="button" size="sm" variant="outline" onClick={openCaseFinanceEditModal} disabled={isFinanceSaving}>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4188 <Button type="button" size="sm" variant="outline" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4191 <Button type="button" size="sm" variant="outline" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4200 <Button type="button" size="sm" variant="outline" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4334 <Button type="button" size="sm" variant="outline" onClick={closeCaseNoteEditStage231H_R1D2_R6} disabled={caseNoteEditSubmittingStage231H_R1D2_R6}>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4340 <Button type="button" size="sm" variant="outline" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4343 <Button type="button" size="sm" variant="outline" className="cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a30__delete" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4357 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4451 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4491 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4545 <Button type="button" size="sm" variant="outline" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4555 <Button type="button" size="sm" variant="outline" className="cf-vst-button cf-vst-button-delete case-payment-history
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4593 <Button type="button" size="sm" variant="outline" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4604 <Button type="button" size="sm" variant="outline" className="cf-vst-button cf-vst-button-delete case-payment-history-modal-s
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4624 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4693 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4859 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4994 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5046 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5209 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5209 <Button type="button" className="cf-btn-tone-gap" onClick={onSubmit}>
+- src/pages/CaseDetail.tsx:3719 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:3735 <button type="button" className="case-detail-back-button client-detail-back-button" onClick={() =>
+- src/pages/CaseDetail.tsx:3754 <Button type="button" variant="outline" className="cf-vst-button cf-case-detail-restore-action-stage231b0-r7 cf-case-detail-restore-action-stage231b0-r8" da
+- src/pages/CaseDetail.tsx:3769 <Button type="button" variant="outline" className="cf-vst-button cf-case-detail-close-action-stage231b0 cf-case-detail-close-action-stage231b0-r7 cf-case-detail-close-actio
+- src/pages/CaseDetail.tsx:3787 <Button type="button" variant="outline" className="cf-vst-button cf-vst-button-delete cf-case-detail-delete-emergency-action-stage231b0" data-case-detail-delete-act
+- src/pages/CaseDetail.tsx:3877 <Button type="button" variant="outline" onClick={openCaseNoteDialog}>
+- src/pages/CaseDetail.tsx:3881 <Button type="button" variant="outline" onClick={handleStartCaseNoteDictationStage231H_R1D2} data-stage231h-r1d2-voice-note-button="true"
+- src/pages/CaseDetail.tsx:3896 <Button type="button" variant="outline" onClick={openCaseTaskDialog}>
+- src/pages/CaseDetail.tsx:3900 <Button type="button" variant="outline" onClick={openCaseEventDialog}>
+- src/pages/CaseDetail.tsx:3904 <Button type="button" variant="outline" data-context-action-kind="blocker" data-context-record-type="case" data-context-
+- src/pages/CaseDetail.tsx:3930 <button type="button" className="stage220a8-show-all-button" onClick={() =>
+- src/pages/CaseDetail.tsx:3968 <button type="button" className="stage220a8-case-actions-group-trigger" onClick={() =>
+- src/pages/CaseDetail.tsx:4026 <Button type="button" variant="outline" onClick={handleStartCaseNoteDictationStage231H_R1D2} data-stage231h-r1d2-notes-panel-voice-note-butt
+- src/pages/CaseDetail.tsx:4041 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:4079 <Button type="button" variant="ghost" onClick={closeNoteFollowUpPrompt} data-case-note-follow-up-dismiss="true">
+- src/pages/CaseDetail.tsx:4188 <Button type="button" size="sm" variant="outline" onClick={openCaseFinanceEditModal} disabled={isFinanceSaving}>
+- src/pages/CaseDetail.tsx:4191 <Button type="button" size="sm" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:4194 <Button type="button" size="sm" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:4203 <Button type="button" size="sm" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:4337 <Button type="button" size="sm" variant="outline" onClick={closeCaseNoteEditStage231H_R1D2_R6} disabled={caseNoteEditSubmittingStage231H_R1D2_R6}>
+- src/pages/CaseDetail.tsx:4343 <Button type="button" size="sm" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:4346 <Button type="button" size="sm" variant="outline" className="cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a30__delete" onClick={() =>
+- src/pages/CaseDetail.tsx:4360 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:4454 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:4494 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:4548 <Button type="button" size="sm" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:4558 <Button type="button" size="sm" variant="outline" className="cf-vst-button cf-vst-button-delete case-payment-history
+- src/pages/CaseDetail.tsx:4596 <Button type="button" size="sm" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:4607 <Button type="button" size="sm" variant="outline" className="cf-vst-button cf-vst-button-delete case-payment-history-modal-s
+- src/pages/CaseDetail.tsx:4627 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:4696 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:4862 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:4997 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:5049 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:5212 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:5212 <Button type="button" className="cf-btn-tone-gap" onClick={onSubmit}>
+- src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:571 <Button type="button" variant="outline" className="btn soft-blue" data-cf-header-action="ai">
+- src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:581 <Button className="btn primary" disabled={!workspaceReady}>
+- src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:721 <Button type="button" variant="outline" onClick={() =>
+- src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:836 <Link to={caseDetailPath(record.id)} className="title">
 
 ## Relevant className snippets
 - src/components/ActivityItemPreviewDialog.tsx:47 `cf-activity-note-preview`
@@ -1360,10 +1374,10 @@ import { AlertTriangle: src/pages/Today.tsx
 - src/components/admin-tools/AdminDebugToolbar.tsx:617 `admin-button-list`
 - src/components/admin-tools/AdminDebugToolbar.tsx:619 `admin-button-row`
 - src/components/CloseFlowPageHeaderV2.tsx:99 `cf-page-header-v2__actions`
-- src/components/detail/MissingItemQuickActionModal.tsx:75 `missing-item-modal-card lead-form-vnext-content`
-- src/components/detail/MissingItemQuickActionModal.tsx:150 `missing-item-modal-actions lead-form-footer`
-- src/components/detail/MissingItemQuickActionModal.tsx:151 `missing-item-modal-secondary-action`
-- src/components/detail/MissingItemQuickActionModal.tsx:154 `missing-item-modal-primary-action`
+- src/components/detail/MissingItemQuickActionModal.tsx:72 `missing-item-modal-card lead-form-vnext-content`
+- src/components/detail/MissingItemQuickActionModal.tsx:147 `missing-item-modal-actions lead-form-footer`
+- src/components/detail/MissingItemQuickActionModal.tsx:148 `missing-item-modal-secondary-action`
+- src/components/detail/MissingItemQuickActionModal.tsx:151 `missing-item-modal-primary-action`
 - src/components/detail/QuickActionsBar.tsx:60 `cf-shared-quick-actions-bar__header`
 - src/components/detail/QuickActionsBar.tsx:63 `cf-shared-quick-actions-bar__grid`
 - src/components/detail/QuickActionsBar.tsx:74 `cf-shared-quick-actions-bar__icon`
@@ -1371,35 +1385,37 @@ import { AlertTriangle: src/pages/Today.tsx
 - src/components/entity-contact-card.tsx:70 `client-detail-icon-button cf-entity-contact-copy-button`
 - src/components/entity-contact-card.tsx:133 `cf-entity-contact-note`
 - src/components/ErrorBoundary.tsx:34 `w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6`
-- src/components/finance/CaseSettlementPanel.tsx:220 `cf-finance-settlement-metric`
-- src/components/finance/CaseSettlementPanel.tsx:266 `cf-finance-settlement-actions`
-- src/components/finance/CaseSettlementPanel.tsx:298 `cf-finance-settlement-footnote`
+- src/components/finance/CaseSettlementPanel.tsx:219 `cf-finance-settlement-metric`
+- src/components/finance/CaseSettlementPanel.tsx:265 `cf-finance-settlement-actions`
+- src/components/finance/CaseSettlementPanel.tsx:297 `cf-finance-settlement-footnote`
+- src/components/finance/FinanceMiniSummary.tsx:181 `cf-finance-metric`
 - src/components/finance/FinanceMiniSummary.tsx:182 `cf-finance-metric`
 - src/components/finance/FinanceMiniSummary.tsx:183 `cf-finance-metric`
 - src/components/finance/FinanceMiniSummary.tsx:184 `cf-finance-metric`
-- src/components/finance/FinanceMiniSummary.tsx:185 `cf-finance-metric`
-- src/components/finance/FinanceMiniSummary.tsx:186 `cf-finance-metric cf-finance-metric--wide`
+- src/components/finance/FinanceMiniSummary.tsx:185 `cf-finance-metric cf-finance-metric--wide`
+- src/components/finance/FinanceMiniSummary.tsx:295 `cf-finance-metric`
 - src/components/finance/FinanceMiniSummary.tsx:296 `cf-finance-metric`
 - src/components/finance/FinanceMiniSummary.tsx:297 `cf-finance-metric`
 - src/components/finance/FinanceMiniSummary.tsx:298 `cf-finance-metric`
 - src/components/finance/FinanceMiniSummary.tsx:299 `cf-finance-metric`
 - src/components/finance/FinanceMiniSummary.tsx:300 `cf-finance-metric`
-- src/components/finance/FinanceMiniSummary.tsx:301 `cf-finance-metric`
-- src/components/finance/FinanceMiniSummary.tsx:319 `cf-fin13-client-case-finance-row__metrics`
-- src/components/finance/FinanceSnapshot.tsx:159 `cf-finance-actions`
+- src/components/finance/FinanceMiniSummary.tsx:318 `cf-fin13-client-case-finance-row__metrics`
+- src/components/finance/FinanceSnapshot.tsx:158 `cf-finance-actions`
 - src/components/finance/LeadValuePanel.tsx:189 `cf-finance-lead-value-panel__actions`
 - src/components/GlobalQuickActions.tsx:15 `global-actions`
-- src/components/GlobalQuickActions.tsx:84 `global-actions sticky top-16 z-20 overflow-x-auto`
-- src/components/GlobalQuickActions.tsx:91 `btn soft-blue cf-command-action cf-command-action--ai`
-- src/components/GlobalQuickActions.tsx:98 `btn cf-command-action cf-command-action--neutral`
-- src/components/GlobalQuickActions.tsx:104 `btn cf-command-action cf-command-action--neutral`
-- src/components/GlobalQuickActions.tsx:109 `btn cf-command-action cf-command-action--neutral`
-- src/components/GlobalQuickActions.tsx:113 `btn cf-command-action cf-command-action--neutral`
-- src/components/Layout.tsx:187 `user-card`
-- src/components/Layout.tsx:714 `access-warning-action`
+- src/components/GlobalQuickActions.tsx:83 `global-actions sticky top-16 z-20 overflow-x-auto`
+- src/components/GlobalQuickActions.tsx:90 `btn soft-blue cf-command-action cf-command-action--ai`
+- src/components/GlobalQuickActions.tsx:97 `btn cf-command-action cf-command-action--neutral`
+- src/components/GlobalQuickActions.tsx:103 `btn cf-command-action cf-command-action--neutral`
+- src/components/GlobalQuickActions.tsx:108 `btn cf-command-action cf-command-action--neutral`
+- src/components/GlobalQuickActions.tsx:112 `btn cf-command-action cf-command-action--neutral`
+- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:182 `user-card`
+- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:709 `access-warning-action`
+- src/components/Layout.tsx:185 `user-card`
+- src/components/Layout.tsx:712 `access-warning-action`
 - src/components/operator-rail/OperatorSideCard.tsx:41 `cf-rail-card-title`
 - src/components/operator-rail/TopValueRecordsCard.tsx:85 `note`
-- src/components/QuickAiCapture.tsx:280 `rounded-xl cf-command-action cf-command-action--ai`
+- src/components/QuickAiCapture.tsx:279 `rounded-xl cf-command-action cf-command-action--ai`
 - src/components/task-editor-dialog.tsx:101 `task-form-vnext-content`
 - src/components/task-editor-dialog.tsx:105 `task-form-vnext-header`
 - src/components/task-editor-dialog.tsx:106 `task-form-vnext-title-block`
@@ -1426,6 +1442,7 @@ import { AlertTriangle: src/pages/Today.tsx
 - src/components/task-editor-dialog.tsx:214 `task-form-field`
 - src/components/task-editor-dialog.tsx:221 `task-form-field`
 - src/components/task-editor-dialog.tsx:229 `task-form-footer`
+- src/components/TaskCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx:208 `event-form-card rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-900`
 - src/components/TaskCreateDialog.tsx:208 `event-form-card rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-900`
 - src/components/TodayAiAssistant.tsx:165 `ai-assistant-card`
 - src/components/TodayAiAssistant.tsx:171 `ai-assistant-card__header`
@@ -1479,223 +1496,220 @@ import { AlertTriangle: src/pages/Today.tsx
 - src/components/work-item-card.tsx:119 `cf-vst-button cf-selected-day-v9-action cf-work-item-card-shift`
 - src/components/work-item-card.tsx:136 `cf-work-item-card-done`
 - src/components/work-item-card.tsx:183 `cf-work-item-card-open`
-- src/pages/Activity.tsx:166 `activity-row-action`
-- src/pages/Activity.tsx:168 `activity-open-button`
-- src/pages/Activity.tsx:172 `activity-open-button activity-open-button-disabled`
-- src/pages/Activity.tsx:312 `activity-toolbar-card`
-- src/pages/Activity.tsx:371 `activity-list-card`
-- src/pages/Activity.tsx:417 `right-card activity-right-card`
-- src/pages/Activity.tsx:418 `activity-right-card-head`
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:162 `activity-row-action`
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:164 `activity-open-button`
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:168 `activity-open-button activity-open-button-disabled`
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:308 `activity-toolbar-card`
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:367 `activity-list-card`
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:413 `right-card activity-right-card`
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:414 `activity-right-card-head`
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:418 `activity-rail-button`
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:422 `activity-rail-button`
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:428 `right-card activity-right-card`
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:429 `activity-right-card-head`
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:450 `right-card activity-right-card`
+- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:451 `activity-right-card-head`
+- src/pages/Activity.tsx:162 `activity-row-action`
+- src/pages/Activity.tsx:164 `activity-open-button`
+- src/pages/Activity.tsx:168 `activity-open-button activity-open-button-disabled`
+- src/pages/Activity.tsx:308 `activity-toolbar-card`
+- src/pages/Activity.tsx:367 `activity-list-card`
+- src/pages/Activity.tsx:413 `right-card activity-right-card`
+- src/pages/Activity.tsx:414 `activity-right-card-head`
+- src/pages/Activity.tsx:418 `activity-rail-button`
 - src/pages/Activity.tsx:422 `activity-rail-button`
-- src/pages/Activity.tsx:426 `activity-rail-button`
-- src/pages/Activity.tsx:432 `right-card activity-right-card`
-- src/pages/Activity.tsx:433 `activity-right-card-head`
-- src/pages/Activity.tsx:454 `right-card activity-right-card`
-- src/pages/Activity.tsx:455 `activity-right-card-head`
-- src/pages/AdminAiSettings.tsx:88 `cf-readable-card border-none app-surface-strong`
-- src/pages/AdminAiSettings.tsx:162 `cf-readable-card border-none app-surface-strong`
-- src/pages/AdminAiSettings.tsx:181 `cf-readable-card border-none app-surface-strong`
-- src/pages/AdminAiSettings.tsx:232 `cf-readable-card border-none app-surface-strong`
-- src/pages/AiDrafts.tsx:950 `ai-drafts-approval-actions`
-- src/pages/AiDrafts.tsx:999 `ai-drafts-recognized-card`
-- src/pages/AiDrafts.tsx:1011 `ai-drafts-recognized-card`
-- src/pages/AiDrafts.tsx:1018 `ai-drafts-source-note`
-- src/pages/AiDrafts.tsx:1020 `ai-drafts-source-note`
-- src/pages/AiDrafts.tsx:1024 `ai-drafts-recognized-card`
-- src/pages/AiDrafts.tsx:1029 `ai-drafts-source-note`
-- src/pages/AiDrafts.tsx:1066 `ai-drafts-actions-col`
-- src/pages/AiDrafts.tsx:1069 `ai-drafts-action ai-drafts-action-blue`
-- src/pages/AiDrafts.tsx:1070 `ai-drafts-action`
-- src/pages/AiDrafts.tsx:1071 `ai-drafts-action ai-drafts-action-green`
-- src/pages/AiDrafts.tsx:1072 `ai-drafts-action ai-drafts-action-red`
-- src/pages/AiDrafts.tsx:1076 `ai-drafts-action ai-drafts-action-blue`
-- src/pages/AiDrafts.tsx:1077 `ai-drafts-action ai-drafts-action-red`
-- src/pages/AiDrafts.tsx:1088 `ai-drafts-action ai-drafts-action-green`
-- src/pages/AiDrafts.tsx:1089 `ai-drafts-action`
-- src/pages/AiDrafts.tsx:1090 `ai-drafts-action`
-- src/pages/AiDrafts.tsx:1111 `ai-drafts-header-actions`
-- src/pages/AiDrafts.tsx:1112 `ai-drafts-header-button`
-- src/pages/AiDrafts.tsx:1167 `ai-drafts-voice-trace-actions ai-drafts-voice-trace-actions-visible`
-- src/pages/AiDrafts.tsx:1239 `ai-drafts-quick-capture-actions`
-- src/pages/AiDrafts.tsx:1244 `ai-drafts-quick-capture-save-button`
-- src/pages/AiDrafts.tsx:1264 `ai-drafts-toolbar-card`
-- src/pages/AiDrafts.tsx:1290 `ai-drafts-list-card`
-- src/pages/AiDrafts.tsx:1319 `right-card ai-drafts-right-card`
-- src/pages/AiDrafts.tsx:1320 `ai-drafts-right-card-head`
-- src/pages/AiDrafts.tsx:1324 `ai-drafts-rail-button`
-- src/pages/AiDrafts.tsx:1328 `ai-drafts-rail-button`
-- src/pages/AiDrafts.tsx:1332 `ai-drafts-rail-button`
-- src/pages/AiDrafts.tsx:1338 `right-card ai-drafts-right-card`
-- src/pages/AiDrafts.tsx:1339 `ai-drafts-right-card-head`
-- src/pages/AiDrafts.tsx:1357 `right-card ai-drafts-right-card`
-- src/pages/AiDrafts.tsx:1358 `ai-drafts-right-card-head`
-- src/pages/AiDrafts.tsx:1376 `right-card ai-drafts-right-card`
-- src/pages/AiDrafts.tsx:1377 `ai-drafts-right-card-head`
-- src/pages/Billing.tsx:282 `billing-loading-card`
-- src/pages/Billing.tsx:298 `billing-header-actions`
-- src/pages/Billing.tsx:316 `billing-status-icon`
-- src/pages/Billing.tsx:337 `billing-expired-card`
-- src/pages/Billing.tsx:346 `billing-period-card`
-- src/pages/Billing.tsx:395 `billing-plan-button`
-- src/pages/Billing.tsx:416 `right-card billing-right-card`
-- src/pages/Billing.tsx:443 `right-card billing-right-card`
-- src/pages/Billing.tsx:452 `right-card billing-right-card billing-right-featured`
-- src/pages/Billing.tsx:464 `right-card billing-right-card`
-- src/pages/Billing.tsx:478 `billing-settlements-card`
-- src/pages/Calendar.tsx:576 `cf-vst-card cf-vst-cf-calendar-week-plan-entry-card `
-- src/pages/Calendar.tsx:606 `cf-calendar-week-plan-entry-actions`
-- src/pages/Calendar.tsx:607 `cf-vst-button cf-calendar-week-plan-action`
-- src/pages/Calendar.tsx:608 `cf-vst-button cf-calendar-week-plan-action`
-- src/pages/Calendar.tsx:609 `cf-vst-button cf-calendar-week-plan-action`
-- src/pages/Calendar.tsx:610 `cf-vst-button cf-calendar-week-plan-action`
-- src/pages/Calendar.tsx:611 `cf-calendar-week-plan-action cf-calendar-week-plan-action-done`
-- src/pages/Calendar.tsx:614 `cf-vst-button cf-vst-button-delete cf-calendar-week-plan-action cf-calendar-week-plan-action-danger`
-- src/pages/Calendar.tsx:655 `cf-vst-card cf-vst-calendar-entry-card cf-selected-day-v9-entry-shell cf-selected-day-v9-week-visual-contract `
-- src/pages/Calendar.tsx:675 `cf-selected-day-v9-actions`
-- src/pages/Calendar.tsx:676 `cf-vst-button cf-selected-day-v9-action`
-- src/pages/Calendar.tsx:677 `cf-vst-button cf-selected-day-v9-action`
-- src/pages/Calendar.tsx:678 `cf-vst-button cf-selected-day-v9-action`
-- src/pages/Calendar.tsx:679 `cf-vst-button cf-selected-day-v9-action`
-- src/pages/Calendar.tsx:680 `cf-selected-day-v9-action cf-selected-day-v9-action-done`
-- src/pages/Calendar.tsx:3089 `head-actions`
-- src/pages/Calendar.tsx:3222 `right-card mb-4 flex items-center gap-3 border border-blue-100 bg-blue-50/70 text-blue-900`
-- src/pages/Calendar.tsx:3429 `right-card calendar-week-filter`
-- src/pages/Calendar.tsx:3472 `right-card calendar-week-plan`
-- src/pages/CaseDetail.tsx:248 `case-detail-section-card case-detail-history-unified-panel`
-- src/pages/CaseDetail.tsx:3704 `case-detail-loading-card`
-- src/pages/CaseDetail.tsx:3717 `case-detail-empty-card`
-- src/pages/CaseDetail.tsx:3739 `case-detail-back-button client-detail-back-button`
-- src/pages/CaseDetail.tsx:3754 `case-detail-header-actions-stage231b0`
-- src/pages/CaseDetail.tsx:3759 `cf-vst-button cf-case-detail-restore-action-stage231b0-r7 cf-case-detail-restore-action-stage231b0-r8`
-- src/pages/CaseDetail.tsx:3774 `cf-vst-button cf-case-detail-close-action-stage231b0 cf-case-detail-close-action-stage231b0-r7 cf-case-detail-close-action-stage231b0-r8 cf-case-detail-close-positive-stage231b0-r7 cf-case-detail-close-positive-stage231b0-r8`
-- src/pages/CaseDetail.tsx:3792 `cf-vst-button cf-vst-button-delete cf-case-detail-delete-emergency-action-stage231b0`
-- src/pages/CaseDetail.tsx:3809 `case-detail-stage228r10d-tabs-card case-service-tabs-column`
-- src/pages/CaseDetail.tsx:3825 `case-detail-stage220a10-tab-icon`
-- src/pages/CaseDetail.tsx:3844 `case-detail-stage228r10d-tabs-card case-service-tabs-column`
-- src/pages/CaseDetail.tsx:3860 `case-detail-stage220a10-tab-icon`
-- src/pages/CaseDetail.tsx:3869 `case-service-actions-panel`
-- src/pages/CaseDetail.tsx:3870 `case-detail-section-card stage217-case-operation-workspace`
-- src/pages/CaseDetail.tsx:3878 `stage217-case-service-actions`
-- src/pages/CaseDetail.tsx:3924 `stage220a8-case-actions-preview stage220a8-case-actions-accordion`
-- src/pages/CaseDetail.tsx:3925 `stage220a8-case-actions-preview-head`
-- src/pages/CaseDetail.tsx:3927 `stage220a8-case-actions-preview-label`
-- src/pages/CaseDetail.tsx:3930 `stage220a8-case-actions-head-actions`
-- src/pages/CaseDetail.tsx:3931 `stage220a8-case-actions-preview-count`
-- src/pages/CaseDetail.tsx:3932 `stage220a8-show-all-button`
-- src/pages/CaseDetail.tsx:3970 `stage220a8-case-actions-group-trigger`
-- src/pages/CaseDetail.tsx:3979 `case-detail-work-list stage220a8-case-actions-accordion-list`
-- src/pages/CaseDetail.tsx:4005 `case-service-notes-panel`
-- src/pages/CaseDetail.tsx:4006 `case-detail-section-card stage217-case-notes-panel`
-- src/pages/CaseDetail.tsx:4007 `case-detail-section-head stage219-case-notes-head`
-- src/pages/CaseDetail.tsx:4012 `stage219-case-notes-actions`
-- src/pages/CaseDetail.tsx:4057 `stage217-case-notes-list stage231h-r1d2-r14f-expanded-notes-panel`
-- src/pages/CaseDetail.tsx:4059 `stage217-case-note-row`
-- src/pages/CaseDetail.tsx:4060 `stage217-case-note-row__icon`
-- src/pages/CaseDetail.tsx:4062 `case-note-kind-label-stage231h-r1d2-r10c`
-- src/pages/CaseDetail.tsx:4074 `case-detail-note-follow-up-panel`
-- src/pages/CaseDetail.tsx:4075 `case-detail-note-follow-up-head`
-- src/pages/CaseDetail.tsx:4085 `case-detail-note-follow-up-preview`
-- src/pages/CaseDetail.tsx:4086 `case-detail-note-follow-up-actions`
-- src/pages/CaseDetail.tsx:4092 `case-detail-note-follow-up-custom`
-- src/pages/CaseDetail.tsx:4103 `case-detail-section-card case-detail-stage220a10-tab-panel case-detail-stage220a10-checklist-panel`
-- src/pages/CaseDetail.tsx:4126 `case-detail-row-actions`
-- src/pages/CaseDetail.tsx:4140 `case-detail-section-card case-detail-stage220a10-tab-panel case-detail-stage220a10-history-panel`
-- src/pages/CaseDetail.tsx:4152 `case-detail-stage220a10-history-icon cf-vst-icon`
-- src/pages/CaseDetail.tsx:4171 `right-card case-detail-right-card cf-finance-scope-card cf-finance-scope-card--case case-settlement-rail-card`
-- src/pages/CaseDetail.tsx:4172 `cf-finance-scope-card__head`
-- src/pages/CaseDetail.tsx:4173 `cf-finance-scope-card__icon`
-- src/pages/CaseDetail.tsx:4178 `cf-finance-scope-card__metrics`
-- src/pages/CaseDetail.tsx:4189 `cf-finance-scope-card__actions case-finance-panel-actions`
-- src/pages/CaseDetail.tsx:4222 `case-quick-actions-rail`
-- src/pages/CaseDetail.tsx:4258 `stage220a8-case-actions-all-modal sm:max-w-4xl`
-- src/pages/CaseDetail.tsx:4267 `case-detail-work-list stage220a8-case-actions-all-list`
-- src/pages/CaseDetail.tsx:4296 `client-case-form-content case-payment-history-modal-stage220a27b case-payment-history-modal-stage220a27b-r3-light case-payment-history-modal-stage220a28-vst max-w-3xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30`
-- src/pages/CaseDetail.tsx:4302 `client-case-form-header case-payment-history-modal-stage220a28-header event-form-vnext-header case-finance-source-header-stage220a30 case-all-notes-modal-stage231d0d-r2__header`
-- src/pages/CaseDetail.tsx:4310 `case-all-notes-modal-stage231d0d-r2__list case-payment-history-modal-stage220a27b__list`
-- src/pages/CaseDetail.tsx:4316 `client-case-form-section case-payment-history-modal-stage220a27b__row case-payment-history-modal-stage220a28-row case-note-crud-row-stage231h-r1d2-r6`
-- src/pages/CaseDetail.tsx:4333 `case-payment-history-modal-stage220a27b__actions case-payment-history-modal-stage220a30__actions`
-- src/pages/CaseDetail.tsx:4348 `cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a30__delete`
-- src/pages/CaseDetail.tsx:4549 `case-payment-history-modal-stage220a27b__actions case-payment-history-modal-stage220a30__actions`
-- src/pages/CaseDetail.tsx:4564 `cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a29__delete case-payment-history-modal-stage220a30__delete`
-- src/pages/CaseDetail.tsx:4596 `case-payment-history-modal-stage220a27b__actions case-payment-history-modal-stage220a30__actions`
-- src/pages/CaseDetail.tsx:4613 `cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a29__delete case-payment-history-modal-stage220a30__delete`
-- src/pages/CaseDetail.tsx:4962 `case-finance-edit-field case-finance-edit-field--wide case-finance-edit-transaction-basis-stage220a36r10`
-- src/pages/CaseDetail.tsx:5076 `case-detail-card-title-row`
-- src/pages/CaseDetail.tsx:5138 `case-detail-work-icon`
-- src/pages/CaseDetail.tsx:5149 `case-detail-row-actions`
-- src/pages/CaseDetail.tsx:5177 `case-detail-row-action-trash`
-- src/pages/Cases.tsx:573 `head-actions`
-- src/pages/Cases.tsx:716 `client-case-form-disabled-note`
-- src/pages/Cases.tsx:785 `table-card`
-- src/pages/Cases.tsx:792 `table-card`
-- src/pages/Cases.tsx:799 `table-card`
-- src/pages/Cases.tsx:866 `lead-action-cell`
-- src/pages/Cases.tsx:868 `next-action-text`
-- src/pages/Cases.tsx:869 `sub next-action-date`
-- src/pages/Cases.tsx:871 `lead-actions cf-case-row-actions-stage220a28`
-- src/pages/Cases.tsx:872 `btn ghost cf-icon-action-button cf-case-row-open-indicator`
-- src/pages/Cases.tsx:911 `cases-shortcuts-rail-card operator-simple-filters-card`
-- src/pages/Cases.tsx:927 `right-card cases-risk-rail-card`
-- src/pages/Cases.tsx:928 `cf-rail-card-title`
-- src/pages/Cases.tsx:947 `note`
-- src/pages/ClientDetail.tsx:848 `client-detail-next-action-context`
-- src/pages/ClientDetail.tsx:1097 `client-detail-mini-button`
-- src/pages/ClientDetail.tsx:1117 `client-detail-mini-button client-detail-mini-button-muted`
-- src/pages/ClientDetail.tsx:1247 `client-detail-top-tiles entity-overview-tiles`
-- src/pages/ClientDetail.tsx:1249 `client-detail-top-tile entity-overview-tile entity-overview-tile-action `
-- src/pages/ClientDetail.tsx:1252 `entity-overview-tile-head`
-- src/pages/ClientDetail.tsx:1253 `entity-overview-tile-icon`
-- src/pages/ClientDetail.tsx:1259 `entity-overview-tile-link`
-- src/pages/ClientDetail.tsx:1263 `entity-overview-tile-chip entity-overview-tile-chip-muted`
-- src/pages/ClientDetail.tsx:1267 `client-detail-top-tile entity-overview-tile entity-overview-tile-finance`
-- src/pages/ClientDetail.tsx:1268 `entity-overview-tile-head`
-- src/pages/ClientDetail.tsx:1269 `entity-overview-tile-icon`
-- src/pages/ClientDetail.tsx:1273 `entity-overview-metrics`
-- src/pages/ClientDetail.tsx:1274 `entity-overview-metric-row`
-- src/pages/ClientDetail.tsx:1278 `entity-overview-metric-row`
-- src/pages/ClientDetail.tsx:1282 `entity-overview-metric-row`
-- src/pages/ClientDetail.tsx:1286 `entity-overview-metric-row`
-- src/pages/ClientDetail.tsx:1293 `client-detail-top-tile entity-overview-tile entity-overview-tile-cases`
-- src/pages/ClientDetail.tsx:1294 `entity-overview-tile-head`
-- src/pages/ClientDetail.tsx:1295 `entity-overview-tile-icon`
-- src/pages/ClientDetail.tsx:1306 `entity-overview-tile-link !mt-0`
-- src/pages/ClientDetail.tsx:1330 `lead-detail-card-title-row client-detail-missing-top-title-row`
-- src/pages/ClientDetail.tsx:1343 `lead-detail-card-inline-actions client-detail-missing-top-tile-actions`
-- src/pages/ClientDetail.tsx:1344 `lead-detail-inline-action`
-- src/pages/ClientDetail.tsx:1347 `lead-detail-inline-action`
-- src/pages/ClientDetail.tsx:2646 `client-detail-case-smart-card client-active-case-card client-active-case-card-compact`
-- src/pages/ClientDetail.tsx:2652 `client-active-case-card-main`
-- src/pages/ClientDetail.tsx:2653 `client-active-case-card-title-line`
-- src/pages/ClientDetail.tsx:2658 `client-active-case-next-action`
-- src/pages/ClientDetail.tsx:2667 `client-active-case-actions`
-- src/pages/ClientDetail.tsx:2670 `client-detail-case-smart-delete-icon-button`
-- src/pages/ClientDetail.tsx:2700 `client-detail-case-smart-actions`
-- src/pages/ClientDetail.tsx:2709 `client-detail-case-restore-action-stage231b0-r8`
-- src/pages/ClientDetail.tsx:2727 `client-detail-case-smart-delete-icon-button`
-- src/pages/ClientDetail.tsx:2768 `client-detail-loading-card`
-- src/pages/ClientDetail.tsx:2793 `client-detail-empty-card`
-- src/pages/ClientDetail.tsx:2858 `client-detail-back-button`
-- src/pages/ClientDetail.tsx:2866 `client-detail-header-actions`
-- src/pages/ClientDetail.tsx:2867 `client-detail-header-action-soft`
-- src/pages/ClientDetail.tsx:2873 `client-detail-header-action-primary`
-- src/pages/ClientDetail.tsx:2883 `client-detail-today-info-tiles`
-- src/pages/ClientDetail.tsx:2885 `client-detail-today-info-tile-icon`
-- src/pages/ClientDetail.tsx:2888 `client-detail-today-info-tile-body`
-- src/pages/ClientDetail.tsx:2898 `client-detail-today-info-tile-action`
-- src/pages/ClientDetail.tsx:2906 `client-detail-today-info-tile client-detail-today-info-tile-finance cf-finance-scope-card cf-finance-scope-card--client`
-- src/pages/ClientDetail.tsx:2908 `cf-finance-scope-card__head`
-- src/pages/ClientDetail.tsx:2909 `cf-finance-scope-card__icon`
-- src/pages/ClientDetail.tsx:2914 `cf-finance-scope-card__metrics`
-- src/pages/ClientDetail.tsx:2921 `cf-finance-scope-card__main-action`
-- src/pages/ClientDetail.tsx:2927 `client-detail-profile-card client-detail-side-card`
-- src/pages/ClientDetail.tsx:2936 `client-detail-visible-edit-action client-detail-edit-main-button`
-- src/pages/ClientDetail.tsx:3024 `client-detail-right-card client-detail-recent-moves-card`
-- src/pages/ClientDetail.tsx:3026 `client-detail-card-title-row`
-- src/pages/ClientDetail.tsx:3043 `client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact`
-- src/pages/ClientDetail.tsx:3053 `client-detail-main-top-tiles`
-- src/pages/ClientDetail.tsx:3085 `client-detail-section-card client-detail-missing-items-section client-detail-missing-items-section-lead-vst`
-- src/pages/ClientDetail.tsx:3087 `lead-detail-card-title-row client-detail-stage232i6-title-row`
-- src/pages/ClientDetail.tsx:3091 `lead-detail-inline-action client-detail-stage232i6-close-action`
-- src/pages/ClientDetail.tsx:3147 `client-detail-missing-item-actions`
-- src/pages/ClientDetail.tsx:3165 `client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact`
-- src/pages/ClientDetail.tsx:3174 `client-detail-section-card client-detail-notes-center-section`
+- src/pages/Activity.tsx:428 `right-card activity-right-card`
+- src/pages/Activity.tsx:429 `activity-right-card-head`
+- src/pages/Activity.tsx:450 `right-card activity-right-card`
+- src/pages/Activity.tsx:451 `activity-right-card-head`
+- src/pages/AdminAiSettings.tsx:86 `cf-readable-card border-none app-surface-strong`
+- src/pages/AdminAiSettings.tsx:160 `cf-readable-card border-none app-surface-strong`
+- src/pages/AdminAiSettings.tsx:179 `cf-readable-card border-none app-surface-strong`
+- src/pages/AdminAiSettings.tsx:230 `cf-readable-card border-none app-surface-strong`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:947 `ai-drafts-approval-actions`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:996 `ai-drafts-recognized-card`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1008 `ai-drafts-recognized-card`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1015 `ai-drafts-source-note`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1017 `ai-drafts-source-note`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1021 `ai-drafts-recognized-card`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1026 `ai-drafts-source-note`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1063 `ai-drafts-actions-col`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1066 `ai-drafts-action ai-drafts-action-blue`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1067 `ai-drafts-action`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1068 `ai-drafts-action ai-drafts-action-green`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1069 `ai-drafts-action ai-drafts-action-red`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1073 `ai-drafts-action ai-drafts-action-blue`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1074 `ai-drafts-action ai-drafts-action-red`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1085 `ai-drafts-action ai-drafts-action-green`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1086 `ai-drafts-action`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1087 `ai-drafts-action`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1108 `ai-drafts-header-actions`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1109 `ai-drafts-header-button`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1164 `ai-drafts-voice-trace-actions ai-drafts-voice-trace-actions-visible`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1236 `ai-drafts-quick-capture-actions`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1241 `ai-drafts-quick-capture-save-button`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1261 `ai-drafts-toolbar-card`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1287 `ai-drafts-list-card`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1316 `right-card ai-drafts-right-card`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1317 `ai-drafts-right-card-head`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1321 `ai-drafts-rail-button`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1325 `ai-drafts-rail-button`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1329 `ai-drafts-rail-button`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1335 `right-card ai-drafts-right-card`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1336 `ai-drafts-right-card-head`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1354 `right-card ai-drafts-right-card`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1355 `ai-drafts-right-card-head`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1373 `right-card ai-drafts-right-card`
+- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1374 `ai-drafts-right-card-head`
+- src/pages/AiDrafts.tsx:947 `ai-drafts-approval-actions`
+- src/pages/AiDrafts.tsx:996 `ai-drafts-recognized-card`
+- src/pages/AiDrafts.tsx:1008 `ai-drafts-recognized-card`
+- src/pages/AiDrafts.tsx:1015 `ai-drafts-source-note`
+- src/pages/AiDrafts.tsx:1017 `ai-drafts-source-note`
+- src/pages/AiDrafts.tsx:1021 `ai-drafts-recognized-card`
+- src/pages/AiDrafts.tsx:1026 `ai-drafts-source-note`
+- src/pages/AiDrafts.tsx:1063 `ai-drafts-actions-col`
+- src/pages/AiDrafts.tsx:1066 `ai-drafts-action ai-drafts-action-blue`
+- src/pages/AiDrafts.tsx:1067 `ai-drafts-action`
+- src/pages/AiDrafts.tsx:1068 `ai-drafts-action ai-drafts-action-green`
+- src/pages/AiDrafts.tsx:1069 `ai-drafts-action ai-drafts-action-red`
+- src/pages/AiDrafts.tsx:1073 `ai-drafts-action ai-drafts-action-blue`
+- src/pages/AiDrafts.tsx:1074 `ai-drafts-action ai-drafts-action-red`
+- src/pages/AiDrafts.tsx:1085 `ai-drafts-action ai-drafts-action-green`
+- src/pages/AiDrafts.tsx:1086 `ai-drafts-action`
+- src/pages/AiDrafts.tsx:1087 `ai-drafts-action`
+- src/pages/AiDrafts.tsx:1108 `ai-drafts-header-actions`
+- src/pages/AiDrafts.tsx:1109 `ai-drafts-header-button`
+- src/pages/AiDrafts.tsx:1164 `ai-drafts-voice-trace-actions ai-drafts-voice-trace-actions-visible`
+- src/pages/AiDrafts.tsx:1236 `ai-drafts-quick-capture-actions`
+- src/pages/AiDrafts.tsx:1241 `ai-drafts-quick-capture-save-button`
+- src/pages/AiDrafts.tsx:1261 `ai-drafts-toolbar-card`
+- src/pages/AiDrafts.tsx:1287 `ai-drafts-list-card`
+- src/pages/AiDrafts.tsx:1316 `right-card ai-drafts-right-card`
+- src/pages/AiDrafts.tsx:1317 `ai-drafts-right-card-head`
+- src/pages/AiDrafts.tsx:1321 `ai-drafts-rail-button`
+- src/pages/AiDrafts.tsx:1325 `ai-drafts-rail-button`
+- src/pages/AiDrafts.tsx:1329 `ai-drafts-rail-button`
+- src/pages/AiDrafts.tsx:1335 `right-card ai-drafts-right-card`
+- src/pages/AiDrafts.tsx:1336 `ai-drafts-right-card-head`
+- src/pages/AiDrafts.tsx:1354 `right-card ai-drafts-right-card`
+- src/pages/AiDrafts.tsx:1355 `ai-drafts-right-card-head`
+- src/pages/AiDrafts.tsx:1373 `right-card ai-drafts-right-card`
+- src/pages/AiDrafts.tsx:1374 `ai-drafts-right-card-head`
+- src/pages/Billing.tsx:280 `billing-loading-card`
+- src/pages/Billing.tsx:296 `billing-header-actions`
+- src/pages/Billing.tsx:314 `billing-status-icon`
+- src/pages/Billing.tsx:335 `billing-expired-card`
+- src/pages/Billing.tsx:344 `billing-period-card`
+- src/pages/Billing.tsx:393 `billing-plan-button`
+- src/pages/Billing.tsx:414 `right-card billing-right-card`
+- src/pages/Billing.tsx:441 `right-card billing-right-card`
+- src/pages/Billing.tsx:450 `right-card billing-right-card billing-right-featured`
+- src/pages/Billing.tsx:462 `right-card billing-right-card`
+- src/pages/Billing.tsx:476 `billing-settlements-card`
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:566 `cf-vst-card cf-vst-cf-calendar-week-plan-entry-card `
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:596 `cf-calendar-week-plan-entry-actions`
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:597 `cf-vst-button cf-calendar-week-plan-action`
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:598 `cf-vst-button cf-calendar-week-plan-action`
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:599 `cf-vst-button cf-calendar-week-plan-action`
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:600 `cf-vst-button cf-calendar-week-plan-action`
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:601 `cf-calendar-week-plan-action cf-calendar-week-plan-action-done`
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:604 `cf-vst-button cf-vst-button-delete cf-calendar-week-plan-action cf-calendar-week-plan-action-danger`
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:645 `cf-vst-card cf-vst-calendar-entry-card cf-selected-day-v9-entry-shell cf-selected-day-v9-week-visual-contract `
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:665 `cf-selected-day-v9-actions`
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:666 `cf-vst-button cf-selected-day-v9-action`
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:667 `cf-vst-button cf-selected-day-v9-action`
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:668 `cf-vst-button cf-selected-day-v9-action`
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:669 `cf-vst-button cf-selected-day-v9-action`
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:670 `cf-selected-day-v9-action cf-selected-day-v9-action-done`
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3079 `head-actions`
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3212 `right-card mb-4 flex items-center gap-3 border border-blue-100 bg-blue-50/70 text-blue-900`
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3419 `right-card calendar-week-filter`
+- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3462 `right-card calendar-week-plan`
+- src/pages/Calendar.tsx:566 `cf-vst-card cf-vst-cf-calendar-week-plan-entry-card `
+- src/pages/Calendar.tsx:596 `cf-calendar-week-plan-entry-actions`
+- src/pages/Calendar.tsx:597 `cf-vst-button cf-calendar-week-plan-action`
+- src/pages/Calendar.tsx:598 `cf-vst-button cf-calendar-week-plan-action`
+- src/pages/Calendar.tsx:599 `cf-vst-button cf-calendar-week-plan-action`
+- src/pages/Calendar.tsx:600 `cf-vst-button cf-calendar-week-plan-action`
+- src/pages/Calendar.tsx:601 `cf-calendar-week-plan-action cf-calendar-week-plan-action-done`
+- src/pages/Calendar.tsx:604 `cf-vst-button cf-vst-button-delete cf-calendar-week-plan-action cf-calendar-week-plan-action-danger`
+- src/pages/Calendar.tsx:645 `cf-vst-card cf-vst-calendar-entry-card cf-selected-day-v9-entry-shell cf-selected-day-v9-week-visual-contract `
+- src/pages/Calendar.tsx:665 `cf-selected-day-v9-actions`
+- src/pages/Calendar.tsx:666 `cf-vst-button cf-selected-day-v9-action`
+- src/pages/Calendar.tsx:667 `cf-vst-button cf-selected-day-v9-action`
+- src/pages/Calendar.tsx:668 `cf-vst-button cf-selected-day-v9-action`
+- src/pages/Calendar.tsx:669 `cf-vst-button cf-selected-day-v9-action`
+- src/pages/Calendar.tsx:670 `cf-selected-day-v9-action cf-selected-day-v9-action-done`
+- src/pages/Calendar.tsx:3079 `head-actions`
+- src/pages/Calendar.tsx:3212 `right-card mb-4 flex items-center gap-3 border border-blue-100 bg-blue-50/70 text-blue-900`
+- src/pages/Calendar.tsx:3419 `right-card calendar-week-filter`
+- src/pages/Calendar.tsx:3462 `right-card calendar-week-plan`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:243 `case-detail-section-card case-detail-history-unified-panel`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3699 `case-detail-loading-card`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3712 `case-detail-empty-card`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3734 `case-detail-back-button client-detail-back-button`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3749 `case-detail-header-actions-stage231b0`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3754 `cf-vst-button cf-case-detail-restore-action-stage231b0-r7 cf-case-detail-restore-action-stage231b0-r8`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3769 `cf-vst-button cf-case-detail-close-action-stage231b0 cf-case-detail-close-action-stage231b0-r7 cf-case-detail-close-action-stage231b0-r8 cf-case-detail-close-positive-stage231b0-r7 cf-case-detail-close-positive-stage231b0-r8`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3787 `cf-vst-button cf-vst-button-delete cf-case-detail-delete-emergency-action-stage231b0`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3804 `case-detail-stage228r10d-tabs-card case-service-tabs-column`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3820 `case-detail-stage220a10-tab-icon`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3839 `case-detail-stage228r10d-tabs-card case-service-tabs-column`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3855 `case-detail-stage220a10-tab-icon`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3864 `case-service-actions-panel`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3865 `case-detail-section-card stage217-case-operation-workspace`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3873 `stage217-case-service-actions`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3919 `stage220a8-case-actions-preview stage220a8-case-actions-accordion`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3920 `stage220a8-case-actions-preview-head`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3922 `stage220a8-case-actions-preview-label`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3925 `stage220a8-case-actions-head-actions`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3926 `stage220a8-case-actions-preview-count`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3927 `stage220a8-show-all-button`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3965 `stage220a8-case-actions-group-trigger`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3974 `case-detail-work-list stage220a8-case-actions-accordion-list`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4000 `case-service-notes-panel`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4001 `case-detail-section-card stage217-case-notes-panel`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4002 `case-detail-section-head stage219-case-notes-head`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4007 `stage219-case-notes-actions`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4052 `stage217-case-notes-list stage231h-r1d2-r14f-expanded-notes-panel`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4054 `stage217-case-note-row`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4055 `stage217-case-note-row__icon`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4057 `case-note-kind-label-stage231h-r1d2-r10c`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4069 `case-detail-note-follow-up-panel`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4070 `case-detail-note-follow-up-head`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4080 `case-detail-note-follow-up-preview`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4081 `case-detail-note-follow-up-actions`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4087 `case-detail-note-follow-up-custom`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4098 `case-detail-section-card case-detail-stage220a10-tab-panel case-detail-stage220a10-checklist-panel`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4121 `case-detail-row-actions`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4135 `case-detail-section-card case-detail-stage220a10-tab-panel case-detail-stage220a10-history-panel`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4147 `case-detail-stage220a10-history-icon cf-vst-icon`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4166 `right-card case-detail-right-card cf-finance-scope-card cf-finance-scope-card--case case-settlement-rail-card`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4167 `cf-finance-scope-card__head`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4168 `cf-finance-scope-card__icon`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4173 `cf-finance-scope-card__metrics`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4184 `cf-finance-scope-card__actions case-finance-panel-actions`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4217 `case-quick-actions-rail`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4253 `stage220a8-case-actions-all-modal sm:max-w-4xl`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4262 `case-detail-work-list stage220a8-case-actions-all-list`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4291 `client-case-form-content case-payment-history-modal-stage220a27b case-payment-history-modal-stage220a27b-r3-light case-payment-history-modal-stage220a28-vst max-w-3xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4297 `client-case-form-header case-payment-history-modal-stage220a28-header event-form-vnext-header case-finance-source-header-stage220a30 case-all-notes-modal-stage231d0d-r2__header`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4305 `case-all-notes-modal-stage231d0d-r2__list case-payment-history-modal-stage220a27b__list`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4311 `client-case-form-section case-payment-history-modal-stage220a27b__row case-payment-history-modal-stage220a28-row case-note-crud-row-stage231h-r1d2-r6`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4328 `case-payment-history-modal-stage220a27b__actions case-payment-history-modal-stage220a30__actions`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4343 `cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a30__delete`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4544 `case-payment-history-modal-stage220a27b__actions case-payment-history-modal-stage220a30__actions`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4559 `cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a29__delete case-payment-history-modal-stage220a30__delete`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4591 `case-payment-history-modal-stage220a27b__actions case-payment-history-modal-stage220a30__actions`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4608 `cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a29__delete case-payment-history-modal-stage220a30__delete`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4957 `case-finance-edit-field case-finance-edit-field--wide case-finance-edit-transaction-basis-stage220a36r10`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5071 `case-detail-card-title-row`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5133 `case-detail-work-icon`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5144 `case-detail-row-actions`
+- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5172 `case-detail-row-action-trash`
+- src/pages/CaseDetail.tsx:246 `case-detail-section-card case-detail-history-unified-panel`
+- src/pages/CaseDetail.tsx:3702 `case-detail-loading-card`
+- src/pages/CaseDetail.tsx:3715 `case-detail-empty-card`
+- src/pages/CaseDetail.tsx:3737 `case-detail-back-button client-detail-back-button`
+- src/pages/CaseDetail.tsx:3752 `case-detail-header-actions-stage231b0`

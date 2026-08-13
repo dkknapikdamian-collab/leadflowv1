@@ -82,22 +82,12 @@ import { toast } from 'sonner';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
 import { pl } from 'date-fns/locale';
-import '../styles/visual-stage22-event-form-vnext.css';
+import '../styles/closeflow-event-form.css';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { isTaskOrEventStatusCompleted } from '../lib/domain-statuses';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
-import '../styles/closeflow-page-header-v2.css';
-// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-calendar-skin-only-v1.css';
-// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-calendar-color-tooltip-v2.css';
-// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-calendar-month-chip-overlap-fix-v1.css';
-// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-calendar-month-rows-no-overlap-repair2.css';
-// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-calendar-month-entry-structural-fix-v3.css';
-// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-calendar-month-plain-text-rows-v4.css';
-// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-calendar-selected-day-full-text-repair11.css';
-// LF-UI-SOT-007 canonical owner marker: import '../styles/closeflow-calendar-selected-day-new-tile-v9.css';
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
-// LF-UI-SOT-007 canonical owner marker: disabled merged import ../styles/closeflow-canvas-source-truth-stage211e.css; canvas content is provided once by App.tsx.
-import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';import {
+import '../styles/closeflow-page-header-runtime.css';
+import '../styles/closeflow-canvas-runtime.css';import {
   getOperationalEntryActionDecision,
   isOperationalEntryActionAllowed,
 } from '../lib/calendar-operational-entry-action-policy';
@@ -153,7 +143,7 @@ type CalendarScale = 'compact' | 'default' | 'large';
 type CalendarView = 'week' | 'month';
 
 const EVENT_FORM_VISUAL_REBUILD_STAGE22 = 'EVENT_FORM_VISUAL_REBUILD_STAGE22';
-const STAGE34_CALENDAR_COMPLETED_VISIBILITY = 'STAGE34_CALENDAR_COMPLETED_VISIBILITY calendar-entry-completed data-calendar-entry-completed data-calendar-stage34="readability-status-forms"';
+const STAGE34_CALENDAR_COMPLETED_VISIBILITY = 'STAGE34_CALENDAR_COMPLETED_VISIBILITY calendar-entry-completed data-calendar-entry-completed data-calendar-semantic34="readability-status-forms"';
 const STAGE220A20_CALENDAR_STATUS_VST = 'calendar event/task/status/deadline rows use CloseFlow Visual Source of Truth';
 void STAGE220A20_CALENDAR_STATUS_VST;
 
@@ -3102,7 +3092,7 @@ export default function Calendar() {
                             <DialogContent className="event-form-vnext-content calendar-entry-modal-viewport sm:max-w-2xl" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode="create-event" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22} data-calendar-modal-viewport-stage114d="true" aria-describedby={undefined}>
                                                                       <DialogHeader>
             <DialogTitle>Zaplanuj wydarzenie</DialogTitle>
-            <DialogDescription className="event-form-vnext-description" data-calendar-modal-description="create-event" data-stage114-calendar-modal-description="create-event" data-stage171-hidden-copy="true">Opis formularza.</DialogDescription>
+            <DialogDescription className="event-form-vnext-description" data-calendar-modal-description="create-event" data-stage114-calendar-modal-description="create-event" data-semantic171-hidden-copy="true">Opis formularza.</DialogDescription>
           </DialogHeader>
                               <form onSubmit={handleAddEvent} className="event-form-vnext" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode="create-event" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
                                 <div className="space-y-4">
