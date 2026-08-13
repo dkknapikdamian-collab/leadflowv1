@@ -34,7 +34,7 @@ import { AlertTriangle,
  */
 // VISUAL_STAGE18_LEADS_HTML_HARD_1TO1_LAYOUT
 // VISUAL_STAGE17_TODAY_HTML_HARD_1TO1_LAYOUT
-/* VISUAL_HTML_THEME_V15_STAGE01_GUARD_COMPAT keeps legacy guard text: className="app closeflow-visual-stage01" */
+/* VISUAL_HTML_THEME_V15_STAGE01_GUARD_COMPAT keeps legacy guard text: className="app closeflow-visual-semantic01" */
 /* VISUAL_HTML_THEME_V14_LAYOUT */
 /* STAGE232J_R1_LEADS_SCROLL_TOP_CUT_RUNTIME_FIX
  * Route-scoped runtime guard for /leads: one inner content scroll owner, snap near-top scroll to 0,
@@ -62,13 +62,9 @@ import GlobalQuickActions from './GlobalQuickActions';
 import ContextActionDialogsHost from './ContextActionDialogs';
 import AdminDebugToolbar from './admin-tools/AdminDebugToolbar';
 import OperatorTopBarRuntime from './OperatorTopBarRuntime';
-import VisualFoundationRuntimeStage212M from './VisualFoundationRuntimeStage212M';
 
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-compact-top-shell-source-truth.css; content merged above.
 // LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-compact-top-shell-source-truth.css' is provided once by App.tsx.
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-operator-top-trim-source-truth.css; content merged above.
 // LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-operator-top-trim-source-truth.css' is provided once by App.tsx.
-// LF-UI-SOT-007 canonical owner marker: disabled legacy import src/styles/closeflow-unified-page-canvas-stage211c.css; content merged above.
 // LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css' is provided once by App.tsx.
 import { OperatorMetricToneRuntime } from './ui-system';
 // STAGE200 disabled legacy visual/sidebar layer: /* STAGE198B disabled global 80pct density import: closeflow-desktop-density-source-truth.css */
@@ -217,7 +213,7 @@ export default function Layout({ children }: LayoutProps) {
       if (typeof document === 'undefined') return;
 
       const root = document.querySelector('#root');
-      const appShell = document.querySelector('#root > .app.closeflow-visual-stage01.cf-html-shell');
+      const appShell = document.querySelector('#root > .app.closeflow-visual-semantic01.cf-html-shell');
       const sidebar = document.querySelector('aside.sidebar[data-shell-sidebar="true"]');
       const navScroll = document.querySelector('aside.sidebar[data-shell-sidebar="true"] .nav-scroll');
       const main = document.querySelector('main[data-shell-main="true"]');
@@ -564,7 +560,7 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div
-      className="app closeflow-visual-stage01 cf-html-shell"
+      className="app closeflow-visual-semantic01 cf-html-shell"
       data-visual-stage="01-shell-sidebar"
       data-sidebar-pointer-router="true"
       onPointerDownCapture={handleSidebarPointerRouter}
@@ -572,21 +568,11 @@ export default function Layout({ children }: LayoutProps) {
       <OperatorMetricToneRuntime />
 
       <OperatorTopBarRuntime />
-      <VisualFoundationRuntimeStage212M />
 
-<aside
+      <aside
         className="sidebar"
         data-shell-sidebar="true"
         data-sidebar-layout-contract="stage195-inline"
-        style={{
-          height: '100dvh',
-          minHeight: '100dvh',
-          maxHeight: '100dvh',
-          display: 'grid',
-          gridTemplateRows: 'auto minmax(0, 1fr) auto',
-          alignSelf: 'stretch',
-          overflow: 'hidden',
-        }}
       >
         <Link to="/" className="brand" aria-label="CloseFlow - przejdź do Dziś">
           <span className="brand-logo" aria-hidden="true">
@@ -600,24 +586,11 @@ export default function Layout({ children }: LayoutProps) {
         <nav
           className="nav-scroll"
           aria-label="Główne menu CloseFlow"
-          style={{
-            minHeight: 0,
-            height: 'auto',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-          }}
         >
           {renderNavGroups()}
         </nav>
 
-        <div
-          className="sidebar-footer"
-          style={{
-            minHeight: 0,
-            alignSelf: 'end',
-            marginTop: 0,
-          }}
-        >
+        <div className="sidebar-footer">
           {shouldShowAccessStatusCard ? (
             <TrialCard
               trialDaysLeft={trialDaysLeft}

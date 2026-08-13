@@ -21,7 +21,9 @@ function reject(file, text, label) {
 reject('src/index.css', 'visual-html-theme-v14.css', 'inactive V14 global theme import');
 expect('src/components/Layout.tsx', 'OperatorTopBarRuntime', 'current operator shell runtime');
 expect('src/App.tsx', "./styles/closeflow-visual-source-truth.css", 'canonical visual owner entrypoint');
-expect('src/components/Layout.tsx', 'VisualFoundationRuntimeStage212M', 'current Stage212M visual foundation runtime');
+reject('src/components/Layout.tsx', 'VisualFoundationRuntimeStage212M', 'retired historical visual runtime');
+expect('src/styles/owners/closeflow-page-shell.css', '.app.cf-html-shell', 'canonical app shell owner');
+expect('src/styles/owners/closeflow-foundation.css', '--cf-vst-surface-canvas', 'canonical canvas token');
 expect('src/components/Layout.tsx', 'cf-html-shell', 'current HTML shell class compatibility');
 expect('src/pages/Cases.tsx', "../styles/closeflow-page-header-runtime.css", 'current Cases page header adapter');
 expect('src/pages/Cases.tsx', "../styles/closeflow-record-list-source-truth.css", 'current Cases record-list CSS import');

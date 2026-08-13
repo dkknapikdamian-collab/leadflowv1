@@ -39,6 +39,7 @@
   --cf-vst-color-danger: var(--cf-vst-color-delete);
   --cf-vst-color-danger-soft: var(--cf-vst-color-delete-soft);
   --cf-vst-surface-page: #f8fafc;
+  --cf-vst-surface-canvas: #f1f5f9;
   --cf-vst-surface-card: rgba(255, 255, 255, 0.94);
   --cf-vst-surface-card-solid: #ffffff;
   --cf-vst-surface-soft: #f8fafc;
@@ -50,6 +51,14 @@
   --cf-vst-text-main: #334155;
   --cf-vst-text-muted: #64748b;
   --cf-vst-text-faint: #94a3b8;
+  --cf-vst-shell-surface: #0f1b31;
+  --cf-vst-shell-surface-deep: #091426;
+  --cf-vst-shell-text: #f8fafc;
+  --cf-vst-shell-text-muted: rgba(248, 250, 252, 0.68);
+  --cf-vst-shell-text-faint: rgba(248, 250, 252, 0.42);
+  --cf-vst-shell-border: rgba(255, 255, 255, 0.10);
+  --cf-vst-shell-hover: rgba(255, 255, 255, 0.08);
+  --cf-vst-shell-active: rgba(255, 255, 255, 0.12);
   --cf-vst-radius-card: 20px;
   --cf-vst-radius-panel: 24px;
   --cf-vst-radius-pill: 999px;
@@ -191,6 +200,10 @@
   --cf-vst-icon-box-sm: 28px;
   --cf-vst-icon-box-md: 32px;
   --cf-vst-icon-box-lg: 38px;
+  --cf-canvas: var(--cf-vst-surface-canvas);
+  --cf-surface: var(--cf-vst-surface-card-solid);
+  --cf-surface-soft: var(--cf-vst-surface-soft);
+  --cf-border: var(--cf-vst-surface-border);
   --cf-vst-tab-height: 38px;
   --cf-vst-tab-padding-x: 12px;
   --cf-vst-badge-height: 24px;

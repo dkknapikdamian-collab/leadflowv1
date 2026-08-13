@@ -60,7 +60,8 @@ expect('src/styles/closeflow-visual-source-truth.css', './owners/closeflow-page-
 expect('src/styles/closeflow-visual-source-truth.css', './owners/closeflow-responsive-adapters.css', 'responsive semantic owner');
 reject('src/styles/closeflow-visual-source-truth.css', 'visual-stage01-shell.css', 'historical Stage01 CSS in active graph');
 expect('src/components/Layout.tsx', 'OperatorTopBarRuntime', 'operator top bar runtime');
-expect('src/components/Layout.tsx', 'VisualFoundationRuntimeStage212M', 'visual foundation runtime');
+reject('src/components/Layout.tsx', 'VisualFoundationRuntimeStage212M', 'retired historical visual runtime');
+expect('src/styles/owners/closeflow-page-shell.css', '.app.cf-html-shell', 'canonical HTML shell owner');
 expect('src/components/Layout.tsx', 'ContextActionDialogsHost', 'shared context action host');
 
 expect('src/components/GlobalQuickActions.tsx', 'VISUAL_STAGE_01_GLOBAL_BAR_ACTIONS', 'global actions visual marker');

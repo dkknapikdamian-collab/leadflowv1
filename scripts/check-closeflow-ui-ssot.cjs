@@ -138,6 +138,7 @@ function addFailure(failures, message) {
 // this check role-independent: an adapter can bypass SSOT just as easily as a
 // canonical owner when it carries a copied stage/final-lock contract.
 const HISTORICAL_OWNER_PATTERN = /(?:\bstage\d+[a-z0-9_-]*\b|\bvisual[-_]?stage[a-z0-9_-]*\b|\bhotfix[a-z0-9_-]*\b|\bfinal[-_]?lock\b|\bpacket\d+[a-z0-9_-]*\b|\bsemantic\d+[a-z0-9_-]*\b|--stage\d+[a-z0-9_-]*|data-stage\d+[a-z0-9_-]*|--(?:cf|closeflow-semantic)\d+[a-z0-9_-]*|data-cf-main-search-[a-z0-9_-]*semantic\d+[a-z0-9_-]*|data-cf-main-search-source\s*=\s*[\"']semantic\d+[a-z0-9_-]*[\"'])/i;
+const RUNTIME_STYLE_INJECTION_PATTERN = /document\.createElement\(\s*[\"']style[\"']\s*\)/i;
 const EXPLICIT_PATCH_PATTERN = /(?:activePatchLayer\s*:\s*true|PATCH_LAYER|specificity[-_ ]patch|runtime[-_ ]hotfix)/i;
 const EXPLICIT_IMPORTANT_BOUNDARY_PATTERN = /LF-UI-IMPORTANT_BOUNDARY\s*:\s*([A-Z0-9_]+)/i;
 // Match exact shell primitives only. Route classes such as `.main-clients` and
@@ -486,6 +487,7 @@ function validateCssArchitecture({
   const concernMismatchFiles = new Set();
   const concernMismatches = [];
   const invalidScopedConsumerBoundaries = new Set();
+  const runtimeStyleOwners = new Set();
   const markerTokens = registry.forbiddenRuntimeTokens || [];
   const ownerModel = registry.ownerModel || {};
   const policy = registry.scopedOwnerPolicy || {};
@@ -495,6 +497,21 @@ function validateCssArchitecture({
     const consumers = incomingCssConsumers.get(edge.to) || new Set();
     consumers.add(edge.from);
     incomingCssConsumers.set(edge.to, consumers);
+  }
+
+  // CSS injected by a reachable runtime module is part of the visual runtime
+  // contract even when it is not represented by a stylesheet import edge.
+  // Historical stage/hotfix markers in such a module therefore invalidate the
+  // same SSOT gate as historical CSS in any owner role.
+  for (const file of reachable) {
+    if (!/\.(?:ts|tsx|js|jsx)$/i.test(file)) continue;
+    const source = read(file);
+    if (!RUNTIME_STYLE_INJECTION_PATTERN.test(source)) continue;
+    runtimeStyleOwners.add(file);
+    if (HISTORICAL_OWNER_PATTERN.test(source)) {
+      addFailure(failures, `historical stage/hotfix authority remains in reachable runtime style injection: ${file}`);
+      historicalOwners.add(file);
+    }
   }
 
   for (const concern of requiredConcerns) {
@@ -725,6 +742,7 @@ function validateCssArchitecture({
     activeCssFiles: reachableCss.length,
     ACTIVE_RUNTIME_PATCH_LAYERS: activePatchLayers.size,
     HISTORICAL_STAGE_RUNTIME_OWNERS: historicalOwners.size,
+    ACTIVE_RUNTIME_STYLE_OWNERS: runtimeStyleOwners.size,
     COMPETING_VISUAL_OWNERS: duplicateOwners.size,
     UNKNOWN_VISUAL_OWNERS: unknownOwners.size,
     DUPLICATE_SEMANTIC_OWNERS: duplicateOwners.size,
@@ -746,7 +764,7 @@ function validateCssArchitecture({
     IMPORTANT_BY_FILE: importantAudit.byFile,
     OWNER_MODULE_AUDIT: ownerModuleAudit,
   };
-  return { ok: failures.length === 0, failures, summary, reachableCss, metadataByFile, importantAudit, ownerModuleAudit, concernMismatches, invalidScopedConsumerBoundaries };
+  return { ok: failures.length === 0, failures, summary, reachableCss, metadataByFile, importantAudit, ownerModuleAudit, concernMismatches, invalidScopedConsumerBoundaries, runtimeStyleOwners };
 }
 
 function diffAddedLines() {
