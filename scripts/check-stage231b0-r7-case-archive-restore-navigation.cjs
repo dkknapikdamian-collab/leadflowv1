@@ -95,7 +95,9 @@ const stagedForbidden = ['_LOCAL_CHECKS', '2026-06-09_STAGE230C'];
 let staged = '';
 try {
   staged = cp.execSync('git diff --cached --name-only', { encoding: 'utf8' });
-} catch {}
+} catch (error) {
+  fail(`unable to inspect staged files: ${error instanceof Error ? error.message : String(error)}`);
+}
 for (const token of stagedForbidden) {
   if (staged.includes(token)) fail(`forbidden staged artifact: ${token}`);
 }
