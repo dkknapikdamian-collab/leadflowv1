@@ -33,7 +33,7 @@ test('real tasks route no longer has local header create CTA or technical copy',
   assert.doesNotMatch(tasks, /onClick=\{openNewTask\}/);
   assert.doesNotMatch(tasks, /<Plus[\s\S]{0,120}Nowe zadanie[\s\S]{0,180}<\/Button>/);
   assert.doesNotMatch(tasks, /Stabilny widok Supabase bez bramki Firebase/);
-  assert.match(tasks, /data-tasks-refresh-visible-stage45m="true"/);
+  assert.match(tasks, /data-tasks-refresh-visible="true"/);
 });
 
 test('hotfix direct task modal test is included in quiet release gate', () => {
