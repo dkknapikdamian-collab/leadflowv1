@@ -5,6 +5,7 @@ const path = require('node:path');
 
 const repoRoot = path.resolve(__dirname, '..');
 const read = (relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
+const rightRailOwnerPath = 'src/styles/owners/closeflow-records-and-rails.css';
 
 function sliceBetween(text, start, end) {
   const s = text.indexOf(start);
@@ -39,17 +40,17 @@ test('Stage96 Leads layout delegates right rail width to source truth', () => {
 });
 
 test('Stage96 right rail source truth defines shared Clients/Leads width', () => {
-  const css = read('src/styles/closeflow-right-rail-source-truth.css');
-  assert.ok(css.includes('CLOSEFLOW_RIGHT_RAIL_WIDTH_POSITION_STAGE96_2026_05_16'));
+  const css = read(rightRailOwnerPath);
+  assert.match(css, /LF-UI-SOT-007_OWNER .*"ownerId":"semantic:records-rails"/);
   assert.ok(css.includes('--cf-right-rail-width-min: 300px;'));
   assert.ok(css.includes('--cf-right-rail-width-preferred: 320px;'));
   assert.ok(css.includes('--cf-right-rail-width-max: 340px;'));
-  assert.ok(css.includes('.main-leads-html, .main-clients-html'));
+  assert.match(css, /:is\(\.main-leads-html, \.main-clients-html\)/);
   assert.ok(!css.includes('195px'), 'Right rail source truth must not contain legacy narrow width literal.');
 });
 
 test('Stage96 Leads rail lock no longer moves top-value above filters', () => {
-  const css = read('src/styles/closeflow-leads-right-rail-layout-lock.css');
+  const css = read(rightRailOwnerPath);
   assert.ok(!css.includes('order: -10'), 'Leads rail lock must not move top-value above filters.');
   assert.ok(css.includes('order: 10'), 'Top value card should stay after simple filters.');
   assert.ok(!css.includes('minmax(280px, 315px)'), 'Leads rail lock must delegate width to shared source truth tokens.');
