@@ -97,7 +97,7 @@ test('B4 cancelled draft is rejected before any final record insert', async () =
 });
 
 test('B4 active draft confirmation writes one server-authoritative lead and releases claim', async () => {
-  const fixture = installDraftFetch({ id: '22222222-2222-4222-8222-222222222222', status: 'draft', workspace_id: 'workspace-a', expires_at: '2026-08-11T08:00:00.000Z', parsed_data: { name: 'Anna' } });
+  const fixture = installDraftFetch({ id: '22222222-2222-4222-8222-222222222222', status: 'draft', workspace_id: 'workspace-a', expires_at: new Date(Date.now() + 60 * 60 * 1000).toISOString(), parsed_data: { name: 'Anna' } });
   try {
     const response = responseRecorder();
     await systemHandler(request({ id: '22222222-2222-4222-8222-222222222222', action: 'confirm', userId: 'attacker-user' }), response);
