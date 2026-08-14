@@ -236,7 +236,10 @@ export function useWorkspace() {
         ...fallbackPlanAccess,
         subscriptionStatus: fallbackAccess.status,
       };
-  const isAdmin = profile?.role === 'admin' || profile?.isAdmin === true;
+  const workspaceRole = profile?.workspaceRole || profile?.role || 'member';
+  const isWorkspaceOwner = profile?.isWorkspaceOwner === true || workspaceRole === 'owner';
+  const isWorkspaceAdmin = profile?.isWorkspaceAdmin === true || isWorkspaceOwner || workspaceRole === 'admin';
+  const isAdmin = isWorkspaceAdmin || profile?.isAdmin === true;
   const isAppOwner = isCreatorProfile(profile);
   const finalAccess = isAppOwner ? buildCreatorAccessOverride(access) : access;
   const refresh = () => setRefreshToken((prev) => prev + 1);
@@ -250,6 +253,9 @@ export function useWorkspace() {
     workspaceError,
     hasAccess: finalAccess.hasAccess || isAppOwner,
     isAdmin,
+    workspaceRole,
+    isWorkspaceOwner,
+    isWorkspaceAdmin,
     isAppOwner,
     isTrialActive: finalAccess.isTrialActive,
     isPaidActive: finalAccess.isPaidActive,

@@ -1,7 +1,7 @@
 import { getClientAuthSnapshot } from './client-auth';
 import { isAdminEmail } from './admin';
 import { PLAN_IDS, TRIAL_DAYS, TRIAL_MS } from './plans';
-import { getStoredWorkspaceId, persistWorkspaceId } from './supabase-fallback';
+import { getStoredWorkspaceId, isSupabaseConfigured, persistWorkspaceId } from './supabase-fallback';
 
 type WorkspaceRecord = {
   id: string;
@@ -45,6 +45,10 @@ export async function ensureWorkspaceForUser(
   const uid = typeof user?.uid === 'string' ? user.uid.trim() : '';
   if (!uid) {
     throw new Error('Brak aktywnej sesji.');
+  }
+
+  if (isSupabaseConfigured()) {
+    throw new Error('SUPABASE_WORKSPACE_BOOTSTRAP_REQUIRED');
   }
 
   const storedWorkspaceId = getStoredWorkspaceId() || `local-${uid}`;

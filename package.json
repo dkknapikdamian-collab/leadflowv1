@@ -73,6 +73,8 @@
         "verify:migrations:supabase": "node scripts/check-supabase-migrations-guard.cjs",
         "check:c1-supabase-boundary": "node scripts/check-c1-supabase-boundary.cjs",
         "test:c1-supabase-boundary": "node --test tests/c1-supabase-boundary.test.cjs",
+        "check:c2-auth-workspace-bootstrap": "node scripts/check-c2-auth-workspace-bootstrap.cjs",
+        "test:c2-auth-workspace-bootstrap": "node --test tests/c2-auth-workspace-bootstrap.test.cjs",
         "check:a13-critical-regressions": "node scripts/check-a13-critical-regressions.cjs",
         "test:raw": "node --test \"tests/**/*.test.cjs\"",
         "test:b1-digest-authorization": "node --test tests/b1-digest-authorization.test.cjs && node --import tsx --test tests/b1-digest-authorization-runtime.test.ts",

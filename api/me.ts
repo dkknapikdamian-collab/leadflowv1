@@ -25,6 +25,21 @@ void STAGE231A_GOOGLE_AUTH_PUBLIC_TRIAL_BOOTSTRAP_DECISION;
 const FREE_LIMITS = PLAN_FREE_LIMITS;
 
 type NullableString = string | null;
+type WorkspaceRole = 'owner' | 'admin' | 'member';
+
+function normalizeWorkspaceRole(value: unknown): WorkspaceRole | null {
+  const role = String(value || '').trim().toLowerCase();
+  if (role === 'owner') return 'owner';
+  if (role === 'admin') return 'admin';
+  if (role === 'member' || role === 'operator') return 'member';
+  return null;
+}
+
+function isSameIdentity(left: unknown, right: unknown) {
+  const normalizedLeft = asNullableString(left);
+  const normalizedRight = asNullableString(right);
+  return Boolean(normalizedLeft && normalizedRight && normalizedLeft === normalizedRight);
+}
 
 type AppOwnerIdentity = {
   isAppOwner: boolean;
@@ -170,12 +185,6 @@ async function resolveAppOwnerIdentity(row: Record<string, unknown> | null, uid:
   };
 }
 
-
-function isAdminProfileRow(row: Record<string, unknown> | null) {
-  if (!row) return false;
-  const role = String(row.role ?? '').trim().toLowerCase();
-  return role === 'admin' || Boolean(row.is_admin ?? row.isAdmin ?? false);
-}
 
 function isUuid(value: unknown) {
   return typeof value === 'string'
@@ -349,6 +358,7 @@ function normalizeProfile(
   fallbackEmail: string | null,
   fallbackFullName: string | null,
   appOwnerIdentity: AppOwnerIdentity = { isAppOwner: false, source: 'none', role: 'workspace' },
+  workspaceMembership: Record<string, unknown> | null = null,
 ) {
   const email = asString(row?.email ?? fallbackEmail ?? '');
   const fallbackUidOwner = getAppOwnerUidCandidates(row, fallbackUid).some((candidate) => isServerConfiguredAppOwnerUid(candidate));
@@ -356,7 +366,9 @@ function normalizeProfile(
   const appOwner = Boolean(appOwnerIdentity.isAppOwner || fallbackUidOwner || fallbackEmailOwner);
   const appOwnerRole = appOwner ? normalizeAppOwnerRole(appOwnerIdentity.role) : 'workspace';
   const appOwnerSource = appOwnerIdentity.isAppOwner ? appOwnerIdentity.source : fallbackUidOwner ? 'env_uid' : fallbackEmailOwner ? 'env_email' : 'none';
-  const admin = isAdminProfileRow(row) || appOwner;
+  const workspaceRole = normalizeWorkspaceRole(workspaceMembership?.role);
+  const workspaceAdmin = workspaceRole === 'owner' || workspaceRole === 'admin';
+  const admin = workspaceAdmin || appOwner;
   return {
     id: asString(
       row?.id
@@ -373,7 +385,10 @@ function normalizeProfile(
     fullName: asString(row?.full_name ?? row?.fullName ?? fallbackFullName ?? ''),
     companyName: asString(row?.company_name ?? row?.companyName ?? ''),
     email,
-    role: asString(row?.role ?? (admin ? 'admin' : 'member'), admin ? 'admin' : 'member'),
+    role: workspaceRole || (admin ? 'admin' : 'member'),
+    workspaceRole: workspaceRole || 'member',
+    isWorkspaceOwner: workspaceRole === 'owner',
+    isWorkspaceAdmin: workspaceAdmin,
     isAdmin: admin,
     isAppOwner: appOwner,
     appRole: appOwner ? appOwnerRole : 'workspace',
@@ -478,6 +493,61 @@ async function fetchWorkspace(workspaceId: string | null) {
   } catch {
     return null;
   }
+}
+
+async function fetchWorkspaceMembership(workspaceId: string | null, uid: string | null) {
+  if (!workspaceId || !isUuid(workspaceId) || !uid || !isUuid(uid)) {
+    return null;
+  }
+
+  const query = `workspace_members?workspace_id=eq.${encodeURIComponent(workspaceId)}&user_id=eq.${encodeURIComponent(uid)}&select=*&limit=1`;
+  const result = await selectFirstAvailable([query]);
+  const row = Array.isArray(result.data) ? result.data[0] : null;
+  return row && typeof row === 'object' ? row as Record<string, unknown> : null;
+}
+
+async function ensureWorkspaceMembership(
+  workspaceId: string,
+  uid: string,
+  workspaceRow: Record<string, unknown> | null,
+  workspaceCreated: boolean,
+) {
+  const existing = await fetchWorkspaceMembership(workspaceId, uid);
+  if (existing) return existing;
+
+  const ownerIds = [
+    workspaceRow?.owner_user_id,
+    workspaceRow?.ownerUserId,
+    workspaceRow?.owner_id,
+    workspaceRow?.ownerId,
+    workspaceRow?.created_by_user_id,
+    workspaceRow?.createdByUserId,
+  ];
+  const canRepairAsOwner = workspaceCreated || ownerIds.some((ownerId) => isSameIdentity(ownerId, uid));
+  if (!canRepairAsOwner) {
+    throw new Error('WORKSPACE_MEMBERSHIP_REQUIRED');
+  }
+
+  try {
+    await insertWithVariants(['workspace_members'], [{
+      workspace_id: workspaceId,
+      user_id: uid,
+      role: 'owner',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    }]);
+  } catch (error) {
+    // A concurrent /api/me request may have won the unique membership insert.
+    const raced = await fetchWorkspaceMembership(workspaceId, uid);
+    if (!raced) throw error;
+    return raced;
+  }
+
+  const repaired = await fetchWorkspaceMembership(workspaceId, uid);
+  if (!repaired) {
+    throw new Error('WORKSPACE_MEMBERSHIP_BOOTSTRAP_FAILED');
+  }
+  return repaired;
 }
 
 function getProfileLookupCandidates(
@@ -790,7 +860,7 @@ async function ensureProfile(
   if (!profileRow) {
     const generatedId = crypto.randomUUID();
     const payload: Record<string, unknown> = {
-      id: generatedId,
+      id: normalizedUid || generatedId,
       email: email || '',
       full_name: fullName || '',
       company_name: '',
@@ -937,14 +1007,16 @@ function shouldRepairTrialAccessBootstrap(row: Record<string, unknown> | null, w
 }
 function resolveWorkspaceOwnerUserId(profileRow: Record<string, unknown> | null, uid: string | null) {
   return extractUuidCandidate(
-    profileRow?.id,
+    uid,
+    profileRow?.auth_user_id,
+    profileRow?.authUserId,
     profileRow?.firebase_uid,
     profileRow?.firebaseUid,
     profileRow?.auth_uid,
     profileRow?.authUid,
     profileRow?.external_auth_uid,
     profileRow?.externalAuthUid,
-    uid,
+    profileRow?.id,
     profileRow?.owner_user_id,
     profileRow?.ownerUserId,
     profileRow?.owner_id,
@@ -998,6 +1070,7 @@ async function ensureWorkspace(
     return {
       workspaceId: asNullableString((inserted as Record<string, unknown>).id) || workspaceId || '',
       workspaceRow: inserted as Record<string, unknown>,
+      created: true,
     };
   }
 
@@ -1056,6 +1129,7 @@ async function ensureWorkspace(
     return {
       workspaceId: workspaceId || asNullableString(row.id) || '',
       workspaceRow: row,
+      created: false,
     };
   }
 
@@ -1064,6 +1138,7 @@ async function ensureWorkspace(
   return {
     workspaceId,
     workspaceRow: (Array.isArray(updated) && updated[0] ? updated[0] : { ...row, ...patch }) as Record<string, unknown>,
+    created: false,
   };
 }
 
@@ -1081,6 +1156,9 @@ export default async function handler(req: any, res: any) {
           companyName: '',
           email: authContext.email || '',
           role: 'member',
+          workspaceRole: 'member',
+          isWorkspaceOwner: false,
+          isWorkspaceAdmin: false,
           isAdmin: false,
           appearanceSkin: 'classic-light',
           planningConflictWarningsEnabled: true,
@@ -1166,7 +1244,19 @@ export default async function handler(req: any, res: any) {
     profileRow = await ensureProfile(profileRow, uid, email, fullName, workspaceId);
 
     const workspace = normalizeWorkspace(workspaceRow, workspaceId, workspaceOwnerUserId);
-    const profile = normalizeProfile(profileRow, uid, email, fullName, await resolveAppOwnerIdentity(profileRow, uid, email));
+    const workspaceMembership = await ensureWorkspaceMembership(workspace.id, uid, workspaceRow, ensuredWorkspace.created);
+    const workspaceRole = normalizeWorkspaceRole(workspaceMembership.role);
+    if (!workspaceRole) {
+      throw new Error('WORKSPACE_MEMBERSHIP_ROLE_INVALID');
+    }
+    const profile = normalizeProfile(
+      profileRow,
+      uid,
+      email,
+      fullName,
+      await resolveAppOwnerIdentity(profileRow, uid, email),
+      workspaceMembership,
+    );
     const access = enrichAccessModel(buildAccess(workspace), workspace.planId);
 
     if (workspaceResolutionMode === 'historical_mapping' || workspaceResolutionMode === 'explicit_fallback') {
@@ -1185,7 +1275,17 @@ export default async function handler(req: any, res: any) {
       });
     }
 
-    res.status(200).json({ workspace, profile, access });
+    res.status(200).json({
+      workspace,
+      profile,
+      workspaceMembership: {
+        id: asNullableString(workspaceMembership.id),
+        workspaceId: asNullableString(workspaceMembership.workspace_id ?? workspaceMembership.workspaceId) || workspace.id,
+        userId: asNullableString(workspaceMembership.user_id ?? workspaceMembership.userId) || uid,
+        role: workspaceRole,
+      },
+      access,
+    });
   } catch (error: any) {
     const validHeaderWorkspaceId = headerWorkspaceId && isUuid(headerWorkspaceId) ? headerWorkspaceId : null;
     const recoveredWorkspaceId = validHeaderWorkspaceId ? await findWorkspaceId(validHeaderWorkspaceId) : null;

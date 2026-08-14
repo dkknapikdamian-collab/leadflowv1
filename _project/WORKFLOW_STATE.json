@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 72,
+  "state_revision": 73,
   "last_accepted": {
     "id": "LF-UI-SOT-007",
     "status": "ACCEPTED_AND_CLOSED",
@@ -9,17 +9,17 @@
     "evidence": "LF-UI-SOT-007 accepted and closed by owner decision at the exact accepted runtime/evidence anchor 8316a19da0905433f73d20d49c86cf374dca29b0; visual SSOT terminal counters are zero, ONE_OWNER_PER_VISUAL_CONCERN=PASS, SSOT negative tests=23/23, TSC/lint/build/diff-check=PASS, Guardian final=PASS, authenticated desktop/mobile browser proof=PASS, and Vercel production version API is exact on dev-rollout-freeze; control-plane closeout does not change product runtime"
   },
   "current_workflow": {
-    "id": "LF-UI-SOT-007",
+    "id": "LF-V1-PR-002",
     "kind": "TECHNICAL_IMPLEMENTATION_STAGE_DESIGN",
-    "contract_path": "_project/contracts/LF-UI-SOT-007_TRUE_VISUAL_DESIGN_SYSTEM_RUNTIME_CONSOLIDATION.md",
-    "status": "ACCEPTED_AND_CLOSED",
-    "base_sha": "1c14ff31b4c3e65ed101bb037eadfcc883cde599",
+    "contract_path": "_project/contracts/LF-V1-PR-002_FRESH_SIGNUP_EMAIL_VERIFICATION_WORKSPACE_BOOTSTRAP_AND_ROLE_MATRIX.md",
+    "status": "ACTIVE",
+    "base_sha": "3bcd836255e7de22ff04b85ee83bd71c2657fc8a",
     "base_branch": "dev-rollout-freeze",
-    "target_branch": "dev-rollout-freeze",
-    "blocker": null,
+    "target_branch": "codex/closeflow-v1-c2-email-workspace-bootstrap",
+    "blocker": "AI_CODE_GUARDIAN_BLOCK:SKILL_BODY_BUDGET_EXCEEDED:FULL_REPOSITORY_AUDIT_FINDINGS=1020",
     "ssot_open_findings": 0,
-    "active_stage_count": 0,
-    "terminal_audit": "PASS"
+    "active_stage_count": 1,
+    "terminal_audit": "PENDING"
   },
   "next_workflow": {"id": null, "status": "NO_CANONICAL_NEXT_CONTRACT_IN_ACTIVE_WORKFLOW_STATE"},
   "source_evidence": [
@@ -230,6 +230,12 @@
     "LF-UI-SOT-007:BROWSER_DESKTOP=PASS:BROWSER_MOBILE=PASS:authenticated_shell_routes_detail_modal_search_mobile_menu_verified:no_console_errors:no_horizontal_overflow",
     "LF-UI-SOT-007:AUTHENTICATED_POPULATED_DATA=PASS:temporary_smoke_lead_created_detail_and_search_verified_then_removed_to_empty_trash",
     "LF-UI-SOT-007:VERCEL_PRODUCTION=PASS:version_api_exact_commit_verified:branch=dev-rollout-freeze",
-    "LF-UI-SOT-007:OWNER_ACCEPTANCE=RECORDED:STATUS=ACCEPTED_AND_CLOSED:CLOSEOUT_ANCHOR=8316a19da0905433f73d20d49c86cf374dca29b0:ACTIVE_STAGE_COUNT=0:NEXT_WORKFLOW_ID=null:NO_CANONICAL_NEXT_WORKFLOW:PRODUCT_RUNTIME_CHANGED=NO"
+    "LF-UI-SOT-007:OWNER_ACCEPTANCE=RECORDED:STATUS=ACCEPTED_AND_CLOSED:CLOSEOUT_ANCHOR=8316a19da0905433f73d20d49c86cf374dca29b0:ACTIVE_STAGE_COUNT=0:NEXT_WORKFLOW_ID=null:NO_CANONICAL_NEXT_WORKFLOW:PRODUCT_RUNTIME_CHANGED=NO",
+    "LF-V1-PR-002:ROUTED_FROM=3bcd836255e7de22ff04b85ee83bd71c2657fc8a:BASE_BRANCH=dev-rollout-freeze:TARGET_BRANCH=codex/closeflow-v1-c2-email-workspace-bootstrap:NEXT_WORKFLOW_ID=null",
+    "LF-V1-PR-002:MARKETPLACE=9f84949c024e61ade235085a5b180935be42db1c:FREEBUFF=BLOCKED_PROVIDER_WORK_DEADLINE:OPENCODE=BLOCKED_MODEL_LIST_FAILED_EXPLICIT_HOST_COMMAND_REQUIRED",
+    "LF-V1-PR-002:STATIC_GATES=PASS:C2_GUARD=PASS:C2_TESTS=2/2:TSC=PASS:LINT=PASS:BUILD=PASS:GIT_DIFF_CHECK=PASS",
+    "LF-V1-PR-002:BASELINE_FAILURES=A15_EMAIL_VERIFICATION,P0_API_WORKSPACE_SCOPE:OUTSIDE_C2_SCOPE:NOT_CLAIMED_AS_C2_FAILURE",
+    "LF-V1-PR-002:GUARDIAN=BLOCK:FINDINGS=1020:BLOCKER=SKILL_BODY_BUDGET_EXCEEDED:READ_ONLY_BYTES=PASS:GIT_INTEGRITY=PASS",
+    "LF-V1-PR-002:MANUAL_RUNTIME=NOT_VERIFIED:LIVE_SUPABASE_MIGRATION_AND_FRESH_SIGNUP_REQUIRE_EXTERNAL_PROJECT_OWNER_BOUNDARY"
   ]
 }
