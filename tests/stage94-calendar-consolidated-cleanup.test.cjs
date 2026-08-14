@@ -5,7 +5,7 @@ const test = require('node:test');
 
 const repoRoot = path.resolve(__dirname, '..');
 const calendarPath = path.join(repoRoot, 'src', 'pages', 'Calendar.tsx');
-const skinPath = path.join(repoRoot, 'src', 'styles', 'closeflow-calendar-skin-only-v1.css');
+const skinPath = path.join(repoRoot, 'src', 'styles', 'owners', 'closeflow-calendar.css');
 const releasePath = path.join(repoRoot, 'scripts', 'closeflow-release-check-quiet.cjs');
 
 function read(file) {
@@ -54,7 +54,11 @@ test('Stage94 fixes broken old broad calendar CSS selector', () => {
   const skin = read(skinPath);
   assert.ok(!skin.includes('old broad calendar scope'), 'Broken old broad scope selector text must be removed.');
   assert.ok(skin.includes('#root .cf-html-view.main-calendar-html'), 'Calendar page background should use a valid scoped selector.');
-  assert.ok(skin.includes('STAGE94_CALENDAR_CONSOLIDATED_CLEANUP_WEEK_RAIL_TEXT_COUNT'), 'Week count text CSS safeguard missing.');
+  assert.match(
+    skin,
+    /#root \[data-cf-page-header-v2="calendar"\] ~ \* \.calendar-week-visible-days-v3 \.calendar-week-day-count-text/,
+    'Canonical calendar owner must style the week count text.'
+  );
 });
 
 test('Stage94 guard is included in quiet release gate', () => {
