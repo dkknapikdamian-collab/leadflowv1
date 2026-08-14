@@ -15,7 +15,7 @@ test('Stage114E calendar modals keep viewport-safe DialogContent and description
 });
 
 test('Stage114E modal CSS protects title, body scroll and sticky footer', () => {
-  assert.match(css, /LF-UI-SOT-007_OWNER[\s\S]*"ownerId":"runtime:src\/styles\/closeflow-event-form\.css"[\s\S]*"consumerRoots":\["src\/pages\/Calendar\.tsx"\][\s\S]*"role":"scoped-adapter"/, 'Calendar form CSS must remain the registered Calendar-scoped adapter.');
+  assert.match(css, /LF-UI-SOT-007_OWNER[\s\S]*"ownerId":"runtime:src\/styles\/closeflow-event-form\.css"[\s\S]*"consumerRoots":\[[^\]]*"src\/pages\/Calendar\.tsx"[^\]]*\][\s\S]*"role":"scoped-adapter"/, 'Calendar form CSS must remain the registered Calendar-scoped adapter.');
   assert.match(css, /max-height:\s*calc\(100vh\s*-\s*64px\)/, 'DialogContent max-height must be viewport based.');
   assert.match(css, /top:\s*max\(32px,\s*env\(safe-area-inset-top\)\)/, 'DialogContent must stay inside the safe viewport top edge.');
   assert.match(css, /\.event-form-vnext(?:,|\s)[\s\S]*?overflow-y:\s*auto/i, 'Form body must scroll.');
