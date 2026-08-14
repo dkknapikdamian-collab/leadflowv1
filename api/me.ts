@@ -9,6 +9,8 @@ const PAID_PLAN_IDS = new Set([
   'closeflow_basic_yearly',
   'closeflow_pro',
   'closeflow_pro_yearly',
+  'closeflow_ai',
+  'closeflow_ai_yearly',
   'closeflow_business',
   'closeflow_business_yearly',
 ]);

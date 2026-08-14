@@ -1,4 +1,5 @@
 import { normalizeWorkItem, type WorkItem } from './normalize';
+import { isTaskOrEventStatusClosed } from '../domain-statuses';
 
 export type NearestPlannedAction = {
   id: string;
@@ -26,8 +27,7 @@ function parseMoment(value: string | null | undefined) {
 }
 
 export function isClosedWorkItemStatus(status: unknown) {
-  const normalized = String(status || '').trim().toLowerCase();
-  return normalized === 'done' || normalized === 'completed' || normalized === 'cancelled' || normalized === 'canceled' || normalized === 'closed' || normalized === 'archived';
+  return isTaskOrEventStatusClosed(status);
 }
 
 export function normalizeWorkItems(items: unknown[]) {

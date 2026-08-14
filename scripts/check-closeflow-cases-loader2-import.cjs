@@ -78,12 +78,12 @@ const lucideNames = requireNames('lucide-react', [
   'Loader2',
   'Plus',
   'Search',
-  'Trash2',
   'X',
 ]);
 const dateFnsNames = requireNames('date-fns', ['format']);
 const dateFnsLocaleNames = requireNames('date-fns/locale', ['pl']);
 const entityIconNames = requireNames('../components/ui-system/EntityIcon', ['EntityIcon']);
+const deleteActionNames = requireNames('../components/ui-system/ActionIcon', ['DeleteActionIcon']);
 
 for (const forbidden of ['useEffect', 'useMemo', 'useRef', 'useState', 'FormEvent']) {
   if (routerNames.has(forbidden)) fail(`${forbidden} must not be imported from react-router-dom`);
@@ -102,10 +102,11 @@ if (lucideNames.has('pl')) fail('pl must not be imported from lucide-react in Ca
 const requiredLiteralImports = [
   "import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';",
   "import { Link, useSearchParams } from 'react-router-dom';",
-  "import { AlertTriangle, CheckCircle2, ChevronRight, Clock, ExternalLink, FileText, Loader2, Plus, Search, Trash2, X } from 'lucide-react';",
+  "import { AlertTriangle, CheckCircle2, ChevronRight, Clock, ExternalLink, FileText, Loader2, Plus, Search, X } from 'lucide-react';",
   "import { format } from 'date-fns';",
   "import { pl } from 'date-fns/locale';",
   "import { EntityIcon } from '../components/ui-system/EntityIcon';",
+  "import { DeleteActionIcon } from '../components/ui-system/ActionIcon';",
 ];
 
 for (const literal of requiredLiteralImports) {

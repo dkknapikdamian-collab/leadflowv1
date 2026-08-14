@@ -1,3 +1,4 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/pages/legal-public-pages.css","concerns":[],"scope":"route","consumerRoots":["src/pages/LegalPrivacy.tsx"],"role":"scoped-adapter","boundary":"route-component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 .cf-legal-page {
   min-height: 100vh;
   background:
@@ -64,9 +65,9 @@
 }
 
 .cf-legal-muted {
-  color: #667085 !important;
-  font-size: 13px !important;
-  font-weight: 800 !important;
+  color: #667085;
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .cf-legal-actions {

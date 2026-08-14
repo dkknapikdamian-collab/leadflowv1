@@ -1,6 +1,7 @@
 /* STAGE16_SCOPED_MUTATION_ENDPOINT: workspace-owned mutations must scope service-role writes by workspace_id. */
 import { deleteById, insertWithVariants, selectFirstAvailable, updateById, updateByIdScoped, deleteByIdScoped, updateByWorkspaceAndId, deleteByWorkspaceAndId } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
+import { requireSupabaseRequestContext } from '../src/server/_supabase-auth.js';
 import { normalizeEventStatus, normalizeTaskStatus } from '../src/lib/domain-statuses.js';
 import { RequestAuthError } from '../src/server/_supabase-auth.js';
 import { normalizeWorkItem } from '../src/lib/work-items/normalize.js';
@@ -134,15 +135,6 @@ function syntheticMissingPayloadStage232I4R8(row: any) {
   };
 }
 
-
-function getRequestUserId(req: any) {
-  const raw =
-    req.headers?.['x-user-id']
-    || req.headers?.['x-auth-uid']
-    || req.headers?.['x-firebase-uid']
-    || '';
-  return Array.isArray(raw) ? String(raw[0] || '') : String(raw || '').trim();
-}
 
 function googleSyncOptedOut(body: any) {
   return body?.googleCalendarSyncEnabled === false || body?.syncToGoogleCalendar === false;
@@ -362,7 +354,8 @@ async function syncGoogleCalendarEventAfterMutation(input: {
   row: any;
   body: any;
 }) {
-  const userId = getRequestUserId(input.req);
+  const requestContext = await requireSupabaseRequestContext(input.req);
+  const userId = requestContext.userId;
   const rowId = input.row?.id || input.body?.id;
   if (!input.workspaceId || !rowId) return;
 

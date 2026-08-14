@@ -1,0 +1,42 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:page-header-responsive","concerns":[],"scope":"route-scoped","consumerRoots":["src/pages/Calendar.tsx"],"role":"scoped-adapter","boundary":"route-component","whyNotGlobal":"This stylesheet contains only page-header wrapping and responsive composition.","whyNotDuplicate":"Header typography, actions and semantic colors are consumed from their registered owners.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+
+.cf-page-header,
+.cf-page-header-row,
+.cf-page-hero-layout,
+.cf-page-hero-actions {
+  min-width: 0;
+}
+
+.cf-page-header-row,
+.cf-page-hero-layout {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--cf-vst-layout-gap, 18px);
+}
+
+.cf-page-header-row > *,
+.cf-page-hero-layout > *,
+.cf-page-hero-actions > * {
+  min-width: 0;
+}
+
+.cf-page-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+@media (max-width: 760px) {
+  .cf-page-header-row,
+  .cf-page-hero-layout {
+    display: grid;
+    gap: 12px;
+  }
+
+  .cf-page-hero-actions {
+    justify-content: flex-start;
+  }
+}

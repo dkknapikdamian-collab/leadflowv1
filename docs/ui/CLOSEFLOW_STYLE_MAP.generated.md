@@ -1,63 +1,104 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-05-08T19:05:48.262Z
+Generated: 2026-08-14T14:17:13.168Z
 
 ## CSS variables
-- --font-sans: src/index.css:31
+- --cf-canvas: src/components/VisualFoundationRuntime.tsx:11
+- --cf-surface: src/components/VisualFoundationRuntime.tsx:12
+- --cf-surface-soft: src/components/VisualFoundationRuntime.tsx:13
+- --cf-border: src/components/VisualFoundationRuntime.tsx:14
+- --app-bg: src/components/VisualFoundationRuntime.tsx:15
+- --app-surface: src/components/VisualFoundationRuntime.tsx:16
+- --app-surface-strong: src/components/VisualFoundationRuntime.tsx:17
+- --cf-operator-bg: src/components/VisualFoundationRuntime.tsx:18
+- --cf-operator-bg-soft: src/components/VisualFoundationRuntime.tsx:19
+- --cf-canvas: src/components/VisualFoundationRuntimeStage212B.tsx:7
+- --cf-surface: src/components/VisualFoundationRuntimeStage212B.tsx:8
+- --cf-surface-soft: src/components/VisualFoundationRuntimeStage212B.tsx:9
+- --cf-border: src/components/VisualFoundationRuntimeStage212B.tsx:10
+- --cf-operator-bg: src/components/VisualFoundationRuntimeStage212B.tsx:11
+- --cf-operator-bg-soft: src/components/VisualFoundationRuntimeStage212B.tsx:12
+- --cf-vs-bg: src/components/VisualFoundationRuntimeStage212B.tsx:13
+- --cf-vs-bg-2: src/components/VisualFoundationRuntimeStage212B.tsx:14
+- --app-bg: src/components/VisualFoundationRuntimeStage212B.tsx:15
+- --app-surface: src/components/VisualFoundationRuntimeStage212B.tsx:16
+- --app-surface-strong: src/components/VisualFoundationRuntimeStage212B.tsx:17
+- --app-surface-muted: src/components/VisualFoundationRuntimeStage212B.tsx:18
+- --app-border: src/components/VisualFoundationRuntimeStage212B.tsx:19
+- --cf-canvas: src/components/VisualFoundationRuntimeStage212G.tsx:7
+- --cf-surface: src/components/VisualFoundationRuntimeStage212G.tsx:8
+- --cf-surface-soft: src/components/VisualFoundationRuntimeStage212G.tsx:9
+- --cf-border: src/components/VisualFoundationRuntimeStage212G.tsx:10
+- --cf-operator-bg: src/components/VisualFoundationRuntimeStage212G.tsx:11
+- --cf-operator-bg-soft: src/components/VisualFoundationRuntimeStage212G.tsx:12
+- --cf-vs-bg: src/components/VisualFoundationRuntimeStage212G.tsx:13
+- --cf-vs-bg-2: src/components/VisualFoundationRuntimeStage212G.tsx:14
+- --app-bg: src/components/VisualFoundationRuntimeStage212G.tsx:15
+- --app-surface: src/components/VisualFoundationRuntimeStage212G.tsx:16
+- --app-surface-strong: src/components/VisualFoundationRuntimeStage212G.tsx:17
+- --app-surface-muted: src/components/VisualFoundationRuntimeStage212G.tsx:18
+- --app-border: src/components/VisualFoundationRuntimeStage212G.tsx:19
+- --cf-canvas: src/components/VisualFoundationRuntimeStage212M.tsx:7
+- --cf-surface: src/components/VisualFoundationRuntimeStage212M.tsx:8
+- --cf-surface-soft: src/components/VisualFoundationRuntimeStage212M.tsx:9
+- --cf-border: src/components/VisualFoundationRuntimeStage212M.tsx:10
+- --cf-admin-dark: src/components/VisualFoundationRuntimeStage212M.tsx:11
+- --font-sans: src/index.css:8
+- --color-primary: src/index.css:9
+- --color-primary-foreground: src/index.css:10
+- --color-primary: src/index.css:16
+- --color-primary-foreground: src/index.css:17
+- --app-bg: src/index.css:18
+- --app-surface: src/index.css:19
+- --app-surface-strong: src/index.css:20
+- --app-surface-muted: src/index.css:21
+- --app-border: src/index.css:22
+- --app-text: src/index.css:23
+- --app-muted: src/index.css:24
+- --app-muted-soft: src/index.css:25
+- --app-primary-chip-bg: src/index.css:26
+- --app-primary-chip-text: src/index.css:27
+- --app-shadow-color: src/index.css:28
 - --color-primary: src/index.css:32
 - --color-primary-foreground: src/index.css:33
-- --color-primary: src/index.css:39
-- --color-primary-foreground: src/index.css:40
-- --app-bg: src/index.css:41
-- --app-surface: src/index.css:42
-- --app-surface-strong: src/index.css:43
-- --app-surface-muted: src/index.css:44
-- --app-border: src/index.css:45
-- --app-text: src/index.css:46
-- --app-muted: src/index.css:47
-- --app-muted-soft: src/index.css:48
-- --app-primary-chip-bg: src/index.css:49
-- --app-primary-chip-text: src/index.css:50
-- --app-shadow-color: src/index.css:51
-- --color-primary: src/index.css:55
-- --color-primary-foreground: src/index.css:56
-- --app-bg: src/index.css:57
-- --app-surface: src/index.css:58
-- --app-surface-strong: src/index.css:59
-- --app-surface-muted: src/index.css:60
-- --app-border: src/index.css:61
-- --app-text: src/index.css:62
-- --app-muted: src/index.css:63
-- --app-muted-soft: src/index.css:64
-- --app-primary-chip-bg: src/index.css:65
-- --app-primary-chip-text: src/index.css:66
-- --app-shadow-color: src/index.css:67
-- --color-primary: src/index.css:71
-- --color-primary-foreground: src/index.css:72
-- --app-bg: src/index.css:73
-- --app-surface: src/index.css:74
-- --app-surface-strong: src/index.css:75
-- --app-surface-muted: src/index.css:76
-- --app-border: src/index.css:77
-- --app-text: src/index.css:78
-- --app-muted: src/index.css:79
-- --app-muted-soft: src/index.css:80
-- --app-primary-chip-bg: src/index.css:81
-- --app-primary-chip-text: src/index.css:82
-- --app-shadow-color: src/index.css:83
-- --color-primary: src/index.css:87
-- --color-primary-foreground: src/index.css:88
-- --app-bg: src/index.css:89
-- --app-surface: src/index.css:90
-- --app-surface-strong: src/index.css:91
-- --app-surface-muted: src/index.css:92
-- --app-border: src/index.css:93
-- --app-text: src/index.css:94
-- --app-muted: src/index.css:95
-- --app-muted-soft: src/index.css:96
-- --app-primary-chip-bg: src/index.css:97
-- --app-primary-chip-text: src/index.css:98
-- --app-shadow-color: src/index.css:99
+- --app-bg: src/index.css:34
+- --app-surface: src/index.css:35
+- --app-surface-strong: src/index.css:36
+- --app-surface-muted: src/index.css:37
+- --app-border: src/index.css:38
+- --app-text: src/index.css:39
+- --app-muted: src/index.css:40
+- --app-muted-soft: src/index.css:41
+- --app-primary-chip-bg: src/index.css:42
+- --app-primary-chip-text: src/index.css:43
+- --app-shadow-color: src/index.css:44
+- --color-primary: src/index.css:48
+- --color-primary-foreground: src/index.css:49
+- --app-bg: src/index.css:50
+- --app-surface: src/index.css:51
+- --app-surface-strong: src/index.css:52
+- --app-surface-muted: src/index.css:53
+- --app-border: src/index.css:54
+- --app-text: src/index.css:55
+- --app-muted: src/index.css:56
+- --app-muted-soft: src/index.css:57
+- --app-primary-chip-bg: src/index.css:58
+- --app-primary-chip-text: src/index.css:59
+- --app-shadow-color: src/index.css:60
+- --color-primary: src/index.css:64
+- --color-primary-foreground: src/index.css:65
+- --app-bg: src/index.css:66
+- --app-surface: src/index.css:67
+- --app-surface-strong: src/index.css:68
+- --app-surface-muted: src/index.css:69
+- --app-border: src/index.css:70
+- --app-text: src/index.css:71
+- --app-muted: src/index.css:72
+- --app-muted-soft: src/index.css:73
+- --app-primary-chip-bg: src/index.css:74
+- --app-primary-chip-text: src/index.css:75
+- --app-shadow-color: src/index.css:76
+- ---: src/pages/ClientDetail.tsx:778
 - --bg: src/pages/UiPreviewVNextFull.tsx:20
 - --bg-2: src/pages/UiPreviewVNextFull.tsx:20
 - --sidebar: src/pages/UiPreviewVNextFull.tsx:20
@@ -85,62 +126,6 @@ Generated: 2026-05-08T19:05:48.262Z
 - --radius-xl: src/pages/UiPreviewVNextFull.tsx:20
 - --radius-lg: src/pages/UiPreviewVNextFull.tsx:20
 - --radius-md: src/pages/UiPreviewVNextFull.tsx:20
-- --case-shell-radius: src/styles/case-detail-simplified.css:8
-- --case-tile-radius: src/styles/case-detail-simplified.css:9
-- --case-soft-border: src/styles/case-detail-simplified.css:10
-- --case-soft-surface: src/styles/case-detail-simplified.css:11
-- --case-muted-surface: src/styles/case-detail-simplified.css:12
-- --case-primary-soft: src/styles/case-detail-simplified.css:13
-- --case-primary-line: src/styles/case-detail-simplified.css:14
-- --case-stage2-radius-xl: src/styles/case-detail-stage2.css:8
-- --case-stage2-radius-lg: src/styles/case-detail-stage2.css:9
-- --case-stage2-radius-md: src/styles/case-detail-stage2.css:10
-- --case-stage2-border: src/styles/case-detail-stage2.css:11
-- --case-stage2-surface: src/styles/case-detail-stage2.css:12
-- --case-stage2-muted: src/styles/case-detail-stage2.css:13
-- --case-stage2-primary-soft: src/styles/case-detail-stage2.css:14
-- --case-stage2-primary-line: src/styles/case-detail-stage2.css:15
-- --case-stage2-warning-bg: src/styles/case-detail-stage2.css:16
-- --case-stage2-warning-line: src/styles/case-detail-stage2.css:17
-- --case-stage2-danger-bg: src/styles/case-detail-stage2.css:18
-- --case-stage2-danger-line: src/styles/case-detail-stage2.css:19
-- --case-stage2-success-bg: src/styles/case-detail-stage2.css:20
-- --case-stage2-success-line: src/styles/case-detail-stage2.css:21
-- --cf-action-danger-text: src/styles/closeflow-action-tokens.css:6
-- --cf-action-danger-text-hover: src/styles/closeflow-action-tokens.css:7
-- --cf-action-danger-bg: src/styles/closeflow-action-tokens.css:8
-- --cf-action-danger-bg-hover: src/styles/closeflow-action-tokens.css:9
-- --cf-action-danger-border: src/styles/closeflow-action-tokens.css:10
-- --cf-action-danger-border-hover: src/styles/closeflow-action-tokens.css:11
-- --cf-action-danger-focus: src/styles/closeflow-action-tokens.css:12
-- --cf-action-neutral-text: src/styles/closeflow-action-tokens.css:13
-- --cf-action-neutral-bg: src/styles/closeflow-action-tokens.css:14
-- --cf-action-neutral-border: src/styles/closeflow-action-tokens.css:15
-- --cf-action-neutral-bg-hover: src/styles/closeflow-action-tokens.css:16
-- --cf-action-neutral-border-hover: src/styles/closeflow-action-tokens.css:17
-- --cf-session-action-danger-text: src/styles/closeflow-action-tokens.css:71
-- --cf-session-action-danger-text-hover: src/styles/closeflow-action-tokens.css:72
-- --cf-session-action-danger-bg-hover: src/styles/closeflow-action-tokens.css:73
-- --cf-session-action-danger-focus: src/styles/closeflow-action-tokens.css:74
-- --cf-alert-error-text: src/styles/closeflow-alert-severity.css:2
-- --cf-alert-error-bg: src/styles/closeflow-alert-severity.css:3
-- --cf-alert-error-border: src/styles/closeflow-alert-severity.css:4
-- --cf-alert-warning-text: src/styles/closeflow-alert-severity.css:5
-- --cf-alert-warning-bg: src/styles/closeflow-alert-severity.css:6
-- --cf-alert-warning-border: src/styles/closeflow-alert-severity.css:7
-- --cf-alert-info-text: src/styles/closeflow-alert-severity.css:8
-- --cf-alert-info-bg: src/styles/closeflow-alert-severity.css:9
-- --cf-alert-info-border: src/styles/closeflow-alert-severity.css:10
-- --cf-alert-success-text: src/styles/closeflow-alert-severity.css:11
-- --cf-alert-success-bg: src/styles/closeflow-alert-severity.css:12
-- --cf-alert-success-border: src/styles/closeflow-alert-severity.css:13
-- --cf-alert-muted-text: src/styles/closeflow-alert-severity.css:14
-- --cf-readable-card-bg: src/styles/closeflow-card-readability.css:8
-- --cf-readable-card-border: src/styles/closeflow-card-readability.css:9
-- --cf-readable-title: src/styles/closeflow-card-readability.css:10
-- --cf-readable-text: src/styles/closeflow-card-readability.css:11
-- --cf-readable-muted: src/styles/closeflow-card-readability.css:12
-- --cf-readable-empty-bg: src/styles/closeflow-card-readability.css:13
 - --cf-case-bg: src/styles/closeflow-case-detail-focus.css:2
 - --cf-case-surface: src/styles/closeflow-case-detail-focus.css:3
 - --cf-case-surface-soft: src/styles/closeflow-case-detail-focus.css:4
@@ -160,441 +145,488 @@ Generated: 2026-05-08T19:05:48.262Z
 - --cf-case-info: src/styles/closeflow-case-detail-focus.css:18
 - --cf-case-info-bg: src/styles/closeflow-case-detail-focus.css:19
 - --cf-case-shadow: src/styles/closeflow-case-detail-focus.css:20
-- --cf-entity-type-event-border: src/styles/closeflow-entity-type-tokens.css:6
-- --cf-entity-type-event-bg: src/styles/closeflow-entity-type-tokens.css:7
-- --cf-entity-type-event-text: src/styles/closeflow-entity-type-tokens.css:8
-- --cf-entity-type-task-border: src/styles/closeflow-entity-type-tokens.css:9
-- --cf-entity-type-task-bg: src/styles/closeflow-entity-type-tokens.css:10
-- --cf-entity-type-task-text: src/styles/closeflow-entity-type-tokens.css:11
-- --cf-entity-type-lead-border: src/styles/closeflow-entity-type-tokens.css:12
-- --cf-entity-type-lead-bg: src/styles/closeflow-entity-type-tokens.css:13
-- --cf-entity-type-lead-text: src/styles/closeflow-entity-type-tokens.css:14
-- --cf-form-actions-gap: src/styles/closeflow-form-actions.css:7
-- --cf-form-actions-mobile-gap: src/styles/closeflow-form-actions.css:8
-- --cf-form-actions-padding-top: src/styles/closeflow-form-actions.css:9
-- --cf-form-actions-border: src/styles/closeflow-form-actions.css:10
-- --cf-form-actions-danger-gap: src/styles/closeflow-form-actions.css:11
-- --cf-list-row-contact-text: src/styles/closeflow-list-row-tokens.css:5
-- --cf-list-row-contact-bg: src/styles/closeflow-list-row-tokens.css:6
-- --cf-list-row-contact-border: src/styles/closeflow-list-row-tokens.css:7
-- --cf-list-row-value-text: src/styles/closeflow-list-row-tokens.css:8
-- --cf-list-row-value-bg: src/styles/closeflow-list-row-tokens.css:9
-- --cf-list-row-value-border: src/styles/closeflow-list-row-tokens.css:10
-- --cf-list-row-client-text: src/styles/closeflow-list-row-tokens.css:11
-- --cf-list-row-client-bg: src/styles/closeflow-list-row-tokens.css:12
-- --cf-list-row-client-border: src/styles/closeflow-list-row-tokens.css:13
-- --cf-status-blue-text: src/styles/closeflow-list-row-tokens.css:14
-- --cf-status-blue-bg: src/styles/closeflow-list-row-tokens.css:15
-- --cf-status-blue-border: src/styles/closeflow-list-row-tokens.css:16
-- --cf-status-green-text: src/styles/closeflow-list-row-tokens.css:17
-- --cf-status-green-bg: src/styles/closeflow-list-row-tokens.css:18
-- --cf-status-green-border: src/styles/closeflow-list-row-tokens.css:19
-- --cf-status-amber-text: src/styles/closeflow-list-row-tokens.css:20
-- --cf-status-amber-bg: src/styles/closeflow-list-row-tokens.css:21
-- --cf-status-amber-border: src/styles/closeflow-list-row-tokens.css:22
-- --cf-status-red-text: src/styles/closeflow-list-row-tokens.css:23
-- --cf-status-red-bg: src/styles/closeflow-list-row-tokens.css:24
-- --cf-status-red-border: src/styles/closeflow-list-row-tokens.css:25
-- --cf-status-neutral-text: src/styles/closeflow-list-row-tokens.css:26
-- --cf-status-neutral-bg: src/styles/closeflow-list-row-tokens.css:27
-- --cf-status-neutral-border: src/styles/closeflow-list-row-tokens.css:28
-- --cf-progress-track: src/styles/closeflow-list-row-tokens.css:29
-- --cf-progress-fill: src/styles/closeflow-list-row-tokens.css:30
-- --cf-metric-tile-radius: src/styles/closeflow-metric-tiles.css:8
-- --cf-metric-tile-border: src/styles/closeflow-metric-tiles.css:9
-- --cf-metric-tile-bg: src/styles/closeflow-metric-tiles.css:10
-- --cf-metric-tile-shadow: src/styles/closeflow-metric-tiles.css:11
-- --cf-metric-tile-shadow-hover: src/styles/closeflow-metric-tiles.css:12
-- --cf-metric-tile-label: src/styles/closeflow-metric-tiles.css:13
-- --cf-metric-tile-value: src/styles/closeflow-metric-tiles.css:14
-- --cf-metric-tile-helper: src/styles/closeflow-metric-tiles.css:15
-- --cf-metric-tile-icon-bg: src/styles/closeflow-metric-tiles.css:16
-- --cf-metric-tile-icon: src/styles/closeflow-metric-tiles.css:17
-- --cf-metric-tile-min-height: src/styles/closeflow-metric-tiles.css:18
-- --cf-metric-tile-gap: src/styles/closeflow-metric-tiles.css:19
-- --cf-metric-tile-padding-y: src/styles/closeflow-metric-tiles.css:20
-- --cf-metric-tile-padding-x: src/styles/closeflow-metric-tiles.css:21
-- --cf-metric-tile-label-size: src/styles/closeflow-metric-tiles.css:22
-- --cf-metric-tile-label-line-height: src/styles/closeflow-metric-tiles.css:23
-- --cf-metric-tile-value-size: src/styles/closeflow-metric-tiles.css:24
-- --cf-metric-tile-icon-size: src/styles/closeflow-metric-tiles.css:25
-- --cf-metric-tile-icon-svg-size: src/styles/closeflow-metric-tiles.css:26
-- --cf-metric-tile-icon-radius: src/styles/closeflow-metric-tiles.css:27
-- --cf-metric-tile-icon-padding: src/styles/closeflow-metric-tiles.css:28
-- --cf-metric-tone-neutral-value: src/styles/closeflow-metric-tiles.css:29
-- --cf-metric-tone-neutral-icon-bg: src/styles/closeflow-metric-tiles.css:30
-- --cf-metric-tone-neutral-icon: src/styles/closeflow-metric-tiles.css:31
-- --cf-metric-tone-blue-value: src/styles/closeflow-metric-tiles.css:32
-- --cf-metric-tone-blue-icon-bg: src/styles/closeflow-metric-tiles.css:33
-- --cf-metric-tone-blue-icon: src/styles/closeflow-metric-tiles.css:34
-- --cf-metric-tone-amber-value: src/styles/closeflow-metric-tiles.css:35
-- --cf-metric-tone-amber-icon-bg: src/styles/closeflow-metric-tiles.css:36
-- --cf-metric-tone-amber-icon: src/styles/closeflow-metric-tiles.css:37
-- --cf-metric-tone-red-value: src/styles/closeflow-metric-tiles.css:38
-- --cf-metric-tone-red-icon-bg: src/styles/closeflow-metric-tiles.css:39
-- --cf-metric-tone-red-icon: src/styles/closeflow-metric-tiles.css:40
-- --cf-metric-tone-green-value: src/styles/closeflow-metric-tiles.css:41
-- --cf-metric-tone-green-icon-bg: src/styles/closeflow-metric-tiles.css:42
-- --cf-metric-tone-green-icon: src/styles/closeflow-metric-tiles.css:43
-- --cf-metric-tone-purple-value: src/styles/closeflow-metric-tiles.css:44
-- --cf-metric-tone-purple-icon-bg: src/styles/closeflow-metric-tiles.css:45
-- --cf-metric-tone-purple-icon: src/styles/closeflow-metric-tiles.css:46
-- --cf-metric-tile-min-height: src/styles/closeflow-metric-tiles.css:361
-- --cf-metric-tile-gap: src/styles/closeflow-metric-tiles.css:362
-- --cf-metric-tile-label-size: src/styles/closeflow-metric-tiles.css:363
-- --cf-metric-tile-value-size: src/styles/closeflow-metric-tiles.css:364
-- --cf-metric-tile-icon-size: src/styles/closeflow-metric-tiles.css:365
-- --cf-metric-tile-icon-svg-size: src/styles/closeflow-metric-tiles.css:366
-- --cf-page-head-title: src/styles/closeflow-page-header.css:8
-- --cf-page-head-muted: src/styles/closeflow-page-header.css:9
-- --cf-page-head-kicker: src/styles/closeflow-page-header.css:10
-- --cf-page-head-action-gap: src/styles/closeflow-page-header.css:11
-- --cf-page-hero-bg: src/styles/closeflow-page-header.css:12
-- --cf-page-hero-border: src/styles/closeflow-page-header.css:13
-- --cf-page-hero-shadow: src/styles/closeflow-page-header.css:14
-- --cf-page-hero-radius: src/styles/closeflow-page-header.css:15
-- --cf-page-hero-padding-y: src/styles/closeflow-page-header.css:16
-- --cf-page-hero-padding-x: src/styles/closeflow-page-header.css:17
-- --cf-page-hero-title-size: src/styles/closeflow-page-header.css:18
-- --cf-page-hero-kicker-bg: src/styles/closeflow-page-header.css:19
-- --cf-page-hero-kicker-border: src/styles/closeflow-page-header.css:20
-- --cf-page-hero-kicker-text: src/styles/closeflow-page-header.css:21
-- --cf-surface-page: src/styles/closeflow-surface-tokens.css:2
-- --cf-surface-card: src/styles/closeflow-surface-tokens.css:3
-- --cf-surface-card-muted: src/styles/closeflow-surface-tokens.css:4
-- --cf-surface-border: src/styles/closeflow-surface-tokens.css:5
-- --cf-surface-text: src/styles/closeflow-surface-tokens.css:6
-- --cf-surface-muted: src/styles/closeflow-surface-tokens.css:7
-- --cf-surface-shadow: src/styles/closeflow-surface-tokens.css:8
-- --cfv-bg: src/styles/closeflow-vnext-ui-contract.css:6
-- --cfv-bg-2: src/styles/closeflow-vnext-ui-contract.css:6
-- --cfv-sidebar: src/styles/closeflow-vnext-ui-contract.css:6
-- --cfv-card: src/styles/closeflow-vnext-ui-contract.css:6
-- --cfv-card-soft: src/styles/closeflow-vnext-ui-contract.css:6
-- --cfv-text: src/styles/closeflow-vnext-ui-contract.css:6
-- --cfv-muted: src/styles/closeflow-vnext-ui-contract.css:6
-- --cfv-muted-2: src/styles/closeflow-vnext-ui-contract.css:6
-- --cfv-line: src/styles/closeflow-vnext-ui-contract.css:6
-- --cfv-accent: src/styles/closeflow-vnext-ui-contract.css:6
-- --cfv-accent-2: src/styles/closeflow-vnext-ui-contract.css:6
-- --cfv-accent-soft: src/styles/closeflow-vnext-ui-contract.css:6
-- --cfv-green: src/styles/closeflow-vnext-ui-contract.css:6
-- --cfv-red: src/styles/closeflow-vnext-ui-contract.css:6
-- --cfv-amber: src/styles/closeflow-vnext-ui-contract.css:6
-- --cfv-shadow: src/styles/closeflow-vnext-ui-contract.css:6
-- --cfv-shadow-soft: src/styles/closeflow-vnext-ui-contract.css:6
-- --cfv-radius-xl: src/styles/closeflow-vnext-ui-contract.css:6
-- --cfv-radius-lg: src/styles/closeflow-vnext-ui-contract.css:6
-- --cfv-radius-md: src/styles/closeflow-vnext-ui-contract.css:6
-- --eliteflow-desktop-scale: src/styles/eliteflow-desktop-compact-scale.css:9
-- --eliteflow-metric-radius: src/styles/eliteflow-final-metric-tiles-hard-lock.css:7
-- --eliteflow-metric-border: src/styles/eliteflow-final-metric-tiles-hard-lock.css:8
-- --eliteflow-metric-bg: src/styles/eliteflow-final-metric-tiles-hard-lock.css:9
-- --eliteflow-metric-label: src/styles/eliteflow-final-metric-tiles-hard-lock.css:10
-- --eliteflow-metric-value: src/styles/eliteflow-final-metric-tiles-hard-lock.css:11
-- --eliteflow-metric-icon-bg: src/styles/eliteflow-final-metric-tiles-hard-lock.css:12
-- --eliteflow-metric-icon: src/styles/eliteflow-final-metric-tiles-hard-lock.css:13
-- --eliteflow-metric-shadow: src/styles/eliteflow-final-metric-tiles-hard-lock.css:14
-- --eliteflow-metric-shadow-hover: src/styles/eliteflow-final-metric-tiles-hard-lock.css:15
-- --eliteflow-metric-min-height: src/styles/eliteflow-final-metric-tiles-hard-lock.css:16
-- --eliteflow-metric-gap: src/styles/eliteflow-final-metric-tiles-hard-lock.css:17
-- --eliteflow-metric-min-height: src/styles/eliteflow-final-metric-tiles-hard-lock.css:290
-- --eliteflow-metric-gap: src/styles/eliteflow-final-metric-tiles-hard-lock.css:291
-- --eliteflow-font-weight-label: src/styles/eliteflow-metric-tiles-color-font-parity.css:7
-- --eliteflow-font-weight-value: src/styles/eliteflow-metric-tiles-color-font-parity.css:8
-- --eliteflow-label-color: src/styles/eliteflow-metric-tiles-color-font-parity.css:9
-- --eliteflow-value-slate: src/styles/eliteflow-metric-tiles-color-font-parity.css:10
-- --eliteflow-value-blue: src/styles/eliteflow-metric-tiles-color-font-parity.css:11
-- --eliteflow-value-red: src/styles/eliteflow-metric-tiles-color-font-parity.css:12
-- --eliteflow-value-orange: src/styles/eliteflow-metric-tiles-color-font-parity.css:13
-- --eliteflow-value-green: src/styles/eliteflow-metric-tiles-color-font-parity.css:14
-- --eliteflow-value-purple: src/styles/eliteflow-metric-tiles-color-font-parity.css:15
-- --cf-semantic-danger-bg: src/styles/eliteflow-semantic-badges-and-today-sections.css:14
-- --cf-semantic-danger-border: src/styles/eliteflow-semantic-badges-and-today-sections.css:15
-- --cf-semantic-danger-text: src/styles/eliteflow-semantic-badges-and-today-sections.css:16
-- --cf-semantic-event-bg: src/styles/eliteflow-semantic-badges-and-today-sections.css:18
-- --cf-semantic-event-border: src/styles/eliteflow-semantic-badges-and-today-sections.css:19
-- --cf-semantic-event-text: src/styles/eliteflow-semantic-badges-and-today-sections.css:20
-- --cf-semantic-task-bg: src/styles/eliteflow-semantic-badges-and-today-sections.css:22
-- --cf-semantic-task-border: src/styles/eliteflow-semantic-badges-and-today-sections.css:23
-- --cf-semantic-task-text: src/styles/eliteflow-semantic-badges-and-today-sections.css:24
-- --cf-semantic-note-bg: src/styles/eliteflow-semantic-badges-and-today-sections.css:26
-- --cf-semantic-note-border: src/styles/eliteflow-semantic-badges-and-today-sections.css:27
-- --cf-semantic-note-text: src/styles/eliteflow-semantic-badges-and-today-sections.css:28
-- --cf-semantic-lead-bg: src/styles/eliteflow-semantic-badges-and-today-sections.css:30
-- --cf-semantic-lead-border: src/styles/eliteflow-semantic-badges-and-today-sections.css:31
-- --cf-semantic-lead-text: src/styles/eliteflow-semantic-badges-and-today-sections.css:32
-- --cf-semantic-case-bg: src/styles/eliteflow-semantic-badges-and-today-sections.css:34
-- --cf-semantic-case-border: src/styles/eliteflow-semantic-badges-and-today-sections.css:35
-- --cf-semantic-case-text: src/styles/eliteflow-semantic-badges-and-today-sections.css:36
-- --cf-semantic-client-bg: src/styles/eliteflow-semantic-badges-and-today-sections.css:38
-- --cf-semantic-client-border: src/styles/eliteflow-semantic-badges-and-today-sections.css:39
-- --cf-semantic-client-text: src/styles/eliteflow-semantic-badges-and-today-sections.css:40
-- --cf-semantic-neutral-bg: src/styles/eliteflow-semantic-badges-and-today-sections.css:42
-- --cf-semantic-neutral-border: src/styles/eliteflow-semantic-badges-and-today-sections.css:43
-- --cf-semantic-neutral-text: src/styles/eliteflow-semantic-badges-and-today-sections.css:44
-- --cf-detail-hotfix-card: src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:7
-- --cf-detail-hotfix-soft: src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:8
-- --cf-detail-hotfix-border: src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:9
-- --cf-detail-hotfix-mini-border: src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:10
-- --cf-detail-hotfix-text: src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:11
-- --cf-detail-hotfix-muted: src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:12
-- --cf-detail-hotfix-blue: src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:13
-- --cf-detail-hotfix-shadow: src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:14
-- --cf-hotfix-border: src/styles/hotfix-right-rail-dark-wrappers.css:4
-- --cf-hotfix-shadow: src/styles/hotfix-right-rail-dark-wrappers.css:5
-- --tw-ring-color: src/styles/hotfix-task-stat-tiles-clean.css:20
-- --tw-ring-shadow: src/styles/hotfix-task-stat-tiles-clean.css:21
-- --cf30a-text: src/styles/stage30a-mobile-contrast-lock.css:15
-- --cf30a-muted: src/styles/stage30a-mobile-contrast-lock.css:16
-- --cf30a-soft-muted: src/styles/stage30a-mobile-contrast-lock.css:17
-- --cf30a-border: src/styles/stage30a-mobile-contrast-lock.css:18
-- --cf30a-card: src/styles/stage30a-mobile-contrast-lock.css:19
-- --cf30a-card-soft: src/styles/stage30a-mobile-contrast-lock.css:20
-- --cf30a-blue: src/styles/stage30a-mobile-contrast-lock.css:21
-- --cf30a-blue-strong: src/styles/stage30a-mobile-contrast-lock.css:22
-- --cf30a-blue-soft: src/styles/stage30a-mobile-contrast-lock.css:23
-- --cf30a-shadow: src/styles/stage30a-mobile-contrast-lock.css:24
-- --cf-tone-case-active-bg: src/styles/stage35-clients-value-detail-cleanup.css:5
-- --cf-tone-case-active-text: src/styles/stage35-clients-value-detail-cleanup.css:6
-- --cf-tone-case-active-border: src/styles/stage35-clients-value-detail-cleanup.css:7
-- --cf-tone-no-case-bg: src/styles/stage35-clients-value-detail-cleanup.css:9
-- --cf-tone-no-case-text: src/styles/stage35-clients-value-detail-cleanup.css:10
-- --cf-tone-no-case-border: src/styles/stage35-clients-value-detail-cleanup.css:11
-- --cf-tone-leads-bg: src/styles/stage35-clients-value-detail-cleanup.css:13
-- --cf-tone-leads-text: src/styles/stage35-clients-value-detail-cleanup.css:14
-- --cf-tone-leads-border: src/styles/stage35-clients-value-detail-cleanup.css:15
-- --cf-tone-value-bg: src/styles/stage35-clients-value-detail-cleanup.css:17
-- --cf-tone-value-text: src/styles/stage35-clients-value-detail-cleanup.css:18
-- --cf-tone-value-border: src/styles/stage35-clients-value-detail-cleanup.css:19
-- --cf-tone-contact-bg: src/styles/stage35-clients-value-detail-cleanup.css:21
-- --cf-tone-contact-text: src/styles/stage35-clients-value-detail-cleanup.css:22
-- --cf-tone-contact-border: src/styles/stage35-clients-value-detail-cleanup.css:23
-- --cf-tone-attention-bg: src/styles/stage35-clients-value-detail-cleanup.css:25
-- --cf-tone-attention-text: src/styles/stage35-clients-value-detail-cleanup.css:26
-- --cf-tone-attention-border: src/styles/stage35-clients-value-detail-cleanup.css:27
-- --cf-tone-blocked-bg: src/styles/stage35-clients-value-detail-cleanup.css:29
-- --cf-tone-blocked-text: src/styles/stage35-clients-value-detail-cleanup.css:30
-- --cf-tone-blocked-border: src/styles/stage35-clients-value-detail-cleanup.css:31
-- --cf-tone-portal-bg: src/styles/stage35-clients-value-detail-cleanup.css:33
-- --cf-tone-portal-text: src/styles/stage35-clients-value-detail-cleanup.css:34
-- --cf-tone-portal-border: src/styles/stage35-clients-value-detail-cleanup.css:35
-- --cf-tone-gap-bg: src/styles/stage35-clients-value-detail-cleanup.css:37
-- --cf-tone-gap-text: src/styles/stage35-clients-value-detail-cleanup.css:38
-- --cf-tone-gap-border: src/styles/stage35-clients-value-detail-cleanup.css:39
-- --cf-tone-task-bg: src/styles/stage35-clients-value-detail-cleanup.css:41
-- --cf-tone-task-text: src/styles/stage35-clients-value-detail-cleanup.css:42
-- --cf-tone-task-border: src/styles/stage35-clients-value-detail-cleanup.css:43
-- --cf-tone-event-bg: src/styles/stage35-clients-value-detail-cleanup.css:45
-- --cf-tone-event-text: src/styles/stage35-clients-value-detail-cleanup.css:46
-- --cf-tone-event-border: src/styles/stage35-clients-value-detail-cleanup.css:47
-- --cf-tone-note-bg: src/styles/stage35-clients-value-detail-cleanup.css:49
-- --cf-tone-note-text: src/styles/stage35-clients-value-detail-cleanup.css:50
-- --cf-tone-note-border: src/styles/stage35-clients-value-detail-cleanup.css:51
-- --cf-bg: src/styles/visual-html-theme-v14.css:3
-- --cf-sidebar: src/styles/visual-html-theme-v14.css:4
-- --cf-text: src/styles/visual-html-theme-v14.css:5
-- --cf-muted: src/styles/visual-html-theme-v14.css:6
-- --cf-line: src/styles/visual-html-theme-v14.css:7
-- --cf-blue: src/styles/visual-html-theme-v14.css:8
-- --cf-blue-soft: src/styles/visual-html-theme-v14.css:9
-- --cf-shadow: src/styles/visual-html-theme-v14.css:10
-- --cf-shadow-soft: src/styles/visual-html-theme-v14.css:11
-- --cf-radius-xl: src/styles/visual-html-theme-v14.css:12
-- --cf-vs-bg: src/styles/visual-stage01-shell.css:7
-- --cf-vs-bg-2: src/styles/visual-stage01-shell.css:8
-- --cf-vs-sidebar: src/styles/visual-stage01-shell.css:9
-- --cf-vs-sidebar-2: src/styles/visual-stage01-shell.css:10
-- --cf-vs-card: src/styles/visual-stage01-shell.css:11
-- --cf-vs-card-soft: src/styles/visual-stage01-shell.css:12
-- --cf-vs-text: src/styles/visual-stage01-shell.css:13
-- --cf-vs-muted: src/styles/visual-stage01-shell.css:14
-- --cf-vs-muted-2: src/styles/visual-stage01-shell.css:15
-- --cf-vs-line: src/styles/visual-stage01-shell.css:16
-- --cf-vs-line-2: src/styles/visual-stage01-shell.css:17
-- --cf-vs-blue: src/styles/visual-stage01-shell.css:18
-- --cf-vs-blue-2: src/styles/visual-stage01-shell.css:19
-- --cf-vs-blue-soft: src/styles/visual-stage01-shell.css:20
-- --cf-vs-green: src/styles/visual-stage01-shell.css:21
-- --cf-vs-red: src/styles/visual-stage01-shell.css:22
-- --cf-vs-amber: src/styles/visual-stage01-shell.css:23
-- --cf-vs-violet: src/styles/visual-stage01-shell.css:24
-- --cf-vs-shadow: src/styles/visual-stage01-shell.css:25
-- --cf-vs-shadow-soft: src/styles/visual-stage01-shell.css:26
-- --cf-vs-radius-xl: src/styles/visual-stage01-shell.css:27
-- --cf-vs-radius-lg: src/styles/visual-stage01-shell.css:28
-- --cf-vs-radius-md: src/styles/visual-stage01-shell.css:29
-- --cf-blue: src/styles/visual-stage03-leads.css:3
-- --cf-blue-soft: src/styles/visual-stage03-leads.css:4
-- --cf-text: src/styles/visual-stage03-leads.css:5
-- --cf-muted: src/styles/visual-stage03-leads.css:6
-- --cf-line: src/styles/visual-stage03-leads.css:7
-- --cf-card: src/styles/visual-stage03-leads.css:8
-- --cf-blue: src/styles/visual-stage04-lead-detail.css:3
-- --cf-blue-soft: src/styles/visual-stage04-lead-detail.css:4
-- --cf-green: src/styles/visual-stage04-lead-detail.css:5
-- --cf-red: src/styles/visual-stage04-lead-detail.css:6
-- --cf-amber: src/styles/visual-stage04-lead-detail.css:7
-- --cf-violet: src/styles/visual-stage04-lead-detail.css:8
-- --cf-text: src/styles/visual-stage04-lead-detail.css:9
-- --cf-muted: src/styles/visual-stage04-lead-detail.css:10
-- --cf-line: src/styles/visual-stage04-lead-detail.css:11
-- --cf-card: src/styles/visual-stage04-lead-detail.css:12
-- --cf-soft: src/styles/visual-stage04-lead-detail.css:13
-- --cf-client-card: src/styles/visual-stage06-client-detail.css:9
-- --cf-client-soft: src/styles/visual-stage06-client-detail.css:10
-- --cf-client-text: src/styles/visual-stage06-client-detail.css:11
-- --cf-client-muted: src/styles/visual-stage06-client-detail.css:12
-- --cf-client-line: src/styles/visual-stage06-client-detail.css:13
-- --cf-client-blue: src/styles/visual-stage06-client-detail.css:14
-- --cf-cases-card: src/styles/visual-stage07-cases.css:9
-- --cf-cases-soft: src/styles/visual-stage07-cases.css:10
-- --cf-cases-text: src/styles/visual-stage07-cases.css:11
-- --cf-cases-muted: src/styles/visual-stage07-cases.css:12
-- --cf-cases-line: src/styles/visual-stage07-cases.css:13
-- --cf-cases-blue: src/styles/visual-stage07-cases.css:14
-- --cf-cases-green: src/styles/visual-stage07-cases.css:15
-- --cf-cases-red: src/styles/visual-stage07-cases.css:16
-- --cf-cases-amber: src/styles/visual-stage07-cases.css:17
-- --cf-cases-shadow: src/styles/visual-stage07-cases.css:18
-- --cf-cases-shadow-soft: src/styles/visual-stage07-cases.css:19
-- --cf16-bg: src/styles/visual-stage16-today-html-reset.css:8
-- --cf16-bg-2: src/styles/visual-stage16-today-html-reset.css:9
-- --cf16-sidebar: src/styles/visual-stage16-today-html-reset.css:10
-- --cf16-sidebar-2: src/styles/visual-stage16-today-html-reset.css:11
-- --cf16-card: src/styles/visual-stage16-today-html-reset.css:12
-- --cf16-card-soft: src/styles/visual-stage16-today-html-reset.css:13
-- --cf16-text: src/styles/visual-stage16-today-html-reset.css:14
-- --cf16-muted: src/styles/visual-stage16-today-html-reset.css:15
-- --cf16-muted-2: src/styles/visual-stage16-today-html-reset.css:16
-- --cf16-line: src/styles/visual-stage16-today-html-reset.css:17
-- --cf16-line-2: src/styles/visual-stage16-today-html-reset.css:18
-- --cf16-blue: src/styles/visual-stage16-today-html-reset.css:19
-- --cf16-blue-2: src/styles/visual-stage16-today-html-reset.css:20
-- --cf16-blue-soft: src/styles/visual-stage16-today-html-reset.css:21
-- --cf16-green: src/styles/visual-stage16-today-html-reset.css:22
-- --cf16-green-soft: src/styles/visual-stage16-today-html-reset.css:23
-- --cf16-red: src/styles/visual-stage16-today-html-reset.css:24
-- --cf16-red-soft: src/styles/visual-stage16-today-html-reset.css:25
-- --cf16-amber: src/styles/visual-stage16-today-html-reset.css:26
-- --cf16-amber-soft: src/styles/visual-stage16-today-html-reset.css:27
-- --cf16-violet: src/styles/visual-stage16-today-html-reset.css:28
-- --cf16-violet-soft: src/styles/visual-stage16-today-html-reset.css:29
-- --cf16-shadow: src/styles/visual-stage16-today-html-reset.css:30
-- --cf16-shadow-soft: src/styles/visual-stage16-today-html-reset.css:31
-- --cf16-radius-xl: src/styles/visual-stage16-today-html-reset.css:32
-- --cf16-radius-lg: src/styles/visual-stage16-today-html-reset.css:33
-- --cf16-radius-md: src/styles/visual-stage16-today-html-reset.css:34
-- --cf17-bg: src/styles/visual-stage17-today-hard-1to1.css:7
-- --cf17-bg-2: src/styles/visual-stage17-today-hard-1to1.css:8
-- --cf17-sidebar: src/styles/visual-stage17-today-hard-1to1.css:9
-- --cf17-sidebar-2: src/styles/visual-stage17-today-hard-1to1.css:10
-- --cf17-card: src/styles/visual-stage17-today-hard-1to1.css:11
-- --cf17-card-soft: src/styles/visual-stage17-today-hard-1to1.css:12
-- --cf17-text: src/styles/visual-stage17-today-hard-1to1.css:13
-- --cf17-muted: src/styles/visual-stage17-today-hard-1to1.css:14
-- --cf17-muted-2: src/styles/visual-stage17-today-hard-1to1.css:15
-- --cf17-line: src/styles/visual-stage17-today-hard-1to1.css:16
-- --cf17-line-2: src/styles/visual-stage17-today-hard-1to1.css:17
-- --cf17-blue: src/styles/visual-stage17-today-hard-1to1.css:18
-- --cf17-blue-2: src/styles/visual-stage17-today-hard-1to1.css:19
-- --cf17-blue-soft: src/styles/visual-stage17-today-hard-1to1.css:20
-- --cf17-green: src/styles/visual-stage17-today-hard-1to1.css:21
-- --cf17-green-soft: src/styles/visual-stage17-today-hard-1to1.css:22
-- --cf17-red: src/styles/visual-stage17-today-hard-1to1.css:23
-- --cf17-red-soft: src/styles/visual-stage17-today-hard-1to1.css:24
+- --cf-case-history-bg: src/styles/closeflow-case-history-visual-source-truth.css:4
+- --cf-case-history-line: src/styles/closeflow-case-history-visual-source-truth.css:5
+- --cf-case-history-text: src/styles/closeflow-case-history-visual-source-truth.css:6
+- --cf-case-history-muted: src/styles/closeflow-case-history-visual-source-truth.css:7
+- --cf-case-history-blue: src/styles/closeflow-case-history-visual-source-truth.css:8
+- --cf-case-history-blue-soft: src/styles/closeflow-case-history-visual-source-truth.css:9
+- --cf-case-history-bg: src/styles/closeflow-case-history-visual-source-truth.css:326
+- --cf-case-history-line: src/styles/closeflow-case-history-visual-source-truth.css:327
+- --cf-case-history-text: src/styles/closeflow-case-history-visual-source-truth.css:328
+- --cf-case-history-muted: src/styles/closeflow-case-history-visual-source-truth.css:329
+- --cf-case-history-blue-soft: src/styles/closeflow-case-history-visual-source-truth.css:330
+- --cf-case-history-bg: src/styles/closeflow-case-history-visual-source-truth.css:492
+- --cf-case-history-line: src/styles/closeflow-case-history-visual-source-truth.css:493
+- --cf-case-history-text: src/styles/closeflow-case-history-visual-source-truth.css:494
+- --cf-case-history-muted: src/styles/closeflow-case-history-visual-source-truth.css:495
+- --cf-case-history-blue-soft: src/styles/closeflow-case-history-visual-source-truth.css:496
+- --cf-case-history-bg: src/styles/closeflow-case-history-visual-source-truth.css:629
+- --cf-case-history-line: src/styles/closeflow-case-history-visual-source-truth.css:630
+- --cf-case-history-text: src/styles/closeflow-case-history-visual-source-truth.css:631
+- --cf-case-history-muted: src/styles/closeflow-case-history-visual-source-truth.css:632
+- --cf-case-history-blue-soft: src/styles/closeflow-case-history-visual-source-truth.css:633
+- --cf-desktop-density-page-max: src/styles/closeflow-desktop-density-source-truth.css:16
+- --cf-desktop-density-page-gap: src/styles/closeflow-desktop-density-source-truth.css:17
+- --cf-desktop-density-card-radius: src/styles/closeflow-desktop-density-source-truth.css:18
+- --cf-entity-icon-size-sm: src/styles/design-system/closeflow-icons.css:3
+- --cf-entity-icon-size-md: src/styles/design-system/closeflow-icons.css:4
+- --cf-entity-icon-size-lg: src/styles/design-system/closeflow-icons.css:5
+- --cf-entity-icon-client: src/styles/design-system/closeflow-icons.css:7
+- --cf-entity-icon-lead: src/styles/design-system/closeflow-icons.css:8
+- --cf-entity-icon-case: src/styles/design-system/closeflow-icons.css:9
+- --cf-entity-icon-task: src/styles/design-system/closeflow-icons.css:10
+- --cf-entity-icon-event: src/styles/design-system/closeflow-icons.css:11
+- --cf-entity-icon-activity: src/styles/design-system/closeflow-icons.css:12
+- --cf-entity-icon-payment: src/styles/design-system/closeflow-icons.css:13
+- --cf-entity-icon-commission: src/styles/design-system/closeflow-icons.css:14
+- --cf-entity-icon-ai: src/styles/design-system/closeflow-icons.css:15
+- --cf-entity-icon-template: src/styles/design-system/closeflow-icons.css:16
+- --cf-entity-icon-notification: src/styles/design-system/closeflow-icons.css:17
+- --cf-entity-icon-settings: src/styles/design-system/closeflow-icons.css:18
+- --cf-entity-icon-billing: src/styles/design-system/closeflow-icons.css:19
+- --cf-finance-tone-bg: src/styles/finance/closeflow-finance.css:659
+- --cf-finance-tone-border: src/styles/finance/closeflow-finance.css:660
+- --cf-finance-tone-text: src/styles/finance/closeflow-finance.css:661
+- --cf-finance-tone-bg: src/styles/finance/closeflow-finance.css:665
+- --cf-finance-tone-border: src/styles/finance/closeflow-finance.css:666
+- --cf-finance-tone-text: src/styles/finance/closeflow-finance.css:667
+- --cf-finance-tone-bg: src/styles/finance/closeflow-finance.css:672
+- --cf-finance-tone-border: src/styles/finance/closeflow-finance.css:673
+- --cf-finance-tone-text: src/styles/finance/closeflow-finance.css:674
+- --cf-finance-tone-bg: src/styles/finance/closeflow-finance.css:678
+- --cf-finance-tone-border: src/styles/finance/closeflow-finance.css:679
+- --cf-finance-tone-text: src/styles/finance/closeflow-finance.css:680
+- --cf-finance-tone-bg: src/styles/finance/closeflow-finance.css:684
+- --cf-finance-tone-border: src/styles/finance/closeflow-finance.css:685
+- --cf-finance-tone-text: src/styles/finance/closeflow-finance.css:686
+- --cf-finance-tone-bg: src/styles/finance/closeflow-finance.css:690
+- --cf-finance-tone-border: src/styles/finance/closeflow-finance.css:691
+- --cf-finance-tone-text: src/styles/finance/closeflow-finance.css:692
+- --cf-action-danger-text: src/styles/owners/closeflow-actions.css:4
+- --cf-action-danger-text-hover: src/styles/owners/closeflow-actions.css:5
+- --cf-action-danger-bg: src/styles/owners/closeflow-actions.css:6
+- --cf-action-danger-bg-hover: src/styles/owners/closeflow-actions.css:7
+- --cf-action-danger-border: src/styles/owners/closeflow-actions.css:8
+- --cf-action-danger-border-hover: src/styles/owners/closeflow-actions.css:9
+- --cf-action-danger-focus: src/styles/owners/closeflow-actions.css:10
+- --cf-action-neutral-text: src/styles/owners/closeflow-actions.css:11
+- --cf-action-neutral-bg: src/styles/owners/closeflow-actions.css:12
+- --cf-action-neutral-border: src/styles/owners/closeflow-actions.css:13
+- --cf-action-neutral-bg-hover: src/styles/owners/closeflow-actions.css:14
+- --cf-action-neutral-border-hover: src/styles/owners/closeflow-actions.css:15
+- --cf-session-action-danger-text: src/styles/owners/closeflow-actions.css:66
+- --cf-session-action-danger-text-hover: src/styles/owners/closeflow-actions.css:67
+- --cf-session-action-danger-bg-hover: src/styles/owners/closeflow-actions.css:68
+- --cf-session-action-danger-focus: src/styles/owners/closeflow-actions.css:69
+- --cf-trash-icon-color: src/styles/owners/closeflow-actions.css:154
+- --cf-trash-icon-hover-color: src/styles/owners/closeflow-actions.css:155
+- --cf-trash-icon-bg: src/styles/owners/closeflow-actions.css:156
+- --cf-trash-icon-hover-bg: src/styles/owners/closeflow-actions.css:157
+- --cf-trash-icon-border: src/styles/owners/closeflow-actions.css:158
+- --cf-trash-icon-hover-border: src/styles/owners/closeflow-actions.css:159
+- --cf-header-action-primary-bg: src/styles/owners/closeflow-actions.css:217
+- --cf-header-action-primary-bg-hover: src/styles/owners/closeflow-actions.css:218
+- --cf-header-action-primary-border: src/styles/owners/closeflow-actions.css:219
+- --cf-header-action-primary-border-hover: src/styles/owners/closeflow-actions.css:220
+- --cf-header-action-primary-text: src/styles/owners/closeflow-actions.css:221
+- --cf-header-action-primary-shadow: src/styles/owners/closeflow-actions.css:222
+- --cf-header-action-ai-bg: src/styles/owners/closeflow-actions.css:224
+- --cf-header-action-ai-bg-hover: src/styles/owners/closeflow-actions.css:225
+- --cf-header-action-ai-border: src/styles/owners/closeflow-actions.css:226
+- --cf-header-action-ai-border-hover: src/styles/owners/closeflow-actions.css:227
+- --cf-header-action-ai-text: src/styles/owners/closeflow-actions.css:228
+- --cf-header-action-ai-shadow: src/styles/owners/closeflow-actions.css:229
+- --cf-header-action-secondary-bg: src/styles/owners/closeflow-actions.css:231
+- --cf-header-action-secondary-bg-hover: src/styles/owners/closeflow-actions.css:232
+- --cf-header-action-secondary-border: src/styles/owners/closeflow-actions.css:233
+- --cf-header-action-secondary-border-hover: src/styles/owners/closeflow-actions.css:234
+- --cf-header-action-secondary-text: src/styles/owners/closeflow-actions.css:235
+- --cf-header-action-secondary-shadow: src/styles/owners/closeflow-actions.css:236
+- --cf-action-cluster-gap: src/styles/owners/closeflow-actions.css:294
+- --cf-action-cluster-gap: src/styles/owners/closeflow-actions.css:299
+- --cf-form-actions-gap: src/styles/owners/closeflow-actions.css:319
+- --cf-form-actions-mobile-gap: src/styles/owners/closeflow-actions.css:320
+- --cf-form-actions-padding-top: src/styles/owners/closeflow-actions.css:321
+- --cf-form-actions-border: src/styles/owners/closeflow-actions.css:322
+- --cf-form-actions-danger-gap: src/styles/owners/closeflow-actions.css:323
+- --cf-cal-page-bg: src/styles/owners/closeflow-calendar.css:4
+- --cf-cal-page-glow: src/styles/owners/closeflow-calendar.css:5
+- --cf-cal-surface: src/styles/owners/closeflow-calendar.css:7
+- --cf-cal-surface-soft: src/styles/owners/closeflow-calendar.css:8
+- --cf-cal-surface-muted: src/styles/owners/closeflow-calendar.css:9
+- --cf-cal-surface-selected: src/styles/owners/closeflow-calendar.css:10
+- --cf-cal-border: src/styles/owners/closeflow-calendar.css:12
+- --cf-cal-border-strong: src/styles/owners/closeflow-calendar.css:13
+- --cf-cal-border-selected: src/styles/owners/closeflow-calendar.css:14
+- --cf-cal-shadow: src/styles/owners/closeflow-calendar.css:16
+- --cf-cal-shadow-soft: src/styles/owners/closeflow-calendar.css:17
+- --cf-cal-text: src/styles/owners/closeflow-calendar.css:19
+- --cf-cal-text-muted: src/styles/owners/closeflow-calendar.css:20
+- --cf-cal-text-soft: src/styles/owners/closeflow-calendar.css:21
+- --cf-cal-blue: src/styles/owners/closeflow-calendar.css:23
+- --cf-cal-blue-soft: src/styles/owners/closeflow-calendar.css:24
+- --cf-cal-violet: src/styles/owners/closeflow-calendar.css:26
+- --cf-cal-violet-soft: src/styles/owners/closeflow-calendar.css:27
+- --cf-cal-green: src/styles/owners/closeflow-calendar.css:29
+- --cf-cal-green-soft: src/styles/owners/closeflow-calendar.css:30
+- --cf-cal-red: src/styles/owners/closeflow-calendar.css:32
+- --cf-cal-red-soft: src/styles/owners/closeflow-calendar.css:33
+- --cf-cal-phone: src/styles/owners/closeflow-calendar.css:35
+- --cf-cal-phone-soft: src/styles/owners/closeflow-calendar.css:36
+- --cf-cal-radius-xl: src/styles/owners/closeflow-calendar.css:38
+- --cf-cal-radius-lg: src/styles/owners/closeflow-calendar.css:39
+- --cf-cal-radius-md: src/styles/owners/closeflow-calendar.css:40
+- --cf-cal-radius-sm: src/styles/owners/closeflow-calendar.css:41
+- --cf-cal-radius-pill: src/styles/owners/closeflow-calendar.css:42
+- --cf-cal-button-height: src/styles/owners/closeflow-calendar.css:44
+- --cf-cal-button-radius: src/styles/owners/closeflow-calendar.css:45
+- --cf-cal-event-chip-height: src/styles/owners/closeflow-calendar.css:47
+- --cf-cal-v2-text: src/styles/owners/closeflow-calendar.css:392
+- --cf-cal-v2-muted: src/styles/owners/closeflow-calendar.css:393
+- --cf-cal-v2-border: src/styles/owners/closeflow-calendar.css:394
+- --cf-cal-v2-blue: src/styles/owners/closeflow-calendar.css:395
+- --cf-cal-v2-blue-soft: src/styles/owners/closeflow-calendar.css:396
+- --cf-cal-v2-blue-border: src/styles/owners/closeflow-calendar.css:397
+- --cf-cal-v2-violet: src/styles/owners/closeflow-calendar.css:398
+- --cf-cal-v2-violet-soft: src/styles/owners/closeflow-calendar.css:399
+- --cf-cal-v2-violet-border: src/styles/owners/closeflow-calendar.css:400
+- --cf-cal-v2-green: src/styles/owners/closeflow-calendar.css:401
+- --cf-cal-v2-green-soft: src/styles/owners/closeflow-calendar.css:402
+- --cf-cal-v2-green-border: src/styles/owners/closeflow-calendar.css:403
+- --cf-cal-v2-red: src/styles/owners/closeflow-calendar.css:404
+- --cf-cal-v2-red-soft: src/styles/owners/closeflow-calendar.css:405
+- --cf-cal-v2-red-border: src/styles/owners/closeflow-calendar.css:406
+- --cf-calendar-color-scope-v2: src/styles/owners/closeflow-calendar.css:409
+- --cf-cal-month-chip-height-v1: src/styles/owners/closeflow-calendar.css:546
+- --cf-cal-month-chip-gap-v1: src/styles/owners/closeflow-calendar.css:547
+- --cf-cal-month-chip-radius-v1: src/styles/owners/closeflow-calendar.css:548
+- --cf-cal-month-chip-border-v1: src/styles/owners/closeflow-calendar.css:549
+- --cf-cal-month-chip-text-v1: src/styles/owners/closeflow-calendar.css:550
+- --cf-cal-month-chip-muted-v1: src/styles/owners/closeflow-calendar.css:551
+- --cf-cal-month-chip-blue-v1: src/styles/owners/closeflow-calendar.css:552
+- --cf-cal-month-chip-violet-v1: src/styles/owners/closeflow-calendar.css:553
+- --cf-cal-month-chip-violet-bg-v1: src/styles/owners/closeflow-calendar.css:554
+- --cf-cal-month-chip-violet-border-v1: src/styles/owners/closeflow-calendar.css:555
+- --cf-cal-month-chip-green-v1: src/styles/owners/closeflow-calendar.css:556
+- --cf-cal-month-chip-green-bg-v1: src/styles/owners/closeflow-calendar.css:557
+- --cf-cal-month-chip-green-border-v1: src/styles/owners/closeflow-calendar.css:558
+- --cf-calendar-month-chip-overlap-fix-v1: src/styles/owners/closeflow-calendar.css:561
+- --cf-cal-month-row-height-r2: src/styles/owners/closeflow-calendar.css:705
+- --cf-cal-month-row-gap-r2: src/styles/owners/closeflow-calendar.css:706
+- --cf-cal-month-row-radius-r2: src/styles/owners/closeflow-calendar.css:707
+- --cf-cal-month-row-border-r2: src/styles/owners/closeflow-calendar.css:708
+- --cf-cal-month-row-text-r2: src/styles/owners/closeflow-calendar.css:709
+- --cf-cal-month-row-muted-r2: src/styles/owners/closeflow-calendar.css:710
+- --cf-cal-month-row-bg-r2: src/styles/owners/closeflow-calendar.css:711
+- --cf-cal-month-badge-width-r2: src/styles/owners/closeflow-calendar.css:713
+- --cf-cal-month-badge-height-r2: src/styles/owners/closeflow-calendar.css:714
+- --cf-cal-month-event-r2: src/styles/owners/closeflow-calendar.css:716
+- --cf-cal-month-event-bg-r2: src/styles/owners/closeflow-calendar.css:717
+- --cf-cal-month-event-border-r2: src/styles/owners/closeflow-calendar.css:718
+- --cf-cal-month-task-r2: src/styles/owners/closeflow-calendar.css:720
+- --cf-cal-month-task-bg-r2: src/styles/owners/closeflow-calendar.css:721
+- --cf-cal-month-task-border-r2: src/styles/owners/closeflow-calendar.css:722
+- --cf-cal-month-phone-r2: src/styles/owners/closeflow-calendar.css:724
+- --cf-cal-month-phone-bg-r2: src/styles/owners/closeflow-calendar.css:725
+- --cf-cal-month-phone-border-r2: src/styles/owners/closeflow-calendar.css:726
+- --cf-calendar-month-rows-no-overlap-repair2: src/styles/owners/closeflow-calendar.css:729
+- --cf-month-entry-height-v3: src/styles/owners/closeflow-calendar.css:970
+- --cf-month-entry-gap-v3: src/styles/owners/closeflow-calendar.css:971
+- --cf-month-entry-radius-v3: src/styles/owners/closeflow-calendar.css:972
+- --cf-month-entry-border-v3: src/styles/owners/closeflow-calendar.css:973
+- --cf-month-entry-text-v3: src/styles/owners/closeflow-calendar.css:974
+- --cf-month-entry-muted-v3: src/styles/owners/closeflow-calendar.css:975
+- --cf-month-entry-event-v3: src/styles/owners/closeflow-calendar.css:976
+- --cf-month-entry-event-bg-v3: src/styles/owners/closeflow-calendar.css:977
+- --cf-month-entry-event-border-v3: src/styles/owners/closeflow-calendar.css:978
+- --cf-month-entry-task-v3: src/styles/owners/closeflow-calendar.css:979
+- --cf-month-entry-task-bg-v3: src/styles/owners/closeflow-calendar.css:980
+- --cf-month-entry-task-border-v3: src/styles/owners/closeflow-calendar.css:981
+- --cf-month-entry-phone-v3: src/styles/owners/closeflow-calendar.css:982
+- --cf-month-entry-phone-bg-v3: src/styles/owners/closeflow-calendar.css:983
+- --cf-month-entry-phone-border-v3: src/styles/owners/closeflow-calendar.css:984
+- --cf-month-entry-lead-v3: src/styles/owners/closeflow-calendar.css:985
+- --cf-month-entry-lead-bg-v3: src/styles/owners/closeflow-calendar.css:986
+- --cf-month-entry-lead-border-v3: src/styles/owners/closeflow-calendar.css:987
+- --cf-cal-month-line-height-v4: src/styles/owners/closeflow-calendar.css:1150
+- --cf-cal-month-line-gap-v4: src/styles/owners/closeflow-calendar.css:1151
+- --cf-cal-month-line-text-v4: src/styles/owners/closeflow-calendar.css:1152
+- --cf-cal-month-line-muted-v4: src/styles/owners/closeflow-calendar.css:1153
+- --cf-cal-month-line-event-v4: src/styles/owners/closeflow-calendar.css:1154
+- --cf-cal-month-line-task-v4: src/styles/owners/closeflow-calendar.css:1155
+- --cf-cal-month-line-phone-v4: src/styles/owners/closeflow-calendar.css:1156
+- --cf-cal-month-line-lead-v4: src/styles/owners/closeflow-calendar.css:1157
+- --cf-modal-shell: src/styles/owners/closeflow-dialogs.css:5
+- --cf-modal-shell-2: src/styles/owners/closeflow-dialogs.css:6
+- --cf-modal-shell-3: src/styles/owners/closeflow-dialogs.css:7
+- --cf-modal-ink-on-dark: src/styles/owners/closeflow-dialogs.css:8
+- --cf-modal-muted-on-dark: src/styles/owners/closeflow-dialogs.css:9
+- --cf-modal-soft-on-dark: src/styles/owners/closeflow-dialogs.css:10
+- --cf-modal-border: src/styles/owners/closeflow-dialogs.css:11
+- --cf-modal-border-strong: src/styles/owners/closeflow-dialogs.css:12
+- --cf-modal-accent: src/styles/owners/closeflow-dialogs.css:13
+- --cf-modal-accent-strong: src/styles/owners/closeflow-dialogs.css:14
+- --cf-modal-accent-hover: src/styles/owners/closeflow-dialogs.css:15
+- --cf-modal-focus: src/styles/owners/closeflow-dialogs.css:16
+- --cf-modal-danger: src/styles/owners/closeflow-dialogs.css:17
+- --cf-modal-danger-soft: src/styles/owners/closeflow-dialogs.css:18
+- --cf-modal-warning: src/styles/owners/closeflow-dialogs.css:19
+- --cf-modal-warning-soft: src/styles/owners/closeflow-dialogs.css:20
+- --cf-modal-info: src/styles/owners/closeflow-dialogs.css:21
+- --cf-modal-info-soft: src/styles/owners/closeflow-dialogs.css:22
+- --cf-modal-success-soft: src/styles/owners/closeflow-dialogs.css:23
+- --cf-modal-field-bg: src/styles/owners/closeflow-dialogs.css:25
+- --cf-modal-field-ink: src/styles/owners/closeflow-dialogs.css:26
+- --cf-modal-field-muted: src/styles/owners/closeflow-dialogs.css:27
+- --cf-modal-field-border: src/styles/owners/closeflow-dialogs.css:28
+- --cf-modal-field-border-hover: src/styles/owners/closeflow-dialogs.css:29
+- --cf-modal-field-disabled-bg: src/styles/owners/closeflow-dialogs.css:30
+- --cf-modal-field-disabled-ink: src/styles/owners/closeflow-dialogs.css:31
+- --cf-modal-radius: src/styles/owners/closeflow-dialogs.css:33
+- --cf-modal-radius-sm: src/styles/owners/closeflow-dialogs.css:34
+- --cf-modal-shadow: src/styles/owners/closeflow-dialogs.css:35
+- --primary: src/styles/owners/closeflow-dialogs.css:227
+- --cf-vst-color-primary: src/styles/owners/closeflow-foundation.css:4
+- --cf-vst-color-primary-strong: src/styles/owners/closeflow-foundation.css:5
+- --cf-vst-color-primary-soft: src/styles/owners/closeflow-foundation.css:6
+- --cf-vst-color-primary-border: src/styles/owners/closeflow-foundation.css:7
+- --cf-vst-color-note: src/styles/owners/closeflow-foundation.css:8
+- --cf-vst-color-note-soft: src/styles/owners/closeflow-foundation.css:9
+- --cf-vst-color-note-border: src/styles/owners/closeflow-foundation.css:10
+- --cf-vst-color-task: src/styles/owners/closeflow-foundation.css:12
+- --cf-vst-color-task-soft: src/styles/owners/closeflow-foundation.css:13
+- --cf-vst-color-task-border: src/styles/owners/closeflow-foundation.css:14
+- --cf-vst-color-event: src/styles/owners/closeflow-foundation.css:16
+- --cf-vst-color-event-soft: src/styles/owners/closeflow-foundation.css:17
+- --cf-vst-color-event-border: src/styles/owners/closeflow-foundation.css:18
+- --cf-vst-color-payment: src/styles/owners/closeflow-foundation.css:20
+- --cf-vst-color-payment-soft: src/styles/owners/closeflow-foundation.css:21
+- --cf-vst-color-payment-border: src/styles/owners/closeflow-foundation.css:22
+- --cf-vst-color-status: src/styles/owners/closeflow-foundation.css:24
+- --cf-vst-color-status-soft: src/styles/owners/closeflow-foundation.css:25
+- --cf-vst-color-status-border: src/styles/owners/closeflow-foundation.css:26
+- --cf-vst-color-case-item: src/styles/owners/closeflow-foundation.css:28
+- --cf-vst-color-case-item-soft: src/styles/owners/closeflow-foundation.css:29
+- --cf-vst-color-case-item-border: src/styles/owners/closeflow-foundation.css:30
+- --cf-vst-color-delete: src/styles/owners/closeflow-foundation.css:31
+- --cf-vst-color-delete-strong: src/styles/owners/closeflow-foundation.css:32
+- --cf-vst-color-delete-soft: src/styles/owners/closeflow-foundation.css:33
+- --cf-vst-color-delete-border: src/styles/owners/closeflow-foundation.css:34
+- --cf-vst-color-success: src/styles/owners/closeflow-foundation.css:35
+- --cf-vst-color-success-soft: src/styles/owners/closeflow-foundation.css:36
+- --cf-vst-color-warning: src/styles/owners/closeflow-foundation.css:37
+- --cf-vst-color-warning-soft: src/styles/owners/closeflow-foundation.css:38
+- --cf-vst-color-danger: src/styles/owners/closeflow-foundation.css:39
+- --cf-vst-color-danger-soft: src/styles/owners/closeflow-foundation.css:40
+- --cf-vst-surface-page: src/styles/owners/closeflow-foundation.css:41
+- --cf-vst-surface-canvas: src/styles/owners/closeflow-foundation.css:42
+- --cf-vst-surface-card: src/styles/owners/closeflow-foundation.css:43
+- --cf-vst-surface-card-solid: src/styles/owners/closeflow-foundation.css:44
+- --cf-vst-surface-soft: src/styles/owners/closeflow-foundation.css:45
+- --cf-vst-surface-border: src/styles/owners/closeflow-foundation.css:46
+- --cf-vst-surface-border-strong: src/styles/owners/closeflow-foundation.css:47
+- --cf-vst-shadow-card: src/styles/owners/closeflow-foundation.css:48
+- --cf-vst-shadow-modal: src/styles/owners/closeflow-foundation.css:49
+- --cf-vst-text-strong: src/styles/owners/closeflow-foundation.css:50
+- --cf-vst-text-main: src/styles/owners/closeflow-foundation.css:51
+- --cf-vst-text-muted: src/styles/owners/closeflow-foundation.css:52
+- --cf-vst-text-faint: src/styles/owners/closeflow-foundation.css:53
+- --cf-vst-shell-surface: src/styles/owners/closeflow-foundation.css:54
+- --cf-vst-shell-surface-deep: src/styles/owners/closeflow-foundation.css:55
+- --cf-vst-shell-text: src/styles/owners/closeflow-foundation.css:56
+- --cf-vst-shell-text-muted: src/styles/owners/closeflow-foundation.css:57
+- --cf-vst-shell-text-faint: src/styles/owners/closeflow-foundation.css:58
+- --cf-vst-shell-border: src/styles/owners/closeflow-foundation.css:59
+- --cf-vst-shell-hover: src/styles/owners/closeflow-foundation.css:60
+- --cf-vst-shell-active: src/styles/owners/closeflow-foundation.css:61
+- --cf-vst-radius-card: src/styles/owners/closeflow-foundation.css:62
+- --cf-vst-radius-panel: src/styles/owners/closeflow-foundation.css:63
+- --cf-vst-radius-pill: src/styles/owners/closeflow-foundation.css:64
+- --cf-vst-radius-button: src/styles/owners/closeflow-foundation.css:65
+- --cf-vst-metric-number-color: src/styles/owners/closeflow-foundation.css:66
+- --cf-vst-metric-number-weight: src/styles/owners/closeflow-foundation.css:67
+- --cf-vst-kind-color: src/styles/owners/closeflow-foundation.css:71
+- --cf-vst-kind-bg: src/styles/owners/closeflow-foundation.css:72
+- --cf-vst-kind-border: src/styles/owners/closeflow-foundation.css:73
+- --cf-vst-kind-color: src/styles/owners/closeflow-foundation.css:78
+- --cf-vst-kind-bg: src/styles/owners/closeflow-foundation.css:79
+- --cf-vst-kind-border: src/styles/owners/closeflow-foundation.css:80
+- --cf-vst-kind-color: src/styles/owners/closeflow-foundation.css:86
+- --cf-vst-kind-bg: src/styles/owners/closeflow-foundation.css:87
+- --cf-vst-kind-border: src/styles/owners/closeflow-foundation.css:88
+- --cf-vst-kind-color: src/styles/owners/closeflow-foundation.css:94
+- --cf-vst-kind-bg: src/styles/owners/closeflow-foundation.css:95
+- --cf-vst-kind-border: src/styles/owners/closeflow-foundation.css:96
+- --cf-vst-kind-color: src/styles/owners/closeflow-foundation.css:102
+- --cf-vst-kind-bg: src/styles/owners/closeflow-foundation.css:103
+- --cf-vst-kind-border: src/styles/owners/closeflow-foundation.css:104
+- --cf-vst-kind-color: src/styles/owners/closeflow-foundation.css:111
+- --cf-vst-kind-bg: src/styles/owners/closeflow-foundation.css:112
+- --cf-vst-kind-border: src/styles/owners/closeflow-foundation.css:113
+- --cf-vst-kind-color: src/styles/owners/closeflow-foundation.css:119
+- --cf-vst-kind-bg: src/styles/owners/closeflow-foundation.css:120
+- --cf-vst-kind-border: src/styles/owners/closeflow-foundation.css:121
+- --cf-vst-font-family-app: src/styles/owners/closeflow-foundation.css:127
+- --cf-vst-font-family-number: src/styles/owners/closeflow-foundation.css:128
+- --cf-vst-font-size-micro: src/styles/owners/closeflow-foundation.css:129
+- --cf-vst-font-size-meta: src/styles/owners/closeflow-foundation.css:130
+- --cf-vst-font-size-label: src/styles/owners/closeflow-foundation.css:131
+- --cf-vst-font-size-body-sm: src/styles/owners/closeflow-foundation.css:132
+- --cf-vst-font-size-body: src/styles/owners/closeflow-foundation.css:133
+- --cf-vst-font-size-card-title: src/styles/owners/closeflow-foundation.css:134
+- --cf-vst-font-size-section-title: src/styles/owners/closeflow-foundation.css:135
+- --cf-vst-font-size-page-title: src/styles/owners/closeflow-foundation.css:136
+- --cf-vst-font-size-page-title-lg: src/styles/owners/closeflow-foundation.css:137
+- --cf-vst-font-size-metric: src/styles/owners/closeflow-foundation.css:138
+- --cf-vst-font-size-metric-lg: src/styles/owners/closeflow-foundation.css:139
+- --cf-vst-font-weight-regular: src/styles/owners/closeflow-foundation.css:140
+- --cf-vst-font-weight-medium: src/styles/owners/closeflow-foundation.css:141
+- --cf-vst-font-weight-semibold: src/styles/owners/closeflow-foundation.css:142
+- --cf-vst-font-weight-bold: src/styles/owners/closeflow-foundation.css:143
+- --cf-vst-font-weight-heavy: src/styles/owners/closeflow-foundation.css:144
+- --cf-vst-line-height-tight: src/styles/owners/closeflow-foundation.css:145
+- --cf-vst-line-height-title: src/styles/owners/closeflow-foundation.css:146
+- --cf-vst-line-height-body: src/styles/owners/closeflow-foundation.css:147
+- --cf-vst-line-height-button: src/styles/owners/closeflow-foundation.css:148
+- --cf-vst-letter-spacing-tight: src/styles/owners/closeflow-foundation.css:149
+- --cf-vst-letter-spacing-label: src/styles/owners/closeflow-foundation.css:150
+- --cf-vst-space-2xs: src/styles/owners/closeflow-foundation.css:151
+- --cf-vst-space-xs: src/styles/owners/closeflow-foundation.css:152
+- --cf-vst-space-sm: src/styles/owners/closeflow-foundation.css:153
+- --cf-vst-space-md: src/styles/owners/closeflow-foundation.css:154
+- --cf-vst-space-lg: src/styles/owners/closeflow-foundation.css:155
+- --cf-vst-space-xl: src/styles/owners/closeflow-foundation.css:156
+- --cf-vst-space-2xl: src/styles/owners/closeflow-foundation.css:157
+- --cf-vst-space-3xl: src/styles/owners/closeflow-foundation.css:158
+- --cf-vst-layout-page-max: src/styles/owners/closeflow-foundation.css:159
+- --cf-vst-layout-content-max: src/styles/owners/closeflow-foundation.css:160
+- --cf-vst-layout-right-rail: src/styles/owners/closeflow-foundation.css:161
+- --cf-vst-layout-sidebar: src/styles/owners/closeflow-foundation.css:162
 
 ## Danger/red local classes
-- bg-red-100: src/components/ErrorBoundary.tsx:32
-- text-red-600: src/components/ErrorBoundary.tsx:32
-- border-red-500: src/components/ui/select.tsx:42
-- ring-red-500: src/components/ui/select.tsx:42
-- text-rose-500: src/lib/access.ts:87
-- bg-rose-500: src/lib/access.ts:87
-- bg-rose-500: src/lib/access.ts:88
-- text-rose-600: src/lib/access.ts:88
-- text-rose-400: src/lib/access.ts:88
-- text-rose-500: src/lib/access.ts:132
-- bg-rose-500: src/lib/access.ts:132
-- bg-rose-500: src/lib/access.ts:133
-- text-rose-600: src/lib/access.ts:133
-- text-rose-400: src/lib/access.ts:133
-- text-rose-500: src/lib/access.ts:167
-- bg-rose-500: src/lib/access.ts:167
-- bg-rose-500: src/lib/access.ts:168
-- text-rose-600: src/lib/access.ts:168
-- text-rose-400: src/lib/access.ts:168
-- text-red-500: src/pages/ClientPortal.tsx:223
-- bg-red-100: src/pages/ClientPortal.tsx:265
-- text-red-600: src/pages/ClientPortal.tsx:265
-- border-red-200: src/pages/ClientPortal.tsx:276
-- text-red-500: src/pages/ClientPortal.tsx:276
-- text-red-600: src/pages/ClientPortal.tsx:377
-- bg-red-50: src/pages/ClientPortal.tsx:377
-- border-red-100: src/pages/Today.tsx:1290
-- bg-red-50: src/pages/Today.tsx:1290
-- border-red-200: src/pages/Today.tsx:1290
-- bg-red-100: src/pages/Today.tsx:1290
-- text-red-700: src/pages/Today.tsx:1291
-- text-red-950: src/pages/Today.tsx:1292
-- text-red-700: src/pages/Today.tsx:1293
-- border-red-100: src/pages/Today.tsx:1308
-- bg-red-50: src/pages/Today.tsx:1308
-- text-red-800: src/pages/Today.tsx:1309
-- border-red-100: src/pages/Today.tsx:1318
-- border-red-200: src/pages/Today.tsx:1318
-- bg-red-50: src/pages/Today.tsx:1318
-- text-red-950: src/pages/Today.tsx:1320
-- text-red-700: src/pages/Today.tsx:1321
-- border-rose-200: src/pages/Today.tsx:2186
-- text-rose-700: src/pages/Today.tsx:2188
-- text-rose-600: src/pages/Today.tsx:2306
-- bg-rose-50: src/pages/Today.tsx:2307
-- border-rose-100: src/pages/Today.tsx:2426
-- bg-rose-50: src/pages/Today.tsx:2426
-- border-rose-100: src/pages/Today.tsx:2435
-- text-rose-500: src/pages/Today.tsx:2450
-- text-rose-600: src/pages/Today.tsx:2477
-- text-rose-500: src/pages/Today.tsx:2489
-- border-rose-100: src/pages/Today.tsx:2490
-- bg-rose-50: src/pages/Today.tsx:2490
-- border-rose-200: src/pages/Today.tsx:2802
-- bg-rose-50: src/pages/Today.tsx:2802
-- bg-rose-50: src/pages/Today.tsx:2802
-- text-rose-700: src/pages/Today.tsx:2804
-- text-rose-600: src/pages/Today.tsx:2853
-- border-rose-200: src/pages/Today.tsx:2854
-- text-rose-700: src/pages/Today.tsx:2854
-- text-rose-500: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
-- text-rose-600: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
-- text-rose-700: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
-- text-red-500: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
-- text-red-600: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
-- text-red-700: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
-- bg-rose-50: src/styles/visual-stage20-tasks-safe-css.css:226
-- bg-red-50: src/styles/visual-stage20-tasks-safe-css.css:227
-- bg-red-50: src/styles/visual-stage21-today-final-lock.css:470
-- bg-rose-50: src/styles/visual-stage21-today-final-lock.css:471
-- bg-rose-50: src/styles/visual-stage22-leads-final-lock.css:459
-- bg-red-50: src/styles/visual-stage22-leads-final-lock.css:460
-- bg-rose-50: src/styles/visual-stage22-leads-final-lock.css:461
-- bg-red-50: src/styles/visual-stage22-leads-final-lock.css:462
-- bg-rose-50: src/styles/visual-stage22-leads-final-lock.css:463
-- bg-red-50: src/styles/visual-stage22-leads-final-lock.css:464
+- bg-red-100: src/components/ErrorBoundary.tsx:34
+- text-red-600: src/components/ErrorBoundary.tsx:34
+- border-red-500: src/components/ui/select.tsx:46
+- ring-red-500: src/components/ui/select.tsx:46
+- text-red-700: src/components/ui-system/semantic-visual-registry.ts:43
+- text-red-600: src/components/ui-system/semantic-visual-registry.ts:44
+- text-red-600: src/components/ui-system/semantic-visual-registry.ts:45
+- bg-red-50: src/components/ui-system/semantic-visual-registry.ts:46
+- bg-red-100: src/components/ui-system/semantic-visual-registry.ts:47
+- border-red-200: src/components/ui-system/semantic-visual-registry.ts:48
+- bg-red-50: src/components/ui-system/semantic-visual-registry.ts:49
+- text-red-700: src/components/ui-system/semantic-visual-registry.ts:49
+- border-red-200: src/components/ui-system/semantic-visual-registry.ts:49
+- ring-red-500: src/components/ui-system/semantic-visual-registry.ts:50
+- text-rose-700: src/components/ui-system/semantic-visual-registry.ts:54
+- text-rose-600: src/components/ui-system/semantic-visual-registry.ts:55
+- text-rose-600: src/components/ui-system/semantic-visual-registry.ts:56
+- bg-rose-50: src/components/ui-system/semantic-visual-registry.ts:57
+- bg-rose-100: src/components/ui-system/semantic-visual-registry.ts:58
+- border-rose-200: src/components/ui-system/semantic-visual-registry.ts:59
+- bg-rose-50: src/components/ui-system/semantic-visual-registry.ts:60
+- text-rose-700: src/components/ui-system/semantic-visual-registry.ts:60
+- border-rose-200: src/components/ui-system/semantic-visual-registry.ts:60
+- ring-rose-500: src/components/ui-system/semantic-visual-registry.ts:61
+- bg-rose-50: src/components/ui-system/StatusPill.tsx:16
+- text-rose-700: src/components/ui-system/StatusPill.tsx:16
+- border-rose-100: src/components/ui-system/StatusPill.tsx:16
+- border-rose-200: src/components/ui-system/SurfaceCard.tsx:17
+- bg-rose-50: src/components/ui-system/SurfaceCard.tsx:17
+- text-rose-950: src/components/ui-system/SurfaceCard.tsx:17
+- text-rose-500: src/lib/access.ts:90
+- bg-rose-500: src/lib/access.ts:90
+- bg-rose-500: src/lib/access.ts:91
+- text-rose-600: src/lib/access.ts:91
+- text-rose-400: src/lib/access.ts:91
+- text-rose-500: src/lib/access.ts:136
+- bg-rose-500: src/lib/access.ts:136
+- bg-rose-500: src/lib/access.ts:137
+- text-rose-600: src/lib/access.ts:137
+- text-rose-400: src/lib/access.ts:137
+- text-rose-500: src/lib/access.ts:171
+- bg-rose-500: src/lib/access.ts:171
+- bg-rose-500: src/lib/access.ts:172
+- text-rose-600: src/lib/access.ts:172
+- text-rose-400: src/lib/access.ts:172
+- border-red-200: src/lib/config/funnel-stages.ts:55
+- bg-red-50: src/lib/config/funnel-stages.ts:55
+- text-red-700: src/lib/config/funnel-stages.ts:55
+- border-rose-200: src/lib/source-of-truth/template-options.ts:42
+- bg-rose-50: src/lib/source-of-truth/template-options.ts:42
+- text-rose-700: src/lib/source-of-truth/template-options.ts:42
+- bg-rose-100: src/lib/source-of-truth/ui-tones.ts:32
+- text-rose-700: src/lib/source-of-truth/ui-tones.ts:32
+- border-rose-100: src/lib/source-of-truth/ui-tones.ts:32
+- text-rose-700: src/lib/source-of-truth/ui-tones.ts:33
+- bg-rose-50: src/lib/source-of-truth/ui-tones.ts:34
+- border-rose-100: src/lib/source-of-truth/ui-tones.ts:34
+- text-rose-700: src/lib/source-of-truth/ui-tones.ts:100
+- bg-rose-100: src/lib/source-of-truth/ui-tones.ts:110
+- text-rose-700: src/lib/source-of-truth/ui-tones.ts:110
+- border-rose-100: src/lib/source-of-truth/ui-tones.ts:110
+- text-red-500: src/pages/ClientPortal.tsx:218
+- bg-red-100: src/pages/ClientPortal.tsx:260
+- text-red-600: src/pages/ClientPortal.tsx:260
+- border-red-200: src/pages/ClientPortal.tsx:271
+- text-red-500: src/pages/ClientPortal.tsx:271
+- text-red-600: src/pages/ClientPortal.tsx:372
+- bg-red-50: src/pages/ClientPortal.tsx:372
+- border-red-200: src/pages/SalesFunnel.tsx:488
+- bg-red-50: src/pages/SalesFunnel.tsx:488
+- text-red-800: src/pages/SalesFunnel.tsx:488
+- border-red-100: src/pages/Today.tsx:1298
+- bg-red-50: src/pages/Today.tsx:1298
+- border-red-200: src/pages/Today.tsx:1298
+- bg-red-100: src/pages/Today.tsx:1298
+- text-red-700: src/pages/Today.tsx:1299
+- text-red-950: src/pages/Today.tsx:1300
+- text-red-700: src/pages/Today.tsx:1301
+- border-red-100: src/pages/Today.tsx:1316
+- bg-red-50: src/pages/Today.tsx:1316
+- text-red-800: src/pages/Today.tsx:1317
+- border-red-100: src/pages/Today.tsx:1326
+- border-red-200: src/pages/Today.tsx:1326
+- bg-red-50: src/pages/Today.tsx:1326
+- text-red-950: src/pages/Today.tsx:1328
+- text-red-700: src/pages/Today.tsx:1329
+- border-rose-200: src/pages/Today.tsx:2208
+- text-rose-700: src/pages/Today.tsx:2210
+- text-rose-600: src/pages/Today.tsx:2328
+- bg-rose-50: src/pages/Today.tsx:2329
+- border-rose-100: src/pages/Today.tsx:2448
+- bg-rose-50: src/pages/Today.tsx:2448
+- border-rose-100: src/pages/Today.tsx:2457
+- text-rose-500: src/pages/Today.tsx:2472
+- text-rose-600: src/pages/Today.tsx:2499
+- text-rose-500: src/pages/Today.tsx:2511
+- border-rose-100: src/pages/Today.tsx:2512
+- bg-rose-50: src/pages/Today.tsx:2512
+- border-rose-200: src/pages/Today.tsx:2824
+- bg-rose-50: src/pages/Today.tsx:2824
+- bg-rose-50: src/pages/Today.tsx:2824
+- text-rose-700: src/pages/Today.tsx:2826
+- text-rose-600: src/pages/Today.tsx:2875
+- border-rose-200: src/pages/Today.tsx:2876
+- text-rose-700: src/pages/Today.tsx:2876
+- text-red-600: src/styles/owners/closeflow-dialogs.css:253
+- text-rose-600: src/styles/owners/closeflow-dialogs.css:254
+- text-rose-600: src/ui-system/icons/SemanticIcon.tsx:151
 
 ## Inline styles
-- src/components/ContextActionDialogs.tsx:153
-- src/components/Layout.tsx:122
+- src/components/ContextActionDialogs.tsx:455
+- src/components/Layout.tsx:172
 - src/components/ui/progress.tsx:19
-- src/pages/Activity.tsx:804
-- src/pages/Calendar.tsx:1502
-- src/pages/Calendar.tsx:1684
-- src/pages/CaseDetail.tsx:1326
-- src/pages/CaseDetail.tsx:1449
-- src/pages/Cases.tsx:757
-- src/pages/ClientDetail.tsx:1649
-- src/pages/NotificationsCenter.tsx:712
-- src/pages/Today.tsx:812
+- src/pages/Activity.tsx:394
+- src/pages/Calendar.tsx:3358
+- src/pages/CaseDetail.tsx:3979
+- src/pages/CaseDetail.tsx:4055
+- src/pages/CaseDetail.tsx:4267
+- src/pages/Cases.tsx:863
+- src/pages/ClientDetail.tsx:3461
+- src/pages/NotificationsCenter.tsx:783
+- src/pages/Today.tsx:821
 - src/pages/UiPreviewVNext.tsx:8
 - src/pages/UiPreviewVNext.tsx:9
 - src/pages/UiPreviewVNext.tsx:14
@@ -608,23 +640,67 @@ Generated: 2026-05-08T19:05:48.262Z
 
 ## Local style risk files
 - src/App.tsx
+- src/components/ActivityRoadmap.tsx
+- src/components/CaseQuickActions.tsx
+- src/components/ClientCreateDialog.tsx
+- src/components/EventCreateDialog.tsx
 - src/components/GlobalAiAssistant.tsx
 - src/components/GlobalQuickActions.tsx
+- src/components/Layout.tsx
+- src/components/OperatorTopBarRuntime.tsx
 - src/components/PwaInstallPrompt.tsx
 - src/components/StatShortcutCard.tsx
+- src/components/TaskCreateDialog.tsx
 - src/components/TodayAiAssistant.tsx
+- src/components/VisualFoundationRuntime.tsx
+- src/components/VisualFoundationRuntimeStage212B.tsx
+- src/components/VisualFoundationRuntimeStage212G.tsx
+- src/components/VisualFoundationRuntimeStage212M.tsx
 - src/components/admin-tools/AdminDebugToolbar.tsx
 - src/components/admin-tools/admin-tools-export.ts
 - src/components/admin-tools/admin-tools-storage.ts
+- src/components/detail/MissingItemQuickActionModal.tsx
+- src/components/detail/MissingItemsManagerDialog.tsx
+- src/components/finance/CaseFinanceEditorDialog.tsx
+- src/components/finance/CaseSettlementPanel.tsx
+- src/components/finance/CommissionFormDialog.tsx
+- src/components/finance/FinanceMiniSummary.tsx
+- src/components/finance/FinanceSnapshot.tsx
+- src/components/finance/LeadValuePanel.tsx
 - src/components/task-editor-dialog.tsx
+- src/components/ui-system/OperatorMetricTiles.tsx
+- src/components/ui-system/OperatorMetricToneRuntime.tsx
 - src/components/ui/dialog.tsx
 - src/hooks/useSupabaseSession.ts
 - src/hooks/useWorkspace.ts
-- src/index.css
+- src/lib/action-visual-taxonomy.ts
+- src/lib/activity-roadmap.ts
+- src/lib/activity-timeline.ts
 - src/lib/ai-drafts.ts
 - src/lib/ai-usage-guard.ts
+- src/lib/calendar-dom-normalizer-policy.ts
+- src/lib/closeflow-runtime-source-truth.ts
+- src/lib/config/badges.ts
+- src/lib/data-contract.ts
+- src/lib/finance/case-finance-source.ts
+- src/lib/finance/finance-calculations.ts
+- src/lib/finance/finance-client-summary.ts
+- src/lib/finance/finance-normalize.ts
+- src/lib/finance/finance-types.ts
+- src/lib/owner-control/activity-truth.ts
+- src/lib/routes.ts
 - src/lib/schedule-conflicts.ts
 - src/lib/scheduling.ts
+- src/lib/source-of-truth/calendar-date-time-boundary-plan.ts
+- src/lib/source-of-truth/calendar-date-time-boundary-readonly-runtime.ts
+- src/lib/source-of-truth/casedetail-isolated-adoption-plan.ts
+- src/lib/source-of-truth/forms-modals-action-visual-readonly-bridge.ts
+- src/lib/source-of-truth/lead-options.ts
+- src/lib/source-of-truth/lists-cards-readonly-bridge.ts
+- src/lib/source-of-truth/runtime-adoption-readonly.ts
+- src/lib/source-of-truth/today-readonly-bridge.ts
+- src/lib/source-of-truth/today-status-date-readonly-runtime-plan.ts
+- src/lib/source-of-truth/visual-repository.ts
 - src/lib/stage31-today-tiles-interaction.ts
 - src/lib/stage32-today-relations-loading-polish.ts
 - src/lib/supabase-fallback.ts
@@ -639,13 +715,16 @@ Generated: 2026-05-08T19:05:48.262Z
 - src/pages/LeadDetail.tsx
 - src/pages/Leads.tsx
 - src/pages/NotificationsCenter.tsx
+- src/pages/SalesFunnel.tsx
 - src/pages/Settings.tsx
 - src/pages/SupportCenter.tsx
 - src/pages/Tasks.tsx
+- src/pages/TasksStable.tsx
 - src/pages/Today.tsx
 - src/pages/TodayStable.tsx
 - src/pages/UiPreviewVNext.tsx
 - src/pages/UiPreviewVNextFull.tsx
+- src/pwa/chunk-asset-reload-guard.ts
 - src/server/_access-gate.ts
 - src/server/_digest.ts
 - src/server/ai-application-operator.ts
@@ -654,50 +733,38 @@ Generated: 2026-05-08T19:05:48.262Z
 - src/server/google-calendar-outbound.ts
 - src/server/google-calendar-sync.ts
 - src/server/payments.ts
+- src/server/portal-upload.ts
 - src/server/records.ts
 - src/styles/admin-tools.css
-- src/styles/closeflow-metric-tiles.css
+- src/styles/closeflow-activity-rail.css
+- src/styles/closeflow-ai-drafts-rail.css
+- src/styles/closeflow-ai-drafts.css
+- src/styles/closeflow-billing-taxonomy.css
+- src/styles/closeflow-billing.css
+- src/styles/closeflow-calendar-selected-day-full-text-repair12.css
+- src/styles/closeflow-case-detail-shell-rail.css
+- src/styles/closeflow-case-history-visual-source-truth.css
+- src/styles/closeflow-entity-data-card.css
+- src/styles/closeflow-event-form.css
+- src/styles/closeflow-notification-conflict-card.css
+- src/styles/closeflow-notifications-rail.css
+- src/styles/closeflow-notifications.css
+- src/styles/closeflow-right-rail-wrappers.css
+- src/styles/closeflow-settings-copy.css
+- src/styles/closeflow-settings-form-controls.css
+- src/styles/closeflow-settings-tabs.css
+- src/styles/closeflow-settings.css
+- src/styles/closeflow-support.css
+- src/styles/closeflow-task-form.css
 - src/styles/closeflow-vnext-ui-contract.css
-- src/styles/eliteflow-admin-feedback-p1-hotfix.css
-- src/styles/eliteflow-metric-text-clip-tasks-repair.css
-- src/styles/eliteflow-sidebar-footer-contrast-repair.css
-- src/styles/eliteflow-sidebar-user-footer-below-nav.css
-- src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css
-- src/styles/hotfix-ai-drafts-right-rail-stage28.css
-- src/styles/hotfix-lead-client-right-rail-dark-wrappers.css
-- src/styles/hotfix-right-rail-dark-wrappers.css
-- src/styles/hotfix-task-stat-tiles-clean.css
-- src/styles/stage31-full-mobile-polish.css
-- src/styles/stage33a-ai-drafts-generated-text-contrast.css
-- src/styles/stage35-clients-value-detail-cleanup.css
-- src/styles/stage36-unified-light-pages.css
-- src/styles/stage7a-tasks-blue-outline-fix.css
-- src/styles/stageA19v2-sidebar-nav-contrast-fix.css
-- src/styles/stageA20-sidebar-today-click-fix.css
-- src/styles/stageA20c-sidebar-today-hitbox-fix.css
-- src/styles/stageA20e-sidebar-today-tone-lock.css
-- src/styles/stageA25-today-relations-lead-badge-inline.css
-- src/styles/visual-stage01-shell.css
-- src/styles/visual-stage05-clients.css
-- src/styles/visual-stage08-case-detail.css
-- src/styles/visual-stage10-notifications-vnext.css
-- src/styles/visual-stage12-client-detail-vnext.css
-- src/styles/visual-stage13-case-detail-vnext.css
-- src/styles/visual-stage14-lead-detail-vnext.css
-- src/styles/visual-stage16-billing-vnext.css
-- src/styles/visual-stage17-support-vnext.css
-- src/styles/visual-stage17-today-hard-1to1.css
-- src/styles/visual-stage19-settings-vnext.css
-- src/styles/visual-stage20-lead-form-vnext.css
-- src/styles/visual-stage21-task-form-vnext.css
-- src/styles/visual-stage22-event-form-vnext.css
-- src/styles/visual-stage23-client-case-forms-vnext.css
-- src/styles/visual-stage23-leads-html-parity-fix.css
-- src/styles/visual-stage24-leads-html-dom-parity-hardfix.css
-- src/styles/visual-stage26-leads-visual-alignment-fix.css
-- src/styles/visual-stage27-cases-vnext.css
-- src/styles/visual-stage28-tasks-vnext.css
-- src/styles/visual-stage29-calendar-vnext.css
-- src/styles/visual-stage3-pipeline-and-case.css
-- src/styles/visual-stage8-activity-vnext.css
-- src/styles/visual-stage9-ai-drafts-vnext.css
+- src/styles/core/core-contracts.css
+- src/styles/finance/closeflow-finance.css
+- src/styles/owners/closeflow-calendar.css
+- src/styles/owners/closeflow-client-detail.css
+- src/styles/owners/closeflow-dialogs.css
+- src/styles/owners/closeflow-page-adapters.css
+- src/styles/owners/closeflow-page-shell.css
+- src/styles/owners/closeflow-rails-and-detail.css
+- src/styles/owners/closeflow-records-and-rails.css
+- src/styles/owners/closeflow-responsive-adapters.css
+- src/ui-system/icons/SemanticIcon.tsx

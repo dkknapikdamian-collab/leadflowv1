@@ -1,4 +1,4 @@
-/* STAGE116_TODAY_WORK_ITEM_CARD_SOURCE_TRUTH */
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/work-item-card.css","concerns":[],"scope":"component","consumerRoots":["src/components/work-item-card.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 .cf-work-item-card {
   display: grid;
   grid-template-columns: 38px minmax(0, 1fr) auto;
@@ -98,9 +98,6 @@
   justify-content: flex-end;
   gap: 8px;
 }
-
-
-/* STAGE227G1_TODAY_RESCHEDULE_SOURCE_OF_TRUTH_START */
 .cf-work-item-card-shift {
   min-width: 42px;
   height: 30px;
@@ -123,10 +120,6 @@
   background: #f5f3ff;
   color: #7c3aed;
 }
-/* STAGE227G1_TODAY_RESCHEDULE_SOURCE_OF_TRUTH_END */
-
-
-/* STAGE227G1R1_TODAY_SHIFT_VISIBILITY_REPAIR_START */
 .cf-work-item-card-actions {
   align-items: center;
 }
@@ -142,7 +135,6 @@
   font-size: 12px;
   font-weight: 850;
 }
-/* STAGE227G1R1_TODAY_SHIFT_VISIBILITY_REPAIR_END */
 
 .cf-work-item-card-done {
   gap: 6px;
@@ -202,8 +194,6 @@
     justify-content: flex-start;
   }
 }
-
-/* STAGE227G2_TODAY_MOVEMENT_HELPER_VISUAL_START */
 .cf-work-item-card-helper {
   display: inline-flex;
   max-width: 100%;
@@ -223,4 +213,3 @@
 .cf-work-item-card-helper:empty {
   display: none;
 }
-/* STAGE227G2_TODAY_MOVEMENT_HELPER_VISUAL_END */

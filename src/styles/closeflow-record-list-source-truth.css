@@ -1,231 +1,226 @@
-/* CLOSEFLOW_RECORD_LIST_SOURCE_TRUTH_2026_05_12
-   owner: CloseFlow Visual System
-   scope: /leads and /clients list rows
-   goal: one visual source of truth for operator record cards
-   rule: compact horizontal row on desktop, readable stacked row on mobile
-*/
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-record-list-source-truth.css","concerns":[],"scope":"component","consumerRoots":["src/pages/Clients.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .table-card {
-  width: 100% !important;
-  max-width: none !important;
-  min-width: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 0.55rem !important;
-  padding: 0.65rem !important;
-  border-radius: 1.35rem !important;
-  box-sizing: border-box !important;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.65rem;
+  border-radius: 1.35rem;
+  box-sizing: border-box;
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .table-card > .relative,
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .table-card > [class*="group/"],
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) [data-client-card-wide-layout="true"],
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) [data-lead-card-wide-layout="true"] {
-  width: 100% !important;
-  max-width: none !important;
-  min-width: 0 !important;
-  box-sizing: border-box !important;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .table-card > .relative > a,
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .table-card > [class*="group/"] > a,
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .table-card a.block {
-  display: block !important;
-  width: 100% !important;
-  max-width: none !important;
-  min-width: 0 !important;
+  display: block;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty),
 #root .cf-html-view.main-clients-html .client-row.cf-client-row-inline:not(.row-empty) {
-  width: 100% !important;
-  max-width: none !important;
-  min-width: 0 !important;
-  min-height: 0 !important;
-  box-sizing: border-box !important;
-  display: grid !important;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+  display: grid;
   grid-template-columns:
     minmax(2.15rem, 2.5rem)
     minmax(15rem, 1.35fr)
     minmax(7.75rem, 0.55fr)
     minmax(15.5rem, 1fr)
-    minmax(5rem, auto) !important;
-  grid-auto-rows: minmax(0, auto) !important;
-  align-items: center !important;
-  gap: 0.55rem 0.8rem !important;
-  padding: 0.68rem 0.82rem !important;
-  border-radius: 1rem !important;
+    minmax(5rem, auto);
+  grid-auto-rows: minmax(0, auto);
+  align-items: center;
+  gap: 0.55rem 0.8rem;
+  padding: 0.68rem 0.82rem;
+  border-radius: 1rem;
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > .index {
-  grid-column: 1 !important;
-  grid-row: 1 !important;
-  align-self: center !important;
-  justify-self: start !important;
-  width: 2rem !important;
-  height: 2rem !important;
-  min-width: 2rem !important;
-  min-height: 2rem !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border-radius: 999px !important;
-  line-height: 1 !important;
-  font-size: 0.72rem !important;
-  font-weight: 800 !important;
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
+  justify-self: start;
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
+  min-height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  line-height: 1;
+  font-size: 0.72rem;
+  font-weight: 800;
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-main-cell, .cf-client-main-cell) {
-  grid-column: 2 !important;
-  grid-row: 1 !important;
-  min-width: 0 !important;
-  align-self: center !important;
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  align-self: center;
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-value-cell, .cf-client-cases-cell) {
-  grid-column: 3 !important;
-  grid-row: 1 !important;
-  min-width: 0 !important;
-  align-self: center !important;
-  justify-self: start !important;
+  grid-column: 3;
+  grid-row: 1;
+  min-width: 0;
+  align-self: center;
+  justify-self: start;
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-action-cell, .client-card-next-action-block, .cf-client-next-action-panel, .cf-client-next-action-inline) {
-  grid-column: 4 !important;
-  grid-row: 1 !important;
-  min-width: 0 !important;
-  width: 100% !important;
-  align-self: center !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  gap: 0.16rem !important;
-  padding: 0 !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
+  grid-column: 4;
+  grid-row: 1;
+  min-width: 0;
+  width: 100%;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.16rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-actions-cell, .lead-actions, .row-actions, .client-actions, .client-card-action-buttons, .cf-client-row-actions) {
-  grid-column: 5 !important;
-  grid-row: 1 !important;
-  align-self: center !important;
-  justify-self: end !important;
-  width: auto !important;
-  min-width: max-content !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  flex-wrap: nowrap !important;
-  gap: 0.42rem !important;
-  white-space: nowrap !important;
+  grid-column: 5;
+  grid-row: 1;
+  align-self: center;
+  justify-self: end;
+  width: auto;
+  min-width: max-content;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+  gap: 0.42rem;
+  white-space: nowrap;
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) .title {
-  display: block !important;
-  max-width: 100% !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  line-height: 1.15 !important;
-  font-size: 0.92rem !important;
-  font-weight: 850 !important;
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.15;
+  font-size: 0.92rem;
+  font-weight: 850;
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) :is(.sub, .mini, small) {
-  line-height: 1.1 !important;
+  line-height: 1.1;
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) :is(.cf-list-row-meta, .statusline) {
-  max-width: 100% !important;
-  min-width: 0 !important;
-  display: flex !important;
-  flex-wrap: wrap !important;
-  align-items: center !important;
-  gap: 0.28rem 0.38rem !important;
-  margin-top: 0.22rem !important;
-  line-height: 1 !important;
+  max-width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.28rem 0.38rem;
+  margin-top: 0.22rem;
+  line-height: 1;
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) :is(.cf-list-row-meta, .statusline) > * {
-  min-width: 0 !important;
-  max-width: 100% !important;
+  min-width: 0;
+  max-width: 100%;
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) :is(.pill, .cf-status-pill, .badge, [class*="badge"], [data-cf-status-tone]) {
-  min-height: 1.35rem !important;
-  height: auto !important;
-  max-width: 100% !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0.24rem 0.46rem !important;
-  border-radius: 999px !important;
-  line-height: 1 !important;
-  font-size: 0.68rem !important;
-  font-weight: 800 !important;
-  white-space: nowrap !important;
+  min-height: 1.35rem;
+  height: auto;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.24rem 0.46rem;
+  border-radius: 999px;
+  line-height: 1;
+  font-size: 0.68rem;
+  font-weight: 800;
+  white-space: nowrap;
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) :is(.cf-list-row-contact, .cf-list-row-value) {
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-value-cell, .cf-client-cases-cell) :is(.mini, small) {
-  display: block !important;
-  margin-bottom: 0.12rem !important;
-  font-size: 0.61rem !important;
-  letter-spacing: 0.08em !important;
-  text-transform: uppercase !important;
-  line-height: 1 !important;
+  display: block;
+  margin-bottom: 0.12rem;
+  font-size: 0.61rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-value-cell, .cf-client-cases-cell) :is(strong, .title) {
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  line-height: 1.08 !important;
-  font-size: 0.82rem !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.08;
+  font-size: 0.82rem;
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-action-cell, .client-card-next-action-block, .cf-client-next-action-panel, .cf-client-next-action-inline) :is(.mini, small) {
-  display: block !important;
-  margin-bottom: 0.1rem !important;
-  font-size: 0.61rem !important;
-  letter-spacing: 0.08em !important;
-  text-transform: uppercase !important;
-  line-height: 1 !important;
-  color: rgb(100 116 139) !important;
-  -webkit-text-fill-color: rgb(100 116 139) !important;
+  display: block;
+  margin-bottom: 0.1rem;
+  font-size: 0.61rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: rgb(100 116 139);
+  -webkit-text-fill-color: rgb(100 116 139);
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-action-cell, .client-card-next-action-block, .cf-client-next-action-panel, .cf-client-next-action-inline) :is(strong, .title) {
-  max-width: 100% !important;
-  display: -webkit-box !important;
-  -webkit-line-clamp: 2 !important;
-  -webkit-box-orient: vertical !important;
-  overflow: hidden !important;
-  overflow-wrap: anywhere !important;
-  white-space: normal !important;
-  line-height: 1.12 !important;
-  font-size: 0.82rem !important;
-  color: rgb(15 23 42) !important;
-  -webkit-text-fill-color: rgb(15 23 42) !important;
+  max-width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  line-height: 1.12;
+  font-size: 0.82rem;
+  color: rgb(15 23 42);
+  -webkit-text-fill-color: rgb(15 23 42);
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-actions-cell, .lead-actions, .row-actions, .client-actions, .client-card-action-buttons, .cf-client-row-actions) :is(button, a) {
-  width: 2.05rem !important;
-  min-width: 2.05rem !important;
-  height: 2.05rem !important;
-  min-height: 2.05rem !important;
-  padding: 0 !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border-radius: 0.72rem !important;
+  width: 2.05rem;
+  min-width: 2.05rem;
+  height: 2.05rem;
+  min-height: 2.05rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.72rem;
 }
 
 @media (max-width: 72rem) {
@@ -235,479 +230,412 @@
       minmax(2.15rem, 2.5rem)
       minmax(0, 1fr)
       minmax(12rem, 0.75fr)
-      minmax(4.75rem, auto) !important;
+      minmax(4.75rem, auto);
   }
 
   #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-main-cell, .cf-client-main-cell) {
-    grid-column: 2 !important;
+    grid-column: 2;
   }
 
   #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-value-cell, .cf-client-cases-cell) {
-    grid-column: 3 !important;
+    grid-column: 3;
   }
 
   #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-action-cell, .client-card-next-action-block, .cf-client-next-action-panel, .cf-client-next-action-inline) {
-    grid-column: 2 / 4 !important;
-    grid-row: 2 !important;
+    grid-column: 2 / 4;
+    grid-row: 2;
   }
 
   #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-actions-cell, .lead-actions, .row-actions, .client-actions, .client-card-action-buttons, .cf-client-row-actions) {
-    grid-column: 4 !important;
+    grid-column: 4;
   }
 }
 
 @media (max-width: 46rem) {
   #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty),
   #root .cf-html-view.main-clients-html .client-row.cf-client-row-inline:not(.row-empty) {
-    grid-template-columns: 2.1rem minmax(0, 1fr) !important;
-    align-items: start !important;
-    gap: 0.48rem 0.62rem !important;
-    padding: 0.72rem !important;
+    grid-template-columns: 2.1rem minmax(0, 1fr);
+    align-items: start;
+    gap: 0.48rem 0.62rem;
+    padding: 0.72rem;
   }
 
   #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > .index {
-    grid-column: 1 !important;
-    grid-row: 1 !important;
+    grid-column: 1;
+    grid-row: 1;
   }
 
   #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-main-cell, .cf-client-main-cell),
   #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-value-cell, .cf-client-cases-cell),
   #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-action-cell, .client-card-next-action-block, .cf-client-next-action-panel, .cf-client-next-action-inline),
   #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-actions-cell, .lead-actions, .row-actions, .client-actions, .client-card-action-buttons, .cf-client-row-actions) {
-    grid-column: 2 !important;
-    grid-row: auto !important;
-    justify-self: stretch !important;
-    width: 100% !important;
-    max-width: 100% !important;
+    grid-column: 2;
+    grid-row: auto;
+    justify-self: stretch;
+    width: 100%;
+    max-width: 100%;
   }
 
   #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-actions-cell, .lead-actions, .row-actions, .client-actions, .client-card-action-buttons, .cf-client-row-actions) {
-    justify-content: flex-start !important;
+    justify-content: flex-start;
   }
 }
-
-/* CLOSEFLOW_RECORD_LIST_DEDUPED_ROW_CONTENT_2026_05_12
-   owner: CloseFlow Visual System
-   scope: /leads and /clients record lists
-   reason: remove duplicate source/value chips after shared row layout was introduced
-   rule: one factual slot per fact: contact in main cell, value in value cell, next action in action cell
-*/
 
 #root .cf-html-view.main-leads-html .lead-main-cell .cf-list-row-meta > .sub,
 #root .cf-html-view.main-leads-html .lead-main-cell .cf-list-row-meta > .cf-list-row-value,
 #root .cf-html-view.main-leads-html .lead-main-cell .cf-list-row-meta > .cf-chip-lead-value,
 #root .cf-html-view.main-leads-html .lead-main-cell .cf-list-row-meta > .pill:not(:first-child) {
-  display: none !important;
+  display: none;
 }
 
 #root .cf-html-view.main-leads-html .lead-main-cell .statusline > .pill:not(.cf-status-pill):not([data-cf-status-tone]) {
-  display: none !important;
+  display: none;
 }
 
 #root .cf-html-view.main-leads-html .lead-main-cell .cf-list-row-meta > .pill:first-child {
-  background: rgb(219 234 254) !important;
-  border: 1px solid rgb(147 197 253) !important;
-  color: rgb(29 78 216) !important;
-  -webkit-text-fill-color: rgb(29 78 216) !important;
+  background: rgb(219 234 254);
+  border: 1px solid rgb(147 197 253);
+  color: rgb(29 78 216);
+  -webkit-text-fill-color: rgb(29 78 216);
 }
 
 #root .cf-html-view.main-clients-html .cf-chip-leads-count,
 #root .cf-html-view.main-clients-html .cf-chip-client-value {
-  display: none !important;
+  display: none;
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) :is(.cf-status-pill, [data-cf-status-tone]) {
-  font-weight: 850 !important;
+  font-weight: 850;
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-value-cell, .cf-client-cases-cell) :is(.mini, small),
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-action-cell, .client-card-next-action-block, .cf-client-next-action-panel, .cf-client-next-action-inline) :is(.mini, small) {
-  color: rgb(100 116 139) !important;
-  -webkit-text-fill-color: rgb(100 116 139) !important;
-  font-weight: 850 !important;
+  color: rgb(100 116 139);
+  -webkit-text-fill-color: rgb(100 116 139);
+  font-weight: 850;
+}
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-button {
+  border-color: var(--cf-trash-border-color, #fecaca);
+  background: var(--cf-trash-bg, #ffffff);
+  color: var(--cf-trash-text-color, #334155);
+  box-shadow: none;
 }
 
-/* CLOSEFLOW_STAGE95_RECORD_TRASH_ACTION_SOURCE_OF_TRUTH
-   Record rows may size the button, but they must not repaint destructive actions as red slabs.
-*/
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-button {
-  border-color: var(--cf-trash-border-color, #fecaca) !important;
-  background: var(--cf-trash-bg, #ffffff) !important;
-  color: var(--cf-trash-text-color, #334155) !important;
-  box-shadow: none !important;
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-button:hover {
+  border-color: var(--cf-trash-border-hover-color, #fca5a5);
+  background: var(--cf-trash-bg-hover, rgba(254, 242, 242, 0.72));
 }
 
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-button:hover {
-  border-color: var(--cf-trash-border-hover-color, #fca5a5) !important;
-  background: var(--cf-trash-bg-hover, rgba(254, 242, 242, 0.72)) !important;
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-icon,
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-button svg {
+  color: var(--cf-trash-icon-color, #dc2626);
 }
-
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-icon,
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-button svg {
-  color: var(--cf-trash-icon-color, #dc2626) !important;
-}
-
-
-/* CLOSEFLOW_RECORD_LIST_DOES_NOT_OWN_RIGHT_RAIL_STAGE96_2026_05_16
-   Record list CSS may style list rows only. Right rail width/order is owned by closeflow-right-rail-source-truth.css.
-*/
-
-
-/* STAGE105_TEMPLATES_DELETE_AND_VISUAL_CONTRACT
-   owner: CloseFlow Visual System
-   scope: /templates case template cards
-   goal: templates use the readable record-card source, not ad-hoc admin/debug styling
-*/
 #root .cf-html-view.main-templates-html [data-cf-template-card-source="record-list-source-truth"] {
-  width: 100% !important;
-  max-width: none !important;
-  border-radius: 1.35rem !important;
-  border: 1px solid rgb(226 232 240) !important;
-  background: rgb(255 255 255) !important;
-  box-shadow: 0 10px 30px rgb(15 23 42 / 0.04) !important;
+  width: 100%;
+  max-width: none;
+  border-radius: 1.35rem;
+  border: 1px solid rgb(226 232 240);
+  background: rgb(255 255 255);
+  box-shadow: 0 10px 30px rgb(15 23 42 / 0.04);
 }
 
 #root .cf-html-view.main-templates-html [data-cf-template-card-source="record-list-source-truth"] > [class*="CardContent"],
 #root .cf-html-view.main-templates-html [data-cf-template-card-source="record-list-source-truth"] .cf-template-card-items {
-  min-width: 0 !important;
+  min-width: 0;
 }
 
 #root .cf-html-view.main-templates-html .cf-template-card-actions {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  gap: 0.45rem !important;
-  min-width: min(100%, 19rem) !important;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  min-width: min(100%, 19rem);
 }
 
 #root .cf-html-view.main-templates-html .cf-template-card-action {
-  min-height: 2.15rem !important;
-  border-radius: 0.95rem !important;
-  font-size: 0.78rem !important;
-  font-weight: 850 !important;
-  line-height: 1 !important;
+  min-height: 2.15rem;
+  border-radius: 0.95rem;
+  font-size: 0.78rem;
+  font-weight: 850;
+  line-height: 1;
 }
 
 #root .cf-html-view.main-templates-html [data-cf-template-delete-action="true"] {
-  border-color: rgb(254 202 202) !important;
-  background: rgb(255 255 255) !important;
+  border-color: rgb(254 202 202);
+  background: rgb(255 255 255);
 }
 
 #root .cf-html-view.main-templates-html [data-cf-template-delete-action="true"]:hover {
-  border-color: rgb(248 113 113) !important;
-  background: rgb(254 242 242) !important;
+  border-color: rgb(248 113 113);
+  background: rgb(254 242 242);
 }
 
 #root .cf-html-view.main-templates-html [data-cf-template-card-items="true"] > .cf-readable-panel {
-  min-width: 0 !important;
-  border-radius: 1rem !important;
-  border-color: rgb(226 232 240) !important;
-  background: rgb(248 250 252) !important;
+  min-width: 0;
+  border-radius: 1rem;
+  border-color: rgb(226 232 240);
+  background: rgb(248 250 252);
 }
 
 @media (max-width: 46rem) {
   #root .cf-html-view.main-templates-html .cf-template-card-actions {
-    justify-content: stretch !important;
+    justify-content: stretch;
   }
 
   #root .cf-html-view.main-templates-html .cf-template-card-action,
   #root .cf-html-view.main-templates-html .cf-template-card-actions > button {
-    width: 100% !important;
-    justify-content: center !important;
+    width: 100%;
+    justify-content: center;
   }
 }
-
-
-/* STAGE107_TEMPLATES_DELETE_AND_VISUAL_CONTRACT
-   owner: CloseFlow Visual System
-   scope: /templates case template cards
-   decision: templates use shared readable card/action source of truth and visible destructive action
-*/
 #root .cf-html-view.main-templates-html [data-cf-template-card-source="record-list-source-truth"] {
-  width: 100% !important;
-  max-width: none !important;
-  border-radius: 1.35rem !important;
-  border: 1px solid rgb(226 232 240) !important;
-  background: rgb(255 255 255) !important;
-  box-shadow: 0 10px 30px rgb(15 23 42 / 0.04) !important;
+  width: 100%;
+  max-width: none;
+  border-radius: 1.35rem;
+  border: 1px solid rgb(226 232 240);
+  background: rgb(255 255 255);
+  box-shadow: 0 10px 30px rgb(15 23 42 / 0.04);
 }
 
 #root .cf-html-view.main-templates-html .cf-template-card-actions {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  gap: 0.45rem !important;
-  min-width: min(100%, 19rem) !important;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  min-width: min(100%, 19rem);
 }
 
 #root .cf-html-view.main-templates-html .cf-template-card-action {
-  min-height: 2.15rem !important;
-  border-radius: 0.95rem !important;
-  font-size: 0.78rem !important;
-  font-weight: 850 !important;
-  line-height: 1 !important;
+  min-height: 2.15rem;
+  border-radius: 0.95rem;
+  font-size: 0.78rem;
+  font-weight: 850;
+  line-height: 1;
 }
 
 #root .cf-html-view.main-templates-html [data-cf-template-delete-action="true"],
 #root .cf-html-view.main-templates-html [data-cf-template-delete-action="menu"] {
-  border-color: rgb(254 202 202) !important;
-  background: rgb(255 255 255) !important;
+  border-color: rgb(254 202 202);
+  background: rgb(255 255 255);
 }
 
 #root .cf-html-view.main-templates-html [data-cf-template-delete-action="true"]:hover,
 #root .cf-html-view.main-templates-html [data-cf-template-delete-action="menu"]:hover {
-  border-color: rgb(248 113 113) !important;
-  background: rgb(254 242 242) !important;
+  border-color: rgb(248 113 113);
+  background: rgb(254 242 242);
 }
 
 #root .cf-html-view.main-templates-html [data-cf-template-card-items="true"] > .cf-readable-panel {
-  min-width: 0 !important;
-  border-radius: 1rem !important;
-  border-color: rgb(226 232 240) !important;
-  background: rgb(248 250 252) !important;
+  min-width: 0;
+  border-radius: 1rem;
+  border-color: rgb(226 232 240);
+  background: rgb(248 250 252);
 }
 
 @media (max-width: 46rem) {
   #root .cf-html-view.main-templates-html .cf-template-card-actions {
-    justify-content: stretch !important;
+    justify-content: stretch;
   }
 
   #root .cf-html-view.main-templates-html .cf-template-card-action,
   #root .cf-html-view.main-templates-html .cf-template-card-actions > button {
-    width: 100% !important;
-    justify-content: center !important;
+    width: 100%;
+    justify-content: center;
   }
 }
 
-/* STAGE220A21_RECORD_LISTS_VST_WIRING
-   Existing record-list source truth is bridged to CloseFlow Visual Source of Truth.
-*/
-
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .table-card {
-  background: var(--cf-vst-surface-card) !important;
-  border: 1px solid var(--cf-vst-surface-border) !important;
-  border-radius: var(--cf-vst-radius-card) !important;
-  box-shadow: var(--cf-vst-shadow-card) !important;
-  color: var(--cf-vst-text-strong) !important;
+  background: var(--cf-vst-surface-card);
+  border: 1px solid var(--cf-vst-surface-border);
+  border-radius: var(--cf-vst-radius-card);
+  box-shadow: var(--cf-vst-shadow-card);
+  color: var(--cf-vst-text-strong);
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty),
 #root .cf-html-view.main-clients-html .client-row.cf-client-row-inline:not(.row-empty) {
-  background: var(--cf-vst-surface-card-solid) !important;
-  border: 1px solid var(--cf-vst-surface-border) !important;
-  border-radius: var(--cf-vst-radius-button) !important;
-  color: var(--cf-vst-text-strong) !important;
+  background: var(--cf-vst-surface-card-solid);
+  border: 1px solid var(--cf-vst-surface-border);
+  border-radius: var(--cf-vst-radius-button);
+  color: var(--cf-vst-text-strong);
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > .index {
-  background: var(--cf-vst-color-primary-soft) !important;
-  border: 1px solid var(--cf-vst-color-primary-border) !important;
-  color: var(--cf-vst-color-primary-strong) !important;
-  -webkit-text-fill-color: var(--cf-vst-color-primary-strong) !important;
-  font-size: var(--cf-vst-font-size-meta) !important;
-  font-weight: var(--cf-vst-font-weight-heavy) !important;
+  background: var(--cf-vst-color-primary-soft);
+  border: 1px solid var(--cf-vst-color-primary-border);
+  color: var(--cf-vst-color-primary-strong);
+  -webkit-text-fill-color: var(--cf-vst-color-primary-strong);
+  font-size: var(--cf-vst-font-size-meta);
+  font-weight: var(--cf-vst-font-weight-heavy);
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) .title {
-  color: var(--cf-vst-text-strong) !important;
-  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
-  font-size: var(--cf-vst-font-size-body-sm) !important;
-  font-weight: var(--cf-vst-font-weight-bold) !important;
-  line-height: var(--cf-vst-line-height-title) !important;
+  color: var(--cf-vst-text-strong);
+  -webkit-text-fill-color: var(--cf-vst-text-strong);
+  font-size: var(--cf-vst-font-size-body-sm);
+  font-weight: var(--cf-vst-font-weight-bold);
+  line-height: var(--cf-vst-line-height-title);
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) :is(.sub, .mini, small, .cf-list-row-contact, .cf-list-row-value) {
-  color: var(--cf-vst-text-muted) !important;
-  -webkit-text-fill-color: var(--cf-vst-text-muted) !important;
-  font-size: var(--cf-vst-font-size-meta) !important;
+  color: var(--cf-vst-text-muted);
+  -webkit-text-fill-color: var(--cf-vst-text-muted);
+  font-size: var(--cf-vst-font-size-meta);
 }
 
 #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) :is(.pill, .cf-status-pill, .badge, [class*="badge"], [data-cf-status-tone]) {
-  min-height: var(--cf-vst-badge-height) !important;
-  border-color: var(--cf-vst-kind-border, var(--cf-vst-surface-border)) !important;
-  border-radius: var(--cf-vst-radius-pill) !important;
-  background: var(--cf-vst-kind-bg, var(--cf-vst-surface-soft)) !important;
-  color: var(--cf-vst-kind-color, var(--cf-vst-text-main)) !important;
-  -webkit-text-fill-color: var(--cf-vst-kind-color, var(--cf-vst-text-main)) !important;
-  font-size: var(--cf-vst-font-size-meta) !important;
-  font-weight: var(--cf-vst-font-weight-bold) !important;
-  line-height: var(--cf-vst-line-height-button) !important;
+  min-height: var(--cf-vst-badge-height);
+  border-color: var(--cf-vst-kind-border, var(--cf-vst-surface-border));
+  border-radius: var(--cf-vst-radius-pill);
+  background: var(--cf-vst-kind-bg, var(--cf-vst-surface-soft));
+  color: var(--cf-vst-kind-color, var(--cf-vst-text-main));
+  -webkit-text-fill-color: var(--cf-vst-kind-color, var(--cf-vst-text-main));
+  font-size: var(--cf-vst-font-size-meta);
+  font-weight: var(--cf-vst-font-weight-bold);
+  line-height: var(--cf-vst-line-height-button);
 }
 
 #root .cf-html-view.main-leads-html .lead-main-cell .cf-list-row-meta > .pill:first-child {
-  background: var(--cf-vst-color-primary-soft) !important;
-  border: 1px solid var(--cf-vst-color-primary-border) !important;
-  color: var(--cf-vst-color-primary-strong) !important;
-  -webkit-text-fill-color: var(--cf-vst-color-primary-strong) !important;
+  background: var(--cf-vst-color-primary-soft);
+  border: 1px solid var(--cf-vst-color-primary-border);
+  color: var(--cf-vst-color-primary-strong);
+  -webkit-text-fill-color: var(--cf-vst-color-primary-strong);
 }
 
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-button {
-  border-color: var(--cf-vst-color-delete-border) !important;
-  background: var(--cf-vst-surface-card-solid) !important;
-  color: var(--cf-vst-color-delete-strong) !important;
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-button {
+  border-color: var(--cf-vst-color-delete-border);
+  background: var(--cf-vst-surface-card-solid);
+  color: var(--cf-vst-color-delete-strong);
 }
 
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-button:hover {
-  border-color: var(--cf-vst-color-delete) !important;
-  background: var(--cf-vst-color-delete-soft) !important;
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-button:hover {
+  border-color: var(--cf-vst-color-delete);
+  background: var(--cf-vst-color-delete-soft);
 }
 
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-icon,
-#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-button svg {
-  color: var(--cf-vst-color-delete) !important;
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-icon,
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-button svg {
+  color: var(--cf-vst-color-delete);
 }
 
 #root .cf-html-view.main-templates-html [data-cf-template-card-source="record-list-source-truth"] {
-  background: var(--cf-vst-surface-card-solid) !important;
-  border-color: var(--cf-vst-surface-border) !important;
-  border-radius: var(--cf-vst-radius-card) !important;
-  box-shadow: var(--cf-vst-shadow-card) !important;
+  background: var(--cf-vst-surface-card-solid);
+  border-color: var(--cf-vst-surface-border);
+  border-radius: var(--cf-vst-radius-card);
+  box-shadow: var(--cf-vst-shadow-card);
 }
 
 #root .cf-html-view.main-templates-html [data-cf-template-delete-action="true"],
 #root .cf-html-view.main-templates-html [data-cf-template-delete-action="menu"] {
-  border-color: var(--cf-vst-color-delete-border) !important;
-  background: var(--cf-vst-surface-card-solid) !important;
-  color: var(--cf-vst-color-delete-strong) !important;
+  border-color: var(--cf-vst-color-delete-border);
+  background: var(--cf-vst-surface-card-solid);
+  color: var(--cf-vst-color-delete-strong);
 }
 
 #root .cf-html-view.main-templates-html [data-cf-template-delete-action="true"]:hover,
 #root .cf-html-view.main-templates-html [data-cf-template-delete-action="menu"]:hover {
-  border-color: var(--cf-vst-color-delete) !important;
-  background: var(--cf-vst-color-delete-soft) !important;
+  border-color: var(--cf-vst-color-delete);
+  background: var(--cf-vst-color-delete-soft);
 }
 
-/* STAGE220A22_CLIENT_CASE_INDEX_CHEVRON_CONSISTENCY
-   Clients and Cases list index pills share one VST color.
-   Client row open indicator uses the same chevron language as case rows.
-*/
-
 #root .cf-html-view:is(.main-clients-html, .main-cases-html) .row:not(.row-empty) > .index {
-  background: var(--cf-vst-color-primary-soft) !important;
-  border: 1px solid var(--cf-vst-color-primary-border) !important;
-  color: var(--cf-vst-color-primary-strong) !important;
-  -webkit-text-fill-color: var(--cf-vst-color-primary-strong) !important;
-  font-size: var(--cf-vst-font-size-meta) !important;
-  font-weight: var(--cf-vst-font-weight-heavy) !important;
-  box-shadow: none !important;
+  background: var(--cf-vst-color-primary-soft);
+  border: 1px solid var(--cf-vst-color-primary-border);
+  color: var(--cf-vst-color-primary-strong);
+  -webkit-text-fill-color: var(--cf-vst-color-primary-strong);
+  font-size: var(--cf-vst-font-size-meta);
+  font-weight: var(--cf-vst-font-weight-heavy);
+  box-shadow: none;
 }
 
 #root .cf-html-view.main-cases-html .table-card {
-  background: var(--cf-vst-surface-card) !important;
-  border: 1px solid var(--cf-vst-surface-border) !important;
-  border-radius: var(--cf-vst-radius-card) !important;
-  box-shadow: var(--cf-vst-shadow-card) !important;
+  background: var(--cf-vst-surface-card);
+  border: 1px solid var(--cf-vst-surface-border);
+  border-radius: var(--cf-vst-radius-card);
+  box-shadow: var(--cf-vst-shadow-card);
 }
 
 #root .cf-html-view.main-cases-html .row:not(.row-empty) {
-  background: var(--cf-vst-surface-card-solid) !important;
-  border: 1px solid var(--cf-vst-surface-border) !important;
-  border-radius: var(--cf-vst-radius-button) !important;
-  color: var(--cf-vst-text-strong) !important;
+  background: var(--cf-vst-surface-card-solid);
+  border: 1px solid var(--cf-vst-surface-border);
+  border-radius: var(--cf-vst-radius-button);
+  color: var(--cf-vst-text-strong);
 }
 
 #root .cf-html-view.main-clients-html .cf-client-row-open-indicator {
-  background: var(--cf-vst-surface-card-solid) !important;
-  border: 1px solid var(--cf-vst-surface-border) !important;
-  color: var(--cf-vst-color-primary-strong) !important;
-  -webkit-text-fill-color: var(--cf-vst-color-primary-strong) !important;
+  background: var(--cf-vst-surface-card-solid);
+  border: 1px solid var(--cf-vst-surface-border);
+  color: var(--cf-vst-color-primary-strong);
+  -webkit-text-fill-color: var(--cf-vst-color-primary-strong);
 }
 
 #root .cf-html-view.main-clients-html .cf-client-row-open-indicator svg {
-  color: var(--cf-vst-color-primary-strong) !important;
+  color: var(--cf-vst-color-primary-strong);
 }
 
 #root .cf-html-view.main-clients-html .cf-client-row-open-indicator:hover {
-  background: var(--cf-vst-color-primary-soft) !important;
-  border-color: var(--cf-vst-color-primary-border) !important;
-}
-
-/* STAGE220A28_CASE_ROW_ACTIONS_SOURCE_TRUTH
-   Cases list uses right-side icon actions like Clients/Leads: open chevron + trash.
-*/
-
-.cf-case-row-actions-stage220a28 {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  gap: 8px !important;
-}
-
-.cf-case-row-actions-stage220a28 .cf-icon-action-button,
-.cf-case-row-delete-icon-action {
-  width: 38px !important;
-  height: 38px !important;
-  min-width: 38px !important;
-  padding: 0 !important;
-  border-radius: 14px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  background: var(--cf-vst-color-primary-soft);
+  border-color: var(--cf-vst-color-primary-border);
 }
 
 .cf-case-row-delete-icon-action {
-  border-color: rgba(244, 63, 94, 0.18) !important;
-  color: #e11d48 !important;
-  background: #fff !important;
+  border-color: rgba(244, 63, 94, 0.18);
+  color: #e11d48;
+  background: #fff;
 }
 
 .cf-case-row-delete-icon-action:hover {
-  border-color: rgba(244, 63, 94, 0.32) !important;
-  background: #fff1f2 !important;
+  border-color: rgba(244, 63, 94, 0.32);
+  background: #fff1f2;
 }
-/* STAGE231D0B_CLIENT_LIST_CARD_VISUAL_FREEZE
-   owner: CloseFlow Visual System
-   scope: /clients ClientListCard
-   rule: desktop 2-line relationship row; phone is a strong standalone slot; no leads count; no active-case badge
-*/
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line {
-  grid-template-columns: minmax(2.15rem, 2.5rem) minmax(0, 1fr) minmax(5rem, auto) !important;
-  align-items: center !important;
-  gap: 0.55rem 0.82rem !important;
+  grid-template-columns: minmax(2.15rem, 2.5rem) minmax(0, 1fr) minmax(5rem, auto);
+  align-items: center;
+  gap: 0.55rem 0.82rem;
 }
 
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line > .cf-client-list-card-content {
-  grid-column: 2 !important;
-  grid-row: 1 !important;
-  min-width: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 0.34rem !important;
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.34rem;
 }
 
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line > .cf-client-row-actions,
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line > .client-card-action-buttons {
-  grid-column: 3 !important;
-  grid-row: 1 !important;
-  justify-self: end !important;
-  align-self: center !important;
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+  align-self: center;
 }
 
 #root .cf-html-view.main-clients-html .client-list-card-row-primary,
 #root .cf-html-view.main-clients-html .client-list-card-row-secondary {
-  min-width: 0 !important;
-  display: grid !important;
-  align-items: center !important;
-  gap: 0.42rem 0.74rem !important;
+  min-width: 0;
+  display: grid;
+  align-items: center;
+  gap: 0.42rem 0.74rem;
 }
 
 #root .cf-html-view.main-clients-html .client-list-card-row-primary {
-  grid-template-columns: minmax(10rem, 1.15fr) minmax(8.25rem, 0.7fr) minmax(10rem, 0.85fr) minmax(12rem, 0.85fr) !important;
+  grid-template-columns: minmax(10rem, 1.15fr) minmax(8.25rem, 0.7fr) minmax(10rem, 0.85fr) minmax(12rem, 0.85fr);
 }
 
 #root .cf-html-view.main-clients-html .client-list-card-row-secondary {
-  grid-template-columns: minmax(10rem, 1.15fr) minmax(6.5rem, 0.45fr) minmax(12rem, 0.8fr) minmax(12rem, 1fr) auto !important;
+  grid-template-columns: minmax(10rem, 1.15fr) minmax(6.5rem, 0.45fr) minmax(12rem, 0.8fr) minmax(12rem, 1fr) auto;
 }
 
 #root .cf-html-view.main-clients-html .client-list-card-phone {
-  font-size: 0.94rem !important;
-  line-height: 1.05 !important;
-  font-weight: 900 !important;
-  color: rgb(15 23 42) !important;
-  -webkit-text-fill-color: rgb(15 23 42) !important;
-  white-space: nowrap !important;
+  font-size: 0.94rem;
+  line-height: 1.05;
+  font-weight: 900;
+  color: rgb(15 23 42);
+  -webkit-text-fill-color: rgb(15 23 42);
+  white-space: nowrap;
 }
 
 #root .cf-html-view.main-clients-html .client-list-card-email,
@@ -716,861 +644,198 @@
 #root .cf-html-view.main-clients-html .cf-client-cases-count,
 #root .cf-html-view.main-clients-html .cf-client-nearest-action,
 #root .cf-html-view.main-clients-html .cf-client-company-slot {
-  min-width: 0 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 #root .cf-html-view.main-clients-html .cf-client-active-commission,
 #root .cf-html-view.main-clients-html .cf-client-lifetime-earned,
 #root .cf-html-view.main-clients-html .cf-client-cases-count {
-  font-weight: 850 !important;
+  font-weight: 850;
 }
 
 @media (max-width: 72rem) {
   #root .cf-html-view.main-clients-html .client-list-card-row-primary,
   #root .cf-html-view.main-clients-html .client-list-card-row-secondary {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 }
 
 @media (max-width: 46rem) {
   #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line {
-    grid-template-columns: 2.1rem minmax(0, 1fr) !important;
+    grid-template-columns: 2.1rem minmax(0, 1fr);
   }
 
   #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line > .cf-client-row-actions,
   #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line > .client-card-action-buttons {
-    grid-column: 2 !important;
-    grid-row: auto !important;
-    justify-self: start !important;
+    grid-column: 2;
+    grid-row: auto;
+    justify-self: start;
   }
 
   #root .cf-html-view.main-clients-html .client-list-card-row-primary,
   #root .cf-html-view.main-clients-html .client-list-card-row-secondary {
-    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
-
-/* STAGE231D0B-R9 CLIENTLISTCARD SOURCE TRUTH CLEANUP START
-   Machine guard marker: STAGE231D0B-R9_CLIENT_LIST_CARD_POLISH_SOURCE_TRUTH */
-/*
-  Status: ACTIVE
-  Scope: only /clients ClientListCard two-line row.
-  Decision: R8 unscoped rescue selectors are removed. Finance values are compact chips, not long bars.
-  LeadListCard mapping is documented in UI Dictionary only; runtime leads are not changed in this stage.
-*/
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line {
-  grid-template-columns: minmax(2.15rem, 2.5rem) minmax(0, 1fr) minmax(4.8rem, max-content) !important;
-  align-items: center !important;
+  grid-template-columns: minmax(2.15rem, 2.5rem) minmax(0, 1fr) minmax(4.8rem, max-content);
+  align-items: center;
 }
 
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .cf-client-list-card-content {
-  display: grid !important;
-  gap: 0.34rem !important;
-  min-width: 0 !important;
+  display: grid;
+  gap: 0.34rem;
+  min-width: 0;
 }
 
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-row-primary,
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-row-secondary {
-  display: grid !important;
-  align-items: center !important;
-  gap: 0.34rem 0.62rem !important;
-  min-width: 0 !important;
+  display: grid;
+  align-items: center;
+  gap: 0.34rem 0.62rem;
+  min-width: 0;
 }
 
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-row-primary {
-  grid-template-columns: minmax(9rem, 1.12fr) minmax(7.5rem, 0.68fr) minmax(9rem, 0.86fr) minmax(8.5rem, max-content) !important;
+  grid-template-columns: minmax(9rem, 1.12fr) minmax(7.5rem, 0.68fr) minmax(9rem, 0.86fr) minmax(8.5rem, max-content);
 }
 
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-row-secondary {
-  grid-template-columns: minmax(9rem, 1.12fr) minmax(5.6rem, max-content) minmax(9rem, max-content) minmax(10rem, 1fr) auto !important;
+  grid-template-columns: minmax(9rem, 1.12fr) minmax(5.6rem, max-content) minmax(9rem, max-content) minmax(10rem, 1fr) auto;
 }
 
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-phone {
-  font-size: 0.95rem !important;
-  line-height: 1.05 !important;
-  font-weight: 900 !important;
-  color: rgb(15 23 42) !important;
-  -webkit-text-fill-color: rgb(15 23 42) !important;
-  white-space: nowrap !important;
+  font-size: 0.95rem;
+  line-height: 1.05;
+  font-weight: 900;
+  color: rgb(15 23 42);
+  -webkit-text-fill-color: rgb(15 23 42);
+  white-space: nowrap;
 }
 
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-email,
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .cf-client-cases-count,
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .cf-client-nearest-action,
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .cf-client-company-slot {
-  min-width: 0 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line :is(.cf-client-active-commission, .cf-client-lifetime-earned) {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  width: fit-content !important;
-  max-width: max-content !important;
-  max-inline-size: min(100%, 14rem) !important;
-  min-width: 0 !important;
-  padding: 0.22rem 0.5rem !important;
-  border-radius: 999px !important;
-  border: 1px solid rgba(16, 185, 129, 0.22) !important;
-  background: rgba(236, 253, 245, 0.78) !important;
-  color: rgb(4, 120, 87) !important;
-  -webkit-text-fill-color: rgb(4, 120, 87) !important;
-  font-size: 0.78rem !important;
-  font-weight: 850 !important;
-  line-height: 1.05 !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  box-shadow: none !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: fit-content;
+  max-width: max-content;
+  max-inline-size: min(100%, 14rem);
+  min-width: 0;
+  padding: 0.22rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(16, 185, 129, 0.22);
+  background: rgba(236, 253, 245, 0.78);
+  color: rgb(4, 120, 87);
+  -webkit-text-fill-color: rgb(4, 120, 87);
+  font-size: 0.78rem;
+  font-weight: 850;
+  line-height: 1.05;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: none;
 }
 
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .cf-client-lifetime-earned {
-  background: rgba(240, 253, 244, 0.62) !important;
-  border-color: rgba(22, 163, 74, 0.18) !important;
+  background: rgba(240, 253, 244, 0.62);
+  border-color: rgba(22, 163, 74, 0.18);
 }
 
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .cf-client-cases-count {
-  font-weight: 800 !important;
-  color: rgb(51 65 85) !important;
-  -webkit-text-fill-color: rgb(51 65 85) !important;
+  font-weight: 800;
+  color: rgb(51 65 85);
+  -webkit-text-fill-color: rgb(51 65 85);
 }
 
 @media (max-width: 72rem) {
   #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-row-primary,
   #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-row-secondary {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 }
 
 @media (max-width: 46rem) {
   #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line {
-    grid-template-columns: 2.1rem minmax(0, 1fr) !important;
+    grid-template-columns: 2.1rem minmax(0, 1fr);
   }
 
   #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line > .cf-client-row-actions,
   #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line > .client-card-action-buttons {
-    grid-column: 2 !important;
-    grid-row: auto !important;
-    justify-self: start !important;
+    grid-column: 2;
+    grid-row: auto;
+    justify-self: start;
   }
 
   #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-row-primary,
   #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-row-secondary {
-    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
-/* STAGE231D0B-R9 CLIENTLISTCARD SOURCE TRUTH CLEANUP END */
-
-/* STAGE231D0B-R10 CLIENTLISTCARD ALIGNMENT ELLIPSIS TOOLTIP START
-   Machine guard marker: STAGE231D0B-R10_CLIENT_CARD_ALIGNMENT_ELLIPSIS_TOOLTIP
-   Scope: /clients ClientListCard only.
-   Decision: primary and secondary rows share the same visual columns; long text uses ellipsis and full value is exposed through title attributes in JSX.
-*/
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-content {
-  display: grid !important;
-  gap: 0.36rem !important;
-  min-width: 0 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-primary,
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-secondary {
-  display: grid !important;
-  grid-template-columns: minmax(9.5rem, 1.15fr) minmax(6.7rem, 0.58fr) minmax(9.5rem, 0.9fr) minmax(9rem, max-content) minmax(4.8rem, max-content) !important;
-  align-items: center !important;
-  gap: 0.34rem 0.72rem !important;
-  min-width: 0 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-name,
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-company-slot {
-  grid-column: 1 !important;
-  min-width: 0 !important;
-  max-width: 100% !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-phone,
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-cases-count {
-  grid-column: 2 !important;
-  min-width: 0 !important;
-  max-width: 100% !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-email,
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-nearest-action {
-  grid-column: 3 !important;
-  min-width: 0 !important;
-  max-width: 100% !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-active-commission,
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-lifetime-earned {
-  grid-column: 4 !important;
-  justify-self: start !important;
-  max-inline-size: min(100%, 13.5rem) !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-secondary > .cf-status-pill {
-  grid-column: 5 !important;
-  justify-self: start !important;
-}
-
-@media (max-width: 72rem) {
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-primary,
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-secondary {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
-  }
-
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-name,
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-company-slot {
-    grid-column: 1 !important;
-  }
-
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-phone,
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-cases-count {
-    grid-column: 2 !important;
-  }
-
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-email,
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-nearest-action,
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-active-commission,
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-lifetime-earned,
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-secondary > .cf-status-pill {
-    grid-column: auto !important;
-  }
-}
-
-@media (max-width: 46rem) {
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-primary,
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-secondary {
-    grid-template-columns: minmax(0, 1fr) !important;
-  }
-}
-/* STAGE231D0B-R10 CLIENTLISTCARD ALIGNMENT ELLIPSIS TOOLTIP END */
-
-/* STAGE231D0B-R10-R7 FINANCE CHIP START ALIGN START
-   Machine guard marker: STAGE231D0B-R10-R7_FINANCE_CHIP_START_ALIGN
-   Scope: /clients ClientListCard only.
-   Decision: finance chips start in the same grid column. Chip length may vary; do not force equal chip width.
-*/
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-primary,
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-secondary {
-  justify-items: start !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-active-commission,
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-lifetime-earned {
-  place-self: center start !important;
-  justify-self: start !important;
-  align-self: center !important;
-  justify-content: flex-start !important;
-  text-align: left !important;
-  margin-inline-start: 0 !important;
-  margin-inline-end: auto !important;
-  transform: none !important;
-}
-
-@media (max-width: 72rem) {
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-active-commission,
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-lifetime-earned {
-    place-self: center start !important;
-    justify-self: start !important;
-  }
-}
-/* STAGE231D0B-R10-R7 FINANCE CHIP START ALIGN END */
-
-/* STAGE231D0B-R10-R8 FINANCE CHIP END ALIGN START
-   Machine guard marker: STAGE231D0B-R10-R8_FINANCE_CHIP_END_ALIGN
-   Scope: /clients ClientListCard only.
-   Decision: finance chip boxes align to the right edge of the finance column. Text inside chips stays left; chip width may vary.
-*/
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-active-commission,
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-lifetime-earned {
-  place-self: center end !important;
-  justify-self: end !important;
-  align-self: center !important;
-  justify-content: flex-start !important;
-  text-align: left !important;
-  margin-inline-start: auto !important;
-  margin-inline-end: 0 !important;
-  transform: none !important;
-}
-
-@media (max-width: 72rem) {
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-active-commission,
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-lifetime-earned {
-    place-self: center end !important;
-    justify-self: end !important;
-    margin-inline-start: auto !important;
-    margin-inline-end: 0 !important;
-  }
-}
-/* STAGE231D0B-R10-R8 FINANCE CHIP END ALIGN END */
-
-
-/* STAGE231D0B-R10-R9 FINANCE TEXT START ALIGN START
-   Machine guard marker: STAGE231D0B-R10-R9_FINANCE_TEXT_START_ALIGN
-   Scope: /clients ClientListCard only.
-   Decision: finance text must start on one shared left axis inside the finance column. Chip length may vary to the right. R8 right-edge alignment is deprecated by this later source-truth override.
-*/
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-primary,
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-secondary {
-  justify-items: start !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-active-commission,
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-lifetime-earned {
-  grid-column: 4 !important;
-  place-self: center start !important;
-  justify-self: start !important;
-  align-self: center !important;
-  justify-content: flex-start !important;
-  text-align: left !important;
-  margin-inline-start: 0 !important;
-  margin-inline-end: auto !important;
-  width: fit-content !important;
-  max-width: max-content !important;
-  transform: none !important;
-}
-
-@media (max-width: 72rem) {
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-active-commission,
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-lifetime-earned {
-    place-self: center start !important;
-    justify-self: start !important;
-    margin-inline-start: 0 !important;
-    margin-inline-end: auto !important;
-  }
-}
-/* STAGE231D0B-R10-R9 FINANCE TEXT START ALIGN END */
-
-/* STAGE231D0B-R10-R10 SINGLE GRID ALIGNMENT START
-   Machine guard marker: STAGE231D0B-R10-R10_SINGLE_GRID_ALIGNMENT
-   Scope: /clients ClientListCard only.
-   Decision: ClientListCard content uses one physical CSS grid, not two independent row grids. Text starts must align by shared grid columns.
-*/
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-content {
-  display: grid !important;
-  grid-template-columns: minmax(9.5rem, 1.15fr) minmax(6.7rem, 0.58fr) minmax(9.5rem, 0.9fr) minmax(9rem, max-content) minmax(4.8rem, max-content) !important;
-  grid-template-rows: auto auto !important;
-  align-items: center !important;
-  gap: 0.34rem 0.72rem !important;
-  min-width: 0 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-primary,
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-secondary {
-  display: contents !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-name {
-  grid-column: 1 !important;
-  grid-row: 1 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-company-slot {
-  grid-column: 1 !important;
-  grid-row: 2 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-phone {
-  grid-column: 2 !important;
-  grid-row: 1 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-cases-count {
-  grid-column: 2 !important;
-  grid-row: 2 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-email {
-  grid-column: 3 !important;
-  grid-row: 1 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-nearest-action {
-  grid-column: 3 !important;
-  grid-row: 2 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-active-commission {
-  grid-column: 4 !important;
-  grid-row: 1 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-lifetime-earned {
-  grid-column: 4 !important;
-  grid-row: 2 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-secondary > .cf-status-pill {
-  grid-column: 5 !important;
-  grid-row: 2 !important;
-  justify-self: start !important;
-  align-self: center !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] :is(.cf-client-list-card-name, .cf-client-company-slot, .client-list-card-phone, .cf-client-cases-count, .client-list-card-email, .cf-client-nearest-action) {
-  min-width: 0 !important;
-  max-width: 100% !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] :is(.cf-client-active-commission, .cf-client-lifetime-earned) {
-  place-self: center start !important;
-  justify-self: start !important;
-  align-self: center !important;
-  justify-content: flex-start !important;
-  text-align: left !important;
-  margin-inline-start: 0 !important;
-  margin-inline-end: auto !important;
-  width: fit-content !important;
-  max-width: max-content !important;
-  max-inline-size: min(100%, 13.5rem) !important;
-  transform: none !important;
-}
-
-@media (max-width: 72rem) {
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-content {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
-    grid-template-rows: auto !important;
-  }
-
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] :is(.cf-client-list-card-name, .cf-client-company-slot, .client-list-card-phone, .cf-client-cases-count, .client-list-card-email, .cf-client-nearest-action, .cf-client-active-commission, .cf-client-lifetime-earned, .client-list-card-row-secondary > .cf-status-pill) {
-    grid-column: auto !important;
-    grid-row: auto !important;
-  }
-}
-
-@media (max-width: 46rem) {
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-content {
-    grid-template-columns: minmax(0, 1fr) !important;
-  }
-
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] :is(.cf-client-list-card-name, .cf-client-company-slot, .client-list-card-phone, .cf-client-cases-count, .client-list-card-email, .cf-client-nearest-action, .cf-client-active-commission, .cf-client-lifetime-earned, .client-list-card-row-secondary > .cf-status-pill) {
-    grid-column: 1 !important;
-    grid-row: auto !important;
-  }
-}
-/* STAGE231D0B-R10-R10 SINGLE GRID ALIGNMENT END */
-
-/* STAGE231D0B-R10-R11 FIXED COLUMN AXIS START
-   Machine guard marker: STAGE231D0B-R10-R11_FIXED_COLUMN_AXIS
-   Scope: /clients ClientListCard only.
-   Decision: every ClientListCard uses the same deterministic column widths. Text starts are anchored across cards; content length must not move column starts.
-*/
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-content {
-  --cf-client-card-name-col: minmax(13.5rem, 1.25fr);
-  --cf-client-card-phone-col: 11rem;
-  --cf-client-card-email-col: 17rem;
-  --cf-client-card-finance-col: 16.25rem;
-  --cf-client-card-status-col: 6rem;
-  display: grid !important;
-  grid-template-columns: var(--cf-client-card-name-col) var(--cf-client-card-phone-col) var(--cf-client-card-email-col) var(--cf-client-card-finance-col) var(--cf-client-card-status-col) !important;
-  grid-template-rows: auto auto !important;
-  align-items: center !important;
-  justify-items: start !important;
-  gap: 0.34rem 0.72rem !important;
-  min-width: 0 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-primary,
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-secondary {
-  display: contents !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-name,
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-company-slot {
-  grid-column: 1 !important;
-  justify-self: start !important;
-  text-align: left !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-name {
-  grid-row: 1 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-company-slot {
-  grid-row: 2 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-phone,
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-cases-count {
-  grid-column: 2 !important;
-  justify-self: start !important;
-  text-align: left !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-phone {
-  grid-row: 1 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-cases-count {
-  grid-row: 2 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-email,
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-nearest-action {
-  grid-column: 3 !important;
-  justify-self: start !important;
-  text-align: left !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-email {
-  grid-row: 1 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-nearest-action {
-  grid-row: 2 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-active-commission,
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-lifetime-earned {
-  grid-column: 4 !important;
-  place-self: center start !important;
-  justify-self: start !important;
-  align-self: center !important;
-  justify-content: flex-start !important;
-  text-align: left !important;
-  margin-inline-start: 0 !important;
-  margin-inline-end: auto !important;
-  width: fit-content !important;
-  max-width: min(100%, var(--cf-client-card-finance-col)) !important;
-  max-inline-size: min(100%, var(--cf-client-card-finance-col)) !important;
-  transform: none !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-active-commission {
-  grid-row: 1 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-lifetime-earned {
-  grid-row: 2 !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-secondary > .cf-status-pill {
-  grid-column: 5 !important;
-  grid-row: 2 !important;
-  justify-self: start !important;
-}
-
-#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] :is(.cf-client-list-card-name, .cf-client-company-slot, .client-list-card-phone, .cf-client-cases-count, .client-list-card-email, .cf-client-nearest-action) {
-  min-width: 0 !important;
-  max-width: 100% !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
-
-@media (max-width: 90rem) {
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-content {
-    --cf-client-card-name-col: minmax(11rem, 1.15fr);
-    --cf-client-card-phone-col: 9.25rem;
-    --cf-client-card-email-col: 14rem;
-    --cf-client-card-finance-col: 15rem;
-    --cf-client-card-status-col: 4.8rem;
-  }
-}
-
-@media (max-width: 72rem) {
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-content {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
-    grid-template-rows: auto !important;
-  }
-
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] :is(.cf-client-list-card-name, .cf-client-company-slot, .client-list-card-phone, .cf-client-cases-count, .client-list-card-email, .cf-client-nearest-action, .cf-client-active-commission, .cf-client-lifetime-earned, .client-list-card-row-secondary > .cf-status-pill) {
-    grid-column: auto !important;
-    grid-row: auto !important;
-  }
-}
-
-@media (max-width: 46rem) {
-  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-content {
-    grid-template-columns: minmax(0, 1fr) !important;
-  }
-}
-/* STAGE231D0B-R10-R11 FIXED COLUMN AXIS END */
-
-/* STAGE231D0C LEAD LIST CARD CLIENT VIEW FREEZE START
-   Machine guard marker: STAGE231D0C_LEAD_LIST_CARD_CLIENT_VIEW_FREEZE
-   Scope: /leads LeadListCard only.
-   Decision: accepted ClientListCard visual shell is frozen and LeadListCard reuses the same card rhythm, fixed axes, action column, ellipsis and compact pill sizing. Lead data semantics stay unchanged.
-*/
-#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] {
-  --cf-lead-card-main-col: minmax(13.5rem, 1.25fr);
-  --cf-lead-card-value-col: 10.5rem;
-  --cf-lead-card-action-col: minmax(17rem, 1fr);
-  --cf-lead-card-actions-col: 5rem;
-  width: 100% !important;
-  max-width: none !important;
-  min-width: 0 !important;
-  min-height: 4.05rem !important;
-  display: grid !important;
-  grid-template-columns: minmax(2.15rem, 2.5rem) var(--cf-lead-card-main-col) var(--cf-lead-card-value-col) var(--cf-lead-card-action-col) var(--cf-lead-card-actions-col) !important;
-  grid-template-rows: auto !important;
-  align-items: center !important;
-  gap: 0.34rem 0.72rem !important;
-  padding: 0.68rem 0.82rem !important;
-  border-radius: 1rem !important;
-  box-sizing: border-box !important;
-}
-
-#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .index {
-  grid-column: 1 !important;
-  grid-row: 1 !important;
-  align-self: center !important;
-  justify-self: start !important;
-}
-
-#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .lead-main-cell {
-  grid-column: 2 !important;
-  grid-row: 1 !important;
-  min-width: 0 !important;
-  max-width: 100% !important;
-  align-self: center !important;
-  justify-self: stretch !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  gap: 0.18rem !important;
-}
-
-#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .lead-value-cell {
-  grid-column: 3 !important;
-  grid-row: 1 !important;
-  min-width: 0 !important;
-  max-width: 100% !important;
-  width: 100% !important;
-  align-self: center !important;
-  justify-self: stretch !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  align-items: flex-start !important;
-  gap: 0.16rem !important;
-  padding: 0 !important;
-  border: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .lead-action-cell {
-  grid-column: 4 !important;
-  grid-row: 1 !important;
-  min-width: 0 !important;
-  max-width: 100% !important;
-  width: 100% !important;
-  align-self: center !important;
-  justify-self: stretch !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  align-items: flex-start !important;
-  gap: 0.12rem !important;
-  padding: 0 !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .lead-actions {
-  grid-column: 5 !important;
-  grid-row: 1 !important;
-  align-self: center !important;
-  justify-self: end !important;
-  width: auto !important;
-  min-width: max-content !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  flex-wrap: nowrap !important;
-  gap: 0.42rem !important;
-}
-
-#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .cf-lead-list-card-name,
-#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .cf-list-row-contact,
-#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .lead-action-cell strong,
-#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .lead-action-cell .sub {
-  min-width: 0 !important;
-  max-width: 100% !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
-
-#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .cf-list-row-meta,
-#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .statusline {
-  min-width: 0 !important;
-  max-width: 100% !important;
-  display: flex !important;
-  flex-wrap: nowrap !important;
-  align-items: center !important;
-  gap: 0.26rem !important;
-  overflow: hidden !important;
-}
-
-#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .statusline > *,
-#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .cf-list-row-meta > * {
-  flex: 0 1 auto !important;
-  min-width: 0 !important;
-}
-
-#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .lead-value-cell .mini,
-#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .lead-action-cell .mini {
-  margin: 0 !important;
-  font-size: 0.61rem !important;
-  line-height: 1 !important;
-  letter-spacing: 0.08em !important;
-  text-transform: uppercase !important;
-  color: rgb(100 116 139) !important;
-  -webkit-text-fill-color: rgb(100 116 139) !important;
-  font-weight: 850 !important;
-}
-
-#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .lead-card-value-pill {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  width: fit-content !important;
-  max-width: max-content !important;
-  max-inline-size: min(100%, 10rem) !important;
-  min-width: 0 !important;
-  padding: 0.22rem 0.5rem !important;
-  border-radius: 999px !important;
-  border: 1px solid rgba(16, 185, 129, 0.22) !important;
-  background: rgba(236, 253, 245, 0.78) !important;
-  color: rgb(4, 120, 87) !important;
-  -webkit-text-fill-color: rgb(4, 120, 87) !important;
-  font-size: 0.78rem !important;
-  font-weight: 850 !important;
-  line-height: 1.05 !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  box-shadow: none !important;
-}
-
-#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .cf-lead-next-action-title {
-  line-height: 1.08 !important;
-  font-size: 0.82rem !important;
-  color: rgb(15 23 42) !important;
-  -webkit-text-fill-color: rgb(15 23 42) !important;
-}
-
-@media (max-width: 72rem) {
-  #root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] {
-    grid-template-columns: minmax(2.15rem, 2.5rem) minmax(0, 1fr) minmax(8rem, auto) minmax(4.8rem, max-content) !important;
-  }
-
-  #root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .lead-main-cell {
-    grid-column: 2 !important;
-  }
-
-  #root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .lead-value-cell {
-    grid-column: 3 !important;
-  }
-
-  #root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .lead-action-cell {
-    grid-column: 2 / 4 !important;
-    grid-row: 2 !important;
-  }
-
-  #root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .lead-actions {
-    grid-column: 4 !important;
-  }
-}
-
-@media (max-width: 46rem) {
-  #root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] {
-    grid-template-columns: 2.1rem minmax(0, 1fr) !important;
-    align-items: start !important;
-  }
-
-  #root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > :is(.lead-main-cell, .lead-value-cell, .lead-action-cell, .lead-actions) {
-    grid-column: 2 !important;
-    grid-row: auto !important;
-    justify-self: stretch !important;
-    width: 100% !important;
-  }
-
-  #root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .lead-actions {
-    justify-content: flex-start !important;
-  }
-}
-/* STAGE231D0C LEAD LIST CARD CLIENT VIEW FREEZE END */
-
-/* STAGE231D0F_R6_SHARED_FILTER_STRIP_SOURCE
-   Source truth for compact list filter strips: Funnel, Clients, later Leads.
-*/
 
 #root .cf-html-view .cf-filter-strip {
-  width: 100% !important;
-  max-width: none !important;
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 1.25rem !important;
-  background: #ffffff !important;
-  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.055) !important;
-  padding: 0.72rem !important;
+  width: 100%;
+  max-width: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.25rem;
+  background: #ffffff;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.055);
+  padding: 0.72rem;
 }
 
 #root .cf-html-view .cf-filter-strip-header {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 0.75rem !important;
-  margin-bottom: 0.55rem !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.55rem;
 }
 
 #root .cf-html-view .cf-filter-strip-title {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 0.42rem !important;
-  color: #0f172a !important;
-  font-size: 0.82rem !important;
-  font-weight: 900 !important;
-  line-height: 1.1 !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  color: #0f172a;
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.1;
 }
 
 #root .cf-html-view .cf-filter-strip-description {
-  margin: 0.12rem 0 0 !important;
-  color: #64748b !important;
-  font-size: 0.72rem !important;
-  font-weight: 700 !important;
-  line-height: 1.25 !important;
+  margin: 0.12rem 0 0;
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.25;
 }
 
 #root .cf-html-view .cf-filter-pills {
-  display: flex !important;
-  gap: 0.45rem !important;
-  overflow-x: auto !important;
-  padding-bottom: 0.12rem !important;
+  display: flex;
+  gap: 0.45rem;
+  overflow-x: auto;
+  padding-bottom: 0.12rem;
 }
 
 #root .cf-html-view .cf-filter-pill {
-  min-width: max-content !important;
-  border-radius: 999px !important;
+  min-width: max-content;
+  border-radius: 999px;
 }
 
 #root .cf-html-view .cf-filter-pill:is(.pill, .cf-status-pill) {
-  min-height: 1.92rem !important;
-  padding: 0.46rem 0.68rem !important;
-  font-size: 0.74rem !important;
-  font-weight: 850 !important;
+  min-height: 1.92rem;
+  padding: 0.46rem 0.68rem;
+  font-size: 0.74rem;
+  font-weight: 850;
 }

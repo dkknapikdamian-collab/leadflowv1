@@ -14,10 +14,14 @@ const runtime = 'src/components/ui-system/OperatorMetricToneRuntime.tsx';
 const operator = 'src/components/ui-system/OperatorMetricTiles.tsx';
 const layout = 'src/components/Layout.tsx';
 const index = 'src/components/ui-system/index.ts';
-const css = 'src/styles/closeflow-operator-semantic-tones.css';
+const app = 'src/App.tsx';
+// LF-UI-SOT-007 consolidates the former stage stylesheet into the semantic
+// owner graph. Keep this guard bound to the canonical owner, not a historical
+// filename that is intentionally removed from the runtime.
+const css = 'src/styles/owners/closeflow-foundation-operator.css';
 const indexCss = 'src/index.css';
 
-[contract, runtime, operator, layout, index, css, indexCss, 'package.json'].forEach((rel) => assert(exists(rel), `Missing file ${rel}`));
+[contract, runtime, operator, layout, index, app, css, indexCss, 'package.json'].forEach((rel) => assert(exists(rel), `Missing file ${rel}`));
 
 assertIncludes(contract, 'CLOSEFLOW_VS7_SEMANTIC_METRIC_TONE_SOURCE_OF_TRUTH');
 assertIncludes(contract, 'resolveOperatorMetricTone');
@@ -57,7 +61,7 @@ assertIncludes(index, './operator-metric-tone-contract');
 assertIncludes(index, './OperatorMetricToneRuntime');
 assertIncludes(css, 'data-cf-semantic-tone');
 assertIncludes(css, 'data-cf-operator-metric-icon-tone');
-assertIncludes(indexCss, 'closeflow-operator-semantic-tones.css');
+assertIncludes(app, "./styles/closeflow-visual-source-truth.css");
 
 const pkg = JSON.parse(read('package.json'));
 assert(pkg.scripts && pkg.scripts['check:vs7-semantic-metric-tones'], 'Missing package script check:vs7-semantic-metric-tones');

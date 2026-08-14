@@ -238,18 +238,10 @@ export function persistWorkspaceId(workspaceId?: string | null) {
 }
 async function getAuthHeaders() {
   const accessToken = await getSupabaseAccessToken();
-  const authContext = getAuthContext();
   const workspaceId = getStoredWorkspaceId();
   const headers: Record<string, string> = {};
 
   if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
-  if (authContext.uid) {
-    headers['x-user-id'] = authContext.uid;
-    headers['x-firebase-uid'] = authContext.uid;
-    headers['x-auth-uid'] = authContext.uid;
-  }
-  if (authContext.email) headers['x-user-email'] = authContext.email;
-  if (authContext.fullName) headers['x-user-full-name'] = authContext.fullName;
   if (workspaceId) {
     headers['x-workspace-id'] = workspaceId;
     headers['x-closeflow-workspace-id'] = workspaceId;
@@ -474,7 +466,6 @@ export async function fetchPaymentsFromSupabase(params?: { leadId?: string; case
       if (params?.caseId && String((row as any).caseId || '') !== params.caseId) return false;
       if (params?.clientId && String((row as any).clientId || '') !== params.clientId) return false;
       if (params?.status && String((row as any).status || '') !== params.status) return false;
-      if (!params?.includeArchived && String((row as any).status || '').toLowerCase() === 'archived') return false;
       return true;
     }));
   }
@@ -522,6 +513,7 @@ export type AiDraftApiInput = {
   cancelledAt?: string | null;
   linkedRecordId?: string | null;
   linkedRecordType?: string | null;
+  confirmation?: Record<string, unknown> | null;
 };
 
 export async function fetchAiDraftsFromSupabase(params?: { status?: string; limit?: number }) {
@@ -537,6 +529,13 @@ export async function createAiDraftInSupabase(input: AiDraftApiInput) {
 
 export async function updateAiDraftInSupabase(input: AiDraftApiInput & { id: string; action?: string }) {
   return callApi<Record<string, unknown>>('/api/system?kind=ai-drafts', { method: 'PATCH', body: JSON.stringify(input) });
+}
+
+export async function confirmAiDraftInSupabase(input: { id: string; confirmation: Record<string, unknown> }) {
+  return callApi<{ draft: Record<string, unknown>; createdRecord: Record<string, unknown>; idempotent?: boolean }>('/api/system?kind=ai-drafts', {
+    method: 'PATCH',
+    body: JSON.stringify({ id: input.id, action: 'confirm', confirmation: input.confirmation }),
+  });
 }
 
 export async function deleteAiDraftFromSupabase(id: string) {
@@ -906,18 +905,11 @@ export async function fetchMeFromSupabase(input?: { uid?: string; email?: string
   // STAGE231D_R6_FIX_FETCH_ME_SYNTAX
   // R5 added Google auth intent routing, but a malformed duplicate tail broke build.
   // Keep the intent query path and replace the whole function block atomically.
-  const headers: Record<string, string> = {};
-  if (input?.uid) {
-    headers['x-user-id'] = input.uid;
-    headers['x-firebase-uid'] = input.uid;
-    headers['x-auth-uid'] = input.uid;
-  }
-  if (input?.email) headers['x-user-email'] = input.email;
-  if (input?.fullName) headers['x-user-full-name'] = input.fullName;
+  void input;
 
   const authIntent = getCloseFlowAuthIntent();
   const path = authIntent ? `/api/me?authIntent=${encodeURIComponent(authIntent)}` : '/api/me';
-  return callApi<MeResponse>(path, { headers });
+  return callApi<MeResponse>(path);
 }
 export async function updateProfileSettingsInSupabase(input: ProfileSettingsUpdate) { return callApi<SupabaseInsertResult>('/api/system?kind=profile-settings', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function updateWorkspaceSettingsInSupabase(input: WorkspaceSettingsUpdate) { return callApi<SupabaseInsertResult>('/api/workspace-settings', { method: 'PATCH', body: JSON.stringify(input) }); }
@@ -939,6 +931,12 @@ export async function updateSupportRequestInSupabase(input: Record<string, unkno
 
 export async function createBillingCheckoutSessionInSupabase(input: { workspaceId: string; customerEmail?: string | null; planKey?: string | null; billingPeriod?: string | null; dryRun?: boolean }) {
   return callApi<{ ok: boolean; provider?: string; url?: string; sessionId?: string | null; error?: string; missing?: Record<string, boolean>; dryRun?: boolean; checkoutConfigured?: boolean; webhookConfigured?: boolean; appUrl?: string; planId?: string; planKey?: string; billingPeriod?: string; amount?: number; amountPln?: number; currency?: string; accessDays?: number }>('/api/billing-checkout', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+export async function getBillingCheckoutConfigurationInSupabase(input: { workspaceId: string }) {
+  return callApi<{ ok: boolean; provider?: string; error?: string; missing?: Record<string, boolean>; checkoutConfigured?: boolean; webhookConfigured?: boolean; appUrl?: string; planId?: string; planKey?: string; billingPeriod?: string; amount?: number; amountPln?: number; currency?: string; accessDays?: number }>('/api/billing-checkout?route=config', {
     method: 'POST',
     body: JSON.stringify(input),
   });

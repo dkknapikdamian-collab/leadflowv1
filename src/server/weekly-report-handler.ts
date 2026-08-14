@@ -3,6 +3,8 @@ import { buildWeeklyReportEmail, buildWeeklyReportPayload, getReportWeekRange } 
 import { getAppUrlFromRequest, getMailDiagnostics, sendResendEmail } from './_mail.js';
 import { insertWithVariants, selectFirstAvailable, updateWhere } from './_supabase.js';
 import { withWorkspaceFilter } from './_request-scope.js';
+import { getInteractiveDigestScope, isDigestCronAuthorized } from './digest-authorization.js';
+import { RequestAuthError, writeAuthErrorResponse } from './_supabase-auth.js';
 
 const DEFAULT_TZ = 'Europe/Warsaw';
 
@@ -37,28 +39,6 @@ function parseBody(req: any) {
     }
   }
   return req.body;
-}
-
-function extractBearerToken(req: any) {
-  const auth = asText(req?.headers?.authorization || req?.headers?.Authorization);
-  if (!auth.toLowerCase().startsWith('bearer ')) return '';
-  return auth.slice(7).trim();
-}
-
-function isRequestAuthorized(req: any, body: Record<string, unknown>) {
-  const cronSecret = asNullableText(process.env.CRON_SECRET);
-  const providedSecret =
-    asNullableText(req?.headers?.['x-cron-secret']) ||
-    asNullableText(req?.query?.secret) ||
-    asNullableText((body as any)?.secret) ||
-    asNullableText(extractBearerToken(req));
-
-  const vercelCron = asNullableText(req?.headers?.['x-vercel-cron']);
-  if (vercelCron) return true;
-  if (cronSecret) return providedSecret === cronSecret;
-  if (asBool(req?.query?.manual, false)) return true;
-  if (asBool((body as any)?.manual, false)) return true;
-  return false;
 }
 
 function getDateKey(date: Date, timeZone: string) {
@@ -116,10 +96,10 @@ async function readWeeklyReportWorkspaces() {
   return Array.isArray(result.data) ? result.data.filter((row) => row && typeof row === 'object') as Record<string, unknown>[] : [];
 }
 
-async function alreadySentWeekly(profileEmail: string, sentForDate: string) {
+async function alreadySentWeekly(workspaceId: string, profileEmail: string, sentForDate: string) {
   try {
     const result = await selectFirstAvailable([
-      `digest_logs?select=id&profile_email=eq.${encodeURIComponent(profileEmail)}&report_type=eq.weekly&sent_for_date=eq.${encodeURIComponent(sentForDate)}&limit=1`,
+      `digest_logs?select=id&workspace_id=eq.${encodeURIComponent(workspaceId)}&profile_email=eq.${encodeURIComponent(profileEmail)}&report_type=eq.weekly&sent_for_date=eq.${encodeURIComponent(sentForDate)}&limit=1`,
     ]);
     return Array.isArray(result.data) && result.data.length > 0;
   } catch {
@@ -222,25 +202,10 @@ export default async function handler(req: any, res: any) {
     const mode = asText((body as any)?.mode || (body as any)?.action || req?.query?.mode).toLowerCase();
 
     if (mode === 'workspace-diagnostics' || mode === 'weekly-report-diagnostics') {
-      const workspaceId = asNullableText((body as any)?.workspaceId || req?.headers?.['x-workspace-id']);
-      const requesterEmail = asNullableText(req?.headers?.['x-user-email'] || (body as any)?.requesterEmail)?.toLowerCase() || null;
-
-      if (!workspaceId) {
-        res.status(400).json({ error: 'WORKSPACE_ID_REQUIRED' });
-        return;
-      }
-      if (!requesterEmail) {
-        res.status(401).json({ error: 'REQUESTER_EMAIL_REQUIRED' });
-        return;
-      }
-
-      const workspaceResult = await selectFirstAvailable([
-        `workspaces?select=*&id=eq.${encodeURIComponent(workspaceId)}&limit=1`,
-      ]);
-      const workspaceRow = Array.isArray(workspaceResult.data) && workspaceResult.data[0]
-        ? workspaceResult.data[0] as Record<string, unknown>
-        : { id: workspaceId };
-      const recipientEmail = asNullableText((body as any)?.recipientEmail || workspaceRow.daily_digest_recipient_email || workspaceRow.dailyDigestRecipientEmail || requesterEmail)?.toLowerCase() || null;
+      const interactiveScope = await getInteractiveDigestScope(req, body);
+      const workspaceId = interactiveScope.workspaceId;
+      const workspaceRow = interactiveScope.workspaceRow;
+      const recipientEmail = interactiveScope.recipientEmail;
       const diagnostics = getMailDiagnostics();
 
       res.status(200).json({
@@ -268,24 +233,10 @@ export default async function handler(req: any, res: any) {
         return;
       }
 
-      const workspaceId = asNullableText((body as any)?.workspaceId || req?.headers?.['x-workspace-id']);
-      const requesterEmail = asNullableText(req?.headers?.['x-user-email'] || (body as any)?.requesterEmail)?.toLowerCase() || null;
-      if (!workspaceId) {
-        res.status(400).json({ error: 'WORKSPACE_ID_REQUIRED' });
-        return;
-      }
-      if (!requesterEmail) {
-        res.status(401).json({ error: 'REQUESTER_EMAIL_REQUIRED' });
-        return;
-      }
-
-      const workspaceResult = await selectFirstAvailable([
-        `workspaces?select=*&id=eq.${encodeURIComponent(workspaceId)}&limit=1`,
-      ]);
-      const workspaceRow = Array.isArray(workspaceResult.data) && workspaceResult.data[0]
-        ? workspaceResult.data[0] as Record<string, unknown>
-        : { id: workspaceId };
-      const recipientEmail = asNullableText((body as any)?.recipientEmail || workspaceRow.daily_digest_recipient_email || workspaceRow.dailyDigestRecipientEmail || requesterEmail)?.toLowerCase() || null;
+      const interactiveScope = await getInteractiveDigestScope(req, body);
+      const workspaceId = interactiveScope.workspaceId;
+      const workspaceRow = interactiveScope.workspaceRow;
+      const recipientEmail = interactiveScope.recipientEmail;
       const planGate = getWeeklyPlanGateStatus(workspaceRow);
       if (!planGate.allowed) {
         res.status(403).json({ ok: false, error: 'WEEKLY_REPORT_NOT_AVAILABLE_ON_FREE', planId: planGate.planId });
@@ -336,7 +287,7 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
-    if (!isRequestAuthorized(req, body)) {
+    if (!isDigestCronAuthorized(req)) {
       res.status(401).json({ error: 'WEEKLY_REPORT_CRON_UNAUTHORIZED' });
       return;
     }
@@ -380,7 +331,7 @@ export default async function handler(req: any, res: any) {
         stats.skippedPlan += 1;
         continue;
       }
-      if (!force && await alreadySentWeekly(recipientEmail, sentForDate)) {
+      if (!force && await alreadySentWeekly(workspaceId, recipientEmail, sentForDate)) {
         stats.skippedDuplicate += 1;
         continue;
       }
@@ -454,6 +405,10 @@ export default async function handler(req: any, res: any) {
       errors: errors.slice(0, 50),
     });
   } catch (error: any) {
+    if (error instanceof RequestAuthError) {
+      writeAuthErrorResponse(res, error);
+      return;
+    }
     res.status(500).json({ error: error?.message || 'WEEKLY_REPORT_FAILED' });
   }
 }

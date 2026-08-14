@@ -1,0 +1,112 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:page-adapters","concerns":[],"scope":"route-scoped","consumerRoots":["src/pages/Today.tsx","src/pages/Leads.tsx","src/pages/Clients.tsx","src/pages/Cases.tsx","src/pages/Calendar.tsx","src/pages/LeadDetail.tsx","src/pages/CaseDetail.tsx"],"role":"scoped-adapter","boundary":"route-component","whyNotGlobal":"This stylesheet adapts route composition only; shared shell, cards, actions, metrics, colors and typography have separate owners.","whyNotDuplicate":"Each rule is anchored to an actual route consumer and consumes canonical layout tokens.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+/* Layout-only context for the registered cf-html-shell route wrapper; no shell semantics are owned here. */
+
+.cf-html-view.main-today-html,
+.cf-html-view.main-leads-html,
+.cf-html-view.main-clients-html,
+.cf-html-view.main-cases-html,
+.cf-html-view.main-calendar-html {
+  min-width: 0;
+  width: 100%;
+}
+
+.cf-html-view.main-today-html .today-main-column,
+.cf-html-view.main-today-html .today-right-rail {
+  min-width: 0;
+}
+
+.cf-html-view.main-today-html .today-main-column {
+  display: grid;
+  align-content: start;
+  gap: var(--cf-vst-layout-gap, 18px);
+}
+
+.cf-html-view.main-today-html .today-right-rail {
+  display: grid;
+  align-content: start;
+  gap: var(--cf-vst-layout-gap, 18px);
+}
+
+.cf-html-view.main-leads-html .lead-right-rail,
+.cf-html-view.main-clients-html .clients-right-rail,
+.cf-html-view.main-cases-html .cases-right-rail {
+  min-width: 0;
+  align-self: start;
+}
+
+.cf-html-view.main-leads-html .lead-main-cell,
+.cf-html-view.main-clients-html .clients-main-cell,
+.cf-html-view.main-cases-html .lead-main-cell {
+  min-width: 0;
+}
+
+.cf-html-view.main-leads-html .cf-main-search,
+.cf-html-view.main-clients-html .cf-main-search,
+.cf-html-view.main-cases-html .cf-main-search {
+  min-width: 0;
+}
+
+.cf-html-view.main-calendar-html .calendar-week-visible-days-v3 {
+  min-width: 0;
+}
+
+/* Detail-route layout anchors are structural only; card/action semantics stay canonical. */
+.main-client-detail,
+.main-lead-detail,
+.main-case-detail,
+.layout-detail {
+  min-width: 0;
+  width: 100%;
+}
+
+.main-case-detail .right-card,
+.main-lead-detail .right-card {
+  min-width: 0;
+}
+
+.lead-detail-vnext-page .lead-detail-left-rail,
+.lead-detail-vnext-page .lead-detail-main-column,
+.lead-detail-vnext-page .lead-detail-right-rail,
+.case-detail-vnext-page .case-detail-main-column,
+.case-detail-vnext-page .case-detail-right-rail {
+  min-width: 0;
+}
+
+.lead-detail-vnext-page .lead-detail-left-rail,
+.lead-detail-vnext-page .lead-detail-main-column,
+.lead-detail-vnext-page .lead-detail-right-rail,
+.case-detail-vnext-page .case-detail-main-column,
+.case-detail-vnext-page .case-detail-right-rail {
+  display: grid;
+  align-content: start;
+  gap: var(--cf-vst-layout-gap, 18px);
+}
+
+.lead-detail-vnext-page .lead-detail-activity-history-rail-list,
+.lead-detail-vnext-page .lead-detail-history-list,
+.case-detail-vnext-page .case-quick-actions-rail {
+  min-width: 0;
+}
+
+.case-detail-vnext-page .case-detail-shell {
+  min-width: 0;
+}
+
+@media (max-width: 1180px) {
+  .lead-detail-vnext-page .lead-detail-right-rail,
+  .case-detail-vnext-page .case-detail-right-rail {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .cf-html-view.main-today-html .today-main-column,
+  .cf-html-view.main-today-html .today-right-rail,
+  .lead-detail-vnext-page .lead-detail-left-rail,
+  .lead-detail-vnext-page .lead-detail-main-column,
+  .lead-detail-vnext-page .lead-detail-right-rail,
+  .case-detail-vnext-page .case-detail-main-column,
+  .case-detail-vnext-page .case-detail-right-rail {
+    gap: 14px;
+  }
+}

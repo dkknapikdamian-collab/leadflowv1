@@ -196,7 +196,7 @@ export function getBillingAccessCopy(status?: string | null) {
 
 export function getDisplayBillingPlanId(planId?: string | null, subscriptionStatus?: string | null) {
   const normalized = String(planId || '');
-  if (['closeflow_basic', 'closeflow_basic_yearly', 'closeflow_pro', 'closeflow_pro_yearly', 'closeflow_business', 'closeflow_business_yearly'].includes(normalized)) {
+  if (['closeflow_basic', 'closeflow_basic_yearly', 'closeflow_pro', 'closeflow_pro_yearly', 'closeflow_ai', 'closeflow_ai_yearly', 'closeflow_business', 'closeflow_business_yearly'].includes(normalized)) {
     return normalized;
   }
   if (['solo_mini', 'solo_full', 'team_mini', 'team_full', 'pro'].includes(normalized)) {

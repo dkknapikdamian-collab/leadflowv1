@@ -16,7 +16,7 @@ const libCases = read('src/lib/cases.ts');
 const fallback = read('src/lib/supabase-fallback.ts');
 
 [
-  "import { deleteCaseWithRelations } from '../lib/cases';",
+  'deleteCaseWithRelations',
   'const [caseToDelete, setCaseToDelete] = useState<CaseRecord | null>(null);',
   'const [deletePending, setDeletePending] = useState(false);',
   'async function handleDeleteCase()',
@@ -26,8 +26,10 @@ const fallback = read('src/lib/supabase-fallback.ts');
   "toast.error(hasRelationBlocker ? 'Nie mo\u017Cna usun\u0105\u0107 sprawy, bo ma powi\u0105zane dzia\u0142ania.' : 'Nie uda\u0142o si\u0119 usun\u0105\u0107 sprawy.');",
   'className="case-row-title-line"',
   'data-case-row-delete-action="true"',
-  'cf-case-row-delete-text-action',
-  '<Trash2 className="h-4 w-4" />',
+  'data-cf-destructive-source="trash-action-source"',
+  'EntityTrashButton',
+  'DeleteActionIcon',
+  'trashActionIconClass("h-4 w-4")',
   'Usu\u0144',
   'event.preventDefault();',
   'event.stopPropagation();',
@@ -38,8 +40,7 @@ const fallback = read('src/lib/supabase-fallback.ts');
 });
 
 [
-  'EntityTrashButton',
-  '</EntityTrashButton>',
+  'cf-case-row-delete-text-action',
   ': <Trash2 className="cf-trash-action-icon',
   'window.location.reload',
 ].forEach((forbidden) => {

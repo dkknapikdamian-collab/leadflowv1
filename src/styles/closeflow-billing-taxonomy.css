@@ -1,0 +1,334 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-billing-taxonomy.css","concerns":[],"scope":"component","consumerRoots":["src/pages/Billing.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+.billing-vnext-page .billing-status-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+}
+
+.billing-vnext-page .billing-status-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 18px;
+  bottom: 18px;
+  width: 5px;
+  border-radius: 999px;
+  background: var(--cf-billing-blue-text);
+}
+
+.billing-vnext-page .billing-status-amber {
+  border-color: var(--cf-billing-amber-border);
+  background:
+    radial-gradient(circle at top right, rgba(180, 83, 9, 0.10), transparent 34%),
+    #ffffff;
+}
+
+.billing-vnext-page .billing-status-amber::before {
+  background: var(--cf-billing-amber-text);
+}
+
+.billing-vnext-page .billing-status-green {
+  border-color: var(--cf-billing-emerald-border);
+  background:
+    radial-gradient(circle at top right, rgba(4, 120, 87, 0.10), transparent 34%),
+    #ffffff;
+}
+
+.billing-vnext-page .billing-status-green::before {
+  background: var(--cf-billing-emerald-text);
+}
+
+.billing-vnext-page .billing-status-red {
+  border-color: #fecaca;
+  background:
+    radial-gradient(circle at top right, rgba(220, 38, 38, 0.10), transparent 34%),
+    #ffffff;
+}
+
+.billing-vnext-page .billing-status-red::before {
+  background: #dc2626;
+}
+
+.billing-vnext-page .billing-status-slate {
+  border-color: var(--cf-billing-slate-border);
+  background:
+    radial-gradient(circle at top right, rgba(71, 85, 105, 0.08), transparent 34%),
+    #ffffff;
+}
+.billing-vnext-page .billing-period-card {
+  border-color: #dbeafe;
+  background:
+    linear-gradient(180deg, rgba(239, 246, 255, 0.70), rgba(255,255,255,0.96));
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.06);
+}
+
+.billing-vnext-page .billing-period-card h2 {
+  color: #0f172a;
+  font-weight: 950;
+}
+
+.billing-vnext-page .billing-period-switch button {
+  font-weight: 900;
+}
+
+.billing-vnext-page .billing-period-switch .billing-period-active {
+  border-color: var(--cf-billing-blue-border);
+  background: var(--cf-billing-blue-bg);
+  color: var(--cf-billing-blue-text);
+}
+.billing-vnext-page .billing-plan-card {
+  position: relative;
+  overflow: hidden;
+  border-width: 1px;
+  border-radius: 24px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
+}
+
+.billing-vnext-page .billing-plan-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 16px;
+  bottom: 16px;
+  width: 5px;
+  border-radius: 999px;
+  background: var(--cf-billing-slate-text);
+}
+
+.billing-vnext-page .billing-plan-card[data-billing-plan-key="free"] {
+  border-color: var(--cf-billing-slate-border);
+  background:
+    radial-gradient(circle at top right, rgba(71, 85, 105, 0.07), transparent 34%),
+    #ffffff;
+}
+
+.billing-vnext-page .billing-plan-card[data-billing-plan-key="free"]::before {
+  background: var(--cf-billing-slate-text);
+}
+
+.billing-vnext-page .billing-plan-card[data-billing-plan-key="basic"] {
+  border-color: var(--cf-billing-blue-border);
+  background:
+    radial-gradient(circle at top right, rgba(29, 78, 216, 0.09), transparent 34%),
+    #ffffff;
+}
+
+.billing-vnext-page .billing-plan-card[data-billing-plan-key="basic"]::before {
+  background: var(--cf-billing-blue-text);
+}
+
+.billing-vnext-page .billing-plan-card[data-billing-plan-key="pro"] {
+  border-color: var(--cf-billing-emerald-border);
+  background:
+    radial-gradient(circle at top right, rgba(4, 120, 87, 0.12), transparent 34%),
+    #ffffff;
+}
+
+.billing-vnext-page .billing-plan-card[data-billing-plan-key="pro"]::before {
+  background: var(--cf-billing-emerald-text);
+}
+
+.billing-vnext-page .billing-plan-card[data-billing-plan-key="ai"] {
+  border-color: var(--cf-billing-violet-border);
+  background:
+    radial-gradient(circle at top right, rgba(109, 40, 217, 0.13), transparent 34%),
+    #ffffff;
+}
+
+.billing-vnext-page .billing-plan-card[data-billing-plan-key="ai"]::before {
+  background: var(--cf-billing-violet-text);
+}
+
+.billing-vnext-page .billing-plan-card[data-billing-plan-key="pro"].billing-plan-current,
+.billing-vnext-page .billing-plan-card[data-billing-plan-key="pro"]:has(strong) {
+  box-shadow: 0 18px 42px rgba(4, 120, 87, 0.14);
+}
+
+.billing-vnext-page .billing-plan-status {
+  border: 1px solid currentColor;
+  background: rgba(255,255,255,0.78);
+  color: inherit;
+  font-weight: 950;
+}
+
+.billing-vnext-page .billing-plan-card[data-billing-plan-key="free"] .billing-plan-status {
+  color: var(--cf-billing-slate-text);
+}
+
+.billing-vnext-page .billing-plan-card[data-billing-plan-key="basic"] .billing-plan-status,
+.billing-vnext-page .billing-plan-card[data-billing-plan-key="basic"] .billing-plan-price span {
+  color: var(--cf-billing-blue-text);
+}
+
+.billing-vnext-page .billing-plan-card[data-billing-plan-key="pro"] .billing-plan-status,
+.billing-vnext-page .billing-plan-card[data-billing-plan-key="pro"] .billing-plan-price span {
+  color: var(--cf-billing-emerald-text);
+}
+
+.billing-vnext-page .billing-plan-card[data-billing-plan-key="ai"] .billing-plan-status,
+.billing-vnext-page .billing-plan-card[data-billing-plan-key="ai"] .billing-plan-price span {
+  color: var(--cf-billing-violet-text);
+}
+
+.billing-vnext-page .billing-plan-card li svg {
+  padding: 2px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.billing-vnext-page .billing-plan-card[data-billing-plan-key="pro"] li svg {
+  background: var(--cf-billing-emerald-bg);
+  color: var(--cf-billing-emerald-text);
+}
+
+.billing-vnext-page .billing-plan-card[data-billing-plan-key="ai"] li svg {
+  background: var(--cf-billing-violet-bg);
+  color: var(--cf-billing-violet-text);
+}
+
+.billing-vnext-page .billing-plan-button {
+  font-weight: 950;
+  border-radius: 16px;
+}
+.billing-vnext-page .billing-right-rail {
+  gap: 18px;
+}
+
+.billing-vnext-page .billing-right-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  border-width: 1px;
+  background: #ffffff;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+  padding: 18px;
+}
+
+.billing-vnext-page .billing-right-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 5px;
+  border-radius: 999px;
+  background: var(--cf-billing-blue-text);
+}
+.billing-vnext-page .billing-right-card[data-billing-rail-card="status"],
+.billing-vnext-page .billing-right-rail .billing-right-card:nth-of-type(1) {
+  border-color: var(--cf-billing-blue-border);
+  background:
+    radial-gradient(circle at top right, rgba(29, 78, 216, 0.10), transparent 34%),
+    #ffffff;
+}
+.billing-vnext-page .billing-right-card[data-billing-rail-card="summary"],
+.billing-vnext-page .billing-right-rail .billing-right-card:nth-of-type(2) {
+  border-color: var(--cf-billing-slate-border);
+  background:
+    radial-gradient(circle at top right, rgba(71, 85, 105, 0.07), transparent 34%),
+    #ffffff;
+}
+
+.billing-vnext-page .billing-right-card[data-billing-rail-card="summary"]::before,
+.billing-vnext-page .billing-right-rail .billing-right-card:nth-of-type(2)::before {
+  background: var(--cf-billing-slate-text);
+}
+.billing-vnext-page .billing-right-card[data-billing-rail-card="popular"],
+.billing-vnext-page .billing-right-rail .billing-right-card:nth-of-type(3) {
+  border-color: var(--cf-billing-violet-border);
+  background:
+    radial-gradient(circle at top right, rgba(109, 40, 217, 0.13), transparent 34%),
+    #ffffff;
+}
+
+.billing-vnext-page .billing-right-card[data-billing-rail-card="popular"]::before,
+.billing-vnext-page .billing-right-rail .billing-right-card:nth-of-type(3)::before {
+  background: var(--cf-billing-violet-text);
+}
+.billing-vnext-page .billing-right-card[data-billing-rail-card="pro"],
+.billing-vnext-page .billing-right-rail .billing-right-card:nth-of-type(4) {
+  border-color: var(--cf-billing-emerald-border);
+  background:
+    radial-gradient(circle at top right, rgba(4, 120, 87, 0.12), transparent 34%),
+    #ffffff;
+}
+
+.billing-vnext-page .billing-right-card[data-billing-rail-card="pro"]::before,
+.billing-vnext-page .billing-right-rail .billing-right-card:nth-of-type(4)::before {
+  background: var(--cf-billing-emerald-text);
+}
+.billing-vnext-page .billing-right-card[data-billing-rail-card="ai"],
+.billing-vnext-page .billing-right-rail .billing-right-card:nth-of-type(5) {
+  border-color: var(--cf-billing-violet-border);
+  background:
+    radial-gradient(circle at top right, rgba(109, 40, 217, 0.13), transparent 34%),
+    #ffffff;
+}
+
+.billing-vnext-page .billing-right-card[data-billing-rail-card="ai"]::before,
+.billing-vnext-page .billing-right-rail .billing-right-card:nth-of-type(5)::before {
+  background: var(--cf-billing-violet-text);
+}
+
+.billing-vnext-page .billing-right-title {
+  gap: 10px;
+}
+
+.billing-vnext-page .billing-right-title svg {
+  width: 26px;
+  height: 26px;
+  padding: 6px;
+  border-radius: 10px;
+  background: currentColor;
+  color: #ffffff;
+  stroke: #ffffff;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.10);
+}
+
+.billing-vnext-page .billing-right-card:nth-of-type(1) .billing-right-title { color: var(--cf-billing-blue-text); }
+.billing-vnext-page .billing-right-card:nth-of-type(2) .billing-right-title { color: var(--cf-billing-slate-text); }
+.billing-vnext-page .billing-right-card:nth-of-type(3) .billing-right-title { color: var(--cf-billing-violet-text); }
+.billing-vnext-page .billing-right-card:nth-of-type(4) .billing-right-title { color: var(--cf-billing-emerald-text); }
+.billing-vnext-page .billing-right-card:nth-of-type(5) .billing-right-title { color: var(--cf-billing-violet-text); }
+
+.billing-vnext-page .billing-right-title h2 {
+  color: #111827;
+  font-weight: 950;
+}
+
+.billing-vnext-page .billing-right-list span {
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  background: #f8fafc;
+  color: #334155;
+  font-weight: 850;
+}
+
+.billing-vnext-page .billing-right-card[data-billing-rail-card="pro"] .billing-right-list span,
+.billing-vnext-page .billing-right-rail .billing-right-card:nth-of-type(4) .billing-right-list span {
+  border-color: rgba(4, 120, 87, 0.24);
+  background: var(--cf-billing-emerald-bg);
+  color: var(--cf-billing-emerald-text);
+}
+
+.billing-vnext-page .billing-right-featured button {
+  border-color: var(--cf-billing-blue-border);
+  background: var(--cf-billing-blue-bg);
+  color: var(--cf-billing-blue-text);
+  font-weight: 950;
+}
+
+.billing-vnext-page .billing-right-card button {
+  font-weight: 850;
+  border-radius: 14px;
+}
+
+@media (max-width: 860px) {
+  .billing-vnext-page .billing-plan-card::before,
+  .billing-vnext-page .billing-right-card::before,
+  .billing-vnext-page .billing-status-card::before {
+    width: 4px;
+  }
+}

@@ -1,5 +1,5 @@
 import type { CommissionStatus, FinancePayment, FinanceSummary } from './finance-types.js';
-import { clampFinanceAmount, calculateCommissionAmount } from './finance-calculations.js';
+import { buildFinanceSummary, clampFinanceAmount, calculateCommissionAmount } from './finance-calculations.js';
 import {
   normalizeCommissionBase,
   normalizeCommissionConfig,
@@ -109,17 +109,14 @@ export function buildClientFinanceSummary(input: ClientFinanceSummaryInput = {})
 
   let contractValue = 0;
   let casePaidAmount = 0;
-  let caseRemainingAmount = 0;
   let commissionAmount = 0;
 
   for (const row of cases) {
     const currency = getCaseCurrency(row, fallbackCurrency);
     const currentContractValue = getCaseContractValue(row);
     const currentPaid = pickNumber(row, CASE_PAID_KEYS, 0);
-    const currentRemaining = pickNumber(row, CASE_REMAINING_KEYS, 0);
     contractValue += currentContractValue;
     casePaidAmount += currentPaid;
-    caseRemainingAmount += currentRemaining;
     commissionAmount += getCaseCommissionAmount(row, currentContractValue, currentPaid, currency);
   }
 
@@ -132,18 +129,21 @@ export function buildClientFinanceSummary(input: ClientFinanceSummaryInput = {})
     .reduce((sum, payment) => sum + payment.amount, 0);
 
   const paidAmount = paidCustomerPayments > 0 ? paidCustomerPayments : casePaidAmount;
-  const remainingAmount = caseRemainingAmount > 0 ? caseRemainingAmount : Math.max(0, contractValue - paidAmount);
+  const commissionStatus = resolveCommissionStatus(cases, commissionAmount, paidCommissionAmount);
 
-  return {
+  return buildFinanceSummary({
     contractValue,
     paidAmount: Math.max(0, paidAmount),
-    plannedAmount: normalizedPayments.filter((payment) => payment.status === 'planned').reduce((sum, payment) => sum + payment.amount, 0),
-    dueAmount: normalizedPayments.filter((payment) => payment.status === 'due').reduce((sum, payment) => sum + payment.amount, 0),
-    refundedAmount: normalizedPayments.filter((payment) => payment.type === 'refund').reduce((sum, payment) => sum + payment.amount, 0),
-    remainingAmount,
-    commissionAmount,
-    paidCommissionAmount,
-    commissionStatus: resolveCommissionStatus(cases, commissionAmount, paidCommissionAmount),
     currency: fallbackCurrency,
-  };
+    payments: normalizedPayments,
+    commission: {
+      mode: commissionAmount > 0 ? 'fixed' : 'none',
+      base: 'contract_value',
+      amount: commissionAmount,
+      fixedAmount: commissionAmount,
+      paidAmount: paidCommissionAmount,
+      status: commissionStatus,
+      currency: fallbackCurrency,
+    },
+  });
 }

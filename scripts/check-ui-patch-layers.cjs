@@ -219,7 +219,7 @@ const CSS_PATCH_ALLOWLIST = new Map([
 ]);
 
 const APP_STYLES_IMPORT_MAX = new Map([
-  ['src/App.tsx', 45],
+  ['src/App.tsx', 2],
 ]);
 
 const LOCAL_ICON_BUTTON_CLONE_ALLOWLIST = new Map([
@@ -345,7 +345,9 @@ function walk(dir, extensions) {
 
   const results = [];
   for (const entry of fs.readdirSync(absolute, { withFileTypes: true })) {
-    if (entry.name.endsWith('.bak')) continue;
+    // File-sync conflict snapshots are outside the runtime graph and must not
+    // become new UI debt findings in the canonical guard.
+    if (entry.name.endsWith('.bak') || entry.name.includes('.sync-conflict-') || entry.name.startsWith('~syncthing~')) continue;
     const child = path.join(dir, entry.name).replace(/\\/g, '/');
     if (entry.isDirectory()) {
       results.push(...walk(child, extensions));

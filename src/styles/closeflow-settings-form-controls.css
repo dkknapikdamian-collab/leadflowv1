@@ -1,0 +1,69 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-settings-form-controls.css","concerns":[],"scope":"component","consumerRoots":["src/pages/Settings.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+
+.settings-vnext-page .settings-field label,
+.settings-vnext-page .settings-field > label {
+  color: #334155;
+  font-weight: 850;
+  letter-spacing: 0.01em;
+}
+
+.settings-vnext-page .settings-field input,
+.settings-vnext-page .settings-field select,
+.settings-vnext-page .settings-field textarea {
+  min-height: 42px;
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #ffffff;
+  background-color: #ffffff;
+  color: #0f172a;
+  -webkit-text-fill-color: #0f172a;
+  caret-color: #0f172a;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.06),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.92);
+  opacity: 1;
+}
+
+.settings-vnext-page .settings-field select {
+  appearance: auto;
+  cursor: pointer;
+}
+
+.settings-vnext-page .settings-field select option {
+  background: #ffffff;
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+.settings-vnext-page .settings-field input::placeholder,
+.settings-vnext-page .settings-field textarea::placeholder {
+  color: #64748b;
+  -webkit-text-fill-color: #64748b;
+  opacity: 1;
+}
+
+.settings-vnext-page .settings-field input:focus,
+.settings-vnext-page .settings-field select:focus,
+.settings-vnext-page .settings-field textarea:focus,
+.settings-vnext-page .settings-field input:focus-visible,
+.settings-vnext-page .settings-field select:focus-visible,
+.settings-vnext-page .settings-field textarea:focus-visible {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.16),
+    0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+.settings-vnext-page .settings-field input:disabled,
+.settings-vnext-page .settings-field select:disabled,
+.settings-vnext-page .settings-field textarea:disabled {
+  border-color: #d7dde7;
+  background: #f8fafc;
+  background-color: #f8fafc;
+  color: #334155;
+  -webkit-text-fill-color: #334155;
+  opacity: 1;
+  cursor: not-allowed;
+}

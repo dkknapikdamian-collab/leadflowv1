@@ -1,6 +1,11 @@
-import { insertWithVariants, selectFirstAvailable, updateById, withWorkspaceFilter } from './_supabase.js';
-import { asText, requireRequestIdentity, requireScopedRow, resolveRequestWorkspaceId } from './_request-scope.js';
+import { insertWithVariants, selectFirstAvailable, updateByWorkspaceAndId, withWorkspaceFilter } from './_supabase.js';
+import { RequestAuthError, requireSupabaseRequestContext, writeAuthErrorResponse } from './_supabase-auth.js';
+import { asText, requireScopedRow, resolveRequestWorkspaceId } from './_request-scope.js';
 import { assertWorkspaceWriteAccess, assertWorkspaceAiAllowed } from './_access-gate.js';
+import { claimAiDraftConfirmation, createFinalRecordFromAiDraft, releaseAiDraftConfirmation } from './ai-draft-confirmation.js';
+
+// Compatibility alias: both legacy and canonical draft routes delegate to the same confirmation SOT.
+const createFinalRecordFromDraft = createFinalRecordFromAiDraft;
 
 function parseBody(req: any) {
   if (!req?.body) return {};
@@ -64,66 +69,20 @@ function normalizeDraft(row: Record<string, unknown>) {
   };
 }
 
+function assertDraftConfirmable(row: Record<string, unknown>) {
+  const status = normalizeStatus(row.status);
+  if (status !== 'pending') throw new RequestAuthError(409, 'DRAFT_NOT_CONFIRMABLE');
+  const expiresAt = asText(row.expires_at ?? row.expiresAt);
+  if (expiresAt && Number.isFinite(new Date(expiresAt).getTime()) && new Date(expiresAt).getTime() <= Date.now()) {
+    throw new RequestAuthError(409, 'DRAFT_EXPIRED');
+  }
+}
+
 async function loadDraftById(id: string, workspaceId: string) {
   const query = withWorkspaceFilter(`ai_drafts?id=eq.${encodeURIComponent(id)}&select=*&limit=1`, workspaceId);
   const result = await selectFirstAvailable([query]);
   const rows = Array.isArray(result.data) ? (result.data as Record<string, unknown>[]) : [];
   return rows[0] || null;
-}
-
-async function createFinalRecordFromDraft(draft: Record<string, unknown>, workspaceId: string) {
-  const parsed = asObject(draft.parsed_data ?? draft.parsedData);
-  const type = normalizeType(draft.type);
-  const nowIso = new Date().toISOString();
-
-  if (type === 'lead') {
-    const payload = {
-      workspace_id: workspaceId,
-      name: asText(parsed.name ?? parsed.title ?? draft.raw_text) || 'Lead ze szkicu',
-      company: asText(parsed.company) || null,
-      email: asText(parsed.email) || null,
-      phone: asText(parsed.phone) || null,
-      source: asText(parsed.source) || 'ai_draft',
-      status: asText(parsed.status) || 'new',
-      created_at: nowIso,
-      updated_at: nowIso,
-    };
-    const result = await insertWithVariants(['leads'], [payload]);
-    return { id: (result.data as any[])?.[0]?.id || null, type: 'lead' };
-  }
-
-  if (type === 'note') {
-    const payload = {
-      workspace_id: workspaceId,
-      title: asText(parsed.title) || 'Notatka ze szkicu',
-      details: asText(parsed.body ?? parsed.description ?? draft.raw_text) || '',
-      status: 'done',
-      record_type: 'note',
-      created_at: nowIso,
-      updated_at: nowIso,
-    };
-    const result = await insertWithVariants(['activities'], [payload]);
-    return { id: (result.data as any[])?.[0]?.id || null, type: 'note' };
-  }
-
-  const workItemPayload = {
-    workspace_id: workspaceId,
-    title: asText(parsed.title ?? draft.raw_text) || (type === 'event' ? 'Wydarzenie ze szkicu' : 'Zadanie ze szkicu'),
-    status: asText(parsed.status) || (type === 'event' ? 'planned' : 'todo'),
-    priority: asText(parsed.priority) || 'medium',
-    record_type: type,
-    item_type: type,
-    scheduled_at: asText(parsed.scheduledAt ?? parsed.startAt) || null,
-    start_at: asText(parsed.startAt ?? parsed.scheduledAt) || null,
-    end_at: asText(parsed.endAt) || null,
-    lead_id: asText(parsed.leadId) || null,
-    case_id: asText(parsed.caseId) || null,
-    client_id: asText(parsed.clientId) || null,
-    created_at: nowIso,
-    updated_at: nowIso,
-  };
-  const result = await insertWithVariants(['work_items'], [workItemPayload]);
-  return { id: (result.data as any[])?.[0]?.id || null, type };
 }
 
 export default async function handler(req: any, res: any) {
@@ -147,12 +106,14 @@ export default async function handler(req: any, res: any) {
 
     if (req.method === 'POST') {
       await assertWorkspaceAiAllowed(workspaceId);
-      const identity = await requireRequestIdentity(req);
+       const verifiedContext = await requireSupabaseRequestContext(req);
+       const verifiedUserId = asText(verifiedContext.userId);
+       if (!verifiedUserId) throw new RequestAuthError(401, 'DRAFT_USER_CONTEXT_REQUIRED');
       const nowIso = new Date().toISOString();
       const status = normalizeStatus(body.status);
       const payload = {
         workspace_id: workspaceId,
-        user_id: asText(body.userId ?? identity.userId) || null,
+         user_id: verifiedUserId,
         type: normalizeType(body.type),
         raw_text: status === 'pending' ? (asText(body.rawText) || null) : null,
         parsed_data: asObject(body.parsedData),
@@ -189,23 +150,41 @@ export default async function handler(req: any, res: any) {
           return;
         }
 
-        const created = await createFinalRecordFromDraft(draftRow, workspaceId);
-        const updatedRows = await updateById('ai_drafts', id, {
-          status: 'confirmed',
-          raw_text: null,
-          confirmed_at: nowIso,
-          converted_at: nowIso,
-          updated_at: nowIso,
-          linked_record_id: created.id,
-          linked_record_type: created.type,
-        });
-        const updated = Array.isArray(updatedRows) && updatedRows[0] ? updatedRows[0] : { ...draftRow, status: 'confirmed', updated_at: nowIso, raw_text: null };
-        res.status(200).json({ draft: normalizeDraft(updated), createdRecord: created });
-        return;
+        const existingLinkedId = asText(draftRow.linked_record_id ?? draftRow.linkedRecordId);
+        const existingLinkedType = asText(draftRow.linked_record_type ?? draftRow.linkedRecordType);
+        if (normalizeStatus(draftRow.status) === 'confirmed' && existingLinkedId && existingLinkedType) {
+          res.status(200).json({ draft: normalizeDraft(draftRow), createdRecord: { id: existingLinkedId, type: existingLinkedType }, idempotent: true });
+          return;
+        }
+        assertDraftConfirmable(draftRow);
+        const claimed = await claimAiDraftConfirmation(id, workspaceId);
+        if (!claimed) {
+          res.status(409).json({ error: 'AI_DRAFT_CONFIRMATION_IN_PROGRESS' });
+          return;
+        }
+        try {
+          const created = await createFinalRecordFromAiDraft(draftRow, workspaceId, asObject(body.confirmation));
+           const updatedRows = await updateByWorkspaceAndId('ai_drafts', id, workspaceId, {
+            status: 'confirmed',
+            raw_text: null,
+            confirmed_at: nowIso,
+            converted_at: nowIso,
+            updated_at: nowIso,
+            linked_record_id: created.id,
+             linked_record_type: created.type,
+           });
+           await releaseAiDraftConfirmation(id, workspaceId).catch(() => null);
+           const updated = Array.isArray(updatedRows) && updatedRows[0] ? updatedRows[0] : { ...draftRow, status: 'confirmed', updated_at: nowIso, raw_text: null };
+          res.status(200).json({ draft: normalizeDraft(updated), createdRecord: created });
+          return;
+        } catch (error) {
+          await releaseAiDraftConfirmation(id, workspaceId).catch(() => null);
+          throw error;
+        }
       }
 
       if (action === 'cancel') {
-        const updatedRows = await updateById('ai_drafts', id, {
+        const updatedRows = await updateByWorkspaceAndId('ai_drafts', id, workspaceId, {
           status: 'cancelled',
           raw_text: null,
           cancelled_at: nowIso,
@@ -217,7 +196,7 @@ export default async function handler(req: any, res: any) {
       }
 
       if (action === 'expire') {
-        const updatedRows = await updateById('ai_drafts', id, {
+        const updatedRows = await updateByWorkspaceAndId('ai_drafts', id, workspaceId, {
           status: 'expired',
           raw_text: null,
           expires_at: nowIso,
@@ -231,7 +210,7 @@ export default async function handler(req: any, res: any) {
       const patch: Record<string, unknown> = { updated_at: nowIso };
       if (body.parsedData !== undefined) patch.parsed_data = asObject(body.parsedData);
       if (body.expiresAt !== undefined) patch.expires_at = asText(body.expiresAt) || null;
-      const updatedRows = await updateById('ai_drafts', id, patch);
+      const updatedRows = await updateByWorkspaceAndId('ai_drafts', id, workspaceId, patch);
       const updated = Array.isArray(updatedRows) && updatedRows[0] ? updatedRows[0] : { id, workspace_id: workspaceId, ...patch };
       res.status(200).json(normalizeDraft(updated));
       return;
@@ -244,6 +223,10 @@ export default async function handler(req: any, res: any) {
 
     res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
   } catch (error: any) {
+    if (error?.code || error?.status) {
+      writeAuthErrorResponse(res, error);
+      return;
+    }
     res.status(500).json({ error: error?.message || 'DRAFTS_API_FAILED' });
   }
 }

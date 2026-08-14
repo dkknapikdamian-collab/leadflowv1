@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, CheckCircle2, Copy, FolderKanban, MoreVertical, Plus, Search, ShieldAlert, Trash2 } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Copy, FolderKanban, MoreVertical, Plus, Search, ShieldAlert } from 'lucide-react';
 import { AiEntityIcon, TemplateEntityIcon } from '../components/ui-system';
+import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 import { Card, CardContent } from '../components/ui/card';
 import {
   Dialog,
@@ -41,13 +42,11 @@ import {
   updateCaseTemplateInSupabase
 } from '../lib/supabase-fallback';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
-import '../styles/closeflow-page-header-v2.css';
+import '../styles/closeflow-page-header-runtime.css';
 import '../styles/closeflow-record-list-source-truth.css';
-import '../styles/visual-stage22-event-form-vnext.css';
-import '../styles/closeflow-template-modal-source-truth-stage181l.css';
-import '../styles/closeflow-template-modal-source-truth-stage181n.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+import '../styles/closeflow-event-form.css';
+import '../styles/closeflow-template-modal-layout.css';
+import '../styles/closeflow-template-modal-actions.css';
 import {
   TEMPLATE_ITEM_TYPE_OPTIONS,
   createEmptyTemplateDraft,
@@ -297,7 +296,7 @@ export default function Templates() {
 
         <Card className="cf-readable-card border border-slate-200 bg-white shadow-sm">
           <CardContent className="flex flex-col gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="relative flex-1 cf-main-search cf-main-search-stage175" data-cf-main-search-source="stage173" data-cf-main-search-stage175="true">
+            <div className="relative flex-1 cf-main-search cf-main-search-semantic175" data-cf-main-search-source="semantic173" data-cf-main-search-semantic175="true">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <Input
                 placeholder="Szukaj po nazwie szablonu albo pozycjach checklisty..."
@@ -363,7 +362,7 @@ export default function Templates() {
                           data-cf-template-delete-action="true"
                           onClick={() => void handleDeleteTemplate(template)}
                         >
-                          <Trash2 className={trashActionIconClass("mr-2 h-4 w-4")} /> Usuń
+                          <DeleteActionIcon className={trashActionIconClass("mr-2 h-4 w-4")} /> Usuń
                         </EntityTrashButton>
                         <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -378,7 +377,7 @@ export default function Templates() {
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
                             <EntityTrashButton type="button" className="w-full justify-start rounded-sm px-2 py-1.5 text-sm font-normal shadow-none" data-cf-template-delete-action="menu" onClick={() => void handleDeleteTemplate(template)}>
-                            <Trash2 className={trashActionIconClass("mr-2 h-4 w-4")} /> Usuń
+                            <DeleteActionIcon className={trashActionIconClass("mr-2 h-4 w-4")} /> Usuń
                             </EntityTrashButton>
                           </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -449,7 +448,7 @@ export default function Templates() {
                       aria-label="Usuń pozycję"
                       title="Usuń pozycję"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <DeleteActionIcon className="h-4 w-4" />
                     </EntityActionButton>
                   </div>
 
@@ -535,3 +534,5 @@ export default function Templates() {
     </Layout>
   );
 }
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

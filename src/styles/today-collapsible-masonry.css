@@ -1,21 +1,17 @@
-/*
-FAZA5_ETAP52_TODAY_COLLAPSIBLE_MASONRY
-Cel: sekcje w Dziś są zwijane i mają niezależną wysokość.
-Nie pozwalamy, żeby jedna długa sekcja rozciągała sąsiednią krótką sekcję w tym samym rzędzie siatki.
-*/
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/today-collapsible-masonry.css","concerns":[],"scope":"component","consumerRoots":["src/pages/Today.tsx"],"role":"scoped-adapter","boundary":"today-masonry","whyNotGlobal":"This stylesheet is limited to the Today page masonry consumer and does not define shared semantic primitives.","whyNotDuplicate":"The Today masonry layout is a route-specific adapter; shared card and spacing semantics remain owned by the registered semantic owners.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 
 [data-today-tile-card="true"],
 [data-today-collapsible-section="true"],
 .today-independent-section {
-  align-self: start !important;
-  height: fit-content !important;
-  min-height: 0 !important;
+  align-self: start;
+  height: fit-content;
+  min-height: 0;
 }
 
 [data-today-tile-card="true"] > *,
 [data-today-collapsible-section="true"] > *,
 .today-independent-section > * {
-  min-height: 0 !important;
+  min-height: 0;
 }
 
 [data-today-tile-header="true"] {
@@ -23,7 +19,7 @@ Nie pozwalamy, żeby jedna długa sekcja rozciągała sąsiednią krótką sekcj
 }
 
 [data-today-tile-body="true"] {
-  min-height: 0 !important;
+  min-height: 0;
 }
 
 @media (min-width: 768px) {
@@ -32,6 +28,6 @@ Nie pozwalamy, żeby jedna długa sekcja rozciągała sąsiednią krótką sekcj
   .today-sections-grid,
   main [class*="grid-cols"]:has([data-today-tile-card="true"]),
   main [class*="grid-cols"]:has([data-today-collapsible-section="true"]) {
-    align-items: start !important;
+    align-items: start;
   }
 }

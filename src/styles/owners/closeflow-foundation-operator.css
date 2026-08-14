@@ -1,0 +1,76 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:foundation-operator","concerns":[],"scope":"route-scoped","consumerRoots":["src/pages/TodayStable.tsx"],"role":"scoped-adapter","boundary":"route-component","whyNotGlobal":"This stylesheet contains only operator rail and metric layout composition for concrete screens.","whyNotDuplicate":"Metric appearance, badges, actions and shell visuals remain owned by registered semantic modules.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+
+.cf-route-work-root,
+.cf-list-layout,
+.cf-record-list,
+.entity-list-layout,
+.layout-list {
+  min-width: 0;
+}
+
+.cf-operator-metric-grid,
+.cf-operator-metric-grid-2,
+.cf-operator-metric-grid-3,
+.cf-operator-metric-grid-4,
+.cf-operator-metric-grid-5 {
+  display: grid;
+  min-width: 0;
+  gap: var(--cf-vst-layout-gap, 16px);
+}
+
+.cf-operator-metric-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.cf-operator-metric-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.cf-operator-metric-grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.cf-operator-metric-grid-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+
+.cf-operator-metric-tile,
+.cf-operator-metric-tile-content,
+.cf-operator-metric-value-row,
+.cf-operator-metric-tile [data-cf-semantic-tone],
+.cf-operator-metric-tile [data-cf-operator-metric-icon-tone],
+.cf-section-head-actions,
+.cf-section-head-action-stack,
+.cf-today-section-head-actions,
+.activity-header-actions,
+.ai-drafts-header-actions,
+.billing-header-actions {
+  min-width: 0;
+}
+
+.cf-operator-metric-tile-content {
+  display: grid;
+  gap: 6px;
+}
+
+.cf-operator-metric-value-row,
+.cf-section-head-actions,
+.cf-section-head-action-stack,
+.cf-today-section-head-actions,
+.activity-header-actions,
+.ai-drafts-header-actions,
+.billing-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.cf-operator-metric-icon {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 980px) {
+  .cf-operator-metric-grid-4,
+  .cf-operator-metric-grid-5 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .cf-operator-metric-grid-2,
+  .cf-operator-metric-grid-3,
+  .cf-operator-metric-grid-4,
+  .cf-operator-metric-grid-5 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

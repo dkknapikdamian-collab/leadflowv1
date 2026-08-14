@@ -30,16 +30,16 @@ test('Quick Lead Capture creates pending draft before final lead save', () => {
 
   assertIncludes(component, 'QUICK_LEAD_CAPTURE_MODAL_STAGE27', 'QuickLeadCaptureModal');
   assertIncludes(component, 'saveAiLeadDraftAsync', 'QuickLeadCaptureModal');
-  assertIncludes(component, 'markAiLeadDraftConvertedAsync', 'QuickLeadCaptureModal');
+  assertIncludes(component, 'confirmAiDraftInSupabase', 'QuickLeadCaptureModal');
   assertIncludes(component, 'archiveAiLeadDraftAsync', 'QuickLeadCaptureModal');
 });
 
-test('Quick Lead Capture confirm creates lead and clears rawText', () => {
+test('Quick Lead Capture confirm uses the canonical server confirmation and clears rawText', () => {
   const component = read('src/components/quick-lead/QuickLeadCaptureModal.tsx');
 
-  assertIncludes(component, 'insertLeadToSupabase', 'QuickLeadCaptureModal');
-  assertIncludes(component, 'insertTaskToSupabase', 'QuickLeadCaptureModal');
-  assertIncludes(component, "rawText: ''", 'QuickLeadCaptureModal');
+  assertIncludes(component, 'confirmAiDraftInSupabase', 'QuickLeadCaptureModal');
+  assert.ok(!component.includes('insertLeadToSupabase'), 'QuickLead must not write leads directly from the browser');
+  assert.ok(!component.includes('insertTaskToSupabase'), 'QuickLead must not write tasks directly from the browser');
   assertIncludes(component, 'setRawText(\'\')', 'QuickLeadCaptureModal');
   assertIncludes(component, 'Zatwierd\u017A i zapisz', 'QuickLeadCaptureModal');
 });

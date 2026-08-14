@@ -1,0 +1,43 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-notification-conflict-card.css","concerns":[],"scope":"component","consumerRoots":["src/pages/NotificationsCenter.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="conflicts"] {
+  position: relative;
+  overflow: hidden;
+  border-color: #fecaca;
+  background:
+    radial-gradient(circle at top right, rgba(220, 38, 38, 0.11), transparent 34%),
+    #ffffff;
+}
+
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="conflicts"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 5px;
+  border-radius: 999px;
+  background: #dc2626;
+}
+
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="conflicts"] .notifications-right-card-head {
+  color: #dc2626;
+}
+
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="conflicts"] .notifications-right-card-head > svg {
+  width: 26px;
+  height: 26px;
+  padding: 6px;
+  border-radius: 10px;
+  background: #dc2626;
+  color: #ffffff;
+  stroke: #ffffff;
+  box-shadow: 0 8px 18px rgba(220, 38, 38, 0.14);
+}
+
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="conflicts"] .notifications-rail-empty {
+  border: 1px dashed rgba(220, 38, 38, 0.28);
+  background: #fef2f2;
+  color: #991b1b;
+  font-weight: 750;
+}

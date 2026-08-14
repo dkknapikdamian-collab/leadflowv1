@@ -1,0 +1,75 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-right-rail-wrappers.css","concerns":[],"scope":"component","consumerRoots":["src/pages/Activity.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+
+.activity-vnext-page .activity-right-rail,
+.ai-drafts-vnext-page .ai-drafts-right-rail,
+.notifications-vnext-page .notifications-right-rail {
+  background: transparent;
+  background-color: transparent;
+  background-image: none;
+  border: 0;
+  box-shadow: none;
+  outline: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 300px;
+  overflow: visible;
+}
+
+.activity-vnext-page .activity-right-rail::before,
+.activity-vnext-page .activity-right-rail::after,
+.ai-drafts-vnext-page .ai-drafts-right-rail::before,
+.ai-drafts-vnext-page .ai-drafts-right-rail::after,
+.notifications-vnext-page .notifications-right-rail::before,
+.notifications-vnext-page .notifications-right-rail::after {
+  content: none;
+  display: none;
+}
+
+.activity-vnext-page .right-card.activity-right-card,
+.activity-vnext-page .activity-right-card,
+.ai-drafts-vnext-page .right-card.ai-drafts-right-card,
+.ai-drafts-vnext-page .ai-drafts-right-card,
+.notifications-vnext-page .right-card.notifications-right-card,
+.notifications-vnext-page .notifications-right-card {
+  background: #ffffff;
+  background-color: #ffffff;
+  background-image: none;
+  border-radius: 28px;
+  color: #111827;
+  overflow: hidden;
+}
+
+.activity-vnext-page .right-card.activity-right-card::before,
+.activity-vnext-page .right-card.activity-right-card::after,
+.activity-vnext-page .activity-right-card::before,
+.activity-vnext-page .activity-right-card::after,
+.ai-drafts-vnext-page .right-card.ai-drafts-right-card::before,
+.ai-drafts-vnext-page .right-card.ai-drafts-right-card::after,
+.ai-drafts-vnext-page .ai-drafts-right-card::before,
+.ai-drafts-vnext-page .ai-drafts-right-card::after,
+.notifications-vnext-page .right-card.notifications-right-card::before,
+.notifications-vnext-page .right-card.notifications-right-card::after,
+.notifications-vnext-page .notifications-right-card::before,
+.notifications-vnext-page .notifications-right-card::after {
+  content: none;
+  display: none;
+}
+
+.activity-vnext-page .activity-right-rail .activity-rail-item,
+.ai-drafts-vnext-page .ai-drafts-right-rail .ai-drafts-rail-item,
+.notifications-vnext-page .notifications-right-rail .notifications-rail-item {
+  background: #f8fafc;
+  background-color: #f8fafc;
+  border: 1px solid #eaecf0;
+  border-radius: 16px;
+  color: #111827;
+  box-shadow: none;
+}
+
+.activity-vnext-page .activity-right-rail .activity-rail-item span,
+.ai-drafts-vnext-page .ai-drafts-right-rail .ai-drafts-rail-item span,
+.notifications-vnext-page .notifications-right-rail .notifications-rail-item span {
+  color: #667085;
+}

@@ -12,7 +12,7 @@ function read(relativePath) {
 test('Clients panel exposes safe trash action', () => {
   const source = read('src/pages/Clients.tsx');
 
-  assert.match(source, /Trash2/);
+  assert.match(source, /DeleteActionIcon/);
   assert.match(source, /RotateCcw/);
   assert.match(source, /updateClientInSupabase/);
   assert.match(source, /handleArchiveClient/);
@@ -25,7 +25,7 @@ test('Clients panel exposes safe trash action', () => {
 test('Leads panel exposes safe trash action', () => {
   const source = read('src/pages/Leads.tsx');
 
-  assert.match(source, /Trash2/);
+  assert.match(source, /DeleteActionIcon/);
   assert.match(source, /RotateCcw/);
   assert.match(source, /updateLeadInSupabase/);
   assert.match(source, /handleArchiveLead/);

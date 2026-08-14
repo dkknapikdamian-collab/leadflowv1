@@ -116,9 +116,9 @@ push(!today.includes("../firebase") && !today.includes("'../firebase'") && !toda
 push(!today.includes('auth.currentUser') && !today.includes('auth.signOut'), 'Today must not use Firebase auth runtime');
 
 const accessGate = exists('src/server/_access-gate.ts') ? read('src/server/_access-gate.ts') : '';
-push(accessGate.includes('fetchWorkspaceWriteAccess'), '_access-gate must expose fetchWorkspaceWriteAccess');
+const plans = exists('src/lib/plans.ts') ? read('src/lib/plans.ts') : '';
 push(accessGate.includes('assertWorkspaceWriteAccess'), '_access-gate must expose assertWorkspaceWriteAccess');
-push(accessGate.includes('buildPlanAccessModel'), '_access-gate must use shared plan access model');
+push(plans.includes('buildPlanAccessModel'), 'plans.ts must expose the shared buildPlanAccessModel');
 
 const requestScope = exists('src/server/_request-scope.ts') ? read('src/server/_request-scope.ts') : '';
 push(requestScope.includes('resolveRequestWorkspaceId'), '_request-scope must expose resolveRequestWorkspaceId');

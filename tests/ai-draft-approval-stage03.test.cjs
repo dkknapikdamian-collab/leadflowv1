@@ -17,24 +17,20 @@ test('Stage03 AI draft approval helper exists', () => {
   assert.match(helper, /note/);
 });
 
-test('AiDrafts can approve drafts into final records manually through safe helper aliases', () => {
+test('AiDrafts delegates manually confirmed final-record creation to the server SOT', () => {
   const page = read('src/pages/AiDrafts.tsx');
 
-  assert.match(page, /AI_DRAFT_APPROVAL_TO_FINAL_RECORD_STAGE03/);
+  assert.match(page, /AI_DRAFT_CONFIRM_RECORDS_STAGE25_PAGE/);
   assert.match(page, /Przejrzyj i zatwierd\u017A/);
-  assert.match(page, /Zatwierd\u017A szkic jako finalny rekord/);
-  assert.match(page, /createLeadFromAiDraftApprovalInSupabase/);
-  assert.match(page, /insertTaskToSupabase/);
-  assert.match(page, /insertEventToSupabase/);
-  assert.match(page, /insertActivityToSupabase/);
-  assert.match(page, /markAiLeadDraftConvertedAsync/);
-  assert.doesNotMatch(page, /insertLeadToSupabase/);
+  assert.match(page, /confirmAiDraftInSupabase/);
+  assert.match(page, /data-ai-draft-real-record-create="true"/);
+  assert.doesNotMatch(page, /createLeadFromAiDraftApprovalInSupabase|insertTaskToSupabase|insertEventToSupabase|insertActivityToSupabase/);
 });
 
 test('AI draft approval keeps manual confirmation rule', () => {
   const page = read('src/pages/AiDrafts.tsx');
 
-  assert.match(page, /Utw\u00F3rz rekord/);
+  assert.match(page, /ZatwierdĹş i zapisz|Zatwierdź i zapisz/);
   assert.match(page, /approvalSaving/);
   assert.match(page, /handleApproveDraftToRecord/);
   assert.doesNotMatch(page, /useEffect\([^)]*handleApproveDraftToRecord/s);

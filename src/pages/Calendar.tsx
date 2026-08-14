@@ -1,7 +1,8 @@
 import { type FormEvent, type MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Calendar as CalendarIcon, CheckSquare, ChevronLeft, ChevronRight, Loader2, Plus, Repeat, Trash2 } from 'lucide-react';
-import { EntityIcon, NotificationEntityIcon } from '../components/ui-system';
+import { CheckSquare, ChevronLeft, ChevronRight, Loader2, Repeat } from 'lucide-react';
+import { EntityIcon, NotificationEntityIcon, SemanticIcon } from '../components/ui-system';
+import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
 import { actionButtonClass as entityActionButtonClass, modalFooterClass, trashActionButtonClass, trashActionIconClass } from '../components/entity-actions';
 import {
@@ -61,7 +62,7 @@ import {
 
 } from '../lib/supabase-fallback';
 import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
-import { auth } from '../firebase';
+import { getClientAuthSnapshot } from '../lib/client-auth';
 import {
   addDays,
   addHours,
@@ -82,21 +83,12 @@ import { toast } from 'sonner';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
 import { pl } from 'date-fns/locale';
-import '../styles/visual-stage22-event-form-vnext.css';
+import '../styles/closeflow-event-form.css';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
+import { isTaskOrEventStatusCompleted } from '../lib/domain-statuses';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
-import '../styles/closeflow-page-header-v2.css';
-import '../styles/closeflow-calendar-skin-only-v1.css';
-import '../styles/closeflow-calendar-color-tooltip-v2.css';
-import '../styles/closeflow-calendar-month-chip-overlap-fix-v1.css';
-import '../styles/closeflow-calendar-month-rows-no-overlap-repair2.css';
-import '../styles/closeflow-calendar-month-entry-structural-fix-v3.css';
-import '../styles/closeflow-calendar-month-plain-text-rows-v4.css';
-import '../styles/closeflow-calendar-selected-day-full-text-repair11.css';
-import '../styles/closeflow-calendar-selected-day-new-tile-v9.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
-import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';import {
+import '../styles/closeflow-page-header-runtime.css';
+import '../styles/closeflow-canvas-runtime.css';import {
   getOperationalEntryActionDecision,
   isOperationalEntryActionAllowed,
 } from '../lib/calendar-operational-entry-action-policy';
@@ -152,7 +144,7 @@ type CalendarScale = 'compact' | 'default' | 'large';
 type CalendarView = 'week' | 'month';
 
 const EVENT_FORM_VISUAL_REBUILD_STAGE22 = 'EVENT_FORM_VISUAL_REBUILD_STAGE22';
-const STAGE34_CALENDAR_COMPLETED_VISIBILITY = 'STAGE34_CALENDAR_COMPLETED_VISIBILITY calendar-entry-completed data-calendar-entry-completed data-calendar-stage34="readability-status-forms"';
+const STAGE34_CALENDAR_COMPLETED_VISIBILITY = 'STAGE34_CALENDAR_COMPLETED_VISIBILITY calendar-entry-completed data-calendar-entry-completed data-calendar-semantic34="readability-status-forms"';
 const STAGE220A20_CALENDAR_STATUS_VST = 'calendar event/task/status/deadline rows use CloseFlow Visual Source of Truth';
 void STAGE220A20_CALENDAR_STATUS_VST;
 
@@ -268,19 +260,8 @@ function getCalendarEntryStatus(entry: ScheduleEntry) {
 function isCompletedCalendarEntry(entry: ScheduleEntry) {
   // STAGE34B_CALENDAR_COMPLETED_VISIBILITY: completed tasks/events/leads stay visible but are clearly crossed out.
   const status = getCalendarEntryStatus(entry);
-  const doneStatuses = new Set([
-    'done',
-    'completed',
-    'complete',
-    'finished',
-    'closed',
-    'zrobione',
-    'wykonane',
-    'archived',
-  ]);
-
   return (
-    doneStatuses.has(status) ||
+    isTaskOrEventStatusCompleted(status) ||
     entry.raw?.done === true ||
     entry.raw?.isDone === true ||
     entry.raw?.is_done === true ||
@@ -382,7 +363,7 @@ function getCalendarEntryVstKindStage220A20(entry: ScheduleEntry) {
 
 function getCalendarEntryStatusVstKindStage220A20(entry: ScheduleEntry) {
   const status = getCalendarEntryStatus(entry);
-  if (status === 'done' || status === 'completed' || status === 'complete' || status === 'finished' || status === 'zrobione' || status === 'wykonane') return 'success';
+  if (isTaskOrEventStatusCompleted(status)) return 'success';
   if (status === 'overdue') return 'danger';
   if (status === 'cancelled' || status === 'canceled') return 'status';
   if (status === 'in_progress') return 'primary';
@@ -622,7 +603,7 @@ function ScheduleEntryCard(props: ScheduleEntryCardProps) {
           <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? "..." : isCompletedEntry ? "Przywróć" : "Zrobione"}
         </button>
         <button type="button" className="cf-vst-button cf-vst-button-delete cf-calendar-week-plan-action cf-calendar-week-plan-action-danger" data-cf-vst-kind="delete" data-cf-destructive-source="trash-action-source" onClick={() => onDelete(entry)} disabled={pendingDelete}>
-          <Trash2 className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? "..." : "Usuń"}
+          <DeleteActionIcon className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? "..." : "Usuń"}
         </button>
       </div>
     </div>
@@ -691,7 +672,7 @@ function CalendarSelectedDayEntryRowV9({ entry, actionPendingId, onEdit, onShift
           <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : isCompletedEntry ? 'Przywróć' : 'Zrobione'}
         </button>
         <button type="button" className={trashActionButtonClass("cf-vst-button cf-vst-button-delete cf-selected-day-v9-action cf-selected-day-v9-action-danger")} data-cf-vst-kind="delete" data-cf-destructive-source="trash-action-source" onClick={() => onDelete(entry)} disabled={pendingDelete}>
-          <Trash2 className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? '...' : 'Usuń'}
+          <DeleteActionIcon className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? '...' : 'Usuń'}
         </button>
       </div>
     </div>
@@ -735,6 +716,7 @@ function CalendarSelectedDayTileV9({ selectedDate, entries, actionPendingId, onE
 }
 
 export default function Calendar() {
+  const authSnapshot = getClientAuthSnapshot();
   const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -961,7 +943,7 @@ export default function Calendar() {
 
   function isCalendarRetainedRowCompletedStage232GR1I(row: any) {
     const status = String(row?.status || '').trim().toLowerCase();
-    return ['done', 'completed', 'complete', 'finished', 'zrobione', 'wykonane'].includes(status) || row?.done === true || row?.isDone === true || row?.is_done === true || Boolean(row?.completedAt || row?.completed_at || row?.doneAt || row?.done_at);
+    return isTaskOrEventStatusCompleted(status) || row?.done === true || row?.isDone === true || row?.is_done === true || Boolean(row?.completedAt || row?.completed_at || row?.doneAt || row?.done_at);
   }
 
   function buildCalendarCompletedRetentionRowStage232GR1I(entry: ScheduleEntry) {
@@ -1531,7 +1513,7 @@ export default function Calendar() {
     };
   }, [calendarView, calendarScale, currentMonth, events.length, tasks.length, leads.length, cases.length, clients.length, loading]);
 
-  const calendarAuthUserId = auth.currentUser?.uid || 'anonymous';
+  const calendarAuthUserId = authSnapshot.uid || 'anonymous';
 
 
   // CLOSEFLOW_STAGE181I_LOCAL_CALENDAR_DIRECT_SEED
@@ -2078,8 +2060,8 @@ export default function Calendar() {
 
     try {
       await insertActivityToSupabase({
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
+        ownerId: authSnapshot.uid || null,
+        actorId: authSnapshot.uid || null,
         actorType: 'operator',
         eventType: 'reminder_scheduled',
         payload: {
@@ -2123,7 +2105,7 @@ export default function Calendar() {
         priority: newTask.priority,
         leadId: newTask.leadId || null,
         caseId: newTask.caseId || null,
-        ownerId: auth.currentUser?.uid,
+        ownerId: authSnapshot.uid,
         workspaceId,
       });
 
@@ -2326,8 +2308,8 @@ export default function Calendar() {
   ) => {
     try {
       await insertActivityToSupabase({
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
+        ownerId: authSnapshot.uid || null,
+        actorId: authSnapshot.uid || null,
         actorType: 'operator',
         eventType,
         leadId: entry.raw?.leadId ?? null,
@@ -2600,7 +2582,7 @@ export default function Calendar() {
         taskLeadId === leadKey &&
         taskMoment === momentKey &&
         taskTitle === titleKey &&
-        (taskStatus === 'done' || taskStatus === 'completed')
+        isTaskOrEventStatusCompleted(taskStatus)
       );
     }) as any;
 
@@ -2667,7 +2649,7 @@ export default function Calendar() {
       status: 'done',
       leadId,
       caseId: readCalendarRawText(entry.raw?.caseId || entry.raw?.case_id) || null,
-      ownerId: auth.currentUser?.uid,
+      ownerId: authSnapshot.uid,
       workspaceId,
     });
 
@@ -3097,11 +3079,11 @@ export default function Calendar() {
             <>
               <div className="head-actions">
                           <button type="button" className={createEntryActionClass()} data-cf-header-action="primary" data-calendar-header-add-event-stage6="true" onClick={() => setIsNewEventOpen(true)}>
-                            <Plus className="mr-1 h-3.5 w-3.5" />
+                            <SemanticIcon role="add" size="xs" className="mr-1" />
                             Dodaj wydarzenie
                           </button>
                           <button type="button" className={createEntryActionClass()} data-cf-header-action="primary" data-calendar-header-add-task-stage6="true" onClick={() => setIsNewTaskOpen(true)}>
-                            <Plus className="mr-1 h-3.5 w-3.5" />
+                            <SemanticIcon role="add" size="xs" className="mr-1" />
                             Dodaj zadanie
                           </button>
                           <Link to="/ai-drafts" className="btn soft-blue" data-cf-header-action="ai">
@@ -3111,7 +3093,7 @@ export default function Calendar() {
                             <DialogContent className="event-form-vnext-content calendar-entry-modal-viewport sm:max-w-2xl" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode="create-event" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22} data-calendar-modal-viewport-stage114d="true" aria-describedby={undefined}>
                                                                       <DialogHeader>
             <DialogTitle>Zaplanuj wydarzenie</DialogTitle>
-            <DialogDescription className="event-form-vnext-description" data-calendar-modal-description="create-event" data-stage114-calendar-modal-description="create-event" data-stage171-hidden-copy="true">Opis formularza.</DialogDescription>
+            <DialogDescription className="event-form-vnext-description" data-calendar-modal-description="create-event" data-stage114-calendar-modal-description="create-event" data-semantic171-hidden-copy="true">Opis formularza.</DialogDescription>
           </DialogHeader>
                               <form onSubmit={handleAddEvent} className="event-form-vnext" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode="create-event" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
                                 <div className="space-y-4">
@@ -3384,7 +3366,7 @@ export default function Calendar() {
                     </div>
                     <div className="space-y-1">
                       {dayEntries.slice(0, calendarScale === 'compact' ? 3 : 4).map((entry) => {
-                        const isCompletedEntry = entry.kind === 'task' && entry.raw?.status === 'done';
+                        const isCompletedEntry = entry.kind === 'task' && isTaskOrEventStatusCompleted(entry.raw?.status);
 
                         return (
                           <button
@@ -3707,3 +3689,5 @@ export default function Calendar() {
 }
 
 /* CALENDAR_STAGE08D_NO_FIREBASE_BOOT_BLOCK GLOBAL_QUICK_ACTIONS_STAGE08D_CALENDAR_MODAL_EVENT_BUS */
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

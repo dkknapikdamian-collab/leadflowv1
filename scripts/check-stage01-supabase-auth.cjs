@@ -23,7 +23,7 @@ const requiredFiles = [
   'src/hooks/useSupabaseSession.ts',
   'src/server/_supabase-auth.ts',
   'src/server/_request-scope.ts',
-  'supabase/migrations/2026-05-01_stage01_supabase_auth_identity.sql',
+  'supabase/migrations/20260501010100_stage01_supabase_auth_identity.sql',
   'docs/STAGE01_SUPABASE_AUTH.md',
 ];
 
@@ -48,17 +48,32 @@ assert(!app.includes("from './firebase'"), 'App.tsx must not import firebase');
 assert(login.includes('signInWithGoogle'), 'Login.tsx must use Supabase Google auth');
 assert(!login.includes('firebase/auth'), 'Login.tsx must not import firebase/auth');
 assert(!login.includes('../firebase'), 'Login.tsx must not import firebase config');
-assert(fallback.includes('Authorization: `Bearer ${accessToken}`'), 'API client must send Supabase bearer token');
+assert(fallback.includes('headers.Authorization = `Bearer ${accessToken}`'), 'API client must send Supabase bearer token');
 assert(!fallback.includes("'x-user-id'"), 'API client must not send x-user-id');
 assert(!fallback.includes("'x-user-email'"), 'API client must not send x-user-email');
 assert(!fallback.includes("'x-user-name'"), 'API client must not send x-user-name');
-assert(!fallback.includes("'x-workspace-id'"), 'API client must not send x-workspace-id');
+assert(requestScope.includes('hintedWorkspaceId'), 'workspace header may only be a verified membership hint');
 assert(requestScope.includes('requireSupabaseRequestContext'), 'request scope must use verified Supabase request context');
 assert(!requestScope.includes("headerValue(req, 'x-user-id')"), 'request scope must not trust x-user-id');
 assert(!requestScope.includes("headerValue(req, 'x-workspace-id')"), 'request scope must not trust x-workspace-id');
-assert(apiMe.includes('requireSupabaseRequestContext'), 'api/me.ts must derive identity from Supabase JWT');
+assert(/requireSupabase(?:Request|Auth)Context/.test(apiMe), 'api/me.ts must derive identity from Supabase JWT');
 assert(!apiMe.includes("req.query?.uid || req.headers?.['x-user-id']"), 'api/me.ts must not trust query/header identity');
 assert(envExample.includes('VITE_SUPABASE_ANON_KEY'), '.env.example must include VITE_SUPABASE_ANON_KEY');
 assert(envExample.includes('SUPABASE_SERVICE_ROLE_KEY'), '.env.example must include SUPABASE_SERVICE_ROLE_KEY');
+
+const activeAuthFiles = [
+  'src/pages/Settings.tsx',
+  'src/pages/Dashboard.tsx',
+  'src/pages/Tasks.tsx',
+  'src/pages/Calendar.tsx',
+  'src/pages/SupportCenter.tsx',
+  'api/leads.ts',
+  'api/work-items.ts',
+  'src/server/google-calendar-handler.ts',
+];
+for (const file of activeAuthFiles) {
+  const content = read(file);
+  assert(!/from\s+['"][^'"]*firebase|firebase\/auth|auth\.currentUser|x-(?:user-id|user-email|auth-uid|firebase-uid)/.test(content), `${file} must use Supabase Auth context only`);
+}
 
 console.log('OK: Stage 01 Supabase Auth guard passed.');

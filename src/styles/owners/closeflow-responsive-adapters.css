@@ -1,0 +1,61 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:responsive-adapters","concerns":["RESPONSIVE_DENSITY"],"scope":"route-scoped","consumerRoots":["src/pages/Today.tsx","src/pages/Leads.tsx","src/pages/Clients.tsx","src/pages/Cases.tsx","src/pages/Calendar.tsx","src/pages/LeadDetail.tsx","src/pages/ClientDetail.tsx","src/pages/CaseDetail.tsx"],"role":"canonical-owner","boundary":"route-semantic","whyNotGlobal":"This owner contains only breakpoint, grid and density adaptations for concrete route consumers.","whyNotDuplicate":"Semantic colors, actions, icons and base shell visuals remain in their registered owners.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+
+@media (max-width: 1180px) {
+  .cf-html-view.main-leads-html,
+  .cf-html-view.main-clients-html,
+  .cf-html-view.main-cases-html,
+  .cf-html-view.main-calendar-html {
+    min-width: 0;
+  }
+
+  .cf-html-view.main-leads-html .lead-right-rail,
+  .cf-html-view.main-clients-html .clients-right-rail,
+  .cf-html-view.main-cases-html .cases-right-rail {
+    width: 100%;
+  }
+
+  .lead-detail-vnext-page .lead-detail-shell,
+  .case-detail-vnext-page .case-detail-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lead-detail-vnext-page .lead-detail-right-rail,
+  .case-detail-vnext-page .case-detail-right-rail {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .cf-html-view.main-leads-html .lead-right-rail,
+  .cf-html-view.main-clients-html .clients-right-rail,
+  .cf-html-view.main-cases-html .cases-right-rail {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--cf-vst-layout-gap, 18px);
+  }
+
+  .client-detail-vnext-page .client-detail-right-rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .cf-html-view.main-leads-html .lead-right-rail,
+  .cf-html-view.main-clients-html .clients-right-rail,
+  .cf-html-view.main-cases-html .cases-right-rail,
+  .client-detail-vnext-page .client-detail-right-rail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cf-html-view.main-leads-html .cf-main-search,
+  .cf-html-view.main-clients-html .cf-main-search,
+  .cf-html-view.main-cases-html .cf-main-search {
+    width: 100%;
+  }
+
+  .lead-detail-vnext-page .lead-detail-header-actions,
+  .case-detail-vnext-page .case-detail-header-actions,
+  .client-detail-vnext-page .client-detail-header-actions {
+    justify-content: flex-start;
+  }
+}

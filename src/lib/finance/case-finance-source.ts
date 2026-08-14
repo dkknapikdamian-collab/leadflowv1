@@ -293,7 +293,7 @@ export function getCaseClientPaidAmount(payments: unknown[] = []): number {
   const rows = Array.isArray(payments) ? payments : [];
   const total = rows
     .filter((payment) => paymentType(payment) !== 'commission' && isPaidLike(payment))
-    .reduce((sum, payment) => {
+    .reduce<number>((sum, payment) => {
       const amount = paymentAmount(payment);
       return sum + (paymentType(payment) === 'refund' ? -amount : amount);
     }, 0);
@@ -305,7 +305,7 @@ export function getCaseCommissionPaidAmount(payments: unknown[] = []): number {
   return roundMoney(
     rows
       .filter((payment) => paymentType(payment) === 'commission' && isPaidLike(payment))
-      .reduce((sum, payment) => sum + paymentAmount(payment), 0),
+      .reduce<number>((sum, payment) => sum + paymentAmount(payment), 0),
   );
 }
 
@@ -346,7 +346,7 @@ export function getCaseFinanceSummary(caseRecord: unknown, payments: unknown[] =
   const refundAmount = roundMoney(
     paymentRows
       .filter((payment) => paymentType(payment) === 'refund' && isPaidLike(payment))
-      .reduce((sum, payment) => sum + paymentAmount(payment), 0),
+      .reduce<number>((sum, payment) => sum + paymentAmount(payment), 0),
   );
 
   return {

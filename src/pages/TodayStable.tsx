@@ -1,8 +1,9 @@
-import { type FormEvent, type MouseEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { type FormEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AlertTriangle, ArrowRight, Calendar, CalendarDays, CheckSquare, ChevronDown, ChevronUp, Loader2, RefreshCcw, SlidersHorizontal, Trash2, TrendingUp } from 'lucide-react';
+import { AlertTriangle, ArrowRight, CalendarDays, CheckSquare, ChevronDown, ChevronUp, Loader2, RefreshCcw, SlidersHorizontal, TrendingUp } from 'lucide-react';
 import {
   EntityIcon } from '../components/ui-system';
+import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 /*
 P0_TODAY_STABLE_REBUILD
 Stable Today screen reads the same Supabase API collections that Network diagnostics proved are working.
@@ -56,11 +57,9 @@ import {
   isTodayWorkItemOverdue as isSotTodayWorkItemOverdue,
 } from '../lib/source-of-truth/today-work-item-status';
 import { EVENT_TYPES, PRIORITY_OPTIONS, TASK_TYPES } from '../lib/options';
-import '../styles/closeflow-page-header-v2.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+import '../styles/closeflow-page-header-runtime.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
-import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';import {
+import '../styles/closeflow-canvas-runtime.css';import {
   getTodayEventMomentRaw,
   getTodayLeadMomentRaw,
   getTodayOperationalDayKey,
@@ -773,7 +772,7 @@ function RowLink({
               aria-label={deleting ? 'Usuwanie' : 'Kosz'}
               title={deleting ? 'Usuwanie' : 'Kosz'}
             >
-              {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+              {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <DeleteActionIcon className="h-4 w-4" />}
             </EntityActionButton>
           ) : null}
           <Link to={to} className="inline-flex items-center rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600">
@@ -2281,3 +2280,5 @@ function TodayStable() {
 /* CLOSEFLOW_STAGE89_TODAYSTABLE_EXPLICIT_EXPORT_CONTRACT: lazy runtime needs both named and default exports. */
 export { TodayStable };
 export default TodayStable;
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

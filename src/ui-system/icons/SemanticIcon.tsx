@@ -1,3 +1,4 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:icon-geometry","concerns":["ICON_GEOMETRY"],"scope":"global","consumerRoots":["src/components/ui-system/ActionIcon.tsx","src/components/ui-system/EntityIcon.tsx"],"role":"canonical-owner","boundary":"global-semantic","whyNotGlobal":"This component is the registered geometry owner for semantic icons.","whyNotDuplicate":"The registry maps ICON_GEOMETRY to this single reachable component.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 // CLOSEFLOW_UI2_SEMANTIC_ICON_GUARD_V1
 // Jedno źródło prawdy dla standardowych ikon CloseFlow.
 // Ten komponent jest fundamentem UI-2. Runtime migracja widoków idzie etapami.
@@ -28,15 +29,16 @@ import {
   Search,
   Send,
   Settings,
+  ShieldCheck,
   Sparkles,
   Target,
-  Trash2,
   UserRound,
   Wallet,
   X,
   type LucideIcon,
   type LucideProps,
 } from 'lucide-react';
+import { ACTION_ICON_MAP } from '../../components/ui-system/action-icon-registry';
 
 export type SemanticIconRole =
   | 'add'
@@ -62,6 +64,7 @@ export type SemanticIconRole =
   | 'pin'
   | 'refresh'
   | 'risk_alert'
+  | 'safety'
   | 'search'
   | 'send'
   | 'settings'
@@ -102,7 +105,7 @@ export const semanticIconConfig = {
   close: { role: 'close', tone: 'neutral', label: 'Zamknij', defaultIcon: X, migrationStage: 'later' },
   company_property: { role: 'company_property', tone: 'neutral', label: 'Firma / nieruchomość', defaultIcon: Building2, migrationStage: 'later' },
   copy: { role: 'copy', tone: 'neutral', label: 'Kopiuj', defaultIcon: Copy, migrationStage: 'UI-2' },
-  delete: { role: 'delete', tone: 'danger', label: 'Usuń', defaultIcon: Trash2, migrationStage: 'UI-2' },
+  delete: { role: 'delete', tone: 'danger', label: 'Usuń', defaultIcon: ACTION_ICON_MAP.delete, migrationStage: 'UI-2' },
   edit: { role: 'edit', tone: 'neutral', label: 'Edytuj', defaultIcon: Pencil, migrationStage: 'UI-2' },
   email: { role: 'email', tone: 'contact', label: 'E-mail', defaultIcon: Mail, migrationStage: 'UI-3' },
   event: { role: 'event', tone: 'event', label: 'Wydarzenie', defaultIcon: CalendarClock, migrationStage: 'UI-2' },
@@ -118,6 +121,7 @@ export const semanticIconConfig = {
   pin: { role: 'pin', tone: 'neutral', label: 'Przypięte', defaultIcon: Pin, migrationStage: 'later' },
   refresh: { role: 'refresh', tone: 'neutral', label: 'Odśwież', defaultIcon: RefreshCw, migrationStage: 'later' },
   risk_alert: { role: 'risk_alert', tone: 'danger', label: 'Ryzyko / alert', defaultIcon: AlertTriangle, migrationStage: 'UI-2' },
+  safety: { role: 'safety', tone: 'task', label: 'Bezpieczeństwo', defaultIcon: ShieldCheck, migrationStage: 'UI-2' },
   search: { role: 'search', tone: 'neutral', label: 'Szukaj', defaultIcon: Search, migrationStage: 'later' },
   send: { role: 'send', tone: 'primary', label: 'Wyślij', defaultIcon: Send, migrationStage: 'later' },
   settings: { role: 'settings', tone: 'neutral', label: 'Ustawienia', defaultIcon: Settings, migrationStage: 'later' },

@@ -1,15 +1,23 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, BellRing, Calendar, CalendarDays, CheckCircle2, Clock3, FileText, Mail, Mic, ShieldCheck, Sparkles, Users } from 'lucide-react';
+import { ArrowRight, BellRing, FileText, Mail, Mic, Users, type LucideIcon } from 'lucide-react';
+import { SemanticIcon, type SemanticIconRole } from '../components/ui-system';
 import '../styles/closeflow-public-landing.css';
 
-const FEATURES = [
+type PublicLandingFeature = {
+  icon?: LucideIcon;
+  role?: SemanticIconRole;
+  title: string;
+  text: string;
+};
+
+const FEATURES: PublicLandingFeature[] = [
   {
-    icon: Clock3,
+    role: 'time',
     title: 'Widok Dziś',
     text: 'Otwierasz aplikację i widzisz leady, zadania, spotkania oraz sprawy, które wymagają ruchu teraz.',
   },
   {
-    icon: CheckCircle2,
+    role: 'task_status',
     title: 'Następny krok przy leadzie',
     text: 'Każdy kontakt może mieć konkretny ruch: telefon, wiadomość, oferta, spotkanie albo przypomnienie.',
   },
@@ -19,7 +27,7 @@ const FEATURES = [
     text: 'Po sprzedaży temat nie znika. Przechodzi w obsługę, zadania, terminy i historię działań.',
   },
   {
-    icon: CalendarDays,
+    role: 'event',
     title: 'Google Calendar',
     text: 'Spotkania i wydarzenia mogą pracować razem z Twoim kalendarzem Google. Wpisujesz w jednym miejscu, widzisz w drugim.',
   },
@@ -39,7 +47,7 @@ const FEATURES = [
     text: 'Wklejasz albo dyktujesz notatkę po rozmowie. Szkic trafia do sprawdzenia, a Ty później porządkujesz go w leadzie, zadaniu albo sprawie.',
   },
   {
-    icon: ShieldCheck,
+    role: 'safety',
     title: 'Bez automatycznego bałaganu',
     text: 'AI może pomóc przygotować szkic, ale finalne dane zatwierdzasz Ty. Nic ważnego nie zapisuje się samo za Twoimi plecami.',
   },
@@ -167,7 +175,7 @@ export default function PublicLanding() {
       <section className="public-landing-hero">
         <div className="public-landing-hero-copy">
           <div className="public-landing-pill">
-            <Sparkles className="h-4 w-4" />
+            <SemanticIcon role="ai" size="sm" />
             <span>Panel dnia dla leadów, follow-upów i spraw</span>
           </div>
           <h1>Wiesz, kogo dziś ruszyć.</h1>
@@ -222,7 +230,7 @@ export default function PublicLanding() {
             return (
               <article key={feature.title} className="public-landing-feature-card">
                 <span>
-                  <Icon className="h-5 w-5" />
+                  {feature.role ? <SemanticIcon role={feature.role} size="md" /> : Icon ? <Icon className="h-5 w-5" /> : null}
                 </span>
                 <h3>{feature.title}</h3>
                 <p>{feature.text}</p>

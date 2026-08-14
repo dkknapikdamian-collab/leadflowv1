@@ -1,11 +1,12 @@
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, Archive, CheckCircle2, Clock3, HelpCircle, LifeBuoy, Lightbulb, Loader2, Mail, MessageSquare, Search, Send, ShieldCheck, Sparkles, Wrench } from 'lucide-react';
+import { AlertTriangle, Archive, CheckCircle2, Clock3, HelpCircle, LifeBuoy, Lightbulb, Loader2, Mail, MessageSquare, Search, Send, ShieldCheck, Wrench } from 'lucide-react';
+import { SemanticIcon } from '../components/ui-system';
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { auth } from '../firebase';
+import { getClientAuthSnapshot } from '../lib/client-auth';
 import { useWorkspace } from '../hooks/useWorkspace';
 import {
   createSupportRequestInSupabase,
@@ -13,12 +14,10 @@ import {
   replyToSupportRequestInSupabase,
   updateSupportRequestStatusInSupabase,
 } from '../lib/supabase-fallback';
-import '../styles/visual-stage17-support-vnext.css';
+import '../styles/closeflow-support.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
-import '../styles/closeflow-page-header-v2.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
-import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
+import '../styles/closeflow-page-header-runtime.css';
+import '../styles/closeflow-canvas-runtime.css';
 
 type TicketKind = 'suggestion' | 'problem' | 'support';
 type TicketKindFilter = 'all' | TicketKind;
@@ -120,7 +119,7 @@ const SUGGESTED_TICKETS: SuggestedTicket[] = [
     kind: 'suggestion',
     title: '',
     message: 'Opisz, co spowalnia pracę, jak powinien wyglądać docelowy ruch i jaki problem ma zniknąć.',
-    Icon: Sparkles,
+    Icon: ({ className }: { className?: string }) => <SemanticIcon role="ai" size="sm" className={className} />,
   },
   {
     kind: 'support',
@@ -218,8 +217,9 @@ function getLastReplyLabel(ticket: TicketRow) {
 
 export default function SupportCenter() {
   const { workspace, isAdmin, loading: workspaceLoading } = useWorkspace();
-  const userId = auth.currentUser?.uid || '';
-  const userEmail = auth.currentUser?.email || '';
+  const authSnapshot = getClientAuthSnapshot();
+  const userId = authSnapshot.uid || '';
+  const userEmail = authSnapshot.email || '';
 
   const [composeKind, setComposeKind] = useState<TicketKind>('problem');
   const [kindFilter, setKindFilter] = useState<TicketKindFilter>('all');
@@ -716,3 +716,5 @@ export default function SupportCenter() {
     </Layout>
   );
 }
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

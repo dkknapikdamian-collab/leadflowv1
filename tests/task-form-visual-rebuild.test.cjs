@@ -6,7 +6,7 @@ const { mojibakeWords } = require('../scripts/mojibake-markers.cjs');
 const root = process.cwd();
 const tasksPath = path.join(root, 'src', 'pages', 'Tasks.tsx');
 const editorPath = path.join(root, 'src', 'components', 'task-editor-dialog.tsx');
-const cssPath = path.join(root, 'src', 'styles', 'visual-stage21-task-form-vnext.css');
+const cssPath = path.join(root, 'src', 'styles', 'closeflow-task-form.css');
 
 function fail(message) {
   console.error('FAIL task form visual rebuild:', message);
@@ -15,7 +15,7 @@ function fail(message) {
 
 if (!fs.existsSync(tasksPath)) fail('missing Tasks.tsx');
 if (!fs.existsSync(editorPath)) fail('missing task-editor-dialog.tsx');
-if (!fs.existsSync(cssPath)) fail('missing visual-stage21-task-form-vnext.css');
+if (!fs.existsSync(cssPath)) fail('missing closeflow-task-form.css');
 
 const tasks = fs.readFileSync(tasksPath, 'utf8');
 const editor = fs.readFileSync(editorPath, 'utf8');

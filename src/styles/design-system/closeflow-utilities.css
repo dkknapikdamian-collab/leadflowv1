@@ -1,4 +1,4 @@
-/* CLOSEFLOW_DESIGN_SYSTEM_UTILITIES_VS1 */
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/design-system/closeflow-utilities.css","concerns":[],"scope":"component","consumerRoots":["src/pages/Activity.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 .cf-text-primary { color: var(--cf-text-primary); }
 .cf-text-secondary { color: var(--cf-text-secondary); }
 .cf-text-muted { color: var(--cf-text-muted); }

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { CheckCircle2, ClipboardList, Copy, Loader2, Sparkles } from 'lucide-react';
+import { CheckCircle2, ClipboardList, Copy, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 import { createLeadNextActionSuggestion, type LeadNextActionSuggestion } from '../lib/ai-next-action';
+import { SemanticIcon } from './ui-system';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { insertTaskToSupabase } from '../lib/supabase-fallback';
 import { requireWorkspaceId } from '../lib/workspace-context';
@@ -141,7 +142,7 @@ export default function LeadAiNextAction({ lead, tasks, events, activities, disa
       <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <CardTitle className="flex items-center gap-2 text-base text-slate-900">
-            <Sparkles className="h-4 w-4 text-emerald-600" />
+            <SemanticIcon role="ai" size="sm" tone="ai" className="text-emerald-600" />
             AI następny ruch
           </CardTitle>
           <p className="mt-1 text-sm text-slate-600">Podpowiedź kolejnego kroku dla leada: {leadTitle}. AI niczego nie tworzy bez Twojego kliknięcia.</p>
@@ -160,7 +161,7 @@ export default function LeadAiNextAction({ lead, tasks, events, activities, disa
             <div className="space-y-4 py-2">
               <div className="flex flex-wrap items-center gap-2">
                 <Button type="button" onClick={handleGenerate} disabled={loading}>
-                  {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                  {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <SemanticIcon role="ai" size="sm" tone="ai" className="mr-2" />}
                   Analizuj leada
                 </Button>
                 <Badge variant="outline">Tylko sugestia</Badge>

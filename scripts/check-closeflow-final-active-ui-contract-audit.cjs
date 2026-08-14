@@ -119,7 +119,7 @@ for (const mapFile of [
 }
 
 const app = read('src/App.tsx');
-assert(app.includes("const Today = lazy(() => import('./pages/TodayStable'))"), 'App.tsx must route Today to TodayStable');
+assert(/const Today\s*=\s*lazy(?:Page)?\(\(\)\s*=>\s*import\(['"]\.\/pages\/TodayStable['"]\)(?:,\s*['"]TodayStable['"])?\)/.test(app), 'App.tsx must route Today to TodayStable');
 assert(!app.includes("import('./pages/Today')"), 'App.tsx must not lazy import legacy Today.tsx');
 assert(doc.includes('Today.tsx') && doc.toLowerCase().includes('legacy inactive'), 'Stage18 document must explain Today.tsx legacy inactive');
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Loader2, Mic, MicOff, Sparkles } from 'lucide-react';
+import { Loader2, Mic, MicOff } from 'lucide-react';
 /* STAGE16O_QUICK_AI_CAPTURE_STATIC_CONTRACTS
  * saveAiLeadDraft Zapisz szkic Zatwierdź jako lead
  * buildAiUsageKey(workspace?.id, profile?.id) getAiUsageSnapshot(aiUsageKey registerAiUsage(aiUsageKey !usage.canUse AI_COMMAND_MAX_LENGTH data-ai-usage-badge="quick-capture"
@@ -20,10 +20,10 @@ import {
 } from '../lib/ai-usage-guard';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import '../styles/closeflow-command-actions-source-truth.css';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
+import { SemanticIcon } from './ui-system';
 
 type SpeechRecognitionLike = {
   lang: string;
@@ -278,7 +278,7 @@ export default function QuickAiCapture({ initialText = '', openSignal = 0, draft
     >
       <DialogTrigger asChild>
         <Button type="button" variant="outline" className="rounded-xl cf-command-action cf-command-action--ai" data-cf-command-action="ai" disabled={!workspaceReady}>
-          <Sparkles className="mr-2 h-4 w-4" /> Szybki szkic
+          <SemanticIcon role="ai" size="sm" tone="ai" className="mr-2" /> Szybki szkic
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-3xl max-h-[92vh] overflow-y-auto">
@@ -304,7 +304,7 @@ export default function QuickAiCapture({ initialText = '', openSignal = 0, draft
 
           <div className="flex flex-wrap items-center gap-2">
             <Button type="button" onClick={() => void handleBuildDraft()} disabled={draftLoading || !rawText.trim() || (!usage.canUse && !usage.adminExempt)}>
-              {draftLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+              {draftLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <SemanticIcon role="ai" size="sm" tone="ai" className="mr-2" />}
               Zrób szkic
             </Button>
             <Button type="button" variant="outline" onClick={handleSaveRawDraft} disabled={!rawText.trim() || saving}>

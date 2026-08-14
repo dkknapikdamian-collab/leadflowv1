@@ -15,7 +15,7 @@ const requiredFiles = [
   'src/lib/data-contract.ts',
   'src/lib/supabase-fallback.ts',
   'src/lib/calendar-items.ts',
-  'supabase/migrations/2026-05-01_stage05_supabase_data_contract.sql',
+  'supabase/migrations/20260501010500_stage05_supabase_data_contract.sql',
   'docs/STAGE05_SUPABASE_DATA_CONTRACT.md',
 ];
 
@@ -24,7 +24,7 @@ for (const file of requiredFiles) assert(exists(file), `${file} is missing`);
 const contract = read('src/lib/data-contract.ts');
 const fallback = read('src/lib/supabase-fallback.ts');
 const calendar = read('src/lib/calendar-items.ts');
-const migration = read('supabase/migrations/2026-05-01_stage05_supabase_data_contract.sql');
+const migration = read('supabase/migrations/20260501010500_stage05_supabase_data_contract.sql');
 const pkg = JSON.parse(read('package.json'));
 
 assert(pkg.scripts && pkg.scripts['verify:data-contract-stage05'], 'package.json must include verify:data-contract-stage05');

@@ -116,7 +116,7 @@ export function buildMissingItemModalDraft(
   input: { title: string; note?: string; missingKind?: unknown; blocksProgress?: boolean; blockScope?: string },
 ): MissingItemModalDraft {
   const result = validateMissingItemTitle(input.title);
-  if (!result.ok) {
+  if (result.ok === false) {
     throw new Error(result.error);
   }
 

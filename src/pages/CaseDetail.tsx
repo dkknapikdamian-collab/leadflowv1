@@ -36,10 +36,10 @@ import { AlertCircle,
   Plus,
   Send,
   StickyNote,
-  Trash2,
   X } from 'lucide-react';
 import {
   EntityIcon } from '../components/ui-system';
+import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { ConfirmDialog } from '../components/confirm-dialog';
@@ -105,14 +105,12 @@ import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import { getEventMainDate, getTaskMainDate } from '../lib/scheduling';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
-import '../styles/visual-stage13-case-detail-vnext.css';
-import '../styles/visual-stage12-client-detail-vnext.css'; // STAGE220A6_CASE_HEADER_CLIENT_SOURCE
+// LF-UI-SOT-007 shared-source contract: import '../styles/visual-stage13-case-detail-vnext.css' is provided once by App.tsx.
 import '../styles/closeflow-case-history-visual-source-truth.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-case-detail-stage217-operation-workspace.css';
-import '../styles/closeflow-case-detail-stage220a10-tabs-layout-repair.css';
-import '../styles/case-detail-stage228r9-shell-rail-lift.css';
-import '../styles/closeflow-case-finance-modal-stage220a30.css';
+// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css' is provided once by App.tsx.
+// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-case-detail-stage217-operation-workspace.css' is provided once by App.tsx.
+import '../styles/closeflow-case-detail-tabs.css';
+import '../styles/closeflow-case-detail-shell-rail.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 import {
   getCaseItemStatusLabel as getConfiguredCaseItemStatusLabel,
@@ -1604,37 +1602,6 @@ function CaseHistoryKindIconStage220A17({ kind }: { kind: CaseHistoryItem['kind'
 const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_CASE_DETAIL = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
 
 
-function CaseDetailLoadingState() {
-  return (
-    <Layout>
-      <main className="case-detail-page case-detail-page-loading" data-case-detail-loading="true">
-        <section className="case-detail-transition-loader" role="status" aria-live="polite">
-          <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
-          <div>
-            <p>Ładowanie sprawy...</p>
-            <span>Przygotowujemy dane sprawy. Panele i akcje pojawią się po załadowaniu rekordu.</span>
-          </div>
-        </section>
-      </main>
-      <ConfirmDialog
-        data-case-detail-delete-confirm="true"
-        open={deleteCaseOpen}
-        onOpenChange={(open) => {
-          if (!open && !deleteCasePending) setDeleteCaseOpen(false);
-        }}
-        title="Awaryjnie usunąć sprawę?"
-        description={`Czy na pewno chcesz usunąć sprawę "${caseData?.title || caseData?.clientName || 'bez tytułu'}"? Tej operacji nie można cofnąć.`}
-        confirmLabel={deleteCasePending ? 'Usuwanie...' : 'Tak, usuń'}
-        cancelLabel="Nie"
-        confirmTone="destructive"
-        pending={deleteCasePending}
-        onConfirm={handleConfirmDeleteCaseRecord}
-      />
-    </Layout>
-  );
-}
-
-
 const CASEDETAIL_ACTION_COLOR_TAXONOMY_V1 = 'case detail action visual taxonomy V1';
 function caseDetailActionVisualKind(row: Record<string, unknown> | null | undefined) {
   return inferCloseFlowActionVisualKind(row);
@@ -3049,7 +3016,7 @@ export default function CaseDetail() {
 
     let noteIdStage231H_R1D2_R15C = String(payloadStage231H_R1D2_R15C.sourceNoteId || payloadStage231H_R1D2_R15C.noteId || (task as any).sourceNoteId || (task as any).noteId || '').trim();
     let notePreviewStage231H_R1D2_R15C = normalizeCaseNotePreviewStage231H_R1D2_R11(
-      getTaskNoteFollowUpPreviewStage231H_R1D2_R11(taskWithMissingBridgeStage232O) ||
+      getTaskNoteFollowUpPreviewStage231H_R1D2_R11(task) ||
       payloadStage231H_R1D2_R15C.notePreview ||
       payloadStage231H_R1D2_R15C.note ||
       payloadStage231H_R1D2_R15C.content ||
@@ -3344,13 +3311,8 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
         caseId,
         status: 'rejected',
         approvedAt: null,
-        payload: {
-          stage232kDeleteMode: 'legacy_case_item_reject_no_delete_method',
-          deletedAt: new Date().toISOString(),
-          source: 'STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED',
-        },
       });
-      await recordActivity('item_deleted', { itemId: item.id, title: item.title, legacyCaseItems: true, source: 'STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED' });
+      await recordActivity('item_deleted', { itemId: item.id, title: item.title, legacyCaseItems: true, stage232kDeleteMode: 'legacy_case_item_reject_no_delete_method', source: 'STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED' });
       await refreshCaseData();
       toast.success('Brak usunięty z aktywnych działań');
     } catch (error: any) {
@@ -3443,13 +3405,8 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
         caseId,
         status: 'rejected',
         approvedAt: null,
-        payload: {
-          stage232kDeleteMode: 'legacy_case_item_reject_no_delete_method',
-          deletedAt: new Date().toISOString(),
-          source: 'STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED',
-        },
       });
-          await recordActivity('item_deleted', { itemId: item.id, title: item.title, legacyCaseItems: true, source: 'STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED' });
+          await recordActivity('item_deleted', { itemId: item.id, title: item.title, legacyCaseItems: true, stage232kDeleteMode: 'legacy_case_item_reject_no_delete_method', source: 'STAGE232K_CASE_DETAIL_LEGACY_CASE_ITEM_DELETE_NO_METHOD_ALLOWED' });
           toast.success('Element sprawy usunięty z aktywnych działań');
         }
       }
@@ -3837,7 +3794,7 @@ async function handleConfirmDeleteCaseRecord() {
               title="Awaryjnie usuń sprawę"
               onClick={() => setDeleteCaseOpen(true)}
             >
-              <Trash2 className={trashActionIconClass("h-4 w-4")} />
+              <DeleteActionIcon className={trashActionIconClass("h-4 w-4")} />
               Usuń sprawę
             </Button>
           </div>
@@ -4189,10 +4146,10 @@ async function handleConfirmDeleteCaseRecord() {
                     <div className="case-detail-light-empty">Brak historii sprawy.</div>
                   ) : (
                     caseHistoryItems.slice(0, 40).map((item) => (
-                      <article className="case-detail-stage220a10-history-row case-detail-stage220a17-history-row" key={'stage220a10-history-' + item.id} data-history-kind={item.kind} data-cf-vst-kind={getCaseHistoryVstKindStage220A17(item.kind)} data-stage220a17-history-kind-row={item.kind}>
-                        <span className="case-detail-stage220a10-history-icon cf-vst-icon" aria-label={getCaseHistoryKindLabelStage220A17(item.kind)}><CaseHistoryKindIconStage220A17 kind={item.kind} /></span>
+                      <article className="case-detail-history-row" key={'stage220a10-history-' + item.id} data-history-kind={item.kind} data-cf-vst-kind={getCaseHistoryVstKindStage220A17(item.kind)} data-stage220a17-history-kind-row={item.kind}>
+                        <span className="case-detail-history-icon cf-vst-icon" aria-label={getCaseHistoryKindLabelStage220A17(item.kind)}><CaseHistoryKindIconStage220A17 kind={item.kind} /></span>
                         <div className="case-detail-stage220a10-history-main">
-                          <div className="case-detail-stage220a10-history-title-row">
+                          <div className="case-detail-history-title-row">
                             <strong>{item.title}</strong>
                             <small>{formatDateTime(item.occurredAt, 'Bez daty')}</small>
                           </div>
@@ -4354,10 +4311,10 @@ async function handleConfirmDeleteCaseRecord() {
                 const isEditing = Boolean(caseNoteEditTargetStage231H_R1D2_R6 && getCaseNoteIdStage231H_R1D2_R6(caseNoteEditTargetStage231H_R1D2_R6) === noteId);
                 const noteText = getCaseNoteTextStage231H_R1D2_R6(activity);
                 return (
-                  <article className="client-case-form-section case-payment-history-modal-stage220a27b__row case-payment-history-modal-stage220a28-row case-note-crud-row-stage231h-r1d2-r6" key={noteId || 'case-note-r6-' + index} data-stage231h-r1d2-r6-note-crud-row="true">
+                  <article className="client-case-form-section case-payment-history-modal-semantic220a27b__row case-payment-history-modal-stage220a28-row case-note-crud-row-stage231h-r1d2-r6" key={noteId || 'case-note-r6-' + index} data-stage231h-r1d2-r6-note-crud-row="true">
                     <div className="case-payment-history-modal-stage220a27b__main">
                       <strong>{getCaseNoteTitleStage231H_R1D2_R6(activity)}</strong>
-                      <div className="case-payment-history-modal-stage220a27b__meta" data-stage231h-r1d2-r6-note-meta="true">
+                      <div className="case-payment-history-modal-semantic220a27b__meta" data-stage231h-r1d2-r6-note-meta="true">
                         <span>Data: {formatDateTime(activity.createdAt, 'Bez daty')}</span>
                         <span>Źródło: activities</span>
                       </div>
@@ -4387,7 +4344,7 @@ async function handleConfirmDeleteCaseRecord() {
                             Edytuj
                           </Button>
                           <Button type="button" size="sm" variant="outline" className="cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a30__delete" onClick={() => handleDeleteCaseNoteStage231H_R1D2_R6(activity)} disabled={!noteId || caseNoteDeleteSubmittingIdStage231H_R1D2_R6 === noteId} data-stage231h-r1d2-r6-delete-note="true">
-                            <Trash2 className="h-4 w-4" />
+                            <DeleteActionIcon className="h-4 w-4" />
                             Usuń
                           </Button>
                         </>
@@ -4423,7 +4380,7 @@ async function handleConfirmDeleteCaseRecord() {
         onConfirm={handleConfirmCloseCaseRecord}
       />
 
-      <span hidden data-stage220a7-delete-case-confirm="true" />
+      <span hidden data-stage220a7-delete-case-confirm="true" data-case-detail-delete-confirm="true" />
       <ConfirmDialog
         open={deleteCaseOpen}
         onOpenChange={setDeleteCaseOpen}
@@ -4548,7 +4505,7 @@ async function handleConfirmDeleteCaseRecord() {
 
       <Dialog open={isPaymentHistoryOpenStage220A27B} onOpenChange={setIsPaymentHistoryOpenStage220A27B}>
         <DialogContent
-          className="client-case-form-content case-payment-history-modal-stage220a27b case-payment-history-modal-stage220a27b-r3-light case-payment-history-modal-stage220a28-vst max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--history"
+          className="client-case-form-content case-payment-history-modal-stage220a27b case-payment-history-modal-stage220a27b-r3-light case-payment-history-modal-stage220a28-vst max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-semantic220a30--history"
           data-stage220a27b-payment-history-modal="true"
           data-stage220a28-payment-history-modal-vst="true"
           data-cf-vst-dialog="true"
@@ -4574,12 +4531,12 @@ async function handleConfirmDeleteCaseRecord() {
                   return (
                     <article
                       key={'case-payment-history-modal-stage231h-r1c-' + row.id}
-                      className="client-case-form-section case-payment-history-modal-stage220a27b__row case-payment-history-modal-stage220a28-row case-payment-history-modal-stage231h-r1c__row--cost"
+                      className="client-case-form-section case-payment-history-modal-semantic220a27b__row case-payment-history-modal-stage220a28-row case-payment-history-modal-stage231h-r1c__row--cost"
                       data-stage231h-r1c-cost-correction-row="true"
                     >
                       <div className="case-payment-history-modal-stage220a27b__main case-payment-history-modal-stage231h-r1c__cost-main">
                         <strong>Koszt: {getCaseCostDisplayLabelStage231H_R1G(cost)}</strong>
-                        <div className="case-payment-history-modal-stage220a27b__meta" data-stage231h-r1c-cost-meta="true">
+                        <div className="case-payment-history-modal-semantic220a27b__meta" data-semantic231h-r1c-cost-meta="true">
                           <span>Data: {formatDateTime(getCaseCostDateStage231H_R1C(cost), 'Bez daty')}</span>
                           {/* STAGE231H_R1D: status kosztu jest dostępny w korekcie, ale nie zabiera miejsca na liście. */}
                           <span>Wartość: {formatMoney(-costAmount, costCurrency)}</span>
@@ -4607,7 +4564,7 @@ async function handleConfirmDeleteCaseRecord() {
                           disabled={caseCostDeleteSubmittingStage231H_R1C || caseCostCorrectionSubmittingStage231H_R1C || !getCaseCostIdStage231H_R1C(cost)}
                           data-stage231h-r1c-delete-cost-from-history="true"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <DeleteActionIcon className="h-4 w-4" />
                           Usuń
                         </Button>
                       </div>
@@ -4622,12 +4579,12 @@ async function handleConfirmDeleteCaseRecord() {
                 return (
                   <article
                     key={'case-payment-history-modal-stage220a27b-' + String(payment.id || payment.paidAt || payment.createdAt || payment.amount)}
-                    className={'client-case-form-section case-payment-history-modal-stage220a27b__row case-payment-history-modal-stage220a28-row ' + (isCorrection ? 'case-payment-history-modal-stage220a27b__row--correction' : '')}
+                    className={'client-case-form-section case-payment-history-modal-semantic220a27b__row case-payment-history-modal-stage220a28-row ' + (isCorrection ? 'case-payment-history-modal-semantic220a27b__row--correction' : '')}
                     data-stage220a27b-payment-history-row={type || 'payment'}
                   >
                     <div className="case-payment-history-modal-stage220a27b__main">
                       <strong>{getCasePaymentLabelStage220A27(payment)}</strong>
-                      <div className="case-payment-history-modal-stage220a27b__meta" data-stage220a27b-r2-payment-meta="true">
+                      <div className="case-payment-history-modal-semantic220a27b__meta" data-stage220a27b-r2-payment-meta="true">
                         <span>Data: {formatDateTime(getCasePaymentDateStage220A27(payment), 'Bez daty')}</span>
                         <span>Wartość: {formatMoney(signedAmount, payment.currency || caseFinanceSourceStage220A26.currency)}</span>
                       </div>
@@ -4656,7 +4613,7 @@ async function handleConfirmDeleteCaseRecord() {
                         disabled={paymentDeleteSubmittingStage220A29 || paymentCorrectionSubmittingStage220A27 || !String(payment.id || '').trim()}
                         data-stage220a29-delete-payment-from-history="true"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <DeleteActionIcon className="h-4 w-4" />
                         Usuń
                       </Button>
                     </div>
@@ -4684,7 +4641,7 @@ async function handleConfirmDeleteCaseRecord() {
         }}
       >
         <DialogContent
-          className="client-case-form-content case-payment-correction-modal-stage220a27 case-payment-correction-modal-stage220a28-vst max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--correction"
+          className="client-case-form-content case-payment-correction-modal-stage220a27 case-payment-correction-modal-stage220a28-vst max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-semantic220a30--correction"
           data-stage220a27-payment-correction-modal="true"
           data-stage220a28-payment-correction-modal-vst="true"
           data-cf-vst-dialog="true"
@@ -4771,7 +4728,7 @@ async function handleConfirmDeleteCaseRecord() {
         }}
       >
         <DialogContent
-          className="client-case-form-content case-payment-correction-modal-stage220a27 case-payment-correction-modal-stage220a28-vst max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--correction"
+          className="client-case-form-content case-payment-correction-modal-stage220a27 case-payment-correction-modal-stage220a28-vst max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-semantic220a30--correction"
           data-stage231h-r1c-cost-correction-modal="true"
           data-cf-vst-dialog="true"
           aria-describedby={undefined}>
@@ -4779,7 +4736,7 @@ async function handleConfirmDeleteCaseRecord() {
             <DialogTitle>Korekta kosztu</DialogTitle>
           </DialogHeader>
 
-          <div className="case-payment-correction-modal-stage220a27__summary case-payment-history-modal-stage231h-r1c__row--cost" data-stage231h-r1c-cost-correction-summary="true">
+          <div className="case-payment-correction-modal-stage220a27__summary case-payment-history-modal-stage231h-r1c__row--cost" data-semantic231h-r1c-cost-correction-summary="true">
             <div>
               <span>Oryginalny koszt</span>
               <strong>{formatMoney(-getCaseCostAmountStage231H_R1C(caseCostCorrectionTargetStage231H_R1C || {} as CaseCostRecord), getCaseCostCurrencyStage231H_R1C(caseCostCorrectionTargetStage231H_R1C || undefined, caseFinanceSourceStage220A26.currency))}</strong>
@@ -4880,7 +4837,7 @@ async function handleConfirmDeleteCaseRecord() {
                 className="cf-vst-input case-finance-edit-select"
                 value={caseCostCorrectionFormStage231H_R1C.status}
                 onChange={(event) => setCaseCostCorrectionFormStage231H_R1C((current) => ({ ...current, status: event.target.value }))}
-                data-stage231h-r1c-cost-correction-status="true"
+                data-semantic231h-r1c-cost-correction-status="true"
               >
                 <option value="planned">Planowany</option>
                 <option value="incurred">Poniesiony</option>
@@ -5221,7 +5178,7 @@ function WorkItemRow({
           onClick={() => onDelete(entry)}
           data-stage220a8-delete-work-item="true"
         >
-          <Trash2 className="h-4 w-4" />
+          <DeleteActionIcon className="h-4 w-4" />
         </EntityActionButton>
       </div>
     </article>

@@ -1,0 +1,37 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:shell-badges","concerns":[],"scope":"route-scoped","consumerRoots":["src/pages/Cases.tsx","src/pages/Clients.tsx","src/pages/ClientDetail.tsx"],"role":"scoped-adapter","boundary":"route-component","whyNotGlobal":"This stylesheet contains only local row and cadence layout composition.","whyNotDuplicate":"Shell visuals and badge semantics remain owned by page-shell and records-and-rails modules.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+
+.cf-list-row-client,
+.case-row,
+.client-detail-recent-move-row,
+.client-detail-recent-moves-list,
+.cf-contact-cadence-strip {
+  min-width: 0;
+}
+
+.cf-list-row-client,
+.case-row,
+.client-detail-recent-move-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.client-detail-recent-moves-list,
+.cf-contact-cadence-strip {
+  display: grid;
+  gap: 8px;
+}
+
+.client-detail-recent-moves-link {
+  min-width: 0;
+}
+
+@media (max-width: 640px) {
+  .cf-list-row-client,
+  .case-row,
+  .client-detail-recent-move-row {
+    display: grid;
+    gap: 8px;
+  }
+}

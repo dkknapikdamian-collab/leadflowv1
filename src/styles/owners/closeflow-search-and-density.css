@@ -1,0 +1,120 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:search-density","concerns":["SEARCH"],"scope":"route-scoped","consumerRoots":["src/pages/Leads.tsx","src/pages/Clients.tsx"],"role":"canonical-owner","boundary":"route-semantic","whyNotGlobal":"This file is the registered semantic owner for search composition used by Leads and Clients.","whyNotDuplicate":"The registry maps SEARCH to this single reachable owner.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+/* LF-UI-IMPORTANT_BOUNDARY: SEMANTIC_OWNER_CASCADE */
+
+:root {
+  --cf-search-bg: #ffffff;
+  --cf-search-border: #e2e8f0;
+  --cf-search-border-focus: #93c5fd;
+  --cf-search-text: #0f172a;
+  --cf-search-muted: #64748b;
+  --cf-search-placeholder: #94a3b8;
+  --cf-search-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+  --cf-search-height: 42px;
+  --cf-search-radius: 16px;
+  --cf-search-padding-x: 13px;
+  --cf-search-icon-size: 18px;
+}
+
+.cf-main-search,
+.search[data-cf-main-search="true"],
+.search[data-leads-search="true"],
+.search[data-clients-search="true"] {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: var(--cf-search-height);
+  border: 1px solid var(--cf-search-border);
+  border-radius: var(--cf-search-radius);
+  padding: 0 var(--cf-search-padding-x);
+  background: var(--cf-search-bg);
+  color: var(--cf-search-muted);
+  box-shadow: var(--cf-search-shadow);
+}
+
+.cf-main-search > span,
+.cf-main-search > svg,
+.search[data-cf-main-search="true"] > span,
+.search[data-cf-main-search="true"] > svg,
+.search[data-leads-search="true"] > span,
+.search[data-leads-search="true"] > svg,
+.search[data-clients-search="true"] > span,
+.search[data-clients-search="true"] > svg {
+  display: inline-flex;
+  flex: 0 0 var(--cf-search-icon-size);
+  align-items: center;
+  justify-content: center;
+  width: var(--cf-search-icon-size);
+  height: var(--cf-search-icon-size);
+  color: var(--cf-search-muted);
+}
+
+.cf-main-search input,
+.cf-main-search [role="combobox"],
+.search[data-cf-main-search="true"] input,
+.search[data-leads-search="true"] input,
+.search[data-clients-search="true"] input {
+  width: 100%;
+  min-width: 0;
+  min-height: calc(var(--cf-search-height) - 2px);
+  border: 0;
+  outline: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--cf-search-text);
+  box-shadow: none;
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.cf-main-search input::placeholder,
+.cf-main-search [role="combobox"]::placeholder,
+.search[data-cf-main-search="true"] input::placeholder,
+.search[data-leads-search="true"] input::placeholder,
+.search[data-clients-search="true"] input::placeholder {
+  color: var(--cf-search-placeholder);
+  opacity: 1;
+  font-weight: 650;
+}
+
+.cf-main-search:focus-within,
+.search[data-cf-main-search="true"]:focus-within,
+.search[data-leads-search="true"]:focus-within,
+.search[data-clients-search="true"]:focus-within {
+  border-color: var(--cf-search-border-focus);
+  box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.32), var(--cf-search-shadow);
+}
+
+.cf-main-search + .suggestions,
+.cf-main-search + .lead-search-suggestions {
+  width: 100%;
+  margin-top: 8px;
+  border: 1px solid var(--cf-search-border);
+  border-radius: 12px;
+  background: var(--cf-search-bg);
+  box-shadow: var(--cf-search-shadow);
+}
+
+@media (min-width: 1280px) {
+  .cf-html-view .cf-main-search,
+  .cf-html-view .search[data-cf-main-search="true"] {
+    max-width: 1120px;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --cf-search-height: 40px;
+    --cf-search-radius: 12px;
+    --cf-search-padding-x: 11px;
+  }
+
+  .cf-main-search input,
+  .cf-main-search [role="combobox"],
+  .search[data-cf-main-search="true"] input,
+  .search[data-leads-search="true"] input,
+  .search[data-clients-search="true"] input {
+    font-size: 13px;
+  }
+}

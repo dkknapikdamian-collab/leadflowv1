@@ -21,7 +21,6 @@ test('daily digest payload includes required sections and nearest upcoming', () 
 test('daily digest handler does not fake provider success and has cron guard', () => {
   assert.match(dailyHandler, /sendResendEmail/);
   assert.match(dailyHandler, /RESEND_API_KEY_MISSING/);
-  assert.match(dailyHandler, /if \(vercelCron\) return true/);
-  assert.match(dailyHandler, /if \(!cronSecret\) return false/);
+  assert.match(dailyHandler, /isDigestCronAuthorized/);
   assert.match(dailyHandler, /DIGEST_CRON_UNAUTHORIZED/);
 });

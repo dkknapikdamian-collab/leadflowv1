@@ -19,15 +19,34 @@ Tu trafiaja audyty i mapy, ktore maja naprawiac zrodlo prawdy przed kolejnymi zm
 - `LF-UI-SOT-002_UI_PATCH_LAYERS_GUARD.md` - guard na plastry UI: blokada nowych runtime/CSS/delete-action obejsc.
 - `LF-UI-SOT-003_CONFIG_STATUS_SOURCE_OF_TRUTH.md` - centralny config statusow, badge'y, funnel/risk/work-item labels i guard `guard:config:status-source-of-truth`.
 
+## Rejestr SOT-000..SOT-006
+
+Ten rejestr jest uzupełnieniem istniejącego indeksu; nie tworzy drugiego indeksu.
+
+| ID | Artifact | Status | Provenance / classification |
+|---|---|---|---|
+| SOT-000 | `LF-UI-SOT-000_PREFLIGHT_ROUTE_UI_MAP.md` | EXISTS / HISTORICAL | repo-local artifact |
+| SOT-001 | `LF-UI-SOT-001_CANONICAL_ROUTING_MAP.md` | EXISTS / HISTORICAL | repo-local artifact |
+| SOT-002 | `LF-UI-SOT-002_UI_PATCH_LAYERS_GUARD.md` | EXISTS / HISTORICAL | repo-local artifact |
+| SOT-003 | `LF-UI-SOT-003_CONFIG_STATUS_SOURCE_OF_TRUTH.md` | EXISTS / HISTORICAL | repo-local artifact |
+| SOT-004 | `LF-UI-SOT-004_GLOBAL_CSS_LAYER_SOURCE_OF_TRUTH_AUDIT.md` | EXISTS / CLOSED | repo-local artifact and recorded completion evidence |
+| SOT-005 | no canonical artifact found in current tree or Git history search | MISSING / NOT_FABRICATED | historical reference only; no provenance invented |
+| SOT-006 | `LF-UI-SOT-006_CSS_OWNER_GUARDS_BEFORE_CLEANUP.md` | EXISTS / DONE / GUARD_ONLY | canonical provenance is this exact repo-local file and its listed guard/test commits; it is not silently attributed to a missing SOT-005 artifact |
+
+SOT-006's historical sentence that it replaced an SOT-005 audit is retained as
+history. The missing SOT-005 artifact is not recreated from that sentence.
+
 ## Zasada uzycia
 
 Przed kazdym kolejnym etapem UI dotyczacym Today, Leads, Clients, Cases, CaseDetail, ClientDetail, Layout, modalow, CSS albo wizualnego source-of-truth trzeba sprawdzic ten katalog.
 
 ## Link do dodania w glownym spisie tresci
 
-Dopisac pod sekcja `04 - Etapy i kierunek` w:
+Dokument repo-local jest indeksowany przez kanoniczny binding projektu:
 
-`10_PROJEKTY/CloseFlow_Lead_App/00_START - CloseFlow Lead App.md`
+`10_PROJEKTY/CloseFlow_Lead_App/00_AI_START_SPIS_TRESCI.md`
+
+Historyczny dashboard `00_START - CloseFlow Lead App.md` nie jest technicznym routerem.
 
 ```md
 - `_project/Naprawa_Zrodla_Prawdy/00_START_NAPRAWA_ZRODLA_PRAWDY.md` - indeks miejsca Naprawa zrodla prawdy.
@@ -42,8 +61,29 @@ Dopisac pod sekcja `04 - Etapy i kierunek` w:
 - data i godzina: 2026-06-28 00:10 Europe/Warsaw
 - save status: indeks zapisany w repo aplikacji
 - runtime/UI: nietkniete
-- glowny Obsidian start: do recznego dopisania przez maly blok, bo connector zablokowal pelne nadpisanie `00_START - CloseFlow Lead App.md`
+- glowny Obsidian start: canonical binding jest wskazany w repo; lokalny Vault nie zawiera potwierdzonego pliku o tej nazwie, dlatego nie tworzono go automatycznie
 - Obsidian local sync: LOCAL_SYNC_PENDING
+
+## 2026-08-11 — SSOT terminal deep audit
+
+`LF-SSOT-002_SUPABASE_AUTH_SINGLE_SESSION_OWNER_REPAIR` został zaakceptowany
+w `f1339e51cb7cc5002572760c094fc5ad504134ca`. Terminalny audyt na
+`65b28dfd920977be0ff254a6844359e82dc9efbc` potwierdził zero aktywnych
+konfliktów źródła prawdy:
+
+- Supabase Auth jest jedynym aktywnym właścicielem sesji/tożsamości;
+- `supabase/migrations` jest jedynym executable migration ledger;
+- route map, statusy task/event, billing/access i Storage/portal mają jednego
+  aktywnego ownera per decyzja;
+- Firebase files, SOT-005 oraz brakujący historyczny `check:p15` endpoint są
+  sklasyfikowane jako legacy/historical-only i nie są aktywną authority;
+- lokalny Obsidian pozostaje `LOCAL_SYNC_PENDING`, bez tworzenia konkurencyjnego
+  routera.
+
+`SSOT_PROGRAM=ACCEPTED_AND_CLOSED`
+`SSOT_OPEN_FINDINGS=0`
+`SSOT_ACTIVE_STAGE=NONE`
+Evidence: `audit/evidence/LF-V1-PR-001_provider-acl-repair-20260811.md`.
 
 ## 2026-06-28 15:35 Europe/Warsaw - LF-UI-SOT-004_GLOBAL_CSS_LAYER_SOURCE_OF_TRUTH_AUDIT completion
 

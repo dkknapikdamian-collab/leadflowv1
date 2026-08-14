@@ -10,15 +10,16 @@
 
 Ten etap uklada CSS w warstwy. Nie usuwa starych plikow i nie przepina ekranow.
 
-## Docelowe bloki w `src/index.css`
+## Aktualna granica importu w `src/index.css`
 
 1. `Tailwind/base`
 2. `Design system`
 3. `Core contracts`
 4. `Page adapters`
-5. `Legacy imports`
-6. `Temporary overrides`
-7. `Emergency hotfixes`
+
+The retired legacy, temporary, and emergency aggregators are not runtime
+imports. Import order is verified from the actual import statements; comments
+or historical marker tokens are not required evidence.
 
 ## Agregatory
 
@@ -26,44 +27,28 @@ Ten etap uklada CSS w warstwy. Nie usuwa starych plikow i nie przepina ekranow.
 |---|---|---|
 | Core contracts | `src/styles/core/core-contracts.css` | shell, theme, tokeny, kontrakty metryk i akcji |
 | Page adapters | `src/styles/page-adapters/page-adapters.css` | stare page-level `visual-stage*` i etapowe adaptery stron |
-| Legacy imports | `src/styles/legacy/legacy-imports.css` | historyczne style, ktore nie sa juz standardem |
-| Temporary overrides | `src/styles/temporary/temporary-overrides.css` | czasowe naprawy i override'y do usuniecia po migracjach |
-| Emergency hotfixes | `src/styles/emergency/emergency-hotfixes.css` | awaryjne, wasko zakresowe hotfixy runtime |
+| Legacy/temporary/emergency | retired from runtime | historical runtime owners are not active imports |
 
 ## Decyzje
 
-### 1. Nie usuwamy starych CSS-ow
+### 1. Runtime does not reactivate historical CSS owners
 
-Pliki `visual-stage*`, `stage*`, `eliteflow*` i `hotfix-*` zostaja w repo. Zmieniamy tylko miejsce importu.
+Historical files may remain in preserved backups, but they are not runtime
+owners and are not imported by the active entrypoint.
 
 ### 2. `src/index.css` nie importuje juz bezposrednio stage/hotfix/eliteflow
 
 `src/index.css` importuje agregatory. Konkretne stare pliki sa sklasyfikowane w agregatorach.
 
-### 3. Temporary i emergency musza miec metadata
-
-Kazdy blok temporary albo emergency ma opis:
-
-```css
-/* owner:
-   reason:
-   scope:
-   remove_after_stage:
-*/
-```
-
-Bez tego check ma pasc.
-
-### 4. Brak migracji ekranow w VS-3
+### 3. Brak migracji ekranow w VS-3
 
 Nie ruszamy JSX, klas Tailwind w ekranach, routingu, danych ani logiki biznesowej.
 
 ## Czego nie robic po VS-3
 
-- Nie dodawac nowych `@import './styles/hotfix-...'` bezposrednio do `src/index.css`.
-- Nie wrzucac nowego emergency hotfixa bez `owner/reason/scope/remove_after_stage`.
-- Nie traktowac `temporary-overrides.css` jako nowego standardu.
-- Nie usuwac starego CSS bez osobnego etapu i testu wizualnego.
+- Nie dodawać nowych stage/hotfix/temporary imports do `src/index.css`.
+- Nie traktować historycznego CSS jako standardu runtime.
+- Nie dodawać komentarzowych markerów jako substytutu rzeczywistego import graph.
 
 ## Weryfikacja
 
@@ -76,8 +61,7 @@ npm run build
 
 VS-3 jest zakonczony, gdy:
 
-1. `src/index.css` ma 7 blokow importow w dobrej kolejnosci,
-2. stare `visual-stage*`, `stage*`, `eliteflow*`, `hotfix-*` sa w agregatorach,
-3. temporary/hotfix sa opisane metadanymi,
-4. `npm run check:closeflow-css-import-order` przechodzi,
-5. `npm run build` przechodzi.
+1. `src/index.css` ma 4 aktywne importy w dobrej kolejności,
+2. historyczne stage/hotfix/temporary CSS nie jest aktywnym importem,
+3. `npm run check:closeflow-css-import-order` przechodzi,
+4. `npm run build` przechodzi.

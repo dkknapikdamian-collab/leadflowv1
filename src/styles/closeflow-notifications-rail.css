@@ -1,0 +1,247 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-notifications-rail.css","concerns":[],"scope":"component","consumerRoots":["src/pages/NotificationsCenter.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+.notifications-vnext-page .notifications-filter-pill[data-notification-filter-kind="all"],
+.notifications-vnext-page .notifications-filter-pill:nth-child(1) {
+  border-color: var(--cf-notif-slate-border);
+  background: var(--cf-notif-slate-bg);
+  color: var(--cf-notif-slate-text);
+}
+
+.notifications-vnext-page .notifications-filter-pill[data-notification-filter-kind="action"],
+.notifications-vnext-page .notifications-filter-pill:nth-child(2) {
+  border-color: var(--cf-notif-blue-border);
+  background: var(--cf-notif-blue-bg);
+  color: var(--cf-notif-blue-text);
+}
+
+.notifications-vnext-page .notifications-filter-pill[data-notification-filter-kind="overdue"],
+.notifications-vnext-page .notifications-filter-pill:nth-child(3) {
+  border-color: var(--cf-notif-red-border);
+  background: var(--cf-notif-red-bg);
+  color: var(--cf-notif-red-text);
+}
+
+.notifications-vnext-page .notifications-filter-pill[data-notification-filter-kind="today"],
+.notifications-vnext-page .notifications-filter-pill:nth-child(4) {
+  border-color: var(--cf-notif-blue-border);
+  background: var(--cf-notif-blue-bg);
+  color: var(--cf-notif-blue-text);
+}
+
+.notifications-vnext-page .notifications-filter-pill[data-notification-filter-kind="upcoming"],
+.notifications-vnext-page .notifications-filter-pill:nth-child(5) {
+  border-color: var(--cf-notif-violet-border);
+  background: var(--cf-notif-violet-bg);
+  color: var(--cf-notif-violet-text);
+}
+
+.notifications-vnext-page .notifications-filter-pill[data-notification-filter-kind="snoozed"],
+.notifications-vnext-page .notifications-filter-pill:nth-child(6) {
+  border-color: var(--cf-notif-amber-border);
+  background: var(--cf-notif-amber-bg);
+  color: var(--cf-notif-amber-text);
+}
+
+.notifications-vnext-page .notifications-filter-pill[data-notification-filter-kind="read"],
+.notifications-vnext-page .notifications-filter-pill:nth-child(7) {
+  border-color: var(--cf-notif-emerald-border);
+  background: var(--cf-notif-emerald-bg);
+  color: var(--cf-notif-emerald-text);
+}
+
+.notifications-vnext-page .notifications-filter-pill[data-notification-filter-kind="system"],
+.notifications-vnext-page .notifications-filter-pill:nth-child(8) {
+  border-color: var(--cf-notif-violet-border);
+  background: var(--cf-notif-violet-bg);
+  color: var(--cf-notif-violet-text);
+}
+
+.notifications-vnext-page .notifications-filter-pill strong {
+  background: rgba(255,255,255,0.82);
+  border: 1px solid currentColor;
+  color: currentColor;
+}
+
+.notifications-vnext-page .notifications-filter-pill-active {
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
+}
+.notifications-vnext-page .notifications-right-rail {
+  gap: 18px;
+}
+
+.notifications-vnext-page .notifications-right-rail .notifications-right-card,
+.notifications-vnext-page .notifications-right-rail .right-card.notifications-right-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  border-width: 1px;
+  background: #ffffff;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+  padding: 18px;
+}
+
+.notifications-vnext-page .notifications-right-rail .notifications-right-card::before,
+.notifications-vnext-page .notifications-right-rail .right-card.notifications-right-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 5px;
+  border-radius: 999px;
+  background: var(--cf-notif-blue-text);
+}
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="channels"],
+.notifications-vnext-page .notifications-right-rail .right-card.notifications-right-card:nth-of-type(1) {
+  border-color: var(--cf-notif-amber-border);
+  background:
+    radial-gradient(circle at top right, rgba(180, 83, 9, 0.11), transparent 34%),
+    #ffffff;
+}
+
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="channels"]::before,
+.notifications-vnext-page .notifications-right-rail .right-card.notifications-right-card:nth-of-type(1)::before {
+  background: var(--cf-notif-amber-text);
+}
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="actions"],
+.notifications-vnext-page .notifications-right-rail .right-card.notifications-right-card:nth-of-type(2) {
+  border-color: var(--cf-notif-blue-border);
+  background:
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 34%),
+    #ffffff;
+}
+
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="actions"]::before,
+.notifications-vnext-page .notifications-right-rail .right-card.notifications-right-card:nth-of-type(2)::before {
+  background: var(--cf-notif-blue-text);
+}
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="upcoming"],
+.notifications-vnext-page .notifications-right-rail .right-card.notifications-right-card:nth-of-type(3) {
+  border-color: var(--cf-notif-violet-border);
+  background:
+    radial-gradient(circle at top right, rgba(109, 40, 217, 0.11), transparent 34%),
+    #ffffff;
+}
+
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="upcoming"]::before,
+.notifications-vnext-page .notifications-right-rail .right-card.notifications-right-card:nth-of-type(3)::before {
+  background: var(--cf-notif-violet-text);
+}
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="help"],
+.notifications-vnext-page .notifications-right-rail .right-card.notifications-right-card:nth-of-type(4) {
+  border-color: var(--cf-notif-sky-border);
+  background:
+    radial-gradient(circle at top right, rgba(3, 105, 161, 0.10), transparent 34%),
+    #ffffff;
+}
+
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="help"]::before,
+.notifications-vnext-page .notifications-right-rail .right-card.notifications-right-card:nth-of-type(4)::before {
+  background: var(--cf-notif-sky-text);
+}
+.notifications-vnext-page .notifications-right-card .notifications-right-card-head {
+  margin-left: 2px;
+  gap: 10px;
+  color: var(--cf-notif-amber-text);
+}
+
+.notifications-vnext-page .notifications-right-card:nth-of-type(2) .notifications-right-card-head,
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="actions"] .notifications-right-card-head {
+  color: var(--cf-notif-blue-text);
+}
+
+.notifications-vnext-page .notifications-right-card:nth-of-type(3) .notifications-right-card-head,
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="upcoming"] .notifications-right-card-head {
+  color: var(--cf-notif-violet-text);
+}
+
+.notifications-vnext-page .notifications-right-card:nth-of-type(4) .notifications-right-card-head,
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="help"] .notifications-right-card-head {
+  color: var(--cf-notif-sky-text);
+}
+
+.notifications-vnext-page .notifications-right-card-head > svg {
+  width: 26px;
+  height: 26px;
+  padding: 6px;
+  border-radius: 10px;
+  background: currentColor;
+  color: #ffffff;
+  stroke: #ffffff;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.10);
+}
+
+.notifications-vnext-page .notifications-right-card-head h2 {
+  color: #111827;
+  font-weight: 950;
+}
+.notifications-vnext-page .notifications-channel-card {
+  border-radius: 16px;
+  border: 1px solid rgba(180, 83, 9, 0.18);
+  background: var(--cf-notif-amber-bg);
+}
+
+.notifications-vnext-page .notifications-channel-card + .notifications-channel-card {
+  margin-top: 10px;
+}
+
+.notifications-vnext-page .notifications-channel-card button {
+  border-color: var(--cf-notif-blue-border);
+  background: var(--cf-notif-blue-bg);
+  color: var(--cf-notif-blue-text);
+  font-weight: 900;
+}
+.notifications-vnext-page .notifications-rail-button {
+  min-height: 46px;
+  border-radius: 16px;
+  font-weight: 900;
+}
+
+.notifications-vnext-page .notifications-rail-button[data-notification-rail-button="action"],
+.notifications-vnext-page .notifications-right-card:nth-of-type(2) .notifications-rail-button:nth-of-type(1) {
+  border-color: var(--cf-notif-blue-border);
+  background: var(--cf-notif-blue-bg);
+  color: var(--cf-notif-blue-text);
+}
+
+.notifications-vnext-page .notifications-rail-button[data-notification-rail-button="overdue"],
+.notifications-vnext-page .notifications-right-card:nth-of-type(2) .notifications-rail-button:nth-of-type(2) {
+  border-color: var(--cf-notif-red-border);
+  background: var(--cf-notif-red-bg);
+  color: var(--cf-notif-red-text);
+}
+
+.notifications-vnext-page .notifications-rail-button[data-notification-rail-button="read"],
+.notifications-vnext-page .notifications-right-card:nth-of-type(2) .notifications-rail-button:nth-of-type(3) {
+  border-color: var(--cf-notif-emerald-border);
+  background: var(--cf-notif-emerald-bg);
+  color: var(--cf-notif-emerald-text);
+}
+
+.notifications-vnext-page .notifications-rail-button strong {
+  min-width: 30px;
+  height: 26px;
+  border: 1px solid currentColor;
+  background: rgba(255,255,255,0.82);
+  color: currentColor;
+  font-weight: 950;
+}
+.notifications-vnext-page .notifications-right-card:nth-of-type(3) .notifications-rail-empty,
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="upcoming"] .notifications-rail-empty {
+  border: 1px dashed rgba(109, 40, 217, 0.28);
+  background: var(--cf-notif-violet-bg);
+  color: var(--cf-notif-violet-text);
+}
+
+.notifications-vnext-page .notifications-right-card:nth-of-type(4) .notifications-rail-empty,
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="help"] .notifications-rail-empty {
+  border: 1px dashed rgba(3, 105, 161, 0.24);
+  background: var(--cf-notif-sky-bg);
+  color: #075985;
+}
+
+.notifications-vnext-page .notifications-rail-empty {
+  border-radius: 16px;
+  padding: 12px;
+  font-weight: 750;
+}

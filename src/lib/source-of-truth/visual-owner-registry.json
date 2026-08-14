@@ -1,0 +1,144 @@
+{
+  "schema": "LF-UI-SOT-007.semantic-visual-owner-registry.v2",
+  "stage": "LF-UI-SOT-007",
+  "runtimeEntry": "src/main.tsx",
+  "visualEntry": "src/styles/closeflow-visual-source-truth.css",
+  "ownerModel": {
+    "canonicalRole": "canonical-owner",
+    "scopedRole": "scoped-adapter",
+    "entryRole": "entrypoint",
+    "oneOwnerPerConcern": true,
+    "metadataEvidenceRequired": ["role", "boundary", "whyNotGlobal", "whyNotDuplicate"],
+    "forbidMarkerOwnership": true,
+    "forbidHistoricalRuntimeOwners": true
+  },
+  "concerns": {
+    "TOKENS": {
+      "owner": "src/styles/owners/closeflow-foundation.css",
+      "scope": "global",
+      "consumerRoots": ["src/styles/closeflow-visual-source-truth.css"]
+    },
+    "SEMANTIC_COLORS": {
+      "owner": "src/styles/owners/closeflow-foundation.css",
+      "scope": "global",
+      "consumerRoots": ["src/styles/closeflow-visual-source-truth.css", "src/components/ui-system/semantic-visual-registry.ts"]
+    },
+    "TYPOGRAPHY": {
+      "owner": "src/styles/owners/closeflow-foundation.css",
+      "scope": "global",
+      "consumerRoots": ["src/styles/closeflow-visual-source-truth.css"]
+    },
+    "SPACING": {
+      "owner": "src/styles/owners/closeflow-foundation.css",
+      "scope": "global",
+      "consumerRoots": ["src/styles/closeflow-visual-source-truth.css"]
+    },
+    "SURFACES": {
+      "owner": "src/styles/owners/closeflow-surfaces-and-cards.css",
+      "scope": "global",
+      "consumerRoots": ["src/styles/closeflow-visual-source-truth.css"]
+    },
+    "RADII": {
+      "owner": "src/styles/owners/closeflow-surfaces-and-cards.css",
+      "scope": "global",
+      "consumerRoots": ["src/styles/closeflow-visual-source-truth.css"]
+    },
+    "SHADOWS": {
+      "owner": "src/styles/owners/closeflow-surfaces-and-cards.css",
+      "scope": "global",
+      "consumerRoots": ["src/styles/closeflow-visual-source-truth.css"]
+    },
+    "ICONS": {
+      "owner": "src/styles/design-system/closeflow-icons.css",
+      "scope": "global",
+      "consumerRoots": ["src/styles/design-system/index.css", "src/components/ui-system/icon-registry.ts"]
+    },
+    "ICON_GEOMETRY": {
+      "owner": "src/ui-system/icons/SemanticIcon.tsx",
+      "scope": "global",
+      "consumerRoots": ["src/components/ui-system/ActionIcon.tsx", "src/components/ui-system/EntityIcon.tsx"]
+    },
+    "BUTTONS_ACTIONS": {
+      "owner": "src/styles/owners/closeflow-actions.css",
+      "scope": "global",
+      "consumerRoots": ["src/styles/closeflow-visual-source-truth.css", "src/components/ui/button.tsx"]
+    },
+    "CARDS_TILES": {
+      "owner": "src/styles/owners/closeflow-metrics.css",
+      "scope": "global",
+      "consumerRoots": ["src/styles/closeflow-visual-source-truth.css", "src/components/ui-system/MetricTile.tsx"]
+    },
+    "BADGES": {
+      "owner": "src/styles/owners/closeflow-records-and-rails.css",
+      "scope": "global",
+      "consumerRoots": ["src/styles/closeflow-visual-source-truth.css", "src/components/ui-system/StatusPill.tsx"]
+    },
+    "FORMS": {
+      "owner": "src/styles/owners/closeflow-dialogs.css",
+      "scope": "global",
+      "consumerRoots": ["src/styles/closeflow-visual-source-truth.css", "src/components/ui-system/FormFooter.tsx"]
+    },
+    "MODALS": {
+      "owner": "src/styles/owners/closeflow-dialogs.css",
+      "scope": "global",
+      "consumerRoots": ["src/styles/closeflow-visual-source-truth.css", "src/components/TaskCreateDialog.tsx"]
+    },
+    "LIST_ROWS": {
+      "owner": "src/styles/owners/closeflow-records-and-rails.css",
+      "scope": "global",
+      "consumerRoots": ["src/styles/closeflow-visual-source-truth.css", "src/components/ui-system/ListRow.tsx"]
+    },
+    "PAGE_SHELL": {
+      "owner": "src/styles/owners/closeflow-page-shell.css",
+      "scope": "global",
+      "consumerRoots": ["src/styles/closeflow-visual-source-truth.css", "src/components/ui-system/PageShell.tsx"]
+    },
+    "RIGHT_RAIL": {
+      "owner": "src/styles/owners/closeflow-records-and-rails.css",
+      "scope": "global",
+      "consumerRoots": ["src/styles/closeflow-visual-source-truth.css", "src/components/Layout.tsx"]
+    },
+    "SEARCH": {
+      "owner": "src/styles/owners/closeflow-search-and-density.css",
+      "scope": "route-scoped",
+      "consumerRoots": ["src/pages/Leads.tsx", "src/pages/Clients.tsx"]
+    },
+    "RESPONSIVE_DENSITY": {
+      "owner": "src/styles/owners/closeflow-responsive-adapters.css",
+      "scope": "route-scoped",
+      "consumerRoots": ["src/pages/Today.tsx", "src/pages/Leads.tsx", "src/pages/Clients.tsx", "src/pages/Cases.tsx", "src/pages/Calendar.tsx", "src/pages/LeadDetail.tsx", "src/pages/ClientDetail.tsx", "src/pages/CaseDetail.tsx"]
+    },
+    "CALENDAR": {
+      "owner": "src/styles/owners/closeflow-calendar.css",
+      "scope": "route-scoped",
+      "consumerRoots": ["src/pages/Calendar.tsx"]
+    }
+  },
+  "entryOnly": [
+    "src/index.css",
+    "src/styles/closeflow-visual-source-truth.css",
+    "src/styles/design-system/index.css",
+    "src/styles/core/core-contracts.css",
+    "src/styles/page-adapters/page-adapters.css"
+  ],
+  "scopedOwnerPolicy": {
+    "requiredMetadata": true,
+    "requiredEvidenceForScopedAdapters": true,
+    "allowedRoots": ["src/styles", "src/pages"],
+    "allowedScopes": ["entry", "global", "route", "component", "route-scoped", "component-scoped"],
+    "historicalRuntimePatterns": [
+      "(?:^|/)stage[^/]*\\.css$",
+      "(?:^|/)hotfix[^/]*\\.css$",
+      "(?:^|/)eliteflow[^/]*\\.css$",
+      "(?:^|/)emergency[^/]*\\.css$",
+      "(?:^|/)temporary/",
+      "(?:^|/)legacy/",
+      "final-lock",
+      "packet\\d+"
+    ]
+  },
+  "forbiddenRuntimeTokens": [
+    "LF-UI-SOT-007_CANONICAL_CSS_OWNER_BEGIN",
+    "LF-UI-SOT-007_CANONICAL_CSS_OWNER_END"
+  ]
+}

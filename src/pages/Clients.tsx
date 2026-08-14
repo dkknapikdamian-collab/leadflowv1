@@ -10,6 +10,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import {
   CaseEntityIcon,
+  EntityIcon,
   LeadEntityIcon,
   PaymentEntityIcon,
 } from '../components/ui-system';
@@ -20,8 +21,8 @@ import {
   Plus,
   RotateCcw,
   Search,
-  Trash2,
 } from 'lucide-react';
+import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
@@ -71,14 +72,14 @@ import {
 } from '../lib/owner-control/last-contact-intake';
 import { isActiveClientCase } from '../lib/client-cases';
 import { getCaseFinanceSummary, getClientCasesFinanceSummary } from '../lib/finance/case-finance-source';
-import '../styles/visual-stage23-client-case-forms-vnext.css';
+// LF-UI-SOT-007 shared-source contract: import '../styles/visual-stage23-client-case-forms-vnext.css'; is provided once by App.tsx.
 import '../styles/clients-next-action-layout.css';
 
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
-import '../styles/closeflow-page-header-v2.css';
+import '../styles/closeflow-page-header-runtime.css';
 import '../styles/closeflow-record-list-source-truth.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css'; is provided once by App.tsx.
+// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-canvas-source-truth-stage211e.css'; is provided once by App.tsx.
 const CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS = 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS';
 const STAGE30_CLIENTS_TRASH_COPY_REMOVED = 'STAGE30_CLIENTS_TRASH_COPY_REMOVED';
 const CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER = 'Szukaj po nazwie, telefonie, e-mailu, firmie albo sprawie...';
@@ -852,9 +853,11 @@ export default function Clients() {
           actions={
             <>
               <div className="head-actions">
-                          <Button type="button" variant="outline" className="btn soft-blue" data-cf-header-action="ai">? Zapytaj AI</Button>
+                          <Button type="button" variant="outline" className="btn soft-blue" data-cf-header-action="ai">
+                            <EntityIcon entity="ai" className="h-4 w-4" /> Zapytaj AI
+                          </Button>
                           <Button type="button" variant="outline" className="btn" onClick={() => applyClientRelationFilterStage232C(showArchived ? 'all' : 'archived')}>
-                            {showArchived ? <RotateCcw className="w-4 h-4" /> : <Trash2 className="w-4 h-4" />}
+                            {showArchived ? <RotateCcw className="w-4 h-4" /> : <DeleteActionIcon className="w-4 h-4" />}
                             {showArchived ? 'Pokaż aktywnych' : 'Kosz'}
                             <span className="pill">{showArchived ? activeCount : archivedCount}</span>
                           </Button>
@@ -1030,7 +1033,7 @@ export default function Clients() {
 
         <div className="layout-list w-full max-w-none" data-clients-wide-layout="true">
           <div className="stack">
-            <div className="search cf-main-search" data-cf-main-search="true" data-clients-search="true" data-cf-main-search-source="stage173">
+            <div className="search cf-main-search" data-cf-main-search="true" data-clients-search="true" data-cf-main-search-source="semantic173">
               <span aria-hidden="true"><Search className="w-4 h-4" /></span>
               <Input placeholder={showArchived ? CLOSEFLOW_STAGE134_TRASH_SEARCH_PLACEHOLDER : CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER} value={search} onChange={(event) => setSearch(event.target.value)} aria-label="Szukaj w klientach" />
             </div>
@@ -1118,7 +1121,7 @@ export default function Clients() {
                             onClick={(event) => isArchived ? handleRestoreClient(event, client) : handleArchiveClient(event, client, counters)}
                             className={actionIconClass('danger', 'btn ghost cf-icon-action-button')}
                           >
-                            {archivePendingId === client.id ? <Loader2 className="h-4 w-4 animate-spin" /> : isArchived ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
+                            {archivePendingId === client.id ? <Loader2 className="h-4 w-4 animate-spin" /> : isArchived ? <RotateCcw className="h-4 w-4" /> : <DeleteActionIcon className="h-4 w-4" />}
                           </button>
                         </span>
                       </div>
@@ -1167,3 +1170,5 @@ export default function Clients() {
     </Layout>
   );
 }
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

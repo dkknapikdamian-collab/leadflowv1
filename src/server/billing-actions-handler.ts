@@ -1,7 +1,9 @@
 import { selectFirstAvailable, updateWhere } from './_supabase.js';
 import { resolveRequestWorkspaceId } from './_request-scope.js';
-import { getStripeSubscription, updateStripeSubscription } from './_stripe.js';
-import { writeAuthErrorResponse } from './_supabase-auth.js';
+import { assertWorkspaceOwnerOrAdmin } from './_request-scope.js';
+import { resolveRequestedWorkspaceId } from './_request-scope.js';
+import { assertStripeSubscriptionWorkspaceBinding, getStripeSubscription, updateStripeSubscription } from './_stripe.js';
+import { RequestAuthError, writeAuthErrorResponse } from './_supabase-auth.js';
 
 const BILLING_ACTIONS_RESOLVE_SCOPED_WORKSPACE_STAGE86K = 'billing actions resolve workspace through verified request scope';
 
@@ -27,7 +29,7 @@ function asNullableText(value: unknown) {
 async function fetchWorkspace(workspaceId: string) {
   try {
     const result = await selectFirstAvailable([
-      `workspaces?id=eq.${encodeURIComponent(workspaceId)}&select=id,billing_provider,provider_subscription_id,cancel_at_period_end&limit=1`,
+      `workspaces?id=eq.${encodeURIComponent(workspaceId)}&select=id,billing_provider,provider_customer_id,provider_subscription_id,cancel_at_period_end&limit=1`,
     ]);
     const rows = Array.isArray(result.data) ? result.data : [];
     return rows[0] && typeof rows[0] === 'object' ? rows[0] as Record<string, unknown> : null;
@@ -49,12 +51,18 @@ export default async function handler(req: any, res: any) {
       res.status(400).json({ error: 'WORKSPACE_ID_REQUIRED' });
       return;
     }
+    const requestedWorkspaceId = resolveRequestedWorkspaceId(body);
+    if (requestedWorkspaceId && requestedWorkspaceId !== workspaceId) {
+      throw new RequestAuthError(403, 'WORKSPACE_SCOPE_MISMATCH');
+    }
+    await assertWorkspaceOwnerOrAdmin(workspaceId, req);
 
     const action = asText(body.action).toLowerCase();
     const nowIso = new Date().toISOString();
     const workspace = await fetchWorkspace(workspaceId);
     const provider = asNullableText(workspace?.billing_provider);
     const providerSubscriptionId = asNullableText(workspace?.provider_subscription_id);
+    const providerCustomerId = asNullableText(workspace?.provider_customer_id);
 
     if (action === 'cancel') {
       if (provider === 'stripe_blik') {
@@ -62,7 +70,10 @@ export default async function handler(req: any, res: any) {
           res.status(409).json({ error: 'STRIPE_SUBSCRIPTION_REQUIRED' });
           return;
         }
+        const currentSubscription = await getStripeSubscription(providerSubscriptionId);
+        assertStripeSubscriptionWorkspaceBinding(currentSubscription, workspaceId, providerCustomerId, providerSubscriptionId);
         const subscription = await updateStripeSubscription(providerSubscriptionId, { cancel_at_period_end: true });
+        assertStripeSubscriptionWorkspaceBinding(subscription, workspaceId, providerCustomerId, providerSubscriptionId);
         await updateWhere(`workspaces?id=eq.${encodeURIComponent(workspaceId)}`, {
           cancel_at_period_end: true,
           subscription_status: 'paid_active',
@@ -97,8 +108,12 @@ export default async function handler(req: any, res: any) {
           res.status(409).json({ error: 'STRIPE_SUBSCRIPTION_REQUIRED' });
           return;
         }
+        const currentSubscription = await getStripeSubscription(providerSubscriptionId);
+        assertStripeSubscriptionWorkspaceBinding(currentSubscription, workspaceId, providerCustomerId, providerSubscriptionId);
         const subscription = await updateStripeSubscription(providerSubscriptionId, { cancel_at_period_end: false });
+        assertStripeSubscriptionWorkspaceBinding(subscription, workspaceId, providerCustomerId, providerSubscriptionId);
         const refreshed = await getStripeSubscription(providerSubscriptionId);
+        assertStripeSubscriptionWorkspaceBinding(refreshed, workspaceId, providerCustomerId, providerSubscriptionId);
         await updateWhere(`workspaces?id=eq.${encodeURIComponent(workspaceId)}`, {
           cancel_at_period_end: false,
           subscription_status: String(refreshed.status || '').toLowerCase() === 'active' ? 'paid_active' : 'inactive',

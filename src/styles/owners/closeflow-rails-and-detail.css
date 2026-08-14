@@ -1,0 +1,70 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:rails-detail","concerns":[],"scope":"route-scoped","consumerRoots":["src/pages/LeadDetail.tsx","src/pages/ClientDetail.tsx","src/pages/CaseDetail.tsx","src/pages/Activity.tsx","src/pages/AiDrafts.tsx","src/pages/Billing.tsx"],"role":"scoped-adapter","boundary":"route-component","whyNotGlobal":"This stylesheet contains only route-local rail and detail layout composition.","whyNotDuplicate":"Shared rail surfaces, badges, actions and typography remain owned by registered modules.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+
+.activity-vnext-shell,
+.ai-drafts-vnext-shell,
+.billing-vnext-shell,
+.lead-detail-vnext-page,
+.client-detail-vnext-page,
+.case-detail-vnext-page {
+  min-width: 0;
+}
+
+.activity-main-column,
+.activity-right-rail,
+.ai-drafts-main-column,
+.ai-drafts-right-rail,
+.billing-main-column,
+.billing-right-rail,
+.lead-detail-main-column,
+.lead-detail-right-rail,
+.client-detail-main-column,
+.client-detail-right-rail,
+.case-detail-main-column,
+.case-detail-right-rail {
+  min-width: 0;
+  align-content: start;
+}
+
+.activity-right-rail,
+.ai-drafts-right-rail,
+.billing-right-rail,
+.lead-detail-right-rail,
+.client-detail-right-rail,
+.case-detail-right-rail {
+  display: grid;
+  gap: var(--cf-vst-layout-gap, 18px);
+}
+
+.activity-rows,
+.activity-rail-list,
+.case-detail-top-grid,
+.case-detail-tabs-shell,
+.case-detail-section-head,
+.case-detail-right-actions {
+  min-width: 0;
+}
+
+.activity-row,
+.case-detail-checklist-row,
+.case-detail-row-actions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+}
+
+.activity-row-main,
+.activity-row-heading,
+.case-detail-work-main,
+.lead-detail-action-accordion {
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .activity-vnext-shell,
+  .ai-drafts-vnext-shell,
+  .billing-vnext-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

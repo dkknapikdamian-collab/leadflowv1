@@ -15,6 +15,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const childProcess = require('child_process');
 
 const repoRoot = process.cwd();
 const failures = [];
@@ -36,6 +37,8 @@ const SERVER_SECRET_ENV_NAMES = [
 const SKIP_DIRS = new Set([
   '.git',
   '.github',
+  '_local_backups',
+  '.stversions',
   'node_modules',
   'coverage',
   '.turbo',
@@ -67,6 +70,7 @@ const TEXT_EXTENSIONS = new Set([
 ]);
 
 const SELF = 'scripts/verify-server-only-secrets.cjs';
+const NON_RUNTIME_TRACKED_PREFIXES = ['audit/evidence/'];
 
 function toPosix(value) {
   return value.split(path.sep).join('/');
@@ -93,6 +97,30 @@ function walk(dirAbs, callback) {
   }
 }
 
+function trackedTextFiles() {
+  let output;
+  try {
+    output = childProcess.execFileSync('git', ['ls-files', '-z'], {
+      cwd: repoRoot,
+      encoding: 'buffer',
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+  } catch (error) {
+    failures.push(`git ls-files failed while establishing the tracked secret-scan boundary: ${error instanceof Error ? error.message : String(error)}`);
+    return [];
+  }
+
+  return output.toString('utf8')
+    .split('\0')
+    .filter(Boolean)
+    .filter((relative) => {
+      const normalized = relative.split(path.sep).join('/');
+      return !NON_RUNTIME_TRACKED_PREFIXES.some((prefix) => normalized.startsWith(prefix));
+    })
+    .map((relative) => path.join(repoRoot, relative))
+    .filter((absolute) => isTextFile(absolute));
+}
+
 function readText(abs) {
   try {
     return fs.readFileSync(abs, 'utf8');
@@ -106,10 +134,9 @@ function lineNumber(content, index) {
 }
 
 function scanForbiddenNames() {
-  walk(repoRoot, (abs) => {
-    if (!isTextFile(abs)) return;
+  for (const abs of trackedTextFiles()) {
     const rel = toPosix(path.relative(repoRoot, abs));
-    if (rel === SELF) return;
+    if (rel === SELF) continue;
 
     const content = readText(abs);
     if (!content) return;
@@ -121,7 +148,7 @@ function scanForbiddenNames() {
         index = content.indexOf(forbidden, index + forbidden.length);
       }
     }
-  });
+  }
 }
 
 function escapeRegExp(value) {

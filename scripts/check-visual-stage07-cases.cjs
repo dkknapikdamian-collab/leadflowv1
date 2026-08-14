@@ -23,21 +23,12 @@ expectIncludes('src/components/Layout.tsx', 'main-cases', 'main-cases scoped cla
 expectIncludes('src/components/Layout.tsx', "data-visual-stage-cases={isCasesRoute ? '07-cases' : undefined}", 'cases visual data marker');
 
 rejectIncludes('src/index.css', 'visual-stage07-cases.css', 'inactive Stage07 Cases CSS import');
-expectIncludes('src/pages/Cases.tsx', "../styles/closeflow-page-header-v2.css", 'current Cases page header CSS import');
+expectIncludes('src/pages/Cases.tsx', "../styles/closeflow-page-header-runtime.css", 'current Cases page header adapter');
 expectIncludes('src/pages/Cases.tsx', "../styles/closeflow-record-list-source-truth.css", 'current Cases record-list CSS import');
-expectIncludes('src/pages/Cases.tsx', "../styles/closeflow-unified-page-canvas-stage211c.css", 'current Stage211C canvas import');
-expectIncludes('src/pages/Cases.tsx', "../styles/closeflow-canvas-source-truth-stage211e.css", 'current Stage211E canvas source import');
-expectIncludes('src/pages/Cases.tsx', 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES', 'current Cases rebuild marker');
-expectIncludes('src/pages/Cases.tsx', 'STAGE228G_OPERATOR_RAIL_SOURCE_TRUTH', 'current Cases operator rail marker');
-expectIncludes('src/pages/Cases.tsx', 'STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION', 'current open/closed Cases navigation marker');
-
-expectIncludes('src/styles/visual-stage07-cases.css', 'VISUAL_STAGE_07_CASES', 'Stage07 reference CSS marker');
-expectIncludes('src/styles/visual-stage07-cases.css', '.main-cases', 'historical scoped Cases selector');
-expectIncludes('src/styles/visual-stage07-cases.css', 'grid-4', 'historical grid-4 pattern');
-expectIncludes('src/styles/visual-stage07-cases.css', 'table-card', 'historical table-card pattern');
-expectIncludes('src/styles/visual-stage07-cases.css', 'right-card', 'historical right-card pattern');
-expectIncludes('src/styles/visual-stage07-cases.css', 'statusline', 'historical statusline pattern');
-expectIncludes('src/styles/visual-stage07-cases.css', '@media (max-width: 760px)', 'historical mobile polish');
+expectIncludes('src/App.tsx', "./styles/closeflow-visual-source-truth.css", 'canonical visual owner entrypoint');
+expectIncludes('src/styles/owners/closeflow-page-adapters.css', '.main-cases', 'canonical Cases page adapter');
+expectIncludes('src/styles/closeflow-record-list-source-truth.css', 'table-card', 'scoped Cases record-list adapter');
+expectIncludes('src/styles/owners/closeflow-responsive-adapters.css', '@media (max-width: 760px)', 'canonical mobile adapter');
 
 expectIncludes('src/pages/Cases.tsx', 'fetchCasesFromSupabase', 'case read flow remains present');
 expectIncludes('src/pages/Cases.tsx', 'fetchLeadsFromSupabase', 'lead context remains present');

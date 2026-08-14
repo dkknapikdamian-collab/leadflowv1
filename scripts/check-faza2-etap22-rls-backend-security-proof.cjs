@@ -35,7 +35,7 @@ function section(title) {
   console.log('\n== ' + title + ' ==');
 }
 
-const migrationPath = 'supabase/migrations/2026-05-01_stageA22_supabase_auth_rls_workspace_foundation.sql';
+const migrationPath = 'supabase/migrations/20260501012200_stageA22_supabase_auth_rls_workspace_foundation.sql';
 const docPath = 'docs/release/FAZA2_ETAP22_RLS_BACKEND_SECURITY_PROOF_2026-05-03.md';
 const sqlPath = 'docs/sql/CLOSEFLOW_RLS_WORKSPACE_SECURITY_PROOF_2026-05-03.sql';
 const requestScopePath = 'src/server/_request-scope.ts';

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, CalendarClock, CheckCircle2, Clipboard, Clock, Loader2, Pencil, Search, Trash2 } from 'lucide-react';
+import { AlertTriangle, CalendarClock, CheckCircle2, Clipboard, Clock, Loader2, Pencil, Search } from 'lucide-react';
 import {
   AiEntityIcon,
   EntityIcon,
@@ -40,7 +40,6 @@ import {
   deleteAiLeadDraftAsync,
   getAiLeadDraftsAsync,
   saveAiLeadDraftAsync,
-  markAiLeadDraftConvertedAsync,
   updateAiLeadDraftAsync,
   type AiLeadDraft,
   type AiLeadDraftStatus
@@ -53,27 +52,17 @@ import {
   type AiDraftApprovalType
 } from '../lib/ai-draft-approval';
 import {
-  insertActivityToSupabase,
-  insertEventToSupabase,
-  createLeadFromAiDraftApprovalInSupabase,
-  insertTaskToSupabase,
+  confirmAiDraftInSupabase,
   fetchClientsFromSupabase,
   fetchLeadsFromSupabase,
   fetchCasesFromSupabase
 } from '../lib/supabase-fallback';
-import {
-  buildAiDraftConfirmedParsedDraft,
-  getAiDraftCreatedRecordId
-} from '../lib/ai-draft-confirm-records';
-import '../styles/visual-stage20-lead-form-vnext.css';
-import '../styles/visual-stage9-ai-drafts-vnext.css';
-import '../styles/hotfix-right-rail-dark-wrappers.css';
-import '../styles/closeflow-ai-drafts-rail-force-colors-stage181w.css';
+import '../styles/closeflow-ai-drafts.css';
+import '../styles/closeflow-right-rail-wrappers.css';
+import '../styles/closeflow-ai-drafts-rail.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
-import '../styles/closeflow-page-header-v2.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
-import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
+import '../styles/closeflow-page-header-runtime.css';
+import '../styles/closeflow-canvas-runtime.css';
 type DraftFilter =
   | 'all'
   | 'draft'
@@ -686,14 +675,6 @@ useEffect(() => {
     }));
   };
 
-  const buildConvertedActivityPayload = (draft: AiLeadDraft, form: AiDraftApprovalForm, createdRecord: Record<string, unknown>) => ({
-    source: 'ai_draft_approval',
-    draftId: draft.id,
-    recordType: form.recordType,
-    title: form.title || form.name,
-    createdRecordId: createdRecord?.id || null,
-  });
-
   const handleApproveDraftToRecord = async (draft: AiLeadDraft) => {
     if (!approvalForm || approvalDraftId !== draft.id) {
       openDraftApproval(draft);
@@ -728,116 +709,28 @@ useEffect(() => {
 
     setApprovalSaving(true);
     try {
-      let createdRecord: Record<string, unknown> = {};
-      let linkedRecordId = '';
-      const confirmedAt = new Date().toISOString();
-
-      if (form.recordType === 'lead') {
-        createdRecord = await createLeadFromAiDraftApprovalInSupabase({
+      await confirmAiDraftInSupabase({
+        id: draft.id,
+        confirmation: {
+          recordType: form.recordType,
+          title,
           name,
-          company: form.company || undefined,
-          email: form.email || undefined,
-          phone: form.phone || undefined,
+          company: form.company,
+          email: form.email,
+          phone: form.phone,
           source: form.source || 'ai_draft',
           dealValue: normalizeAiDraftApprovalAmount(form.dealValue),
-          nextActionAt: form.scheduledAt || undefined,
-        });
-
-        linkedRecordId = getAiDraftCreatedRecordId(createdRecord);
-
-        if (form.scheduledAt && linkedRecordId) {
-          await insertTaskToSupabase({
-            title: title && title !== name ? title : 'Follow-up: ' + name,
-            type: form.taskType || 'follow_up',
-            date: form.scheduledAt.slice(0, 10),
-            scheduledAt: form.scheduledAt,
-            dueAt: form.scheduledAt,
-            priority: form.priority || 'medium',
-            status: 'todo',
-            leadId: linkedRecordId,
-            clientId: form.clientId || null,
-          }).catch(() => null);
-        }
-      } else if (form.recordType === 'task') {
-        createdRecord = await insertTaskToSupabase({
-          title,
-          type: form.taskType || 'follow_up',
-          date: form.scheduledAt ? form.scheduledAt.slice(0, 10) : undefined,
-          scheduledAt: form.scheduledAt || undefined,
-          dueAt: form.scheduledAt || undefined,
+          body,
+          scheduledAt: form.scheduledAt,
+          endAt: form.endAt || form.scheduledAt,
           priority: form.priority || 'medium',
-          status: 'todo',
+          taskType: form.taskType || 'follow_up',
+          eventType: form.eventType || 'meeting',
           leadId: form.leadId || null,
           caseId: form.caseId || null,
           clientId: form.clientId || null,
-        });
-        linkedRecordId = getAiDraftCreatedRecordId(createdRecord);
-      } else if (form.recordType === 'event') {
-        const startAt = form.scheduledAt;
-        const endAt = form.endAt || form.scheduledAt;
-        createdRecord = await insertEventToSupabase({
-          title,
-          type: form.eventType || 'meeting',
-          startAt,
-          endAt,
-          status: 'scheduled',
-          leadId: form.leadId || null,
-          caseId: form.caseId || null,
-          clientId: form.clientId || null,
-        });
-        linkedRecordId = getAiDraftCreatedRecordId(createdRecord);
-      } else {
-        createdRecord = await insertActivityToSupabase({
-          leadId: form.leadId || null,
-          caseId: form.caseId || null,
-          actorType: 'operator',
-          eventType: 'ai_note_approved',
-          payload: {
-            note: body,
-            title: title || 'Notatka AI',
-            clientId: form.clientId || null,
-            source: 'ai_draft_approval',
-            draftId: draft.id,
-          },
-        });
-        linkedRecordId = getAiDraftCreatedRecordId(createdRecord) || form.caseId || form.leadId || form.clientId;
-      }
-
-      if (!linkedRecordId) {
-        throw new Error('LINKED_RECORD_ID_MISSING');
-      }
-
-      await insertActivityToSupabase({
-        leadId: form.recordType === 'lead' ? linkedRecordId : form.leadId || null,
-        caseId: form.caseId || null,
-        actorType: 'operator',
-        eventType: 'ai_draft_converted',
-        payload: {
-          ...buildConvertedActivityPayload(draft, form, createdRecord),
-          confirmedAt,
-          linkedRecordId,
-          linkedRecordType: form.recordType,
-          rawTextRemoved: true,
         },
-      }).catch(() => null);
-
-      const parsedDraft = buildAiDraftConfirmedParsedDraft({
-        parsedDraft: getDraftParsedData(draft),
-        linkedRecordId,
-        linkedRecordType: form.recordType,
-        confirmedAt,
       });
-
-      await updateAiLeadDraftAsync(draft.id, {
-        status: 'converted',
-        convertedAt: confirmedAt,
-        confirmedAt,
-        rawText: '',
-        parsedDraft,
-        parsedData: parsedDraft,
-        linkedRecordId,
-        linkedRecordType: form.recordType,
-      } as any);
 
       closeDraftApproval();
       setActiveDraftId(null);
@@ -1381,7 +1274,7 @@ useEffect(() => {
                 ))}
               </div>
 
-              <label className="ai-drafts-search-box cf-main-search cf-main-search-stage175" data-cf-main-search-source="stage173" data-cf-main-search-stage175="true">
+              <label className="ai-drafts-search-box cf-main-search cf-main-search-semantic175" data-cf-main-search-source="semantic173" data-cf-main-search-semantic175="true">
                 <Search className="h-4 w-4" />
                 <input
                   value={searchQuery}
@@ -1544,3 +1437,5 @@ Przejrzyj i zatwierdź
 markAiLeadDraftConverted
 Szkice AI
 */
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

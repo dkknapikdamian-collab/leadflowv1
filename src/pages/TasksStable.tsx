@@ -1,6 +1,6 @@
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { AlertTriangle, CheckCircle2, CheckSquare, Clock, Loader2, RefreshCcw, Search, Trash2 } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, CheckSquare, Clock, Loader2, RefreshCcw, Search } from 'lucide-react';
 /*
 P0_TASKS_STABLE_REBUILD
 */
@@ -8,6 +8,7 @@ P0_TASKS_STABLE_REBUILD
 
 import Layout from '../components/Layout';
 import { OperatorMetricTiles, type OperatorMetricTileItem } from '../components/ui-system';
+import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 import { actionButtonClass, modalFooterClass, EntityTrashButton, trashActionIconClass } from '../components/entity-actions';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -38,11 +39,10 @@ import { requireWorkspaceId } from '../lib/workspace-context';
 import { toDateTimeLocalValue } from '../lib/scheduling';
 import { getTaskDisplayStatusLabel, getTaskDisplayStatusTone } from '../lib/source-of-truth/task-display-status';
 import { getTaskStableGroupDateKeyCompat } from '../lib/source-of-truth/task-display-status';
+import { isTaskStatusClosed } from '../lib/domain-statuses';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import { ConfirmDialog } from '../components/confirm-dialog';
-import '../styles/closeflow-page-header-v2.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+import '../styles/closeflow-page-header-runtime.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 const P0_TASKS_STABLE_REBUILD = 'P0_TASKS_STABLE_REBUILD';
 void P0_TASKS_STABLE_REBUILD;
@@ -129,8 +129,7 @@ function parseTaskTime(task: any) {
 }
 
 function isTaskDone(task: any) {
-  const status = String(task?.status || '').trim().toLowerCase();
-  return status === 'done' || status === 'completed' || status === 'closed' || status === 'cancelled' || status === 'canceled';
+  return isTaskStatusClosed(task?.status);
 }
 
 function isTaskToday(task: any) {
@@ -599,7 +598,7 @@ export default function TasksStable() {
         pending={taskDeletePending}
         onConfirm={confirmDeleteTask}
       />
-      <main className="cf-route-work-root flex w-full flex-col gap-5 p-4 sm:p-6" data-p0-tasks-stable-rebuild="true" data-tasks-compact-stage48="true" data-stage83-task-done-next-step-prompt="true" data-stage16c-tasks-cases-repair="tasks" data-stage178-tasks-operational-panel="true">
+      <main className="cf-route-work-root flex w-full flex-col gap-5 p-4 sm:p-6" data-p0-tasks-stable-rebuild="true" data-tasks-compact-semantic48="true" data-stage83-task-done-next-step-prompt="true" data-stage16c-tasks-cases-repair="tasks" data-semantic178-tasks-operational-panel="true">
         <CloseFlowPageHeaderV2
           pageKey="tasks"
           actions={
@@ -608,7 +607,7 @@ export default function TasksStable() {
                             <Button type="button" variant="outline" className={actionButtonClass('neutral', 'border-blue-200 bg-white text-blue-700 hover:bg-blue-50 hover:text-blue-800')} onClick={() => openNewTask()} data-cf-header-action="primary" data-page-header-new-task-stage6="true">
                               Nowe zadanie
                             </Button>
-                            <Button type="button" variant="outline" className={actionButtonClass('neutral', 'border-slate-300 bg-white text-slate-950 hover:bg-slate-50 hover:text-slate-950')} onClick={() => void refreshData()} disabled={loading || workspaceLoading} data-tasks-refresh-visible-stage45m="true">
+                            <Button type="button" variant="outline" className={actionButtonClass('neutral', 'border-slate-300 bg-white text-slate-950 hover:bg-slate-50 hover:text-slate-950')} onClick={() => void refreshData()} disabled={loading || workspaceLoading} data-tasks-refresh-visible="true">
                               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
                               Odśwież
                             </Button>
@@ -630,12 +629,12 @@ export default function TasksStable() {
           data-stage16d-task-metric-final-lock="replaced-by-operator-metric-tiles"
         />
 
-        <div className="tasks-stage178-workspace" data-stage178-tasks-workspace="true">
-          <div className="tasks-stage178-main-stack">
-            <Card className="border-slate-100 shadow-sm" data-tasks-search-panel-stage178="true">
+        <div className="tasks-semantic178-workspace" data-semantic178-tasks-workspace="true">
+          <div className="tasks-semantic178-main-stack">
+            <Card className="border-slate-100 shadow-sm" data-tasks-search-panel-semantic178="true">
               <CardContent className="p-4 sm:p-5">
-                <div className="tasks-stage178-search-row">
-                  <div className="relative w-full cf-main-search cf-main-search-stage175 cf-main-search-stage178" data-cf-main-search-source="stage173" data-cf-main-search-stage175="true" data-cf-main-search-stage178="true">
+                <div className="tasks-semantic178-search-row">
+                  <div className="relative w-full cf-main-search cf-main-search-semantic175 cf-main-search-semantic178" data-cf-main-search-source="semantic173" data-cf-main-search-semantic175="true" data-cf-main-search-semantic178="true">
                     <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                     <Input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="Szukaj zadania, sprawy albo priorytetu..." />
                   </div>
@@ -644,23 +643,23 @@ export default function TasksStable() {
               </CardContent>
             </Card>
 
-            <section className="tasks-stage178-grouped-list" data-tasks-compact-list-stage48="true" data-stage178-tasks-grouped-list="true">
+            <section className="tasks-semantic178-grouped-list" data-tasks-compact-list-semantic48="true" data-semantic178-tasks-grouped-list="true">
               {loading ? (
                 <Card className="border-slate-100"><CardContent className="flex items-center gap-3 p-5 text-slate-600"><Loader2 className="h-4 w-4 animate-spin" /> Ładowanie zadań...</CardContent></Card>
               ) : filteredTasks.length ? groupedTasks.map((group) => (
-                <div key={group.id} className="tasks-stage178-group" data-stage178-task-group={group.id}>
-                  <div className="tasks-stage178-group-header">
-                    <div className="tasks-stage178-group-title">
+                <div key={group.id} className="tasks-semantic178-group" data-semantic178-task-group={group.id}>
+                  <div className="tasks-semantic178-group-header">
+                    <div className="tasks-semantic178-group-title">
                       <strong>{group.label}</strong>
                       <span>{group.hint}</span>
                     </div>
-                    <span className="tasks-stage178-group-count">{group.tasks.length}</span>
+                    <span className="tasks-semantic178-group-count">{group.tasks.length}</span>
                   </div>
 
                   {group.tasks.map((task) => {
                     const caseRecord = task.caseId ? casesById.get(String(task.caseId)) : null;
                     return (
-                      <Card key={String(task.id || getTaskTitle(task))} className="border-slate-100 shadow-sm tasks-stage48-task-card">
+                      <Card key={String(task.id || getTaskTitle(task))} className="border-slate-100 shadow-sm tasks-task-card">
                         <CardContent className="p-3 sm:p-4">
                           <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                             <div className="min-w-0 flex-1">
@@ -669,22 +668,22 @@ export default function TasksStable() {
                                 <Badge variant="outline" className="rounded-full">{readText(task, ['priority'], 'medium')}</Badge>
                                 <Badge variant="outline" className="rounded-full">{readText(task, ['type'], 'task')}</Badge>
                               </div>
-                              <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1" data-task-title-date-row-stage48="true">
+                              <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1" data-task-title-date-row-semantic48="true">
                                 <h2 className={'text-base font-bold text-slate-950 sm:text-lg ' + (isTaskDone(task) ? 'line-through opacity-60' : '')}>{getTaskTitle(task)}</h2>
-                                <span className="text-xs font-bold text-slate-500" data-task-date-inline-stage48="true">{formatTaskMoment(task)}</span>
+                                <span className="text-xs font-bold text-slate-500" data-task-date-inline-semantic48="true">{formatTaskMoment(task)}</span>
                               </div>
                               {caseRecord ? <p className="mt-1 text-sm text-slate-600">Sprawa: {getCaseTitle(caseRecord)}</p> : null}
                               {readText(task, ['leadName', 'lead_name'], '') ? <p className="mt-1 text-sm text-slate-600">Lead: {readText(task, ['leadName', 'lead_name'], '')}</p> : null}
                             </div>
                             <div className="flex flex-wrap gap-2">
-                              <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="done-toggle" onClick={() => void toggleTask(task)}>
+                              <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-semantic47-action-button tasks-semantic48-task-action-button')} data-task-action-visible-semantic48="done-toggle" onClick={() => void toggleTask(task)}>
                                 {isTaskDone(task) ? 'Przywróć' : 'Zrobione'}
                               </Button>
-                              <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="edit" onClick={() => openEditTask(task)}>
+                              <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-semantic47-action-button tasks-semantic48-task-action-button')} data-task-action-visible-semantic48="edit" onClick={() => openEditTask(task)}>
                                 Edytuj
                               </Button>
-                              <EntityTrashButton type="button" variant="outline" className="tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action" data-task-action-visible-stage48="delete" onClick={() => requestDeleteTask(task)}>
-                                <Trash2 className={trashActionIconClass("mr-2 h-4 w-4")} /> Usuń
+                              <EntityTrashButton type="button" variant="outline" className="tasks-semantic47-action-button tasks-semantic48-task-action-button tasks-semantic48-danger-action" data-task-action-visible-semantic48="delete" onClick={() => requestDeleteTask(task)}>
+                                <DeleteActionIcon className={trashActionIconClass("mr-2 h-4 w-4")} /> Usuń
                               </EntityTrashButton>
                             </div>
                           </div>
@@ -699,52 +698,52 @@ export default function TasksStable() {
             </section>
           </div>
 
-          <aside className="tasks-stage178-right-rail cf-operator-right-rail" data-stage178-tasks-right-rail="true" aria-label="Panel operacyjny zadań">
-            <section className="tasks-stage178-rail-card" data-stage178-tasks-filter-card="true">
-              <div className="tasks-stage178-rail-head">
+          <aside className="tasks-semantic178-right-rail cf-operator-right-rail" data-semantic178-tasks-right-rail="true" aria-label="Panel operacyjny zadań">
+            <section className="tasks-semantic178-rail-card" data-semantic178-tasks-filter-card="true">
+              <div className="tasks-semantic178-rail-head">
                 <h2>Filtry zadań</h2>
               </div>
-              <div className="tasks-stage178-filter-list">
+              <div className="tasks-semantic178-filter-list">
                 {taskScopeFilters.map((filter) => (
-                  <button key={filter.id} type="button" className="tasks-stage178-filter-button" data-active={scope === filter.id ? 'true' : 'false'} data-tone={filter.tone} onClick={() => setScope(filter.id)}>
-                    <span className="tasks-stage178-filter-label">{filter.label}</span>
-                    <span className="tasks-stage178-filter-count">{filter.count}</span>
+                  <button key={filter.id} type="button" className="tasks-semantic178-filter-button" data-active={scope === filter.id ? 'true' : 'false'} data-tone={filter.tone} onClick={() => setScope(filter.id)}>
+                    <span className="tasks-semantic178-filter-label">{filter.label}</span>
+                    <span className="tasks-semantic178-filter-count">{filter.count}</span>
                   </button>
                 ))}
               </div>
             </section>
 
-            <section className="tasks-stage178-rail-card" data-stage178-tasks-urgent-card="true">
-              <div className="tasks-stage178-rail-head">
+            <section className="tasks-semantic178-rail-card" data-semantic178-tasks-urgent-card="true">
+              <div className="tasks-semantic178-rail-head">
                 <h3>Najpilniejsze zadania</h3>
               </div>
               {urgentTasks.length ? (
-                <div className="tasks-stage178-urgent-list">
+                <div className="tasks-semantic178-urgent-list">
                   {urgentTasks.map((task) => (
                     <button
                       key={String(task.id || getTaskTitle(task))}
                       type="button"
-                      className="tasks-stage178-urgent-button"
+                      className="tasks-semantic178-urgent-button"
                       title={getTaskTitle(task) + ' - ' + formatTaskMoment(task)}
                       aria-label={getTaskTitle(task) + ' - ' + formatTaskMoment(task)}
-                      data-stage181g-urgent-custom-tooltip="true"
+                      data-semantic181g-urgent-custom-tooltip="true"
                       data-cf-tooltip={getTaskTitle(task) + ' - ' + formatTaskMoment(task)}
                       onClick={() => { setScope(isTaskDone(task) ? 'done' : 'active'); setSearchQuery(getTaskTitle(task)); }}
                     >
-                      <span className="tasks-stage178-urgent-title" title={getTaskTitle(task)}>{getTaskTitle(task)}</span>
-                      <span className="tasks-stage178-urgent-meta">{formatTaskMoment(task)}</span>
+                      <span className="tasks-semantic178-urgent-title" title={getTaskTitle(task)}>{getTaskTitle(task)}</span>
+                      <span className="tasks-semantic178-urgent-meta">{formatTaskMoment(task)}</span>
                     </button>
                   ))}
                 </div>
               ) : (
-                <p className="tasks-stage178-empty-rail-note">Brak aktywnych pilnych zadań.</p>
+                <p className="tasks-semantic178-empty-rail-note">Brak aktywnych pilnych zadań.</p>
               )}
             </section>
 </aside>
         </div>
 
         <Dialog open={isDialogOpen} onOpenChange={(open) => (open ? setIsDialogOpen(true) : closeDialog())}>
-          <DialogContent className="cf-vst-dialog tasks-stable-dialog-stage220a23b max-w-xl" data-stage220a23b-task-form-dialog="true" data-cf-vst-dialog="true">
+          <DialogContent className="cf-vst-dialog tasks-stable-dialog max-w-xl" data-task-form-dialog="true" data-cf-vst-dialog="true">
             <DialogHeader>
               <DialogTitle>{form.id ? 'Edytuj zadanie' : 'Nowe zadanie'}</DialogTitle>
             </DialogHeader>
@@ -787,16 +786,16 @@ export default function TasksStable() {
                   </select>
                 </div>
               </div>
-              <DialogFooter className={modalFooterClass("tasks-stable-dialog-stage220a23b-footer cf-vst-dialog-footer")}>
+              <DialogFooter className={modalFooterClass("tasks-stable-dialog-footer cf-vst-dialog-footer")}>
                 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>Anuluj</Button>
-                <Button type="submit" className="tasks-stable-dialog-stage220a23b-primary" disabled={saving}>{saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Zapisz zadanie</Button>
+                <Button type="submit" className="tasks-stable-dialog-primary" disabled={saving}>{saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Zapisz zadanie</Button>
               </DialogFooter>
             </form>
           </DialogContent>
         </Dialog>
 
         <Dialog open={Boolean(nextStepPrompt)} onOpenChange={(open) => (!open ? closeNextStepPrompt() : undefined)}>
-          <DialogContent className="cf-vst-dialog task-next-step-dialog-stage220a23b max-w-lg" data-stage83-task-done-next-step-prompt="dialog" data-stage220a23b-task-next-step-dialog="true" data-cf-vst-dialog="true">
+          <DialogContent className="cf-vst-dialog task-next-step-dialog max-w-lg" data-stage83-task-done-next-step-prompt="dialog" data-task-next-step-dialog="true" data-cf-vst-dialog="true">
             <DialogHeader>
               <DialogTitle>Ustaw kolejny krok</DialogTitle>
             </DialogHeader>
@@ -837,7 +836,7 @@ export default function TasksStable() {
               </div>
               <DialogFooter className={modalFooterClass()}>
                 <Button type="button" variant="outline" onClick={closeNextStepPrompt} disabled={nextStepSaving}>Pomiń</Button>
-                <Button type="submit" className="tasks-stable-dialog-stage220a23b-primary" disabled={nextStepSaving}>
+                <Button type="submit" className="tasks-stable-dialog-primary" disabled={nextStepSaving}>
                   {nextStepSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                   Ustaw kolejny krok
                 </Button>
@@ -855,3 +854,5 @@ void FIN14_REPAIR4_TASKS_HEADER_CLICK_GUARD;
 
 const FIN14_REPAIR5_TASKS_HEADER_PLUS_GUARD = 'FIN-14_REPAIR5_TASKS_HEADER_PLUS_GUARD_no_plus_icon_in_new_task_button';
 void FIN14_REPAIR5_TASKS_HEADER_PLUS_GUARD;
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

@@ -12,9 +12,9 @@ function read(relativePath) {
 test('Activity exposes command center filters and search', () => {
   const source = read('src/pages/Activity.tsx');
 
-  assert.match(source, /const sourceOptions = \[/);
-  assert.match(source, /const activityTypeOptions = \[/);
-  assert.match(source, /const relationOptions = \[/);
+  assert.match(source, /ACTIVITY_SOURCE_OPTIONS as sourceOptions/);
+  assert.match(source, /ACTIVITY_TYPE_OPTIONS as activityTypeOptions/);
+  assert.match(source, /ACTIVITY_RELATION_OPTIONS as relationOptions/);
   assert.match(source, /placeholder="Szukaj po tytule, leadzie, sprawie, typie zdarzenia\.\.\."/);
   assert.match(source, /setSourceFilter/);
   assert.match(source, /setTypeFilter/);
@@ -23,16 +23,22 @@ test('Activity exposes command center filters and search', () => {
 
 test('Activity recognizes today and calendar operational event types', () => {
   const source = read('src/pages/Activity.tsx');
+  const activitySource = read('src/lib/source-of-truth/activity-options.ts');
 
-  assert.match(source, /calendar_entry_completed/);
-  assert.match(source, /calendar_entry_restored/);
-  assert.match(source, /calendar_entry_deleted/);
-  assert.match(source, /today_task_completed/);
-  assert.match(source, /today_task_restored/);
-  assert.match(source, /today_task_deleted/);
-  assert.match(source, /today_event_completed/);
-  assert.match(source, /today_event_restored/);
-  assert.match(source, /today_event_deleted/);
+  assert.match(source, /getActivityTitle/);
+  for (const eventType of [
+    'calendar_entry_completed',
+    'calendar_entry_restored',
+    'calendar_entry_deleted',
+    'today_task_completed',
+    'today_task_restored',
+    'today_task_deleted',
+    'today_event_completed',
+    'today_event_restored',
+    'today_event_deleted',
+  ]) {
+    assert.match(activitySource, new RegExp(eventType));
+  }
 });
 
 test('Activity includes metrics and payload preview', () => {

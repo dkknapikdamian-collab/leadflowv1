@@ -16,7 +16,6 @@ import { StatusPill, SurfaceCard } from '../ui-system';
 import { CaseFinanceActionButtons } from './CaseFinanceActionButtons';
 import { CaseFinanceEditorDialog, formatCaseFinanceMoney, parseCaseFinanceNumber, type CaseFinancePatch } from './CaseFinanceEditorDialog';
 import { CaseFinancePaymentDialog, type CaseFinancePaymentInput } from './CaseFinancePaymentDialog';
-import '../../styles/finance/closeflow-finance.css';
 
 export const CLOSEFLOW_FIN13_CLIENT_CASE_FINANCES = 'CLOSEFLOW_FIN13_CLIENT_CASE_FINANCES_V1' as const;
 export const STAGE228R7_CLIENT_FINANCE_COMMISSION_BALANCE_TRUTH = 'client finance summary shows commission paid and remaining as main balance' as const;
@@ -182,7 +181,7 @@ export function FinanceMiniSummary({
         <div className="cf-finance-metric" data-cf-finance-tone="transaction"><dt>Wartość transakcji</dt><dd>{formatMoney(summary.contractValue, summary.currency)}</dd></div>
         <div className="cf-finance-metric" data-cf-finance-tone="commission"><dt>Prowizja należna</dt><dd>{buildCommissionLabel(summary, commissionMode, commissionRate)}</dd></div>
         <div className="cf-finance-metric" data-cf-finance-tone="paid"><dt>Wpłacono prowizji</dt><dd>{formatMoney(summary.commissionPaidAmount, summary.currency)}</dd></div>
-        <div className="cf-finance-metric" data-cf-finance-tone="remaining"><dt>Pozostało do zapłaty</dt><dd>{formatMoney(summary.commissionRemainingAmount, summary.currency)}</dd></div>
+        <div className="cf-finance-metric" data-cf-finance-tone="remaining"><dt>Do zapłaty prowizji</dt><dd>{formatMoney(summary.commissionRemainingAmount, summary.currency)}</dd></div>
         <div className="cf-finance-metric cf-finance-metric--wide">
           <dt>Status prowizji</dt>
           <dd>
@@ -296,7 +295,7 @@ export function ClientFinanceRelationSummary({
         <div className="cf-finance-metric" data-cf-finance-tone="transaction"><dt>Suma wartości transakcji</dt><dd>{formatMoney(totals.totalValue)}</dd></div>
         <div className="cf-finance-metric" data-cf-finance-tone="commission"><dt>Prowizja należna</dt><dd>{formatMoney(totals.commissionAmount)}</dd></div>
         <div className="cf-finance-metric" data-cf-finance-tone="paid"><dt>Wpłacono prowizji</dt><dd>{formatMoney(totals.commissionPaidAmount)}</dd></div>
-        <div className="cf-finance-metric" data-cf-finance-tone="remaining"><dt>Pozostało do zapłaty</dt><dd>{formatMoney(totals.commissionRemainingAmount)}</dd></div>
+        <div className="cf-finance-metric" data-cf-finance-tone="remaining"><dt>Do zapłaty prowizji</dt><dd>{formatMoney(totals.commissionRemainingAmount)}</dd></div>
         <div className="cf-finance-metric" data-cf-finance-tone="cost" data-stage231d3-client-costs-to-reimburse="true"><dt>{CASE_COST_FINANCE_LABELS.costsToReimburse}</dt><dd>{formatMoney(clientCostsSummary.costsToReimburseAmount, clientCostsSummary.currency)}</dd></div>
         <div className="cf-finance-metric" data-cf-finance-tone="total" data-stage231d3-client-total-to-collect="true"><dt>{CASE_COST_FINANCE_LABELS.totalToCollect}</dt><dd>{formatMoney(clientCostsSummary.totalToCollectAmount, clientCostsSummary.currency)}</dd></div>
       </dl>
@@ -320,7 +319,7 @@ export function ClientFinanceRelationSummary({
               <div data-cf-finance-tone="transaction"><dt>Wartość transakcji</dt><dd>{row.summary.contractValue > 0 ? formatMoney(row.summary.contractValue, row.summary.currency) : 'Nie ustawiono'}</dd></div>
               <div data-cf-finance-tone="commission"><dt>Prowizja należna</dt><dd>{formatMoney(row.summary.commissionAmount, row.summary.currency)}</dd></div>
               <div data-cf-finance-tone="paid"><dt>Wpłacono prowizji</dt><dd>{formatMoney(row.summary.commissionPaidAmount, row.summary.currency)}</dd></div>
-              <div data-cf-finance-tone="remaining"><dt>Pozostało do zapłaty</dt><dd>{formatMoney(row.summary.commissionRemainingAmount, row.summary.currency)}</dd></div>
+              <div data-cf-finance-tone="remaining"><dt>Do zapłaty prowizji</dt><dd>{formatMoney(row.summary.commissionRemainingAmount, row.summary.currency)}</dd></div>
               <div data-stage231d3-row-costs-to-reimburse="true"><dt>{CASE_COST_FINANCE_LABELS.costsToReimburse}</dt><dd>{formatMoney(row.costsSummary.costsToReimburseAmount, row.costsSummary.currency)}</dd></div>
               <div data-stage231d3-row-total-to-collect="true"><dt>{CASE_COST_FINANCE_LABELS.totalToCollect}</dt><dd>{formatMoney(row.costsSummary.totalToCollectAmount, row.costsSummary.currency)}</dd></div>
               <div><dt>Status prowizji</dt><dd>{COMMISSION_STATUS_LABELS[row.summary.commissionStatus] || row.summary.commissionStatus}</dd></div>

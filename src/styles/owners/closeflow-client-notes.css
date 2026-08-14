@@ -1,0 +1,102 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:client-notes","concerns":[],"scope":"component-scoped","consumerRoots":["src/pages/ClientDetail.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet contains only the ClientDetail notes composition and local note form layout.","whyNotDuplicate":"Modal, form, color and typography primitives are consumed from their registered owners.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+
+.client-detail-notes-center-section {
+  min-width: 0;
+}
+
+.client-detail-notes-center-list,
+.client-detail-notes-list {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.client-detail-note-center-item,
+.client-detail-note-card,
+.client-detail-note-item {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--cf-vst-surface-border);
+  border-radius: var(--cf-vst-radius-card);
+  background: var(--cf-vst-surface-card-solid);
+  box-shadow: var(--cf-vst-shadow-card);
+}
+
+.client-detail-note-item {
+  display: grid;
+  gap: 10px;
+}
+
+.client-detail-note-item-toolbar,
+.client-detail-note-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.client-detail-note-input,
+.client-detail-note-dictation-preview {
+  min-width: 0;
+}
+
+.client-detail-note-input {
+  width: 100%;
+  min-height: 92px;
+  resize: vertical;
+}
+
+.client-detail-note-dialog,
+.client-note-modal {
+  width: min(100%, 720px);
+}
+
+.client-note-modal-portal {
+  min-width: 0;
+}
+
+.client-detail-add-note-dialog-form {
+  display: grid;
+  gap: 12px;
+}
+
+.client-detail-add-note-dialog-form .client-detail-note-actions-row {
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+
+.client-detail-note-delete-button {
+  flex: 0 0 auto;
+}
+
+.client-detail-notes-center-section .client-detail-section-head,
+.client-detail-notes-center-section .client-detail-card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.client-detail-notes-center-section .client-detail-section-head > *,
+.client-detail-notes-center-section .client-detail-card-title-row > * {
+  min-width: 0;
+}
+
+@media (max-width: 760px) {
+  .client-detail-note-center-item,
+  .client-detail-note-card,
+  .client-detail-note-item {
+    padding: 12px;
+  }
+
+  .client-detail-notes-center-section .client-detail-section-head,
+  .client-detail-notes-center-section .client-detail-card-title-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .client-detail-note-actions-row {
+    justify-content: flex-start;
+  }
+}

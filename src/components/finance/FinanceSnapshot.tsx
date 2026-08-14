@@ -8,7 +8,6 @@ import { FinanceMiniSummary } from './FinanceMiniSummary';
 import { PaymentList } from './PaymentList';
 import { PaymentFormDialog, type PaymentFormValue } from './PaymentFormDialog';
 import { CommissionFormDialog, type CommissionFormValue } from './CommissionFormDialog';
-import '../../styles/finance/closeflow-finance.css';
 
 export const CLOSEFLOW_FINANCE_COMPONENTS_FIN3 = 'FIN-3_CLOSEFLOW_FINANCE_COMPONENTS_V1' as const;
 

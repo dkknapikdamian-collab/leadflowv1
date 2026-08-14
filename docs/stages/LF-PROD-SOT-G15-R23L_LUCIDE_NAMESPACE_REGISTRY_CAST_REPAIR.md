@@ -23,6 +23,12 @@ remote_evidence:
   - tsc_log_sha256:fe6cb8013043b74b96915adec1d73ee3434008ce191c4e97120f925ed66f0916
   - local_acceptance_package:CLOSEFLOW_G15_R23L_ACCEPT_MERGE_SYNC_R1.zip
   - local_acceptance_package_sha256:b8b5ac7c49f71f1454db3a01d9fcaf5e595b3697b3914b9f70448a7e4ab6f275
+control_plane_resolution:
+  id: CONTROL-00
+  execution_branch: codex/closeflow-v1-e2e-roadmap
+  execution_base_branch: dev-rollout-freeze
+  execution_base_ref: ab0f5c85f6cb3636c483debd13c04c5e29779c81
+  historical_pr_role: EVIDENCE_ONLY_REEXECUTION_REQUIRED
 ---
 
 # G15-R23L — Lucide namespace registry cast repair
@@ -30,6 +36,10 @@ remote_evidence:
 ## Stan
 
 `REMOTE_GATES_PASS / DRAFT_PR_OPEN / LOCAL_ACCEPTANCE_PACKAGE_READY / EXACT_LOCAL_AND_MERGE_PENDING`
+
+## CONTROL-00 execution handoff
+
+The historical stage branch and PR #50 remain immutable evidence. They are not the implementation source for this run. The controller resolved the control plane to `codex/closeflow-v1-e2e-roadmap` from `dev-rollout-freeze@ab0f5c85f6cb3636c483debd13c04c5e29779c81`; the minimal R23L diff must be reproduced and reverified there. No PASS is inherited from PR #50.
 
 ## Wejście diagnostyczne
 

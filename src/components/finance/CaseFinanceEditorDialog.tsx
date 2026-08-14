@@ -10,7 +10,6 @@ import {
 } from '../../lib/finance/case-finance-source';
 import { normalizeCommissionMode, normalizeCommissionStatus, normalizeCurrency } from '../../lib/finance/finance-normalize';
 import type { CommissionMode, CommissionStatus } from '../../lib/finance/finance-types';
-import '../../styles/finance/closeflow-finance.css';
 
 export const CLOSEFLOW_FIN12_SHARED_CASE_FINANCE_EDITOR_DIALOG = 'CLOSEFLOW_FIN12_SHARED_CASE_FINANCE_EDITOR_DIALOG_V1' as const;
 // FIN-13 parser guard literal: replace(/\./g, '').replace(',', '\.')
@@ -176,13 +175,13 @@ export function CaseFinanceEditorDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="cf-finance-dialog cf-finance-editor-dialog" data-fin12-shared-case-finance-editor="true" data-fin13-client-case-finance-editor="true" data-stage220a36-commission-input-model-split="true" data-stage220a36r2-commission-field-order="true">
+      <DialogContent className="cf-finance-dialog cf-finance-editor-dialog" data-fin12-shared-case-finance-editor="true" data-fin13-client-case-finance-editor="true" data-stage220a36-commission-input-model-split="true" data-cf-finance-commission-field-order="true">
         <DialogHeader>
           <DialogTitle>Prowizja sprawy</DialogTitle>
           <p className="cf-finance-editor-dialog__subtitle">Najpierw wybierz rodzaj prowizji. Kwota stała to gotowa prowizja, a procent wymaga wartości transakcji do wyliczenia.</p>
         </DialogHeader>
         <form className="cf-finance-editor-form" onSubmit={handleSubmit}>
-          <div className="cf-finance-editor-grid cf-finance-editor-grid--commission-order" data-stage220a36r2-commission-grid="true">
+          <div className="cf-finance-editor-grid cf-finance-editor-grid--commission-order" data-cf-finance-commission-grid="true">
             <label className="cf-finance-field cf-finance-field--commission-mode">
               <span>Rodzaj prowizji</span>
               <select

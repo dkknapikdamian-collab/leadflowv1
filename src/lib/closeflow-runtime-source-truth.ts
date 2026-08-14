@@ -234,9 +234,11 @@ export function isBlockerLike(input) {
   return collectInputTokens(input).some((token) => BLOCKER_TOKENS.has(token));
 }
 
-export function buildRuntimeAccessPlanTruth(input = {}) {
-  const rawPlanId = normalizePlanToken(input.planId);
-  const rawSubscriptionStatus = normalizeRuntimeStatus(input.subscriptionStatus || 'inactive');
+export function buildRuntimeAccessPlanTruth(
+  { planId = '', subscriptionStatus: rawSubscriptionStatusInput = '' } = {},
+) {
+  const rawPlanId = normalizePlanToken(planId);
+  const rawSubscriptionStatus = normalizeRuntimeStatus(rawSubscriptionStatusInput || 'inactive');
   const subscriptionStatus = normalizeAccessStatus(rawSubscriptionStatus);
   const explicitPlanId = resolveExplicitPlanId(rawPlanId);
 

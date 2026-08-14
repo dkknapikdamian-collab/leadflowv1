@@ -44,10 +44,11 @@ const STAGE232I4_R16Z_R8_LEAD_MISSING_BLOCKER_TOGGLE_PRIORITY_FIX = 'LeadDetail 
 void STAGE232I4_R16Z_R8_LEAD_MISSING_BLOCKER_TOGGLE_PRIORITY_FIX;
 
 void STAGE232A_R6_LEAD_MISSING_BLOCKER_ACTIVE_LIST_AND_TOP_CARD_SOURCE_TRUTH;
-import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { type FormEvent, type PointerEventHandler, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, Clock, DollarSign, Edit2, Loader2, Mail, Mic, MicOff, MoreVertical, Phone, Plus, Trash2 } from 'lucide-react';
-import { EntityIcon } from '../components/ui-system';
+import { ArrowLeft, ArrowRight, CheckCircle2, Clock, DollarSign, Edit2, Loader2, Mail, Mic, MicOff, MoreVertical, Phone, Plus } from 'lucide-react';
+import { EntityIcon, SemanticIcon } from '../components/ui-system';
+import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 // LEAD_TO_CASE_FLOW_STAGE24_LEAD_DETAIL
 /* STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP */
 /* STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP_REPAIR1_BUILD_FIX */
@@ -177,10 +178,7 @@ import {
   softDeleteTaskInSupabase,
   updateCaseInSupabase,
 } from '../lib/supabase-fallback';
-import '../styles/visual-stage14-lead-detail-vnext.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-shared-quick-actions-bar-stage227e3.css';
-import '../styles/closeflow-lead-detail-sales-signal-stage227e4.css';
+import '../styles/closeflow-quick-actions.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 
 
@@ -654,7 +652,7 @@ function buildTimeline(tasks: any[], events: any[]): TimelineEntry[] {
     return (asDate(left.dateValue)?.getTime() ?? Number.MAX_SAFE_INTEGER) - (asDate(right.dateValue)?.getTime() ?? Number.MAX_SAFE_INTEGER);
   });
 }
-function LeadActionButton({ children, onClick, disabled }: { children: ReactNode; onClick?: () => void; disabled?: boolean }) {
+function LeadActionButton({ children, onClick, onPointerDown, disabled }: { children: ReactNode; onClick?: () => void; onPointerDown?: PointerEventHandler<HTMLButtonElement>; disabled?: boolean }) {
   const isStartServiceActionStage14F = children === 'Rozpocznij obsługę';
   return (
     <button
@@ -662,6 +660,7 @@ function LeadActionButton({ children, onClick, disabled }: { children: ReactNode
       className={isStartServiceActionStage14F ? "lead-detail-chip-button cf-action-button cf-action-button-primary" : "lead-detail-chip-button cf-action-button"}
       data-lead-start-service={isStartServiceActionStage14F ? "true" : undefined}
       onClick={onClick}
+      onPointerDown={onPointerDown}
       disabled={disabled}
     >
       {children}
@@ -1148,11 +1147,20 @@ export default function LeadDetail() {
   };
 
   const handleAddLeadMissingFromManagerStage232I4R14 = async () => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
     const safeLeadId = String(leadId || '').trim();
     const title = leadMissingManagerTitle.trim();
-    if (!safeLeadId) return setLeadMissingManagerError('Brak ID leada. Nie można dodać braku.');
-    if (!title) return setLeadMissingManagerError('Wpisz nazwę braku.');
+    if (!safeLeadId) {
+      setLeadMissingManagerError('Brak ID leada. Nie można dodać braku.');
+      return;
+    }
+    if (!title) {
+      setLeadMissingManagerError('Wpisz nazwę braku.');
+      return;
+    }
     const createdAt = new Date().toISOString();
     const status = leadMissingManagerBlocksProgress ? 'blocking_missing_item' : 'missing_item';
     try {
@@ -1245,10 +1253,16 @@ export default function LeadDetail() {
   };
 
   const handleToggleLeadMissingBlockerStage232I4R14 = async (entry: MissingItemsManagerItem, blocksProgress: boolean) => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
     const task = (entry?.raw || entry) as any;
     const taskId = String(task?.id || entry?.id || '').trim();
-    if (!taskId) return toast.error('Brak ID braku. Nie można zmienić blokady.');
+    if (!taskId) {
+      toast.error('Brak ID braku. Nie można zmienić blokady.');
+      return;
+    }
     const taskTitle = String(task?.title || entry?.title || 'Brak');
     const nextStatus = blocksProgress ? 'blocking_missing_item' : 'missing_item';
     const nextPriorityStage232I4R16ZR8 = blocksProgress ? 'high' : 'medium';
@@ -1289,10 +1303,16 @@ export default function LeadDetail() {
     }
   };
   const handleResolveLeadMissingItemStage228R13 = async (entry: any) => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
     const task = entry?.raw || entry || {};
     const taskId = String(task?.id || '').trim();
-    if (!taskId) return toast.error('Brak ID braku. Nie można oznaczyć jako rozwiązany.');
+    if (!taskId) {
+      toast.error('Brak ID braku. Nie można oznaczyć jako rozwiązany.');
+      return;
+    }
     const resolvedAt = new Date().toISOString();
 
     try {
@@ -1329,10 +1349,16 @@ export default function LeadDetail() {
 
 
   const handleDeleteLeadMissingItemStage228R15 = async (entry: any) => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
     const task = entry?.raw || entry || {};
     const taskId = String(task?.id || '').trim();
-    if (!taskId) return toast.error('Brak ID braku. Nie można usunąć.');
+    if (!taskId) {
+      toast.error('Brak ID braku. Nie można usunąć.');
+      return;
+    }
     if (!window.confirm('Usunąć ten brak?')) return;
 
     const deletedAt = new Date().toISOString();
@@ -1603,8 +1629,8 @@ useEffect(() => {
       financePotential: leadFinancePanel.potential,
       financeLabel: leadFinance.formatted,
       nextActionLabel: nextTimelineEntry ? nextTimelineEntry.title + ' • ' + nextTimelineEntry.dateLabel : '',
-      riskLabel: leadSilenceRisk.riskLabel || leadWorkCenter.riskLabel,
-      riskReason: leadRiskReasonStage14F || leadSilenceRisk.riskReason || leadWorkCenter.riskReason,
+      riskLabel: leadSilenceRisk.label || leadWorkCenter.riskLabel,
+      riskReason: leadRiskReasonStage14F || leadSilenceRisk.details || leadWorkCenter.riskReason,
     }),
     [lead, leadFinance.formatted, leadFinancePanel.potential, leadPrimaryNoteText, leadRiskReasonStage14F, leadSilenceRisk, leadWorkCenter.riskLabel, leadWorkCenter.riskReason, nextTimelineEntry],
   );
@@ -1688,7 +1714,7 @@ useEffect(() => {
             data-context-case-id={serviceCaseId || ''}
             data-context-record-label={getLeadName(lead)}
           >
-            <AlertTriangle className="h-4 w-4" /> Brak
+            <SemanticIcon role="risk_alert" size="sm" /> Brak
           </LeadActionButton>
           {serviceCaseId ? (
             <LeadActionButton onClick={() => navigate(caseDetailPath(serviceCaseId))}>
@@ -2193,10 +2219,10 @@ useEffect(() => {
 
   const handleDeleteLinkedEvent = async (event: any) => {
     if (!window.confirm('Usunąć to wydarzenie?')) return;
+    const optimisticEventSnapshot = linkedEvents;
     try {
       setLinkedEntryActionId(`event:${event.id}:delete`);
     const eventId = String(event?.id || '');
-    const optimisticEventSnapshot = linkedEvents;
     setLinkedEvents((previous) => previous.filter((item: any) => String(item?.id || '') !== eventId));
     const stage228r50EventDeleteOptimisticSnapshot = 'stage228r50_lead_detail_event_delete_optimistic_snapshot';
     void stage228r50EventDeleteOptimisticSnapshot;
@@ -2630,7 +2656,7 @@ useEffect(() => {
                   </div>
                 </article>
                 <article className="lead-detail-top-card lead-detail-callout-amber" data-stage227e2-silence-risk-card="true" data-stage227e3-silence-risk-card="true">
-                  <div className="lead-detail-card-title-row"><AlertTriangle className="h-4 w-4" /><h2>Cisza / ryzyko</h2></div>
+                  <div className="lead-detail-card-title-row"><SemanticIcon role="risk_alert" size="sm" /><h2>Cisza / ryzyko</h2></div>
                   <strong>{leadSilenceRisk.headline}</strong>
                   <p>{leadSilenceRisk.details}</p>
                   <span className={`lead-detail-pill ${leadSilenceRisk.toneClass}`}>{leadSilenceRisk.label}</span>
@@ -2642,7 +2668,7 @@ useEffect(() => {
                   </div>
                 </article>
                 <article className="lead-detail-top-card lead-detail-callout-red" data-stage227e3-blocker-card="true" data-stage232a-r9-blocker-top-card-summary="true">
-                  <div className="lead-detail-card-title-row"><AlertTriangle className="h-4 w-4" /><h2>Blokada</h2></div>
+                  <div className="lead-detail-card-title-row"><SemanticIcon role="risk_alert" size="sm" /><h2>Blokada</h2></div>
                   {leadBlockerEntries.length > 0 ? (
                     <>
                       <strong>{leadBlockerEntries.length === 1 ? '1 aktywna blokada' : leadBlockerEntries.length + ' aktywne blokady'}</strong>
@@ -2700,7 +2726,7 @@ useEffect(() => {
                         data-lead-work-item-overdue={entry.isOverdue ? 'true' : 'false'}
                          data-stage231g-work-row-layout="true" data-stage232n-row-kind={getLeadTimelineRowDataKindStage232N(entry)}
                       >
-                        <span className="lead-detail-work-row__icon lead-detail-work-icon">{isMissingItemTimelineEntry(entry) ? <AlertTriangle className="h-4 w-4" /> : entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
+                        <span className="lead-detail-work-row__icon lead-detail-work-icon">{isMissingItemTimelineEntry(entry) ? <SemanticIcon role="risk_alert" size="sm" /> : entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
                         <div className="lead-detail-work-row__content lead-detail-work-content">
                           <small>{getLeadTimelineKindLabelStage232N(entry)}</small>
                           <h3>{entry.title}</h3>
@@ -2757,7 +2783,7 @@ useEffect(() => {
                       count: activeMissingItemEntriesStage228R19R2.length,
                       empty: 'Brak jawnych braków i blokad przy tym leadzie.',
                       items: activeMissingItemEntriesStage228R19R2.slice(0, 5),
-                      icon: <AlertTriangle className="h-4 w-4" />,
+                      icon: <SemanticIcon role="risk_alert" size="sm" />,
                     },
                     {
                       key: 'active' as LeadActionAccordionGroup,
@@ -2795,7 +2821,7 @@ useEffect(() => {
                               <div className="lead-detail-work-list lead-detail-stage228d-work-list" data-stage228d-lead-action-visible-limit="5">
                                 {group.items.map((entry) => (
                                   <article key={`stage228d-${String(group.key)}-${entry.id}`} className={`lead-detail-work-row ${entry.isOverdue || group.key === 'blockers' ? 'lead-detail-work-row-overdue' : ''}`} data-stage228d-lead-work-row="true" data-stage231g-work-row-layout="true" data-stage232n-row-kind={getLeadTimelineRowDataKindStage232N(entry)} data-stage232a-r10-r1-group-key={String(group.key)} data-stage232a-r10-r1-missing-tone-row={group.key === 'blockers' ? 'true' : 'false'}>
-                                    <span className="lead-detail-work-row__icon lead-detail-work-icon">{isMissingItemTimelineEntry(entry) ? <AlertTriangle className="h-4 w-4" /> : entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
+                                    <span className="lead-detail-work-row__icon lead-detail-work-icon">{isMissingItemTimelineEntry(entry) ? <SemanticIcon role="risk_alert" size="sm" /> : entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
                                     <div className="lead-detail-work-row__content lead-detail-work-content">
                                       <small>{getLeadTimelineKindLabelStage232N(entry)} • {getLeadTimelineStatusLabelStage232N(entry)}</small>
                                       <h3>{entry.title}</h3>
@@ -2930,7 +2956,7 @@ useEffect(() => {
                   key: 'missing',
                   label: 'Brak',
                   tone: 'missing',
-                  icon: <AlertTriangle className="h-4 w-4" />,
+                  icon: <SemanticIcon role="risk_alert" size="sm" />,
                   onClick: () => openLeadContextAction('blocker'),
                   disabled: !hasAccess,
                   data: { 'data-context-action-kind': 'blocker', 'data-context-record-type': 'lead', 'data-context-record-id': leadId || '', 'data-context-record-label': getLeadName(lead), 'data-stage227e3-lead-action': 'missing', 'data-stage227c3a-lead-missing-action': 'true', 'data-stage228r12-lead-context-blocker': 'true' },
@@ -2939,7 +2965,7 @@ useEffect(() => {
                   key: 'lost',
                   label: 'Oznacz utracony',
                   tone: 'lost',
-                  icon: <Trash2 className="h-4 w-4" />,
+                  icon: <DeleteActionIcon className="h-4 w-4" />,
                   onClick: () => handleUpdateStatus('lost'),
                   disabled: !hasAccess,
                   data: { 'data-stage227e3-lead-action': 'lost' },

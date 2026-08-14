@@ -8,7 +8,7 @@ const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 const exists = (file) => fs.existsSync(path.join(root, file));
 const expect = (condition, message) => { if (!condition) fail.push(message); };
 
-const migration = 'supabase/migrations/2026-05-01_stageA22_supabase_auth_rls_workspace_foundation.sql';
+const migration = 'supabase/migrations/20260501012200_stageA22_supabase_auth_rls_workspace_foundation.sql';
 expect(exists(migration), 'missing A22 Supabase Auth/RLS/workspace migration');
 
 if (exists(migration)) {
@@ -34,11 +34,7 @@ if (exists(migration)) {
 
 expect(exists('docs/STAGE_A22_SUPABASE_AUTH_RLS_WORKSPACE.md'), 'missing A22 stage documentation');
 expect(exists('docs/SUPABASE_AUTH_RLS_WORKSPACE.md'), 'missing Supabase Auth/RLS/workspace documentation');
-expect(exists('api/_supabase.ts'), 'missing api/_supabase.ts compatibility export');
-
-if (exists('api/_supabase.ts')) {
-  expect(read('api/_supabase.ts').includes("../src/server/_supabase.js"), 'api/_supabase.ts must re-export server Supabase helper');
-}
+expect(exists('src/server/_supabase.ts'), 'missing canonical server Supabase helper');
 
 const supabaseAuth = read('src/server/_supabase-auth.ts');
 expect(supabaseAuth.includes('AUTHORIZATION_BEARER_REQUIRED'), 'API without JWT must return 401 path');

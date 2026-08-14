@@ -1,8 +1,9 @@
-import { ArrowRight, CalendarDays, CheckCircle2, CheckSquare, Loader2, Trash2 } from 'lucide-react';
+import { ArrowRight, CalendarDays, CheckCircle2, CheckSquare, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { EntityTrashButton, trashActionIconClass } from './entity-actions';
 import { Button } from './ui/button';
 import { EntityIcon } from './ui-system';
+import { DeleteActionIcon } from './ui-system/ActionIcon';
 import '../styles/work-item-card.css';
 
 const STAGE227G1_TODAY_RESCHEDULE_SOURCE_OF_TRUTH = 'Today work item card exposes calendar-like +1D/+3D/+1W reschedule actions from one visual source';
@@ -176,7 +177,7 @@ export default function WorkItemCard({
             aria-label={deleteBusy ? 'Usuwanie' : 'Kosz'}
             title={deleteBusy ? 'Usuwanie' : 'Kosz'}
           >
-            {deleteBusy ? <Loader2 className={trashActionIconClass('h-4 w-4 animate-spin')} /> : <Trash2 className={trashActionIconClass('h-4 w-4')} />}
+            {deleteBusy ? <Loader2 className={trashActionIconClass('h-4 w-4 animate-spin')} /> : <DeleteActionIcon className={trashActionIconClass('h-4 w-4')} />}
           </EntityTrashButton>
         ) : null}
         {href ? (

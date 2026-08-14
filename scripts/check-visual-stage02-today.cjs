@@ -41,21 +41,14 @@ expect('src/components/Layout.tsx', 'data-visual-stage-today={isTodayRoute', 'To
 expect('src/App.tsx', "import('./pages/TodayStable')", 'active TodayStable route module');
 
 reject('src/index.css', 'visual-stage02-today.css', 'inactive Stage02 Today CSS import');
-expect('src/pages/TodayStable.tsx', "../styles/closeflow-page-header-v2.css", 'current page header CSS import');
-expect('src/pages/TodayStable.tsx', "../styles/closeflow-unified-page-canvas-stage211c.css", 'current Stage211C canvas import');
-expect('src/pages/TodayStable.tsx', "../styles/closeflow-canvas-source-truth-stage211e.css", 'current Stage211E canvas source import');
-expect('src/pages/TodayStable.tsx', "../styles/closeflow-canvas-runtime-source-truth-stage211j.css", 'current Stage211J runtime canvas import');
-expect('src/pages/TodayStable.tsx', 'P0_TODAY_STABLE_REBUILD', 'current TodayStable rebuild marker');
-expect('src/pages/TodayStable.tsx', 'STAGE232T_R1C_TODAY_PRODUCTION_UI_CLEANUP_AND_SOURCE_TRUTH', 'current Today production UI source marker');
-expect('src/pages/TodayStable.tsx', 'STAGE232B_TODAY_OWNER_CONTROL_TILE_SOURCE_OF_TRUTH', 'current owner-control tile source marker');
-expect('src/pages/TodayStable.tsx', 'STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH', 'current work-item actions source marker');
-expect('src/pages/TodayStable.tsx', 'STAGE232T_R1E_TODAY_ACTIONS_CLOSEOUT_DELETE_EDIT_TRASH_VST', 'current Today action closeout marker');
-
-expect('src/styles/visual-stage02-today.css', 'VISUAL_STAGE_02_TODAY_CSS', 'Stage02 reference CSS marker');
-expect('src/styles/visual-stage02-today.css', '.closeflow-visual-stage01 .main-today', 'historical scoped Today selector');
-expect('src/styles/visual-stage02-today.css', '[data-today-tile-card="true"]', 'historical Today tile styling');
-expect('src/styles/visual-stage02-today.css', '[data-today-quick-snooze-bar="true"]', 'historical snooze styling');
-expect('src/styles/visual-stage02-today.css', '@media (max-width: 760px)', 'historical mobile polish');
+expect('src/App.tsx', "./styles/closeflow-visual-source-truth.css", 'canonical visual source-truth entrypoint');
+expect('src/pages/TodayStable.tsx', "../styles/closeflow-page-header-runtime.css", 'current page-header runtime adapter');
+expect('src/pages/TodayStable.tsx', "../styles/closeflow-canvas-runtime.css", 'current canvas runtime adapter');
+expect('src/styles/closeflow-visual-source-truth.css', './owners/closeflow-calendar.css', 'calendar semantic owner');
+expect('src/styles/closeflow-visual-source-truth.css', './owners/closeflow-page-adapters.css', 'page adapter semantic owner');
+expect('src/styles/closeflow-visual-source-truth.css', './owners/closeflow-records-and-rails.css', 'records/rails semantic owner');
+expect('src/styles/closeflow-visual-source-truth.css', './owners/closeflow-responsive-adapters.css', 'responsive semantic owner');
+reject('src/styles/closeflow-visual-source-truth.css', 'visual-stage02-today.css', 'historical Stage02 CSS in active graph');
 
 expect('src/pages/TodayStable.tsx', 'fetchTasksFromSupabase', 'task read flow');
 expect('src/pages/TodayStable.tsx', 'fetchEventsFromSupabase', 'event read flow');
@@ -69,7 +62,7 @@ expect('src/pages/TodayStable.tsx', 'getOperationalEntryActionDecision', 'shared
 expect('src/pages/TodayStable.tsx', 'isOperationalEntryActionAllowed', 'shared action policy allow check');
 expect('src/pages/TodayStable.tsx', 'WorkItemCard', 'shared work-item card source');
 
-for (const file of ['src/components/Layout.tsx', 'src/App.tsx', 'src/pages/TodayStable.tsx', 'src/styles/visual-stage02-today.css', 'src/index.css']) {
+for (const file of ['src/components/Layout.tsx', 'src/App.tsx', 'src/pages/TodayStable.tsx', 'src/index.css', 'src/styles/closeflow-visual-source-truth.css']) {
   read(file).split(/\r?\n/).forEach((line, index) => {
     if (badPatterns.some((pattern) => line.includes(pattern))) {
       throw new Error(`Polish mojibake detected in ${file}:${index + 1}: ${line.trim().slice(0, 180)}`);

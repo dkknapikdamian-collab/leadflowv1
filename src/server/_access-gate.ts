@@ -171,7 +171,7 @@ function normalizeWorkspaceAccessStatus(workspaceInput: unknown, statusInput?: u
   return rawStatus || 'trial_active';
 }
 
-async function selectWorkspaceAccessRow(workspaceId: string) {
+async function selectWorkspaceAccessRow(workspaceId: string, options: { failClosed?: boolean } = {}) {
   const normalizedWorkspaceId = asText(workspaceId);
   if (!normalizedWorkspaceId) return null;
 
@@ -182,6 +182,7 @@ async function selectWorkspaceAccessRow(workspaceId: string) {
     const rows = Array.isArray(result?.data) ? result.data as WorkspaceAccessRow[] : [];
     return rows[0] || null;
   } catch {
+    if (options.failClosed) throw makeGateError('WORKSPACE_ACCESS_UNAVAILABLE', 503);
     return null;
   }
 }
@@ -270,11 +271,41 @@ export async function assertWorkspaceAiAllowed(
 ) {
   if (process.env.VITE_AI_USAGE_UNLIMITED === 'true' && process.env.NODE_ENV !== 'production') return true;
 
+  if (typeof workspaceInput === 'string' && asText(workspaceInput)) {
+    const workspaceRow = await selectWorkspaceAccessRow(asText(workspaceInput), { failClosed: true });
+    if (!workspaceRow) throw makeGateError('WORKSPACE_ACCESS_REQUIRED', 403);
+    try {
+      return await assertWorkspaceFeatureAccess(workspaceRow, 'fullAi', planInput);
+    } catch (error: unknown) {
+      const code = error && typeof error === 'object'
+        ? String((error as Record<string, unknown>).code || (error as Record<string, unknown>).message || '')
+        : '';
+      if (code === 'WORKSPACE_ACCESS_UNAVAILABLE') throw error;
+      throw makeGateError('WORKSPACE_AI_ACCESS_REQUIRED', 402);
+    }
+  }
+
   try {
     return await assertWorkspaceFeatureAccess(workspaceInput, 'fullAi', planInput);
   } catch {
     throw makeGateError('WORKSPACE_AI_ACCESS_REQUIRED', 402);
   }
+}
+
+export async function getWorkspaceAiLimits(workspaceId: string) {
+  const normalizedWorkspaceId = asText(workspaceId);
+  if (!normalizedWorkspaceId) throw makeGateError('WORKSPACE_CONTEXT_REQUIRED', 401);
+  const workspaceRow = await selectWorkspaceAccessRow(normalizedWorkspaceId, { failClosed: true });
+  if (!workspaceRow) throw makeGateError('WORKSPACE_ACCESS_REQUIRED', 403);
+  const status = normalizeWorkspaceAccessStatus(workspaceRow);
+  const plan = readPlanId(workspaceRow);
+  const limits = getPlanLimits(plan, status);
+  return {
+    planId: normalizePlanId(plan, status),
+    subscriptionStatus: status,
+    aiDaily: limits.aiDaily,
+    aiMonthly: limits.aiMonthly,
+  };
 }
 
 

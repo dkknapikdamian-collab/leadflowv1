@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AlertCircle, CheckCircle2, ChevronRight, Clock, Filter, LayoutDashboard, LogOut, Plus, Search, Settings, Users, X } from 'lucide-react';
-import { auth } from '../firebase';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
@@ -27,6 +26,8 @@ import {
   insertCaseItemToSupabase,
   isSupabaseConfigured,
 } from '../lib/supabase-fallback';
+import { getClientAuthSnapshot } from '../lib/client-auth';
+import { signOutFromSupabase } from '../lib/supabase-auth';
 
 type DashboardCase = {
   id: string;
@@ -75,6 +76,7 @@ function formatDate(value: unknown) {
 }
 
 export default function Dashboard() {
+  const authSnapshot = getClientAuthSnapshot();
   const [cases, setCases] = useState<DashboardCase[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -215,7 +217,7 @@ export default function Dashboard() {
           </Button>
         </nav>
         <div className="p-4 border-t border-slate-100">
-          <Button variant="ghost" className="cf-session-action-danger w-full justify-start gap-3" data-cf-session-action="logout" onClick={() => auth.signOut()}>
+          <Button variant="ghost" className="cf-session-action-danger w-full justify-start gap-3" data-cf-session-action="logout" onClick={() => void signOutFromSupabase()}>
             <LogOut className="w-5 h-5" />
             Wyloguj się
           </Button>
@@ -225,7 +227,7 @@ export default function Dashboard() {
       <main className="flex-1 p-8 overflow-y-auto">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-slate-900">Witaj, {auth.currentUser?.displayName}</h2>
+            <h2 className="text-3xl font-bold text-slate-900">Witaj, {authSnapshot.fullName}</h2>
             <p className="text-slate-500">Oto co dzieje się w Twoich projektach.</p>
           </div>
           <Dialog open={isNewCaseOpen} onOpenChange={setIsNewCaseOpen}>

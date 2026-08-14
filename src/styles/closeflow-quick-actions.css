@@ -1,0 +1,130 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-quick-actions.css","concerns":[],"scope":"component","consumerRoots":["src/components/detail/QuickActionsBar.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+.cf-shared-quick-actions-bar {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid #e4e7ec;
+  border-radius: 22px;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05);
+  color: #111827;
+  padding: 16px;
+}
+
+.cf-shared-quick-actions-bar__header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.cf-shared-quick-actions-bar__header strong {
+  color: #111827;
+  font-size: 15px;
+  font-weight: 850;
+  letter-spacing: -0.02em;
+}
+
+.cf-shared-quick-actions-bar__grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr;
+}
+
+.cf-shared-quick-actions-bar__button {
+  align-items: center;
+  border: 1px solid #e4e7ec;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #344054;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 9px;
+  justify-content: flex-start;
+  min-height: 42px;
+  padding: 10px 12px;
+  text-align: left;
+  transition: border-color 120ms ease, background 120ms ease, transform 120ms ease;
+  width: 100%;
+}
+
+.cf-shared-quick-actions-bar__button:hover:not(:disabled) {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  transform: translateY(-1px);
+}
+
+.cf-shared-quick-actions-bar__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.cf-shared-quick-actions-bar__icon {
+  align-items: center;
+  border-radius: 999px;
+  display: inline-flex;
+  height: 28px;
+  justify-content: center;
+  width: 28px;
+}
+
+.cf-shared-quick-actions-bar__button--note .cf-shared-quick-actions-bar__icon { color: #4f46e5; background: #eef2ff; }
+.cf-shared-quick-actions-bar__button--task .cf-shared-quick-actions-bar__icon { color: #2563eb; background: #eff6ff; }
+.cf-shared-quick-actions-bar__button--event .cf-shared-quick-actions-bar__icon { color: #0f766e; background: #ecfdf5; }
+.cf-shared-quick-actions-bar__button--missing .cf-shared-quick-actions-bar__icon { color: #b45309; background: #fffbeb; }
+.cf-shared-quick-actions-bar__button--lost .cf-shared-quick-actions-bar__icon { color: #b91c1c; background: #fef2f2; }
+.cf-shared-quick-actions-bar__button--service .cf-shared-quick-actions-bar__icon { color: #7c3aed; background: #f5f3ff; }
+.cf-shared-quick-actions-bar__button--payment .cf-shared-quick-actions-bar__icon { color: #16a34a; background: #ecfdf3; }
+.cf-shared-quick-actions-bar--rail {
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(226, 232, 240, 0.96);
+  border-radius: 24px;
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.06);
+  padding: 16px;
+}
+
+.cf-shared-quick-actions-bar--rail .cf-shared-quick-actions-bar__header {
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.cf-shared-quick-actions-bar--rail .cf-shared-quick-actions-bar__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.cf-shared-quick-actions-bar--rail .cf-shared-quick-actions-bar__button {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.96);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.035);
+  color: #334155;
+  display: flex;
+  font-size: 13px;
+  font-weight: 760;
+  gap: 10px;
+  justify-content: flex-start;
+  min-height: 44px;
+  padding: 10px 12px;
+  text-align: left;
+  width: 100%;
+}
+
+.cf-shared-quick-actions-bar--rail .cf-shared-quick-actions-bar__button:hover:not(:disabled) {
+  background: #f8fbff;
+  border-color: rgba(147, 197, 253, 0.9);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08);
+  transform: translateY(-1px);
+}
+
+.cf-shared-quick-actions-bar--rail .cf-shared-quick-actions-bar__icon {
+  flex: 0 0 auto;
+  height: 28px;
+  width: 28px;
+}
+
+.cf-shared-quick-actions-bar--rail .cf-shared-quick-actions-bar__button > span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

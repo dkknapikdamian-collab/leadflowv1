@@ -125,6 +125,55 @@ if (exists('scripts/closeflow-release-check-quiet.cjs')) {
 }
 
 const allowedChangePrefixes = [
+  // CLOSEFLOW_B3_BILLING_AUTHORITY_ALLOWLIST
+  'api/me.ts',
+  'api/system.ts',
+  'scripts/check-p14-billing-production-validation.cjs',
+  'scripts/closeflow-release-check.cjs',
+  'scripts/closeflow-release-check-quiet.cjs',
+  'src/lib/source-of-truth/billing-options.ts',
+  'src/lib/supabase-fallback.ts',
+  'src/pages/Billing.tsx',
+  'src/server/_request-scope.ts',
+  'src/server/_stripe.ts',
+  'src/server/billing-actions-handler.ts',
+  'src/server/billing-checkout-handler.ts',
+  'src/server/billing-webhook-handler.ts',
+  'src/server/digest-authorization.ts',
+  'supabase/migrations/20260810130000_b3_billing_webhook_processing_boundary.sql',
+  'tests/b3-billing-authority.test.cjs',
+  'tests/b3-billing-authority-runtime.test.ts',
+  // B4 AI confirmation remediation allowlist: server confirmation, lifecycle
+  // gates, trusted context origin, idempotency migration and focused tests.
+  'src/components/quick-lead/QuickLeadCaptureModal.tsx',
+  'src/server/ai-access.ts',
+  'src/server/ai-draft-confirmation.ts',
+  'src/server/ai-drafts.ts',
+  'src/server/assistant-context.ts',
+  'src/server/drafts.ts',
+  'supabase/migrations/20260810150000_b4_ai_draft_confirmation_idempotency.sql',
+  'tests/b4-ai-access-runtime.test.ts',
+  'tests/b4-ai-remediation-runtime.test.ts',
+  'tests/b4-ai-remediation.test.cjs',
+  'tests/stage27-quick-lead-capture.test.cjs',
+  // B5 support actor authority and atomic audit allowlist.
+  'src/server/support-handler.ts',
+  'supabase/migrations/20260810160000_b5_support_actor_authority_audit.sql',
+  'tests/b5-support-actor-audit.test.cjs',
+  'tests/b5-support-actor-audit-runtime.test.ts',
+  'docs/stages/LF-SEC-CG-001E_SUPPORT_ACTOR_AUTHORITY_AND_AUDIT_TRAIL_REPAIR.md',
+  'docs/stages/LF-SEC-CG-001F_PORTAL_UPLOAD_PARENT_SCOPE_RATE_LIMIT_AND_QUOTA_REPAIR.md',
+  'docs/stages/LF-SEC-CG-001G_DEPENDENCY_SECRET_AND_SUPPLY_CHAIN_AUDIT_AND_REPAIR.md',
+  '_project/WORKFLOW_STATE.json',
+  // B6 portal upload scope, admission, quota/rate and replay allowlist.
+  'api/case-items.ts',
+  'api/storage-upload.ts',
+  'src/server/_portal-storage.ts',
+  'src/server/portal-upload.ts',
+  'supabase/migrations/20260810170000_b6_portal_upload_admission_scope_quota.sql',
+  'tests/b6-portal-upload-scope.test.cjs',
+  'tests/b6-portal-upload-scope-runtime.test.ts',
+  'tests/b2-case-items-scope.test.cjs',
   // STAGE232T_R1D_TODAY_WORK_ITEM_ACTIONS_SOURCE_TRUTH_ALLOWLIST
   'src/pages/TodayStable.tsx',
   'src/pages/TasksStable.tsx',
@@ -683,7 +732,10 @@ if (exists('.git')) {
     ...gitList(['diff', '--name-only', '--cached']),
     ...gitList(['ls-files', '--others', '--exclude-standard']),
   ]);
-  const outOfScope = [...changed].filter((file) => !allowedChangePrefixes.includes(file.replace(/\\/g, '/')));
+  const outOfScope = [...changed]
+    .map((file) => file.replace(/\\/g, '/'))
+    .filter((file) => file !== '.stversions' && !file.startsWith('.stversions/'))
+    .filter((file) => !allowedChangePrefixes.includes(file));
   expect(outOfScope.length === 0, `Out-of-scope changed files detected for CF-RUNTIME-00: ${outOfScope.join(', ')}`);
 }
 

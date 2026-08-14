@@ -28,22 +28,13 @@ expect('src/components/Layout.tsx', 'main-case-detail', 'main-case-detail scoped
 expect('src/components/Layout.tsx', 'data-visual-stage-case-detail', 'case detail visual data marker');
 
 reject('src/index.css', 'visual-stage08-case-detail.css', 'inactive Stage08 CaseDetail CSS import');
-expect('src/pages/CaseDetail.tsx', "../styles/visual-stage13-case-detail-vnext.css", 'current Stage13 CaseDetail visual import');
 expect('src/pages/CaseDetail.tsx', "../styles/closeflow-case-history-visual-source-truth.css", 'current case history CSS import');
-expect('src/pages/CaseDetail.tsx', "../styles/closeflow-unified-page-canvas-stage211c.css", 'current Stage211C canvas import');
-expect('src/pages/CaseDetail.tsx', "../styles/closeflow-case-detail-stage217-operation-workspace.css", 'current Stage217 operation workspace import');
-expect('src/pages/CaseDetail.tsx', "../styles/closeflow-case-detail-stage220a10-tabs-layout-repair.css", 'current Stage220 tabs layout import');
-expect('src/pages/CaseDetail.tsx', "../styles/case-detail-stage228r9-shell-rail-lift.css", 'current Stage228 shell rail import');
-expect('src/pages/CaseDetail.tsx', 'STAGE231D2_R6_CASE_DETAIL_TOP_STRIP_RAIL_LIFT', 'current CaseDetail rail source marker');
-expect('src/pages/CaseDetail.tsx', 'STAGE217_CASE_DETAIL_OPERATION_WORKSPACE_UX', 'current operation workspace marker');
-
-expect('src/styles/visual-stage08-case-detail.css', 'VISUAL_STAGE_08_CASE_DETAIL_CSS', 'Stage08 reference CSS marker');
-expect('src/styles/visual-stage08-case-detail.css', '.main-case-detail', 'historical scoped CaseDetail selector');
-expect('src/styles/visual-stage08-case-detail.css', 'layout-detail', 'historical layout-detail pattern');
-expect('src/styles/visual-stage08-case-detail.css', 'person-card', 'historical person-card pattern');
-expect('src/styles/visual-stage08-case-detail.css', 'hero.light', 'historical hero light pattern');
-expect('src/styles/visual-stage08-case-detail.css', 'right-card', 'historical right-card pattern');
-expect('src/styles/visual-stage08-case-detail.css', '@media (max-width: 760px)', 'historical mobile polish');
+expect('src/App.tsx', "./styles/closeflow-visual-source-truth.css", 'canonical visual owner entrypoint');
+expect('src/pages/CaseDetail.tsx', "../styles/closeflow-case-detail-tabs.css", 'current CaseDetail tabs adapter');
+expect('src/pages/CaseDetail.tsx', "../styles/closeflow-case-detail-shell-rail.css", 'current CaseDetail shell adapter');
+expect('src/styles/owners/closeflow-page-adapters.css', '.main-case-detail', 'canonical CaseDetail page adapter');
+expect('src/styles/owners/closeflow-page-adapters.css', '.layout-detail', 'canonical CaseDetail layout adapter');
+expect('src/styles/owners/closeflow-page-adapters.css', '.right-card', 'canonical CaseDetail rail adapter');
 
 expect('src/pages/CaseDetail.tsx', 'fetchCaseByIdFromSupabase', 'case fetch remains present');
 expect('src/pages/CaseDetail.tsx', 'fetchCaseItemsFromSupabase', 'case checklist/items remain present');

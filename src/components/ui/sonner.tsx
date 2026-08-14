@@ -4,7 +4,7 @@ import * as React from "react"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
 import { CircleCheckIcon, InfoIcon, TriangleAlertIcon, OctagonXIcon, Loader2Icon } from "lucide-react"
 import { useAppearance } from "../appearance-provider"
-import "../../styles/closeflow-toast-source-truth-stage220a33.css"
+import "../../styles/closeflow-toast.css"
 
 const STAGE220A33_CLOSEFLOW_TOAST_SOURCE_TRUTH = "global CloseFlow toast visual source truth is owned by src/components/ui/sonner.tsx"
 void STAGE220A33_CLOSEFLOW_TOAST_SOURCE_TRUTH

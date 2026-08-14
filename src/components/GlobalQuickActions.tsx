@@ -34,7 +34,6 @@ import TaskCreateDialog from './TaskCreateDialog';
 import ClientCreateDialog from './ClientCreateDialog';
 import { Button } from './ui/button';
 import { useWorkspace } from '../hooks/useWorkspace';
-import '../styles/closeflow-command-actions-source-truth.css';
 
 export type GlobalQuickActionTarget = 'lead' | 'task' | 'event';
 

@@ -227,10 +227,29 @@ function getHeader(headers: Record<string, string | string[] | undefined> | unde
 
 function requestBaseUrl(req: { headers?: Record<string, string | string[] | undefined>; url?: string } | undefined): string | null {
   if (!req?.headers) return null;
-  const proto = getHeader(req.headers, "x-forwarded-proto") || "https";
-  const host = getHeader(req.headers, "x-forwarded-host") || getHeader(req.headers, "host");
-  if (!host) return null;
-  return `${proto}://${host}`;
+  const configuredOrigins = [
+    process.env.CLOSEFLOW_APP_URL,
+    process.env.APP_BASE_URL,
+    process.env.NEXT_PUBLIC_SITE_URL,
+    process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : '',
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '',
+  ].filter(Boolean);
+  for (const origin of configuredOrigins) {
+    try {
+      const parsed = new URL(String(origin));
+      if (parsed.protocol === "https:" || parsed.protocol === "http:") return parsed.origin;
+    } catch {
+      // Ignore malformed deployment configuration and continue fail-closed.
+    }
+  }
+
+  // Never construct an authenticated internal URL from x-forwarded-host. If
+  // no trusted deployment origin is configured, only loopback hosts are safe.
+  const host = getHeader(req.headers, "host")?.split(",")[0]?.trim().toLowerCase();
+  const loopback = Boolean(host && (host === "localhost" || host.startsWith("localhost:") || host.startsWith("127.") || host.startsWith("[::1]")));
+  if (!loopback || !host) return null;
+  const protocol = "http";
+  return `${protocol}://${host}`;
 }
 
 async function fetchJsonSafe(url: string, headers: Record<string, string>): Promise<unknown> {
@@ -340,7 +359,8 @@ export default async function assistantContextHandler(req: any, res: any) {
   const context = await buildAssistantContextFromRequest({
     query,
     timezone,
-    seed: (body.snapshot || body.seed || undefined) as AssistantContextSeed | undefined,
+    // Caller snapshots are untrusted input; server-side reads are the only context SOT.
+    seed: undefined,
     request: {
       headers: req.headers || {},
       url: req.url,

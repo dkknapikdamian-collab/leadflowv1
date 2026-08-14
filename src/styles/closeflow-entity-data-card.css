@@ -1,0 +1,19 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-entity-data-card.css","concerns":[],"scope":"component","consumerRoots":["src/pages/ClientDetail.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+.lead-detail-vnext-page .lead-detail-left-rail,
+.client-detail-vnext-page .client-detail-left-rail {
+  width: var(--cf-entity-data-card-width);
+  min-width: var(--cf-entity-data-card-width);
+  max-width: var(--cf-entity-data-card-width);
+  align-self: start;
+}
+
+.client-detail-vnext-page .client-detail-shell,
+.lead-detail-vnext-page .lead-detail-shell {
+  grid-template-columns: var(--cf-entity-data-card-width) minmax(0, 1fr) 310px;
+}
+@media (max-width: 1120px) {
+  .lead-detail-vnext-page .lead-detail-shell,
+  .client-detail-vnext-page .client-detail-shell {
+    grid-template-columns: 1fr;
+  }
+}

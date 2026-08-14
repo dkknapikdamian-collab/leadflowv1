@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 import type { CloseFlowPageHeaderContent, CloseFlowPageHeaderKey } from '../lib/page-header-content';
-import '../styles/closeflow-page-header-v2.css';
+import '../styles/closeflow-page-header-runtime.css';
 
 type CloseFlowPageHeaderV2Props = {
   pageKey: CloseFlowPageHeaderKey;

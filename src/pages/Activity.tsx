@@ -11,10 +11,8 @@ import {
 } from '../components/ui-system';
 
 import Layout from '../components/Layout';
-import '../styles/visual-stage8-activity-vnext.css';
-import '../styles/closeflow-activity-visual-source-truth-stage181u.css';
-import '../styles/hotfix-right-rail-dark-wrappers.css';
-import '../styles/closeflow-activity-rail-force-colors-stage181v.css';
+import '../styles/closeflow-right-rail-wrappers.css';
+import '../styles/closeflow-activity-rail.css';
 import {
   StatShortcutCard
 } from '../components/StatShortcutCard';
@@ -31,9 +29,7 @@ import {
   useWorkspace
 } from '../hooks/useWorkspace';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
-import '../styles/closeflow-page-header-v2.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+import '../styles/closeflow-page-header-runtime.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 import {
   ACTIVITY_FILTER_OPTIONS as activityFilters,
@@ -59,7 +55,7 @@ import {
   requiresActivityAttention as requiresAttention,
   shouldShowActivityByFilter as shouldShowByFilter,
 } from '../lib/source-of-truth/activity-options';
-import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
+import '../styles/closeflow-canvas-runtime.css';
 function getActivityIcon(activity: any) {
   switch (getActivityEntity(activity)) {
     case 'lead':
@@ -358,7 +354,7 @@ export default function Activity() {
                 </label>
               </div>
 
-              <label className="activity-search-box cf-main-search cf-main-search-stage175" data-cf-main-search-source="stage173" data-cf-main-search-stage175="true">
+              <label className="activity-search-box cf-main-search cf-main-search-semantic175" data-cf-main-search-source="semantic173" data-cf-main-search-semantic175="true">
                 <Search className="h-4 w-4" />
                 <input
                   value={query}
@@ -478,3 +474,5 @@ export default function Activity() {
     </Layout>
   );
 }
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

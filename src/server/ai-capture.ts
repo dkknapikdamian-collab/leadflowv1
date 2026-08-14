@@ -1,3 +1,5 @@
+import { tryGenerateJsonWithAiProvider } from './ai-provider.js';
+
 type AiLeadDraft = {
   name: string;
   company: string;
@@ -303,12 +305,7 @@ function sanitizeAiDraft(candidate: any, rawText: string, provider: string): AiC
   };
 }
 
-async function tryGeminiDraft(rawText: string) {
-  const apiKey = asText(process.env.GEMINI_API_KEY);
-  if (!apiKey) return null;
-
-  const model = asText(process.env.GEMINI_MODEL) || 'gemini-2.5-flash-lite';
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+async function tryAiDraft(rawText: string) {
   const prompt = [
     'Zamień notatkę operatora sprzedaży na bezpieczny szkic JSON.',
     'Nie dopowiadaj danych, których nie ma w notatce.',
@@ -317,27 +314,16 @@ async function tryGeminiDraft(rawText: string) {
     `Notatka: ${rawText}`,
   ].join('\n');
 
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: 0.1,
-          responseMimeType: 'application/json',
-        },
-      }),
-    });
-
-    if (!response.ok) return null;
-    const json = await response.json();
-    const text = asText(json?.candidates?.[0]?.content?.parts?.[0]?.text);
-    if (!text) return null;
-    return JSON.parse(text);
-  } catch {
-    return null;
-  }
+  const result = await tryGenerateJsonWithAiProvider(prompt, {
+    operation: 'capture_draft',
+    maxOutputTokens: 900,
+    temperature: 0.1,
+  });
+  if (!result) return null;
+  return {
+    candidate: result.json,
+    provider: result.provider,
+  };
 }
 
 export default async function aiCaptureHandler(req: any, res: any) {
@@ -360,7 +346,6 @@ export default async function aiCaptureHandler(req: any, res: any) {
       return;
     }
 
-    const aiEnabled = asBool(process.env.AI_ENABLED, false);
     const quickLeadEnabled = asBool(process.env.QUICK_LEAD_CAPTURE_ENABLED, true);
 
     if (!quickLeadEnabled) {
@@ -368,12 +353,10 @@ export default async function aiCaptureHandler(req: any, res: any) {
       return;
     }
 
-    if (aiEnabled) {
-      const geminiDraft = await tryGeminiDraft(rawText);
-      if (geminiDraft) {
-        res.status(200).json(sanitizeAiDraft(geminiDraft, rawText, 'gemini'));
-        return;
-      }
+    const aiDraft = await tryAiDraft(rawText);
+    if (aiDraft) {
+      res.status(200).json(sanitizeAiDraft(aiDraft.candidate, rawText, aiDraft.provider));
+      return;
     }
 
     res.status(200).json(buildRuleDraft(rawText));

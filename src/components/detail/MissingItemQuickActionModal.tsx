@@ -7,9 +7,6 @@ import {
   type MissingItemKind,
   type MissingItemModalContext,
 } from '../../lib/missing-items/stage227c2-missing-item-modal-contract';
-import '../../styles/visual-stage20-lead-form-vnext.css';
-import '../../styles/stage232a-missing-item-visual-source.css';
-
 export const STAGE227C2_MISSING_ITEM_MODAL_COMPONENT =
   'Stage227C2 shared Brak modal component is small, required-title only, no SQL and no checklist';
 

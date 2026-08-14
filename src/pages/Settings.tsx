@@ -1,19 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Building2, Calendar, CalendarDays, Database, KeyRound, LockKeyhole, LogOut, Mail, Menu, MonitorCog, RefreshCw, Save, Settings as SettingsIcon, Shield, SlidersHorizontal, Smartphone, User, Users, WalletCards } from 'lucide-react';
+import { Building2, CalendarDays, Database, KeyRound, LockKeyhole, LogOut, Mail, Menu, MonitorCog, RefreshCw, Save, Settings as SettingsIcon, Shield, SlidersHorizontal, Smartphone, User, Users, WalletCards } from 'lucide-react';
 import {
   EntityIcon,
   NotificationEntityIcon
 } from '../components/ui-system';
 
-import {
-  EmailAuthProvider,
-  fetchSignInMethodsForEmail,
-  linkWithCredential,
-  reauthenticateWithCredential,
-  sendPasswordResetEmail,
-  signOut,
-  verifyBeforeUpdateEmail
-} from 'firebase/auth';
 import {
   toast
 } from 'sonner';
@@ -28,11 +19,9 @@ import {
   Label
 } from '../components/ui/label';
 import {
-  auth
-} from '../firebase';
-import {
   useWorkspace
 } from '../hooks/useWorkspace';
+import { useSupabaseSession } from '../hooks/useSupabaseSession';
 import {
   useClientAuthSnapshot
 } from '../hooks/useClientAuthSnapshot';
@@ -56,7 +45,11 @@ import {
   isSupabaseConfigured
 } from '../lib/supabase-fallback';
 import {
-  getSupabaseAccessToken
+  getSupabaseAccessToken,
+  sendPasswordReset,
+  signInWithPassword,
+  signOutFromSupabase,
+  updateSupabaseUser
 } from '../lib/supabase-auth';
 import {
   GOOGLE_CALENDAR_REMINDER_METHOD_OPTIONS
@@ -67,17 +60,15 @@ import {
 } from '../lib/google-calendar-reminder-preferences';
 import { DEFAULT_HIGH_VALUE_THRESHOLD_PLN, DEFAULT_OWNER_CONTROL_CRITICAL_DAYS, DEFAULT_OWNER_CONTROL_WARNING_DAYS } from '../lib/owner-control/owner-risk-rules';
 import { readOwnerRiskSettings, writeOwnerRiskSettings, getOwnerRiskSettingsStorageNote } from '../lib/owner-control/owner-risk-settings';
-import '../styles/visual-stage19-settings-vnext.css';
+import '../styles/closeflow-settings.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
-import '../styles/closeflow-page-header-v2.css';
-import '../styles/closeflow-settings-form-control-readability-stage179.css';
-import '../styles/closeflow-settings-tabs-stage181ac.css';
-import '../styles/closeflow-settings-summary-right-rail-stage181ae.css';
-import '../styles/closeflow-settings-profile-readability-stage181af.css';
-import '../styles/closeflow-settings-safe-copy-cleanup-stage181ai.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
-import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
+import '../styles/closeflow-page-header-runtime.css';
+import '../styles/closeflow-settings-form-controls.css';
+import '../styles/closeflow-settings-tabs.css';
+import '../styles/closeflow-settings-summary-rail.css';
+import '../styles/closeflow-settings-profile.css';
+import '../styles/closeflow-settings-copy.css';
+import '../styles/closeflow-canvas-runtime.css';
 const SETTINGS_VISUAL_REBUILD_STAGE19 = 'SETTINGS_VISUAL_REBUILD_STAGE19';
 const DAILY_DIGEST_EMAIL_UI_VISIBLE = false;
 const DAILY_DIGEST_EMAIL_TEST_COPY_GUARD = 'Wyślij test teraz';
@@ -200,7 +191,8 @@ function asText(value: unknown, fallback = 'Nie ustawiono') {
 
 export default function Settings() {
   const { workspace, profile: workspaceProfile, loading: workspaceLoading, refresh, access, isAdmin, isAppOwner } = useWorkspace();
-const authSnapshot = useClientAuthSnapshot();
+  const authSnapshot = useClientAuthSnapshot();
+  const [sessionUser] = useSupabaseSession();
   const [activeSettingsTab, setActiveSettingsTab] = useState<SettingsTab>('account');
 
   const [profile, setProfile] = useState<ProfileFormState>({ fullName: '', companyName: '' });
@@ -245,7 +237,7 @@ const authSnapshot = useClientAuthSnapshot();
 
 useEffect(() => {
     setProfile({
-      fullName: workspaceProfile?.fullName || auth.currentUser?.displayName || '',
+      fullName: workspaceProfile?.fullName || authSnapshot.fullName || '',
       companyName: workspaceProfile?.companyName || '',
     });
     setConflictWarningsEnabledState(
@@ -266,41 +258,25 @@ useEffect(() => {
     setDailyDigestEnabled(typeof workspace?.dailyDigestEnabled === 'boolean' ? workspace.dailyDigestEnabled : true);
     setDailyDigestHour(String(workspace?.dailyDigestHour ?? 7));
     setDailyDigestTimezone(workspace?.dailyDigestTimezone || workspace?.timezone || 'Europe/Warsaw');
-    setDailyDigestRecipientEmail(workspace?.dailyDigestRecipientEmail || workspaceProfile?.email || auth.currentUser?.email || '');
+    setDailyDigestRecipientEmail(workspace?.dailyDigestRecipientEmail || workspaceProfile?.email || authSnapshot.email || '');
     const ownerRiskSettings = readOwnerRiskSettings(workspace);
     setOwnerRiskWarningDays(String(ownerRiskSettings.warningDays));
     setOwnerRiskCriticalDays(String(ownerRiskSettings.criticalDays));
     setOwnerRiskHighValueThreshold(String(ownerRiskSettings.highValueThresholdPln));
-  }, [workspace, workspaceProfile]);
+  }, [authSnapshot.email, authSnapshot.fullName, workspace, workspaceProfile]);
 
   useEffect(() => {
-    if (!auth.currentUser) return;
+    const providers = (sessionUser?.authProviders || []).map((provider) => String(provider || '').trim().toLowerCase());
+    setPasswordAuthAvailable(providers.includes('email') || providers.includes('password'));
+  }, [sessionUser]);
 
-    const fetchAuthMethods = async () => {
-      let canUsePassword = auth.currentUser?.providerData?.some((item) => item.providerId === 'password') ?? false;
-
-      if (auth.currentUser?.email) {
-        try {
-          const methods = await fetchSignInMethodsForEmail(auth, auth.currentUser.email);
-          canUsePassword = canUsePassword || methods.includes('password');
-        } catch (error) {
-          console.warn('SETTINGS_FETCH_SIGNIN_METHODS_FAILED', error);
-        }
-      }
-
-      setPasswordAuthAvailable(canUsePassword);
-    };
-
-    void fetchAuthMethods();
-  }, [workspaceProfile?.email]);
-
-  const accountEmail = auth.currentUser?.email || authSnapshot.email || workspaceProfile?.email || '';
+  const accountEmail = sessionUser?.email || authSnapshot.email || workspaceProfile?.email || '';
   const planLabel = humanPlan(workspace?.planId, workspace?.subscriptionStatus);
   const accessLabel = humanAccessStatus(access?.status);
   const workspaceName = asText(workspaceProfile?.companyName || profile.companyName || workspace?.name, 'Workspace CloseFlow');
   // GOOGLE_CALENDAR_STAGE07C_SUPABASE_AUTH_SNAPSHOT
-  const activeUserId = auth.currentUser?.uid || authSnapshot.uid || workspaceProfile?.id || '';
-  const activeUserEmail = auth.currentUser?.email || authSnapshot.email || workspaceProfile?.email || '';
+  const activeUserId = sessionUser?.uid || authSnapshot.uid || workspaceProfile?.id || '';
+  const activeUserEmail = sessionUser?.email || authSnapshot.email || workspaceProfile?.email || '';
 
   const settingsSummary = useMemo(
     () => [
@@ -326,8 +302,6 @@ useEffect(() => {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       'x-workspace-id': workspace?.id || '',
-      'x-user-id': activeUserId,
-      'x-user-email': activeUserEmail,
     };
   };
 
@@ -545,7 +519,7 @@ useEffect(() => {
   };
 
   const handleUpdateProfile = async () => {
-    if (!auth.currentUser) return;
+    if (!sessionUser) return;
 
     setSavingProfile(true);
     try {
@@ -599,17 +573,17 @@ useEffect(() => {
       return;
     }
 
-    const recipientEmail = dailyDigestRecipientEmail.trim() || workspaceProfile?.email || auth.currentUser?.email || '';
+    const recipientEmail = dailyDigestRecipientEmail.trim() || workspaceProfile?.email || sessionUser?.email || '';
 
     setCheckingDigestDiagnostics(true);
     try {
+      const token = await getSupabaseAccessToken().catch(() => '');
       const response = await fetch('/api/daily-digest', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
           'x-workspace-id': workspace.id,
-          'x-user-id': auth.currentUser?.uid || '',
-          'x-user-email': auth.currentUser?.email || workspaceProfile?.email || recipientEmail,
         },
         body: JSON.stringify({
           mode: 'workspace-diagnostics',
@@ -638,7 +612,7 @@ useEffect(() => {
       return;
     }
 
-    const recipientEmail = dailyDigestRecipientEmail.trim() || workspaceProfile?.email || auth.currentUser?.email || '';
+    const recipientEmail = dailyDigestRecipientEmail.trim() || workspaceProfile?.email || sessionUser?.email || '';
     if (!recipientEmail) {
       toast.error('Podaj adres odbiorcy digestu.');
       return;
@@ -646,13 +620,13 @@ useEffect(() => {
 
     setSendingDigestTest(true);
     try {
+      const token = await getSupabaseAccessToken().catch(() => '');
       const response = await fetch('/api/daily-digest', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
           'x-workspace-id': workspace.id,
-          'x-user-id': auth.currentUser?.uid || '',
-          'x-user-email': auth.currentUser?.email || workspaceProfile?.email || recipientEmail,
         },
         body: JSON.stringify({
           mode: 'workspace-test',
@@ -676,7 +650,7 @@ useEffect(() => {
   };
 
   const handleChangeEmail = async () => {
-    if (!auth.currentUser?.email) return;
+    if (!sessionUser?.email) return;
     if (!passwordAuthAvailable) {
       toast.error('Zmiana e-maila z potwierdzeniem hasła działa dla kont z logowaniem e-mail + hasło.');
       return;
@@ -688,7 +662,7 @@ useEffect(() => {
       return;
     }
 
-    if (normalizedEmail === String(auth.currentUser.email).trim().toLowerCase()) {
+    if (normalizedEmail === String(sessionUser.email).trim().toLowerCase()) {
       toast.error('Nowy adres e-mail jest taki sam jak obecny.');
       return;
     }
@@ -700,9 +674,8 @@ useEffect(() => {
 
     setEmailChangeSubmitting(true);
     try {
-      const credential = EmailAuthProvider.credential(auth.currentUser.email, currentPassword);
-      await reauthenticateWithCredential(auth.currentUser, credential);
-      await verifyBeforeUpdateEmail(auth.currentUser, normalizedEmail);
+      await signInWithPassword(sessionUser.email, currentPassword);
+      await updateSupabaseUser({ email: normalizedEmail });
       toast.success('Wysłaliśmy link potwierdzający na nowy e-mail.');
       setEmailChangeOpen(false);
       setNewEmail('');
@@ -715,7 +688,7 @@ useEffect(() => {
   };
 
   const handleSendPasswordChangeLink = async () => {
-    if (!auth.currentUser?.email) return;
+    if (!sessionUser?.email) return;
     if (!passwordAuthAvailable) {
       toast.error('To konto nie ma aktywnego logowania e-mail + hasło.');
       return;
@@ -723,7 +696,7 @@ useEffect(() => {
 
     setPasswordResetSubmitting(true);
     try {
-      await sendPasswordResetEmail(auth, auth.currentUser.email);
+      await sendPasswordReset(sessionUser.email);
       toast.success('Wysłaliśmy link do zmiany hasła na Twój e-mail.');
     } catch (error: any) {
       toast.error(`Błąd wysyłki linku: ${error?.message || 'REQUEST_FAILED'}`);
@@ -733,7 +706,7 @@ useEffect(() => {
   };
 
   const handleSetupPassword = async () => {
-    if (!auth.currentUser?.email) return;
+    if (!sessionUser?.email) return;
 
     if (passwordAuthAvailable) {
       toast.success('To konto ma już aktywne logowanie e-mail + hasło.');
@@ -753,10 +726,9 @@ useEffect(() => {
 
     setSetupPasswordSubmitting(true);
     try {
-      const credential = EmailAuthProvider.credential(auth.currentUser.email, setupPassword);
-      await linkWithCredential(auth.currentUser, credential);
+      await updateSupabaseUser({ password: setupPassword });
       await updateProfileSettingsInSupabase({
-        email: auth.currentUser.email,
+        email: sessionUser.email,
         workspaceId: workspace?.id || null,
       });
       setPasswordAuthAvailable(true);
@@ -766,14 +738,7 @@ useEffect(() => {
       toast.success('Hasło do logowania e-mail zostało ustawione.');
       refresh();
     } catch (error: any) {
-      const code = String(error?.code || '');
-      if (code === 'auth/provider-already-linked') {
-        setPasswordAuthAvailable(true);
-        setSetupPasswordOpen(false);
-        toast.success('Logowanie e-mail + hasło było już aktywne dla tego konta.');
-      } else {
-        toast.error(`Błąd ustawiania hasła: ${error?.message || 'REQUEST_FAILED'}`);
-      }
+      toast.error(`Błąd ustawiania hasła: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setSetupPasswordSubmitting(false);
     }
@@ -830,7 +795,7 @@ useEffect(() => {
   };
 
   const handleSignOutEverywhere = async () => {
-    if (!auth.currentUser) return;
+    if (!sessionUser) return;
     if (!window.confirm('Wylogować wszystkie urządzenia, łącznie z tym?')) return;
 
     setSigningOutEverywhere(true);
@@ -840,7 +805,7 @@ useEffect(() => {
         workspaceId: workspace?.id || null,
       });
       toast.success('Wylogowano wszystkie urządzenia. Zaloguj się ponownie.');
-      await signOut(auth);
+      await signOutFromSupabase();
     } catch (error: any) {
       toast.error(`Błąd: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
@@ -886,12 +851,12 @@ useEffect(() => {
           ))}
         </section>
 
-        <nav className="settings-tabs-stage181ac" data-settings-tabs-stage181ac="true" aria-label="Kategorie ustawień">
+        <nav className="settings-tabs" data-settings-tabs="true" aria-label="Kategorie ustawień">
           {SETTINGS_TAB_ITEMS.map((tab) => (
             <button
               key={tab.id}
               type="button"
-              className={activeSettingsTab === tab.id ? 'settings-tab-stage181ac settings-tab-stage181ac-active' : 'settings-tab-stage181ac'}
+              className={activeSettingsTab === tab.id ? 'settings-tab settings-tab-active' : 'settings-tab'}
               data-settings-tab-kind={tab.id}
               onClick={() => setActiveSettingsTab(tab.id)}
               aria-pressed={activeSettingsTab === tab.id}
@@ -905,7 +870,7 @@ useEffect(() => {
 
         <div className="settings-shell">
           <section className="settings-main-column">
-                            <section hidden={activeSettingsTab !== 'integrations' || canUseGoogleCalendarByPlan} className="settings-section-card settings-tab-empty-stage181ac" data-settings-tab-panel="integrations" data-settings-integrations-empty-stage181ac="true">
+                            <section hidden={activeSettingsTab !== 'integrations' || canUseGoogleCalendarByPlan} className="settings-section-card settings-tab-empty" data-settings-tab-panel="integrations" data-settings-integrations-empty="true">
                 <div className="settings-section-head">
                   <div>
                     <span><CalendarDays className="h-4 w-4" /> Integracje</span>
@@ -1524,3 +1489,5 @@ useEffect(() => { if (!canUseGoogleCalendarByPlan) return; loadGoogleCalendarSta
 <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-reminder-ui="stage06"
 <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-sync-v1-stage03="true"
 */}
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

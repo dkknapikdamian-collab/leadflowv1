@@ -14,10 +14,11 @@
 // STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { AlertTriangle, CheckCircle2, ChevronRight, Clock, ExternalLink, FileText, Loader2, Plus, Search, Trash2, X } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ChevronRight, Clock, ExternalLink, FileText, Loader2, Plus, Search, X } from 'lucide-react';
 import { format } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { EntityIcon } from '../components/ui-system/EntityIcon';
+import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 
 import { toast } from 'sonner';
 import { ConfirmDialog } from '../components/confirm-dialog';
@@ -40,7 +41,6 @@ import { getCaseStatusLabel, getCaseStatusTone } from '../lib/config/case-status
 import { getOwnerRiskLabel } from '../lib/config/funnel-stages';
 import { caseDetailPath } from '../lib/routes';
 import { requireWorkspaceId } from '../lib/workspace-context';
-import '../styles/visual-stage23-client-case-forms-vnext.css';
 import {
   createCaseInSupabase,
   fetchCasesFromSupabase,
@@ -51,10 +51,9 @@ import {
   fetchClientsFromSupabase,
 } from '../lib/supabase-fallback';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
-import '../styles/closeflow-page-header-v2.css';
+import '../styles/closeflow-page-header-runtime.css';
 import '../styles/closeflow-record-list-source-truth.css';
-import '../styles/closeflow-unified-page-canvas-stage211c.css';
-import '../styles/closeflow-canvas-source-truth-stage211e.css';
+// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css' is provided once by App.tsx.
 const CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES = 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES';
 const CLIENT_CASE_FORMS_STAGE23_HUMAN_COPY = 'Podaj nazwę klienta. Podaj tytuł sprawy. Wybierz klienta albo utwórz nowego. Nie udało się zapisać. Spróbuj ponownie. Rozpocznij obsługę.';
 const CASES_LIFECYCLE_NEEDS_NEXT_STEP_GUARD = 'Bez kroku';
@@ -111,7 +110,7 @@ const stage231b0R7CasesClosedViewContract = {
   route: '/cases?view=closed',
   label: 'Sprawy zamknięte',
   matches(record: { status?: unknown }, caseView: CaseView) {
-    const isClosedCase = isClosedCaseStatus((typeof caseRecord !== "undefined" ? caseRecord : null)?.status);
+    const isClosedCase = isClosedCaseStatus(record?.status);
     return (caseView === 'closed' && isClosedCase) || (caseView === 'open' && !isClosedCase) || caseView === 'all';
   },
 };
@@ -773,7 +772,7 @@ const toggleCaseView = (view: CaseView) => {
 
         <div className="layout-list">
           <div className="stack">
-            <div className="search cf-main-search" data-cf-main-search-source="stage173">
+            <div className="search cf-main-search" data-cf-main-search-source="semantic173">
               <span aria-hidden="true"><Search className="h-4 w-4" /></span>
               <Input
                 placeholder="Szukaj po nazwie, telefonie, e-mailu, firmie albo sprawie..."
@@ -823,22 +822,6 @@ const attention = isCaseClosedStage231B0R13 ? false : caseNeedsAttention(record)
                     : getCaseOwnerRiskBadges(record, {
 
                         settings: ownerRiskSettings,
-
-                        lifecycle,
-
-                        nearestCaseAction,
-
-                        nextActionLabel,
-
-                        statusLabel,
-
-                        compactLifecycleLabel,
-
-                        compactLifecyclePill,
-
-                        percent,
-
-                        updatedAt,
 
                       });
 const metaParts = [
@@ -902,7 +885,7 @@ const metaParts = [
                             setCaseToDelete(record);
                           }}
                         >
-                          {deletePending && caseToDelete?.id === record.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className={trashActionIconClass("h-4 w-4")} />}
+                          {deletePending && caseToDelete?.id === record.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <DeleteActionIcon className={trashActionIconClass("h-4 w-4")} />}
                         </EntityTrashButton>
                       </span>
                     </div>
@@ -983,3 +966,5 @@ const metaParts = [
 }
 
 /* PHASE0_STAT_CARD_PAGE_GUARD StatShortcutCard onClick= toggleCaseView('blocked') toggleCaseView('needs_next_step') */
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-structure-lock.css
+// LF-UI-SOT-007 canonical header owner marker: closeflow-page-header-copy-left-only.css

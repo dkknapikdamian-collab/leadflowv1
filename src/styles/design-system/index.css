@@ -1,5 +1,4 @@
-/* CLOSEFLOW_DESIGN_SYSTEM_INDEX_VS1 */
-@import './closeflow-tokens.css';
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/design-system/index.css","concerns":[],"scope":"entry","consumerRoots":["src/styles/design-system/index.css"],"role":"entrypoint","boundary":"runtime-entrypoint","whyNotGlobal":"This file is an import boundary, not a semantic visual owner.","whyNotDuplicate":"Only the runtime entry imports this boundary.","activePatchLayer":false,"historicalImplementationHooks":["Scoped implementation hooks are permitted only within this consumer boundary."]} */
 @import './closeflow-icons.css';
 @import './closeflow-layout.css';
 @import './closeflow-components.css';

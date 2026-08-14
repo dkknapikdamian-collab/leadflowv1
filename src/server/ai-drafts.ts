@@ -1,7 +1,8 @@
-import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, updateById } from './_supabase.js';
-import { writeAuthErrorResponse } from './_supabase-auth.js';
-import { asText, requireRequestIdentity, requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
+import { deleteByWorkspaceAndId, insertWithVariants, isUuid, selectFirstAvailable, updateByWorkspaceAndId } from './_supabase.js';
+import { RequestAuthError, requireSupabaseRequestContext, writeAuthErrorResponse } from './_supabase-auth.js';
+import { asText, requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
 import { assertWorkspaceAiAllowed, assertWorkspaceEntityLimit, assertWorkspaceWriteAccess } from './_access-gate.js';
+import { claimAiDraftConfirmation, createFinalRecordFromAiDraft, releaseAiDraftConfirmation } from './ai-draft-confirmation.js';
 
 type RecordMap = Record<string, unknown>;
 
@@ -153,11 +154,11 @@ async function safeInsertAiDraft(payload: RecordMap) {
   throw new Error('AI_DRAFT_SAFE_INSERT_EXHAUSTED');
 }
 
-async function safeUpdateAiDraft(id: string, payload: RecordMap) {
+async function safeUpdateAiDraft(id: string, workspaceId: string, payload: RecordMap) {
   let currentPayload = { ...payload };
   for (let attempt = 0; attempt < 16; attempt += 1) {
     try {
-      return await updateById('ai_drafts', id, currentPayload);
+      return await updateByWorkspaceAndId('ai_drafts', id, workspaceId, currentPayload);
     } catch (error) {
       const missingColumn = extractMissingColumn(error);
       if (!missingColumn || !(missingColumn in currentPayload)) throw error;
@@ -199,6 +200,18 @@ function getLinkedTable(linkedType: string | null) {
   return null;
 }
 
+function assertDraftConfirmable(row: RecordMap) {
+  const status = normalizeStoredStatus(row.status);
+  if (status !== 'draft' && status !== 'pending') {
+    throw new RequestAuthError(409, 'AI_DRAFT_NOT_CONFIRMABLE');
+  }
+  const expiresAt = toIsoOrNull(row.expires_at ?? row.expiresAt);
+  if (expiresAt && new Date(expiresAt).getTime() <= Date.now()) {
+    throw new RequestAuthError(409, 'AI_DRAFT_EXPIRED');
+  }
+}
+
+
 export default async function handler(req: any, res: any) {
   try {
     const body = parseBody(req);
@@ -236,7 +249,9 @@ export default async function handler(req: any, res: any) {
         return;
       }
 
-      const identity = await requireRequestIdentity(req);
+      const verifiedContext = await requireSupabaseRequestContext(req);
+      const verifiedUserId = asText(verifiedContext.userId);
+      if (!verifiedUserId) throw new RequestAuthError(401, 'AI_DRAFT_USER_CONTEXT_REQUIRED');
       const nowIso = new Date().toISOString();
       const type = normalizeEnum(body.type, TYPES, 'lead');
       const status = normalizeDbStatus(body.status, 'draft');
@@ -248,7 +263,7 @@ export default async function handler(req: any, res: any) {
       }
       const payload: RecordMap = {
         workspace_id: workspaceId,
-        user_id: asText(body.userId ?? body.user_id ?? identity.userId) || null,
+        user_id: verifiedUserId,
         type,
         kind: normalizeKind(type, body.kind),
         raw_text: shouldClearRawText(status) ? null : rawText,
@@ -278,7 +293,7 @@ export default async function handler(req: any, res: any) {
         res.status(400).json({ error: 'AI_DRAFT_ID_REQUIRED' });
         return;
       }
-      await requireScopedRow('ai_drafts', id, workspaceId, 'AI_DRAFT_NOT_FOUND');
+      const draftRow = await requireScopedRow('ai_drafts', id, workspaceId, 'AI_DRAFT_NOT_FOUND');
 
       const nowIso = new Date().toISOString();
       const nextStatus = body.status !== undefined ? normalizeDbStatus(body.status, 'draft') : '';
@@ -326,7 +341,44 @@ export default async function handler(req: any, res: any) {
         if (finalStatus === 'expired') payload.expires_at = payload.expires_at || nowIso;
       }
 
-      const updated = await safeUpdateAiDraft(id, payload);
+      if (finalStatus === 'confirmed') {
+        const existingStatus = normalizeStoredStatus(draftRow.status);
+        const existingLinkedId = asText(draftRow.linked_record_id ?? draftRow.linkedRecordId);
+        const existingLinkedType = getLinkedRecordType(draftRow.linked_record_type ?? draftRow.linkedRecordType);
+        if ((existingStatus === 'confirmed' || existingStatus === 'converted') && existingLinkedId && existingLinkedType) {
+          res.status(200).json({ draft: normalizeDraft(draftRow), createdRecord: { id: existingLinkedId, type: existingLinkedType }, idempotent: true });
+          return;
+        }
+        assertDraftConfirmable(draftRow);
+        const claimed = await claimAiDraftConfirmation(id, workspaceId);
+        if (!claimed) {
+          const latest = await requireScopedRow('ai_drafts', id, workspaceId, 'AI_DRAFT_NOT_FOUND');
+          const latestLinkedId = asText(latest.linked_record_id ?? latest.linkedRecordId);
+          const latestLinkedType = getLinkedRecordType(latest.linked_record_type ?? latest.linkedRecordType);
+          if (normalizeStoredStatus(latest.status) === 'confirmed' && latestLinkedId && latestLinkedType) {
+            res.status(200).json({ draft: normalizeDraft(latest), createdRecord: { id: latestLinkedId, type: latestLinkedType }, idempotent: true });
+            return;
+          }
+          res.status(409).json({ error: 'AI_DRAFT_CONFIRMATION_IN_PROGRESS' });
+          return;
+        }
+        try {
+          const created = await createFinalRecordFromAiDraft(draftRow, workspaceId, asJsonObject(body.confirmation));
+          if (!created.id) throw new Error('AI_DRAFT_CREATED_RECORD_ID_MISSING');
+          payload.linked_record_id = created.id;
+          payload.linked_record_type = created.type;
+          const updated = await safeUpdateAiDraft(id, workspaceId, payload);
+          await releaseAiDraftConfirmation(id, workspaceId).catch(() => null);
+          const row = Array.isArray(updated) && updated[0] ? updated[0] as RecordMap : { id, workspace_id: workspaceId, ...payload };
+          res.status(200).json({ draft: normalizeDraft(row), createdRecord: created });
+          return;
+        } catch (error) {
+          await releaseAiDraftConfirmation(id, workspaceId).catch(() => null);
+          throw error;
+        }
+      }
+
+      const updated = await safeUpdateAiDraft(id, workspaceId, payload);
       const row = Array.isArray(updated) && updated[0] ? updated[0] as RecordMap : { id, workspace_id: workspaceId, ...payload };
       res.status(200).json(normalizeDraft(row));
       return;
@@ -339,7 +391,7 @@ export default async function handler(req: any, res: any) {
         return;
       }
       await requireScopedRow('ai_drafts', id, workspaceId, 'AI_DRAFT_NOT_FOUND');
-      await deleteById('ai_drafts', id);
+      await deleteByWorkspaceAndId('ai_drafts', id, workspaceId);
       res.status(200).json({ ok: true, id });
       return;
     }

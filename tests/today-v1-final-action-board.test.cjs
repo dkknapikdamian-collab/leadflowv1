@@ -43,7 +43,7 @@ test('Today quick snooze keeps task and event updates relation-safe', () => {
 });
 
 test('Activity recognizes Today snooze activity labels', () => {
-  const source = read('src/pages/Activity.tsx');
+  const source = read('src/pages/Activity.tsx') + '\n' + read('src/lib/source-of-truth/activity-options.ts');
 
   assert.match(source, /today_task_snoozed/);
   assert.match(source, /today_event_snoozed/);

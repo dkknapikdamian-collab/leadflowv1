@@ -144,14 +144,14 @@ const CASE_LEGACY_STATUS_MAP: Record<string, CaseStatus> = {
   cancelled: 'canceled',
 };
 
-const TASK_LEGACY_STATUS_MAP: Record<string, TaskStatus> = {
+export const TASK_STATUS_LEGACY_ALIASES: Record<string, TaskStatus> = {
   completed: 'done',
   cancelled: 'canceled',
   postponed: 'scheduled',
   overdue: 'todo',
 };
 
-const EVENT_LEGACY_STATUS_MAP: Record<string, EventStatus> = {
+export const EVENT_STATUS_LEGACY_ALIASES: Record<string, EventStatus> = {
   completed: 'done',
   cancelled: 'canceled',
 };
@@ -200,11 +200,57 @@ export function normalizeCaseStatus(value: unknown, fallback: CaseStatus = 'new'
 }
 
 export function normalizeTaskStatus(value: unknown, fallback: TaskStatus = 'todo'): TaskStatus {
-  return normalizeFromList(value, TASK_STATUS_VALUES, fallback, TASK_LEGACY_STATUS_MAP);
+  return normalizeFromList(value, TASK_STATUS_VALUES, fallback, TASK_STATUS_LEGACY_ALIASES);
 }
 
 export function normalizeEventStatus(value: unknown, fallback: EventStatus = 'scheduled'): EventStatus {
-  return normalizeFromList(value, EVENT_STATUS_VALUES, fallback, EVENT_LEGACY_STATUS_MAP);
+  return normalizeFromList(value, EVENT_STATUS_VALUES, fallback, EVENT_STATUS_LEGACY_ALIASES);
+}
+
+// Task/event domain semantics are owned here. Pages and display adapters may
+// choose wording, but they must not define a competing closed/completed set.
+export const TASK_EVENT_COMPLETED_STATUS_VALUES = [
+  'done',
+  'completed',
+  'complete',
+  'finished',
+  'closed',
+  'archived',
+  'zrobione',
+  'wykonane',
+] as const;
+
+export const TASK_EVENT_CLOSED_STATUS_VALUES = [
+  ...TASK_EVENT_COMPLETED_STATUS_VALUES,
+  'cancelled',
+  'canceled',
+  'deleted',
+  'removed',
+] as const;
+
+export const TASK_STATUS_CLOSED_VALUES = TASK_EVENT_CLOSED_STATUS_VALUES;
+export const EVENT_STATUS_CLOSED_VALUES = TASK_EVENT_CLOSED_STATUS_VALUES;
+
+function normalizeTaskEventStatus(value: unknown) {
+  return typeof value === 'string' ? value.trim().toLowerCase() : '';
+}
+
+export function isTaskOrEventStatusCompleted(value: unknown): boolean {
+  return (TASK_EVENT_COMPLETED_STATUS_VALUES as readonly string[]).includes(normalizeTaskEventStatus(value));
+}
+
+export function isTaskOrEventStatusClosed(value: unknown): boolean {
+  return (TASK_EVENT_CLOSED_STATUS_VALUES as readonly string[]).includes(normalizeTaskEventStatus(value));
+}
+
+export function isTaskStatusClosed(value: unknown): boolean {
+  const raw = normalizeTaskEventStatus(value);
+  return isTaskOrEventStatusClosed(raw) || isTaskOrEventStatusClosed(normalizeTaskStatus(raw));
+}
+
+export function isEventStatusClosed(value: unknown): boolean {
+  const raw = normalizeTaskEventStatus(value);
+  return isTaskOrEventStatusClosed(raw) || isTaskOrEventStatusClosed(normalizeEventStatus(raw));
 }
 
 export function normalizePortalItemStatus(value: unknown, fallback: PortalItemStatus = 'missing'): PortalItemStatus {

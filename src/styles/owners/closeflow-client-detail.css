@@ -1,0 +1,265 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:client-detail","concerns":[],"scope":"route-scoped","consumerRoots":["src/pages/ClientDetail.tsx"],"role":"scoped-adapter","boundary":"route-component","whyNotGlobal":"This stylesheet contains only ClientDetail layout and structural composition rules.","whyNotDuplicate":"Shared surfaces, actions, forms, colors and typography remain owned by their registered modules.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+
+.client-detail-vnext-page {
+  max-width: var(--cf-vst-layout-page-max, 1440px);
+  margin-inline: auto;
+  padding: var(--cf-vst-layout-page-padding, 18px);
+  color: var(--cf-vst-text-strong);
+}
+
+.client-detail-vnext-page .client-detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--cf-vst-layout-gap, 20px);
+  margin-bottom: var(--cf-vst-layout-gap, 20px);
+  padding: var(--cf-vst-card-padding, 22px);
+  border: 1px solid var(--cf-vst-surface-border);
+  border-radius: var(--cf-vst-radius-panel);
+  background: linear-gradient(135deg, var(--cf-vst-surface-card-solid), var(--cf-vst-surface-soft));
+  box-shadow: var(--cf-vst-shadow-card);
+}
+
+.client-detail-vnext-page .client-detail-header-copy,
+.client-detail-vnext-page .client-detail-header-actions {
+  min-width: 0;
+}
+
+.client-detail-vnext-page .client-detail-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.client-detail-vnext-page .client-detail-shell {
+  display: grid;
+  grid-template-columns: minmax(230px, 320px) minmax(0, 1fr) minmax(250px, 320px);
+  align-items: start;
+  gap: var(--cf-vst-layout-gap, 20px);
+}
+
+.client-detail-vnext-page .client-detail-left-rail,
+.client-detail-vnext-page .client-detail-main-column,
+.client-detail-vnext-page .client-detail-right-rail {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: var(--cf-vst-layout-gap, 16px);
+}
+
+.client-detail-vnext-page .client-detail-profile-card,
+.client-detail-vnext-page .client-detail-section-card,
+.client-detail-vnext-page .client-detail-right-card,
+.client-detail-vnext-page .client-detail-case-smart-card,
+.client-detail-vnext-page .client-detail-completeness-card,
+.client-detail-vnext-page .client-detail-summary-card,
+.client-detail-vnext-page .client-detail-hero-card,
+.client-detail-vnext-page .client-detail-empty-card,
+.client-detail-vnext-page .client-detail-loading-card {
+  min-width: 0;
+  border: 1px solid var(--cf-vst-surface-border);
+  border-radius: var(--cf-vst-radius-card);
+  background: var(--cf-vst-surface-card-solid);
+  box-shadow: var(--cf-vst-shadow-card);
+}
+
+.client-detail-vnext-page .client-detail-profile-card,
+.client-detail-vnext-page .client-detail-section-card,
+.client-detail-vnext-page .client-detail-right-card {
+  padding: var(--cf-vst-card-padding, 16px);
+}
+
+.client-detail-vnext-page .client-detail-section-head,
+.client-detail-vnext-page .client-detail-card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.client-detail-vnext-page .client-detail-data-panel-list,
+.client-detail-vnext-page .client-detail-contact-repeat-list,
+.client-detail-vnext-page .client-detail-relations-list,
+.client-detail-vnext-page .client-detail-missing-items-list,
+.client-detail-vnext-page .client-detail-upcoming-actions-list,
+.client-detail-vnext-page .client-detail-history-list,
+.client-detail-vnext-page .client-detail-notes-center-list {
+  display: grid;
+  gap: 10px;
+}
+
+.client-detail-vnext-page .client-detail-data-panel-row,
+.client-detail-vnext-page .client-detail-contact-repeat-row,
+.client-detail-vnext-page .client-detail-relation-row,
+.client-detail-vnext-page .client-detail-upcoming-action-row,
+.client-detail-vnext-page .client-detail-history-row,
+.client-detail-vnext-page .client-detail-note-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  padding-block: 8px;
+  border-bottom: 1px solid var(--cf-vst-surface-border);
+}
+
+.client-detail-vnext-page .client-detail-data-panel-row:last-child,
+.client-detail-vnext-page .client-detail-contact-repeat-row:last-child,
+.client-detail-vnext-page .client-detail-relation-row:last-child,
+.client-detail-vnext-page .client-detail-upcoming-action-row:last-child,
+.client-detail-vnext-page .client-detail-history-row:last-child,
+.client-detail-vnext-page .client-detail-note-item:last-child {
+  border-bottom: 0;
+}
+
+.client-detail-vnext-page .client-detail-top-tiles,
+.client-detail-vnext-page .client-detail-today-info-tiles,
+.client-detail-vnext-page .client-detail-top-cards,
+.client-detail-vnext-page .client-detail-finance-inline-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.client-detail-vnext-page .client-detail-top-tile,
+.client-detail-vnext-page .client-detail-today-info-tile,
+.client-detail-vnext-page .client-detail-stat-cell {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--cf-vst-surface-border);
+  border-radius: var(--cf-vst-radius-card);
+  background: var(--cf-vst-surface-soft);
+}
+
+.client-detail-vnext-page .client-detail-today-info-tile,
+.client-detail-vnext-page .client-detail-top-tile {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+}
+
+.client-detail-vnext-page .client-detail-today-info-tile-body,
+.client-detail-vnext-page .client-detail-relation-main,
+.client-detail-vnext-page .client-detail-case-smart-main {
+  min-width: 0;
+}
+
+.client-detail-vnext-page .client-detail-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--cf-vst-surface-border);
+  border-radius: var(--cf-vst-radius-button);
+  background: var(--cf-vst-surface-soft);
+}
+
+.client-detail-vnext-page .client-detail-tab-panel {
+  min-width: 0;
+}
+
+.client-detail-vnext-page .client-detail-mini-button,
+.client-detail-vnext-page .client-detail-back-button,
+.client-detail-vnext-page .client-detail-note-delete-button,
+.client-detail-vnext-page .client-detail-case-smart-delete-icon-button {
+  min-width: 0;
+}
+
+.client-detail-vnext-page .client-detail-edit-form,
+.client-detail-vnext-page .client-detail-add-note-dialog-form {
+  display: grid;
+  gap: 12px;
+}
+
+.client-detail-vnext-page .client-detail-edit-field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.client-detail-vnext-page .client-detail-edit-label-row,
+.client-detail-vnext-page .client-detail-edit-actions,
+.client-detail-vnext-page .client-detail-note-actions-row,
+.client-detail-vnext-page .client-detail-right-actions,
+.client-detail-vnext-page .client-detail-case-smart-actions,
+.client-detail-vnext-page .client-detail-missing-item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.client-detail-vnext-page .client-detail-notes-center-section,
+.client-detail-vnext-page .client-detail-notes-right-rail {
+  min-width: 0;
+}
+
+.client-detail-vnext-page .client-detail-note-center-item,
+.client-detail-vnext-page .client-detail-note-card,
+.client-detail-vnext-page .client-detail-note-dialog {
+  min-width: 0;
+}
+
+.client-detail-vnext-page .client-detail-note-item-toolbar {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+}
+
+.client-detail-vnext-page .client-detail-work-row-overdue,
+.client-detail-vnext-page .client-detail-callout-red {
+  border-color: var(--cf-vst-color-delete-border);
+  background: var(--cf-vst-color-delete-soft);
+}
+
+.client-detail-vnext-page .client-detail-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding-inline: 9px;
+  border: 1px solid var(--cf-vst-color-status-border);
+  border-radius: var(--cf-vst-radius-pill);
+  background: var(--cf-vst-color-status-soft);
+  color: var(--cf-vst-color-status);
+  font-size: var(--cf-vst-font-size-meta);
+  font-weight: var(--cf-vst-font-weight-bold);
+}
+
+@media (max-width: 1180px) {
+  .client-detail-vnext-page .client-detail-shell {
+    grid-template-columns: minmax(210px, 280px) minmax(0, 1fr);
+  }
+
+  .client-detail-vnext-page .client-detail-right-rail {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .client-detail-vnext-page {
+    padding: 12px;
+  }
+
+  .client-detail-vnext-page .client-detail-header {
+    display: grid;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .client-detail-vnext-page .client-detail-header-actions {
+    justify-content: flex-start;
+  }
+
+  .client-detail-vnext-page .client-detail-shell,
+  .client-detail-vnext-page .client-detail-right-rail,
+  .client-detail-vnext-page .client-detail-top-tiles,
+  .client-detail-vnext-page .client-detail-today-info-tiles,
+  .client-detail-vnext-page .client-detail-top-cards,
+  .client-detail-vnext-page .client-detail-finance-inline-metrics {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

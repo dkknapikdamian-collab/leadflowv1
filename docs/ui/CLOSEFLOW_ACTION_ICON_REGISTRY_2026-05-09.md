@@ -104,6 +104,12 @@ delete: ArchiveX,
 3. Nie zmieniaj ekranĂłw jeden po drugim.
 4. Nie mieszaj tego z `ENTITY_ICON_MAP`, bo to jest rejestr encji.
 
+## Jak zmienić ikonę kosza globalnie
+
+Zmień wyłącznie wpis `delete` w `src/components/ui-system/action-icon-registry.ts`; wszystkie użycia `ActionIcon` odziedziczą tę zmianę.
+Rejestr akcji jest osobny od ikon encji.
+Nie przepina masowo aktywnych ekranów.
+
 ## Czego nie robi VS-2C
 
 - Nie przepina masowo aktywnych ekranĂłw.

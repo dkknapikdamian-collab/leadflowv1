@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const root = process.cwd();
-const migration = path.join(root, 'supabase/migrations/2026-05-01_stageA22_supabase_auth_rls_workspace_foundation.sql');
+const migration = path.join(root, 'supabase/migrations/20260501012200_stageA22_supabase_auth_rls_workspace_foundation.sql');
 const fail = [];
 const expect = (condition, message) => { if (!condition) fail.push(message); };
 

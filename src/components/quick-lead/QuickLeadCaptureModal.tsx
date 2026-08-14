@@ -1,16 +1,14 @@
 import { useMemo, useState } from 'react';
 import { Loader2, Mic, Wand2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { auth } from '../../firebase';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { parseQuickLeadNote, type QuickLeadDraft } from '../../lib/quick-lead-parser';
-import { archiveAiLeadDraftAsync, markAiLeadDraftConvertedAsync, saveAiLeadDraftAsync, updateAiLeadDraftAsync } from '../../lib/ai-drafts';
-import { insertLeadToSupabase, insertTaskToSupabase } from '../../lib/supabase-fallback';
+import { archiveAiLeadDraftAsync, saveAiLeadDraftAsync, updateAiLeadDraftAsync } from '../../lib/ai-drafts';
+import { confirmAiDraftInSupabase } from '../../lib/supabase-fallback';
 import { requireWorkspaceId } from '../../lib/workspace-context';
-import '../../styles/quick-lead-capture-stage27.css';
 
 export const QUICK_LEAD_CAPTURE_MODAL_STAGE27 = 'QUICK_LEAD_CAPTURE_MODAL_STAGE27';
 
@@ -68,11 +66,6 @@ function createParsedDraftPayload(draft: QuickLeadDraft) {
     dueAt: draft.dueAt || '',
     priority: draft.priority || 'medium',
   };
-}
-
-function getLeadRecordId(record: Record<string, unknown> | null | undefined) {
-  if (!record) return '';
-  return String(record.id || record.leadId || record.lead_id || '').trim();
 }
 
 export function QuickLeadCaptureModal({ open, onOpenChange, workspace, hasAccess, onLeadCreated }: QuickLeadCaptureModalProps) {
@@ -168,44 +161,20 @@ export function QuickLeadCaptureModal({ open, onOpenChange, workspace, hasAccess
     try {
       setSubmitting(true);
       const payload = createParsedDraftPayload(draft);
-      const leadRecord = await insertLeadToSupabase({
-        name,
-        phone: payload.phone,
-        email: payload.email,
-        source: payload.source,
-        summary: payload.need,
-        notes: payload.need,
-        status: 'new',
-        isAtRisk: payload.priority === 'high',
-        nextActionAt: payload.dueAt || undefined,
-        ownerId: workspace?.ownerId || auth.currentUser?.uid,
-        workspaceId,
-      } as any);
+      const activeDraftId = draftId || (await saveAiLeadDraftAsync({
+        rawText: rawText.trim() || `${name}${payload.need ? `: ${payload.need}` : ''}`,
+        parsedDraft: payload,
+        source: 'quick_capture',
+        type: 'lead',
+      })).id;
+      if (!activeDraftId) throw new Error('AI_DRAFT_ID_REQUIRED');
+      if (draftId) await updateAiLeadDraftAsync(draftId, { parsedDraft: payload, parsedData: payload });
 
-      const leadId = getLeadRecordId(leadRecord as Record<string, unknown>);
-
-      if (payload.nextAction && payload.dueAt) {
-        await insertTaskToSupabase({
-          title: payload.nextAction,
-          type: 'follow_up',
-          date: payload.dueAt.slice(0, 10),
-          scheduledAt: payload.dueAt,
-          dueAt: payload.dueAt,
-          priority: payload.priority,
-          status: 'todo',
-          leadId: leadId || null,
-          ownerId: auth.currentUser?.uid || workspace?.ownerId,
-          workspaceId,
-        });
-      }
-
-      if (draftId) {
-        await markAiLeadDraftConvertedAsync(draftId, {
-          linkedRecordId: leadId || null,
-          linkedRecordType: 'lead',
-          parsedDraft: { ...payload, rawText: '' },
-        });
-      }
+      const confirmation = await confirmAiDraftInSupabase({
+        id: activeDraftId,
+        confirmation: { recordType: 'lead' },
+      });
+      if (!confirmation.createdRecord?.id) throw new Error('AI_DRAFT_CREATED_RECORD_ID_MISSING');
 
       setRawText('');
       toast.success('Lead zapisany.');

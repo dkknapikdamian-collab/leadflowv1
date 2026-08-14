@@ -9,18 +9,18 @@ function read(relativePath) {
   return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
 }
 
-test('daily digest accepts Vercel Cron before enforcing manual CRON_SECRET', () => {
-  const api = read('api/daily-digest.ts');
+test('daily and weekly digest cron require CRON_SECRET even with a Vercel hint', () => {
+  const daily = read('src/server/daily-digest-handler.ts');
+  const weekly = read('src/server/weekly-report-handler.ts');
+  const authorization = read('src/server/digest-authorization.ts');
 
-  const vercelCronIndex = api.indexOf("const vercelCron = asNullableText(req?.headers?.['x-vercel-cron']);");
-  const cronSecretCheckIndex = api.indexOf('if (cronSecret)', vercelCronIndex);
-
-  assert.notEqual(vercelCronIndex, -1, 'x-vercel-cron guard must exist');
-  assert.notEqual(cronSecretCheckIndex, -1, 'CRON_SECRET guard must exist');
-  assert.ok(vercelCronIndex < cronSecretCheckIndex, 'Vercel Cron guard must run before CRON_SECRET guard');
-
-  assert.match(api, /if \(vercelCron\) return true;/);
-  assert.match(api, /providedSecret === cronSecret/);
+  for (const source of [daily, weekly]) {
+    assert.match(source, /isDigestCronAuthorized/);
+    assert.match(authorization, /CRON_SECRET/);
+    assert.doesNotMatch(source, /if \(vercelCron\) return true;/);
+    assert.doesNotMatch(source, /req\?\.query\?\.secret/);
+    assert.doesNotMatch(source, /body[^\n]*secret/);
+  }
 });
 
 

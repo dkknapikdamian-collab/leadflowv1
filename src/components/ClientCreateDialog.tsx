@@ -20,8 +20,6 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { TextareaField } from './ui/textarea-field';
 import { modalFooterClass } from './entity-actions';
-import '../styles/visual-stage20-lead-form-vnext.css';
-import '../styles/closeflow-global-client-create-dialog-stage172.css';
 
 const STAGE228R5R6_ACTIVE_CLIENT_CREATE_DIALOG_FINANCE_REDIRECT = 'active ClientCreateDialog creates empty starter case and opens CaseDetail finance modal';
 const CLOSEFLOW_CZ2_013_CLIENT_CREATE_FORM_VARIANTS = 'ClientCreateDialog scoped migration uses FormField/TextareaField source of truth';
@@ -213,21 +211,21 @@ export default function ClientCreateDialog({ open, onOpenChange }: ClientCreateD
       if (!nextOpen) setForm(defaultClientCreateForm);
     }}>
       <DialogContent
-        className="lead-form-vnext-content cf-stage172-client-create-dialog"
-        data-client-create-dialog-stage172="true"
+        className="lead-form-vnext-content cf-semantic172-client-create-dialog"
+        data-client-create-dialog-semantic172="true"
         data-stage228r5r6-active-client-create-dialog-finance-redirect="true"
-        aria-describedby="client-create-stage172-description"
+        aria-describedby="client-create-semantic172-description"
       >
         <DialogHeader className="lead-form-vnext-header">
           <div>
             <DialogTitle>Nowy klient</DialogTitle>
-            <DialogDescription id="client-create-stage172-description" data-stage171-hidden-copy="true">
+            <DialogDescription id="client-create-semantic172-description" data-semantic171-hidden-copy="true">
               Formularz dodania klienta.
             </DialogDescription>
           </div>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="lead-form-vnext cf-stage172-client-create-form" data-client-create-form-stage172="true">
+        <form onSubmit={handleSubmit} className="lead-form-vnext cf-semantic172-client-create-form" data-client-create-form-semantic172="true">
           <section className="lead-form-section lead-form-primary-section">
             <div className="lead-form-grid">
               <FormField label="Nazwa / klient" required className="lead-form-field-wide" dataAttrs={{ 'data-cf-form-scoped-migration': 'client-name' }}>
@@ -276,8 +274,8 @@ export default function ClientCreateDialog({ open, onOpenChange }: ClientCreateD
             </div>
           </section>
 
-          <section className="lead-form-section cf-stage172-case-option" data-client-create-case-option-stage172="true">
-            <label className="lead-form-checkbox cf-stage172-create-case-checkbox">
+          <section className="lead-form-section cf-semantic172-case-option" data-client-create-case-option-semantic172="true">
+            <label className="lead-form-checkbox cf-semantic172-create-case-checkbox">
               <input
                 type="checkbox"
                 checked={form.createCase}
@@ -290,7 +288,7 @@ export default function ClientCreateDialog({ open, onOpenChange }: ClientCreateD
             </label>
 
             {form.createCase ? (
-              <div className="lead-form-grid cf-stage172-case-fields">
+              <div className="lead-form-grid cf-semantic172-case-fields">
                 <div className="lead-form-field lead-form-field-wide">
                   <Label>Nazwa sprawy</Label>
                   <Input
@@ -303,7 +301,7 @@ export default function ClientCreateDialog({ open, onOpenChange }: ClientCreateD
             ) : null}
           </section>
 
-          <DialogFooter className={modalFooterClass('lead-form-footer cf-stage172-client-create-footer')}>
+          <DialogFooter className={modalFooterClass('lead-form-footer cf-semantic172-client-create-footer')}>
             <Button type="button" variant="outline" onClick={closeAndReset}>
               Anuluj
             </Button>

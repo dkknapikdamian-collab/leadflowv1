@@ -1,43 +1,29 @@
-/* CLOSEFLOW_ENTITY_TYPE_COLOR_CONTRACT_STAGE17
-   Calendar entity type pills are semantic entity labels, not danger/severity/status alerts.
-   Lead uses amber as an entity type color only through data-cf-entity-type="lead".
-*/
-:root {
-  --cf-entity-type-event-border: #c7d2fe;
-  --cf-entity-type-event-bg: #eef2ff;
-  --cf-entity-type-event-text: #4338ca;
-  --cf-entity-type-task-border: #bbf7d0;
-  --cf-entity-type-task-bg: #ecfdf5;
-  --cf-entity-type-task-text: #047857;
-  --cf-entity-type-lead-border: #fde68a;
-  --cf-entity-type-lead-bg: #fffbeb;
-  --cf-entity-type-lead-text: #b45309;
-}
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-entity-type-tokens.css","concerns":[],"scope":"component","consumerRoots":["src/pages/Calendar.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 
 .cf-entity-type-pill {
-  border-color: var(--cf-entity-type-event-border) !important;
-  background: var(--cf-entity-type-event-bg) !important;
-  color: var(--cf-entity-type-event-text) !important;
-  -webkit-text-fill-color: var(--cf-entity-type-event-text) !important;
+  border-color: var(--cf-entity-type-event-border);
+  background: var(--cf-entity-type-event-bg);
+  color: var(--cf-entity-type-event-text);
+  -webkit-text-fill-color: var(--cf-entity-type-event-text);
 }
 
 .cf-entity-type-pill[data-cf-entity-type="event"] {
-  border-color: var(--cf-entity-type-event-border) !important;
-  background: var(--cf-entity-type-event-bg) !important;
-  color: var(--cf-entity-type-event-text) !important;
-  -webkit-text-fill-color: var(--cf-entity-type-event-text) !important;
+  border-color: var(--cf-entity-type-event-border);
+  background: var(--cf-entity-type-event-bg);
+  color: var(--cf-entity-type-event-text);
+  -webkit-text-fill-color: var(--cf-entity-type-event-text);
 }
 
 .cf-entity-type-pill[data-cf-entity-type="task"] {
-  border-color: var(--cf-entity-type-task-border) !important;
-  background: var(--cf-entity-type-task-bg) !important;
-  color: var(--cf-entity-type-task-text) !important;
-  -webkit-text-fill-color: var(--cf-entity-type-task-text) !important;
+  border-color: var(--cf-entity-type-task-border);
+  background: var(--cf-entity-type-task-bg);
+  color: var(--cf-entity-type-task-text);
+  -webkit-text-fill-color: var(--cf-entity-type-task-text);
 }
 
 .cf-entity-type-pill[data-cf-entity-type="lead"] {
-  border-color: var(--cf-entity-type-lead-border) !important;
-  background: var(--cf-entity-type-lead-bg) !important;
-  color: var(--cf-entity-type-lead-text) !important;
-  -webkit-text-fill-color: var(--cf-entity-type-lead-text) !important;
+  border-color: var(--cf-entity-type-lead-border);
+  background: var(--cf-entity-type-lead-bg);
+  color: var(--cf-entity-type-lead-text);
+  -webkit-text-fill-color: var(--cf-entity-type-lead-text);
 }

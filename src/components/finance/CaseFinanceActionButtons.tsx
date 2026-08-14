@@ -1,5 +1,4 @@
 import { Button } from '../ui/button';
-import '../../styles/finance/closeflow-finance.css';
 
 export const CLOSEFLOW_FIN12_CASE_FINANCE_ACTION_BUTTONS = 'CLOSEFLOW_FIN12_CASE_FINANCE_ACTION_BUTTONS_V1' as const;
 export const CLOSEFLOW_FIN13_CLIENT_CASE_FINANCE_ACTION_BUTTONS = 'CLOSEFLOW_FIN13_CLIENT_CASE_FINANCE_ACTION_BUTTONS_V1' as const;

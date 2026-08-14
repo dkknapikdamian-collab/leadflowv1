@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import '../../styles/closeflow-shared-quick-actions-bar-stage227e3.css';
+import '../../styles/closeflow-quick-actions.css';
 
 export type QuickActionItem = {
   key: string;

@@ -1,4 +1,13 @@
-import { CASE_STATUS_VALUES, EVENT_STATUS_VALUES, LEAD_STATUS_VALUES, TASK_STATUS_VALUES } from '../domain-statuses';
+import {
+  CASE_STATUS_VALUES,
+  EVENT_STATUS_CLOSED_VALUES,
+  EVENT_STATUS_LEGACY_ALIASES,
+  EVENT_STATUS_VALUES,
+  LEAD_STATUS_VALUES,
+  TASK_STATUS_CLOSED_VALUES,
+  TASK_STATUS_LEGACY_ALIASES,
+  TASK_STATUS_VALUES,
+} from '../domain-statuses';
 import { CLIENT_HEALTH_OPTIONS, CLIENT_SOURCE_OPTIONS, PORTAL_STATUS_OPTIONS } from './client-options';
 import { COMMISSION_STATUSES, PAYMENT_STATUSES } from '../finance/finance-types.js';
 
@@ -9,7 +18,7 @@ export type StatusRepositorySection = { entity: string; sourceFiles: readonly st
 const src = {
   domain: 'src/lib/domain-statuses.ts', lead: 'src/lib/source-of-truth/lead-options.ts', client: 'src/lib/source-of-truth/client-options.ts', case: 'src/lib/source-of-truth/case-options.ts', schedule: 'src/lib/source-of-truth/schedule-options.ts', financeTypes: 'src/lib/finance/finance-types.ts', financeNormalize: 'src/lib/finance/finance-normalize.ts', caseFinance: 'src/lib/finance/case-finance-source.ts', ownerMissing: 'src/lib/owner-control/owner-control-missing-blockers.ts', ownerBaseline: 'src/lib/owner-control/owner-control-baseline.ts', lifecycle: 'src/lib/case-lifecycle-v1.ts', activity: 'src/lib/activity-timeline.ts'
 } as const;
-const make = (values: readonly string[], entity: string, source: StatusSourceKind, readOnly = false): StatusMeta[] => values.map((value) => ({ value, label: value === 'done' && entity === 'event' ? 'Odbyte' : value, source, entity, readOnly }));
+const make = (values: readonly string[], entity: string, source: StatusSourceKind, readOnly = false): StatusMeta[] => values.map((value) => ({ value, label: value, source, entity, readOnly }));
 const section = (entity: string, files: readonly string[], items: readonly StatusMeta[], flags: Pick<StatusRepositorySection,'source'|'derived'|'uiOnly'|'legacy'>, contract: string, legacyAliases: Record<string,string> = {}, closedValues: readonly string[] = []): StatusRepositorySection => ({ entity, sourceFiles: files, importedOrAdapted: files.join(' + '), notDuplicated: contract, ...flags, legacyAliases, closedValues, labels: Object.fromEntries(items.map((item) => [item.value, item.label])), tones: {}, items, contract });
 
 export const leadStatus = section('lead', [src.domain, src.lead], make(LEAD_STATUS_VALUES, 'lead', 'source'), {source:true, derived:false, uiOnly:false, legacy:true}, 'adapted from existing lead sources', {follow_up:'waiting_response', active_service:'moved_to_service'}, ['won','lost','moved_to_service','archived']);
@@ -18,8 +27,8 @@ export const clientSourceStatus = section('client.source', [src.client], CLIENT_
 export const clientPortalStatus = section('client.portal', [src.client], PORTAL_STATUS_OPTIONS.map((x) => ({value:x.value,label:x.label,source:'derived',entity:'client.portal',readOnly:true})), {source:false, derived:true, uiOnly:false, legacy:false}, 'clientHealth !== clientSource !== portalStatus');
 export const caseStatus = section('case', [src.domain, src.case], make(CASE_STATUS_VALUES, 'case', 'source'), {source:true, derived:false, uiOnly:false, legacy:true}, 'case.status !== caseLifecycle.bucket', {closed:'completed',done:'completed'}, ['completed','done','closed','archived','canceled','cancelled']);
 export const caseLifecycleStatus = section('case.lifecycle', [src.lifecycle], make(['blocked','waiting_approval','ready_to_start','in_progress','completed','needs_next_step'], 'case.lifecycle', 'derived', true), {source:false, derived:true, uiOnly:false, legacy:false}, 'case.status !== caseLifecycle.bucket', {}, ['completed']);
-export const taskStatus = section('task', [src.domain, src.schedule], make(TASK_STATUS_VALUES, 'task', 'source'), {source:true, derived:false, uiOnly:false, legacy:true}, 'task.done !== event.done', {open:'todo',completed:'done'}, ['done','completed','cancelled','canceled','archived','deleted']);
-export const eventStatus = section('event', [src.domain, src.schedule], make(EVENT_STATUS_VALUES, 'event', 'source'), {source:true, derived:false, uiOnly:false, legacy:true}, 'task.done !== event.done', {planned:'scheduled',completed:'done'}, ['done','completed','cancelled','canceled','deleted']);
+export const taskStatus = section('task', [src.domain], make(TASK_STATUS_VALUES, 'task', 'source'), {source:true, derived:false, uiOnly:false, legacy:true}, 'raw task values, normalization, aliases and closed semantics are owned by domain-statuses.ts; schedule-options is a display adapter', TASK_STATUS_LEGACY_ALIASES, TASK_STATUS_CLOSED_VALUES);
+export const eventStatus = section('event', [src.domain], make(EVENT_STATUS_VALUES, 'event', 'source'), {source:true, derived:false, uiOnly:false, legacy:true}, 'raw event values, normalization, aliases and closed semantics are owned by domain-statuses.ts; schedule-options is a display adapter', EVENT_STATUS_LEGACY_ALIASES, EVENT_STATUS_CLOSED_VALUES);
 export const paymentStatus = section('payment', [src.financeTypes, src.financeNormalize, src.caseFinance], make(PAYMENT_STATUSES, 'payment', 'source'), {source:true, derived:false, uiOnly:false, legacy:true}, 'payment.status !== payment.paidLikeCompatibility', {pending:'due',awaiting_payment:'due',settled:'paid'}, ['paid','cancelled']);
 export const paidLikeCompatibilityValues = ['paid','fully_paid','deposit_paid','partially_paid','confirmed','settled','completed','done'] as const;
 export const dueLikeCompatibilityValues = ['due','planned','pending','awaiting_payment','open'] as const;

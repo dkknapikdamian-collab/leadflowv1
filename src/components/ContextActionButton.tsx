@@ -1,6 +1,4 @@
 import * as React from 'react';
-import "../styles/context-action-button-source-truth.css";
-
 export type ContextActionKind = "task" | "event" | "note" | string;
 export type ContextRecordType = "lead" | "client" | "case" | string;
 

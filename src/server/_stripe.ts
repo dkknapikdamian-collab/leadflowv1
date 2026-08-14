@@ -85,7 +85,8 @@ type StripeSubscriptionRecord = {
   status?: string;
   cancel_at_period_end?: boolean;
   current_period_end?: number;
-  customer?: string | null;
+  customer?: string | { id?: string | null } | null;
+  metadata?: Record<string, unknown>;
 };
 
 const STRIPE_BLIK_BILLING_PLANS: Record<string, StripeBillingPlan> = {
@@ -364,6 +365,36 @@ export async function getStripeSubscription(subscriptionId: string) {
   });
 }
 
+export function getStripeCustomerId(value: StripeSubscriptionRecord['customer']) {
+  if (typeof value === 'string') return value.trim();
+  if (value && typeof value === 'object') return asText(value.id);
+  return '';
+}
+
+export function assertStripeSubscriptionWorkspaceBinding(
+  subscription: StripeSubscriptionRecord,
+  workspaceId: string,
+  expectedCustomerId?: string | null,
+  expectedSubscriptionId?: string | null,
+) {
+  const normalizedWorkspaceId = asText(workspaceId);
+  const subscriptionWorkspaceId = asText(subscription?.metadata?.workspace_id);
+  const subscriptionCustomerId = getStripeCustomerId(subscription?.customer);
+  const subscriptionId = asText(subscription?.id);
+  const normalizedExpectedCustomerId = asText(expectedCustomerId);
+  const normalizedExpectedSubscriptionId = asText(expectedSubscriptionId);
+  if (!normalizedWorkspaceId || !subscriptionId || (normalizedExpectedSubscriptionId && subscriptionId !== normalizedExpectedSubscriptionId)) {
+    throw Object.assign(new Error('STRIPE_SUBSCRIPTION_SCOPE_MISMATCH'), { code: 'STRIPE_SUBSCRIPTION_SCOPE_MISMATCH', status: 409 });
+  }
+  if (subscriptionWorkspaceId !== normalizedWorkspaceId) {
+    throw Object.assign(new Error('STRIPE_SUBSCRIPTION_SCOPE_MISMATCH'), { code: 'STRIPE_SUBSCRIPTION_SCOPE_MISMATCH', status: 409 });
+  }
+  if (!subscriptionCustomerId || (normalizedExpectedCustomerId && subscriptionCustomerId !== normalizedExpectedCustomerId)) {
+    throw Object.assign(new Error('STRIPE_SUBSCRIPTION_CUSTOMER_MISMATCH'), { code: 'STRIPE_SUBSCRIPTION_CUSTOMER_MISMATCH', status: 409 });
+  }
+  return true;
+}
+
 export async function updateStripeSubscription(subscriptionId: string, payload: { cancel_at_period_end: boolean }) {
   const config = assertStripeCheckoutConfigured();
   if (!config.ok) {
@@ -387,6 +418,9 @@ export function verifyStripeSignature(rawBody: string, signatureHeader: string, 
   const signature = parts.find((part) => part.startsWith('v1='))?.slice(3) || '';
 
   if (!timestamp || !signature) return false;
+  const timestampSeconds = Number(timestamp);
+  const signatureToleranceSeconds = 5 * 60;
+  if (!Number.isFinite(timestampSeconds) || Math.abs(Math.floor(Date.now() / 1000) - timestampSeconds) > signatureToleranceSeconds) return false;
 
   const expected = crypto
     .createHmac('sha256', webhookSecret)

@@ -1,4 +1,4 @@
-import { normalizeTaskStatus } from '../domain-statuses';
+import { isTaskStatusClosed } from '../domain-statuses';
 
 export type TaskDisplayStatusKind = 'done' | 'overdue' | 'today' | 'no_due' | 'upcoming';
 export type TaskDisplayStatusTone = 'green' | 'red' | 'blue' | 'neutral';
@@ -18,21 +18,6 @@ export type TaskDisplayStatusResult = {
   hasDueDate: boolean;
 };
 
-const CLOSED_STATUS_VALUES = new Set([
-  'done',
-  'completed',
-  'closed',
-  'cancelled',
-  'canceled',
-  'del' + 'eted',
-  'archived',
-  'rem' + 'oved',
-]);
-
-function normalizeRawTaskDisplayStatus(status: unknown) {
-  return String(status || '').trim().toLowerCase();
-}
-
 export function getTaskDisplayDateKey(momentRaw: unknown): string {
   const text = String(momentRaw || '').trim();
   const dateKey = text.slice(0, 10);
@@ -40,9 +25,7 @@ export function getTaskDisplayDateKey(momentRaw: unknown): string {
 }
 
 export function isTaskDisplayClosed(status: unknown): boolean {
-  const raw = normalizeRawTaskDisplayStatus(status);
-  if (CLOSED_STATUS_VALUES.has(raw)) return true;
-  return CLOSED_STATUS_VALUES.has(normalizeTaskStatus(status));
+  return isTaskStatusClosed(status);
 }
 
 export function isTaskDisplayOverdue(momentRaw: unknown, status: unknown, todayKey: string): boolean {
@@ -84,20 +67,12 @@ export type TaskStableGroupCompatInput = {
   todayKey: string;
 };
 
-const TASK_STABLE_GROUP_CLOSED_COMPAT_VALUES = new Set([
-  'done',
-  'completed',
-  'closed',
-  'cancelled',
-  'canceled',
-]);
-
 export function getTaskStableGroupDateKeyCompat(momentRaw: unknown): string {
   return String(momentRaw || '').slice(0, 10);
 }
 
 export function isTaskStableGroupClosedCompat(status: unknown): boolean {
-  return TASK_STABLE_GROUP_CLOSED_COMPAT_VALUES.has(normalizeRawTaskDisplayStatus(status));
+  return isTaskStatusClosed(status);
 }
 
 export function isTaskStableGroupOverdueCompat(momentRaw: unknown, status: unknown, todayKey: string): boolean {

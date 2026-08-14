@@ -22,6 +22,7 @@ function walk(dir, acc = []) {
       if (!SKIP_DIRS.has(entry.name)) walk(path.join(dir, entry.name), acc);
       continue;
     }
+    if (entry.name.includes('.sync-conflict-')) continue;
     if (CODE_EXT.has(path.extname(entry.name))) acc.push(path.join(dir, entry.name));
   }
   return acc;

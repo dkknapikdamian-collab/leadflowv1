@@ -1,6 +1,4 @@
-/* CLOSEFLOW_DESIGN_SYSTEM_COMPONENTS_VS1
-   Component contracts for future migration. Existing screens are not rewired in VS-1.
-*/
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/design-system/closeflow-components.css","concerns":[],"scope":"component","consumerRoots":["src/pages/TasksStable.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 .cf-surface-card {
   border: 1px solid var(--cf-border-subtle);
   border-radius: var(--cf-radius-2xl);

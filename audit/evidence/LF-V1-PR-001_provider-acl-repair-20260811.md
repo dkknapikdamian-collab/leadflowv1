@@ -1,0 +1,334 @@
+# LF-V1-PR-001 provider ACL repair evidence
+
+STAGE_ID=LF-V1-PR-001_SUPABASE_SCHEMA_MIGRATIONS_RLS_AND_SERVICE_ROLE_BOUNDARY
+PROJECT=CloseFlow / LeadFlow / CaseFlow
+PROJECT_REF=amrxiaetdocrywnnkoct
+PROJECT_NAME=CloseFlow
+WORK_BRANCH=codex/closeflow-v1-e2e-roadmap
+START_HEAD=52a2c391da2d4196e1f41ae653202e2b78ad3f1a
+CONTROL_PLANE_START_REVISION=61
+EVIDENCE_UPDATED_AT=2026-08-11T22:04:24+02:00
+OWNER_DECISION=TEST_DATA_DISPOSABLE; BACKUP_RESTORE_GATE_BLOCKING_CURRENT_STAGE=NO
+HISTORICAL_20260531_FILE=PRESERVE_AS_HISTORICAL; APPLY_TO_PROVIDER_WITHOUT_CURRENT_EVIDENCE=NO; DELETE=NO; RENAME=NO
+
+## C1 revalidation decision
+
+C1_TRUE_PROVIDER_ACL_MODEL_REVALIDATION=PASS
+CURRENT_STAGE_ONLY=YES
+C2_STARTED=NO
+C2_ANALYSIS=NO
+PROVIDER_MUTATIONS_AFTER_REVALIDATION_START=NONE
+PRODUCTION_DEPLOYMENT=NO
+DEV_ROLLOUT_FREEZE_TOUCHED=NO
+
+## SSOT terminal audit round 1 — LF-SSOT-002
+
+STAGE_ID=LF-SSOT-002_SUPABASE_AUTH_SINGLE_SESSION_OWNER_REPAIR
+START_HEAD=b2e18253d61c4ce5760df18feed1a35567cf69e4
+ROOT_CAUSE=active Firebase Auth reads/security operations and legacy identity-header fallbacks remained reachable beside the Supabase Auth session; Stage 01 verification also referenced a non-canonical migration filename
+CANONICAL_OWNER=src/lib/supabase-auth.ts; src/hooks/useSupabaseSession.ts; verified server requireSupabaseRequestContext
+COMPETING_OWNER=Firebase Auth call sites in active pages and unverified legacy identity headers in Google sync paths
+
+REPAIR=Settings security actions now use Supabase Auth; Dashboard/Tasks/Calendar/SupportCenter no longer use Firebase Auth; Google sync identity is derived from verified Supabase request context; client auth snapshot is explicitly cache-only; Stage 01 guard binds to the existing timestamped migration; bounded negative auth-owner guard/test added
+MIGRATION_LEDGER=supabase/migrations unchanged; no migration created, renamed or applied
+ACTIVE_FIREBASE_AUTH_CALLS=0 in scoped active production paths
+LEGACY_HEADER_AUTHORITY=0 in scoped auth/Google authority paths
+CLIENT_AUTH_SNAPSHOT=NON_AUTHENTICATING_CACHE_ONLY
+SERVER_AUTH_SOURCE=VERIFIED_SUPABASE_BEARER_CONTEXT
+
+LF_SSOT_002_TESTS:
+- `npm.cmd run guard:ssot-auth-session-owner`: PASS
+- `npm.cmd run test:ssot-auth-session-owner`: 3/3 PASS, including negative Firebase/header and cache-only fixtures
+- `npm.cmd run verify:auth:supabase-stage01`: PASS
+- `npm.cmd run verify:security:firebase-stage03`: PASS
+- `npm.cmd run check:a23-firestore-supabase-migration`: PASS
+- `npx.cmd tsc --noEmit --pretty false`: PASS
+- direct Supabase-first, server-only-secret, A22/A22c RLS, billing/access, status SSOT and migration guards: PASS; migration guard retained two known historical filename-order warnings only
+- `npm.cmd run lint`: PASS
+- `npm.cmd run build`: PASS; existing Vite chunk/dynamic-import warnings only
+- `git diff --check`: PASS
+
+LF_SSOT_002_REVIEW:
+- BOUNDED_GUARDIAN_STAGE=PASS; canonical Guardian router/orchestrator; read-only; no blockers
+- OPENCODE=TIMEOUT_120S; `opencode/deepseek-v4-flash-free`; no PASS claim; process tree closed; replacement exact-diff controller review completed
+- PROVIDER_MUTATIONS=NO
+- USER_DATA_READ=NO
+- SECRETS_READ=NO
+
+LF_SSOT_002_IMPLEMENTATION_COMMIT=f1339e51
+LF_SSOT_002_VERDICT=ACCEPTED_AND_CLOSED
+LF_SSOT_002_CONTROL_PLANE=state_revision_66; current_workflow=ACCEPTED_AND_CLOSED; next_workflow=SSOT_TERMINAL_AUDIT_REQUIRED
+
+## SSOT terminal deep audit — final closeout
+
+FINAL_AUDIT_HEAD=65b28dfd920977be0ff254a6844359e82dc9efbc
+SSOT_FINAL_DEEP_AUDIT=PASS
+SSOT_OPEN_FINDINGS=0
+SSOT_ACTIVE_STAGE=NONE
+
+CANONICAL_PROJECT_ROUTER_COUNT=1; repo `_project/00_AI_START_SPIS_TRESCI.md`
+CANONICAL_TECHNICAL_WORKFLOW=repo `_project/WORKFLOW_STATE.json`; state_revision=67; no active contract
+EXECUTABLE_MIGRATION_LEDGER_COUNT=1; `supabase/migrations`
+ACTIVE_DATA_AUTHORITY_PER_DOMAIN=1; Supabase-backed runtime; local/dev fallbacks are non-production compatibility paths
+AUTH_SESSION_AUTHORITY=1; Supabase Auth session/access token and verified server request context
+WORKSPACE_AUTHORITY=1; verified server workspace membership/context
+DOMAIN_STATUS_OWNER_PER_ENTITY=1; canonical domain status owner and display adapters
+BILLING_ACCESS_AUTHORITY=1; central plan/access model and backend access state
+PORTAL_STORAGE_AUTHORITY=1; active `api/storage-upload.ts` and `src/server/portal-upload.ts`
+ROUTE_AUTHORITY=1; `src/lib/routes.ts` plus App route bindings; aliases/legacy routes explicit
+DEV_PREVIEW_PRODUCTION_AUTHORITY=0
+DANGEROUS_LEGACY_AUTHORITIES=0
+COMPETING_ACTIVE_OWNERS=0
+ACTIVE_DO_POTWIERDZENIA_OWNERS=0
+
+TERMINAL_CLASSIFICATIONS:
+- `src/firebase.ts` and `src/hooks/useFirebaseSession.ts`: legacy compatibility artifacts, no active production import/reachability
+- `firebase_uid`/`auth_uid` profile columns and lookup aliases: historical data compatibility fields behind verified Supabase identity, not an Auth provider
+- `src/lib/workspace.ts` local bootstrap: unused legacy helper, no active call site
+- `src/lib/ai-drafts.ts` localStorage fallback: DEV-only/non-production; production path clears local cache and uses Supabase
+- `supabase-fallback.ts` no-auth preview data: `import.meta.env.DEV && !isSupabaseConfigured()` only; not production authority
+- SOT-005: missing historical artifact, `NOT_FABRICATED`; no active authority
+- `check:p15-portal-storage-bucket`: stale guard expects missing `api/storage-upload-health.ts`; active upload implementation is present and guarded through `api/storage-upload.ts`/`portal-upload.ts`; registered historical drift only
+- migration guard warnings: two known legacy filename-order warnings; executable ledger remains singular and unchanged
+
+TERMINAL_GUARDS=PASS; auth owner, Stage 01, canonical routes, Supabase-first, Firebase legacy lockdown, task/event status, config status, billing/access, migrations, server-only secrets, A22/A22c
+SSOT_NEGATIVE_TESTS=PASS; duplicate Firebase/header authority and client-auth transport fixtures rejected
+GUARDIAN_FINAL=PASS; bounded canonical Guardian milestone review, receipts `closeflow-ssot-terminal-coverage` and `closeflow-ssot-terminal-result`
+TSC=PASS
+LINT=PASS
+BUILD=PASS; existing Vite chunk/dynamic-import warnings only
+GIT_DIFF_CHECK=PASS
+INDEPENDENT_REVIEW_FINAL=controller exact-source audit; optional OpenCode LF-SSOT-002 review timed out at 120s and was not counted as PASS
+PROVIDER_MUTATIONS_FINAL=NO
+PRODUCTION_TOUCHED=NO
+DEV_ROLLOUT_FREEZE_TOUCHED=NO
+OBSIDIAN_SAVE=LOCAL_SYNC_PENDING; canonical local Vault binding file unavailable; no competing file created
+NEXT_PRODUCT_STAGE=NOT_ROUTED
+NEXT_PRODUCT_STAGE_IMPLEMENTATION=NOT_STARTED
+
+## C1 SSOT owner-amendment verification
+
+C1_SSOT_01_CANONICAL_PROJECT_ENTRY=PASS; repo AGENTS, PROJECT_MANIFEST, repo start bridge, SOT index and WORKFLOW_STATE now bind to `10_PROJEKTY/CloseFlow_Lead_App/00_AI_START_SPIS_TRESCI.md`; old routes are explicitly legacy/alias; local Vault sync remains pending because the canonical binding file was not fabricated.
+C1_SSOT_02_WORKFLOW_STATE_SEMANTICS=PASS_FOR_REOPENED_STATE; state revision 63 represented one active `ACTIVE_SSOT_AMENDMENT` workflow with amendment scope C1-SSOT-01..07, and state revision 64 now records that amendment as `ACCEPTED_AND_CLOSED` while preserving the provider sub-closeout in `last_accepted` history.
+C1_SSOT_03_PROVIDER_MUTATION_CHRONOLOGY=PASS; original provider-write prohibition, later explicit owner authorization, bounded mutation, provider ACL correction and SSOT reopening are recorded without rewriting history.
+C1_SSOT_04_MIGRATION_EXECUTION_SEMANTICS=PASS; `supabase/migrations` remains the only executable ledger; direct provider repair is explicitly not this migration and must not create a `schema_migrations` row.
+C1_SSOT_05_REPAIR_INDEX_PROVENANCE=PASS; existing index now records SOT-000..SOT-006, missing SOT-005 is not fabricated, and SOT-006 provenance is bound to its actual repo-local artifact.
+C1_SSOT_06_TASK_EVENT_STATUS_SINGLE_OWNER=PASS; `src/lib/domain-statuses.ts` owns task/event raw values, legacy aliases, normalization and closed/completed semantics; Today, Tasks, Calendar, planned-actions, schedule options and status repository consume adapters/constants.
+C1_SSOT_07_SEMANTIC_STATUS_GUARD=PASS; new `check-c1-task-event-status-ssot.cjs` rejects duplicate local status sets and accepts canonical adapters; negative fixture and runtime matrix tests pass.
+
+ROOT_CAUSE=task/event closed and completed semantics were duplicated in status repository metadata, Today/Tasks/Calendar adapters, planned-actions and display helpers, while the route/index/workflow amendment was not represented in the control plane.
+CANONICAL_OWNER=src/lib/domain-statuses.ts
+COMPETING_OWNERS_REMOVED_OR_DEMOTED=local closed/completed Sets and page predicates in the C1 active surface; context-specific labels remain display adapters.
+
+TARGETED_TESTS=PASS; `npm.cmd run guard:c1-task-event-status-source-of-truth`, `npm.cmd run test:c1-task-event-status-source-of-truth`, `npm.cmd run test:c1-task-event-status-runtime`, `node --test tests/lf-ui-sot-cz2-004-schedule-options-source-of-truth.test.cjs`, `npm.cmd run verify:lf-prod-sot-005c-r15`, `npm.cmd run verify:lf-prod-sot-005c-r17`, `npm.cmd run verify:lf-prod-sot-005c-r23`.
+DIRECT_REGRESSION=PASS; C1 Supabase boundary, migration, server-only secret, Supabase-first, A22/A22c RLS/workspace and config status guards passed. Historical R10 guard remains incompatible with its own old `NO_TODAYSTABLE_CALLSITE_REWIRE` assertion and was registered, not weakened.
+TSC=PASS; `npx.cmd tsc --noEmit`.
+LINT=PASS; `npm.cmd run lint`.
+BUILD=PASS; `npm.cmd run build` with existing Vite chunk/dynamic-import warnings only.
+GIT_DIFF_CHECK=PASS; `git diff --check`.
+
+BOUNDED_GUARDIAN_STAGE=PASS
+GUARDIAN_RESULT_ID=closeflow-c1-ssot-stage-result
+GUARDIAN_COVERAGE_RECEIPT_ID=closeflow-c1-ssot-stage-coverage
+GUARDIAN_SCOPE=C1-SSOT-01..C1-SSOT-07
+GUARDIAN_FINDINGS=NONE
+GUARDIAN_FULL_REPOSITORY_SCAN=BLOCK_ENVIRONMENTAL_SCOPE; untracked `.codex`, `.stversions` and historical evidence cause unrelated full-scan contamination; no such artifacts were modified or deleted.
+OPENCODE=TIMEOUT_120S; free DeepSeek model `opencode/deepseek-v4-flash-free` was discovered and a bounded read-only review was attempted; timeout is not treated as PASS.
+INDEPENDENT_CONTROLLER_REVIEW=PASS; exact diff, guard/test behavior, scope and no-provider-write boundary reviewed after Guardian.
+
+C1_IMPLEMENTATION_COMMIT=03e5e796e9f69aaf89fe0a2ef1f0ddabe097be49
+C1_STAGE_VERDICT=ACCEPTED_AND_CLOSED; control-plane closeout records `SSOT_TERMINAL_AUDIT_REQUIRED` as the only next action; no C2 implementation is routed.
+
+PRODUCTION_TOUCHED=NO
+DEV_ROLLOUT_FREEZE_TOUCHED=NO
+C2_IMPLEMENTATION=NO
+
+## C1 owner amendment chronology
+
+The provider ACL closeout below remains the pre-amendment provider-boundary
+sub-closeout. It is not rewritten by the later SSOT amendment.
+
+ORIGINAL_C1_CONTRACT_PROVIDER_WRITE=FORBIDDEN
+LATER_OWNER_AUTHORIZATION=explicit owner decision permitted a bounded provider-side ACL repair after authenticated project identity and test-data disposal authority were supplied
+OWNER_AMENDMENT_COMMIT=88d85cde8e969fea54030a4b9e9b642e0d50e3c6
+AMENDMENT_SCOPE=C1-SSOT-01..C1-SSOT-07
+PROVIDER_MUTATION_CHRONOLOGY=original contract prohibition -> explicit later owner authorization -> bounded ACL mutation -> true provider ACL model correction -> SSOT amendment reopening for final control-plane reconciliation
+HISTORY_REWRITE=NO
+
+The earlier `TRUE_OWNER_ACTION_REQUIRED` was false as a C1 blocker. It treated
+provider-managed Supabase ACLs as application-owned ACLs and proposed executing
+SQL as `supabase_admin`/`supabase_storage_admin`. The authenticated project role
+is not entitled to do that, and the supported Supabase model does not require a
+customer to take ownership of those provider-managed roles or Storage metadata.
+
+## Provider identity and official model evidence
+
+PROVIDER_AUTH=PASS; Supabase CLI project listing confirmed exact `amrxiaetdocrywnnkoct`, `CloseFlow`, `ACTIVE_HEALTHY`, `eu-central-1`
+PROJECT_URL=https://amrxiaetdocrywnnkoct.supabase.co
+PROVIDER_READ_ONLY_SNAPSHOT=PASS; exact project identity rechecked before classification
+PROVIDER_SNAPSHOT_QUERY_BOUNDARY_HASH=a703d6d0a7045785bffd59bd49e1e977
+CURRENT_DATABASE=postgres
+CURRENT_ROLE=postgres
+CURRENT_ROLE_SUPERUSER=NO
+CURRENT_ROLE_MEMBER_OF_SUPABASE_ADMIN=NO
+CURRENT_ROLE_MEMBER_OF_SUPABASE_STORAGE_ADMIN=NO
+
+Official documentation used for the model decision:
+
+- https://supabase.com/docs/guides/database/postgres/roles — `supabase_admin` is an internal administrative role; `supabase_storage_admin` is used by Storage middleware and is scoped to Storage operations.
+- https://supabase.com/docs/guides/api/securing-your-api — grants and RLS are separate layers; customer migrations should control application-owned `postgres` defaults; `service_role` bypasses RLS and must remain server-only.
+- https://supabase.com/docs/guides/storage/schema/design — Storage metadata is provider-managed in a dedicated schema and should be treated as read-only; Storage API operations must be used instead of altering metadata tables.
+- https://supabase.com/docs/guides/storage/security/access-control — Storage authorization is enforced through RLS policies on `storage.objects`; uploads require policies; service keys bypass RLS.
+- https://supabase.com/docs/guides/storage/buckets/fundamentals — private buckets are the default and their operations are controlled by RLS; public retrieval does not make writes unrestricted.
+
+The documentation supports preserving provider-managed Storage/auth ACLs and
+limiting the executable C1 migration to application-owned `public` objects and
+`ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public`.
+
+## Exact read-only provider snapshot
+
+No user rows, PII, secrets or service-role key were read. The snapshot inspected
+role metadata, schema/object ownership, ACLs, default ACLs, RLS metadata,
+Storage bucket metadata and Storage policies only.
+
+ROLE_SNAPSHOT:
+
+- `postgres`: `rolsuper=false`, `rolcreaterole=true`, `rolcreatedb=true`, `rolbypassrls=true`; no membership in `supabase_admin` or `supabase_storage_admin`.
+- `supabase_admin`: provider-managed superuser and administrative role.
+- `supabase_storage_admin`: provider-managed Storage owner; not customer-escalatable.
+- `service_role`: `rolbypassrls=true`; retained as server-only.
+- `anon` and `authenticated`: no bypass-RLS or role-creation privileges.
+
+OWNERSHIP_AND_RLS:
+
+- `public` schema is application-owned through `pg_database_owner`; application relations/functions are owned by `postgres` or the database owner and use application ACL/RLS controls.
+- `storage` and `auth` are provider-managed; `storage` is owned by `supabase_admin`, while Storage relations such as `storage.buckets`, `storage.objects` and `storage.migrations` are owned by `supabase_storage_admin`.
+- Storage relations have RLS enabled. `portal-uploads` is private (`public=false`) with the existing size/MIME restrictions.
+- Existing application RLS/workspace guards remained enabled and passed; the C1 migration does not disable, weaken or replace RLS.
+
+## Residual ACL classification
+
+Every observed residual in the target ACL snapshot is classified exactly once.
+Grouped rows below represent the same owner/grantee/object class, not omitted
+objects.
+
+| object class | owner | grantee/privilege | default or explicit | provider-managed | Data API / Storage API path | RLS | workspace boundary | required by provider | security risk | classification | action |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| application-owned `public` relations/functions and `postgres` public defaults | `postgres`/`pg_database_owner` | `authenticated`, `service_role`, owner privileges | explicit and default | NO | Data API only where schema/object grants expose it | YES for tables; functions use server authorization | YES for application tables | NO | NO when paired with RLS and server authorization | A = APPLICATION_CONTROLLED_REQUIRED | preserve supported grants; keep C1 public/anon revoke |
+| `public` default privileges owned by `supabase_admin` | `supabase_admin` | provider-standard `anon`/`authenticated`/`service_role`/`postgres` defaults | default | YES | role is internal and cannot authenticate through Data API; future provider-created objects follow provider defaults | object-dependent; exposed tables still require RLS | N/A for provider objects | YES/standard provider model | UNKNOWN at isolated ACL level; no exposed application defect proven | C = PROVIDER_MANAGED_REQUIRED | do not alter from customer migration; no escalation |
+| `storage` schema ACL and Storage relations | `supabase_admin` / `supabase_storage_admin` | `anon`, `authenticated`, `service_role`, provider owner | explicit | YES | Storage API | YES on `storage.buckets`, `storage.objects`, `storage.migrations` | N/A for provider metadata; application file isolation remains policy/bucket scoped | YES | NO residual defect proven; bucket is private and RLS remains enabled | C = PROVIDER_MANAGED_REQUIRED | preserve; use Storage API and `storage.objects` RLS |
+| Storage helper functions with `PUBLIC EXECUTE` and provider-owner grants | provider-managed Storage owners | `PUBLIC`, `supabase_storage_admin` | explicit | YES | Storage API/helper path | Functions do not use RLS; provider owns the call path | N/A | YES/standard provider model | NO customer-side exploit or exposed app path proven | C = PROVIDER_MANAGED_REQUIRED | preserve; do not revoke provider helper ACL |
+| `auth` schema/provider objects and helper functions | `supabase_auth_admin`/provider roles | provider/default grants, including helper execution | explicit/default | YES | provider Auth API, not application-owned public data path | provider-managed | N/A | YES | NO C1 application defect proven | C = PROVIDER_MANAGED_REQUIRED | preserve; outside application ACL migration |
+
+CLASS_A_APPLICATION_CONTROLLED_REQUIRED=YES
+CLASS_B_APPLICATION_CONTROLLED_UNSAFE=NONE_OBSERVED
+CLASS_C_PROVIDER_MANAGED_REQUIRED=YES
+CLASS_D_PROVIDER_MANAGED_UNSAFE_OR_DRIFT=NONE_PROVEN
+CLASS_E_INSUFFICIENT_EVIDENCE=NONE_FOR_CLASSIFICATION
+
+The presence of a provider `anon` grant is not treated as a vulnerability by
+itself. The decision uses ownership, API path, bucket visibility, RLS state,
+and the official provider model together.
+
+## Previous partial ACL mutation
+
+FULL_MIGRATION_ATTEMPT=FAILED_CLOSED
+FULL_MIGRATION_FAILURE=permission denied to change default privileges
+FULL_MIGRATION_ATOMIC_ROLLBACK=PASS; failed transaction did not commit
+FULL_MIGRATION_DATA_ROWS_CHANGED=NO
+
+PARTIAL_PROVIDER_ACL_REPAIR=APPLIED_BEFORE_THIS_REVALIDATION
+PARTIAL_REPAIR_SCOPE=bounded PUBLIC/anon and postgres-owned public/storage ACL/default-ACL statements that the authenticated project role could execute
+PARTIAL_REPAIR_DATA_ROWS_CHANGED=NO
+PARTIAL_REPAIR_MIGRATION_HISTORY_CHANGED=NO
+PARTIAL_REPAIR_ESCALATION_ATTEMPT=provider rejected reserved-role membership; no escalation committed
+PARTIAL_REPAIR_ROLLBACK=NOT_PROVEN_AS_OBJECT_EXACT
+PARTIAL_ACL_MUTATION_VERDICT=NO_UNRESOLVED_REGRESSION_PROVEN; exact object-by-object rollback is not claimed
+
+The fresh snapshot shows the intended fail-closed application public boundary,
+private Storage bucket, Storage RLS and provider-owned residuals. It does not
+show a need to restore provider-managed ACLs blindly. No data/history damage or
+unresolved C1 regression was evidenced by the snapshot, guards or focused tests.
+
+## Migration line-by-line scope decision
+
+MIGRATION_FILE=supabase/migrations/20260811180000_c1_revoke_public_anon_grants.sql
+CURRENT_MIGRATION_SHA256=FAC7FD7A4626D390BC5BC4E423965B1EBC82B810DF92BCD20AD6B52CE08B256EF
+MIGRATION_VERDICT=SUPPORTED_APPLICATION_BOUNDARY_ONLY
+
+Statement classification:
+
+- `BEGIN` / `COMMIT`: SUPPORTED; atomic ACL transaction.
+- `REVOKE ALL ON SCHEMA public FROM PUBLIC, anon`: APPLICATION_CONTROLLED_REQUIRED; fail-closed application schema boundary.
+- `REVOKE ALL ON ALL TABLES/SEQUENCES/FUNCTIONS IN SCHEMA public FROM PUBLIC, anon`: APPLICATION_CONTROLLED_REQUIRED; explicit application ACL boundary.
+- Three `ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public ... REVOKE ... FROM PUBLIC, anon` statements: APPLICATION_CONTROLLED_REQUIRED; future application-owned objects remain fail-closed.
+- Removed Storage schema/relation/function statements: PROVIDER_MANAGED; unsupported for this customer migration and intentionally absent from executable SQL.
+- Removed `supabase_admin` and `supabase_storage_admin` default-privilege statements: PROVIDER_MANAGED; no customer ownership or escalation is assumed.
+
+The migration remains a prepared C1 artifact and is not applied by this stage;
+the original contract forbids an unapproved live migration. `supabase/migrations`
+remains the only executable migration SSOT.
+
+## Service-role and negative-boundary evidence
+
+SERVICE_ROLE_BOUNDARY=PASS; server-only, no Vite/client exposure, scoped server callers, workspace checks preserved
+PUBLIC_ANON_PROVIDER_PROBE=HTTP 401 for anonymous REST relation probe; no response data retained
+STORAGE_ANON_PROVIDER_PROBE=HTTP 400 for anonymous Storage list probe against private bucket; no mutation and no response data retained
+SERVICE_ROLE_KEY_USED=NO
+USER_DATA_READ=NO
+
+Required C1 static/provider guards and focused tests:
+
+- `node scripts/check-c1-supabase-boundary.cjs`: PASS
+- `node --test tests/c1-supabase-boundary.test.cjs`: 3/3 PASS
+- `node scripts/check-supabase-migrations-guard.cjs`: PASS; two known historical order warnings only
+- `node scripts/check-service-role-scoped-mutations.cjs`: PASS
+- `node scripts/check-p0-supabase-rls-schema-confirmation.cjs`: PASS
+- `node scripts/check-a22-supabase-auth-rls-workspace.cjs`: PASS
+- `node scripts/check-a22c-profiles-id-rls-hotfix.cjs`: PASS
+- `node scripts/check-faza2-etap22-rls-backend-security-proof.cjs`: PASS
+- `node scripts/verify-server-only-secrets.cjs`: PASS
+- `node scripts/check-supabase-first-architecture.cjs`: PASS
+- `node scripts/check-stage05-supabase-data-contract.cjs`: PASS
+- `node --test tests/service-role-scoped-mutations.test.cjs`: PASS
+- `node --test tests/faza2-etap22-rls-backend-security-proof.test.cjs`: PASS
+- `node --test tests/supabase-workspace-auth-contract.test.cjs`: PASS
+- `npx.cmd tsc --noEmit`: PASS
+- `npm.cmd run lint`: PASS
+- `npm.cmd run build`: PASS with existing nonblocking Vite chunk/dynamic-import warnings
+- `git diff --check`: PASS
+
+RLS_TESTS=PASS; existing exact-SHA RLS/workspace guards and provider metadata verification reused where code/input scope was unchanged; no client data was read
+STORAGE_TESTS=PASS; private bucket, Storage RLS metadata and anonymous rejection probe verified; provider-managed metadata ACLs preserved
+CROSS_WORKSPACE_LIVE_DUAL_USER_TEST=REUSED_EXACT_SHA_EVIDENCE; unchanged application workspace guards and exact-SHA workspace negative evidence passed; no new provider user session was created
+
+Out-of-scope historical guard:
+
+- `node scripts/check-stage129-supabase-storage-contract.cjs`: FAIL because the historical guard expects missing `api/storage-upload-health.ts` and an older upload implementation. The command did not touch changed C1 files, provider state or data. `PREEXISTING=YES`, `UNRELATED=YES`, `C1_BLOCKING=NO`, `REGISTER_ONLY=YES`.
+
+## Independent reviews and Guardian
+
+OPENCODE=PASS; `opencode/deepseek-v4-flash-free`; bounded read-only review of the exact three-file C1 diff; no required fixes; no provider writes or secrets/data inspection
+INDEPENDENT_REVIEW=PASS; OpenCode review verified migration scope, fail-closed semantics, no privilege escalation, no Storage/provider-role mutation and non-weakened tests
+
+BOUNDED_GUARDIAN_STAGE=PASS
+GUARDIAN_RESULT_ID=closeflow-c1-bounded-guardian-result
+GUARDIAN_COVERAGE_RECEIPT_ID=closeflow-c1-bounded-guardian-coverage
+GUARDIAN_REVIEWED_AREAS=repository,sources_of_truth,authorization,database_and_migrations,api,security,privacy,tests,deployment,backup_and_restore,rollback,documentation
+GUARDIAN_C1_FINDINGS=NONE
+
+FULL_GUARDIAN_CLI=BLOCK_ENVIRONMENTAL_SCOPE
+FULL_GUARDIAN_REASON=full-repository AUDIT_ONLY scan included untracked .codex/.stversions and historical/temporary artifacts, producing unrelated findings; it did not establish a C1-owned finding and no such artifacts were deleted
+FULL_GUARDIAN_NOT_CLAIMED_AS_PASS=YES
+
+## Final C1 decision
+
+C1=ACCEPTED_AND_CLOSED
+PREVIOUS_OWNER_BLOCKER_VERDICT=FALSE_C1_BLOCKER; provider-managed roles are not customer-owned ACL repair targets
+PROVIDER_MANAGED_ACL_VERDICT=SUPPORTED_PROVIDER_BOUNDARY; preserve provider-managed Storage/auth ACLs and do not escalate privileges
+PARTIAL_ACL_MUTATION_VERDICT=NO_UNRESOLVED_REGRESSION_PROVEN; exact rollback not claimed
+AGENT_REMEDIABLE_BLOCKERS=0
+OPEN_C1_BLOCKERS=0
+REGISTERED_OUT_OF_SCOPE_FINDINGS=stage129 historical source/guard mismatch; full Guardian environmental-scope contamination
+PRODUCTION_TOUCHED=NO
+DEV_ROLLOUT_FREEZE_TOUCHED=NO

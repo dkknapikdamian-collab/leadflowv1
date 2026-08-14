@@ -1,0 +1,245 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/closeflow-ai-drafts-rail.css","concerns":[],"scope":"component","consumerRoots":["src/pages/AiDrafts.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+.ai-drafts-vnext-page .ai-drafts-filter-pill[data-ai-draft-filter-kind="all"],
+.ai-drafts-vnext-page .ai-drafts-filter-pill:nth-child(1) {
+  border-color: var(--cf-ai-draft-slate-border);
+  background: var(--cf-ai-draft-slate-bg);
+  color: var(--cf-ai-draft-slate-text);
+}
+
+.ai-drafts-vnext-page .ai-drafts-filter-pill[data-ai-draft-filter-kind="draft"],
+.ai-drafts-vnext-page .ai-drafts-filter-pill:nth-child(2) {
+  border-color: var(--cf-ai-draft-violet-border);
+  background: var(--cf-ai-draft-violet-bg);
+  color: var(--cf-ai-draft-violet-text);
+}
+
+.ai-drafts-vnext-page .ai-drafts-filter-pill[data-ai-draft-filter-kind="lead"],
+.ai-drafts-vnext-page .ai-drafts-filter-pill:nth-child(3) {
+  border-color: var(--cf-ai-draft-indigo-border);
+  background: var(--cf-ai-draft-indigo-bg);
+  color: var(--cf-ai-draft-indigo-text);
+}
+
+.ai-drafts-vnext-page .ai-drafts-filter-pill[data-ai-draft-filter-kind="task"],
+.ai-drafts-vnext-page .ai-drafts-filter-pill:nth-child(4) {
+  border-color: var(--cf-ai-draft-amber-border);
+  background: var(--cf-ai-draft-amber-bg);
+  color: var(--cf-ai-draft-amber-text);
+}
+
+.ai-drafts-vnext-page .ai-drafts-filter-pill[data-ai-draft-filter-kind="event"],
+.ai-drafts-vnext-page .ai-drafts-filter-pill:nth-child(5) {
+  border-color: var(--cf-ai-draft-sky-border);
+  background: var(--cf-ai-draft-sky-bg);
+  color: var(--cf-ai-draft-sky-text);
+}
+
+.ai-drafts-vnext-page .ai-drafts-filter-pill[data-ai-draft-filter-kind="note"],
+.ai-drafts-vnext-page .ai-drafts-filter-pill:nth-child(6) {
+  border-color: #e9d5ff;
+  background: #faf5ff;
+  color: #7e22ce;
+}
+
+.ai-drafts-vnext-page .ai-drafts-filter-pill[data-ai-draft-filter-kind="errors"],
+.ai-drafts-vnext-page .ai-drafts-filter-pill:nth-child(7) {
+  border-color: var(--cf-ai-draft-red-border);
+  background: var(--cf-ai-draft-red-bg);
+  color: var(--cf-ai-draft-red-text);
+}
+
+.ai-drafts-vnext-page .ai-drafts-filter-pill[data-ai-draft-filter-kind="converted"],
+.ai-drafts-vnext-page .ai-drafts-filter-pill:nth-child(8) {
+  border-color: var(--cf-ai-draft-emerald-border);
+  background: var(--cf-ai-draft-emerald-bg);
+  color: var(--cf-ai-draft-emerald-text);
+}
+
+.ai-drafts-vnext-page .ai-drafts-filter-pill[data-ai-draft-filter-kind="archived"],
+.ai-drafts-vnext-page .ai-drafts-filter-pill:nth-child(9) {
+  border-color: #e2e8f0;
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.ai-drafts-vnext-page .ai-drafts-filter-pill strong {
+  background: rgba(255,255,255,0.82);
+  border: 1px solid currentColor;
+  color: currentColor;
+}
+
+.ai-drafts-vnext-page .ai-drafts-filter-pill-active {
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
+}
+.ai-drafts-vnext-page .ai-drafts-right-rail {
+  gap: 18px;
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-rail .ai-drafts-right-card,
+.ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  border-width: 1px;
+  background: #ffffff;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+  padding: 18px;
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-rail .ai-drafts-right-card::before,
+.ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 5px;
+  border-radius: 999px;
+  background: var(--cf-ai-draft-violet-text);
+}
+.ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="filters"],
+.ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card:nth-of-type(1) {
+  border-color: var(--cf-ai-draft-violet-border);
+  background:
+    radial-gradient(circle at top right, rgba(109, 40, 217, 0.13), transparent 34%),
+    #ffffff;
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="filters"]::before,
+.ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card:nth-of-type(1)::before {
+  background: var(--cf-ai-draft-violet-text);
+}
+.ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="errors"],
+.ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card:nth-of-type(2) {
+  border-color: var(--cf-ai-draft-red-border);
+  background:
+    radial-gradient(circle at top right, rgba(220, 38, 38, 0.11), transparent 34%),
+    #ffffff;
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="errors"]::before,
+.ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card:nth-of-type(2)::before {
+  background: var(--cf-ai-draft-red-text);
+}
+.ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="converted"],
+.ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card:nth-of-type(3) {
+  border-color: var(--cf-ai-draft-emerald-border);
+  background:
+    radial-gradient(circle at top right, rgba(4, 120, 87, 0.12), transparent 34%),
+    #ffffff;
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="converted"]::before,
+.ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card:nth-of-type(3)::before {
+  background: var(--cf-ai-draft-emerald-text);
+}
+.ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="help"],
+.ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card:nth-of-type(4) {
+  border-color: #bfdbfe;
+  background:
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.10), transparent 34%),
+    #ffffff;
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="help"]::before,
+.ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card:nth-of-type(4)::before {
+  background: #2563eb;
+}
+.ai-drafts-vnext-page .ai-drafts-right-card .ai-drafts-right-card-head {
+  margin-left: 2px;
+  gap: 10px;
+  color: var(--cf-ai-draft-violet-text);
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-card:nth-of-type(2) .ai-drafts-right-card-head,
+.ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="errors"] .ai-drafts-right-card-head {
+  color: var(--cf-ai-draft-red-text);
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-card:nth-of-type(3) .ai-drafts-right-card-head,
+.ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="converted"] .ai-drafts-right-card-head {
+  color: var(--cf-ai-draft-emerald-text);
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-card:nth-of-type(4) .ai-drafts-right-card-head,
+.ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="help"] .ai-drafts-right-card-head {
+  color: #2563eb;
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-card-head > svg {
+  width: 26px;
+  height: 26px;
+  padding: 6px;
+  border-radius: 10px;
+  background: currentColor;
+  color: #ffffff;
+  stroke: #ffffff;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.10);
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-card-head h2 {
+  color: #111827;
+  font-weight: 950;
+}
+.ai-drafts-vnext-page .ai-drafts-rail-button {
+  min-height: 46px;
+  border-radius: 16px;
+  font-weight: 900;
+}
+
+.ai-drafts-vnext-page .ai-drafts-rail-button[data-ai-draft-rail-button="draft"],
+.ai-drafts-vnext-page .ai-drafts-right-card:nth-of-type(1) .ai-drafts-rail-button:nth-of-type(1) {
+  border-color: var(--cf-ai-draft-violet-border);
+  background: var(--cf-ai-draft-violet-bg);
+  color: var(--cf-ai-draft-violet-text);
+}
+
+.ai-drafts-vnext-page .ai-drafts-rail-button[data-ai-draft-rail-button="errors"],
+.ai-drafts-vnext-page .ai-drafts-right-card:nth-of-type(1) .ai-drafts-rail-button:nth-of-type(2) {
+  border-color: var(--cf-ai-draft-red-border);
+  background: var(--cf-ai-draft-red-bg);
+  color: var(--cf-ai-draft-red-text);
+}
+
+.ai-drafts-vnext-page .ai-drafts-rail-button[data-ai-draft-rail-button="converted"],
+.ai-drafts-vnext-page .ai-drafts-right-card:nth-of-type(1) .ai-drafts-rail-button:nth-of-type(3) {
+  border-color: var(--cf-ai-draft-emerald-border);
+  background: var(--cf-ai-draft-emerald-bg);
+  color: var(--cf-ai-draft-emerald-text);
+}
+
+.ai-drafts-vnext-page .ai-drafts-rail-button strong {
+  min-width: 30px;
+  height: 26px;
+  border: 1px solid currentColor;
+  background: rgba(255,255,255,0.82);
+  color: currentColor;
+  font-weight: 950;
+}
+.ai-drafts-vnext-page .ai-drafts-right-card:nth-of-type(2) .ai-drafts-rail-empty,
+.ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="errors"] .ai-drafts-rail-empty {
+  border: 1px dashed rgba(220, 38, 38, 0.28);
+  background: var(--cf-ai-draft-red-bg);
+  color: var(--cf-ai-draft-red-text);
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-card:nth-of-type(3) .ai-drafts-rail-empty,
+.ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="converted"] .ai-drafts-rail-empty {
+  border: 1px dashed rgba(4, 120, 87, 0.28);
+  background: var(--cf-ai-draft-emerald-bg);
+  color: var(--cf-ai-draft-emerald-text);
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-card:nth-of-type(4) .ai-drafts-rail-empty,
+.ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="help"] .ai-drafts-rail-empty {
+  border: 1px dashed rgba(37, 99, 235, 0.24);
+  background: var(--cf-ai-draft-sky-bg);
+  color: #1e3a8a;
+}
+
+.ai-drafts-vnext-page .ai-drafts-rail-empty {
+  border-radius: 16px;
+  padding: 12px;
+  font-weight: 750;
+}
