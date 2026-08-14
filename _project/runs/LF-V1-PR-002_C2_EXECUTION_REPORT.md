@@ -31,6 +31,15 @@ Both requested preferred providers were attempted. Neither result was accepted a
 | Freebuff | `freebuff-c2-inventory-v2` | `BLOCKED` | Host selected a default model and hit `PROVIDER_WORK_DEADLINE`; terminal failure after the bounded PTY deadline | No output artifact, no repository changes, no residual process; recorded as `SKIPPED_TIMEOUT_COOLDOWN` |
 | OpenCode | `opencode-c2-inventory` | `BLOCKED` | Executable/help/auth were available, but model discovery returned `MODEL_LIST_FAILED`; the adapter then required `EXPLICIT_HOST_COMMAND_REQUIRED` | No model catalog, process, output or repository artifact; recorded as `SKIPPED_MODEL_UNAVAILABLE` |
 
+The OpenCode adapter result was revalidated through the installed host CLI after the adapter stopped at model discovery. The direct route succeeded without changing this worktree:
+
+- `opencode models --refresh`: `PASS`; the catalog exposed the free exact model `opencode/deepseek-v4-flash-free` (plus other zero-cost OpenCode models).
+- `opencode run --pure --model opencode/deepseek-v4-flash-free`: `PASS` as a bounded read-only review; no edit, commit, push, or destructive command was authorized.
+- The provider review independently confirmed the C2 guard/test and migration guard results, the membership-based fail-closed boundary, the Guardian `BLOCK`, and the missing live Supabase/browser proof. The parent rechecked those findings and verified `git status` clean at `d38e72368a6f5b5fd2b38fa3b77104c386dbc74f`.
+- This direct OpenCode review is advisory evidence only; it does not convert the Guardian blocker or missing runtime evidence into a pass.
+
+Therefore the earlier OpenCode row remains a truthful record of the adapter failure, while direct host-CLI availability is recorded separately. Freebuff remains blocked at the bounded provider deadline.
+
 The first Guardian CLI attempt also exposed a marketplace-runtime issue: the canonical Guardian package had no local `node_modules`, so `npm run guardian` could not find `tsx`. The package lockfile was installed with `npm ci --ignore-scripts --no-audit --no-fund` into the ignored marketplace `node_modules` only. No marketplace source or lockfile was changed. The Guardian was then run from its canonical `src/cli/guardian.ts` entrypoint.
 
 ## Implemented C2 boundary
@@ -68,16 +77,16 @@ The two baseline failures are recorded, not hidden or relabeled as C2 failures.
 
 Canonical invocation: `packages/ai-code-guardian/src/cli/guardian.ts audit --mode AUDIT_ONLY`.
 
-- Audited SHA: `3bcd836255e7de22ff04b85ee83bd71c2657fc8a`
+- Audited SHA: `d38e72368a6f5b5fd2b38fa3b77104c386dbc74f`
 - Guardian outcome: `BLOCK`
-- Findings: `1020`
+- Findings: `1015`
 - Coverage: `28 PARTIALLY_CHECKED`, `3 NOT_CHECKED`
 - Blocker: `SKILL_BODY_BUDGET_EXCEEDED`
 - Read-only byte integrity: `PASS`
 - Read-only Git integrity: `PASS`
 - Worktree unchanged by Guardian: `true`
-- Coverage receipt: `closeflow-c2-guardian-final-json:coverage`
-- Result receipt: `closeflow-c2-guardian-final-json:result`
+- Coverage receipt: `closeflow-c2-guardian-final-head:coverage`
+- Result receipt: `closeflow-c2-guardian-final-head:result`
 
 The large finding count is dominated by the repository's historical scripts/backups and broad repository-wide rules. That does not convert the result into PASS. The current stage is therefore not eligible for technical closeout until the Guardian audit scope/budget is resolved and the relevant findings are challenged or repaired under the stage contract.
 
