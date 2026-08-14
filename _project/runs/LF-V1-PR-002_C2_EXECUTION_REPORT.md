@@ -35,7 +35,7 @@ The OpenCode adapter result was revalidated through the installed host CLI after
 
 - `opencode models --refresh`: `PASS`; the catalog exposed the free exact model `opencode/deepseek-v4-flash-free` (plus other zero-cost OpenCode models).
 - `opencode run --pure --model opencode/deepseek-v4-flash-free`: `PASS` as a bounded read-only review; no edit, commit, push, or destructive command was authorized.
-- The provider review independently confirmed the C2 guard/test and migration guard results, the membership-based fail-closed boundary, the Guardian `BLOCK`, and the missing live Supabase/browser proof. The parent rechecked those findings and verified `git status` clean at `d38e72368a6f5b5fd2b38fa3b77104c386dbc74f`.
+- The provider review independently confirmed the C2 guard/test and migration guard results, the membership-based fail-closed boundary, the Guardian `BLOCK`, and the missing live Supabase/browser proof. The parent rechecked those findings and verified that the only later delta from `d38e72368a6f5b5fd2b38fa3b77104c386dbc74f` to `ad8a9e4d4aa3305b7d99dda18006e0afbb972c2c` is control-plane evidence/reporting.
 - This direct OpenCode review is advisory evidence only; it does not convert the Guardian blocker or missing runtime evidence into a pass.
 
 Therefore the earlier OpenCode row remains a truthful record of the adapter failure, while direct host-CLI availability is recorded separately. Freebuff remains blocked at the bounded provider deadline.
@@ -77,7 +77,7 @@ The two baseline failures are recorded, not hidden or relabeled as C2 failures.
 
 Canonical invocation: `packages/ai-code-guardian/src/cli/guardian.ts audit --mode AUDIT_ONLY`.
 
-- Audited SHA: `d38e72368a6f5b5fd2b38fa3b77104c386dbc74f`
+- Audited SHA: `ad8a9e4d4aa3305b7d99dda18006e0afbb972c2c`
 - Guardian outcome: `BLOCK`
 - Findings: `1015`
 - Coverage: `28 PARTIALLY_CHECKED`, `3 NOT_CHECKED`
@@ -85,14 +85,15 @@ Canonical invocation: `packages/ai-code-guardian/src/cli/guardian.ts audit --mod
 - Read-only byte integrity: `PASS`
 - Read-only Git integrity: `PASS`
 - Worktree unchanged by Guardian: `true`
-- Coverage receipt: `closeflow-c2-guardian-final-head:coverage`
-- Result receipt: `closeflow-c2-guardian-final-head:result`
+- Ignored-path capture: `COMPLETE` on the fresh detached checkout; no `ignored-path-unavailable` blocker remained.
+- Coverage receipt: `guardian-audit:65836e665cd1c449c582:coverage`
+- Result receipt: `guardian-audit:65836e665cd1c449c582:result`
 
 The large finding count is dominated by the repository's historical scripts/backups and broad repository-wide rules. That does not convert the result into PASS. The current stage is therefore not eligible for technical closeout until the Guardian audit scope/budget is resolved and the relevant findings are challenged or repaired under the stage contract.
 
 ## Runtime and owner boundary
 
-Static repository evidence is complete for the bounded implementation. Live Supabase migration application, fresh signup/email confirmation, logout/recovery, cross-tenant isolation, populated browser screens and desktop/mobile authenticated smoke were not claimed from this worktree. They require the configured external project and owner-controlled credentials/project state. No production deployment was promoted.
+Static repository evidence is complete for the bounded implementation. Live Supabase migration application, fresh signup/email confirmation, logout/recovery, cross-tenant isolation, populated browser screens and desktop/mobile authenticated smoke were not claimed from this worktree. They require the configured external project and owner-controlled credentials/project state. The safe public `/api/version` probe still reports production at `3bcd836255e7de22ff04b85ee83bd71c2657fc8a` on `dev-rollout-freeze`, not the C2 branch. No production deployment was promoted.
 
 ## Closeout decision
 
