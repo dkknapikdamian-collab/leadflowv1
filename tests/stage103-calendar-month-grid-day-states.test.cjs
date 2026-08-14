@@ -5,7 +5,7 @@ const path = require('node:path');
 
 const repoRoot = path.resolve(__dirname, '..');
 const calendar = fs.readFileSync(path.join(repoRoot, 'src/pages/Calendar.tsx'), 'utf8');
-const plainRowsCss = fs.readFileSync(path.join(repoRoot, 'src/styles/closeflow-calendar-month-plain-text-rows-v4.css'), 'utf8');
+const plainRowsCss = fs.readFileSync(path.join(repoRoot, 'src/styles/owners/closeflow-calendar.css'), 'utf8');
 const releaseCheck = fs.readFileSync(path.join(repoRoot, 'scripts/closeflow-release-check-quiet.cjs'), 'utf8');
 
 test('stage103 month grid day state classes exist in active render', () => {
@@ -31,7 +31,7 @@ test('stage103 more row is a real button with click handler and selected-day tar
 });
 
 test('stage103 final CSS overrides old month grid layers', () => {
-  assert.match(plainRowsCss, /STAGE103_CALENDAR_MONTH_GRID_DAY_STATES_V3/);
+  assert.match(plainRowsCss, /LF-UI-SOT-007_OWNER[\s\S]*"ownerId":"semantic:calendar"[\s\S]*"concerns":\["CALENDAR"\][\s\S]*"role":"canonical-owner"/);
   assert.match(plainRowsCss, /\.calendar-day-cell\.is-today/);
   assert.match(plainRowsCss, /\.calendar-day-cell\.is-past/);
   assert.match(plainRowsCss, /\.calendar-day-cell\.is-selected/);
