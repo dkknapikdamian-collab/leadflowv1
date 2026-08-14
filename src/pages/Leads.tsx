@@ -22,9 +22,9 @@ import {
   Mail,
   RotateCcw,
   Search,
-  Trash2,
   TrendingUp,
 } from 'lucide-react';
+import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 import {
   CaseEntityIcon,
   EntityIcon,
@@ -779,7 +779,7 @@ export default function Leads() {
                             className="btn"
                             onClick={toggleTrashView}
                           >
-                            {showTrash ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
+                            {showTrash ? <RotateCcw className="h-4 w-4" /> : <DeleteActionIcon className="h-4 w-4" />}
                             {showTrash ? 'Pokaż aktywne' : 'Kosz'}
                             <span className="pill">{showTrash ? stats.total : stats.trash}</span>
                           </button>
@@ -1227,7 +1227,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                             aria-label={showTrash ? 'Przywróć leada' : 'Przenieś leada do kosza'}
                             title={showTrash ? 'Przywróć leada' : 'Przenieś leada do kosza'}
                           >
-                            {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : showTrash ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
+                            {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : showTrash ? <RotateCcw className="h-4 w-4" /> : <DeleteActionIcon className="h-4 w-4" />}
                           </button>
                         </span>
                         </div>

@@ -1,5 +1,6 @@
 import * as Lucide from 'lucide-react';
-import { Activity, BadgeDollarSign, Bell, Briefcase, Calendar, ClipboardList, CreditCard, FileText, Settings, Sparkles, Target, UserRound, Wallet, X, type LucideIcon } from 'lucide-react';
+import { Activity, BadgeDollarSign, Bell, Briefcase, Calendar, ClipboardList, CreditCard, FileText, Settings, Target, UserRound, Wallet, X, type LucideIcon } from 'lucide-react';
+import { semanticIconConfig } from '../../ui-system/icons/SemanticIcon';
 export const CLOSEFLOW_ENTITY_ICON_REGISTRY_VS2B = 'CLOSEFLOW_ENTITY_ICON_REGISTRY_VS2B';
 
 const removeIconKey = 'Trash' + '2';
@@ -14,7 +15,7 @@ export const ENTITY_ICON_MAP = {
   activity: Activity,
   payment: Wallet,
   commission: BadgeDollarSign,
-  ai: Sparkles,
+  ai: semanticIconConfig.ai.defaultIcon,
   template: FileText,
   notification: Bell,
   settings: Settings,

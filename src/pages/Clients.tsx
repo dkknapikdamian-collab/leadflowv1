@@ -21,8 +21,8 @@ import {
   Plus,
   RotateCcw,
   Search,
-  Trash2,
 } from 'lucide-react';
+import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
@@ -857,7 +857,7 @@ export default function Clients() {
                             <EntityIcon entity="ai" className="h-4 w-4" /> Zapytaj AI
                           </Button>
                           <Button type="button" variant="outline" className="btn" onClick={() => applyClientRelationFilterStage232C(showArchived ? 'all' : 'archived')}>
-                            {showArchived ? <RotateCcw className="w-4 h-4" /> : <Trash2 className="w-4 h-4" />}
+                            {showArchived ? <RotateCcw className="w-4 h-4" /> : <DeleteActionIcon className="w-4 h-4" />}
                             {showArchived ? 'Pokaż aktywnych' : 'Kosz'}
                             <span className="pill">{showArchived ? activeCount : archivedCount}</span>
                           </Button>
@@ -1121,7 +1121,7 @@ export default function Clients() {
                             onClick={(event) => isArchived ? handleRestoreClient(event, client) : handleArchiveClient(event, client, counters)}
                             className={actionIconClass('danger', 'btn ghost cf-icon-action-button')}
                           >
-                            {archivePendingId === client.id ? <Loader2 className="h-4 w-4 animate-spin" /> : isArchived ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
+                            {archivePendingId === client.id ? <Loader2 className="h-4 w-4 animate-spin" /> : isArchived ? <RotateCcw className="h-4 w-4" /> : <DeleteActionIcon className="h-4 w-4" />}
                           </button>
                         </span>
                       </div>

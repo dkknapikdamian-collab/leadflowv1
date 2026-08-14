@@ -20,12 +20,12 @@ import {
   Search,
   Settings2,
   ShieldAlert,
-  Trash2,
 } from 'lucide-react';
 import {
   EntityIcon,
   NotificationEntityIcon,
 } from '../components/ui-system';
+import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 import { fetchCalendarBundleFromSupabase, type CalendarBundle } from '../lib/calendar-items';
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
@@ -671,7 +671,7 @@ export default function NotificationsCenter() {
                 </Link>
                 {notificationLog.length ? (
                   <button type="button" className="notifications-header-button" onClick={handleClearLog}>
-                    <Trash2 className="h-4 w-4" />
+                    <DeleteActionIcon className="h-4 w-4" />
                     Wyczyść przeczytane
                   </button>
                 ) : null}

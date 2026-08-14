@@ -548,7 +548,7 @@
         "check:stage28a3-case-finance-history-visible-repair": "node scripts/check-stage28a3-case-finance-history-visible-repair.cjs",
         "check:stage29a-case-panel-notes-actions": "node scripts/check-stage29a-case-panel-notes-actions.cjs",
         "check:closeflow-ui-skill-pack": "node scripts/check-closeflow-ui-skill-pack.cjs",
-        "audit:closeflow-ui-map": "node scripts/audit-closeflow-ui-map.cjs",
+        "audit:closeflow-ui-map": "node scripts/audit-closeflow-ui-map-inventory-v1.cjs",
         "check:closeflow-design-source-contract": "node scripts/check-closeflow-design-source-contract.cjs",
         "audit:closeflow-style-map": "node scripts/audit-closeflow-style-map.cjs",
         "check:closeflow-ui-premap-contract": "node scripts/check-closeflow-ui-premap-contract.cjs",

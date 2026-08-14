@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, CalendarClock, CheckCircle2, Clipboard, Clock, Loader2, Pencil, Search, Trash2 } from 'lucide-react';
+import { AlertTriangle, CalendarClock, CheckCircle2, Clipboard, Clock, Loader2, Pencil, Search } from 'lucide-react';
 import {
   AiEntityIcon,
   EntityIcon,

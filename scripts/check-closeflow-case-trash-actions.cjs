@@ -6,7 +6,7 @@ function read(p){ return fs.readFileSync(path.join(root,p), 'utf8'); }
 function fail(m){ console.error('\u2716 ' + m); process.exit(1); }
 function assert(c,m){ if(!c) fail(m); }
 const entity = read('src/components/entity-actions.tsx');
-const css = read('src/styles/closeflow-action-tokens.css');
+const css = read('src/styles/owners/closeflow-actions.css');
 const cases = read('src/pages/Cases.tsx');
 const detail = read('src/pages/CaseDetail.tsx');
 const pkg = JSON.parse(read('package.json').replace(/^\uFEFF/, ''));

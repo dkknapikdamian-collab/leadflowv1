@@ -1,6 +1,6 @@
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { AlertTriangle, CheckCircle2, CheckSquare, Clock, Loader2, RefreshCcw, Search, Trash2 } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, CheckSquare, Clock, Loader2, RefreshCcw, Search } from 'lucide-react';
 /*
 P0_TASKS_STABLE_REBUILD
 */
@@ -8,6 +8,7 @@ P0_TASKS_STABLE_REBUILD
 
 import Layout from '../components/Layout';
 import { OperatorMetricTiles, type OperatorMetricTileItem } from '../components/ui-system';
+import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 import { actionButtonClass, modalFooterClass, EntityTrashButton, trashActionIconClass } from '../components/entity-actions';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -682,7 +683,7 @@ export default function TasksStable() {
                                 Edytuj
                               </Button>
                               <EntityTrashButton type="button" variant="outline" className="tasks-semantic47-action-button tasks-semantic48-task-action-button tasks-semantic48-danger-action" data-task-action-visible-semantic48="delete" onClick={() => requestDeleteTask(task)}>
-                                <Trash2 className={trashActionIconClass("mr-2 h-4 w-4")} /> Usuń
+                                <DeleteActionIcon className={trashActionIconClass("mr-2 h-4 w-4")} /> Usuń
                               </EntityTrashButton>
                             </div>
                           </div>

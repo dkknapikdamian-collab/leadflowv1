@@ -1,7 +1,8 @@
 import { type FormEvent, type MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { CheckSquare, ChevronLeft, ChevronRight, Loader2, Repeat, Trash2 } from 'lucide-react';
+import { CheckSquare, ChevronLeft, ChevronRight, Loader2, Repeat } from 'lucide-react';
 import { EntityIcon, NotificationEntityIcon, SemanticIcon } from '../components/ui-system';
+import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
 import { actionButtonClass as entityActionButtonClass, modalFooterClass, trashActionButtonClass, trashActionIconClass } from '../components/entity-actions';
 import {
@@ -602,7 +603,7 @@ function ScheduleEntryCard(props: ScheduleEntryCardProps) {
           <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? "..." : isCompletedEntry ? "Przywróć" : "Zrobione"}
         </button>
         <button type="button" className="cf-vst-button cf-vst-button-delete cf-calendar-week-plan-action cf-calendar-week-plan-action-danger" data-cf-vst-kind="delete" data-cf-destructive-source="trash-action-source" onClick={() => onDelete(entry)} disabled={pendingDelete}>
-          <Trash2 className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? "..." : "Usuń"}
+          <DeleteActionIcon className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? "..." : "Usuń"}
         </button>
       </div>
     </div>
@@ -671,7 +672,7 @@ function CalendarSelectedDayEntryRowV9({ entry, actionPendingId, onEdit, onShift
           <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : isCompletedEntry ? 'Przywróć' : 'Zrobione'}
         </button>
         <button type="button" className={trashActionButtonClass("cf-vst-button cf-vst-button-delete cf-selected-day-v9-action cf-selected-day-v9-action-danger")} data-cf-vst-kind="delete" data-cf-destructive-source="trash-action-source" onClick={() => onDelete(entry)} disabled={pendingDelete}>
-          <Trash2 className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? '...' : 'Usuń'}
+          <DeleteActionIcon className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? '...' : 'Usuń'}
         </button>
       </div>
     </div>

@@ -11,6 +11,7 @@ function walk(dir, acc = []) {
   if (!fs.existsSync(dir)) return acc;
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     if (entry.name === 'node_modules' || entry.name === 'dist') continue;
+    if (entry.name.includes('.sync-conflict-')) continue;
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) walk(full, acc);
     else if (exts.has(path.extname(entry.name))) acc.push(full);

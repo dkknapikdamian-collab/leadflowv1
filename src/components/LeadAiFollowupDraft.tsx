@@ -1,5 +1,5 @@
 import { type FormEvent, useMemo, useState } from 'react';
-import { CheckCircle2, Copy, Loader2, MessageSquare, Sparkles } from 'lucide-react';
+import { CheckCircle2, Copy, Loader2, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
@@ -9,6 +9,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 import { createLeadFollowupDraft, type LeadFollowupDraft } from '../lib/ai-followup';
+import { SemanticIcon } from './ui-system';
 
 type LeadAiFollowupDraftProps = {
   lead: Record<string, unknown> | null;
@@ -86,7 +87,7 @@ export default function LeadAiFollowupDraft({ lead, tasks = [], events = [], act
       <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <CardTitle className="flex items-center gap-2 text-base text-slate-900">
-            <Sparkles className="h-4 w-4 text-blue-600" />
+            <SemanticIcon role="ai" size="sm" tone="ai" className="text-blue-600" />
             AI follow-up
           </CardTitle>
           <p className="mt-1 text-sm text-slate-600">Szkic odpowiedzi dla leada: {leadTitle}. AI niczego nie wysyła automatycznie.</p>
@@ -119,7 +120,7 @@ export default function LeadAiFollowupDraft({ lead, tasks = [], events = [], act
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <Button type="submit" disabled={loading}>
-                  {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                  {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <SemanticIcon role="ai" size="sm" tone="ai" className="mr-2" />}
                   Wygeneruj szkic
                 </Button>
                 <Badge variant="outline">Szkic do potwierdzenia</Badge>

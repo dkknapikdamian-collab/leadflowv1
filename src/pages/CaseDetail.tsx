@@ -36,10 +36,10 @@ import { AlertCircle,
   Plus,
   Send,
   StickyNote,
-  Trash2,
   X } from 'lucide-react';
 import {
   EntityIcon } from '../components/ui-system';
+import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { ConfirmDialog } from '../components/confirm-dialog';
@@ -3794,7 +3794,7 @@ async function handleConfirmDeleteCaseRecord() {
               title="Awaryjnie usuń sprawę"
               onClick={() => setDeleteCaseOpen(true)}
             >
-              <Trash2 className={trashActionIconClass("h-4 w-4")} />
+              <DeleteActionIcon className={trashActionIconClass("h-4 w-4")} />
               Usuń sprawę
             </Button>
           </div>
@@ -4344,7 +4344,7 @@ async function handleConfirmDeleteCaseRecord() {
                             Edytuj
                           </Button>
                           <Button type="button" size="sm" variant="outline" className="cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a30__delete" onClick={() => handleDeleteCaseNoteStage231H_R1D2_R6(activity)} disabled={!noteId || caseNoteDeleteSubmittingIdStage231H_R1D2_R6 === noteId} data-stage231h-r1d2-r6-delete-note="true">
-                            <Trash2 className="h-4 w-4" />
+                            <DeleteActionIcon className="h-4 w-4" />
                             Usuń
                           </Button>
                         </>
@@ -4564,7 +4564,7 @@ async function handleConfirmDeleteCaseRecord() {
                           disabled={caseCostDeleteSubmittingStage231H_R1C || caseCostCorrectionSubmittingStage231H_R1C || !getCaseCostIdStage231H_R1C(cost)}
                           data-stage231h-r1c-delete-cost-from-history="true"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <DeleteActionIcon className="h-4 w-4" />
                           Usuń
                         </Button>
                       </div>
@@ -4613,7 +4613,7 @@ async function handleConfirmDeleteCaseRecord() {
                         disabled={paymentDeleteSubmittingStage220A29 || paymentCorrectionSubmittingStage220A27 || !String(payment.id || '').trim()}
                         data-stage220a29-delete-payment-from-history="true"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <DeleteActionIcon className="h-4 w-4" />
                         Usuń
                       </Button>
                     </div>
@@ -5178,7 +5178,7 @@ function WorkItemRow({
           onClick={() => onDelete(entry)}
           data-stage220a8-delete-work-item="true"
         >
-          <Trash2 className="h-4 w-4" />
+          <DeleteActionIcon className="h-4 w-4" />
         </EntityActionButton>
       </div>
     </article>

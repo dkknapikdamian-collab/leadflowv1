@@ -23,7 +23,6 @@ import { AlertTriangle,
   Menu,
   MessageSquareText,
   Settings,
-  Sparkles,
   Users,
   X
 } from 'lucide-react';

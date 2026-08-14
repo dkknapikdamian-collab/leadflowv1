@@ -22,7 +22,7 @@ function read(relativePath) {
 
 const app = read('src/App.tsx');
 const todayStable = read('src/pages/TodayStable.tsx');
-const css = read('src/styles/closeflow-action-tokens.css');
+const css = read('src/styles/owners/closeflow-actions.css');
 const quietGate = read('scripts/closeflow-release-check-quiet.cjs');
 const pkg = JSON.parse(read('package.json').replace(/^\uFEFF/, ''));
 
@@ -36,7 +36,7 @@ assert(todayStable.includes('cf-section-head-last-read'), 'TodayStable musi ozna
 assert(todayStable.includes('appendChild(viewButton)'), 'Widok musi zosta\u0107 do\u0142\u0105czony do tej samej grupy co Od\u015Bwie\u017C dane');
 assert(todayStable.includes('insertBefore(viewButton, refreshButton.nextSibling)'), 'Widok musi by\u0107 ustawiony bezpo\u015Brednio pod/po Od\u015Bwie\u017C dane');
 
-assert(css.includes('ADMIN_FEEDBACK_P1_TODAY_HEADER_ACTION_STACK_FIX_CSS'), 'Brak CSS dla Today header actions stack');
+assert(css.includes('LF-UI-SOT-007_OWNER'), 'Brak kanonicznego ownera akcji dla Today header actions stack');
 assert(css.includes('[data-p0-today-stable-rebuild="true"] .cf-section-head-actions'), 'CSS musi by\u0107 scopeowany do aktywnego TodayStable');
 assert(css.includes('flex-direction: column'), 'Prawa kolumna nag\u0142\u00F3wka musi by\u0107 kolumn\u0105');
 assert(css.includes('align-items: flex-end'), 'Desktop musi wyr\u00F3wnywa\u0107 akcje do prawej kraw\u0119dzi');

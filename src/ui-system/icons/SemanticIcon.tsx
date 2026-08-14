@@ -32,13 +32,13 @@ import {
   ShieldCheck,
   Sparkles,
   Target,
-  Trash2,
   UserRound,
   Wallet,
   X,
   type LucideIcon,
   type LucideProps,
 } from 'lucide-react';
+import { ACTION_ICON_MAP } from '../../components/ui-system/action-icon-registry';
 
 export type SemanticIconRole =
   | 'add'
@@ -105,7 +105,7 @@ export const semanticIconConfig = {
   close: { role: 'close', tone: 'neutral', label: 'Zamknij', defaultIcon: X, migrationStage: 'later' },
   company_property: { role: 'company_property', tone: 'neutral', label: 'Firma / nieruchomość', defaultIcon: Building2, migrationStage: 'later' },
   copy: { role: 'copy', tone: 'neutral', label: 'Kopiuj', defaultIcon: Copy, migrationStage: 'UI-2' },
-  delete: { role: 'delete', tone: 'danger', label: 'Usuń', defaultIcon: Trash2, migrationStage: 'UI-2' },
+  delete: { role: 'delete', tone: 'danger', label: 'Usuń', defaultIcon: ACTION_ICON_MAP.delete, migrationStage: 'UI-2' },
   edit: { role: 'edit', tone: 'neutral', label: 'Edytuj', defaultIcon: Pencil, migrationStage: 'UI-2' },
   email: { role: 'email', tone: 'contact', label: 'E-mail', defaultIcon: Mail, migrationStage: 'UI-3' },
   event: { role: 'event', tone: 'event', label: 'Wydarzenie', defaultIcon: CalendarClock, migrationStage: 'UI-2' },

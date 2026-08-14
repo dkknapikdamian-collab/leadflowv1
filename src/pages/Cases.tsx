@@ -14,10 +14,11 @@
 // STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { AlertTriangle, CheckCircle2, ChevronRight, Clock, ExternalLink, FileText, Loader2, Plus, Search, Trash2, X } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ChevronRight, Clock, ExternalLink, FileText, Loader2, Plus, Search, X } from 'lucide-react';
 import { format } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { EntityIcon } from '../components/ui-system/EntityIcon';
+import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 
 import { toast } from 'sonner';
 import { ConfirmDialog } from '../components/confirm-dialog';
@@ -884,7 +885,7 @@ const metaParts = [
                             setCaseToDelete(record);
                           }}
                         >
-                          {deletePending && caseToDelete?.id === record.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className={trashActionIconClass("h-4 w-4")} />}
+                          {deletePending && caseToDelete?.id === record.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <DeleteActionIcon className={trashActionIconClass("h-4 w-4")} />}
                         </EntityTrashButton>
                       </span>
                     </div>

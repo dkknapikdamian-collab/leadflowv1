@@ -13,6 +13,7 @@ function walk(dir, acc = []) {
   for (const entry of fs.readdirSync(fullDir, { withFileTypes: true })) {
     const full = path.join(fullDir, entry.name);
     if (entry.isDirectory()) walk(path.relative(root, full), acc);
+    else if (entry.name.includes('.sync-conflict-')) continue;
     else if (exts.has(path.extname(entry.name))) acc.push(full);
   }
   return acc;

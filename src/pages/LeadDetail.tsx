@@ -46,8 +46,9 @@ void STAGE232I4_R16Z_R8_LEAD_MISSING_BLOCKER_TOGGLE_PRIORITY_FIX;
 void STAGE232A_R6_LEAD_MISSING_BLOCKER_ACTIVE_LIST_AND_TOP_CARD_SOURCE_TRUTH;
 import { type FormEvent, type PointerEventHandler, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, CheckCircle2, Clock, DollarSign, Edit2, Loader2, Mail, Mic, MicOff, MoreVertical, Phone, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle2, Clock, DollarSign, Edit2, Loader2, Mail, Mic, MicOff, MoreVertical, Phone, Plus } from 'lucide-react';
 import { EntityIcon, SemanticIcon } from '../components/ui-system';
+import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 // LEAD_TO_CASE_FLOW_STAGE24_LEAD_DETAIL
 /* STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP */
 /* STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP_REPAIR1_BUILD_FIX */
@@ -2964,7 +2965,7 @@ useEffect(() => {
                   key: 'lost',
                   label: 'Oznacz utracony',
                   tone: 'lost',
-                  icon: <Trash2 className="h-4 w-4" />,
+                  icon: <DeleteActionIcon className="h-4 w-4" />,
                   onClick: () => handleUpdateStatus('lost'),
                   disabled: !hasAccess,
                   data: { 'data-stage227e3-lead-action': 'lost' },

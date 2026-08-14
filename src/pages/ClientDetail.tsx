@@ -7,8 +7,9 @@
 // STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Activity, AlertTriangle, ArrowLeft, CheckCircle2, Clock, Eye, Loader2, Mic, MicOff, Pencil, Pin, Plus, Save, Trash2 } from 'lucide-react';
+import { Activity, AlertTriangle, ArrowLeft, CheckCircle2, Clock, Eye, Loader2, Mic, MicOff, Pencil, Pin, Plus, Save } from 'lucide-react';
 import { EntityIcon } from '../components/ui-system';
+import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 import { CreateClientCaseDialog } from '../components/CreateClientCaseDialog';
 import { actionButtonClass } from '../components/entity-actions';
 import { Button } from '../components/ui/button';
@@ -1147,8 +1148,8 @@ const STAGE28A_CLIENT_NOTE_ID_COMPAT_GUARD = 'client note listener id safe befor
 const STAGE29A_CLIENT_NOTE_ACTIONS_GUARD = 'client notes edit delete preview pin actions';
 const STAGE27G_CLIENT_NOTE_LISTENER_ID_RUNTIME_FINAL_GUARD = 'client note listener uses client id only';
 const STAGE27D_CLIENT_NOTES_RUNTIME_FINAL_GUARD = 'client notes runtime visibility final';
-const STAGE27A_CLIENT_NOTES_TRASH2_GUARD = 'client notes visible after save and Trash2 imported';
-const STAGE27B_TRASH2_IMPORT_AND_NOTES_FINAL_GUARD = 'Trash2 import fixed and client notes final';
+const STAGE27A_CLIENT_NOTES_DELETE_ACTION_GUARD = 'client notes visible after save and delete action registry is used';
+const STAGE27B_DELETE_ACTION_IMPORT_AND_NOTES_FINAL_GUARD = 'delete action registry import fixed and client notes final';
 const CLOSEFLOW_STAGE107_CLIENT_DETAIL_TDZ_FINANCE_RUNTIME_FIX = 'ClientDetail finance summary is declared before use and passed into ClientTopTiles';
 void CLOSEFLOW_STAGE107_CLIENT_DETAIL_TDZ_FINANCE_RUNTIME_FIX;
 function getClientPaymentAmount(payment: any) {
@@ -2666,7 +2667,7 @@ function ClientDetail() {
             <Button type="button" size="sm" onClick={() => (caseId ? navigate('/cases/' + caseId) : toast.info('Brak ID sprawy.'))}>Otwórz</Button>
             <Button type="button" size="sm" variant="outline" onClick={() => (caseId ? navigate('/cases/' + caseId) : toast.info('Brak ID sprawy.'))}>Edytuj</Button>
             <EntityActionButton type="button" size="sm" variant="outline" tone="danger" iconOnly className="client-detail-case-smart-delete-icon-button" aria-label="Usuń sprawę" title="Usuń sprawę" onClick={() => toast.info('Usuwanie sprawy wymaga potwierdzenia w widoku sprawy.')}>
-              <Trash2 className="h-4 w-4" aria-hidden="true" />
+              <DeleteActionIcon className="h-4 w-4" aria-hidden="true" />
             </EntityActionButton>
           </div>
         </article>
@@ -2727,7 +2728,7 @@ function ClientDetail() {
             title="Usuń sprawę"
             onClick={() => toast.info('Usuwanie sprawy wymaga potwierdzenia w widoku sprawy.')}
           >
-            <Trash2 className="h-4 w-4" aria-hidden="true" />
+            <DeleteActionIcon className="h-4 w-4" aria-hidden="true" />
           </EntityActionButton>
         </div>
       </article>
@@ -3226,7 +3227,7 @@ return (
                           <Pencil className="h-3.5 w-3.5" />
                         </button>
                         <EntityActionButton type="button" tone="danger" iconOnly className="client-detail-note-delete-button" title="Usuń notatkę" aria-label="Usuń notatkę" onClick={() => handleDeleteClientNote(note)}>
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <DeleteActionIcon className="h-3.5 w-3.5" />
                         </EntityActionButton>
                       </div>
                     </article>

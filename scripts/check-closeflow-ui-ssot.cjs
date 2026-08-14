@@ -825,6 +825,30 @@ function runIcons(mode) {
       fail(`${file} musi renderować każdą etykietę „Zapytaj AI” przez EntityIcon(entity="ai")`, mode);
     }
   }
+  const canonicalSemanticIconOwner = 'src/ui-system/icons/SemanticIcon.tsx';
+  const canonicalActionIconOwner = 'src/components/ui-system/action-icon-registry.ts';
+  const directSemanticIconPatterns = [
+    { label: 'AI/Sparkles', pattern: /import\s*\{[^}]*\bSparkles\b[^}]*\}\s*from\s*['"]lucide-react['"]|<Sparkles\b/gi, owner: canonicalSemanticIconOwner },
+    { label: 'delete/Trash2', pattern: /import\s*\{[^}]*\bTrash2\b[^}]*\}\s*from\s*['"]lucide-react['"]|<Trash2\b/gi, owner: canonicalActionIconOwner },
+  ];
+  const activeSourceFiles = [];
+  const collectActiveSourceFiles = (directory) => {
+    if (!fs.existsSync(directory)) return;
+    for (const entryItem of fs.readdirSync(directory, { withFileTypes: true })) {
+      const candidate = path.join(directory, entryItem.name);
+      if (entryItem.isDirectory()) collectActiveSourceFiles(candidate);
+      else if (/\.(?:ts|tsx|js|jsx)$/.test(entryItem.name) && !entryItem.name.includes('.sync-conflict-')) activeSourceFiles.push(rel(candidate));
+    }
+  };
+  collectActiveSourceFiles(path.join(root, 'src'));
+  for (const file of activeSourceFiles) {
+    const source = readRepo(file);
+    for (const { label, pattern, owner } of directSemanticIconPatterns) {
+      if (file === owner) continue;
+      pattern.lastIndex = 0;
+      if (pattern.test(source)) fail(`${file} zawiera bezpośrednią geometrię ${label}; użyj kanonicznego ownera ${owner}`, mode);
+    }
+  }
   checkAddedOwnership(diffAddedLines(), new Set(required.map(([file]) => file).concat(['src/lib/source-of-truth/icon-registry.ts'])), /\b(?:[A-Za-z_$][\w$]*)(?:ICON|Icon|icon)(?:_?MAP|_?REGISTRY|_?CONFIG|_?DEFINITIONS?)\b\s*=/, 'nowa lokalna definicja semantic/action icon poza canonical ownerem', mode);
   console.log('LF-UI-SOT-007_SSOT_ICONS_CHECK_OK');
 }

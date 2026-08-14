@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, CheckCircle2, Copy, FolderKanban, MoreVertical, Plus, Search, ShieldAlert, Trash2 } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Copy, FolderKanban, MoreVertical, Plus, Search, ShieldAlert } from 'lucide-react';
 import { AiEntityIcon, TemplateEntityIcon } from '../components/ui-system';
+import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 import { Card, CardContent } from '../components/ui/card';
 import {
   Dialog,
@@ -361,7 +362,7 @@ export default function Templates() {
                           data-cf-template-delete-action="true"
                           onClick={() => void handleDeleteTemplate(template)}
                         >
-                          <Trash2 className={trashActionIconClass("mr-2 h-4 w-4")} /> Usuń
+                          <DeleteActionIcon className={trashActionIconClass("mr-2 h-4 w-4")} /> Usuń
                         </EntityTrashButton>
                         <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -376,7 +377,7 @@ export default function Templates() {
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
                             <EntityTrashButton type="button" className="w-full justify-start rounded-sm px-2 py-1.5 text-sm font-normal shadow-none" data-cf-template-delete-action="menu" onClick={() => void handleDeleteTemplate(template)}>
-                            <Trash2 className={trashActionIconClass("mr-2 h-4 w-4")} /> Usuń
+                            <DeleteActionIcon className={trashActionIconClass("mr-2 h-4 w-4")} /> Usuń
                             </EntityTrashButton>
                           </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -447,7 +448,7 @@ export default function Templates() {
                       aria-label="Usuń pozycję"
                       title="Usuń pozycję"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <DeleteActionIcon className="h-4 w-4" />
                     </EntityActionButton>
                   </div>
 

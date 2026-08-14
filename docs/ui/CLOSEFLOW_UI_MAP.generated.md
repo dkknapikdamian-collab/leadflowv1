@@ -1,1715 +1,432 @@
-# CloseFlow UI Map — generated
+# CloseFlow UI Map Inventory v1
 
-Generated: 2026-08-13T05:37:47.780Z
-Source files scanned: 397
+Generated: 2026-08-14T14:17:13.950Z
 
-## Likely detail pages
-- src/pages/CaseDetail.tsx
-- src/pages/ClientDetail.tsx
-- src/pages/LeadDetail.tsx
+Scanner: **CLEAN_SCANNER_V4**
 
-## StatShortcutCard usage
-- src/components/StatShortcutCard.tsx
-- src/components/ui-system/OperatorMetricTiles.tsx
-- src/lib/source-of-truth/visual-repository.sync-conflict-20260812-220848-AJIKJ2G.ts
-- src/lib/source-of-truth/visual-repository.ts
-- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
-- src/pages/Activity.tsx
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
-- src/pages/AiDrafts.tsx
-- src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
-- src/pages/Cases.tsx
-- src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
-- src/pages/Clients.tsx
-- src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
-- src/pages/Leads.tsx
-- src/pages/ResponseTemplates.sync-conflict-20260812-220823-AQZURIM.tsx
-- src/pages/ResponseTemplates.tsx
-- src/pages/Tasks.sync-conflict-20260812-220822-AQZURIM.tsx
-- src/pages/Tasks.tsx
-- src/pages/Templates.sync-conflict-20260812-220822-AQZURIM.tsx
-- src/pages/Templates.tsx
+Status: **mapa/inwentaryzacja, nie refactor UI**. Ten plik ma pokazać, gdzie dziś żyją ikony, kafelki, sekcje, notatki, akcje i położenia. Dopiero po tej mapie wolno robić przepięcie na wspólne komponenty.
 
-## Action occurrences
-- Usuń: src/components/ActivityItemPreviewDialog.tsx:66
-- Edytuj: src/components/ActivityItemPreviewDialog.tsx:65
-- Usuń: src/components/ActivityRoadmap.tsx:99
-- Usuń: src/components/ActivityRoadmap.tsx:278
-- Edytuj: src/components/ActivityRoadmap.tsx:98
-- Anuluj: src/components/ActivityRoadmap.tsx:277
-- Anuluj: src/components/AddCaseMissingItemDialog.tsx:128
-- Dodaj: src/components/AddCaseMissingItemDialog.tsx:107
-- Dodaj: src/components/AddCaseMissingItemDialog.tsx:129
-- Dodaj: src/components/AddCaseMissingItemDialog.tsx:129
-- Usuń: src/components/admin-tools/admin-tools-export.ts:68
-- Usuń: src/components/admin-tools/admin-tools-export.ts:68
-- Usuń: src/components/admin-tools/AdminDebugToolbar.tsx:630
-- Zapisz: src/components/admin-tools/AdminDebugToolbar.tsx:531
-- Zapisz: src/components/admin-tools/AdminDebugToolbar.tsx:551
-- Zapisz: src/components/admin-tools/AdminDebugToolbar.tsx:563
-- Zapisz: src/components/ClientCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx:309
-- Anuluj: src/components/ClientCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx:306
-- Zapisz: src/components/ClientCreateDialog.tsx:309
-- Anuluj: src/components/ClientCreateDialog.tsx:306
-- Anuluj: src/components/confirm-dialog.tsx:23
-- Dodaj notatkę: src/components/ContextActionButton.tsx:21
-- Dodaj zadanie: src/components/ContextActionButton.tsx:19
-- Dodaj: src/components/ContextActionButton.tsx:19
-- Dodaj: src/components/ContextActionButton.tsx:20
-- Dodaj: src/components/ContextActionButton.tsx:21
-- Dodaj notatkę: src/components/ContextNoteDialog.tsx:108
-- Zapisz: src/components/ContextNoteDialog.tsx:123
-- Anuluj: src/components/ContextNoteDialog.tsx:122
-- Dodaj: src/components/ContextNoteDialog.tsx:108
-- Dodaj sprawę: src/components/CreateClientCaseDialog.tsx:93
-- Dodaj sprawę: src/components/CreateClientCaseDialog.tsx:115
-- Anuluj: src/components/CreateClientCaseDialog.tsx:112
-- Dodaj: src/components/CreateClientCaseDialog.tsx:93
-- Dodaj: src/components/CreateClientCaseDialog.tsx:115
-- Usuń: src/components/detail/MissingItemsManagerDialog.tsx:196
-- Anuluj: src/components/DraftReviewDialog.tsx:35
-- Edytuj: src/components/EditActivityNoteDialog.tsx:26
-- Zapisz: src/components/EditActivityNoteDialog.tsx:37
-- Anuluj: src/components/EditActivityNoteDialog.tsx:35
-- Kopiuj: src/components/entity-contact-card.tsx:57
-- Kopiuj: src/components/entity-contact-card.tsx:57
-- Kopiuj: src/components/entity-contact-card.tsx:57
-- Usuń: src/components/EntityConflictDialog.tsx:112
-- Anuluj: src/components/EntityConflictDialog.tsx:4
-- Anuluj: src/components/EntityConflictDialog.tsx:122
-- Dodaj: src/components/EntityConflictDialog.tsx:4
-- Dodaj: src/components/EntityConflictDialog.tsx:62
-- Zapisz: src/components/EventCreateDialog.tsx:216
-- Anuluj: src/components/EventCreateDialog.tsx:215
-- Edytuj: src/components/finance/CaseFinanceActionButtons.tsx:42
-- Dodaj: src/components/finance/CaseFinanceActionButtons.tsx:43
-- Dodaj: src/components/finance/CaseFinanceActionButtons.tsx:44
-- Dodaj: src/components/finance/CaseFinanceActionButtons.tsx:45
-- Zapisz: src/components/finance/CaseFinanceEditorDialog.sync-conflict-20260812-220823-AQZURIM.tsx:254
-- Anuluj: src/components/finance/CaseFinanceEditorDialog.sync-conflict-20260812-220823-AQZURIM.tsx:253
-- Zapisz: src/components/finance/CaseFinanceEditorDialog.tsx:254
-- Anuluj: src/components/finance/CaseFinanceEditorDialog.tsx:253
-- Zapisz: src/components/finance/CaseFinancePaymentDialog.tsx:194
-- Anuluj: src/components/finance/CaseFinancePaymentDialog.tsx:193
-- Dodaj: src/components/finance/CaseFinancePaymentDialog.tsx:12
-- Dodaj: src/components/finance/CaseFinancePaymentDialog.tsx:12
-- Dodaj: src/components/finance/CaseFinancePaymentDialog.tsx:12
-- Dodaj: src/components/finance/CaseFinancePaymentDialog.tsx:84
-- Dodaj: src/components/finance/CaseFinancePaymentDialog.tsx:85
-- Dodaj: src/components/finance/CaseFinancePaymentDialog.tsx:86
-- Edytuj: src/components/finance/CommissionFormDialog.tsx:93
-- Zapisz: src/components/finance/CommissionFormDialog.tsx:163
-- Anuluj: src/components/finance/CommissionFormDialog.tsx:162
-- Edytuj: src/components/finance/FinanceSnapshot.tsx:163
-- Dodaj: src/components/finance/FinanceSnapshot.tsx:160
-- Zapisz: src/components/finance/LeadValuePanel.tsx:190
-- Zapisz: src/components/finance/PaymentFormDialog.tsx:176
-- Anuluj: src/components/finance/PaymentFormDialog.tsx:174
-- Dodaj: src/components/finance/PaymentFormDialog.tsx:94
-- Usuń: src/components/lead-picker.tsx:79
-- Kopiuj: src/components/LeadAiFollowupDraft.tsx:160
-- Kopiuj: src/components/LeadAiNextAction.tsx:196
-- Anuluj: src/components/LeadStartServiceDialog.tsx:28
-- Dodaj: src/components/PwaInstallPrompt.tsx:134
-- Dodaj: src/components/PwaInstallPrompt.tsx:148
-- Zapisz: src/components/quick-lead/QuickLeadCaptureModal.tsx:305
-- Anuluj: src/components/quick-lead/QuickLeadCaptureModal.tsx:236
-- Anuluj: src/components/quick-lead/QuickLeadCaptureModal.tsx:302
-- Dodaj: src/components/quick-lead/QuickLeadCaptureModal.tsx:213
-- Zapisz: src/components/QuickAiCapture.tsx:4
-- Zapisz: src/components/QuickAiCapture.tsx:310
-- Zapisz: src/components/QuickAiCapture.tsx:331
-- Zapisz: src/components/QuickAiCapture.tsx:335
-- Zapisz: src/components/QuickAiCapture.tsx:351
-- Zapisz: src/components/QuickAiCapture.tsx:367
-- Dyktuj: src/components/QuickAiCapture.tsx:314
-- Dyktuj: src/components/QuickAiCapture.tsx:358
-- Edytuj: src/components/task-editor-dialog.tsx:108
-- Zapisz: src/components/task-editor-dialog.tsx:231
-- Anuluj: src/components/task-editor-dialog.tsx:230
-- Zapisz: src/components/TaskCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx:278
-- Anuluj: src/components/TaskCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx:277
-- Zapisz: src/components/TaskCreateDialog.tsx:278
-- Anuluj: src/components/TaskCreateDialog.tsx:277
-- Zapisz: src/components/TodayAiAssistant.tsx:9
-- Zapisz: src/components/TodayAiAssistant.tsx:43
-- Zapisz: src/components/TodayAiAssistant.tsx:55
-- Zapisz: src/components/TodayAiAssistant.tsx:101
-- Zapisz: src/components/TodayAiAssistant.tsx:200
-- Zapisz: src/components/TodayAiAssistant.tsx:247
-- Zapisz: src/components/TodayAiAssistant.tsx:305
-- Dyktuj: src/components/TodayAiAssistant.tsx:12
-- Dyktuj: src/components/TodayAiAssistant.tsx:48
-- Dyktuj: src/components/TodayAiAssistant.tsx:250
-- Dodaj: src/components/TodayAiAssistant.tsx:7
-- Dodaj: src/components/TodayAiAssistant.tsx:53
-- Dodaj: src/components/TodayAiAssistant.tsx:245
-- Usuń: src/components/topic-contact-picker.tsx:66
-- Usuń: src/components/ui-system/action-icon-registry.ts:57
-- Edytuj: src/components/ui-system/action-icon-registry.ts:56
-- Zapisz: src/components/ui-system/action-icon-registry.ts:60
-- Anuluj: src/components/ui-system/action-icon-registry.ts:61
-- Kopiuj: src/components/ui-system/action-icon-registry.ts:63
-- Dodaj: src/components/ui-system/action-icon-registry.ts:55
-- Usuń: src/components/ui-system/semantic-visual-registry.ts:92
-- Usuń: src/components/ui-system/semantic-visual-registry.ts:92
-- Edytuj: src/components/work-item-card.tsx:160
-- Zapisz: src/lib/assistant-intents.ts:4
-- Zapisz: src/lib/assistant-intents.ts:5
-- Zapisz: src/lib/assistant-intents.ts:5
-- Zapisz: src/lib/assistant-intents.ts:33
-- Zapisz: src/lib/assistant-intents.ts:35
-- Zapisz: src/lib/assistant-intents.ts:36
-- Dodaj: src/lib/assistant-intents.ts:5
-- Dodaj: src/lib/assistant-intents.ts:34
-- Dodaj zadanie: src/lib/case-lifecycle-v1.ts:111
-- Dodaj zadanie: src/lib/case-lifecycle-v1.ts:170
-- Dodaj: src/lib/case-lifecycle-v1.ts:111
-- Dodaj: src/lib/case-lifecycle-v1.ts:170
-- Usuń: src/lib/closeflow-visual-source-truth.ts:45
-- Nowa sprawa: src/lib/lead-case-handoff.ts:127
-- Zapisz: src/lib/missing-items/stage227c2-missing-item-modal-contract.ts:50
-- Anuluj: src/lib/missing-items/stage227c2-missing-item-modal-contract.ts:51
-- Dodaj: src/lib/missing-items/stage227c2-missing-item-modal-contract.ts:49
-- Usuń: src/lib/source-of-truth/actions.ts:70
-- Usuń: src/lib/source-of-truth/actions.ts:71
-- Usuń: src/lib/source-of-truth/actions.ts:81
-- Usuń: src/lib/source-of-truth/actions.ts:87
-- Usuń: src/lib/source-of-truth/actions.ts:88
-- Usuń: src/lib/source-of-truth/actions.ts:98
-- Usuń: src/lib/source-of-truth/actions.ts:104
-- Usuń: src/lib/source-of-truth/actions.ts:105
-- Usuń: src/lib/source-of-truth/actions.ts:115
-- Usuń: src/lib/source-of-truth/actions.ts:121
-- Usuń: src/lib/source-of-truth/actions.ts:122
-- Usuń: src/lib/source-of-truth/actions.ts:132
-- Usuń: src/lib/source-of-truth/actions.ts:138
-- Usuń: src/lib/source-of-truth/actions.ts:139
-- Usuń: src/lib/source-of-truth/actions.ts:149
-- Usuń: src/lib/source-of-truth/actions.ts:155
-- Usuń: src/lib/source-of-truth/actions.ts:156
-- Usuń: src/lib/source-of-truth/actions.ts:166
-- Anuluj: src/lib/source-of-truth/actions.ts:62
-- Kopiuj: src/lib/source-of-truth/actions.ts:172
-- Kopiuj: src/lib/source-of-truth/actions.ts:173
-- Kopiuj: src/lib/source-of-truth/actions.ts:183
-- Kopiuj: src/lib/source-of-truth/actions.ts:184
-- Kopiuj: src/lib/source-of-truth/actions.ts:194
-- Kopiuj: src/lib/source-of-truth/actions.ts:195
-- Kopiuj: src/lib/source-of-truth/actions.ts:205
-- Kopiuj: src/lib/source-of-truth/actions.ts:206
-- Kopiuj: src/lib/source-of-truth/actions.ts:216
-- Kopiuj: src/lib/source-of-truth/actions.ts:217
-- Usuń: src/lib/source-of-truth/icon-registry.ts:84
-- Kopiuj: src/lib/source-of-truth/icon-registry.ts:44
-- Dodaj: src/lib/source-of-truth/icon-registry.ts:14
-- Usuń: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1074
-- Edytuj: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1067
-- Edytuj: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1433
-- Zapisz: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1085
-- Zapisz: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1125
-- Zapisz: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1244
-- Zapisz: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1434
-- Anuluj: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:953
-- Anuluj: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1069
-- Anuluj: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1086
-- Kopiuj: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1087
-- Kopiuj: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1179
-- Kopiuj: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1207
-- Kopiuj: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1435
-- Usuń: src/pages/AiDrafts.tsx:1074
-- Edytuj: src/pages/AiDrafts.tsx:1067
-- Edytuj: src/pages/AiDrafts.tsx:1433
-- Zapisz: src/pages/AiDrafts.tsx:1085
-- Zapisz: src/pages/AiDrafts.tsx:1125
-- Zapisz: src/pages/AiDrafts.tsx:1244
-- Zapisz: src/pages/AiDrafts.tsx:1434
-- Anuluj: src/pages/AiDrafts.tsx:953
-- Anuluj: src/pages/AiDrafts.tsx:1069
-- Anuluj: src/pages/AiDrafts.tsx:1086
-- Kopiuj: src/pages/AiDrafts.tsx:1087
-- Kopiuj: src/pages/AiDrafts.tsx:1179
-- Kopiuj: src/pages/AiDrafts.tsx:1207
-- Kopiuj: src/pages/AiDrafts.tsx:1435
-- Anuluj: src/pages/Billing.tsx:428
-- Dodaj zadanie: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3086
-- Dodaj zadanie: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3278
-- Dodaj zadanie: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3318
-- Usuń: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:605
-- Usuń: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:674
-- Edytuj: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:153
-- Edytuj: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:597
-- Edytuj: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:666
-- Edytuj: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3517
-- Zapisz: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:153
-- Zapisz: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3679
-- Dodaj: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3082
-- Dodaj: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3086
-- Dodaj: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3278
-- Dodaj: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3318
-- Dodaj zadanie: src/pages/Calendar.tsx:3086
-- Dodaj zadanie: src/pages/Calendar.tsx:3278
-- Dodaj zadanie: src/pages/Calendar.tsx:3318
-- Usuń: src/pages/Calendar.tsx:605
-- Usuń: src/pages/Calendar.tsx:674
-- Edytuj: src/pages/Calendar.tsx:153
-- Edytuj: src/pages/Calendar.tsx:597
-- Edytuj: src/pages/Calendar.tsx:666
-- Edytuj: src/pages/Calendar.tsx:3517
-- Zapisz: src/pages/Calendar.tsx:153
-- Zapisz: src/pages/Calendar.tsx:3679
-- Dodaj: src/pages/Calendar.tsx:3082
-- Dodaj: src/pages/Calendar.tsx:3086
-- Dodaj: src/pages/Calendar.tsx:3278
-- Dodaj: src/pages/Calendar.tsx:3318
-- Dodaj notatkę: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3876
-- Dodaj notatkę: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4021
-- Dodaj notatkę: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4360
-- Dodaj zadanie: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3895
-- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3059
-- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3060
-- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3795
-- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4244
-- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4345
-- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4400
-- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4565
-- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4614
-- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4889
-- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5173
-- Usuń: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5174
-- Edytuj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4186
-- Edytuj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4341
-- Zapisz: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4332
-- Zapisz: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4454
-- Zapisz: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4496
-- Zapisz: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4711
-- Zapisz: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4876
-- Zapisz: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5000
-- Zapisz: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5047
-- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3065
-- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4245
-- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4335
-- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4374
-- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4387
-- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4401
-- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4451
-- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4492
-- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4702
-- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4868
-- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4890
-- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4994
-- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5046
-- Anuluj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5209
-- Dyktuj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:2795
-- Dyktuj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3883
-- Dyktuj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3886
-- Dyktuj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4028
-- Dyktuj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4031
-- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:188
-- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3876
-- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3895
-- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3899
-- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3914
-- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4021
-- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4050
-- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4106
-- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4111
-- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4189
-- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4199
-- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4360
-- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4414
-- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4463
-- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5009
-- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5009
-- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5200
-- Dodaj: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5209
-- Dodaj notatkę: src/pages/CaseDetail.tsx:3879
-- Dodaj notatkę: src/pages/CaseDetail.tsx:4024
-- Dodaj notatkę: src/pages/CaseDetail.tsx:4363
-- Dodaj zadanie: src/pages/CaseDetail.tsx:3898
-- Usuń: src/pages/CaseDetail.tsx:3062
-- Usuń: src/pages/CaseDetail.tsx:3063
-- Usuń: src/pages/CaseDetail.tsx:3798
-- Usuń: src/pages/CaseDetail.tsx:4247
-- Usuń: src/pages/CaseDetail.tsx:4348
-- Usuń: src/pages/CaseDetail.tsx:4403
-- Usuń: src/pages/CaseDetail.tsx:4568
-- Usuń: src/pages/CaseDetail.tsx:4617
-- Usuń: src/pages/CaseDetail.tsx:4892
-- Usuń: src/pages/CaseDetail.tsx:5176
-- Usuń: src/pages/CaseDetail.tsx:5177
-- Edytuj: src/pages/CaseDetail.tsx:4189
-- Edytuj: src/pages/CaseDetail.tsx:4344
-- Zapisz: src/pages/CaseDetail.tsx:4335
-- Zapisz: src/pages/CaseDetail.tsx:4457
-- Zapisz: src/pages/CaseDetail.tsx:4499
-- Zapisz: src/pages/CaseDetail.tsx:4714
-- Zapisz: src/pages/CaseDetail.tsx:4879
-- Zapisz: src/pages/CaseDetail.tsx:5003
-- Zapisz: src/pages/CaseDetail.tsx:5050
-- Anuluj: src/pages/CaseDetail.tsx:3068
-- Anuluj: src/pages/CaseDetail.tsx:4248
-- Anuluj: src/pages/CaseDetail.tsx:4338
-- Anuluj: src/pages/CaseDetail.tsx:4377
-- Anuluj: src/pages/CaseDetail.tsx:4390
-- Anuluj: src/pages/CaseDetail.tsx:4404
-- Anuluj: src/pages/CaseDetail.tsx:4454
-- Anuluj: src/pages/CaseDetail.tsx:4495
-- Anuluj: src/pages/CaseDetail.tsx:4705
-- Anuluj: src/pages/CaseDetail.tsx:4871
-- Anuluj: src/pages/CaseDetail.tsx:4893
-- Anuluj: src/pages/CaseDetail.tsx:4997
-- Anuluj: src/pages/CaseDetail.tsx:5049
-- Anuluj: src/pages/CaseDetail.tsx:5212
-- Dyktuj: src/pages/CaseDetail.tsx:2798
-- Dyktuj: src/pages/CaseDetail.tsx:3886
-- Dyktuj: src/pages/CaseDetail.tsx:3889
-- Dyktuj: src/pages/CaseDetail.tsx:4031
-- Dyktuj: src/pages/CaseDetail.tsx:4034
-- Dodaj: src/pages/CaseDetail.tsx:191
-- Dodaj: src/pages/CaseDetail.tsx:3879
-- Dodaj: src/pages/CaseDetail.tsx:3898
-- Dodaj: src/pages/CaseDetail.tsx:3902
-- Dodaj: src/pages/CaseDetail.tsx:3917
-- Dodaj: src/pages/CaseDetail.tsx:4024
-- Dodaj: src/pages/CaseDetail.tsx:4053
-- Dodaj: src/pages/CaseDetail.tsx:4109
-- Dodaj: src/pages/CaseDetail.tsx:4114
-- Dodaj: src/pages/CaseDetail.tsx:4192
-- Dodaj: src/pages/CaseDetail.tsx:4202
-- Dodaj: src/pages/CaseDetail.tsx:4363
-- Dodaj: src/pages/CaseDetail.tsx:4417
-- Dodaj: src/pages/CaseDetail.tsx:4466
-- Dodaj: src/pages/CaseDetail.tsx:5012
-- Dodaj: src/pages/CaseDetail.tsx:5012
-- Dodaj: src/pages/CaseDetail.tsx:5203
-- Dodaj: src/pages/CaseDetail.tsx:5212
-- Usuń: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:877
-- Usuń: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:878
-- Usuń: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:957
-- Zapisz: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:725
-- Anuluj: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:722
-- Nowa sprawa: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:582
-- Nowa sprawa: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:588
-- Dodaj: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:635
-- Usuń: src/pages/Cases.tsx:878
-- Usuń: src/pages/Cases.tsx:879
-- Usuń: src/pages/Cases.tsx:958
-- Zapisz: src/pages/Cases.tsx:726
-- Anuluj: src/pages/Cases.tsx:723
-- Nowa sprawa: src/pages/Cases.tsx:583
-- Nowa sprawa: src/pages/Cases.tsx:589
-- Dodaj: src/pages/Cases.tsx:636
-- Dodaj notatkę: src/pages/ClientDetail.tsx:3186
-- Dodaj notatkę: src/pages/ClientDetail.tsx:3365
-- Dodaj zadanie: src/pages/ClientDetail.tsx:1927
-- Dodaj zadanie: src/pages/ClientDetail.tsx:3628
-- Dodaj zadanie: src/pages/ClientDetail.tsx:3662
-- Dodaj sprawę: src/pages/ClientDetail.tsx:1309
-- Usuń: src/pages/ClientDetail.tsx:1117
-- Usuń: src/pages/ClientDetail.tsx:1117
-- Usuń: src/pages/ClientDetail.tsx:1119
-- Usuń: src/pages/ClientDetail.tsx:2668
-- Usuń: src/pages/ClientDetail.tsx:2668
-- Usuń: src/pages/ClientDetail.tsx:2726
-- Usuń: src/pages/ClientDetail.tsx:2727
-- Usuń: src/pages/ClientDetail.tsx:3156
-- Usuń: src/pages/ClientDetail.tsx:3228
-- Usuń: src/pages/ClientDetail.tsx:3228
-- Edytuj: src/pages/ClientDetail.tsx:59
-- Edytuj: src/pages/ClientDetail.tsx:1475
-- Edytuj: src/pages/ClientDetail.tsx:2667
-- Edytuj: src/pages/ClientDetail.tsx:2716
-- Edytuj: src/pages/ClientDetail.tsx:2943
-- Edytuj: src/pages/ClientDetail.tsx:3225
-- Edytuj: src/pages/ClientDetail.tsx:3225
-- Zapisz: src/pages/ClientDetail.tsx:59
-- Zapisz: src/pages/ClientDetail.tsx:2943
-- Zapisz: src/pages/ClientDetail.tsx:2974
-- Zapisz: src/pages/ClientDetail.tsx:3366
-- Zapisz: src/pages/ClientDetail.tsx:3403
-- Anuluj: src/pages/ClientDetail.tsx:2977
-- Anuluj: src/pages/ClientDetail.tsx:3400
-- Kopiuj: src/pages/ClientDetail.tsx:2995
-- Kopiuj: src/pages/ClientDetail.tsx:3002
-- Dyktuj: src/pages/ClientDetail.tsx:3201
-- Dyktuj: src/pages/ClientDetail.tsx:3388
-- Nowa sprawa: src/pages/ClientDetail.tsx:62
-- Dodaj: src/pages/ClientDetail.tsx:167
-- Dodaj: src/pages/ClientDetail.tsx:1098
-- Dodaj: src/pages/ClientDetail.tsx:1098
-- Dodaj: src/pages/ClientDetail.tsx:1309
-- Dodaj: src/pages/ClientDetail.tsx:1343
-- Dodaj: src/pages/ClientDetail.tsx:1927
-- Dodaj: src/pages/ClientDetail.tsx:3186
-- Dodaj: src/pages/ClientDetail.tsx:3284
-- Dodaj: src/pages/ClientDetail.tsx:3365
-- Dodaj: src/pages/ClientDetail.tsx:3628
-- Dodaj: src/pages/ClientDetail.tsx:3662
-- Dodaj: src/pages/ClientDetail.tsx:3681
-- Anuluj: src/pages/ClientPortal.tsx:325
-- Anuluj: src/pages/ClientPortal.tsx:358
-- Dodaj: src/pages/ClientPortal.tsx:321
-- Zapisz: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx:970
-- Anuluj: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx:828
-- Anuluj: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx:967
-- Dodaj: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx:724
-- Dodaj: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx:840
-- Dodaj: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx:860
-- Dodaj: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx:866
-- Zapisz: src/pages/Clients.tsx:973
-- Anuluj: src/pages/Clients.tsx:831
-- Anuluj: src/pages/Clients.tsx:970
-- Dodaj: src/pages/Clients.tsx:727
-- Dodaj: src/pages/Clients.tsx:843
-- Dodaj: src/pages/Clients.tsx:863
-- Dodaj: src/pages/Clients.tsx:869
-- Anuluj: src/pages/Dashboard.tsx:273
-- Nowa sprawa: src/pages/Dashboard.tsx:237
-- Dodaj notatkę: src/pages/LeadDetail.tsx:2875
-- Dodaj notatkę: src/pages/LeadDetail.tsx:3182
-- Dodaj zadanie: src/pages/LeadDetail.tsx:1680
-- Usuń: src/pages/LeadDetail.tsx:2746
-- Usuń: src/pages/LeadDetail.tsx:2748
-- Usuń: src/pages/LeadDetail.tsx:2834
-- Usuń: src/pages/LeadDetail.tsx:2846
-- Usuń: src/pages/LeadDetail.tsx:2848
-- Usuń: src/pages/LeadDetail.tsx:2904
-- Edytuj: src/pages/LeadDetail.tsx:2516
-- Edytuj: src/pages/LeadDetail.tsx:2636
-- Edytuj: src/pages/LeadDetail.tsx:2654
-- Edytuj: src/pages/LeadDetail.tsx:2736
-- Edytuj: src/pages/LeadDetail.tsx:2838
-- Edytuj: src/pages/LeadDetail.tsx:2903
-- Edytuj: src/pages/LeadDetail.tsx:2992
-- Edytuj: src/pages/LeadDetail.tsx:3134
-- Edytuj: src/pages/LeadDetail.tsx:3151
-- Edytuj: src/pages/LeadDetail.tsx:3166
-- Edytuj: src/pages/LeadDetail.tsx:3210
-- Zapisz: src/pages/LeadDetail.tsx:3090
-- Zapisz: src/pages/LeadDetail.tsx:3125
-- Zapisz: src/pages/LeadDetail.tsx:3145
-- Zapisz: src/pages/LeadDetail.tsx:3160
-- Zapisz: src/pages/LeadDetail.tsx:3175
-- Zapisz: src/pages/LeadDetail.tsx:3183
-- Zapisz: src/pages/LeadDetail.tsx:3202
-- Zapisz: src/pages/LeadDetail.tsx:3213
-- Anuluj: src/pages/LeadDetail.tsx:3049
-- Anuluj: src/pages/LeadDetail.tsx:3088
-- Anuluj: src/pages/LeadDetail.tsx:3123
-- Anuluj: src/pages/LeadDetail.tsx:3145
-- Anuluj: src/pages/LeadDetail.tsx:3160
-- Anuluj: src/pages/LeadDetail.tsx:3175
-- Anuluj: src/pages/LeadDetail.tsx:3200
-- Anuluj: src/pages/LeadDetail.tsx:3213
-- Kopiuj: src/pages/LeadDetail.tsx:2442
-- Kopiuj: src/pages/LeadDetail.tsx:2449
-- Kopiuj: src/pages/LeadDetail.tsx:2533
-- Kopiuj: src/pages/LeadDetail.tsx:2540
-- Dyktuj: src/pages/LeadDetail.tsx:2887
-- Dyktuj: src/pages/LeadDetail.tsx:3198
-- Dodaj: src/pages/LeadDetail.tsx:1680
-- Dodaj: src/pages/LeadDetail.tsx:2644
-- Dodaj: src/pages/LeadDetail.tsx:2686
-- Dodaj: src/pages/LeadDetail.tsx:2716
-- Dodaj: src/pages/LeadDetail.tsx:2717
-- Dodaj: src/pages/LeadDetail.tsx:2774
-- Dodaj: src/pages/LeadDetail.tsx:2875
-- Dodaj: src/pages/LeadDetail.tsx:2993
-- Dodaj: src/pages/LeadDetail.tsx:3011
-- Dodaj: src/pages/LeadDetail.tsx:3060
-- Dodaj: src/pages/LeadDetail.tsx:3182
-- Usuń: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx:109
-- Usuń: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx:111
-- Usuń: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx:1045
-- Zapisz: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx:933
-- Anuluj: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx:930
-- Anuluj: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx:1339
-- Anuluj: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx:1355
-- Dodaj: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx:481
-- Dodaj: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx:1384
-- Usuń: src/pages/Leads.tsx:111
-- Usuń: src/pages/Leads.tsx:113
-- Usuń: src/pages/Leads.tsx:1047
+## Wynik skanowania
 
-## Lucide icon imports
-- useMemo: src/components/ActivityRoadmap.tsx
-- useState } from 'react';
-import { CalendarClock: src/components/ActivityRoadmap.tsx
-- CheckCircle2: src/components/ActivityRoadmap.tsx
-- CircleDollarSign: src/components/ActivityRoadmap.tsx
-- FileCheck2: src/components/ActivityRoadmap.tsx
-- FileText: src/components/ActivityRoadmap.tsx
-- ListChecks: src/components/ActivityRoadmap.tsx
-- Pencil: src/components/ActivityRoadmap.tsx
-- StickyNote: src/components/ActivityRoadmap.tsx
-- type CSSProperties: src/components/admin-tools/AdminDebugToolbar.tsx
-- type KeyboardEvent: src/components/admin-tools/AdminDebugToolbar.tsx
-- type PointerEvent as ReactPointerEvent: src/components/admin-tools/AdminDebugToolbar.tsx
-- useEffect: src/components/admin-tools/AdminDebugToolbar.tsx
-- useMemo: src/components/admin-tools/AdminDebugToolbar.tsx
-- useState } from 'react';
-import { Copy: src/components/admin-tools/AdminDebugToolbar.tsx
-- CalendarClock: src/components/CaseQuickActions.tsx
-- FileWarning: src/components/CaseQuickActions.tsx
-- ListChecks: src/components/CaseQuickActions.tsx
-- StickyNote: src/components/CaseQuickActions.tsx
-- type FormEvent: src/components/ContextNoteDialog.tsx
-- useEffect: src/components/ContextNoteDialog.tsx
-- useState } from 'react';
-import { Loader2: src/components/ContextNoteDialog.tsx
-- AlertTriangle: src/components/detail/MissingItemsManagerDialog.tsx
-- useState } from 'react';
-import { Loader2: src/components/EmailVerificationGate.tsx
-- LogOut: src/components/EmailVerificationGate.tsx
-- MailCheck: src/components/EmailVerificationGate.tsx
-- RefreshCcw: src/components/EmailVerificationGate.tsx
-- Send: src/components/EmailVerificationGate.tsx
-- type ComponentType } from 'react';
-import { Building2: src/components/entity-contact-card.tsx
-- Copy: src/components/entity-contact-card.tsx
-- Mail: src/components/entity-contact-card.tsx
-- Phone: src/components/entity-contact-card.tsx
-- AlertTriangle: src/components/EntityConflictDialog.tsx
-- type FormEvent: src/components/EventCreateDialog.tsx
-- useEffect: src/components/EventCreateDialog.tsx
-- useState } from 'react';
-import { Loader2: src/components/EventCreateDialog.tsx
-- useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ClipboardList: src/components/GlobalQuickActions.tsx
-- type ReactNode: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- useMemo: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- useState: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- useEffect } from 'react';
-import { Link: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- useLocation: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- useNavigate } from 'react-router-dom';
-import { AlertTriangle: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- Bell: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- Briefcase: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- Calendar: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- CheckCircle2: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- CheckSquare: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- ChevronRight: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- CreditCard: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- FolderKanban: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- History: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- Home: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- LifeBuoy: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- LogOut: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- Menu: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- MessageSquareText: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- Settings: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- Sparkles: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- Users: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- X: src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx
-- type ReactNode: src/components/Layout.tsx
-- useMemo: src/components/Layout.tsx
-- useState: src/components/Layout.tsx
-- useEffect } from 'react';
-import { Link: src/components/Layout.tsx
-- useLocation: src/components/Layout.tsx
-- useNavigate } from 'react-router-dom';
-import { AlertTriangle: src/components/Layout.tsx
-- Bell: src/components/Layout.tsx
-- Briefcase: src/components/Layout.tsx
-- Calendar: src/components/Layout.tsx
-- CheckCircle2: src/components/Layout.tsx
-- CheckSquare: src/components/Layout.tsx
-- ChevronRight: src/components/Layout.tsx
-- CreditCard: src/components/Layout.tsx
-- FolderKanban: src/components/Layout.tsx
-- History: src/components/Layout.tsx
-- Home: src/components/Layout.tsx
-- LifeBuoy: src/components/Layout.tsx
-- LogOut: src/components/Layout.tsx
-- Menu: src/components/Layout.tsx
-- MessageSquareText: src/components/Layout.tsx
-- Settings: src/components/Layout.tsx
-- Sparkles: src/components/Layout.tsx
-- Users: src/components/Layout.tsx
-- X: src/components/Layout.tsx
-- useMemo: src/components/lead-picker.tsx
-- useState } from 'react';
-import { Check: src/components/lead-picker.tsx
-- type FormEvent: src/components/LeadAiFollowupDraft.tsx
-- useMemo: src/components/LeadAiFollowupDraft.tsx
-- useState } from 'react';
-import { CheckCircle2: src/components/LeadAiFollowupDraft.tsx
-- Copy: src/components/LeadAiFollowupDraft.tsx
-- Loader2: src/components/LeadAiFollowupDraft.tsx
-- MessageSquare: src/components/LeadAiFollowupDraft.tsx
-- Sparkles: src/components/LeadAiFollowupDraft.tsx
-- useMemo: src/components/LeadAiNextAction.tsx
-- useState } from 'react';
-import { CheckCircle2: src/components/LeadAiNextAction.tsx
-- ClipboardList: src/components/LeadAiNextAction.tsx
-- Copy: src/components/LeadAiNextAction.tsx
-- Loader2: src/components/LeadAiNextAction.tsx
-- Sparkles: src/components/LeadAiNextAction.tsx
-- useEffect: src/components/PwaInstallPrompt.tsx
-- useMemo: src/components/PwaInstallPrompt.tsx
-- useState } from 'react';
-import { Download: src/components/PwaInstallPrompt.tsx
-- Smartphone: src/components/PwaInstallPrompt.tsx
-- X: src/components/PwaInstallPrompt.tsx
-- useMemo: src/components/quick-lead/QuickLeadCaptureModal.tsx
-- useState } from 'react';
-import { Loader2: src/components/quick-lead/QuickLeadCaptureModal.tsx
-- Mic: src/components/quick-lead/QuickLeadCaptureModal.tsx
-- Wand2: src/components/quick-lead/QuickLeadCaptureModal.tsx
-- useEffect: src/components/QuickAiCapture.tsx
-- useRef: src/components/QuickAiCapture.tsx
-- useState } from 'react';
-import { Loader2: src/components/QuickAiCapture.tsx
-- Mic: src/components/QuickAiCapture.tsx
-- MicOff: src/components/QuickAiCapture.tsx
-- Sparkles: src/components/QuickAiCapture.tsx
-- useEffect: src/components/sidebar-mini-calendar.tsx
-- useMemo: src/components/sidebar-mini-calendar.tsx
-- useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ChevronLeft: src/components/sidebar-mini-calendar.tsx
-- ChevronRight: src/components/sidebar-mini-calendar.tsx
-- type FormEvent: src/components/TaskCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx
-- useEffect: src/components/TaskCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx
-- useMemo: src/components/TaskCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx
-- useState } from 'react';
-import { Loader2: src/components/TaskCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx
-- type FormEvent: src/components/TaskCreateDialog.tsx
-- useEffect: src/components/TaskCreateDialog.tsx
-- useMemo: src/components/TaskCreateDialog.tsx
-- useState } from 'react';
-import { Loader2: src/components/TaskCreateDialog.tsx
-- useMemo: src/components/topic-contact-picker.tsx
-- useState } from 'react';
-import { Check: src/components/topic-contact-picker.tsx
-- Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox"
+- Pliki przeskanowane: **448**
+- Bezpośrednie importy ikon z lucide-react: **395**
+- Użycia StatShortcutCard: **28**
+- Lokalne implementacje InfoRow/InfoLine/StatCell/ActionButton: **3**
+- Kontrakty akcji encji: **3**
+- Dowody położenia/layoutu CSS: **800**
 
-import { cn } from "@/lib/utils"
-import { CheckIcon: src/components/ui/checkbox.tsx
-- X: src/components/ui/dialog.tsx
-- Check: src/components/ui/dropdown-menu.tsx
-- ChevronRight: src/components/ui/dropdown-menu.tsx
-- Circle: src/components/ui/dropdown-menu.tsx
-- Select as SelectPrimitive } from "@base-ui/react/select"
+## Decyzja architektoniczna
 
-import { cn } from "../../lib/utils"
-import { ChevronDownIcon: src/components/ui/select.tsx
-- CheckIcon: src/components/ui/select.tsx
-- ChevronUpIcon: src/components/ui/select.tsx
-- Toaster as Sonner: src/components/ui/sonner.tsx
-- type ToasterProps } from "sonner"
-import { CircleCheckIcon: src/components/ui/sonner.tsx
-- InfoIcon: src/components/ui/sonner.tsx
-- TriangleAlertIcon: src/components/ui/sonner.tsx
-- OctagonXIcon: src/components/ui/sonner.tsx
-- Loader2Icon: src/components/ui/sonner.tsx
-- Archive: src/components/ui-system/action-icon-registry.ts
-- ArrowLeft: src/components/ui-system/action-icon-registry.ts
-- Calendar: src/components/ui-system/action-icon-registry.ts
-- ClipboardList: src/components/ui-system/action-icon-registry.ts
-- Copy: src/components/ui-system/action-icon-registry.ts
-- ExternalLink: src/components/ui-system/action-icon-registry.ts
-- Filter: src/components/ui-system/action-icon-registry.ts
-- MoreHorizontal: src/components/ui-system/action-icon-registry.ts
-- Pencil: src/components/ui-system/action-icon-registry.ts
-- Plus: src/components/ui-system/action-icon-registry.ts
-- RefreshCw: src/components/ui-system/action-icon-registry.ts
-- RotateCcw: src/components/ui-system/action-icon-registry.ts
-- Save: src/components/ui-system/action-icon-registry.ts
-- Search: src/components/ui-system/action-icon-registry.ts
-- Settings: src/components/ui-system/action-icon-registry.ts
-- StickyNote: src/components/ui-system/action-icon-registry.ts
-- Trash2: src/components/ui-system/action-icon-registry.ts
-- X: src/components/ui-system/action-icon-registry.ts
-- type LucideIcon: src/components/ui-system/action-icon-registry.ts
-- Activity: src/components/ui-system/icon-registry.ts
-- BadgeDollarSign: src/components/ui-system/icon-registry.ts
-- Bell: src/components/ui-system/icon-registry.ts
-- Briefcase: src/components/ui-system/icon-registry.ts
-- Calendar: src/components/ui-system/icon-registry.ts
-- ClipboardList: src/components/ui-system/icon-registry.ts
-- CreditCard: src/components/ui-system/icon-registry.ts
-- FileText: src/components/ui-system/icon-registry.ts
-- Settings: src/components/ui-system/icon-registry.ts
-- Sparkles: src/components/ui-system/icon-registry.ts
-- Target: src/components/ui-system/icon-registry.ts
-- UserRound: src/components/ui-system/icon-registry.ts
-- Wallet: src/components/ui-system/icon-registry.ts
-- X: src/components/ui-system/icon-registry.ts
-- type LucideIcon: src/components/ui-system/icon-registry.ts
-- ArrowRight: src/components/work-item-card.tsx
-- CalendarDays: src/components/work-item-card.tsx
-- CheckCircle2: src/components/work-item-card.tsx
-- CheckSquare: src/components/work-item-card.tsx
-- Loader2: src/components/work-item-card.tsx
-- Trash2: src/components/work-item-card.tsx
-- Calendar: src/lib/calendar-items.ts
-- useEffect: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
-- useMemo: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
-- useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Activity as ActivityIcon: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
-- ArrowUpRight: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
-- CalendarClock: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
-- CheckCircle2: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
-- Clock: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
-- Filter: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
-- Link2: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
-- ListChecks: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
-- Loader2: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
-- Search: src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx
-- useEffect: src/pages/Activity.tsx
-- useMemo: src/pages/Activity.tsx
-- useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Activity as ActivityIcon: src/pages/Activity.tsx
-- ArrowUpRight: src/pages/Activity.tsx
-- CalendarClock: src/pages/Activity.tsx
-- CheckCircle2: src/pages/Activity.tsx
-- Clock: src/pages/Activity.tsx
-- Filter: src/pages/Activity.tsx
-- Link2: src/pages/Activity.tsx
-- ListChecks: src/pages/Activity.tsx
-- Loader2: src/pages/Activity.tsx
-- Search: src/pages/Activity.tsx
-- useEffect: src/pages/AdminAiSettings.tsx
-- useState } from 'react';
-import { AlertTriangle: src/pages/AdminAiSettings.tsx
-- CheckCircle2: src/pages/AdminAiSettings.tsx
-- KeyRound: src/pages/AdminAiSettings.tsx
-- RefreshCw: src/pages/AdminAiSettings.tsx
-- ShieldCheck: src/pages/AdminAiSettings.tsx
-- useEffect: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
-- useMemo: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
-- useState } from 'react';
-import { AlertTriangle: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
-- CalendarClock: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
-- CheckCircle2: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
-- Clipboard: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
-- Clock: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
-- Loader2: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
-- Pencil: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
-- Search: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
-- Trash2: src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx
-- useEffect: src/pages/AiDrafts.tsx
-- useMemo: src/pages/AiDrafts.tsx
-- useState } from 'react';
-import { AlertTriangle: src/pages/AiDrafts.tsx
-- CalendarClock: src/pages/AiDrafts.tsx
-- CheckCircle2: src/pages/AiDrafts.tsx
-- Clipboard: src/pages/AiDrafts.tsx
-- Clock: src/pages/AiDrafts.tsx
-- Loader2: src/pages/AiDrafts.tsx
-- Pencil: src/pages/AiDrafts.tsx
-- Search: src/pages/AiDrafts.tsx
-- Trash2: src/pages/AiDrafts.tsx
-- useEffect: src/pages/Billing.tsx
-- useMemo: src/pages/Billing.tsx
-- useState } from 'react';
-import { AlertTriangle: src/pages/Billing.tsx
-- ArrowRight: src/pages/Billing.tsx
-- BadgeCheck: src/pages/Billing.tsx
-- CalendarClock: src/pages/Billing.tsx
-- Check: src/pages/Billing.tsx
-- Loader2: src/pages/Billing.tsx
-- LockKeyhole: src/pages/Billing.tsx
-- RefreshCw: src/pages/Billing.tsx
-- Shield: src/pages/Billing.tsx
-- type FormEvent: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
-- type MouseEvent: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
-- useEffect: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
-- useMemo: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
-- useRef: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
-- useState } from 'react';
-import { Link: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
-- useSearchParams } from 'react-router-dom';
-import { CheckSquare: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
-- ChevronLeft: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
-- ChevronRight: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
-- Loader2: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
-- Repeat: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
-- Trash2: src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx
-- type FormEvent: src/pages/Calendar.tsx
-- type MouseEvent: src/pages/Calendar.tsx
-- useEffect: src/pages/Calendar.tsx
-- useMemo: src/pages/Calendar.tsx
-- useRef: src/pages/Calendar.tsx
-- useState } from 'react';
-import { Link: src/pages/Calendar.tsx
-- useSearchParams } from 'react-router-dom';
-import { CheckSquare: src/pages/Calendar.tsx
-- ChevronLeft: src/pages/Calendar.tsx
-- ChevronRight: src/pages/Calendar.tsx
-- Loader2: src/pages/Calendar.tsx
-- Repeat: src/pages/Calendar.tsx
-- Trash2: src/pages/Calendar.tsx
-- useCallback: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- useEffect: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- useMemo: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- useRef: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- useState } from 'react';
-import { Link: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- useNavigate: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- useParams } from 'react-router-dom';
-import { AlertCircle: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- ArrowLeft: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- ArrowRight: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- CalendarClock: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- Check: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- CheckCircle2: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- Clock: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- Copy: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- ExternalLink: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- History: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- ListChecks: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- Loader2: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- MessageSquare: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- Paperclip: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- Plus: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- Send: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- StickyNote: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- Trash2: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- X: src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx
-- useCallback: src/pages/CaseDetail.tsx
-- useEffect: src/pages/CaseDetail.tsx
-- useMemo: src/pages/CaseDetail.tsx
-- useRef: src/pages/CaseDetail.tsx
-- useState } from 'react';
-import { Link: src/pages/CaseDetail.tsx
-- useNavigate: src/pages/CaseDetail.tsx
-- useParams } from 'react-router-dom';
-import { AlertCircle: src/pages/CaseDetail.tsx
-- ArrowLeft: src/pages/CaseDetail.tsx
-- ArrowRight: src/pages/CaseDetail.tsx
-- CalendarClock: src/pages/CaseDetail.tsx
-- Check: src/pages/CaseDetail.tsx
-- CheckCircle2: src/pages/CaseDetail.tsx
-- Clock: src/pages/CaseDetail.tsx
-- Copy: src/pages/CaseDetail.tsx
-- ExternalLink: src/pages/CaseDetail.tsx
-- History: src/pages/CaseDetail.tsx
-- ListChecks: src/pages/CaseDetail.tsx
-- Loader2: src/pages/CaseDetail.tsx
-- MessageSquare: src/pages/CaseDetail.tsx
-- Paperclip: src/pages/CaseDetail.tsx
-- Plus: src/pages/CaseDetail.tsx
-- Send: src/pages/CaseDetail.tsx
-- StickyNote: src/pages/CaseDetail.tsx
-- Trash2: src/pages/CaseDetail.tsx
-- X: src/pages/CaseDetail.tsx
-- useEffect: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
-- useMemo: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
-- useRef: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
-- useState: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
-- type FormEvent } from 'react';
-import { Link: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
-- useSearchParams } from 'react-router-dom';
-import { AlertTriangle: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
-- CheckCircle2: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
-- ChevronRight: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
-- Clock: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
-- ExternalLink: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
-- FileText: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
-- Loader2: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
-- Plus: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
-- Search: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
-- Trash2: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
-- X: src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx
-- useEffect: src/pages/Cases.tsx
-- useMemo: src/pages/Cases.tsx
-- useRef: src/pages/Cases.tsx
-- useState: src/pages/Cases.tsx
-- type FormEvent } from 'react';
-import { Link: src/pages/Cases.tsx
-- useSearchParams } from 'react-router-dom';
-import { AlertTriangle: src/pages/Cases.tsx
-- CheckCircle2: src/pages/Cases.tsx
-- ChevronRight: src/pages/Cases.tsx
-- Clock: src/pages/Cases.tsx
-- ExternalLink: src/pages/Cases.tsx
-- FileText: src/pages/Cases.tsx
-- Loader2: src/pages/Cases.tsx
-- Plus: src/pages/Cases.tsx
-- Search: src/pages/Cases.tsx
-- Trash2: src/pages/Cases.tsx
-- X: src/pages/Cases.tsx
-- useCallback: src/pages/ClientDetail.tsx
-- useEffect: src/pages/ClientDetail.tsx
-- useMemo: src/pages/ClientDetail.tsx
-- useRef: src/pages/ClientDetail.tsx
-- useState } from 'react';
-import { Link: src/pages/ClientDetail.tsx
-- useNavigate: src/pages/ClientDetail.tsx
-- useParams } from 'react-router-dom';
-import { Activity: src/pages/ClientDetail.tsx
-- AlertTriangle: src/pages/ClientDetail.tsx
-- ArrowLeft: src/pages/ClientDetail.tsx
-- CheckCircle2: src/pages/ClientDetail.tsx
-- Clock: src/pages/ClientDetail.tsx
-- Eye: src/pages/ClientDetail.tsx
-- Loader2: src/pages/ClientDetail.tsx
-- Mic: src/pages/ClientDetail.tsx
-- MicOff: src/pages/ClientDetail.tsx
-- Pencil: src/pages/ClientDetail.tsx
-- Pin: src/pages/ClientDetail.tsx
-- Plus: src/pages/ClientDetail.tsx
-- Save: src/pages/ClientDetail.tsx
-- Trash2: src/pages/ClientDetail.tsx
-- useEffect: src/pages/ClientPortal.tsx
-- useState } from 'react';
-import { Link: src/pages/ClientPortal.tsx
-- useParams } from 'react-router-dom';
-import { AlertCircle: src/pages/ClientPortal.tsx
-- Check: src/pages/ClientPortal.tsx
-- CheckCircle2: src/pages/ClientPortal.tsx
-- Clock: src/pages/ClientPortal.tsx
-- Loader2: src/pages/ClientPortal.tsx
-- MessageSquare: src/pages/ClientPortal.tsx
-- Paperclip: src/pages/ClientPortal.tsx
-- Upload: src/pages/ClientPortal.tsx
-- X: src/pages/ClientPortal.tsx
-- type FormEvent: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
-- type MouseEvent: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
-- useCallback: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
-- useEffect: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
-- useMemo: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
-- useState: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
-- } from 'react';
-import { Link: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
-- useNavigate } from 'react-router-dom';
-import {
-  CaseEntityIcon: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
-- LeadEntityIcon: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
-- PaymentEntityIcon: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
-- } from '../components/ui-system';
-import {
-  AlertTriangle: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
-- ChevronRight: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
-- Loader2: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
-- Plus: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
-- RotateCcw: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
-- Search: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
-- Trash2: src/pages/Clients.sync-conflict-20260812-220823-AQZURIM.tsx
-- type FormEvent: src/pages/Clients.tsx
-- type MouseEvent: src/pages/Clients.tsx
-- useCallback: src/pages/Clients.tsx
-- useEffect: src/pages/Clients.tsx
-- useMemo: src/pages/Clients.tsx
-- useState: src/pages/Clients.tsx
-- } from 'react';
-import { Link: src/pages/Clients.tsx
-- useNavigate } from 'react-router-dom';
-import {
-  CaseEntityIcon: src/pages/Clients.tsx
-- LeadEntityIcon: src/pages/Clients.tsx
-- PaymentEntityIcon: src/pages/Clients.tsx
-- } from '../components/ui-system';
-import {
-  AlertTriangle: src/pages/Clients.tsx
-- ChevronRight: src/pages/Clients.tsx
-- Loader2: src/pages/Clients.tsx
-- Plus: src/pages/Clients.tsx
-- RotateCcw: src/pages/Clients.tsx
-- Search: src/pages/Clients.tsx
-- Trash2: src/pages/Clients.tsx
-- useEffect: src/pages/Dashboard.tsx
-- useState } from 'react';
-import { Link: src/pages/Dashboard.tsx
-- useNavigate } from 'react-router-dom';
-import { AlertCircle: src/pages/Dashboard.tsx
-- CheckCircle2: src/pages/Dashboard.tsx
-- ChevronRight: src/pages/Dashboard.tsx
-- Clock: src/pages/Dashboard.tsx
-- Filter: src/pages/Dashboard.tsx
-- LayoutDashboard: src/pages/Dashboard.tsx
-- LogOut: src/pages/Dashboard.tsx
-- Plus: src/pages/Dashboard.tsx
-- Search: src/pages/Dashboard.tsx
-- Settings: src/pages/Dashboard.tsx
-- Users: src/pages/Dashboard.tsx
-- X: src/pages/Dashboard.tsx
-- type FormEvent: src/pages/LeadDetail.tsx
-- type PointerEventHandler: src/pages/LeadDetail.tsx
-- type ReactNode: src/pages/LeadDetail.tsx
-- useEffect: src/pages/LeadDetail.tsx
-- useMemo: src/pages/LeadDetail.tsx
-- useRef: src/pages/LeadDetail.tsx
-- useState } from 'react';
-import { useNavigate: src/pages/LeadDetail.tsx
-- useParams } from 'react-router-dom';
-import { ArrowLeft: src/pages/LeadDetail.tsx
-- ArrowRight: src/pages/LeadDetail.tsx
-- CheckCircle2: src/pages/LeadDetail.tsx
-- Clock: src/pages/LeadDetail.tsx
-- DollarSign: src/pages/LeadDetail.tsx
-- Edit2: src/pages/LeadDetail.tsx
-- Loader2: src/pages/LeadDetail.tsx
-- Mail: src/pages/LeadDetail.tsx
-- Mic: src/pages/LeadDetail.tsx
-- MicOff: src/pages/LeadDetail.tsx
-- MoreVertical: src/pages/LeadDetail.tsx
-- Phone: src/pages/LeadDetail.tsx
-- Plus: src/pages/LeadDetail.tsx
-- Trash2: src/pages/LeadDetail.tsx
-- useCallback: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
-- useEffect: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
-- useMemo: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
-- useRef: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
-- useState: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
-- type FormEvent: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
-- type MouseEvent: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
-- } from 'react';
-import { Link: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
-- useSearchParams } from 'react-router-dom';
-import {
-  AlertTriangle: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
-- ChevronRight: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
-- Clock3: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
-- Filter: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
-- Loader2: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
-- Mail: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
-- RotateCcw: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
-- Search: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
-- Trash2: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
-- TrendingUp: src/pages/Leads.sync-conflict-20260812-220823-AQZURIM.tsx
-- useCallback: src/pages/Leads.tsx
-- useEffect: src/pages/Leads.tsx
-- useMemo: src/pages/Leads.tsx
-- useRef: src/pages/Leads.tsx
-- useState: src/pages/Leads.tsx
-- type FormEvent: src/pages/Leads.tsx
-- type MouseEvent: src/pages/Leads.tsx
-- } from 'react';
-import { Link: src/pages/Leads.tsx
-- useSearchParams } from 'react-router-dom';
-import {
-  AlertTriangle: src/pages/Leads.tsx
-- ChevronRight: src/pages/Leads.tsx
-- Clock3: src/pages/Leads.tsx
-- Filter: src/pages/Leads.tsx
-- Loader2: src/pages/Leads.tsx
-- Mail: src/pages/Leads.tsx
-- RotateCcw: src/pages/Leads.tsx
-- Search: src/pages/Leads.tsx
-- Trash2: src/pages/Leads.tsx
-- TrendingUp: src/pages/Leads.tsx
-- type FormEvent: src/pages/Login.tsx
-- useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight: src/pages/Login.tsx
-- CalendarDays: src/pages/Login.tsx
-- CheckCircle2: src/pages/Login.tsx
-- Loader2: src/pages/Login.tsx
-- Lock: src/pages/Login.tsx
-- LogIn: src/pages/Login.tsx
-- Mail: src/pages/Login.tsx
-- User: src/pages/Login.tsx
-- useCallback: src/pages/NotificationsCenter.sync-conflict-20260812-220823-AQZURIM.tsx
-- useEffect: src/pages/NotificationsCenter.sync-conflict-20260812-220823-AQZURIM.tsx
+Następny etap UI nie powinien naprawiać pojedynczych kolorów. Najpierw trzeba zatwierdzić mapę:
 
-## Button/link snippets
-- src/components/ActivityItemPreviewDialog.tsx:64 <Button type="button" variant="outline" onClick={() =>
-- src/components/ActivityItemPreviewDialog.tsx:65 <Button type="button" variant="outline" onClick={() =>
-- src/components/ActivityItemPreviewDialog.tsx:66 <Button type="button" variant="destructive" onClick={() =>
-- src/components/ActivityRoadmap.tsx:249 <button type="button" className="cf-activity-roadmap__toggle" onClick={() =>
-- src/components/ActivityRoadmap.tsx:277 <Button type="button" variant="outline" disabled={pending} onClick={() =>
-- src/components/ActivityRoadmap.tsx:278 <Button type="button" variant="destructive" disabled={pending} onClick={handleConfirmDeleteNote}>
-- src/components/AddCaseMissingItemDialog.tsx:128 <Button type="button" variant="outline" onClick={() =>
-- src/components/AppChunkErrorBoundary.tsx:117 <button type="button" className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white" onClick={() =>
-- src/components/AppChunkErrorBoundary.tsx:134 <button type="button" className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white" onClick={() =>
-- src/components/ClientCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx:305 <Button type="button" variant="outline" onClick={closeAndReset}>
-- src/components/ClientCreateDialog.tsx:305 <Button type="button" variant="outline" onClick={closeAndReset}>
-- src/components/confirm-dialog.tsx:36 <Button type="button" variant="outline" className="rounded-xl" onClick={() =>
-- src/components/confirm-dialog.tsx:39 <Button type="button" className="rounded-xl" variant={confirmTone === 'destructive' ? 'destructive' : 'default'} onClick={() =>
-- src/components/ContextNoteDialog.tsx:122 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>
-- src/components/CreateClientCaseDialog.tsx:111 <Button type="button" variant="outline" onClick={() =>
-- src/components/detail/MissingItemQuickActionModal.tsx:148 <button type="button" className="missing-item-modal-secondary-action" onClick={props.onCancel}>
-- src/components/detail/MissingItemQuickActionModal.tsx:151 <button type="submit" className="missing-item-modal-primary-action" disabled={props.isSaving}>
-- src/components/detail/MissingItemsManagerDialog.tsx:144 <Button type="button" variant="outline" onClick={() =>
-- src/components/detail/MissingItemsManagerDialog.tsx:192 <Button type="button" variant="outline" size="sm" disabled={!canMutate || isSaving} onClick={() =>
-- src/components/detail/MissingItemsManagerDialog.tsx:195 <Button type="button" variant="outline" size="sm" disabled={!canMutate || isSaving} onClick={() =>
-- src/components/DraftReviewDialog.tsx:34 <Button type="button" variant="outline" onClick={onCancel} disabled={pending}>
-- src/components/EditActivityNoteDialog.tsx:35 <Button type="button" variant="outline" disabled={pending} onClick={() =>
-- src/components/EmailVerificationGate.tsx:93 <Button type="button" className="h-12 rounded-xl" onClick={handleResend} disabled={resending || checking || signingOut || !email}>
-- src/components/EmailVerificationGate.tsx:97 <Button type="button" variant="outline" className="h-12 rounded-xl" onClick={handleRefresh} disabled={checking || resending || signingOut}>
-- src/components/EmailVerificationGate.tsx:104 <Button type="button" variant="ghost" className="rounded-xl text-slate-500" onClick={handleSignOut} disabled={signingOut || checking || resending}>
-- src/components/entity-contact-card.tsx:68 <button type="button" className="client-detail-icon-button cf-entity-contact-copy-button" onClick={() =>
-- src/components/EntityConflictDialog.tsx:102 <Button type="button" variant="outline" size="sm" onClick={() =>
-- src/components/EntityConflictDialog.tsx:106 <Button type="button" variant="outline" size="sm" onClick={() =>
-- src/components/EntityConflictDialog.tsx:111 <Button type="button" variant="outline" size="sm" onClick={() =>
-- src/components/EntityConflictDialog.tsx:122 <Button type="button" variant="outline" onClick={onCancel} disabled={busy}>
-- src/components/EventCreateDialog.tsx:215 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>
-- src/components/finance/CaseFinanceActionButtons.tsx:42 <Button type="button" variant="outline" onClick={onEdit} disabled={disabled}>
-- src/components/finance/CaseFinanceActionButtons.tsx:43 <Button type="button" variant="outline" onClick={onAddDepositPayment} disabled={disabled}>
-- src/components/finance/CaseFinanceActionButtons.tsx:44 <Button type="button" variant="outline" onClick={onAddPayment} disabled={disabled}>
-- src/components/finance/CaseFinanceActionButtons.tsx:45 <Button type="button" variant="outline" onClick={onAddCommissionPayment} disabled={disabled} data-stage228r7-add-commission-payment-button="true">
-- src/components/finance/CaseFinanceEditorDialog.sync-conflict-20260812-220823-AQZURIM.tsx:253 <Button type="button" variant="outline" onClick={() =>
-- src/components/finance/CaseFinanceEditorDialog.tsx:253 <Button type="button" variant="outline" onClick={() =>
-- src/components/finance/CaseFinancePaymentDialog.tsx:193 <Button type="button" variant="outline" onClick={() =>
-- src/components/finance/CommissionFormDialog.tsx:162 <Button type="button" variant="outline" onClick={() =>
-- src/components/finance/FinanceSnapshot.tsx:162 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/components/finance/LeadValuePanel.tsx:113 <button type="button" className="cf-finance-lead-value-panel__toggle" onClick={() =>
-- src/components/finance/PaymentFormDialog.tsx:174 <Button type="button" variant="outline" onClick={() =>
-- src/components/GlobalQuickActions.tsx:90 <Button asChild variant="outline" className="btn soft-blue cf-command-action cf-command-action--ai" data-global-quick-action="ai-drafts" data-cf-command-action="ai" data-feature-status="Beta" title="Beta">
-- src/components/GlobalQuickActions.tsx:91 <Link to="/ai-drafts" aria-label="Otwórz Inbox szkiców">
-- src/components/GlobalQuickActions.tsx:97 <Button asChild variant="outline" className="btn cf-command-action cf-command-action--neutral" data-global-quick-action="lead" data-cf-command-action="neutral" data-feature-status="Gotowe" title="Gotowe">
-- src/components/GlobalQuickActions.tsx:98 <Link to="/leads?quick=lead" aria-label="Otwórz leady lub dodaj leada" onClick={() =>
-- src/components/GlobalQuickActions.tsx:103 <Button type="button" variant="outline" className="btn cf-command-action cf-command-action--neutral" data-global-quick-action="client" data-cf-command-action="neutral" data-global-client-direct-modal-trigger="true" data-
-- src/components/GlobalQuickActions.tsx:108 <Button type="button" variant="outline" className="btn cf-command-action cf-command-action--neutral" data-global-quick-action="task" data-cf-command-action="neutral" data-global-task-direct-modal-trigger="true" data-feat
-- src/components/GlobalQuickActions.tsx:112 <Button asChild variant="outline" className="btn cf-command-action cf-command-action--neutral" data-global-quick-action="event" data-cf-command-action="neutral" data-feature-status="Gotowe" title="Gotowe">
-- src/components/GlobalQuickActions.tsx:113 <Link to="/calendar?quick=event" aria-label="Otwórz kalendarz lub dodaj wydarzenie" onClick={() =>
-- src/components/layout/sidebar-nav.tsx:54 <Button key={item.key} type="button" variant="ghost" aria-current={item.active ? 'page' : undefined} data-cf-sidebar-nav-item="true" data-cf-sidebar-nav-active={item.active ? 'true' : undefined} onClick={item.onClick}>
-- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:174 <Link to="/billing" className="trial-link">
-- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:585 <Link to="/" className="brand" aria-label="CloseFlow - przejdź do Dziś">
-- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:625 <button type="button" className="sidebar-logout" onClick={() =>
-- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:633 <Link to="/" className="mobile-brand" aria-label="CloseFlow - przejdź do Dziś">
-- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:637 <button type="button" className="mobile-menu-btn" onClick={() =>
-- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:644 <button type="button" className="mobile-drawer-backdrop" onClick={() =>
-- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:654 <button type="button" className="mobile-menu-btn" onClick={() =>
-- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:677 <button type="button" className="sidebar-logout" onClick={() =>
-- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:709 <Link to="/billing" className="access-warning-action">
-- src/components/Layout.tsx:177 <Link to="/billing" className="trial-link">
-- src/components/Layout.tsx:588 <Link to="/" className="brand" aria-label="CloseFlow - przejdź do Dziś">
-- src/components/Layout.tsx:628 <button type="button" className="sidebar-logout" onClick={() =>
-- src/components/Layout.tsx:636 <Link to="/" className="mobile-brand" aria-label="CloseFlow - przejdź do Dziś">
-- src/components/Layout.tsx:640 <button type="button" className="mobile-menu-btn" onClick={() =>
-- src/components/Layout.tsx:647 <button type="button" className="mobile-drawer-backdrop" onClick={() =>
-- src/components/Layout.tsx:657 <button type="button" className="mobile-menu-btn" onClick={() =>
-- src/components/Layout.tsx:680 <button type="button" className="sidebar-logout" onClick={() =>
-- src/components/Layout.tsx:712 <Link to="/billing" className="access-warning-action">
-- src/components/lead-picker.tsx:70 <Button type="button" size="icon" variant="ghost" className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 rounded-lg" onClick={() =>
-- src/components/lead-picker.tsx:91 <button key={lead.id} type="button" className="flex w-full items-start justify-between gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-slate-50"
-- src/components/LeadAiFollowupDraft.tsx:96 <Button type="button" variant="outline" className="rounded-xl bg-white" disabled={disabled}>
-- src/components/LeadAiFollowupDraft.tsx:158 <Button type="button" variant="outline" onClick={handleCopy}>
-- src/components/LeadAiNextAction.tsx:151 <Button type="button" variant="outline" className="rounded-xl bg-white" disabled={disabled}>
-- src/components/LeadAiNextAction.tsx:194 <Button type="button" variant="outline" onClick={handleCopy}>
-- src/components/LeadStartServiceDialog.tsx:28 <Button type="button" variant="outline" onClick={() =>
-- src/components/operator-rail/TopValueRecordsCard.tsx:56 <Link key={item.key} to={item.href || '#'} title={fullTitle} {...(item.dataAttrs || {})} data-cf-operator-rail-item="true" d
-- src/components/PwaInstallPrompt.tsx:140 <Button type="button" size="sm" className="min-h-10 rounded-xl px-3 text-xs font-bold" onClick={handleInstall} disabled={isInstalling}
-- src/components/PwaInstallPrompt.tsx:150 <Button type="button" size="sm" variant="ghost" className="min-h-10 rounded-xl px-3 text-xs font-bold text-slate-500" onClick={handleDismiss
-- src/components/PwaInstallPrompt.tsx:162 <button type="button" onClick={handleDismiss} className="flex min-h-10 min-w-10 items-center justify-center rounded-xl text-slate-400 transition hover:bg-slate-100 hover:text-slate-700
-- src/components/quick-lead/QuickLeadCaptureModal.tsx:235 <Button type="button" variant="outline" onClick={handleCancel} disabled={processing}>
-- src/components/quick-lead/QuickLeadCaptureModal.tsx:301 <Button type="button" variant="outline" onClick={handleCancel} disabled={submitting}>
-- src/components/quick-lead/QuickLeadCaptureModal.tsx:304 <Button type="button" variant="outline" onClick={handleSaveDraftOnly} disabled={submitting} data-stage27-save-draft="true">
-- src/components/QuickAiCapture.tsx:279 <Button type="button" variant="outline" className="rounded-xl cf-command-action cf-command-action--ai" data-cf-command-action="ai" disabled={!workspaceReady}>
-- src/components/QuickAiCapture.tsx:309 <Button type="button" variant="outline" onClick={handleSaveRawDraft} disabled={!rawText.trim() || saving}>
-- src/components/QuickAiCapture.tsx:312 <Button type="button" variant="outline" onClick={handleToggleSpeech}>
-- src/components/QuickAiCapture.tsx:334 <Button type="button" variant="outline" onClick={handleSaveRawDraft} disabled={saving}>
-- src/components/sidebar-mini-calendar.tsx:91 <Button variant="ghost" size="icon" className="h-5 w-5 rounded-md" onClick={() =>
-- src/components/sidebar-mini-calendar.tsx:99 <Button variant="ghost" size="icon" className="h-5 w-5 rounded-md" onClick={() =>
-- src/components/task-editor-dialog.tsx:230 <Button type="button" variant="outline" onClick={() =>
-- src/components/TaskCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx:277 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>
-- src/components/TaskCreateDialog.tsx:277 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>
-- src/components/topic-contact-picker.tsx:57 <Button type="button" size="icon" variant="ghost" className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 rounded-lg" onClick={() =>
-- src/components/ui/filter-chip-group.tsx:53 <Button key={option.value} type="button" variant="ghost" disabled={option.disabled} onClick={() =>
-- src/components/work-item-card.tsx:81 <Link to={href} className="cf-work-item-card-title" onClick={onOpen}>
-- src/components/work-item-card.tsx:85 <button type="button" className="cf-work-item-card-title cf-work-item-card-title-button" onClick={onOpen}>
-- src/components/work-item-card.tsx:114 <Button key={action.label} type="button" size="sm" variant="outline" className="cf-vst-button cf-selected-day-v9-action cf-work-item-card-shift" dat
-- src/components/work-item-card.tsx:132 <Button type="button" size="sm" variant="outline" className="cf-work-item-card-done" data-stage116-work-item-done-action="true" disabled={doneBusy |
-- src/components/work-item-card.tsx:149 <Button type="button" size="sm" variant="outline" data-stage232t-r1d-work-item-edit-action="true" onClick={(event) =>
-- src/components/work-item-card.tsx:183 <Link to={href} className="cf-work-item-card-open" aria-label="Otwórz wpis">
-- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:135 <button type="button" className="activity-payload-toggle" onClick={() =>
-- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:146 <Link to={'/leads/' + leadId} className="activity-relation-link">
-- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:151 <Link to={'/cases/' + caseId} className="activity-relation-link">
-- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:164 <Link to={relation.href} className="activity-open-button" aria-label={'Otwórz ' + relation.label}>
-- src/pages/Activity.tsx:135 <button type="button" className="activity-payload-toggle" onClick={() =>
-- src/pages/Activity.tsx:146 <Link to={'/leads/' + leadId} className="activity-relation-link">
-- src/pages/Activity.tsx:151 <Link to={'/cases/' + caseId} className="activity-relation-link">
-- src/pages/Activity.tsx:164 <Link to={relation.href} className="activity-open-button" aria-label={'Otwórz ' + relation.label}>
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:952 <Button type="button" size="sm" variant="outline" onClick={closeDraftApproval} disabled={approvalSaving}>
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1066 <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() =>
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1067 <button type="button" className="ai-drafts-action" onClick={() =>
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1068 <button type="button" className="ai-drafts-action ai-drafts-action-green" onClick={() =>
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1069 <button type="button" className="ai-drafts-action ai-drafts-action-red" onClick={() =>
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1073 <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() =>
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1074 <button type="button" className="ai-drafts-action ai-drafts-action-red" onClick={() =>
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1085 <button type="button" className="ai-drafts-action ai-drafts-action-green" onClick={() =>
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1086 <button type="button" className="ai-drafts-action" onClick={handleCancelEdit}>
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1087 <button type="button" className="ai-drafts-action" onClick={() =>
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1109 <button type="button" className="ai-drafts-header-button" onClick={() =>
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1343 <button key={draft.id} type="button" className="ai-drafts-rail-item" onClick={() =>
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1362 <button key={draft.id} type="button" className="ai-drafts-rail-item" onClick={() =>
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1414 <a href="/billing" className="mt-5 inline-flex rounded-2xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">
-- src/pages/AiDrafts.tsx:952 <Button type="button" size="sm" variant="outline" onClick={closeDraftApproval} disabled={approvalSaving}>
-- src/pages/AiDrafts.tsx:1066 <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() =>
-- src/pages/AiDrafts.tsx:1067 <button type="button" className="ai-drafts-action" onClick={() =>
-- src/pages/AiDrafts.tsx:1068 <button type="button" className="ai-drafts-action ai-drafts-action-green" onClick={() =>
-- src/pages/AiDrafts.tsx:1069 <button type="button" className="ai-drafts-action ai-drafts-action-red" onClick={() =>
-- src/pages/AiDrafts.tsx:1073 <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() =>
-- src/pages/AiDrafts.tsx:1074 <button type="button" className="ai-drafts-action ai-drafts-action-red" onClick={() =>
-- src/pages/AiDrafts.tsx:1085 <button type="button" className="ai-drafts-action ai-drafts-action-green" onClick={() =>
-- src/pages/AiDrafts.tsx:1086 <button type="button" className="ai-drafts-action" onClick={handleCancelEdit}>
-- src/pages/AiDrafts.tsx:1087 <button type="button" className="ai-drafts-action" onClick={() =>
-- src/pages/AiDrafts.tsx:1109 <button type="button" className="ai-drafts-header-button" onClick={() =>
-- src/pages/AiDrafts.tsx:1343 <button key={draft.id} type="button" className="ai-drafts-rail-item" onClick={() =>
-- src/pages/AiDrafts.tsx:1362 <button key={draft.id} type="button" className="ai-drafts-rail-item" onClick={() =>
-- src/pages/AiDrafts.tsx:1414 <a href="/billing" className="mt-5 inline-flex rounded-2xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">
-- src/pages/Billing.tsx:297 <Button type="button" variant="outline" onClick={refresh}>
-- src/pages/Billing.tsx:421 <Button type="button" size="sm" variant="outline" disabled={Boolean(billingActionLoading) || workspace.cancelAtPeriodEnd}
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:597 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:598 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:599 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:600 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:601 <button type="button" className="cf-calendar-week-plan-action cf-calendar-week-plan-action-done" onClick={() =>
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:604 <button type="button" className="cf-vst-button cf-vst-button-delete cf-calendar-week-plan-action cf-calendar-week-plan-action-danger" data-cf-vst-kind="delete" data-cf-destructive-source="trash-action-source" onClick={()
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:666 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:667 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:668 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:669 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:670 <button type="button" className="cf-selected-day-v9-action cf-selected-day-v9-action-done" onClick={() =>
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3088 <Link to="/ai-drafts" className="btn soft-blue" data-cf-header-action="ai">
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3201 <Button type="submit" className="w-full" disabled={eventSubmitting || !workspaceReady}>
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3236 <button type="button" className="nav-btn" onClick={() =>
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3252 <button type="button" className="nav-today" onClick={() =>
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3255 <button type="button" className="nav-btn" onClick={() =>
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3318 <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3391 <button type="button" className="calendar-more cf-calendar-month-more" data-calendar-month-more-button="true" onClic
-- src/pages/Calendar.tsx:597 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
-- src/pages/Calendar.tsx:598 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
-- src/pages/Calendar.tsx:599 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
-- src/pages/Calendar.tsx:600 <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() =>
-- src/pages/Calendar.tsx:601 <button type="button" className="cf-calendar-week-plan-action cf-calendar-week-plan-action-done" onClick={() =>
-- src/pages/Calendar.tsx:604 <button type="button" className="cf-vst-button cf-vst-button-delete cf-calendar-week-plan-action cf-calendar-week-plan-action-danger" data-cf-vst-kind="delete" data-cf-destructive-source="trash-action-source" onClick={()
-- src/pages/Calendar.tsx:666 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
-- src/pages/Calendar.tsx:667 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
-- src/pages/Calendar.tsx:668 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
-- src/pages/Calendar.tsx:669 <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() =>
-- src/pages/Calendar.tsx:670 <button type="button" className="cf-selected-day-v9-action cf-selected-day-v9-action-done" onClick={() =>
-- src/pages/Calendar.tsx:3088 <Link to="/ai-drafts" className="btn soft-blue" data-cf-header-action="ai">
-- src/pages/Calendar.tsx:3201 <Button type="submit" className="w-full" disabled={eventSubmitting || !workspaceReady}>
-- src/pages/Calendar.tsx:3236 <button type="button" className="nav-btn" onClick={() =>
-- src/pages/Calendar.tsx:3252 <button type="button" className="nav-today" onClick={() =>
-- src/pages/Calendar.tsx:3255 <button type="button" className="nav-btn" onClick={() =>
-- src/pages/Calendar.tsx:3318 <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>
-- src/pages/Calendar.tsx:3391 <button type="button" className="calendar-more cf-calendar-month-more" data-calendar-month-more-button="true" on
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3716 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3732 <button type="button" className="case-detail-back-button client-detail-back-button" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3751 <Button type="button" variant="outline" className="cf-vst-button cf-case-detail-restore-action-stage231b0-r7 cf-case-detail-restore-action-stage231b0-r8" da
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3766 <Button type="button" variant="outline" className="cf-vst-button cf-case-detail-close-action-stage231b0 cf-case-detail-close-action-stage231b0-r7 cf-case-detail-close-actio
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3784 <Button type="button" variant="outline" className="cf-vst-button cf-vst-button-delete cf-case-detail-delete-emergency-action-stage231b0" data-case-detail-delete-act
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3874 <Button type="button" variant="outline" onClick={openCaseNoteDialog}>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3878 <Button type="button" variant="outline" onClick={handleStartCaseNoteDictationStage231H_R1D2} data-stage231h-r1d2-voice-note-button="true"
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3893 <Button type="button" variant="outline" onClick={openCaseTaskDialog}>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3897 <Button type="button" variant="outline" onClick={openCaseEventDialog}>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3901 <Button type="button" variant="outline" data-context-action-kind="blocker" data-context-record-type="case" data-context-
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3927 <button type="button" className="stage220a8-show-all-button" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3965 <button type="button" className="stage220a8-case-actions-group-trigger" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4023 <Button type="button" variant="outline" onClick={handleStartCaseNoteDictationStage231H_R1D2} data-stage231h-r1d2-notes-panel-voice-note-butt
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4038 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4076 <Button type="button" variant="ghost" onClick={closeNoteFollowUpPrompt} data-case-note-follow-up-dismiss="true">
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4185 <Button type="button" size="sm" variant="outline" onClick={openCaseFinanceEditModal} disabled={isFinanceSaving}>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4188 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4191 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4200 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4334 <Button type="button" size="sm" variant="outline" onClick={closeCaseNoteEditStage231H_R1D2_R6} disabled={caseNoteEditSubmittingStage231H_R1D2_R6}>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4340 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4343 <Button type="button" size="sm" variant="outline" className="cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a30__delete" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4357 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4451 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4491 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4545 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4555 <Button type="button" size="sm" variant="outline" className="cf-vst-button cf-vst-button-delete case-payment-history
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4593 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4604 <Button type="button" size="sm" variant="outline" className="cf-vst-button cf-vst-button-delete case-payment-history-modal-s
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4624 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4693 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4859 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4994 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5046 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5209 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5209 <Button type="button" className="cf-btn-tone-gap" onClick={onSubmit}>
-- src/pages/CaseDetail.tsx:3719 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:3735 <button type="button" className="case-detail-back-button client-detail-back-button" onClick={() =>
-- src/pages/CaseDetail.tsx:3754 <Button type="button" variant="outline" className="cf-vst-button cf-case-detail-restore-action-stage231b0-r7 cf-case-detail-restore-action-stage231b0-r8" da
-- src/pages/CaseDetail.tsx:3769 <Button type="button" variant="outline" className="cf-vst-button cf-case-detail-close-action-stage231b0 cf-case-detail-close-action-stage231b0-r7 cf-case-detail-close-actio
-- src/pages/CaseDetail.tsx:3787 <Button type="button" variant="outline" className="cf-vst-button cf-vst-button-delete cf-case-detail-delete-emergency-action-stage231b0" data-case-detail-delete-act
-- src/pages/CaseDetail.tsx:3877 <Button type="button" variant="outline" onClick={openCaseNoteDialog}>
-- src/pages/CaseDetail.tsx:3881 <Button type="button" variant="outline" onClick={handleStartCaseNoteDictationStage231H_R1D2} data-stage231h-r1d2-voice-note-button="true"
-- src/pages/CaseDetail.tsx:3896 <Button type="button" variant="outline" onClick={openCaseTaskDialog}>
-- src/pages/CaseDetail.tsx:3900 <Button type="button" variant="outline" onClick={openCaseEventDialog}>
-- src/pages/CaseDetail.tsx:3904 <Button type="button" variant="outline" data-context-action-kind="blocker" data-context-record-type="case" data-context-
-- src/pages/CaseDetail.tsx:3930 <button type="button" className="stage220a8-show-all-button" onClick={() =>
-- src/pages/CaseDetail.tsx:3968 <button type="button" className="stage220a8-case-actions-group-trigger" onClick={() =>
-- src/pages/CaseDetail.tsx:4026 <Button type="button" variant="outline" onClick={handleStartCaseNoteDictationStage231H_R1D2} data-stage231h-r1d2-notes-panel-voice-note-butt
-- src/pages/CaseDetail.tsx:4041 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4079 <Button type="button" variant="ghost" onClick={closeNoteFollowUpPrompt} data-case-note-follow-up-dismiss="true">
-- src/pages/CaseDetail.tsx:4188 <Button type="button" size="sm" variant="outline" onClick={openCaseFinanceEditModal} disabled={isFinanceSaving}>
-- src/pages/CaseDetail.tsx:4191 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4194 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4203 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4337 <Button type="button" size="sm" variant="outline" onClick={closeCaseNoteEditStage231H_R1D2_R6} disabled={caseNoteEditSubmittingStage231H_R1D2_R6}>
-- src/pages/CaseDetail.tsx:4343 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4346 <Button type="button" size="sm" variant="outline" className="cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a30__delete" onClick={() =>
-- src/pages/CaseDetail.tsx:4360 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4454 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4494 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4548 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4558 <Button type="button" size="sm" variant="outline" className="cf-vst-button cf-vst-button-delete case-payment-history
-- src/pages/CaseDetail.tsx:4596 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4607 <Button type="button" size="sm" variant="outline" className="cf-vst-button cf-vst-button-delete case-payment-history-modal-s
-- src/pages/CaseDetail.tsx:4627 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4696 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4862 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:4997 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:5049 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:5212 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:5212 <Button type="button" className="cf-btn-tone-gap" onClick={onSubmit}>
-- src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:571 <Button type="button" variant="outline" className="btn soft-blue" data-cf-header-action="ai">
-- src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:581 <Button className="btn primary" disabled={!workspaceReady}>
-- src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:721 <Button type="button" variant="outline" onClick={() =>
-- src/pages/Cases.sync-conflict-20260812-220823-AQZURIM.tsx:836 <Link to={caseDetailPath(record.id)} className="title">
+1. każda ikona standardowa ma dostać rolę semantyczną,
+2. każdy kafelek/metrika ma zostać przypisana do wspólnego typu,
+3. każda sekcja detail view ma dostać data-ui-region,
+4. LeadDetail i ClientDetail mają mieć wspólny układ regionów,
+5. dopiero później przepinamy kod na SemanticIcon, EntityInfoRow, EntityNoteCard i EntityDetailShell.
 
-## Relevant className snippets
-- src/components/ActivityItemPreviewDialog.tsx:47 `cf-activity-note-preview`
-- src/components/ActivityItemPreviewDialog.tsx:48 `cf-activity-note-preview__title`
-- src/components/ActivityItemPreviewDialog.tsx:49 `cf-activity-note-preview__body`
-- src/components/ActivityItemPreviewDialog.tsx:50 `cf-activity-note-preview__meta`
-- src/components/ActivityRoadmap.tsx:86 `cf-activity-roadmap__icon`
-- src/components/ActivityRoadmap.tsx:96 `cf-activity-roadmap__actions`
-- src/components/admin-tools/AdminDebugToolbar.tsx:497 `admin-tool-row admin-tool-quick-editor-head-actions`
-- src/components/admin-tools/AdminDebugToolbar.tsx:503 `admin-target-card`
-- src/components/admin-tools/AdminDebugToolbar.tsx:617 `admin-button-list`
-- src/components/admin-tools/AdminDebugToolbar.tsx:619 `admin-button-row`
-- src/components/CloseFlowPageHeaderV2.tsx:99 `cf-page-header-v2__actions`
-- src/components/detail/MissingItemQuickActionModal.tsx:72 `missing-item-modal-card lead-form-vnext-content`
-- src/components/detail/MissingItemQuickActionModal.tsx:147 `missing-item-modal-actions lead-form-footer`
-- src/components/detail/MissingItemQuickActionModal.tsx:148 `missing-item-modal-secondary-action`
-- src/components/detail/MissingItemQuickActionModal.tsx:151 `missing-item-modal-primary-action`
-- src/components/detail/QuickActionsBar.tsx:60 `cf-shared-quick-actions-bar__header`
-- src/components/detail/QuickActionsBar.tsx:63 `cf-shared-quick-actions-bar__grid`
-- src/components/detail/QuickActionsBar.tsx:74 `cf-shared-quick-actions-bar__icon`
-- src/components/entity-contact-card.tsx:60 `client-detail-info-icon cf-entity-contact-info-icon`
-- src/components/entity-contact-card.tsx:70 `client-detail-icon-button cf-entity-contact-copy-button`
-- src/components/entity-contact-card.tsx:133 `cf-entity-contact-note`
-- src/components/ErrorBoundary.tsx:34 `w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6`
-- src/components/finance/CaseSettlementPanel.tsx:219 `cf-finance-settlement-metric`
-- src/components/finance/CaseSettlementPanel.tsx:265 `cf-finance-settlement-actions`
-- src/components/finance/CaseSettlementPanel.tsx:297 `cf-finance-settlement-footnote`
-- src/components/finance/FinanceMiniSummary.tsx:181 `cf-finance-metric`
-- src/components/finance/FinanceMiniSummary.tsx:182 `cf-finance-metric`
-- src/components/finance/FinanceMiniSummary.tsx:183 `cf-finance-metric`
-- src/components/finance/FinanceMiniSummary.tsx:184 `cf-finance-metric`
-- src/components/finance/FinanceMiniSummary.tsx:185 `cf-finance-metric cf-finance-metric--wide`
-- src/components/finance/FinanceMiniSummary.tsx:295 `cf-finance-metric`
-- src/components/finance/FinanceMiniSummary.tsx:296 `cf-finance-metric`
-- src/components/finance/FinanceMiniSummary.tsx:297 `cf-finance-metric`
-- src/components/finance/FinanceMiniSummary.tsx:298 `cf-finance-metric`
-- src/components/finance/FinanceMiniSummary.tsx:299 `cf-finance-metric`
-- src/components/finance/FinanceMiniSummary.tsx:300 `cf-finance-metric`
-- src/components/finance/FinanceMiniSummary.tsx:318 `cf-fin13-client-case-finance-row__metrics`
-- src/components/finance/FinanceSnapshot.tsx:158 `cf-finance-actions`
-- src/components/finance/LeadValuePanel.tsx:189 `cf-finance-lead-value-panel__actions`
-- src/components/GlobalQuickActions.tsx:15 `global-actions`
-- src/components/GlobalQuickActions.tsx:83 `global-actions sticky top-16 z-20 overflow-x-auto`
-- src/components/GlobalQuickActions.tsx:90 `btn soft-blue cf-command-action cf-command-action--ai`
-- src/components/GlobalQuickActions.tsx:97 `btn cf-command-action cf-command-action--neutral`
-- src/components/GlobalQuickActions.tsx:103 `btn cf-command-action cf-command-action--neutral`
-- src/components/GlobalQuickActions.tsx:108 `btn cf-command-action cf-command-action--neutral`
-- src/components/GlobalQuickActions.tsx:112 `btn cf-command-action cf-command-action--neutral`
-- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:182 `user-card`
-- src/components/Layout.sync-conflict-20260812-220823-AQZURIM.tsx:709 `access-warning-action`
-- src/components/Layout.tsx:185 `user-card`
-- src/components/Layout.tsx:712 `access-warning-action`
-- src/components/operator-rail/OperatorSideCard.tsx:41 `cf-rail-card-title`
-- src/components/operator-rail/TopValueRecordsCard.tsx:85 `note`
-- src/components/QuickAiCapture.tsx:279 `rounded-xl cf-command-action cf-command-action--ai`
-- src/components/task-editor-dialog.tsx:101 `task-form-vnext-content`
-- src/components/task-editor-dialog.tsx:105 `task-form-vnext-header`
-- src/components/task-editor-dialog.tsx:106 `task-form-vnext-title-block`
-- src/components/task-editor-dialog.tsx:107 `task-form-vnext-kicker`
-- src/components/task-editor-dialog.tsx:113 `task-form-vnext`
-- src/components/task-editor-dialog.tsx:114 `task-form-section`
-- src/components/task-editor-dialog.tsx:115 `task-form-section-head`
-- src/components/task-editor-dialog.tsx:120 `task-form-grid task-form-grid-2`
-- src/components/task-editor-dialog.tsx:121 `task-form-field task-form-field-wide`
-- src/components/task-editor-dialog.tsx:126 `task-form-field`
-- src/components/task-editor-dialog.tsx:131 `task-form-select`
-- src/components/task-editor-dialog.tsx:139 `task-form-field`
-- src/components/task-editor-dialog.tsx:144 `task-form-field`
-- src/components/task-editor-dialog.tsx:149 `task-form-select`
-- src/components/task-editor-dialog.tsx:157 `task-form-field`
-- src/components/task-editor-dialog.tsx:164 `task-form-section`
-- src/components/task-editor-dialog.tsx:165 `task-form-section-head`
-- src/components/task-editor-dialog.tsx:180 `task-form-section task-form-details`
-- src/components/task-editor-dialog.tsx:183 `task-form-grid task-form-grid-2`
-- src/components/task-editor-dialog.tsx:184 `task-form-field`
-- src/components/task-editor-dialog.tsx:189 `task-form-select`
-- src/components/task-editor-dialog.tsx:200 `task-form-field`
-- src/components/task-editor-dialog.tsx:205 `task-form-select`
-- src/components/task-editor-dialog.tsx:214 `task-form-field`
-- src/components/task-editor-dialog.tsx:221 `task-form-field`
-- src/components/task-editor-dialog.tsx:229 `task-form-footer`
-- src/components/TaskCreateDialog.sync-conflict-20260812-220823-AQZURIM.tsx:208 `event-form-card rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-900`
-- src/components/TaskCreateDialog.tsx:208 `event-form-card rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-900`
-- src/components/TodayAiAssistant.tsx:165 `ai-assistant-card`
-- src/components/TodayAiAssistant.tsx:171 `ai-assistant-card__header`
-- src/components/TodayAiAssistant.tsx:179 `ai-assistant-card__smoke`
-- src/components/TodayAiAssistant.tsx:193 `ai-assistant-card__inputRow`
-- src/components/TodayAiAssistant.tsx:207 `ai-assistant-card__error`
-- src/components/TodayAiAssistant.tsx:209 `ai-assistant-card__answer`
-- src/components/topic-contact-picker.tsx:117 `cf-topic-contact-picker-selected-note text-xs text-slate-500`
-- src/components/ui/detail-panel.tsx:31 `cf-detail-panel-variant-actions`
-- src/components/ui/empty-state-card.tsx:25 `cf-empty-state-card-variant-content`
-- src/components/ui/empty-state-card.tsx:27 `cf-empty-state-card-variant-copy`
-- src/components/ui/empty-state-card.tsx:31 `cf-empty-state-card-variant-cta`
-- src/components/ui/list-card.tsx:47 `cf-list-card-variant-content`
-- src/components/ui/list-card.tsx:48 `cf-list-card-variant-main`
-- src/components/ui/list-card.tsx:49 `cf-list-card-variant-title-row`
-- src/components/ui/list-card.tsx:50 `cf-list-card-variant-title`
-- src/components/ui/list-card.tsx:52 `cf-list-card-variant-badges`
-- src/components/ui/list-card.tsx:59 `cf-list-card-variant-subtitle`
-- src/components/ui/list-card.tsx:62 `cf-list-card-variant-actions`
-- src/components/ui/metric-card.tsx:76 `cf-operator-metric-tile-content`
-- src/components/ui/metric-card.tsx:83 `cf-operator-metric-text`
-- src/components/ui/metric-card.tsx:84 `cf-operator-metric-label`
-- src/components/ui/metric-card.tsx:85 `cf-operator-metric-helper`
-- src/components/ui/metric-card.tsx:87 `cf-operator-metric-value-row`
-- src/components/ui/metric-card.tsx:88 `cf-operator-metric-value`
-- src/components/ui/metric-card.tsx:89 `cf-operator-metric-icon`
-- src/components/ui-system/ActionCluster.tsx:52 `cf-action-cluster-secondary`
-- src/components/ui-system/ActionCluster.tsx:53 `cf-action-cluster-danger`
-- src/components/ui-system/ActionCluster.tsx:54 `cf-action-cluster-primary`
-- src/components/ui-system/ActionIcon.tsx:50 `cf-action-icon-svg`
-- src/components/ui-system/EntityIcon.tsx:42 `cf-entity-icon-svg`
-- src/components/ui-system/OperatorMetricTiles.tsx:86 `cf-operator-metric-tile-content`
-- src/components/ui-system/OperatorMetricTiles.tsx:93 `cf-operator-metric-text`
-- src/components/ui-system/OperatorMetricTiles.tsx:94 `cf-operator-metric-label`
-- src/components/ui-system/OperatorMetricTiles.tsx:95 `cf-operator-metric-helper`
-- src/components/ui-system/OperatorMetricTiles.tsx:97 `cf-operator-metric-value-row`
-- src/components/ui-system/OperatorMetricTiles.tsx:98 `cf-operator-metric-value cf-vst-text-metric`
-- src/components/ui-system/OperatorMetricTiles.tsx:99 `cf-operator-metric-icon`
-- src/components/ui-system/PageHero.tsx:29 `head-actions flex flex-wrap items-center gap-2 md:justify-end`
-- src/components/work-item-card.tsx:81 `cf-work-item-card-title`
-- src/components/work-item-card.tsx:85 `cf-work-item-card-title cf-work-item-card-title-button`
-- src/components/work-item-card.tsx:92 `cf-work-item-card`
-- src/components/work-item-card.tsx:100 `cf-work-item-card-icon`
-- src/components/work-item-card.tsx:103 `cf-work-item-card-main`
-- src/components/work-item-card.tsx:104 `cf-work-item-card-topline`
-- src/components/work-item-card.tsx:105 `cf-work-item-card-kind`
-- src/components/work-item-card.tsx:106 `cf-work-item-card-status`
-- src/components/work-item-card.tsx:109 `cf-work-item-card-helper`
-- src/components/work-item-card.tsx:110 `cf-work-item-card-date`
-- src/components/work-item-card.tsx:112 `cf-work-item-card-actions`
-- src/components/work-item-card.tsx:119 `cf-vst-button cf-selected-day-v9-action cf-work-item-card-shift`
-- src/components/work-item-card.tsx:136 `cf-work-item-card-done`
-- src/components/work-item-card.tsx:183 `cf-work-item-card-open`
-- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:162 `activity-row-action`
-- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:164 `activity-open-button`
-- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:168 `activity-open-button activity-open-button-disabled`
-- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:308 `activity-toolbar-card`
-- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:367 `activity-list-card`
-- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:413 `right-card activity-right-card`
-- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:414 `activity-right-card-head`
-- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:418 `activity-rail-button`
-- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:422 `activity-rail-button`
-- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:428 `right-card activity-right-card`
-- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:429 `activity-right-card-head`
-- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:450 `right-card activity-right-card`
-- src/pages/Activity.sync-conflict-20260812-220823-AQZURIM.tsx:451 `activity-right-card-head`
-- src/pages/Activity.tsx:162 `activity-row-action`
-- src/pages/Activity.tsx:164 `activity-open-button`
-- src/pages/Activity.tsx:168 `activity-open-button activity-open-button-disabled`
-- src/pages/Activity.tsx:308 `activity-toolbar-card`
-- src/pages/Activity.tsx:367 `activity-list-card`
-- src/pages/Activity.tsx:413 `right-card activity-right-card`
-- src/pages/Activity.tsx:414 `activity-right-card-head`
-- src/pages/Activity.tsx:418 `activity-rail-button`
-- src/pages/Activity.tsx:422 `activity-rail-button`
-- src/pages/Activity.tsx:428 `right-card activity-right-card`
-- src/pages/Activity.tsx:429 `activity-right-card-head`
-- src/pages/Activity.tsx:450 `right-card activity-right-card`
-- src/pages/Activity.tsx:451 `activity-right-card-head`
-- src/pages/AdminAiSettings.tsx:86 `cf-readable-card border-none app-surface-strong`
-- src/pages/AdminAiSettings.tsx:160 `cf-readable-card border-none app-surface-strong`
-- src/pages/AdminAiSettings.tsx:179 `cf-readable-card border-none app-surface-strong`
-- src/pages/AdminAiSettings.tsx:230 `cf-readable-card border-none app-surface-strong`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:947 `ai-drafts-approval-actions`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:996 `ai-drafts-recognized-card`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1008 `ai-drafts-recognized-card`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1015 `ai-drafts-source-note`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1017 `ai-drafts-source-note`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1021 `ai-drafts-recognized-card`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1026 `ai-drafts-source-note`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1063 `ai-drafts-actions-col`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1066 `ai-drafts-action ai-drafts-action-blue`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1067 `ai-drafts-action`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1068 `ai-drafts-action ai-drafts-action-green`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1069 `ai-drafts-action ai-drafts-action-red`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1073 `ai-drafts-action ai-drafts-action-blue`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1074 `ai-drafts-action ai-drafts-action-red`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1085 `ai-drafts-action ai-drafts-action-green`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1086 `ai-drafts-action`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1087 `ai-drafts-action`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1108 `ai-drafts-header-actions`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1109 `ai-drafts-header-button`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1164 `ai-drafts-voice-trace-actions ai-drafts-voice-trace-actions-visible`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1236 `ai-drafts-quick-capture-actions`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1241 `ai-drafts-quick-capture-save-button`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1261 `ai-drafts-toolbar-card`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1287 `ai-drafts-list-card`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1316 `right-card ai-drafts-right-card`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1317 `ai-drafts-right-card-head`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1321 `ai-drafts-rail-button`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1325 `ai-drafts-rail-button`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1329 `ai-drafts-rail-button`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1335 `right-card ai-drafts-right-card`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1336 `ai-drafts-right-card-head`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1354 `right-card ai-drafts-right-card`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1355 `ai-drafts-right-card-head`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1373 `right-card ai-drafts-right-card`
-- src/pages/AiDrafts.sync-conflict-20260812-220823-AQZURIM.tsx:1374 `ai-drafts-right-card-head`
-- src/pages/AiDrafts.tsx:947 `ai-drafts-approval-actions`
-- src/pages/AiDrafts.tsx:996 `ai-drafts-recognized-card`
-- src/pages/AiDrafts.tsx:1008 `ai-drafts-recognized-card`
-- src/pages/AiDrafts.tsx:1015 `ai-drafts-source-note`
-- src/pages/AiDrafts.tsx:1017 `ai-drafts-source-note`
-- src/pages/AiDrafts.tsx:1021 `ai-drafts-recognized-card`
-- src/pages/AiDrafts.tsx:1026 `ai-drafts-source-note`
-- src/pages/AiDrafts.tsx:1063 `ai-drafts-actions-col`
-- src/pages/AiDrafts.tsx:1066 `ai-drafts-action ai-drafts-action-blue`
-- src/pages/AiDrafts.tsx:1067 `ai-drafts-action`
-- src/pages/AiDrafts.tsx:1068 `ai-drafts-action ai-drafts-action-green`
-- src/pages/AiDrafts.tsx:1069 `ai-drafts-action ai-drafts-action-red`
-- src/pages/AiDrafts.tsx:1073 `ai-drafts-action ai-drafts-action-blue`
-- src/pages/AiDrafts.tsx:1074 `ai-drafts-action ai-drafts-action-red`
-- src/pages/AiDrafts.tsx:1085 `ai-drafts-action ai-drafts-action-green`
-- src/pages/AiDrafts.tsx:1086 `ai-drafts-action`
-- src/pages/AiDrafts.tsx:1087 `ai-drafts-action`
-- src/pages/AiDrafts.tsx:1108 `ai-drafts-header-actions`
-- src/pages/AiDrafts.tsx:1109 `ai-drafts-header-button`
-- src/pages/AiDrafts.tsx:1164 `ai-drafts-voice-trace-actions ai-drafts-voice-trace-actions-visible`
-- src/pages/AiDrafts.tsx:1236 `ai-drafts-quick-capture-actions`
-- src/pages/AiDrafts.tsx:1241 `ai-drafts-quick-capture-save-button`
-- src/pages/AiDrafts.tsx:1261 `ai-drafts-toolbar-card`
-- src/pages/AiDrafts.tsx:1287 `ai-drafts-list-card`
-- src/pages/AiDrafts.tsx:1316 `right-card ai-drafts-right-card`
-- src/pages/AiDrafts.tsx:1317 `ai-drafts-right-card-head`
-- src/pages/AiDrafts.tsx:1321 `ai-drafts-rail-button`
-- src/pages/AiDrafts.tsx:1325 `ai-drafts-rail-button`
-- src/pages/AiDrafts.tsx:1329 `ai-drafts-rail-button`
-- src/pages/AiDrafts.tsx:1335 `right-card ai-drafts-right-card`
-- src/pages/AiDrafts.tsx:1336 `ai-drafts-right-card-head`
-- src/pages/AiDrafts.tsx:1354 `right-card ai-drafts-right-card`
-- src/pages/AiDrafts.tsx:1355 `ai-drafts-right-card-head`
-- src/pages/AiDrafts.tsx:1373 `right-card ai-drafts-right-card`
-- src/pages/AiDrafts.tsx:1374 `ai-drafts-right-card-head`
-- src/pages/Billing.tsx:280 `billing-loading-card`
-- src/pages/Billing.tsx:296 `billing-header-actions`
-- src/pages/Billing.tsx:314 `billing-status-icon`
-- src/pages/Billing.tsx:335 `billing-expired-card`
-- src/pages/Billing.tsx:344 `billing-period-card`
-- src/pages/Billing.tsx:393 `billing-plan-button`
-- src/pages/Billing.tsx:414 `right-card billing-right-card`
-- src/pages/Billing.tsx:441 `right-card billing-right-card`
-- src/pages/Billing.tsx:450 `right-card billing-right-card billing-right-featured`
-- src/pages/Billing.tsx:462 `right-card billing-right-card`
-- src/pages/Billing.tsx:476 `billing-settlements-card`
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:566 `cf-vst-card cf-vst-cf-calendar-week-plan-entry-card `
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:596 `cf-calendar-week-plan-entry-actions`
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:597 `cf-vst-button cf-calendar-week-plan-action`
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:598 `cf-vst-button cf-calendar-week-plan-action`
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:599 `cf-vst-button cf-calendar-week-plan-action`
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:600 `cf-vst-button cf-calendar-week-plan-action`
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:601 `cf-calendar-week-plan-action cf-calendar-week-plan-action-done`
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:604 `cf-vst-button cf-vst-button-delete cf-calendar-week-plan-action cf-calendar-week-plan-action-danger`
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:645 `cf-vst-card cf-vst-calendar-entry-card cf-selected-day-v9-entry-shell cf-selected-day-v9-week-visual-contract `
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:665 `cf-selected-day-v9-actions`
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:666 `cf-vst-button cf-selected-day-v9-action`
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:667 `cf-vst-button cf-selected-day-v9-action`
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:668 `cf-vst-button cf-selected-day-v9-action`
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:669 `cf-vst-button cf-selected-day-v9-action`
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:670 `cf-selected-day-v9-action cf-selected-day-v9-action-done`
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3079 `head-actions`
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3212 `right-card mb-4 flex items-center gap-3 border border-blue-100 bg-blue-50/70 text-blue-900`
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3419 `right-card calendar-week-filter`
-- src/pages/Calendar.sync-conflict-20260812-220823-AQZURIM.tsx:3462 `right-card calendar-week-plan`
-- src/pages/Calendar.tsx:566 `cf-vst-card cf-vst-cf-calendar-week-plan-entry-card `
-- src/pages/Calendar.tsx:596 `cf-calendar-week-plan-entry-actions`
-- src/pages/Calendar.tsx:597 `cf-vst-button cf-calendar-week-plan-action`
-- src/pages/Calendar.tsx:598 `cf-vst-button cf-calendar-week-plan-action`
-- src/pages/Calendar.tsx:599 `cf-vst-button cf-calendar-week-plan-action`
-- src/pages/Calendar.tsx:600 `cf-vst-button cf-calendar-week-plan-action`
-- src/pages/Calendar.tsx:601 `cf-calendar-week-plan-action cf-calendar-week-plan-action-done`
-- src/pages/Calendar.tsx:604 `cf-vst-button cf-vst-button-delete cf-calendar-week-plan-action cf-calendar-week-plan-action-danger`
-- src/pages/Calendar.tsx:645 `cf-vst-card cf-vst-calendar-entry-card cf-selected-day-v9-entry-shell cf-selected-day-v9-week-visual-contract `
-- src/pages/Calendar.tsx:665 `cf-selected-day-v9-actions`
-- src/pages/Calendar.tsx:666 `cf-vst-button cf-selected-day-v9-action`
-- src/pages/Calendar.tsx:667 `cf-vst-button cf-selected-day-v9-action`
-- src/pages/Calendar.tsx:668 `cf-vst-button cf-selected-day-v9-action`
-- src/pages/Calendar.tsx:669 `cf-vst-button cf-selected-day-v9-action`
-- src/pages/Calendar.tsx:670 `cf-selected-day-v9-action cf-selected-day-v9-action-done`
-- src/pages/Calendar.tsx:3079 `head-actions`
-- src/pages/Calendar.tsx:3212 `right-card mb-4 flex items-center gap-3 border border-blue-100 bg-blue-50/70 text-blue-900`
-- src/pages/Calendar.tsx:3419 `right-card calendar-week-filter`
-- src/pages/Calendar.tsx:3462 `right-card calendar-week-plan`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:243 `case-detail-section-card case-detail-history-unified-panel`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3699 `case-detail-loading-card`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3712 `case-detail-empty-card`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3734 `case-detail-back-button client-detail-back-button`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3749 `case-detail-header-actions-stage231b0`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3754 `cf-vst-button cf-case-detail-restore-action-stage231b0-r7 cf-case-detail-restore-action-stage231b0-r8`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3769 `cf-vst-button cf-case-detail-close-action-stage231b0 cf-case-detail-close-action-stage231b0-r7 cf-case-detail-close-action-stage231b0-r8 cf-case-detail-close-positive-stage231b0-r7 cf-case-detail-close-positive-stage231b0-r8`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3787 `cf-vst-button cf-vst-button-delete cf-case-detail-delete-emergency-action-stage231b0`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3804 `case-detail-stage228r10d-tabs-card case-service-tabs-column`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3820 `case-detail-stage220a10-tab-icon`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3839 `case-detail-stage228r10d-tabs-card case-service-tabs-column`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3855 `case-detail-stage220a10-tab-icon`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3864 `case-service-actions-panel`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3865 `case-detail-section-card stage217-case-operation-workspace`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3873 `stage217-case-service-actions`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3919 `stage220a8-case-actions-preview stage220a8-case-actions-accordion`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3920 `stage220a8-case-actions-preview-head`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3922 `stage220a8-case-actions-preview-label`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3925 `stage220a8-case-actions-head-actions`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3926 `stage220a8-case-actions-preview-count`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3927 `stage220a8-show-all-button`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3965 `stage220a8-case-actions-group-trigger`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:3974 `case-detail-work-list stage220a8-case-actions-accordion-list`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4000 `case-service-notes-panel`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4001 `case-detail-section-card stage217-case-notes-panel`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4002 `case-detail-section-head stage219-case-notes-head`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4007 `stage219-case-notes-actions`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4052 `stage217-case-notes-list stage231h-r1d2-r14f-expanded-notes-panel`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4054 `stage217-case-note-row`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4055 `stage217-case-note-row__icon`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4057 `case-note-kind-label-stage231h-r1d2-r10c`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4069 `case-detail-note-follow-up-panel`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4070 `case-detail-note-follow-up-head`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4080 `case-detail-note-follow-up-preview`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4081 `case-detail-note-follow-up-actions`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4087 `case-detail-note-follow-up-custom`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4098 `case-detail-section-card case-detail-stage220a10-tab-panel case-detail-stage220a10-checklist-panel`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4121 `case-detail-row-actions`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4135 `case-detail-section-card case-detail-stage220a10-tab-panel case-detail-stage220a10-history-panel`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4147 `case-detail-stage220a10-history-icon cf-vst-icon`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4166 `right-card case-detail-right-card cf-finance-scope-card cf-finance-scope-card--case case-settlement-rail-card`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4167 `cf-finance-scope-card__head`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4168 `cf-finance-scope-card__icon`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4173 `cf-finance-scope-card__metrics`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4184 `cf-finance-scope-card__actions case-finance-panel-actions`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4217 `case-quick-actions-rail`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4253 `stage220a8-case-actions-all-modal sm:max-w-4xl`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4262 `case-detail-work-list stage220a8-case-actions-all-list`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4291 `client-case-form-content case-payment-history-modal-stage220a27b case-payment-history-modal-stage220a27b-r3-light case-payment-history-modal-stage220a28-vst max-w-3xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4297 `client-case-form-header case-payment-history-modal-stage220a28-header event-form-vnext-header case-finance-source-header-stage220a30 case-all-notes-modal-stage231d0d-r2__header`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4305 `case-all-notes-modal-stage231d0d-r2__list case-payment-history-modal-stage220a27b__list`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4311 `client-case-form-section case-payment-history-modal-stage220a27b__row case-payment-history-modal-stage220a28-row case-note-crud-row-stage231h-r1d2-r6`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4328 `case-payment-history-modal-stage220a27b__actions case-payment-history-modal-stage220a30__actions`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4343 `cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a30__delete`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4544 `case-payment-history-modal-stage220a27b__actions case-payment-history-modal-stage220a30__actions`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4559 `cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a29__delete case-payment-history-modal-stage220a30__delete`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4591 `case-payment-history-modal-stage220a27b__actions case-payment-history-modal-stage220a30__actions`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4608 `cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a29__delete case-payment-history-modal-stage220a30__delete`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:4957 `case-finance-edit-field case-finance-edit-field--wide case-finance-edit-transaction-basis-stage220a36r10`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5071 `case-detail-card-title-row`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5133 `case-detail-work-icon`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5144 `case-detail-row-actions`
-- src/pages/CaseDetail.sync-conflict-20260812-220823-AQZURIM.tsx:5172 `case-detail-row-action-trash`
-- src/pages/CaseDetail.tsx:246 `case-detail-section-card case-detail-history-unified-panel`
-- src/pages/CaseDetail.tsx:3702 `case-detail-loading-card`
-- src/pages/CaseDetail.tsx:3715 `case-detail-empty-card`
-- src/pages/CaseDetail.tsx:3737 `case-detail-back-button client-detail-back-button`
-- src/pages/CaseDetail.tsx:3752 `case-detail-header-actions-stage231b0`
+## Mapa ikon według roli
+
+| Rola | Liczba importów | Przykłady |
+|---|---:|---|
+| add | 11 | Plus (src/components/ui-system/action-icon-registry.ts:1, użycia: 0)<br>Plus (src/pages/CaseDetail.tsx:22, użycia: 4)<br>Plus (src/pages/Cases.tsx:17, użycia: 2)<br>Plus (src/pages/ClientDetail.tsx:10, użycia: 2)<br>Plus (src/pages/Clients.tsx:17, użycia: 1)<br>Plus (src/pages/Dashboard.tsx:3, użycia: 1)<br>Plus (src/pages/LeadDetail.tsx:49, użycia: 1)<br>Plus (src/pages/ResponseTemplates.tsx:2, użycia: 1)<br>Plus (src/pages/Templates.tsx:2, użycia: 3)<br>Plus (src/pages/Today.tsx:3, użycia: 0)<br>Plus (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0) |
+| ai | 1 | Sparkles (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0) |
+| auth | 7 | LogOut (src/components/EmailVerificationGate.tsx:2, użycia: 1)<br>LogOut (src/components/Layout.tsx:10, użycia: 2)<br>LogOut (src/pages/Dashboard.tsx:3, użycia: 1)<br>LogIn (src/pages/Login.tsx:3, użycia: 2)<br>LogOut (src/pages/Settings.tsx:2, użycia: 1)<br>LogIn (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0)<br>LogOut (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0) |
+| case | 3 | Briefcase (src/components/Layout.tsx:10, użycia: 0)<br>Briefcase (src/components/ui-system/icon-registry.ts:2, użycia: 0)<br>Briefcase (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0) |
+| close | 12 | X (src/components/Layout.tsx:10, użycia: 1)<br>X (src/components/PwaInstallPrompt.tsx:2, użycia: 1)<br>X (src/components/ui/dialog.tsx:5, użycia: 1)<br>OctagonXIcon (src/components/ui/sonner.tsx:5, użycia: 1)<br>X (src/components/ui-system/action-icon-registry.ts:1, użycia: 0)<br>X (src/components/ui-system/icon-registry.ts:2, użycia: 0)<br>X (src/pages/CaseDetail.tsx:22, użycia: 0)<br>X (src/pages/Cases.tsx:17, użycia: 0)<br>X (src/pages/ClientPortal.tsx:3, użycia: 1)<br>X (src/pages/Dashboard.tsx:3, użycia: 0)<br>X (src/server/_portal-token.ts:1, użycia: 0)<br>X (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0) |
+| company_property | 4 | Building2 (src/components/entity-contact-card.tsx:2, użycia: 0)<br>Home (src/components/Layout.tsx:10, użycia: 0)<br>Building2 (src/pages/Settings.tsx:2, użycia: 0)<br>Building2 (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0) |
+| copy | 14 | Copy (src/components/admin-tools/AdminDebugToolbar.tsx:2, użycia: 0)<br>Copy (src/components/entity-contact-card.tsx:2, użycia: 1)<br>ClipboardList (src/components/GlobalQuickActions.tsx:3, użycia: 1)<br>Copy (src/components/LeadAiFollowupDraft.tsx:2, użycia: 1)<br>ClipboardList (src/components/LeadAiNextAction.tsx:2, użycia: 1)<br>Copy (src/components/LeadAiNextAction.tsx:2, użycia: 1)<br>ClipboardList (src/components/ui-system/action-icon-registry.ts:1, użycia: 0)<br>Copy (src/components/ui-system/action-icon-registry.ts:1, użycia: 0)<br>ClipboardList (src/components/ui-system/icon-registry.ts:2, użycia: 0)<br>Clipboard (src/pages/AiDrafts.tsx:2, użycia: 0)<br>Copy (src/pages/CaseDetail.tsx:22, użycia: 0)<br>Copy (src/pages/ResponseTemplates.tsx:2, użycia: 2) |
+| delete | 1 | Trash2 (src/components/ui-system/action-icon-registry.ts:1, użycia: 0) |
+| edit | 6 | Pencil (src/components/ActivityRoadmap.tsx:2, użycia: 0)<br>Pencil (src/components/ui-system/action-icon-registry.ts:1, użycia: 0)<br>Pencil (src/pages/AiDrafts.tsx:2, użycia: 0)<br>Pencil (src/pages/ClientDetail.tsx:10, użycia: 2)<br>Edit2 (src/pages/LeadDetail.tsx:49, użycia: 1)<br>Pencil (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0) |
+| email | 10 | MailCheck (src/components/EmailVerificationGate.tsx:2, użycia: 1)<br>Mail (src/components/entity-contact-card.tsx:2, użycia: 0)<br>Mail (src/pages/LeadDetail.tsx:49, użycia: 1)<br>Mail (src/pages/Leads.tsx:16, użycia: 0)<br>Mail (src/pages/Login.tsx:3, użycia: 2)<br>Mail (src/pages/NotificationsCenter.tsx:9, użycia: 1)<br>Mail (src/pages/PublicLanding.tsx:2, użycia: 0)<br>Mail (src/pages/Settings.tsx:2, użycia: 1)<br>Mail (src/pages/SupportCenter.tsx:2, użycia: 1)<br>Mail (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0) |
+| event | 18 | CalendarClock (src/components/ActivityRoadmap.tsx:2, użycia: 0)<br>CalendarClock (src/components/CaseQuickActions.tsx:1, użycia: 1)<br>Calendar (src/components/Layout.tsx:10, użycia: 0)<br>Calendar (src/components/ui-system/action-icon-registry.ts:1, użycia: 0)<br>Calendar (src/components/ui-system/icon-registry.ts:2, użycia: 0)<br>CalendarDays (src/components/work-item-card.tsx:1, użycia: 0)<br>Calendar (src/lib/calendar-items.ts:1, użycia: 0)<br>CalendarClock (src/pages/Activity.tsx:3, użycia: 0)<br>CalendarClock (src/pages/AiDrafts.tsx:2, użycia: 0)<br>CalendarClock (src/pages/Billing.tsx:2, użycia: 0)<br>CalendarClock (src/pages/CaseDetail.tsx:22, użycia: 3)<br>CalendarDays (src/pages/Login.tsx:3, użycia: 0) |
+| filter | 7 | Filter (src/components/ui-system/action-icon-registry.ts:1, użycia: 0)<br>Filter (src/pages/Activity.tsx:3, użycia: 1)<br>Filter (src/pages/Dashboard.tsx:3, użycia: 1)<br>Filter (src/pages/Leads.tsx:16, użycia: 0)<br>Filter (src/pages/NotificationsCenter.tsx:9, użycia: 1)<br>Filter (src/pages/SalesFunnel.tsx:3, użycia: 1)<br>Filter (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0) |
+| finance | 9 | CircleDollarSign (src/components/ActivityRoadmap.tsx:2, użycia: 0)<br>CreditCard (src/components/Layout.tsx:10, użycia: 0)<br>BadgeDollarSign (src/components/ui-system/icon-registry.ts:2, użycia: 0)<br>CreditCard (src/components/ui-system/icon-registry.ts:2, użycia: 0)<br>Wallet (src/components/ui-system/icon-registry.ts:2, użycia: 0)<br>DollarSign (src/pages/LeadDetail.tsx:49, użycia: 2)<br>WalletCards (src/pages/Settings.tsx:2, użycia: 0)<br>DollarSign (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0)<br>Wallet (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0) |
+| goal | 3 | Target (src/components/ui-system/icon-registry.ts:2, użycia: 0)<br>Target (src/pages/SalesFunnel.tsx:3, użycia: 2)<br>Target (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0) |
+| loading | 30 | Loader2 (src/components/ContextNoteDialog.tsx:2, użycia: 1)<br>Loader2 (src/components/EmailVerificationGate.tsx:2, użycia: 3)<br>Loader2 (src/components/EventCreateDialog.tsx:2, użycia: 1)<br>Loader2 (src/components/LeadAiFollowupDraft.tsx:2, użycia: 1)<br>Loader2 (src/components/LeadAiNextAction.tsx:2, użycia: 2)<br>Loader2 (src/components/quick-lead/QuickLeadCaptureModal.tsx:2, użycia: 2)<br>Loader2 (src/components/QuickAiCapture.tsx:2, użycia: 1)<br>Loader2 (src/components/TaskCreateDialog.tsx:2, użycia: 1)<br>Loader2Icon (src/components/ui/sonner.tsx:5, użycia: 1)<br>Loader2 (src/components/work-item-card.tsx:1, użycia: 1)<br>Loader2 (src/pages/Activity.tsx:3, użycia: 1)<br>Loader2 (src/pages/AiDrafts.tsx:2, użycia: 1) |
+| navigation | 35 | ChevronRight (src/components/Layout.tsx:10, użycia: 1)<br>ChevronLeft (src/components/sidebar-mini-calendar.tsx:3, użycia: 1)<br>ChevronRight (src/components/sidebar-mini-calendar.tsx:3, użycia: 1)<br>ChevronRight (src/components/ui/dropdown-menu.tsx:3, użycia: 1)<br>ChevronDownIcon (src/components/ui/select.tsx:5, użycia: 2)<br>ChevronUpIcon (src/components/ui/select.tsx:5, użycia: 1)<br>ArrowLeft (src/components/ui-system/action-icon-registry.ts:1, użycia: 0)<br>ExternalLink (src/components/ui-system/action-icon-registry.ts:1, użycia: 0)<br>ArrowRight (src/components/work-item-card.tsx:1, użycia: 1)<br>ArrowUpRight (src/pages/Activity.tsx:3, użycia: 1)<br>ArrowRight (src/pages/Billing.tsx:2, użycia: 1)<br>ChevronLeft (src/pages/Calendar.tsx:3, użycia: 1) |
+| note | 13 | FileCheck2 (src/components/ActivityRoadmap.tsx:2, użycia: 0)<br>FileText (src/components/ActivityRoadmap.tsx:2, użycia: 0)<br>StickyNote (src/components/ActivityRoadmap.tsx:2, użycia: 0)<br>FileWarning (src/components/CaseQuickActions.tsx:1, użycia: 1)<br>StickyNote (src/components/CaseQuickActions.tsx:1, użycia: 1)<br>MessageSquareText (src/components/Layout.tsx:10, użycia: 0)<br>StickyNote (src/components/ui-system/action-icon-registry.ts:1, użycia: 0)<br>FileText (src/components/ui-system/icon-registry.ts:2, użycia: 0)<br>StickyNote (src/pages/CaseDetail.tsx:22, użycia: 5)<br>FileText (src/pages/Cases.tsx:17, użycia: 0)<br>FileText (src/pages/PublicLanding.tsx:2, użycia: 1)<br>MessageSquareText (src/pages/ResponseTemplates.tsx:2, użycia: 1) |
+| notification | 4 | Bell (src/components/Layout.tsx:10, użycia: 0)<br>Bell (src/components/ui-system/icon-registry.ts:2, użycia: 0)<br>BellRing (src/pages/PublicLanding.tsx:2, użycia: 0)<br>Bell (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0) |
+| person | 8 | Users (src/components/Layout.tsx:10, użycia: 0)<br>UserRound (src/components/ui-system/icon-registry.ts:2, użycia: 0)<br>Users (src/pages/Dashboard.tsx:3, użycia: 2)<br>User (src/pages/Login.tsx:3, użycia: 1)<br>Users (src/pages/PublicLanding.tsx:2, użycia: 0)<br>User (src/pages/Settings.tsx:2, użycia: 2)<br>Users (src/pages/Settings.tsx:2, użycia: 0)<br>UserRound (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0) |
+| phone | 5 | Phone (src/components/entity-contact-card.tsx:2, użycia: 0)<br>Smartphone (src/components/PwaInstallPrompt.tsx:2, użycia: 1)<br>Phone (src/pages/LeadDetail.tsx:49, użycia: 1)<br>Smartphone (src/pages/Settings.tsx:2, użycia: 1)<br>Phone (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0) |
+| pin | 2 | Pin (src/pages/ClientDetail.tsx:10, użycia: 1)<br>Pin (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0) |
+| refresh | 13 | RefreshCcw (src/components/EmailVerificationGate.tsx:2, użycia: 1)<br>RefreshCw (src/components/ui-system/action-icon-registry.ts:1, użycia: 0)<br>RotateCcw (src/components/ui-system/action-icon-registry.ts:1, użycia: 0)<br>RefreshCw (src/pages/AdminAiSettings.tsx:2, użycia: 0)<br>RefreshCw (src/pages/Billing.tsx:2, użycia: 1)<br>RotateCcw (src/pages/Clients.tsx:17, użycia: 2)<br>RotateCcw (src/pages/Leads.tsx:16, użycia: 2)<br>RotateCcw (src/pages/NotificationsCenter.tsx:9, użycia: 2)<br>RefreshCw (src/pages/SalesFunnel.tsx:3, użycia: 1)<br>RefreshCw (src/pages/Settings.tsx:2, użycia: 2)<br>RefreshCcw (src/pages/TasksStable.tsx:3, użycia: 1)<br>RefreshCcw (src/pages/TodayStable.tsx:3, użycia: 1) |
+| risk_alert | 25 | AlertTriangle (src/components/detail/MissingItemsManagerDialog.tsx:16, użycia: 1)<br>AlertTriangle (src/components/EntityConflictDialog.tsx:1, użycia: 1)<br>AlertTriangle (src/components/Layout.tsx:10, użycia: 1)<br>TriangleAlertIcon (src/components/ui/sonner.tsx:5, użycia: 1)<br>AlertTriangle (src/pages/AdminAiSettings.tsx:2, użycia: 1)<br>AlertTriangle (src/pages/AiDrafts.tsx:2, użycia: 1)<br>AlertTriangle (src/pages/Billing.tsx:2, użycia: 1)<br>AlertCircle (src/pages/CaseDetail.tsx:22, użycia: 2)<br>AlertTriangle (src/pages/Cases.tsx:17, użycia: 0)<br>AlertTriangle (src/pages/ClientDetail.tsx:10, użycia: 3)<br>AlertCircle (src/pages/ClientPortal.tsx:3, użycia: 2)<br>AlertTriangle (src/pages/Clients.tsx:17, użycia: 0) |
+| search | 14 | Search (src/components/ui-system/action-icon-registry.ts:1, użycia: 0)<br>Search (src/pages/Activity.tsx:3, użycia: 1)<br>Search (src/pages/AiDrafts.tsx:2, użycia: 1)<br>Search (src/pages/Cases.tsx:17, użycia: 1)<br>Search (src/pages/Clients.tsx:17, użycia: 1)<br>Search (src/pages/Dashboard.tsx:3, użycia: 2)<br>Search (src/pages/Leads.tsx:16, użycia: 1)<br>Search (src/pages/NotificationsCenter.tsx:9, użycia: 1)<br>Search (src/pages/ResponseTemplates.tsx:2, użycia: 1)<br>Search (src/pages/SupportCenter.tsx:2, użycia: 2)<br>Search (src/pages/Tasks.tsx:3, użycia: 2)<br>Search (src/pages/TasksStable.tsx:3, użycia: 1) |
+| send | 4 | Send (src/components/EmailVerificationGate.tsx:2, użycia: 1)<br>Send (src/pages/CaseDetail.tsx:22, użycia: 0)<br>Send (src/pages/SupportCenter.tsx:2, użycia: 2)<br>Send (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0) |
+| settings | 9 | Settings (src/components/Layout.tsx:10, użycia: 0)<br>Settings (src/components/ui-system/action-icon-registry.ts:1, użycia: 0)<br>Settings (src/components/ui-system/icon-registry.ts:2, użycia: 0)<br>Settings (src/pages/Dashboard.tsx:3, użycia: 1)<br>Settings2 (src/pages/NotificationsCenter.tsx:9, użycia: 1)<br>Settings (src/pages/Settings.tsx:2, użycia: 0)<br>SlidersHorizontal (src/pages/Settings.tsx:2, użycia: 1)<br>SlidersHorizontal (src/pages/TodayStable.tsx:3, użycia: 1)<br>Settings (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0) |
+| task_status | 46 | CheckCircle2 (src/components/ActivityRoadmap.tsx:2, użycia: 0)<br>ListChecks (src/components/ActivityRoadmap.tsx:2, użycia: 0)<br>ListChecks (src/components/CaseQuickActions.tsx:1, użycia: 1)<br>CheckCircle2 (src/components/Layout.tsx:10, użycia: 1)<br>CheckSquare (src/components/Layout.tsx:10, użycia: 0)<br>Check (src/components/lead-picker.tsx:2, użycia: 1)<br>CheckCircle2 (src/components/LeadAiFollowupDraft.tsx:2, użycia: 1)<br>CheckCircle2 (src/components/LeadAiNextAction.tsx:2, użycia: 1)<br>Check (src/components/topic-contact-picker.tsx:2, użycia: 1)<br>CheckIcon (src/components/ui/checkbox.tsx:6, użycia: 1)<br>Check (src/components/ui/dropdown-menu.tsx:3, użycia: 1)<br>CheckIcon (src/components/ui/select.tsx:5, użycia: 1) |
+| time | 15 | Clock (src/pages/Activity.tsx:3, użycia: 0)<br>Clock (src/pages/AiDrafts.tsx:2, użycia: 1)<br>Clock (src/pages/CaseDetail.tsx:22, użycia: 1)<br>Clock (src/pages/Cases.tsx:17, użycia: 0)<br>Clock (src/pages/ClientDetail.tsx:10, użycia: 2)<br>Clock (src/pages/ClientPortal.tsx:3, użycia: 1)<br>Clock (src/pages/Dashboard.tsx:3, użycia: 1)<br>Clock (src/pages/LeadDetail.tsx:49, użycia: 7)<br>Clock3 (src/pages/Leads.tsx:16, użycia: 0)<br>Clock3 (src/pages/NotificationsCenter.tsx:9, użycia: 1)<br>Clock3 (src/pages/SupportCenter.tsx:2, użycia: 1)<br>Clock (src/pages/Tasks.tsx:3, użycia: 0) |
+| unclassified | 64 | FolderKanban (src/components/Layout.tsx:10, użycia: 0)<br>History (src/components/Layout.tsx:10, użycia: 0)<br>LifeBuoy (src/components/Layout.tsx:10, użycia: 0)<br>Menu (src/components/Layout.tsx:10, użycia: 1)<br>MessageSquare (src/components/LeadAiFollowupDraft.tsx:2, użycia: 1)<br>Download (src/components/PwaInstallPrompt.tsx:2, użycia: 1)<br>Mic (src/components/quick-lead/QuickLeadCaptureModal.tsx:2, użycia: 1)<br>Wand2 (src/components/quick-lead/QuickLeadCaptureModal.tsx:2, użycia: 1)<br>Mic (src/components/QuickAiCapture.tsx:2, użycia: 1)<br>MicOff (src/components/QuickAiCapture.tsx:2, użycia: 1)<br>Circle (src/components/ui/dropdown-menu.tsx:3, użycia: 1)<br>InfoIcon (src/components/ui/sonner.tsx:5, użycia: 1) |
+| view | 2 | Eye (src/pages/ClientDetail.tsx:10, użycia: 1)<br>Eye (src/ui-system/icons/SemanticIcon.tsx:6, użycia: 0) |
+
+## Użycia kafelków / StatShortcutCard
+
+| Plik | Linia | Fragment |
+|---|---:|---|
+| src/pages/Activity.tsx | 298 | <StatShortcutCard label="Wszystkie" value={metrics.all} icon={TemplateEntityIcon} active={activeFilter === 'all'} onClick={() => setActiveFilter('all')} iconClassName="cf-activity-metric-icon cf-activity-metric-icon-all" /><br>          <StatShortcutCard label="Dzisiaj" value={metrics.today} icon={Clock} active={activeFilter === 'today'} onClick={() => setActiveFilter('today')} iconClassName="cf-activity-metric-icon cf- |
+| src/pages/Activity.tsx | 299 | <StatShortcutCard label="Dzisiaj" value={metrics.today} icon={Clock} active={activeFilter === 'today'} onClick={() => setActiveFilter('today')} iconClassName="cf-activity-metric-icon cf-activity-metric-icon-today" valueClassName="cf-activity-metric-value-today" /><br>          <StatShortcutCard label="Leady" value={metrics.leads} icon={LeadEntityIcon} active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead |
+| src/pages/Activity.tsx | 300 | <StatShortcutCard label="Leady" value={metrics.leads} icon={LeadEntityIcon} active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} iconClassName="cf-activity-metric-icon cf-activity-metric-icon-lead" valueClassName="cf-activity-metric-value-lead" /><br>          <StatShortcutCard label="Sprawy" value={metrics.cases} icon={CaseEntityIcon} active={activeFilter === 'case'} onClick={() => setActiveFilter(' |
+| src/pages/Activity.tsx | 301 | <StatShortcutCard label="Sprawy" value={metrics.cases} icon={CaseEntityIcon} active={activeFilter === 'case'} onClick={() => setActiveFilter('case')} iconClassName="cf-activity-metric-icon cf-activity-metric-icon-case" valueClassName="cf-activity-metric-value-case" /><br>          <StatShortcutCard label="Zadania" value={metrics.tasks} icon={ListChecks} active={activeFilter === 'task'} onClick={() => setActiveFilter('ta |
+| src/pages/Activity.tsx | 302 | <StatShortcutCard label="Zadania" value={metrics.tasks} icon={ListChecks} active={activeFilter === 'task'} onClick={() => setActiveFilter('task')} iconClassName="cf-activity-metric-icon cf-activity-metric-icon-task" valueClassName="cf-activity-metric-value-task" /><br>          <StatShortcutCard label="Wymaga uwagi" value={metrics.attention} icon={NotificationEntityIcon} active={activeFilter === 'attention'} onClick={() |
+| src/pages/Activity.tsx | 303 | <StatShortcutCard label="Wymaga uwagi" value={metrics.attention} icon={NotificationEntityIcon} active={activeFilter === 'attention'} onClick={() => setActiveFilter('attention')} tone="red" /><br>        </section><br><br>        <div className="activity-vnext-shell"><br>          <section className="activity-main-column"><br>            <div className="activity-toolbar-card"><br>              <div className="activity-filter-pills" ari |
+| src/pages/Cases.tsx | 739 | <StatShortcutCard<br>            label="Otwarte sprawy"<br>            value={stats.open}<br>            icon={FileText}<br>            tone="blue"<br>            active={caseView === 'open'}<br>            onClick={() => setCaseViewStage231B0R9('open')}<br>          /><br>          <StatShortcutCard<br>            label="Czeka na klienta"<br>            value={stats.waiting}<br>            icon={Clock} |
+| src/pages/Cases.tsx | 747 | <StatShortcutCard<br>            label="Czeka na klienta"<br>            value={stats.waiting}<br>            icon={Clock}<br>            tone="amber"<br>            active={caseView === 'waiting' \|\| caseView === 'approval'}<br>            onClick={() => toggleCaseView('waiting')}<br>          /><br>          <StatShortcutCard<br>            label="Zablokowane"<br>            value={stats.blocked}<br>            icon={AlertTriangle} |
+| src/pages/Cases.tsx | 755 | <StatShortcutCard<br>            label="Zablokowane"<br>            value={stats.blocked}<br>            icon={AlertTriangle}<br>            tone="red"<br>            active={caseView === 'blocked'}<br>            onClick={() => toggleCaseView('blocked')}<br>          /><br>          <StatShortcutCard<br>            label="Gotowe"<br>            value={stats.ready}<br>            icon={CheckCircle2} |
+| src/pages/Cases.tsx | 763 | <StatShortcutCard<br>            label="Gotowe"<br>            value={stats.ready}<br>            icon={CheckCircle2}<br>            tone="green"<br>            active={caseView === 'ready'}<br>            onClick={() => toggleCaseView('ready')}<br>          /><br>        </div><br><br>        <div className="layout-list"><br>          <div className="stack"> |
+| src/pages/Clients.tsx | 988 | <StatShortcutCard<br>            label="Aktywni"<br>            value={activeCount}<br>            icon={LeadEntityIcon}<br>            active={clientRelationFilterStage232C === 'all'}<br>            onClick={() => applyClientRelationFilterStage232C('all')}<br>            title="Pokaż aktywnych klientów"<br>            ariaLabel="Pokaż aktywnych klientów"<br>            tone="blue"<br>            helper="niearchiwalni klienci"<br>          /><br>    |
+| src/pages/Clients.tsx | 999 | <StatShortcutCard<br>            label="Bez sprawy"<br>            value={clientsWithoutCases}<br>            icon={CaseEntityIcon}<br>            active={clientRelationFilterStage232C === 'without_case'}<br>            onClick={() => applyClientRelationFilterStage232C('without_case')}<br>            title="Pokaż klientów bez sprawy"<br>            ariaLabel="Pokaż klientów bez sprawy"<br>            tone="neutral"<br>            helper="tylko |
+| src/pages/Clients.tsx | 1010 | <StatShortcutCard<br>            label="Prowizja"<br>            value={formatClientMoney(activeCommissionValueStage232C)}<br>            icon={PaymentEntityIcon}<br>            active={clientRelationFilterStage232C === 'active_commission'}<br>            onClick={() => applyClientRelationFilterStage232C('active_commission')}<br>            title="Pokaż prowizję relacji"<br>            ariaLabel="Pokaż prowizję relacji"<br>            tone= |
+| src/pages/Clients.tsx | 1021 | <StatShortcutCard<br>            label="Wymaga kontaktu"<br>            value={staleClients}<br>            icon={AlertTriangle}<br>            active={clientRelationFilterStage232C === 'needs_contact'}<br>            onClick={() => applyClientRelationFilterStage232C('needs_contact')}<br>            title="Pokaż klientów bez ruchu"<br>            ariaLabel="Pokaż klientów bez ruchu"<br>            tone="red"<br>            helper="do sprawdzen |
+| src/pages/Leads.tsx | 946 | <StatShortcutCard<br>            label="Wszystkie"<br>            value={stats.total}<br>            icon={LeadEntityIcon}<br>            active={quickFilter === 'all' && !valueSortEnabled && !showTrash}<br>            onClick={() => { setShowTrash(false); setQuickFilter('all'); setValueSortEnabled(false); }}<br>            title="Pokaż wszystkie leady"<br>            ariaLabel="Pokaż wszystkie leady"<br>          /><br><br>          <StatShortcu |
+| src/pages/Leads.tsx | 956 | <StatShortcutCard<br>            label="Aktywne"<br>            value={stats.active}<br>            icon={TrendingUp}<br>            active={quickFilter === 'active' && !showTrash}<br>            onClick={() => toggleQuickFilter('active')}<br>            title="Pokaż aktywne leady"<br>            ariaLabel="Pokaż aktywne leady"<br>            valueClassName="text-slate-900"<br>            iconClassName="bg-blue-50 text-blue-500"<br>          /> |
+| src/pages/Leads.tsx | 968 | <StatShortcutCard<br>            label="Wartość"<br>            value={`${stats.value.toLocaleString('pl-PL')} PLN`}<br>            icon={TrendingUp}<br>            active={valueSortEnabled && !showTrash}<br>            onClick={toggleValueSorting}<br>            title="Sortuj leady po wartości"<br>            ariaLabel="Sortuj leady po wartości"<br>            helper={valueSortEnabled ? 'sortowanie aktywne' : 'kliknij, aby sortować!'}<br>     |
+| src/pages/Leads.tsx | 979 | <StatShortcutCard<br>            label="Zagrożone"<br>            value={stats.atRisk}<br>            icon={AlertTriangle}<br>            active={quickFilter === 'at-risk' && !showTrash}<br>            onClick={() => toggleQuickFilter('at-risk')}<br>            title="Pokaż zagrożone leady"<br>            ariaLabel="Pokaż zagrożone leady"<br>            tone="risk"<br>          /><br><br>          <StatShortcutCard |
+| src/pages/Leads.tsx | 990 | <StatShortcutCard<br>            label="Do odzyskania"<br>            value={stats.rescue}<br>            icon={AlertTriangle}<br>            active={quickFilter === 'rescue' && !showTrash}<br>            onClick={() => toggleQuickFilter('rescue')}<br>            title="Pokaż leady do odzyskania"<br>            ariaLabel="Pokaż leady do odzyskania"<br>            tone="risk"<br>            helper={lostLeadRescueSummary.critical ? `${lostLeadRe |
+| src/pages/ResponseTemplates.tsx | 202 | <StatShortcutCard label="Szablony" value={stats.total} icon={AiEntityIcon} iconClassName="app-primary-chip" valueClassName="app-text" /><br>          <StatShortcutCard label="Kategorie" value={stats.categories} icon={MessageSquareText} iconClassName="bg-indigo-500/12 text-indigo-600" valueClassName="app-text" /><br>          <StatShortcutCard label="Tagi" value={stats.tags} icon={Tags} iconClassName="bg-amber-500/12 text-a |
+| src/pages/ResponseTemplates.tsx | 203 | <StatShortcutCard label="Kategorie" value={stats.categories} icon={MessageSquareText} iconClassName="bg-indigo-500/12 text-indigo-600" valueClassName="app-text" /><br>          <StatShortcutCard label="Tagi" value={stats.tags} icon={Tags} iconClassName="bg-amber-500/12 text-amber-600" valueClassName="text-amber-600" /><br>          <StatShortcutCard label="Zmienne" value={stats.withVariables} icon={Copy} iconClassName="bg- |
+| src/pages/ResponseTemplates.tsx | 204 | <StatShortcutCard label="Tagi" value={stats.tags} icon={Tags} iconClassName="bg-amber-500/12 text-amber-600" valueClassName="text-amber-600" /><br>          <StatShortcutCard label="Zmienne" value={stats.withVariables} icon={Copy} iconClassName="bg-emerald-500/12 text-emerald-600" valueClassName="text-emerald-600" /><br>        </section><br><br>        <Card className="cf-readable-card border-none app-surface-strong app-shadow" |
+| src/pages/ResponseTemplates.tsx | 205 | <StatShortcutCard label="Zmienne" value={stats.withVariables} icon={Copy} iconClassName="bg-emerald-500/12 text-emerald-600" valueClassName="text-emerald-600" /><br>        </section><br><br>        <Card className="cf-readable-card border-none app-surface-strong app-shadow"><br>          <CardContent className="flex flex-col gap-4 p-4 lg:flex-row lg:items-center lg:justify-between"><br>            <div className="relative flex-1 c |
+| src/pages/Tasks.tsx | 1461 | <StatShortcutCard<br>              key={stat.id}<br>              label={stat.title}<br>              value={stat.value}<br>              icon={stat.icon}<br>              active={taskScope === stat.id}<br>              onClick={() => activateScope(stat.id)}<br>              tone={stat.tone}<br>              title={`Pokaż: ${stat.title.toLowerCase()}`}<br>            /><br>          ))}<br>        </div> |
+| src/pages/Templates.tsx | 76 | <StatShortcutCard label="Szablony" value={stats.totalTemplates} icon={AiEntityIcon} iconClassName="bg-emerald-50 text-emerald-700" /><br>      <StatShortcutCard label="Pozycje" value={stats.totalItems} icon={TemplateEntityIcon} iconClassName="bg-indigo-50 text-indigo-700" /><br>      <StatShortcutCard label="Obowiązkowe" value={stats.requiredItems} icon={AlertTriangle} iconClassName="bg-amber-50 text-amber-700" valueClassN |
+| src/pages/Templates.tsx | 77 | <StatShortcutCard label="Pozycje" value={stats.totalItems} icon={TemplateEntityIcon} iconClassName="bg-indigo-50 text-indigo-700" /><br>      <StatShortcutCard label="Obowiązkowe" value={stats.requiredItems} icon={AlertTriangle} iconClassName="bg-amber-50 text-amber-700" valueClassName="text-amber-600" /><br>      <StatShortcutCard label="Akceptacje" value={stats.decisionItems} icon={CheckCircle2} iconClassName="bg-emerald |
+| src/pages/Templates.tsx | 78 | <StatShortcutCard label="Obowiązkowe" value={stats.requiredItems} icon={AlertTriangle} iconClassName="bg-amber-50 text-amber-700" valueClassName="text-amber-600" /><br>      <StatShortcutCard label="Akceptacje" value={stats.decisionItems} icon={CheckCircle2} iconClassName="bg-emerald-50 text-emerald-700" valueClassName="text-emerald-600" /><br>    </section><br>  );<br>}<br><br>export default function Templates() {<br>  const { hasAccess |
+| src/pages/Templates.tsx | 79 | <StatShortcutCard label="Akceptacje" value={stats.decisionItems} icon={CheckCircle2} iconClassName="bg-emerald-50 text-emerald-700" valueClassName="text-emerald-600" /><br>    </section><br>  );<br>}<br><br>export default function Templates() {<br>  const { hasAccess } = useWorkspace();<br>  const [templates, setTemplates] = useState<TemplateRecord[]>([]);<br>  const [loading, setLoading] = useState(true);<br>  const [searchQuery, setSearchQue |
+
+## Kontrakty akcji encji
+
+| Plik | Linia | Fragment |
+|---|---:|---|
+| src/pages/CaseDetail.tsx | 169 | const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CASE = {<br>  entity: 'case',<br>  entityHeaderActionCluster: actionButtonClass('neutral', 'cf-entity-action-cluster'),<br>  activityPanelHeader: actionButtonClass('neutral', 'cf-panel-header-actions'),<br>  notePanelHeader: actionButtonClass('neutral', 'cf-panel-header-actions'),<br>  tasksPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),<br>  workItemsPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),<br>  eventsPanelHeader: actionButtonClass('neutral', ' |
+| src/pages/ClientDetail.tsx | 238 | const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CLIENT = {<br>  entity: 'client',<br>  entityHeaderActionCluster: actionButtonClass('neutral', 'cf-entity-action-cluster'),<br>  activityPanelHeader: actionButtonClass('neutral', 'cf-panel-header-actions'),<br>  notePanelHeader: actionButtonClass('neutral', 'cf-panel-header-actions'),<br>  tasksPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),<br>  workItemsPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),<br>  eventsPanelHeader: actionButtonClass('neutral |
+| src/pages/LeadDetail.tsx | 202 | const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_LEAD = {<br>  entity: 'lead',<br>  entityHeaderActionCluster: actionButtonClass('neutral', 'cf-entity-action-cluster'),<br>  activityPanelHeader: actionButtonClass('neutral', 'cf-panel-header-actions'),<br>  notePanelHeader: actionButtonClass('neutral', 'cf-panel-header-actions'),<br>  tasksPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),<br>  workItemsPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),<br>  eventsPanelHeader: actionButtonClass('neutral', ' |
+
+## Lokalne implementacje do przepięcia
+
+Te elementy są kandydatami do przeniesienia do wspólnego UI systemu.
+
+| Nazwa | Plik | Linia |
+|---|---|---:|
+| ClientMultiContactField | src/pages/ClientDetail.tsx | 1072 |
+| StatCell | src/pages/ClientDetail.tsx | 1129 |
+| LeadActionButton | src/pages/LeadDetail.tsx | 655 |
+
+## Regiony / data attributes
+
+| Plik | Linia | Wartość |
+|---|---:|---|
+| src/components/AppChunkErrorBoundary.tsx | 34 | true |
+| src/components/confirm-dialog.tsx | 30 | true |
+| src/components/entity-actions.tsx | 152 | true |
+| src/components/entity-actions.tsx | 153 | trash-action-source |
+| src/components/entity-actions.tsx | 174 | entity-header-action-cluster |
+| src/components/entity-actions.tsx | 174 | VS6 |
+| src/components/entity-actions.tsx | 182 | VS6 |
+| src/components/entity-actions.tsx | 189 | info-row-inline-action |
+| src/components/entity-actions.tsx | 189 | VS6 |
+| src/components/entity-actions.tsx | 196 | danger-action-zone |
+| src/components/entity-actions.tsx | 196 | VS6 |
+| src/components/finance/CaseFinanceEditorDialog.tsx | 178 | true |
+| src/components/finance/CaseFinanceEditorDialog.tsx | 184 | true |
+| src/components/finance/CaseFinanceEditorDialog.tsx | 250 | remaining |
+| src/components/finance/CaseSettlementPanel.tsx | 275 | true |
+| src/components/finance/CaseSettlementSection.tsx | 43 | case-detail-only |
+| src/components/finance/FinanceMiniSummary.tsx | 181 | transaction |
+| src/components/finance/FinanceMiniSummary.tsx | 182 | commission |
+| src/components/finance/FinanceMiniSummary.tsx | 183 | paid |
+| src/components/finance/FinanceMiniSummary.tsx | 184 | remaining |
+| src/components/finance/FinanceMiniSummary.tsx | 295 | transaction |
+| src/components/finance/FinanceMiniSummary.tsx | 296 | commission |
+| src/components/finance/FinanceMiniSummary.tsx | 297 | paid |
+| src/components/finance/FinanceMiniSummary.tsx | 298 | remaining |
+| src/components/finance/FinanceMiniSummary.tsx | 299 | cost |
+| src/components/finance/FinanceMiniSummary.tsx | 300 | total |
+| src/components/finance/FinanceMiniSummary.tsx | 319 | transaction |
+| src/components/finance/FinanceMiniSummary.tsx | 320 | commission |
+| src/components/finance/FinanceMiniSummary.tsx | 321 | paid |
+| src/components/finance/FinanceMiniSummary.tsx | 322 | remaining |
+| src/components/GlobalQuickActions.tsx | 90 | ai |
+| src/components/GlobalQuickActions.tsx | 97 | neutral |
+| src/components/GlobalQuickActions.tsx | 103 | neutral |
+| src/components/GlobalQuickActions.tsx | 108 | neutral |
+| src/components/GlobalQuickActions.tsx | 112 | neutral |
+| src/components/Layout.tsx | 693 | true |
+| src/components/layout/app-shell.tsx | 22 | lf-ui-sot-cz2-015 |
+| src/components/layout/app-shell.tsx | 22 | app-shell |
+| src/components/layout/content-rail-layout.tsx | 23 | lf-ui-sot-cz2-015 |
+| src/components/layout/content-rail-layout.tsx | 23 | content-rail |
+| src/components/layout/content-rail-layout.tsx | 24 | true |
+| src/components/layout/content-rail-layout.tsx | 27 | true |
+| src/components/layout/page-header.tsx | 24 | lf-ui-sot-cz2-015 |
+| src/components/layout/page-header.tsx | 24 | page-header |
+| src/components/layout/page-header.tsx | 26 | true |
+| src/components/layout/page-header.tsx | 28 | true |
+| src/components/layout/page-header.tsx | 29 | true |
+| src/components/layout/page-header.tsx | 31 | true |
+| src/components/layout/page-shell.tsx | 23 | lf-ui-sot-cz2-015 |
+| src/components/layout/page-shell.tsx | 23 | page-shell |
+| src/components/layout/page-shell.tsx | 24 | true |
+| src/components/layout/page-shell.tsx | 25 | true |
+| src/components/layout/page-shell.tsx | 28 | true |
+| src/components/layout/sidebar-nav.tsx | 35 | lf-ui-sot-cz2-015 |
+| src/components/layout/sidebar-nav.tsx | 35 | sidebar-nav |
+| src/components/layout/sidebar-nav.tsx | 41 | true |
+| src/components/layout/sidebar-nav.tsx | 47 | true |
+| src/components/layout/sidebar-nav.tsx | 54 | true |
+| src/components/layout/sidebar-nav.tsx | 59 | true |
+| src/components/operator-rail/TopValueRecordsCard.tsx | 61 | true |
+| src/components/operator-rail/TopValueRecordsCard.tsx | 62 | blue |
+| src/components/QuickAiCapture.tsx | 280 | ai |
+| src/components/ui-system/ActionCluster.tsx | 41 | ActionCluster |
+| src/components/ui-system/ActionCluster.tsx | 45 | VS6 |
+| src/components/ui-system/ActionCluster.tsx | 46 | primary,secondary,danger |
+| src/components/ui-system/EmptyState.tsx | 18 | EmptyState |
+| src/components/ui-system/EmptyState.tsx | 20 | component-registry-vs2 |
+| src/components/ui-system/FormFooter.tsx | 22 | FormFooter |
+| src/components/ui-system/FormFooter.tsx | 24 | component-registry-vs2 |
+| src/components/ui-system/ListRow.tsx | 40 | ListRow |
+| src/components/ui-system/ListRow.tsx | 40 | component-registry-vs2 |
+| src/components/ui-system/ListRow.tsx | 48 | ListRow |
+| src/components/ui-system/ListRow.tsx | 48 | component-registry-vs2 |
+| src/components/ui-system/ListRow.tsx | 55 | ListRow |
+| src/components/ui-system/ListRow.tsx | 55 | component-registry-vs2 |
+| src/components/ui-system/MetricGrid.tsx | 20 | MetricGrid |
+| src/components/ui-system/MetricGrid.tsx | 21 | component-registry-vs2 |
+| src/components/ui-system/MetricGrid.tsx | 23 | 1 |
+| src/components/ui-system/MetricTile.tsx | 59 | MetricTile |
+| src/components/ui-system/MetricTile.tsx | 60 | label,value,helper,icon,tone,active,onClick |
+| src/components/ui-system/MetricTile.tsx | 61 | component-registry-vs2 |
+| src/components/ui-system/OperatorMetricTiles.tsx | 7 | vs5v |
+| src/components/ui-system/OperatorMetricTiles.tsx | 48 | true |
+| src/components/ui-system/OperatorMetricTiles.tsx | 51 | true |
+| src/components/ui-system/OperatorMetricTiles.tsx | 52 | OperatorMetricTiles |
+| src/components/ui-system/OperatorMetricTiles.tsx | 53 | vs5x-repair3 |
+| src/components/ui-system/OperatorMetricTiles.tsx | 87 | true |
+| src/components/ui-system/OperatorMetricTiles.tsx | 98 | true |
+| src/components/ui-system/OperatorMetricToneRuntime.tsx | 93 | true |
+| src/components/ui-system/OperatorMetricToneRuntime.tsx | 109 | true |
+| src/components/ui-system/PageHero.tsx | 20 | PageHero |
+| src/components/ui-system/PageShell.tsx | 21 | PageShell |
+| src/components/ui-system/StatusPill.tsx | 24 | StatusPill |
+| src/components/ui-system/StatusPill.tsx | 26 | component-registry-vs2 |
+| src/components/ui-system/SurfaceCard.tsx | 28 | SurfaceCard |
+| src/components/ui-system/SurfaceCard.tsx | 30 | component-registry-vs2 |
+| src/components/ui/badge.tsx | 42 | true |
+| src/components/ui/button.tsx | 56 | true |
+| src/components/ui/card.tsx | 85 | true |
+| src/components/ui/detail-panel.tsx | 25 | detail-panel |
+| src/components/ui/detail-panel.tsx | 25 | lf-ui-sot-cz2-012 |
+| src/components/ui/dialog.tsx | 36 | true |
+| src/components/ui/empty-state-card.tsx | 24 | empty-state |
+| src/components/ui/empty-state-card.tsx | 24 | lf-ui-sot-cz2-012 |
+| src/components/ui/filter-chip-group.tsx | 46 | chip-group |
+| src/components/ui/filter-chip-group.tsx | 46 | lf-ui-sot-cz2-014 |
+| src/components/ui/filter-select.tsx | 36 | filter-select |
+| src/components/ui/filter-select.tsx | 36 | lf-ui-sot-cz2-014 |
+| src/components/ui/filter-toolbar.tsx | 23 | toolbar |
+| src/components/ui/filter-toolbar.tsx | 23 | lf-ui-sot-cz2-014 |
+| src/components/ui/filter-toolbar.tsx | 25 | true |
+| src/components/ui/filter-toolbar.tsx | 30 | true |
+| src/components/ui/form-field.tsx | 26 | field |
+| src/components/ui/form-field.tsx | 26 | lf-ui-sot-cz2-013 |
+| src/components/ui/form-field.tsx | 33 | true |
+| src/components/ui/form-section.tsx | 23 | section |
+| src/components/ui/form-section.tsx | 23 | lf-ui-sot-cz2-013 |
+| src/components/ui/form-section.tsx | 29 | true |
+| src/components/ui/input.tsx | 14 | true |
+| src/components/ui/list-card.tsx | 46 | list |
+| src/components/ui/list-card.tsx | 46 | lf-ui-sot-cz2-012 |
+| src/components/ui/metric-card.tsx | 64 | metric |
+| src/components/ui/metric-card.tsx | 65 | lf-ui-sot-cz2-012 |
+| src/components/ui/metric-card.tsx | 66 | true |
+| src/components/ui/metric-card.tsx | 69 | cz2-012-card-variant |
+| src/components/ui/metric-card.tsx | 77 | true |
+| src/components/ui/metric-card.tsx | 88 | true |
+| src/components/ui/search-field.tsx | 39 | search |
+| src/components/ui/search-field.tsx | 39 | lf-ui-sot-cz2-014 |
+| src/components/ui/select-field.tsx | 50 | select |
+| src/components/ui/select.tsx | 43 | select |
+| src/components/ui/sort-select.tsx | 25 | sort-select |
+| src/components/ui/sort-select.tsx | 25 | lf-ui-sot-cz2-014 |
+| src/components/ui/textarea-field.tsx | 46 | textarea |
+| src/components/ui/textarea.tsx | 14 | textarea |
+| src/components/VisualFoundationRuntimeStage212B.tsx | 55 | true |
+| src/components/VisualFoundationRuntimeStage212G.tsx | 56 | true |
+| src/components/VisualFoundationRuntimeStage212M.tsx | 74 | true |
+| src/pages/Activity.tsx | 357 | semantic173 |
+| src/pages/Activity.tsx | 357 | true |
+
+## Położenie / layout CSS
+
+| Plik | Linia | Selektor/kontekst | Reguła |
+|---|---:|---|---|
+| src/index.css | 22 | [data-skin="forteca-light"] { --color-primary: #2563eb; --color-primary-foreground: #ffffff; --app-bg: #f1f5f9; --app-surface: #f8fafc; --app-surface-strong: #ffffff; --app-surface-muted: #f1f5f9; --app-border: #e2e8f0; | --app-border: #e2e8f0; |
+| src/index.css | 38 | [data-skin="forteca-dark"] { --color-primary: #60a5fa; --color-primary-foreground: #08111f; --app-bg: #f1f5f9; --app-surface: #f8fafc; --app-surface-strong: #ffffff; --app-surface-muted: #f1f5f9; --app-border: #475569; | --app-border: #475569; |
+| src/index.css | 54 | [data-skin="midnight"] { --color-primary: #22c55e; --color-primary-foreground: #04110a; --app-bg: #f1f5f9; --app-surface: #f8fafc; --app-surface-strong: #ffffff; --app-surface-muted: #f1f5f9; --app-border: #334155; | --app-border: #334155; |
+| src/index.css | 70 | [data-skin="sandstone"] { --color-primary: #d97706; --color-primary-foreground: #fffdf8; --app-bg: #f1f5f9; --app-surface: #f8fafc; --app-surface-strong: #ffffff; --app-surface-muted: #f1f5f9; --app-border: #c8b594; | --app-border: #c8b594; |
+| src/index.css | 128 | .glass { @apply backdrop-blur-md; background-color: color-mix(in srgb, var(--app-surface-strong) 82%, transparent); border: 1px solid color-mix(in srgb, var(--app-border) 65%, transparent); | border: 1px solid color-mix(in srgb, var(--app-border) 65%, transparent); |
+| src/pages/legal-public-pages.css | 14 | .cf-legal-card { width: min(920px, 100%); margin: 0 auto; border: 1px solid #e4e7ec; | border: 1px solid #e4e7ec; |
+| src/pages/legal-public-pages.css | 74 | .cf-legal-actions { display: flex; | display: flex; |
+| src/pages/legal-public-pages.css | 106 | .cf-legal-secondary-link { border: 1px solid #e4e7ec; | border: 1px solid #e4e7ec; |
+| src/pages/legal-public-pages.css | 116 | @media (max-width: 720px) { | @media (max-width: 720px) { |
+| src/styles/admin-tools.css | 3 | .admin-debug-toolbar { position: relative; | position: relative; |
+| src/styles/admin-tools.css | 11 | z-index: 2147483000; isolation: isolate; display: inline-flex; align-items: center; gap: 6px; margin-left: auto; padding: 4px; border: 1px solid rgba(148, 163, 184, 0.36); | border: 1px solid rgba(148, 163, 184, 0.36); |
+| src/styles/admin-tools.css | 28 | .admin-preset-grid button { border: 1px solid rgba(148, 163, 184, 0.32); | border: 1px solid rgba(148, 163, 184, 0.32); |
+| src/styles/admin-tools.css | 48 | .admin-tool-popover { position: absolute; | position: absolute; |
+| src/styles/admin-tools.css | 53 | .admin-tool-popover { position: absolute; z-index: 2147483003; top: calc(100% + 8px); right: 0; width: 320px; display: grid; | display: grid; |
+| src/styles/admin-tools.css | 56 | z-index: 2147483003; top: calc(100% + 8px); right: 0; width: 320px; display: grid; gap: 10px; padding: 12px; border: 1px solid rgba(148, 163, 184, 0.32); | border: 1px solid rgba(148, 163, 184, 0.32); |
+| src/styles/admin-tools.css | 69 | .admin-tool-row { display: flex; | display: flex; |
+| src/styles/admin-tools.css | 79 | .admin-button-list { display: grid; | display: grid; |
+| src/styles/admin-tools.css | 86 | .admin-button-row { display: grid; | display: grid; |
+| src/styles/admin-tools.css | 87 | .admin-button-row { display: grid; grid-template-columns: minmax(0, 1fr) 130px; | grid-template-columns: minmax(0, 1fr) 130px; |
+| src/styles/admin-tools.css | 91 | .admin-button-row { display: grid; grid-template-columns: minmax(0, 1fr) 130px; gap: 8px; align-items: center; padding: 8px; border: 1px solid rgba(148, 163, 184, 0.22); | border: 1px solid rgba(148, 163, 184, 0.22); |
+| src/styles/admin-tools.css | 104 | .admin-tool-dialog-backdrop { position: fixed; | position: fixed; |
+| src/styles/admin-tools.css | 107 | .admin-tool-dialog-backdrop { position: fixed; inset: 0; z-index: 2147483001; display: flex; | display: flex; |
+| src/styles/admin-tools.css | 117 | .admin-tool-dialog { position: relative; | position: relative; |
+| src/styles/admin-tools.css | 123 | .admin-tool-dialog { position: relative; z-index: 2147483002; width: min(520px, 96vw); max-height: calc(100vh - 112px); overflow: auto; will-change: transform; display: grid; | display: grid; |
+| src/styles/admin-tools.css | 137 | .admin-tool-dialog label { display: grid; | display: grid; |
+| src/styles/admin-tools.css | 148 | .admin-tool-popover select { width: 100%; border: 1px solid rgba(148, 163, 184, 0.38); | border: 1px solid rgba(148, 163, 184, 0.38); |
+| src/styles/admin-tools.css | 160 | .admin-target-card { display: grid; | display: grid; |
+| src/styles/admin-tools.css | 163 | .admin-target-card { display: grid; gap: 6px; padding: 10px; border: 1px solid rgba(96, 165, 250, 0.42); | border: 1px solid rgba(96, 165, 250, 0.42); |
+| src/styles/admin-tools.css | 169 | .admin-preset-grid { display: flex; | display: flex; |
+| src/styles/admin-tools.css | 174 | @media (max-width: 900px) { | @media (max-width: 900px) { |
+| src/styles/admin-tools.css | 176 | .admin-debug-toolbar { max-width: 100%; | max-width: 100%; |
+| src/styles/admin-tools.css | 208 | @media (max-height: 720px) { | @media (max-height: 720px) { |
+| src/styles/admin-tools.css | 218 | @media (max-height: 560px) { | @media (max-height: 560px) { |
+| src/styles/admin-tools.css | 228 | .admin-tool-mode-hint { position: fixed; | position: fixed; |
+| src/styles/admin-tools.css | 232 | .admin-tool-mode-hint { position: fixed; right: 24px; bottom: 24px; z-index: 2147483004; max-width: min(420px, calc(100vw - 48px)); | max-width: min(420px, calc(100vw - 48px)); |
+| src/styles/admin-tools.css | 234 | .admin-tool-mode-hint { position: fixed; right: 24px; bottom: 24px; z-index: 2147483004; max-width: min(420px, calc(100vw - 48px)); padding: 10px 12px; border: 1px solid rgba(96, 165, 250, 0.42); | border: 1px solid rgba(96, 165, 250, 0.42); |
+| src/styles/admin-tools.css | 243 | .admin-tool-save-toast { position: fixed; | position: fixed; |
+| src/styles/admin-tools.css | 247 | .admin-tool-save-toast { position: fixed; right: 24px; bottom: 24px; z-index: 2147483005; max-width: min(420px, calc(100vw - 48px)); | max-width: min(420px, calc(100vw - 48px)); |
+| src/styles/admin-tools.css | 249 | .admin-tool-save-toast { position: fixed; right: 24px; bottom: 24px; z-index: 2147483005; max-width: min(420px, calc(100vw - 48px)); padding: 10px 12px; border: 1px solid rgba(34, 197, 94, 0.48); | border: 1px solid rgba(34, 197, 94, 0.48); |
+| src/styles/admin-tools.css | 258 | .admin-tool-quick-editor { position: fixed; | position: fixed; |
+| src/styles/admin-tools.css | 265 | position: fixed; right: 24px; bottom: 24px; z-index: 2147483006; width: min(480px, calc(100vw - 48px)); max-height: min(720px, calc(100vh - 48px)); overflow: auto; display: grid; | display: grid; |
+| src/styles/admin-tools.css | 268 | z-index: 2147483006; width: min(480px, calc(100vw - 48px)); max-height: min(720px, calc(100vh - 48px)); overflow: auto; display: grid; gap: 10px; padding: 14px; border: 1px solid rgba(96, 165, 250, 0.45); | border: 1px solid rgba(96, 165, 250, 0.45); |
+| src/styles/admin-tools.css | 281 | .admin-tool-quick-editor label { display: grid; | display: grid; |
+| src/styles/admin-tools.css | 291 | .admin-tool-quick-editor select { width: 100%; border: 1px solid rgba(148, 163, 184, 0.38); | border: 1px solid rgba(148, 163, 184, 0.38); |
+| src/styles/admin-tools.css | 303 | .admin-tool-quick-editor button { border: 1px solid rgba(148, 163, 184, 0.32); | border: 1px solid rgba(148, 163, 184, 0.32); |
+| src/styles/admin-tools.css | 316 | @media (max-width: 760px) { | @media (max-width: 760px) { |
+| src/styles/admin-tools.css | 323 | .admin-tool-save-toast { right: 12px; bottom: 12px; width: calc(100vw - 24px); max-width: calc(100vw - 24px); | max-width: calc(100vw - 24px); |
+| src/styles/admin-tools.css | 355 | @media (max-width: 760px) { | @media (max-width: 760px) { |
+| src/styles/clients-next-action-layout.css | 4 | .main-clients-html .client-row:not(.cf-client-row-two-line) { display: grid; | display: grid; |
+| src/styles/clients-next-action-layout.css | 5 | .main-clients-html .client-row:not(.cf-client-row-two-line) { display: grid; grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr) minmax(7.5rem, auto); | grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr) minmax(7.5rem, auto); |
+| src/styles/clients-next-action-layout.css | 20 | .main-clients-html .client-row:not(.cf-client-row-two-line) > .lead-main-cell { grid-area: main; min-width: 0; | min-width: 0; |
+| src/styles/clients-next-action-layout.css | 33 | .main-clients-html .client-row:not(.cf-client-row-two-line) > .client-card-next-action-block { grid-area: next; width: 100%; min-width: 0; | min-width: 0; |
+| src/styles/clients-next-action-layout.css | 34 | .main-clients-html .client-row:not(.cf-client-row-two-line) > .client-card-next-action-block { grid-area: next; width: 100%; min-width: 0; display: flex; | display: flex; |
+| src/styles/clients-next-action-layout.css | 40 | min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 0.2rem; padding: 0.72rem 0.85rem; border-radius: 0.95rem; border: 1px solid rgba(148, 163, 184, 0.28); | border: 1px solid rgba(148, 163, 184, 0.28); |
+| src/styles/clients-next-action-layout.css | 54 | .main-clients-html .client-row:not(.cf-client-row-two-line) > .client-card-next-action-block strong { max-width: 100%; | max-width: 100%; |
+| src/styles/clients-next-action-layout.css | 69 | .main-clients-html .client-row:not(.cf-client-row-two-line) > .client-card-action-buttons { grid-area: actions; justify-self: end; width: 100%; min-width: 0; | min-width: 0; |
+| src/styles/clients-next-action-layout.css | 70 | .main-clients-html .client-row:not(.cf-client-row-two-line) > .client-card-action-buttons { grid-area: actions; justify-self: end; width: 100%; min-width: 0; display: flex; | display: flex; |
+| src/styles/clients-next-action-layout.css | 86 | .main-clients-html .client-row:not(.cf-client-row-two-line) > .client-card-action-buttons a { min-width: max-content; | min-width: max-content; |
+| src/styles/clients-next-action-layout.css | 89 | @media (max-width: 1024px) { | @media (max-width: 1024px) { |
+| src/styles/clients-next-action-layout.css | 91 | .main-clients-html .client-row:not(.cf-client-row-two-line) { grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr); | grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr); |
+| src/styles/clients-next-action-layout.css | 109 | @media (max-width: 520px) { | @media (max-width: 520px) { |
+| src/styles/clients-next-action-layout.css | 111 | .main-clients-html .client-row:not(.cf-client-row-two-line) { grid-template-columns: 1fr; | grid-template-columns: 1fr; |
+| src/styles/clients-next-action-layout.css | 135 | .main-clients-html .layout-list { width: 100%; max-width: none; | max-width: none; |
+| src/styles/clients-next-action-layout.css | 136 | .main-clients-html .layout-list { width: 100%; max-width: none; min-width: 0; | min-width: 0; |
+| src/styles/clients-next-action-layout.css | 142 | .main-clients-html .layout-list > .stack { width: 100%; max-width: none; | max-width: none; |
+| src/styles/clients-next-action-layout.css | 143 | .main-clients-html .layout-list > .stack { width: 100%; max-width: none; min-width: 0; | min-width: 0; |
+| src/styles/clients-next-action-layout.css | 148 | .main-clients-html .table-card { width: 100%; max-width: none; | max-width: none; |
+| src/styles/clients-next-action-layout.css | 149 | .main-clients-html .table-card { width: 100%; max-width: none; min-width: 0; | min-width: 0; |
+| src/styles/clients-next-action-layout.css | 157 | .main-clients-html [class*="group/client-card"] { width: 100%; max-width: none; | max-width: none; |
+| src/styles/clients-next-action-layout.css | 158 | .main-clients-html [class*="group/client-card"] { width: 100%; max-width: none; min-width: 0; | min-width: 0; |
+| src/styles/clients-next-action-layout.css | 167 | .main-clients-html [data-client-card-wide-layout="true"] > a { display: block; width: 100%; max-width: none; | max-width: none; |
+| src/styles/clients-next-action-layout.css | 168 | .main-clients-html [data-client-card-wide-layout="true"] > a { display: block; width: 100%; max-width: none; min-width: 0; | min-width: 0; |
+| src/styles/clients-next-action-layout.css | 173 | .main-clients-html .client-row:not(.cf-client-row-two-line) { width: 100%; max-width: none; | max-width: none; |
+| src/styles/clients-next-action-layout.css | 174 | .main-clients-html .client-row:not(.cf-client-row-two-line) { width: 100%; max-width: none; min-width: 0; | min-width: 0; |
+| src/styles/clients-next-action-layout.css | 181 | .main-clients-html .client-row:not(.cf-client-row-two-line) > .client-card-next-action-block { min-width: 0; | min-width: 0; |
+| src/styles/clients-next-action-layout.css | 186 | .main-clients-html .statusline { max-width: 100%; | max-width: 100%; |
+| src/styles/clients-next-action-layout.css | 187 | .main-clients-html .statusline { max-width: 100%; min-width: 0; | min-width: 0; |
+| src/styles/clients-next-action-layout.css | 188 | .main-clients-html .statusline { max-width: 100%; min-width: 0; display: flex; | display: flex; |
+| src/styles/clients-next-action-layout.css | 195 | .main-clients-html .statusline > * { min-width: 0; | min-width: 0; |
+| src/styles/clients-next-action-layout.css | 206 | .cf-client-card-grid { display: grid; | display: grid; |
+| src/styles/clients-next-action-layout.css | 207 | .cf-client-card-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 360px); | grid-template-columns: minmax(0, 1fr) minmax(260px, 360px); |
+| src/styles/clients-next-action-layout.css | 212 | @media (min-width: 901px) { | @media (min-width: 901px) { |
+| src/styles/clients-next-action-layout.css | 214 | .main-clients-html .client-row:not(.cf-client-row-two-line) { grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr) minmax(260px, 360px); | grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr) minmax(260px, 360px); |
+| src/styles/clients-next-action-layout.css | 218 | .main-clients-html .client-row:not(.cf-client-row-two-line) > .lead-value-cell { min-width: 260px; | min-width: 260px; |
+| src/styles/clients-next-action-layout.css | 222 | @media (max-width: 900px) { | @media (max-width: 900px) { |
+| src/styles/clients-next-action-layout.css | 224 | .cf-client-card-grid { grid-template-columns: 1fr; | grid-template-columns: 1fr; |
+| src/styles/clients-next-action-layout.css | 228 | .main-clients-html .client-row:not(.cf-client-row-two-line) { grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr); | grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr); |
+| src/styles/clients-next-action-layout.css | 232 | @media (max-width: 520px) { | @media (max-width: 520px) { |
+| src/styles/clients-next-action-layout.css | 238 | .main-clients-html [class*="group/client-card"] { width: 100%; max-width: 100%; | max-width: 100%; |
+| src/styles/clients-next-action-layout.css | 242 | .main-clients-html .client-row:not(.cf-client-row-two-line) > .cf-client-next-action-panel { border: 1px solid rgba(37, 99, 235, 0.18); | border: 1px solid rgba(37, 99, 235, 0.18); |
+| src/styles/clients-next-action-layout.css | 263 | @media (max-width: 520px) { | @media (max-width: 520px) { |
+| src/styles/clients-next-action-layout.css | 270 | .main-clients-html .client-row:not(.cf-client-row-two-line).cf-client-row-inline { display: grid; | display: grid; |
+| src/styles/clients-next-action-layout.css | 271 | .main-clients-html .client-row:not(.cf-client-row-two-line).cf-client-row-inline { display: grid; grid-template-columns: | grid-template-columns: |
+| src/styles/clients-next-action-layout.css | 282 | .main-clients-html .cf-client-main-cell { min-width: 0; | min-width: 0; |
+| src/styles/clients-next-action-layout.css | 286 | .main-clients-html .cf-client-cases-cell { min-width: 0; | min-width: 0; |
+| src/styles/clients-next-action-layout.css | 290 | .main-clients-html .cf-client-next-action-inline { min-width: 0; | min-width: 0; |
+| src/styles/clients-next-action-layout.css | 292 | .main-clients-html .cf-client-next-action-inline { min-width: 0; align-self: stretch; display: flex; | display: flex; |
+| src/styles/clients-next-action-layout.css | 305 | @media (max-width: 75rem) { | @media (max-width: 75rem) { |
+| src/styles/clients-next-action-layout.css | 307 | .main-clients-html .client-row:not(.cf-client-row-two-line).cf-client-row-inline { grid-template-columns: | grid-template-columns: |
+| src/styles/clients-next-action-layout.css | 315 | .main-clients-html .cf-client-row-actions { grid-column: 2 / -1; | grid-column: 2 / -1; |
+| src/styles/clients-next-action-layout.css | 319 | @media (max-width: 47.5rem) { | @media (max-width: 47.5rem) { |
+| src/styles/clients-next-action-layout.css | 321 | .main-clients-html .client-row:not(.cf-client-row-two-line).cf-client-row-inline { grid-template-columns: auto minmax(0, 1fr); | grid-template-columns: auto minmax(0, 1fr); |
+| src/styles/clients-next-action-layout.css | 328 | .main-clients-html .cf-client-row-actions { grid-column: 2 / -1; | grid-column: 2 / -1; |
+| src/styles/closeflow-activity-rail.css | 8 | .activity-vnext-page .activity-right-rail .right-card.activity-right-card { position: relative; | position: relative; |
+| src/styles/closeflow-activity-rail.css | 20 | .activity-vnext-page .activity-right-rail .right-card.activity-right-card::before { content: ""; position: absolute; | position: absolute; |
+| src/styles/closeflow-activity-rail.css | 117 | .activity-vnext-page .activity-right-rail .activity-rail-button strong { min-width: 30px; | min-width: 30px; |
+| src/styles/closeflow-activity-rail.css | 119 | .activity-vnext-page .activity-right-rail .activity-rail-button strong { min-width: 30px; height: 26px; border: 1px solid currentColor; | border: 1px solid currentColor; |
+| src/styles/closeflow-activity-rail.css | 126 | .activity-vnext-page .activity-right-rail .activity-right-card[data-activity-rail-card="cases"] .activity-rail-empty { border: 1px dashed rgba(4, 120, 87, 0.28); | border: 1px dashed rgba(4, 120, 87, 0.28); |
+| src/styles/closeflow-activity-rail.css | 133 | .activity-vnext-page .activity-right-rail .activity-right-card[data-activity-rail-card="leads"] .activity-rail-empty { border: 1px dashed rgba(79, 70, 229, 0.28); | border: 1px dashed rgba(79, 70, 229, 0.28); |
+| src/styles/closeflow-activity-rail.css | 188 | .activity-vnext-page .activity-filter-pill strong { background: rgba(255,255,255,0.80); color: currentColor; border: 1px solid currentColor; | border: 1px solid currentColor; |
+| src/styles/closeflow-ai-drafts-rail.css | 67 | .ai-drafts-vnext-page .ai-drafts-filter-pill strong { background: rgba(255,255,255,0.82); border: 1px solid currentColor; | border: 1px solid currentColor; |
+| src/styles/closeflow-ai-drafts-rail.css | 81 | .ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card { position: relative; | position: relative; |
+| src/styles/closeflow-ai-drafts-rail.css | 93 | .ai-drafts-vnext-page .ai-drafts-right-rail .right-card.ai-drafts-right-card::before { content: ""; position: absolute; | position: absolute; |
+| src/styles/closeflow-ai-drafts-rail.css | 213 | .ai-drafts-vnext-page .ai-drafts-rail-button strong { min-width: 30px; | min-width: 30px; |
+| src/styles/closeflow-ai-drafts-rail.css | 215 | .ai-drafts-vnext-page .ai-drafts-rail-button strong { min-width: 30px; height: 26px; border: 1px solid currentColor; | border: 1px solid currentColor; |
+| src/styles/closeflow-ai-drafts-rail.css | 222 | .ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="errors"] .ai-drafts-rail-empty { border: 1px dashed rgba(220, 38, 38, 0.28); | border: 1px dashed rgba(220, 38, 38, 0.28); |
+| src/styles/closeflow-ai-drafts-rail.css | 229 | .ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="converted"] .ai-drafts-rail-empty { border: 1px dashed rgba(4, 120, 87, 0.28); | border: 1px dashed rgba(4, 120, 87, 0.28); |
+| src/styles/closeflow-ai-drafts-rail.css | 236 | .ai-drafts-vnext-page .ai-drafts-right-card[data-ai-draft-rail-card="help"] .ai-drafts-rail-empty { border: 1px dashed rgba(37, 99, 235, 0.24); | border: 1px dashed rgba(37, 99, 235, 0.24); |
+| src/styles/closeflow-ai-drafts.css | 10 | .ai-drafts-page-header { max-width: 1440px; | max-width: 1440px; |
+| src/styles/closeflow-ai-drafts.css | 12 | .ai-drafts-page-header { max-width: 1440px; margin: 0 auto 22px; display: flex; | display: flex; |
+| src/styles/closeflow-ai-drafts.css | 41 | .ai-drafts-header-actions { display: flex; | display: flex; |
+| src/styles/closeflow-ai-drafts.css | 49 | .ai-drafts-header-button { min-height: 42px; border: 1px solid #e4e7ec; | border: 1px solid #e4e7ec; |
+| src/styles/closeflow-ai-drafts.css | 66 | .ai-drafts-stats-grid { max-width: 1440px; | max-width: 1440px; |
+| src/styles/closeflow-ai-drafts.css | 68 | .ai-drafts-stats-grid { max-width: 1440px; margin: 0 auto 22px; display: grid; | display: grid; |
+| src/styles/closeflow-ai-drafts.css | 69 | .ai-drafts-stats-grid { max-width: 1440px; margin: 0 auto 22px; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); | grid-template-columns: repeat(6, minmax(0, 1fr)); |
+| src/styles/closeflow-ai-drafts.css | 76 | .ai-drafts-stat-card { min-height: 96px; padding: 16px; border: 1px solid #e4e7ec; | border: 1px solid #e4e7ec; |
+| src/styles/closeflow-ai-drafts.css | 81 | min-height: 96px; padding: 16px; border: 1px solid #e4e7ec; border-radius: 22px; background: rgba(255, 255, 255, 0.92); box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05); color: #111827; display: flex; | display: flex; |
+| src/styles/closeflow-ai-drafts.css | 102 | .ai-drafts-stat-content { display: flex; | display: flex; |
+| src/styles/closeflow-ai-drafts.css | 135 | .ai-drafts-vnext-shell { max-width: 1440px; | max-width: 1440px; |
+| src/styles/closeflow-ai-drafts.css | 137 | .ai-drafts-vnext-shell { max-width: 1440px; margin: 0 auto; display: grid; | display: grid; |
+| src/styles/closeflow-ai-drafts.css | 138 | .ai-drafts-vnext-shell { max-width: 1440px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) 320px; | grid-template-columns: minmax(0, 1fr) 320px; |
+| src/styles/closeflow-ai-drafts.css | 144 | .ai-drafts-main-column { min-width: 0; | min-width: 0; |
+| src/styles/closeflow-ai-drafts.css | 145 | .ai-drafts-main-column { min-width: 0; display: flex; | display: flex; |
+| src/styles/closeflow-ai-drafts.css | 152 | .ai-drafts-list-card { border: 1px solid #e4e7ec; | border: 1px solid #e4e7ec; |
+| src/styles/closeflow-ai-drafts.css | 160 | .ai-drafts-toolbar-card { padding: 16px; display: flex; | display: flex; |
+| src/styles/closeflow-ai-drafts.css | 166 | .ai-drafts-filter-pills { display: flex; | display: flex; |
+| src/styles/closeflow-ai-drafts.css | 174 | .ai-drafts-filter-pill { height: 40px; padding: 0 13px; border: 1px solid #e4e7ec; | border: 1px solid #e4e7ec; |
+| src/styles/closeflow-ai-drafts.css | 188 | .ai-drafts-filter-pill strong { min-width: 24px; | min-width: 24px; |
+| src/styles/closeflow-ai-drafts.css | 215 | .ai-drafts-search-box { min-height: 48px; border: 1px solid #e4e7ec; | border: 1px solid #e4e7ec; |
+| src/styles/closeflow-ai-drafts.css | 219 | .ai-drafts-search-box { min-height: 48px; border: 1px solid #e4e7ec; border-radius: 20px; background: #fff; box-shadow: 0 8px 22px rgba(16, 24, 40, 0.04); display: flex; | display: flex; |
+| src/styles/closeflow-ai-drafts.css | 228 | .ai-drafts-search-box input { width: 100%; min-width: 0; | min-width: 0; |
+| src/styles/closeflow-ai-drafts.css | 229 | .ai-drafts-search-box input { width: 100%; min-width: 0; border: 0; | border: 0; |
+| src/styles/closeflow-ai-drafts.css | 247 | .ai-drafts-list-head { min-height: 78px; padding: 20px 22px; display: flex; | display: flex; |
+| src/styles/closeflow-ai-drafts.css | 273 | .ai-drafts-list-head > span { border: 1px solid #e4e7ec; | border: 1px solid #e4e7ec; |
+| src/styles/closeflow-ai-drafts.css | 283 | .ai-drafts-rows { display: flex; | display: flex; |
+| src/styles/closeflow-ai-drafts.css | 298 | .ai-drafts-row-grid { min-height: 78px; display: grid; | display: grid; |
+| src/styles/closeflow-ai-drafts.css | 299 | .ai-drafts-row-grid { min-height: 78px; display: grid; grid-template-columns: 36px minmax(340px, 1fr) 150px 130px 140px auto; | grid-template-columns: 36px minmax(340px, 1fr) 150px 130px 140px auto; |
+| src/styles/closeflow-ai-drafts.css | 340 | .ai-drafts-row-main { min-width: 0; | min-width: 0; |
+| src/styles/closeflow-ai-drafts.css | 344 | .ai-drafts-row-heading { display: flex; | display: flex; |
+| src/styles/closeflow-ai-drafts.css | 425 | .ai-drafts-actions-col { display: flex; | display: flex; |
+| src/styles/closeflow-ai-drafts.css | 434 | .ai-drafts-action { min-height: 32px; border: 1px solid #e4e7ec; | border: 1px solid #e4e7ec; |
+| src/styles/closeflow-ai-drafts.css | 487 | .ai-drafts-approval-panel { margin: 0 22px 18px 76px; border: 1px solid #e4e7ec; | border: 1px solid #e4e7ec; |
+| src/styles/closeflow-ai-drafts.css | 497 | .ai-drafts-approval-textarea { min-height: 112px; width: 100%; border: 1px solid #e4e7ec; | border: 1px solid #e4e7ec; |
+| src/styles/closeflow-ai-drafts.css | 507 | .ai-drafts-inline-edit > div { margin-top: 10px; display: flex; | display: flex; |
+| src/styles/closeflow-ai-drafts.css | 513 | .ai-drafts-detail-titlebar { display: flex; | display: flex; |
+| src/styles/closeflow-ai-drafts.css | 545 | .ai-drafts-detail-grid { display: grid; | display: grid; |
+| src/styles/closeflow-ai-drafts.css | 546 | .ai-drafts-detail-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); | grid-template-columns: repeat(4, minmax(0, 1fr)); |
+| src/styles/closeflow-ai-drafts.css | 554 | .ai-drafts-relation-picker { border: 1px solid #e4e7ec; | border: 1px solid #e4e7ec; |
+| src/styles/closeflow-ai-drafts.css | 585 | .ai-drafts-recognized-card dl { margin: 10px 0 0; display: grid; | display: grid; |
+| src/styles/closeflow-ai-drafts.css | 586 | .ai-drafts-recognized-card dl { margin: 10px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); | grid-template-columns: repeat(2, minmax(0, 1fr)); |
+
+## Następny krok po zatwierdzeniu mapy
+
+Pakiet UI-2 powinien zrobić dopiero wtedy:
+
+- SemanticIcon jako jedyne źródło ikon standardowych,
+- EntityInfoRow dla telefonu, maila, źródła i danych kontaktowych,
+- EntityNoteCard / EntityNoteComposer / EntityNoteList,
+- EntityDetailShell z regionami dla LeadDetail i ClientDetail,
+- guard blokujący nowe lokalne style ikon/notatek/kontaktów.

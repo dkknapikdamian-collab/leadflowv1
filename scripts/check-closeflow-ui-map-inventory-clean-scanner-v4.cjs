@@ -7,6 +7,8 @@ const jsonPath = path.join(root, 'docs', 'ui', 'CLOSEFLOW_UI_MAP.generated.json'
 function fail(message) { console.error('CLOSEFLOW_UI_MAP_INVENTORY_CLEAN_SCANNER_REPAIR_V4_FAIL: ' + message); process.exit(1); }
 const data = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 if (data.scannerVersion !== 'CLEAN_SCANNER_V4') fail('Brak scannerVersion CLEAN_SCANNER_V4');
+const serialized = JSON.stringify(data);
+if (serialized.includes('.sync-conflict-')) fail('Mapa UI zawiera nieaktywne kopie sync-conflict');
 const nonIconNames = new Set(['useEffect','useState','useMemo','useCallback','useRef','ReactNode','FormEvent','ChangeEvent','MouseEvent','fetchSignInMethodsForEmail','sendPasswordResetEmail','verifyBeforeUpdateEmail']);
 const leaked = (data.directLucideIconImports || []).filter((entry) => nonIconNames.has(entry.imported) || nonIconNames.has(entry.local));
 if (leaked.length) fail('Zabrudzona mapa ikon: ' + leaked.map((entry) => entry.imported + '@' + entry.file).join(', '));

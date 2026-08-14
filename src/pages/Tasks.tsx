@@ -1,6 +1,6 @@
 import { type FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { AlertTriangle, CheckCircle2, CheckSquare, Clock, Link2, Loader2, MoreVertical, Repeat, Search, Trash2 } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, CheckSquare, Clock, Link2, Loader2, MoreVertical, Repeat, Search } from 'lucide-react';
 import { NotificationEntityIcon, TaskEntityIcon } from '../components/ui-system';
 import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
 import { actionButtonClass } from '../components/entity-actions';

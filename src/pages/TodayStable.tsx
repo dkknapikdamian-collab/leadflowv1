@@ -1,8 +1,9 @@
 import { type FormEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AlertTriangle, ArrowRight, CalendarDays, CheckSquare, ChevronDown, ChevronUp, Loader2, RefreshCcw, SlidersHorizontal, Trash2, TrendingUp } from 'lucide-react';
+import { AlertTriangle, ArrowRight, CalendarDays, CheckSquare, ChevronDown, ChevronUp, Loader2, RefreshCcw, SlidersHorizontal, TrendingUp } from 'lucide-react';
 import {
   EntityIcon } from '../components/ui-system';
+import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 /*
 P0_TODAY_STABLE_REBUILD
 Stable Today screen reads the same Supabase API collections that Network diagnostics proved are working.
@@ -771,7 +772,7 @@ function RowLink({
               aria-label={deleting ? 'Usuwanie' : 'Kosz'}
               title={deleting ? 'Usuwanie' : 'Kosz'}
             >
-              {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+              {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <DeleteActionIcon className="h-4 w-4" />}
             </EntityActionButton>
           ) : null}
           <Link to={to} className="inline-flex items-center rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600">
