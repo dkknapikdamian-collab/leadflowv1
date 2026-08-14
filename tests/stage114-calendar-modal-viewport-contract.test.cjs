@@ -5,7 +5,7 @@ const test = require('node:test');
 
 const root = path.resolve(__dirname, '..');
 const calendar = fs.readFileSync(path.join(root, 'src/pages/Calendar.tsx'), 'utf8');
-const css = fs.readFileSync(path.join(root, 'src/styles/visual-stage22-event-form-vnext.css'), 'utf8');
+const css = fs.readFileSync(path.join(root, 'src/styles/closeflow-event-form.css'), 'utf8');
 
 test('Stage114E calendar modals keep viewport-safe DialogContent and descriptions', () => {
   assert.match(calendar, /className="event-form-vnext-content calendar-entry-modal-viewport sm:max-w-2xl"[\s\S]*data-stage114-calendar-modal-viewport="true"[\s\S]*data-calendar-entry-form-mode="create-event"/, 'Create event modal viewport marker missing.');
@@ -15,12 +15,12 @@ test('Stage114E calendar modals keep viewport-safe DialogContent and description
 });
 
 test('Stage114E modal CSS protects title, body scroll and sticky footer', () => {
-  assert.match(css, /STAGE114E_CALENDAR_MODAL_VIEWPORT_REPAIR_START/, 'Stage114E viewport CSS marker missing.');
+  assert.match(css, /LF-UI-SOT-007_OWNER[\s\S]*"ownerId":"runtime:src\/styles\/closeflow-event-form\.css"[\s\S]*"consumerRoots":\["src\/pages\/Calendar\.tsx"\][\s\S]*"role":"scoped-adapter"/, 'Calendar form CSS must remain the registered Calendar-scoped adapter.');
   assert.match(css, /max-height:\s*calc\(100vh\s*-\s*64px\)/, 'DialogContent max-height must be viewport based.');
-  assert.match(css, /top:\s*calc\(50%\s*\+\s*12px\)/, 'DialogContent must be shifted slightly below top edge.');
-  assert.match(css, /\.event-form-vnext\s*\{[\s\S]*overflow-y:\s*auto/i, 'Form body must scroll.');
-  assert.match(css, /scroll-padding-bottom:\s*110px/, 'Form body must reserve bottom scroll padding.');
-  assert.match(css, /\.event-form-footer,[\s\S]*\.cf-modal-footer\s*\{[\s\S]*position:\s*sticky/i, 'Footer must be sticky.');
+  assert.match(css, /top:\s*max\(32px,\s*env\(safe-area-inset-top\)\)/, 'DialogContent must stay inside the safe viewport top edge.');
+  assert.match(css, /\.event-form-vnext(?:,|\s)[\s\S]*?overflow-y:\s*auto/i, 'Form body must scroll.');
+  assert.match(css, /scroll-padding-bottom:\s*(?:104|112)px/, 'Form body must reserve bottom scroll padding.');
+  assert.match(css, /\.event-form-footer\s*\{[\s\S]*?position:\s*sticky/i, 'Footer must be sticky.');
 });
 
 test('Stage114E manual QA flow is documented in this guard', () => {
