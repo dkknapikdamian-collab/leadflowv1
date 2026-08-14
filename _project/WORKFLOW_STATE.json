@@ -16,7 +16,7 @@
     "base_sha": "3bcd836255e7de22ff04b85ee83bd71c2657fc8a",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "codex/closeflow-v1-c2-email-workspace-bootstrap",
-    "blocker": "AI_CODE_GUARDIAN_BLOCK:SKILL_BODY_BUDGET_EXCEEDED:FULL_REPOSITORY_AUDIT_FINDINGS=1020",
+    "blocker": "AI_CODE_GUARDIAN_BLOCK:SKILL_BODY_BUDGET_EXCEEDED",
     "ssot_open_findings": 0,
     "active_stage_count": 1,
     "terminal_audit": "PENDING"
