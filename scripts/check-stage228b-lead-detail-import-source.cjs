@@ -34,14 +34,21 @@ for (const name of ['FormEvent', 'ReactNode', 'useEffect', 'useMemo', 'useRef', 
 for (const name of ['useNavigate', 'useParams']) {
   if (!router.includes(name)) failures.push(`react-router-dom import missing ${name}`);
 }
-for (const name of ['AlertTriangle', 'ArrowLeft', 'ArrowRight', 'CheckCircle2', 'Clock', 'DollarSign', 'Edit2', 'Loader2', 'Mail', 'Mic', 'MicOff', 'MoreVertical', 'Phone', 'Plus', 'Trash2']) {
+for (const name of ['ArrowLeft', 'ArrowRight', 'CheckCircle2', 'Clock', 'DollarSign', 'Edit2', 'Loader2', 'Mail', 'Mic', 'MicOff', 'MoreVertical', 'Phone', 'Plus']) {
   if (!lucide.includes(name)) failures.push(`lucide-react import missing ${name}`);
+}
+
+if (!source.includes("import { EntityIcon, SemanticIcon } from '../components/ui-system';")) {
+  failures.push('LeadDetail must consume semantic risk/entity icons from the canonical ui-system registry.');
+}
+if (!source.includes("import { DeleteActionIcon } from '../components/ui-system/ActionIcon';") || !/<DeleteActionIcon\b/.test(source)) {
+  failures.push('LeadDetail must consume the canonical action icon registry for delete actions.');
 }
 
 for (const bad of ['useNavigate', 'useParams', 'useRef', 'useState', 'useMemo', 'useEffect', 'FormEvent', 'ReactNode']) {
   if (lucide.includes(bad)) failures.push(`${bad} must never be imported from lucide-react`);
 }
-for (const bad of ['ArrowLeft', 'ArrowRight', 'AlertTriangle', 'CheckCircle2', 'Clock', 'DollarSign', 'Edit2', 'Loader2', 'Mail', 'Mic', 'MicOff', 'MoreVertical', 'Phone', 'Plus', 'Trash2']) {
+for (const bad of ['ArrowLeft', 'ArrowRight', 'CheckCircle2', 'Clock', 'DollarSign', 'Edit2', 'Loader2', 'Mail', 'Mic', 'MicOff', 'MoreVertical', 'Phone', 'Plus']) {
   if (react.includes(bad)) failures.push(`${bad} must never be imported from react`);
   if (router.includes(bad)) failures.push(`${bad} must never be imported from react-router-dom`);
 }
