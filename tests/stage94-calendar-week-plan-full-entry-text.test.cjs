@@ -5,7 +5,7 @@ const path = require('node:path');
 
 const repoRoot = path.resolve(__dirname, '..');
 const calendar = fs.readFileSync(path.join(repoRoot, 'src/pages/Calendar.tsx'), 'utf8');
-const css = fs.readFileSync(path.join(repoRoot, 'src/styles/closeflow-calendar-selected-day-new-tile-v9.css'), 'utf8');
+const css = fs.readFileSync(path.join(repoRoot, 'src/styles/owners/closeflow-calendar.css'), 'utf8');
 const quietGate = fs.readFileSync(path.join(repoRoot, 'scripts/closeflow-release-check-quiet.cjs'), 'utf8');
 
 function extractFunction(name) {
@@ -74,8 +74,9 @@ test('Stage94 week plan card shows relation or explicit no-relation text', () =>
 });
 
 test('Stage94 CSS is scoped to week plan and does not touch month grid', () => {
-  const markerIndex = css.indexOf('STAGE104D_CALENDAR_WEEK_PLAN_COMPACT_ONE_ROW');
-  assert.notStrictEqual(markerIndex, -1, 'Missing Stage104D compact week-plan CSS marker');
+  assert.match(css, /LF-UI-SOT-007_OWNER .*"ownerId":"semantic:calendar"/);
+  const markerIndex = css.indexOf('#root .calendar-week-plan [data-cf-calendar-week-plan-entry-card="true"]');
+  assert.notStrictEqual(markerIndex, -1, 'Missing canonical week-plan owner selector');
   const block = css.slice(markerIndex);
   assert.match(block, /\.calendar-week-plan \[data-cf-calendar-week-plan-entry-card="true"\]/);
   assert.doesNotMatch(block, /\.calendar-month-grid/);
