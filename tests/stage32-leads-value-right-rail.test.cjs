@@ -21,10 +21,10 @@ test('Stage32 moves valuable relations to a compact right rail', () => {
   const leads = read('src/pages/Leads.tsx');
 
   assertHas(leads, 'STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL', 'stage marker');
-  assertHas(leads, 'data-stage32-leads-value-layout="true"', 'two column layout marker');
+  assertHas(leads, 'data-semantic32-leads-value-layout="true"', 'two column layout marker');
   assertHas(leads, 'xl:grid-cols-[minmax(0,1fr)_300px]', 'desktop right rail grid');
-  assertHas(leads, 'data-stage32-leads-value-rail="true"', 'right rail marker');
-  assertHas(leads, 'data-stage32-valuable-relation-row="true"', 'valuable relation row marker');
+  assertHas(leads, 'data-semantic32-leads-value-rail="true"', 'right rail marker');
+  assertHas(leads, 'data-semantic32-valuable-relation-row="true"', 'valuable relation row marker');
   assertHas(leads, "to={entry.href || '/leads'}", 'clickable relation route');
   assertHas(leads, 'formatRelationValue(entry.value)', 'relation value label');
 });
