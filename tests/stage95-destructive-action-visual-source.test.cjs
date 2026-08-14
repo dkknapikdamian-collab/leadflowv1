@@ -26,23 +26,22 @@ test('Stage95 entity actions exposes one trash action source of truth', () => {
 });
 
 test('Stage95 trash CSS is subtle, not a solid red plaque', () => {
-  const contextCss = read('src/styles/context-action-button-source-truth.css');
-  const recordCss = read('src/styles/closeflow-record-list-source-truth.css');
-  assert.match(contextCss, /CLOSEFLOW_STAGE95_DESTRUCTIVE_ACTION_SOURCE_OF_TRUTH/);
+  const contextCss = read('src/styles/owners/closeflow-actions.css');
+  assert.match(contextCss, /LF-UI-SOT-007_OWNER .*"ownerId":"semantic:actions"/);
   assert.match(contextCss, /\.cf-trash-action-button/);
   assert.match(contextCss, /\.cf-trash-action-icon/);
-  assert.match(recordCss, /CLOSEFLOW_STAGE95_RECORD_TRASH_ACTION_SOURCE_OF_TRUTH/);
-  const sourceBlock = contextCss.slice(contextCss.indexOf('CLOSEFLOW_STAGE95_DESTRUCTIVE_ACTION_SOURCE_OF_TRUTH'));
+  assert.match(contextCss, /background: var\(--cf-trash-icon-bg\)/);
+  const sourceBlock = contextCss.slice(contextCss.indexOf('.cf-trash-action-button'));
   assert.doesNotMatch(sourceBlock, /background:\s*(?:#dc2626|#ef4444|#b91c1c|rgb\(220\s+38\s+38\))/i);
   assert.doesNotMatch(sourceBlock, heavyRedClass);
 });
 
 test('Stage95 Tasks delete action uses EntityTrashButton and shared icon class', () => {
   const tasks = read('src/pages/TasksStable.tsx');
-  const block = sliceAround(tasks, 'data-task-action-visible-stage48="delete"', '<EntityTrashButton', '</EntityTrashButton>');
+  const block = sliceAround(tasks, 'data-task-action-visible-semantic48="delete"', '<EntityTrashButton', '</EntityTrashButton>');
   assert.match(tasks, /EntityTrashButton/);
   assert.match(tasks, /trashActionIconClass/);
-  assert.match(block, /data-task-action-visible-stage48="delete"/);
+  assert.match(block, /data-task-action-visible-semantic48="delete"/);
   assert.match(block, /trashActionIconClass\("mr-2 h-4 w-4"\)/);
   assert.doesNotMatch(block, /actionButtonClass\('danger'/);
   assert.doesNotMatch(block, heavyRedClass);
