@@ -20,7 +20,10 @@ test('Case quick actions header no longer contains noisy helper copy', () => {
 
 test('Case detail history visual source truth forces compact single-style history rows', () => {
   const css = read('src/styles/closeflow-case-history-visual-source-truth.css');
-  assert.ok(css.includes('CLOSEFLOW_P1_CASE_DETAIL_HISTORY_VISUAL_UNIFIED_2026_05_13'));
+  assert.ok(css.includes('LF-UI-SOT-007_OWNER'));
+  assert.ok(css.includes('"role":"scoped-adapter"'));
+  assert.ok(css.includes('"consumerRoots":["src/pages/CaseDetail.tsx"]'));
+  assert.ok(css.includes('"historicalImplementationHooks":[]'));
   assert.ok(css.includes('.case-detail-section-card:has([data-case-history-summary="true"])'));
   assert.ok(css.includes('.case-detail-work-icon'));
   assert.ok(css.includes('.case-detail-row-actions'));
