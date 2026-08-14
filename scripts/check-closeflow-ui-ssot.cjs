@@ -805,6 +805,26 @@ function runIcons(mode) {
     const source = readRepo(file);
     for (const marker of markers) if (!source.includes(marker)) fail(`${file} nie zawiera: ${marker}`, mode);
   }
+  const activeAiHeaderFiles = [
+    'src/pages/Clients.tsx',
+    'src/pages/Leads.tsx',
+    'src/pages/Cases.tsx',
+    'src/pages/Calendar.tsx',
+    'src/pages/LeadDetail.tsx',
+    'src/pages/ClientDetail.tsx',
+  ];
+  for (const file of activeAiHeaderFiles) {
+    const source = readRepo(file);
+    if (!source.includes('Zapytaj AI')) continue;
+    if (/[?✦]\s*Zapytaj AI/.test(source)) {
+      fail(`${file} zawiera niekanoniczny placeholder ikony dla „Zapytaj AI”`, mode);
+    }
+    const labels = source.match(/Zapytaj AI/g)?.length || 0;
+    const canonicalIcons = source.match(/<EntityIcon\s+entity=["']ai["']/g)?.length || 0;
+    if (canonicalIcons < labels) {
+      fail(`${file} musi renderować każdą etykietę „Zapytaj AI” przez EntityIcon(entity="ai")`, mode);
+    }
+  }
   checkAddedOwnership(diffAddedLines(), new Set(required.map(([file]) => file).concat(['src/lib/source-of-truth/icon-registry.ts'])), /\b(?:[A-Za-z_$][\w$]*)(?:ICON|Icon|icon)(?:_?MAP|_?REGISTRY|_?CONFIG|_?DEFINITIONS?)\b\s*=/, 'nowa lokalna definicja semantic/action icon poza canonical ownerem', mode);
   console.log('LF-UI-SOT-007_SSOT_ICONS_CHECK_OK');
 }

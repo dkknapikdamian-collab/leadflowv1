@@ -10,6 +10,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import {
   CaseEntityIcon,
+  EntityIcon,
   LeadEntityIcon,
   PaymentEntityIcon,
 } from '../components/ui-system';
@@ -852,7 +853,9 @@ export default function Clients() {
           actions={
             <>
               <div className="head-actions">
-                          <Button type="button" variant="outline" className="btn soft-blue" data-cf-header-action="ai">? Zapytaj AI</Button>
+                          <Button type="button" variant="outline" className="btn soft-blue" data-cf-header-action="ai">
+                            <EntityIcon entity="ai" className="h-4 w-4" /> Zapytaj AI
+                          </Button>
                           <Button type="button" variant="outline" className="btn" onClick={() => applyClientRelationFilterStage232C(showArchived ? 'all' : 'archived')}>
                             {showArchived ? <RotateCcw className="w-4 h-4" /> : <Trash2 className="w-4 h-4" />}
                             {showArchived ? 'Pokaż aktywnych' : 'Kosz'}

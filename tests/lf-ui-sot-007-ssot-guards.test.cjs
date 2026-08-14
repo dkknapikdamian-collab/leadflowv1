@@ -289,3 +289,21 @@ test('negative S: SURFACES owner carrying route rail authority is rejected', () 
   assert.equal(result.ok, false);
   assert.match(result.failures.join('\n'), /SURFACES_ROUTE_AUTHORITY/);
 });
+
+test('active AI header actions use the canonical EntityIcon source', () => {
+  const activeAiHeaderFiles = [
+    'src/pages/Clients.tsx',
+    'src/pages/Leads.tsx',
+    'src/pages/Cases.tsx',
+    'src/pages/Calendar.tsx',
+    'src/pages/LeadDetail.tsx',
+    'src/pages/ClientDetail.tsx',
+  ];
+  for (const relative of activeAiHeaderFiles) {
+    const source = fs.readFileSync(path.join(root, relative), 'utf8');
+    const labels = source.match(/Zapytaj AI/g) || [];
+    const canonicalIcons = source.match(/<EntityIcon\s+entity=["']ai["']/g) || [];
+    assert.equal(/[?✦]\s*Zapytaj AI/.test(source), false, `${relative} contains a non-canonical AI icon placeholder`);
+    assert.ok(canonicalIcons.length >= labels.length, `${relative} must render every AI label through EntityIcon(entity="ai")`);
+  }
+});
