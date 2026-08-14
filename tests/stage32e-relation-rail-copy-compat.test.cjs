@@ -13,7 +13,7 @@ test('Stage32e keeps right rail compact and removes old long relation copy', () 
   const leads = read('src/pages/Leads.tsx');
 
   assert.ok(leads.includes('STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL'));
-  assert.ok(leads.includes('data-stage32-leads-value-rail="true"'));
+  assert.ok(leads.includes('data-semantic32-leads-value-rail="true"'));
   assert.ok(leads.includes('Lejek razem: {formatRelationValue(relationFunnelValue)}'));
   assert.equal(leads.includes('Suma lejka liczona z aktywnych lead\u00F3w i klient\u00F3w'), false);
   assert.equal(leads.includes('Suma lejka liczona z aktywnych leadow i klientow'), false);
