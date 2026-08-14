@@ -5,7 +5,7 @@ const path = require('node:path');
 
 const repoRoot = path.resolve(__dirname, '..');
 const calendarPath = path.join(repoRoot, 'src/pages/Calendar.tsx');
-const skinPath = path.join(repoRoot, 'src/styles/closeflow-calendar-skin-only-v1.css');
+const calendarOwnerPath = path.join(repoRoot, 'src/styles/owners/closeflow-calendar.css');
 const releaseGatePath = path.join(repoRoot, 'scripts/closeflow-release-check-quiet.cjs');
 
 function read(relativeOrAbsolutePath) {
@@ -43,7 +43,7 @@ test('Stage93 week rail updates selected day and current month together', () => 
 });
 
 test('Stage93 CSS neutralizes week count badge/plaque styling', () => {
-  const skin = read(skinPath);
+  const skin = read(calendarOwnerPath);
   const countRule = windowFrom(skin, 'calendar-week-day-count-text', 3000);
   assert.ok(countRule.includes('background: transparent'), 'Week count text should have transparent background.');
   assert.ok(countRule.includes('border: 0'), 'Week count text should not have a badge border.');
