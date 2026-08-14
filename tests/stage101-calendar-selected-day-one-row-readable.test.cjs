@@ -15,7 +15,7 @@ function sliceBetween(text, startToken, endToken) {
 }
 
 const calendar = read('src/pages/Calendar.tsx');
-const css = read('src/styles/closeflow-calendar-selected-day-new-tile-v9.css');
+const css = read('src/styles/owners/closeflow-calendar.css');
 const quiet = read('scripts/closeflow-release-check-quiet.cjs');
 const selectedRow = sliceBetween(calendar, 'function CalendarSelectedDayEntryRowV9', '\nfunction CalendarSelectedDayTileV9');
 const selectedTile = sliceBetween(calendar, 'function CalendarSelectedDayTileV9', '\nexport default function Calendar');

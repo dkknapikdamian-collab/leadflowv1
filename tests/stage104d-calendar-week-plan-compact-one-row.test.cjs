@@ -5,7 +5,7 @@ const path = require('node:path');
 
 const repoRoot = path.resolve(__dirname, '..');
 const calendar = fs.readFileSync(path.join(repoRoot, 'src/pages/Calendar.tsx'), 'utf8');
-const css = fs.readFileSync(path.join(repoRoot, 'src/styles/closeflow-calendar-selected-day-new-tile-v9.css'), 'utf8');
+const css = fs.readFileSync(path.join(repoRoot, 'src/styles/owners/closeflow-calendar.css'), 'utf8');
 const quietGate = fs.readFileSync(path.join(repoRoot, 'scripts/closeflow-release-check-quiet.cjs'), 'utf8');
 
 function extractFunction(source, name) {
@@ -66,7 +66,7 @@ test('Stage104D freezes full week-plan card DOM without legacy card CSS', () => 
 
 test('Stage104D root card is compact but still anti-collapse protected', () => {
   const root = joinedBlocks('[data-cf-calendar-week-plan-entry-card="true"]');
-  assert.ok(css.includes('STAGE104D_CALENDAR_WEEK_PLAN_COMPACT_ONE_ROW'));
+  assert.match(css, /LF-UI-SOT-007_OWNER .*"ownerId":"semantic:calendar"/);
   assert.match(root, /display\s*:\s*grid\s*!important/i);
   assert.match(root, /grid-template-columns\s*:\s*minmax\(0,\s*1fr\)\s*auto\s*!important/i);
   assert.match(root, /align-items\s*:\s*center\s*!important/i);

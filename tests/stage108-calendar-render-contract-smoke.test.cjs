@@ -79,7 +79,7 @@ test('Stage108 calendar smoke fixture is non-empty and complete', () => {
 });
 
 test('Stage108 selected-day CSS keeps critical rendered slots visible', () => {
-  const css = read('src/styles/closeflow-calendar-selected-day-new-tile-v9.css');
+  const css = read('src/styles/owners/closeflow-calendar.css');
   assert.ok(!css.includes('[data-cf-calendar-selected-day-entry-v9="true"]::after,'), 'V9 selected-day orphan after selector must be removed');
   assertSelectorVisible(css, '.cf-selected-day-v9-entry-title');
   assertSelectorVisible(css, '.cf-selected-day-v9-meta');

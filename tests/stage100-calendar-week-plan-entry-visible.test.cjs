@@ -5,7 +5,7 @@ const path = require('node:path');
 
 const repoRoot = path.resolve(__dirname, '..');
 const calendar = fs.readFileSync(path.join(repoRoot, 'src/pages/Calendar.tsx'), 'utf8');
-const css = fs.readFileSync(path.join(repoRoot, 'src/styles/closeflow-calendar-selected-day-new-tile-v9.css'), 'utf8');
+const css = fs.readFileSync(path.join(repoRoot, 'src/styles/owners/closeflow-calendar.css'), 'utf8');
 const quietGate = fs.readFileSync(path.join(repoRoot, 'scripts/closeflow-release-check-quiet.cjs'), 'utf8');
 
 function extractFunction(source, name) {
@@ -52,7 +52,7 @@ test('Stage100 week plan map does not wrap cards in display contents', () => {
 });
 
 test('Stage100 CSS has compact anti-collapse week-plan entry selector contract', () => {
-  assert.ok(css.includes('STAGE104D_CALENDAR_WEEK_PLAN_COMPACT_ONE_ROW'));
+  assert.match(css, /LF-UI-SOT-007_OWNER .*"ownerId":"semantic:calendar"/);
   assert.ok(css.includes('[data-cf-calendar-week-plan-entry-card="true"]'));
   assert.ok(css.includes('.cf-calendar-week-plan-entry-title'));
   for (const needle of ['width: 100%', 'max-width: none', 'min-height: 50px', 'overflow: visible', 'visibility: visible', 'opacity: 1']) {
