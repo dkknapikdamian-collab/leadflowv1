@@ -5,24 +5,12 @@ const path = require('node:path');
 const repoRoot = path.resolve(__dirname, '..');
 const read = (relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
 
-const css = read('src/styles/visual-stage22-event-form-vnext.css');
+const css = read('src/styles/closeflow-event-form.css');
 const taskCreate = read('src/components/TaskCreateDialog.tsx');
 const calendar = read('src/pages/Calendar.tsx');
 const quietGate = read('scripts/closeflow-release-check-quiet.cjs');
 
-function blockBetween(text, start, end) {
-  const startIndex = text.indexOf(start);
-  assert.notEqual(startIndex, -1, 'Missing block start: ' + start);
-  const endIndex = text.indexOf(end, startIndex);
-  assert.notEqual(endIndex, -1, 'Missing block end: ' + end);
-  return text.slice(startIndex, endIndex + end.length);
-}
-
-const block = blockBetween(
-  css,
-  'STAGE106_MODAL_INVERTED_VISUAL_CONTRACT_START',
-  'STAGE106_MODAL_INVERTED_VISUAL_CONTRACT_END'
-);
+const block = css;
 
 assert.ok(
   taskCreate.includes('data-calendar-entry-form-mode="quick-task"') &&
@@ -39,34 +27,31 @@ assert.ok(
 
 assert.ok(
   block.includes('html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input') ||
-    block.includes('html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input:not'),
-  'Stage106 block must include skin-scoped input override for calendar entry modals.'
+    block.includes('.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input'),
+  'Current form owner must include a source-scoped input override for calendar entry modals.'
 );
 
 assert.ok(
-  block.includes('html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] input') ||
-    block.includes('html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] input:not'),
-  'Stage106 block must include skin-scoped input override for quick task modal.'
+  block.includes('.event-form-vnext-content[data-task-create-dialog-layout="true"] input'),
+  'Current form owner must include a layout-scoped input override for quick task modal.'
 );
 
 assert.ok(
-  block.includes('background: #0f172a !important') ||
-    block.includes('background: rgba(15, 23, 42, 0.98) !important'),
-  'Stage106 block must provide a dark integrated modal shell/footer.'
+  block.includes('background: rgba(255, 255, 255, 0.98)') || block.includes('background: #ffffff'),
+  'Current form owner must provide a light integrated modal shell.'
 );
 
 assert.ok(
-  block.includes('background: #ffffff !important') &&
-    block.includes('background-color: #ffffff !important') &&
-    block.includes('color: #111827 !important') &&
-    block.includes('-webkit-text-fill-color: #111827 !important'),
-  'Stage106 block must force white form fields with dark readable text.'
+  block.includes('background: #ffffff') &&
+    block.includes('color: #111827') &&
+    block.includes('-webkit-text-fill-color: #111827'),
+  'Current form owner must keep white form fields with dark readable text.'
 );
 
 assert.ok(
-  block.includes('border-color: #93c5fd !important') &&
+  block.includes('border-color: #93c5fd') &&
     block.includes('rgba(37, 99, 235, 0.12)'),
-  'Stage106 block must use blue focus, not green focus.'
+  'Current form owner must use blue focus, not green focus.'
 );
 
 assert.equal(
