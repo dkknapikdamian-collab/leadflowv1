@@ -1,6 +1,6 @@
 # LF-UI-SOT-007 — TRUE VISUAL DESIGN SYSTEM RUNTIME CONSOLIDATION
 
-Status: VALIDATED / ACTIVE_EXECUTION
+Status: ACCEPTED_AND_CLOSED
 Project: CloseFlow / LeadFlow / CaseFlow
 Project ID: closeflow_lead_app
 Repository: dkknapikdamian-collab/leadflowv1

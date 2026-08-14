@@ -1,25 +1,25 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 71,
+  "state_revision": 72,
   "last_accepted": {
-    "id": "LF-SSOT-002_SUPABASE_AUTH_SINGLE_SESSION_OWNER_REPAIR",
+    "id": "LF-UI-SOT-007",
     "status": "ACCEPTED_AND_CLOSED",
-    "commit_sha": "f1339e51cb7cc5002572760c094fc5ad504134ca",
-    "evidence": "LF-SSOT-002 accepted: Supabase Auth is the sole active session/identity owner in scoped production paths; Firebase Auth call sites and legacy Google identity-header fallbacks removed; client auth snapshot is cache-only; canonical Stage 01 migration guard repaired; focused negative tests, direct regressions, TSC/lint/build and bounded Guardian PASS recorded in audit/evidence/LF-V1-PR-001_provider-acl-repair-20260811.md; OpenCode timeout recorded; terminal SSOT deep audit passed at 65b28dfd920977be0ff254a6844359e82dc9efbc with zero active SSOT findings; production untouched"
+    "commit_sha": "8316a19da0905433f73d20d49c86cf374dca29b0",
+    "evidence": "LF-UI-SOT-007 accepted and closed by owner decision at the exact accepted runtime/evidence anchor 8316a19da0905433f73d20d49c86cf374dca29b0; visual SSOT terminal counters are zero, ONE_OWNER_PER_VISUAL_CONCERN=PASS, SSOT negative tests=23/23, TSC/lint/build/diff-check=PASS, Guardian final=PASS, authenticated desktop/mobile browser proof=PASS, and Vercel production version API is exact on dev-rollout-freeze; control-plane closeout does not change product runtime"
   },
   "current_workflow": {
     "id": "LF-UI-SOT-007",
     "kind": "TECHNICAL_IMPLEMENTATION_STAGE_DESIGN",
     "contract_path": "_project/contracts/LF-UI-SOT-007_TRUE_VISUAL_DESIGN_SYSTEM_RUNTIME_CONSOLIDATION.md",
-    "status": "BLOCKED_EXTERNAL_OWNER_ACTION",
+    "status": "ACCEPTED_AND_CLOSED",
     "base_sha": "1c14ff31b4c3e65ed101bb037eadfcc883cde599",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "dev-rollout-freeze",
-    "blocker": "BLOCKED_EXTERNAL_OWNER_ACTION",
+    "blocker": null,
     "ssot_open_findings": 0,
-    "active_stage_count": 1,
-    "terminal_audit": "TECHNICAL_PASS_BLOCKED_EXTERNAL_OWNER_ACTION"
+    "active_stage_count": 0,
+    "terminal_audit": "PASS"
   },
   "next_workflow": {"id": null, "status": "NO_CANONICAL_NEXT_CONTRACT_IN_ACTIVE_WORKFLOW_STATE"},
   "source_evidence": [
@@ -230,6 +230,6 @@
     "LF-UI-SOT-007:BROWSER_DESKTOP=PASS:BROWSER_MOBILE=PASS:authenticated_shell_routes_detail_modal_search_mobile_menu_verified:no_console_errors:no_horizontal_overflow",
     "LF-UI-SOT-007:AUTHENTICATED_POPULATED_DATA=PASS:temporary_smoke_lead_created_detail_and_search_verified_then_removed_to_empty_trash",
     "LF-UI-SOT-007:VERCEL_PRODUCTION=PASS:version_api_exact_commit_verified:branch=dev-rollout-freeze",
-    "LF-UI-SOT-007:WORKFLOW_STATUS_REMAINS=BLOCKED_EXTERNAL_OWNER_ACTION:NO_NEXT_STAGE_ACTIVATED:owner_acceptance_required_to_mark_CLOSED"
+    "LF-UI-SOT-007:OWNER_ACCEPTANCE=RECORDED:STATUS=ACCEPTED_AND_CLOSED:CLOSEOUT_ANCHOR=8316a19da0905433f73d20d49c86cf374dca29b0:ACTIVE_STAGE_COUNT=0:NEXT_WORKFLOW_ID=null:NO_CANONICAL_NEXT_WORKFLOW:PRODUCT_RUNTIME_CHANGED=NO"
   ]
 }
