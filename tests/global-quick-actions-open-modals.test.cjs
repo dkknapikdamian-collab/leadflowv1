@@ -28,7 +28,8 @@ test('global quick task action uses shared direct task dialog', () => {
   const global = stripComments(read('src/components/GlobalQuickActions.tsx'));
   const dialog = read('src/components/TaskCreateDialog.tsx');
   assert.match(global, /TaskCreateDialog/);
-  assert.match(dialog, /data-task-create-dialog-stage45m="true"/);
+  assert.match(dialog, /data-task-create-dialog-stage105="event-form-vnext"/);
+  assert.match(dialog, /data-task-create-dialog-form="true"/);
   assert.match(dialog, /insertTaskToSupabase/);
   assert.match(dialog, /Przypomnienie/);
 });
