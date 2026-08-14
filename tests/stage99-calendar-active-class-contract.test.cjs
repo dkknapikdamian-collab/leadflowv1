@@ -5,7 +5,7 @@ const path = require('node:path');
 
 const repoRoot = path.resolve(__dirname, '..');
 const calendar = fs.readFileSync(path.join(repoRoot, 'src/pages/Calendar.tsx'), 'utf8');
-const css = fs.readFileSync(path.join(repoRoot, 'src/styles/closeflow-calendar-selected-day-new-tile-v9.css'), 'utf8');
+const css = fs.readFileSync(path.join(repoRoot, 'src/styles/owners/closeflow-calendar.css'), 'utf8');
 
 function extractFunction(source, name) {
   const marker = 'function ' + name + '(';
