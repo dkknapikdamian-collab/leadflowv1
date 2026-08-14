@@ -4,13 +4,18 @@ const path = require('node:path');
 const test = require('node:test');
 const repoRoot = process.cwd();
 const lead = fs.readFileSync(path.join(repoRoot, 'src/pages/LeadDetail.tsx'), 'utf8');
-const css = fs.readFileSync(path.join(repoRoot, 'src/styles/visual-stage14-lead-detail-vnext.css'), 'utf8');
+const css = [
+  fs.readFileSync(path.join(repoRoot, 'src/styles/owners/closeflow-page-adapters.css'), 'utf8'),
+  fs.readFileSync(path.join(repoRoot, 'src/styles/owners/closeflow-rails-and-detail.css'), 'utf8'),
+].join('\n');
 
 test('Stage228B R14 maps lead action center to visual source truth without duplicate copy', () => {
   assert.ok(lead.includes('data-stage228b-r14-lead-action-center-vst="true"'));
   assert.ok(lead.includes('Najbliższe zadania, wydarzenia i braki przypięte do tego leada.'));
   assert.ok(!lead.includes('Działania leada: zadania, wydarzenia i braki w jednym miejscu.'));
-  assert.ok(css.includes('STAGE228B_R14_LEAD_ACTION_CENTER_VST_CSS'));
+  assert.ok(css.includes('"ownerId":"semantic:page-adapters"'));
+  assert.ok(css.includes('"ownerId":"semantic:rails-detail"'));
+  assert.ok(css.includes('.lead-detail-action-accordion'));
 });
 
 test('Stage228B R14 does not duplicate overdue events as blockers by default', () => {
