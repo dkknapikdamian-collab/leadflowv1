@@ -26,7 +26,10 @@ test('Case quick actions helper copy stays removed', () => {
 
 test('Case history CSS uses explicit unified panel scope and generic work-row fallback', () => {
   const css = read('src/styles/closeflow-case-history-visual-source-truth.css');
-  assert.ok(css.includes('CLOSEFLOW_CASE_DETAIL_HISTORY_VISUAL_P1_REPAIR4_2026_05_13'));
+  assert.ok(css.includes('LF-UI-SOT-007_OWNER'));
+  assert.ok(css.includes('"role":"scoped-adapter"'));
+  assert.ok(css.includes('"consumerRoots":["src/pages/CaseDetail.tsx"]'));
+  assert.ok(css.includes('"historicalImplementationHooks":[]'));
   assert.ok(css.includes('.case-detail-history-unified-panel .case-detail-work-row'));
   assert.ok(css.includes('.case-detail-history-unified-panel .case-detail-history-row'));
   assert.ok(css.includes('article[class*="case-detail-work"]'));

@@ -27,7 +27,10 @@ test('case history visual scope remains in place after quiet gate repair', () =>
   const quick = read('src/components/CaseQuickActions.tsx');
 
   assert.ok(caseDetail.includes('case-detail-history-unified-panel'));
-  assert.ok(css.includes('CLOSEFLOW_CASE_DETAIL_HISTORY_VISUAL_P1_REPAIR5_2026_05_13'));
+  assert.ok(css.includes('LF-UI-SOT-007_OWNER'));
+  assert.ok(css.includes('"role":"scoped-adapter"'));
+  assert.ok(css.includes('"consumerRoots":["src/pages/CaseDetail.tsx"]'));
+  assert.ok(css.includes('"historicalImplementationHooks":[]'));
   assert.ok(css.includes('.case-detail-history-unified-panel .case-detail-work-row'));
   assert.equal(quick.includes('Dodaj operacyjny ruch bez starego kafelka formularza.'), false);
 });
