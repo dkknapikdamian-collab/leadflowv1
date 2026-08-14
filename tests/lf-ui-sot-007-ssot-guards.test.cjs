@@ -25,7 +25,7 @@ function metadata({ ownerId, concerns = [], scope = 'global', role, boundary, wh
   })} */`;
 }
 
-function fixture({ ownerSource, extraFiles = {}, concerns = ['TYPOGRAPHY'], forbiddenRuntimeTokens = ['LF-UI-SOT-007_CANONICAL_CSS_OWNER_BEGIN', 'LF-UI-SOT-007_CANONICAL_CSS_OWNER_END'], ownerPath = 'src/owners/typography.css', registryOverrides = {} }) {
+function fixture({ ownerSource, extraFiles = {}, extraEdges = [], concerns = ['TYPOGRAPHY'], forbiddenRuntimeTokens = ['LF-UI-SOT-007_CANONICAL_CSS_OWNER_BEGIN', 'LF-UI-SOT-007_CANONICAL_CSS_OWNER_END'], ownerPath = 'src/owners/typography.css', registryOverrides = {} }) {
   const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'lf-ui-sot-007-semantic-'));
   const files = {
     [ownerPath]: ownerSource,
@@ -45,6 +45,7 @@ function fixture({ ownerSource, extraFiles = {}, concerns = ['TYPOGRAPHY'], forb
       .filter((file) => file.endsWith('.css'))
       .map((file) => ({ from: 'src/consumer.ts', to: path.relative(fixtureRoot, file).replaceAll('\\', '/'), specifier: `./${path.relative(path.dirname(consumerAbsolute), file).replaceAll('\\', '/')}` })),
   };
+  graph.edges.push(...extraEdges.map(({ from, to, specifier = `./${path.basename(to)}` }) => ({ from, to, specifier })));
   const registry = {
     schema: 'LF-UI-SOT-007.semantic-visual-owner-registry.test.v1',
     visualEntry: 'src/styles/closeflow-visual-source-truth.css',
@@ -288,6 +289,21 @@ test('negative S: SURFACES owner carrying route rail authority is rejected', () 
   });
   assert.equal(result.ok, false);
   assert.match(result.failures.join('\n'), /SURFACES_ROUTE_AUTHORITY/);
+});
+
+test('negative T: a scoped owner omitting a direct runtime consumer is rejected', () => {
+  const result = fixture({
+    ownerSource: canonical(),
+    extraFiles: {
+      'src/scoped/dialog-adapter.css': scoped('.dialog-local { display: grid; }', ['src/consumer.ts']),
+      'src/route.ts': "import './scoped/dialog-adapter.css';",
+    },
+    extraEdges: [
+      { from: 'src/route.ts', to: 'src/scoped/dialog-adapter.css' },
+    ],
+  });
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /consumerRoots omit direct runtime consumer/);
 });
 
 test('active AI header actions use the canonical EntityIcon source', () => {

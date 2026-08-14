@@ -654,6 +654,17 @@ function validateCssArchitecture({
         unknownOwners.add(file);
       }
       validateConsumerRoots({ rootDir, file, metadata, registry, entryOnly: new Set(registry.entryOnly || []), reachable, graph, read, failures, invalidScopedConsumerBoundaries });
+      if (metadata.role === ownerModel.scopedRole) {
+        const declaredConsumerRoots = new Set(metadata.consumerRoots || []);
+        const directRuntimeConsumers = [...(incomingCssConsumers.get(file) || new Set())]
+          .filter((consumer) => !consumer.endsWith('.css'))
+          .sort();
+        for (const consumer of directRuntimeConsumers) {
+          if (declaredConsumerRoots.has(consumer)) continue;
+          addFailure(failures, `scoped owner consumerRoots omit direct runtime consumer: ${file} -> ${consumer}`);
+          invalidScopedConsumerBoundaries.add(file);
+        }
+      }
       if (metadata.activePatchLayer === true || EXPLICIT_PATCH_PATTERN.test(source)) activePatchLayers.add(file);
     } else {
       addFailure(failures, `UNKNOWN_VISUAL_OWNER: unsupported role ${metadata.role || '<missing>'} in ${file}`);
