@@ -40,7 +40,7 @@ test('Stage107 templates card uses readable record-list visual source', () => {
   assert.ok(templates.includes('data-cf-template-card-source="record-list-source-truth"'), 'template card source marker missing');
   assert.ok(templates.includes('data-cf-template-card-actions="true"'), 'template actions marker missing');
   assert.ok(templates.includes('data-cf-template-card-items="true"'), 'template items marker missing');
-  assert.ok(css.includes('STAGE107_TEMPLATES_DELETE_AND_VISUAL_CONTRACT'), 'Stage107 templates CSS marker missing');
+  assert.match(css, /LF-UI-SOT-007_OWNER[\s\S]*"ownerId":"runtime:src\/styles\/closeflow-record-list-source-truth\.css"[\s\S]*"consumerRoots":\[[^\]]*"src\/pages\/Templates\.tsx"[^\]]*\][\s\S]*"role":"scoped-adapter"/, 'Template list CSS must declare Templates as a real scoped consumer.');
   assert.ok(css.includes('.cf-template-card-actions'), 'template actions CSS missing');
   assert.ok(css.includes('[data-cf-template-delete-action="true"]'), 'template delete CSS missing');
 });
