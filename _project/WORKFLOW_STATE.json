@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 70,
+  "state_revision": 71,
   "last_accepted": {
     "id": "LF-SSOT-002_SUPABASE_AUTH_SINGLE_SESSION_OWNER_REPAIR",
     "status": "ACCEPTED_AND_CLOSED",
@@ -221,13 +221,15 @@
     "ssot-final-deep-audit:65b28dfd920977be0ff254a6844359e82dc9efbc:PASS;zero-active-ssot-findings;no-active-stage",
     "LF-UI-SOT-007:CONTROL_PLANE_DRIFT_FOUND=YES:current_workflow_was_missing_and_was_repaired_before_continuation",
     "LF-UI-SOT-007:CONTROL_PLANE_DRIFT_REPAIRED=YES:current_workflow=ACTIVE:active_stage_count=1:contract_path=_project/contracts/LF-UI-SOT-007_TRUE_VISUAL_DESIGN_SYSTEM_RUNTIME_CONSOLIDATION.md",
-    "LF-UI-SOT-007:TECHNICAL_PASS=YES:SSOT_NEGATIVE_TESTS=21/21:CSS_TERMINAL_COUNTERS_ZERO:ONE_OWNER_PER_VISUAL_CONCERN=PASS",
+    "LF-UI-SOT-007:TECHNICAL_PASS=YES:SSOT_NEGATIVE_TESTS=23/23:CSS_TERMINAL_COUNTERS_ZERO:ONE_OWNER_PER_VISUAL_CONCERN=PASS",
     "LF-UI-SOT-007:TECHNICAL_PASS=YES:TSC=PASS:LINT=PASS:BUILD=PASS:GIT_DIFF_CHECK=PASS",
     "LF-UI-SOT-007:GUARDIAN_FINAL_PRIOR_RECEIPT=SUPERSEDED:canonical_main_sha=d601fb17535c350efc049c91f37b528ea7d9976a",
-    "LF-UI-SOT-007:EXECUTION_CHRONOLOGY_REPAIRED_AFTER_TECHNICAL_PASS=YES:state_revision=70",
-    "LF-UI-SOT-007:GUARDIAN_FINAL=REQUIRES_FRESH_POST_INTEGRATION_AUDIT:prior_receipt=SUPERSEDED:coverage_not_yet_revalidated",
-    "LF-UI-SOT-007:BROWSER_DESKTOP=PASS:BROWSER_MOBILE=PASS:styled_shell_routes_mobile_menu_and_task_modal_verified:no_horizontal_overflow",
-    "LF-UI-SOT-007:AUTHENTICATED_POPULATED_DATA=BLOCKED_EXTERNAL_OWNER_ACTION:local_access_gate=Brak_dostępu:owner_trial_or_credential_required:no_bypass_or_secret_used",
-    "LF-UI-SOT-007:WORKFLOW_STATUS_REMAINS=BLOCKED_EXTERNAL_OWNER_ACTION:NO_NEXT_STAGE_ACTIVATED:final_external_receipt_binds_post_commit_sha"
+    "LF-UI-SOT-007:EXECUTION_CHRONOLOGY_REPAIRED_AFTER_TECHNICAL_PASS=YES:state_revision=71",
+    "LF-UI-SOT-007:INTEGRATION_PARENT_SHA=25303e7f752397a417c9668afcfdcf86c09dd6e9:REMOTE_DEV_EXACT_AT_INTEGRATION=YES:CANDIDATE_F50D_ANCESTOR=YES:DEV_ONLY_COMMIT_ANCESTOR=YES",
+    "LF-UI-SOT-007:GUARDIAN_FINAL=PASS:post_integration_receipt_recorded_and_revalidated_after_control_plane_repair",
+    "LF-UI-SOT-007:BROWSER_DESKTOP=PASS:BROWSER_MOBILE=PASS:authenticated_shell_routes_detail_modal_search_mobile_menu_verified:no_console_errors:no_horizontal_overflow",
+    "LF-UI-SOT-007:AUTHENTICATED_POPULATED_DATA=PASS:temporary_smoke_lead_created_detail_and_search_verified_then_removed_to_empty_trash",
+    "LF-UI-SOT-007:VERCEL_PRODUCTION=PASS:version_api_exact_commit_verified:branch=dev-rollout-freeze",
+    "LF-UI-SOT-007:WORKFLOW_STATUS_REMAINS=BLOCKED_EXTERNAL_OWNER_ACTION:NO_NEXT_STAGE_ACTIVATED:owner_acceptance_required_to_mark_CLOSED"
   ]
 }
