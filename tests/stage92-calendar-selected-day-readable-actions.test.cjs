@@ -5,7 +5,7 @@ const path = require('node:path');
 
 const repoRoot = path.resolve(__dirname, '..');
 const calendarPath = path.join(repoRoot, 'src/pages/Calendar.tsx');
-const cssPath = path.join(repoRoot, 'src/styles/closeflow-calendar-selected-day-new-tile-v9.css');
+const cssPath = path.join(repoRoot, 'src/styles/owners/closeflow-calendar.css');
 const quietGatePath = path.join(repoRoot, 'scripts/closeflow-release-check-quiet.cjs');
 
 function read(filePath) {
@@ -48,7 +48,7 @@ test('Stage92 legacy selected-day render is not active in Calendar.tsx', () => {
 
 test('Stage92 selected-day actions are responsive and not forced into a 260px strip', () => {
   const css = read(cssPath);
-  assert.match(css, /STAGE92_CALENDAR_SELECTED_DAY_READABLE_ACTIONS_START/, 'Stage92 CSS marker missing.');
+  assert.match(css, /LF-UI-SOT-007_OWNER .*"ownerId":"semantic:calendar"/, 'Canonical calendar owner metadata missing.');
   assert.doesNotMatch(css, /min-width:\s*260px\s*!important;/, 'Actions must not keep fixed min-width: 260px.');
   assert.match(css, /cf-selected-day-v9-action-row/, 'Actions must be grouped into stable rows.');
   assert.match(css, /grid-template-columns:\s*minmax\(0, 1fr\) minmax\(224px, 324px\)/, 'Desktop row must use content/action grid.');
