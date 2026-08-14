@@ -8,23 +8,15 @@ const read = (relativePath) => fs.readFileSync(path.join(repoRoot, relativePath)
 const taskCreate = read('src/components/TaskCreateDialog.tsx');
 const calendar = read('src/pages/Calendar.tsx');
 const cases = read('src/pages/Cases.tsx');
-const css = read('src/styles/visual-stage22-event-form-vnext.css');
-const trashCss = read('src/styles/context-action-button-source-truth.css');
-const coreCss = read('src/styles/core/core-contracts.css');
+const css = read('src/styles/closeflow-event-form.css');
+const trashCss = read('src/styles/owners/closeflow-actions.css');
+const coreCss = read('src/styles/closeflow-visual-source-truth.css');
 const quietGate = read('scripts/closeflow-release-check-quiet.cjs');
 
-function blockBetween(text, start, end) {
-  const startIndex = text.indexOf(start);
-  assert.notEqual(startIndex, -1, 'Missing block start: ' + start);
-  const endIndex = text.indexOf(end, startIndex);
-  assert.notEqual(endIndex, -1, 'Missing block end: ' + end);
-  return text.slice(startIndex, endIndex + end.length);
-}
+const stage105Css = css;
+const stage105TrashCss = trashCss;
 
-const stage105Css = blockBetween(css, 'STAGE105_CALENDAR_MODAL_NO_DARK_INPUTS_START', 'STAGE105_CALENDAR_MODAL_NO_DARK_INPUTS_END');
-const stage105TrashCss = blockBetween(trashCss, 'STAGE105_CASE_DELETE_NO_RED_PLAQUE_START', 'STAGE105_CASE_DELETE_NO_RED_PLAQUE_END');
-
-assert.ok(taskCreate.includes("import '../styles/visual-stage22-event-form-vnext.css';"), 'Quick task dialog must import shared event form visual source.');
+assert.ok(taskCreate.includes("import '../styles/closeflow-event-form.css';"), 'Quick task dialog must import shared event form visual source.');
 assert.ok(taskCreate.includes("import { modalFooterClass } from './entity-actions';"), 'Quick task dialog must use modalFooterClass source.');
 assert.ok(taskCreate.includes("TASK_CREATE_DIALOG_STAGE105_FORM_SOURCE = 'event-form-vnext'"), 'Quick task dialog must define Stage105 source constant once.');
 assert.equal((taskCreate.match(/TASK_CREATE_DIALOG_STAGE105_FORM_SOURCE = 'event-form-vnext'/g) || []).length, 1, 'Quick task source constant must be declared exactly once.');
@@ -43,11 +35,10 @@ assert.ok(calendar.includes('data-calendar-entry-form-mode="create-event"'), 'Ca
 assert.ok(calendar.includes('data-calendar-entry-form-mode="create-task"'), 'Calendar create task mode must stay visible.');
 assert.ok(calendar.includes("data-calendar-entry-form-mode={editEntry?.kind === 'event' ? 'edit-event' : 'edit-task'}"), 'Calendar edit modal must keep shared edit mode.');
 
-assert.ok(stage105Css.includes('background: #ffffff !important;'), 'Stage105 modal visual block must force white inputs.');
-assert.ok(stage105Css.includes('color: #111827 !important;'), 'Stage105 modal visual block must force dark text.');
-assert.ok(stage105Css.includes('border-color: #93c5fd !important;'), 'Stage105 modal visual block must use blue focus border.');
+assert.match(stage105Css, /\.event-form-vnext input,[\s\S]*?background:\s*#ffffff;[\s\S]*?color:\s*#111827;/, 'Stage105 modal visual source must keep white inputs and dark text.');
+assert.ok(stage105Css.includes('border-color: #93c5fd;'), 'Stage105 modal visual source must use blue focus border.');
 assert.ok(stage105Css.includes('rgba(37, 99, 235, 0.12)'), 'Stage105 modal visual block must use blue focus ring.');
-assert.ok(stage105Css.includes('background: rgba(255, 255, 255, 0.96) !important;'), 'Stage105 modal visual block must keep footer light.');
+assert.ok(stage105Css.includes('background: rgba(255, 255, 255, 0.96);'), 'Stage105 modal visual source must keep footer light.');
 for (const forbidden of ['bg-slate-900', 'bg-black', 'background: #0f172a', 'background: rgb(15, 23, 42)', '#22c55e', '#16a34a', 'emerald']) {
   assert.equal(stage105Css.toLowerCase().includes(forbidden.toLowerCase()), false, 'Stage105 modal visual block must not contain forbidden dark/green token: ' + forbidden);
 }
@@ -58,10 +49,11 @@ assert.equal(cases.includes('cf-case-row-delete-text-action'), false, 'Visible c
 assert.ok(cases.includes('data-case-row-delete-action="true"'), 'Visible case delete action must keep a dedicated action marker.');
 assert.ok(cases.includes('data-cf-destructive-source="trash-action-source"'), 'Visible case delete action must use shared trash source.');
 assert.ok(cases.includes('trashActionIconClass("h-4 w-4")'), 'Visible case delete action must keep shared subtle icon class.');
-assert.ok(stage105TrashCss.includes('background: var(--cf-trash-bg) !important;'), 'Stage105 case delete block must keep white trash background.');
-assert.ok(stage105TrashCss.includes('border: 1px solid var(--cf-trash-border-color) !important;'), 'Stage105 case delete block must keep subtle red border.');
-assert.equal(stage105TrashCss.includes('background: #dc2626'), false, 'Stage105 case delete block must not use solid red background.');
-assert.ok(coreCss.includes("@import '../context-action-button-source-truth.css';"), 'Core CSS must import context action/trash source truth.');
+assert.match(stage105TrashCss, /LF-UI-SOT-007_OWNER[\s\S]*"ownerId":"semantic:actions"[\s\S]*"concerns":\["BUTTONS_ACTIONS"\][\s\S]*"role":"canonical-owner"/, 'Trash action CSS must remain in the registered semantic action owner.');
+assert.ok(stage105TrashCss.includes('background: var(--cf-trash-icon-bg) !important;'), 'Stage105 case delete owner must keep a subtle trash background.');
+assert.ok(stage105TrashCss.includes('border-color: var(--cf-trash-icon-border) !important;'), 'Stage105 case delete owner must keep a subtle red border.');
+assert.equal(stage105TrashCss.includes('background: #dc2626'), false, 'Stage105 case delete owner must not use solid red background.');
+assert.ok(coreCss.includes("@import './owners/closeflow-actions.css';"), 'Visual runtime entry must import the registered action owner.');
 assert.ok(quietGate.includes('tests/stage105-calendar-modal-no-dark-inputs.test.cjs'), 'Quiet release gate must include Stage105 guard.');
 
 console.log('OK Stage105 modal visual and case delete contract');
