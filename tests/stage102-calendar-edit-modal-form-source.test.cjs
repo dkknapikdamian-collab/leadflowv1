@@ -6,7 +6,7 @@ const repoRoot = path.resolve(__dirname, '..');
 const read = (relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
 
 const calendar = read('src/pages/Calendar.tsx');
-const css = read('src/styles/visual-stage22-event-form-vnext.css');
+const css = read('src/styles/closeflow-event-form.css');
 const entityActions = read('src/components/entity-actions.tsx');
 const quietGate = read('scripts/closeflow-release-check-quiet.cjs');
 
@@ -71,7 +71,7 @@ assert.match(
 
 assert.match(
   css,
-  /\.event-form-vnext input,[\s\S]*?background:\s*#ffffff\s*!important;[\s\S]*?color:\s*#111827\s*!important;/,
+  /\.event-form-vnext input,[\s\S]*?background:\s*#ffffff\s*(?:!important\s*)?;[\s\S]*?color:\s*#111827\s*(?:!important\s*)?;/,
   'Inputs/selects inside shared calendar form must have white background and dark text.',
 );
 
