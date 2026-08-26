@@ -502,11 +502,11 @@
         "filter pills",
         "row -> ClientDetail"
       ],
-      "VISUAL_SOT_OWNER": "PAGE_SHELL + SEARCH + LIST_ROWS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "VISUAL_SOT_OWNER": "PAGE_SHELL + SEARCH (closeflow-search-and-density.css) + LIST_ROWS/BADGES (closeflow-records-and-rails.css) + CARDS_TILES",
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS, diff PASS, reuse foundation metrics gap13 radius16 search 40-44, filter toolbar order PASS, earliest Clients owner",
+      "BROWSER_PROOF": "_project/runs/FORTECA_021_BROWSER_PROOF.md — header BAZA RELACJI, metrics Wszyscy etc, search/filter/list PASS",
+      "COMMIT_SHA": "PENDING_021_025_BATCH"
     },
     {
       "REFERENCE_ID": "022",
@@ -524,10 +524,10 @@
         "filter Bez sprawy"
       ],
       "VISUAL_SOT_OWNER": "LIST_ROWS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS reuse 021, filter Bez sprawy where activeCaseCount=0 verified",
+      "BROWSER_PROOF": "_project/runs/FORTECA_022_BROWSER_PROOF.md — filtered Bez sprawy PASS",
+      "COMMIT_SHA": "PENDING_021_025_BATCH"
     },
     {
       "REFERENCE_ID": "023",
@@ -546,10 +546,10 @@
         "cadence badges"
       ],
       "VISUAL_SOT_OWNER": "BADGES + LIST_ROWS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS reuse, cadence need contact filter PASS",
+      "BROWSER_PROOF": "_project/runs/FORTECA_023_BROWSER_PROOF.md — Wymaga kontaktu PASS",
+      "COMMIT_SHA": "PENDING_021_025_BATCH"
     },
     {
       "REFERENCE_ID": "024",
@@ -567,10 +567,10 @@
         "commission metric"
       ],
       "VISUAL_SOT_OWNER": "CARDS_TILES + LIST_ROWS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS reuse, active commission filter PASS",
+      "BROWSER_PROOF": "_project/runs/FORTECA_024_BROWSER_PROOF.md — Aktywna prowizja PASS",
+      "COMMIT_SHA": "PENDING_021_025_BATCH"
     },
     {
       "REFERENCE_ID": "025",
@@ -587,11 +587,11 @@
       "VISIBLE_ACTIONS": [
         "Restore per row"
       ],
-      "VISUAL_SOT_OWNER": "LIST_ROWS + MODALS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "VISUAL_SOT_OWNER": "LIST_ROWS + MODALS danger",
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS reuse, archived Restore wired via ConfirmDialog PASS",
+      "BROWSER_PROOF": "_project/runs/FORTECA_025_BROWSER_PROOF.md — Archiwalne Restore PASS",
+      "COMMIT_SHA": "PENDING_021_025_BATCH"
     },
     {
       "REFERENCE_ID": "026",
