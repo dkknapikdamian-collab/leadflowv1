@@ -839,7 +839,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, diff PASS, Add case modal Client picker Title Template submit create case workspace scoped -> refetch, cancel/ESC/focus PASS",
       "BROWSER_PROOF": "_project/runs/FORTECA_036_BROWSER_PROOF.md — Dodaj sprawę modal 16 radius grouped PASS",
-      "COMMIT_SHA": "PENDING_036_040_BATCH"
+      "COMMIT_SHA": "844e8070a7c9d0eefed869800eae033c3306627e"
     },
     {
       "REFERENCE_ID": "037",
@@ -860,7 +860,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, Edit case modal prepopulated, update real path PASS",
       "BROWSER_PROOF": "_project/runs/FORTECA_037_BROWSER_PROOF.md — Edytuj sprawę prepopulated PASS",
-      "COMMIT_SHA": "PENDING_036_040_BATCH"
+      "COMMIT_SHA": "844e8070a7c9d0eefed869800eae033c3306627e"
     },
     {
       "REFERENCE_ID": "038",
@@ -886,7 +886,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, CaseDetail Obsługa header back Sprawy+status+Portal/Edytuj, decision strip Kompletność/Braki/Następny ruch/Czeka, Tabs exactly 3 Obsługa/Checklisty/Historia, sections Notatki/Zadania/Wydarzenia/Braki + quick actions + finance rail wiring verified",
       "BROWSER_PROOF": "_project/runs/FORTECA_038_BROWSER_PROOF.md — Obsługa tab full wiring PASS, tabs 3 exactly",
-      "COMMIT_SHA": "PENDING_036_040_BATCH"
+      "COMMIT_SHA": "844e8070a7c9d0eefed869800eae033c3306627e"
     },
     {
       "REFERENCE_ID": "039",
@@ -908,7 +908,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, Checklisty progress summary, required vs optional, rows type/status/deadline/requested, verify/reject/accept + Add item wired, ignore extra AI tabs per manifest",
       "BROWSER_PROOF": "_project/runs/FORTECA_039_BROWSER_PROOF.md — Checklisty as style ref only, extra tabs ignored documented deviation PASS",
-      "COMMIT_SHA": "PENDING_036_040_BATCH"
+      "COMMIT_SHA": "844e8070a7c9d0eefed869800eae033c3306627e"
     },
     {
       "REFERENCE_ID": "040",
@@ -930,7 +930,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, Historia timeline grouped, entity icon+severity, title/meta/relation/time, open related, payload collapsed, ignore extra tabs same as 039",
       "BROWSER_PROOF": "_project/runs/FORTECA_040_BROWSER_PROOF.md — Historia timeline as style ref only, extra tabs ignored PASS",
-      "COMMIT_SHA": "PENDING_036_040_BATCH"
+      "COMMIT_SHA": "844e8070a7c9d0eefed869800eae033c3306627e"
     }
   ]
 }
