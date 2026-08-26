@@ -66,7 +66,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, diff PASS, reuse foundation metrics gap13 radius16, no new SOT, filter toolbar order search+filters+more+reset verified per spec §5.2",
       "BROWSER_PROOF": "_project/runs/FORTECA_004_BROWSER_PROOF.md — header kicker LEADY, metrics Wszystkie9 etc, search 40-44 height, filter chips order, list row identity+status+meta+right action PASS, no dead controls",
-      "COMMIT_SHA": "PENDING_004_COMMIT"
+      "COMMIT_SHA": "f91fdfc75130414edbb5abccfac8403ae1daad8a"
     },
     {
       "REFERENCE_ID": "005",
@@ -81,7 +81,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS reuse 004, filter state active 2 rows verified, no new code needed per contract reuse",
       "BROWSER_PROOF": "_project/runs/FORTECA_005_BROWSER_PROOF.md — Aktywne tile active ring, list filtered 2 rows PASS",
-      "COMMIT_SHA": "PENDING_004_COMMIT"
+      "COMMIT_SHA": "f91fdfc75130414edbb5abccfac8403ae1daad8a"
     },
     {
       "REFERENCE_ID": "006",
@@ -96,7 +96,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS reuse, risk taxonomy red=blocked/high, visual pass",
       "BROWSER_PROOF": "_project/runs/FORTECA_006_BROWSER_PROOF.md — Zagrożone filter 1 row red pill PASS",
-      "COMMIT_SHA": "PENDING_004_COMMIT"
+      "COMMIT_SHA": "f91fdfc75130414edbb5abccfac8403ae1daad8a"
     },
     {
       "REFERENCE_ID": "007",
@@ -111,7 +111,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS reuse, history not mixed with active PASS",
       "BROWSER_PROOF": "_project/runs/FORTECA_007_BROWSER_PROOF.md — Historia 7 rows segmented PASS",
-      "COMMIT_SHA": "PENDING_004_COMMIT"
+      "COMMIT_SHA": "f91fdfc75130414edbb5abccfac8403ae1daad8a"
     },
     {
       "REFERENCE_ID": "008",
@@ -126,7 +126,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS reuse, CTA wired real persistence path via TasksCreate, no console.log",
       "BROWSER_PROOF": "_project/runs/FORTECA_008_BROWSER_PROOF.md — rescue prioritized, CTA wired PASS",
-      "COMMIT_SHA": "PENDING_004_COMMIT"
+      "COMMIT_SHA": "f91fdfc75130414edbb5abccfac8403ae1daad8a"
     },
     {
       "REFERENCE_ID": "009",
@@ -141,7 +141,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS reuse, restore/hard delete verified via ConfirmDialog, danger separate PASS",
       "BROWSER_PROOF": "_project/runs/FORTECA_009_BROWSER_PROOF.md — archived rows, Restore/Hard delete wired PASS",
-      "COMMIT_SHA": "PENDING_004_COMMIT"
+      "COMMIT_SHA": "f91fdfc75130414edbb5abccfac8403ae1daad8a"
     },
     {
       "REFERENCE_ID": "010",
