@@ -345,7 +345,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, diff PASS, TaskCreateDialog trigger/context/validation/submit real path via insertTaskToSupabase leadId, cancel/focus PASS",
       "BROWSER_PROOF": "_project/runs/FORTECA_014_BROWSER_PROOF.md — Zadanie quick action -> Dialog with lead context, grouped fields, footer Cancel+Zapisz PASS",
-      "COMMIT_SHA": "PENDING_014_020_BATCH"
+      "COMMIT_SHA": "6e8cf9349ef370bbd0d19a4258ee902f2ce28050"
     },
     {
       "REFERENCE_ID": "015",
@@ -367,7 +367,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, diff PASS, ContextNoteDialog trigger/context/submit insertActivityToSupabase note_added PASS",
       "BROWSER_PROOF": "_project/runs/FORTECA_015_BROWSER_PROOF.md — Notatka Textarea + relation, Save real path PASS",
-      "COMMIT_SHA": "PENDING_014_020_BATCH"
+      "COMMIT_SHA": "6e8cf9349ef370bbd0d19a4258ee902f2ce28050"
     },
     {
       "REFERENCE_ID": "016",
@@ -389,7 +389,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, diff PASS, EventCreateDialog single calendar icon per spec 3.6, submit insertEventToSupabase PASS",
       "BROWSER_PROOF": "_project/runs/FORTECA_016_BROWSER_PROOF.md — Wydarzenie fields+single icon PASS",
-      "COMMIT_SHA": "PENDING_014_020_BATCH"
+      "COMMIT_SHA": "6e8cf9349ef370bbd0d19a4258ee902f2ce28050"
     },
     {
       "REFERENCE_ID": "017",
@@ -413,7 +413,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, diff PASS, AddCaseMissingItemDialog lead variant type/title/description/blocksProgress validated -> missing_item task create PASS",
       "BROWSER_PROOF": "_project/runs/FORTECA_017_BROWSER_PROOF.md — Brak modal grouped PASS",
-      "COMMIT_SHA": "PENDING_014_020_BATCH"
+      "COMMIT_SHA": "6e8cf9349ef370bbd0d19a4258ee902f2ce28050"
     },
     {
       "REFERENCE_ID": "018",
@@ -438,7 +438,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, diff PASS, MissingItemsManagerDialog active source linkedTasks only, toggle/edit/delete wired optimistic+soft-delete+refresh PASS",
       "BROWSER_PROOF": "_project/runs/FORTECA_018_BROWSER_PROOF.md — Zobacz wszystkie braki manager, active list PASS",
-      "COMMIT_SHA": "PENDING_014_020_BATCH"
+      "COMMIT_SHA": "6e8cf9349ef370bbd0d19a4258ee902f2ce28050"
     },
     {
       "REFERENCE_ID": "019",
@@ -458,7 +458,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, diff PASS, Next step prompt Jutro/Niestandardowo/Zostaw bez kroku wired persistence light card not blocking PASS",
       "BROWSER_PROOF": "_project/runs/FORTECA_019_BROWSER_PROOF.md — light prompt 3 actions wired PASS",
-      "COMMIT_SHA": "PENDING_014_020_BATCH"
+      "COMMIT_SHA": "6e8cf9349ef370bbd0d19a4258ee902f2ce28050"
     },
     {
       "REFERENCE_ID": "020",
@@ -481,7 +481,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, diff PASS, LeadStartServiceDialog Rozpocznij obsługę -> lead-case-handoff create case + migrate -> navigate /cases/:id PASS",
       "BROWSER_PROOF": "_project/runs/FORTECA_020_BROWSER_PROOF.md — Rozpocznij obsługę modal create+redirect PASS",
-      "COMMIT_SHA": "PENDING_014_020_BATCH"
+      "COMMIT_SHA": "6e8cf9349ef370bbd0d19a4258ee902f2ce28050"
     },
     {
       "REFERENCE_ID": "021",
