@@ -613,11 +613,11 @@
         "overflow",
         "quick actions note/task/event/brak"
       ],
-      "VISUAL_SOT_OWNER": "PAGE_SHELL + RIGHT_RAIL + CARDS_TILES + MODALS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "VISUAL_SOT_OWNER": "PAGE_SHELL + SURFACES + RIGHT_RAIL (closeflow-records-and-rails.css) + CARDS_TILES",
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS reuse, ClientDetail header PageHeader Nowa sprawa primary wiring verified, EntityContactCard left, hero 2 cards, tabs, right rail quick actions",
+      "BROWSER_PROOF": "_project/runs/FORTECA_026_BROWSER_PROOF.md — Klient detail full PASS",
+      "COMMIT_SHA": "PENDING_026_031_BATCH"
     },
     {
       "REFERENCE_ID": "027",
@@ -635,10 +635,10 @@
         "CTA Utwórz pierwszą sprawę"
       ],
       "VISUAL_SOT_OWNER": "SURFACES + BUTTONS_ACTIONS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS reuse, empty active case state with CTA Utwórz pierwszą sprawę wired",
+      "BROWSER_PROOF": "_project/runs/FORTECA_027_BROWSER_PROOF.md — no active case empty PASS",
+      "COMMIT_SHA": "PENDING_026_031_BATCH"
     },
     {
       "REFERENCE_ID": "028",
@@ -657,10 +657,10 @@
         "row nav"
       ],
       "VISUAL_SOT_OWNER": "LIST_ROWS + BUTTONS_ACTIONS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS reuse, closed cases Przywróć wired via patch status",
+      "BROWSER_PROOF": "_project/runs/FORTECA_028_BROWSER_PROOF.md — closed cases Przywróć PASS",
+      "COMMIT_SHA": "PENDING_026_031_BATCH"
     },
     {
       "REFERENCE_ID": "029",
@@ -679,11 +679,11 @@
         "Utwórz od razu sprawę checkbox",
         "Anuluj/Utwórz"
       ],
-      "VISUAL_SOT_OWNER": "MODALS/FORMS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "VISUAL_SOT_OWNER": "MODALS/FORMS (closeflow-dialogs.css)",
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS, ClientCreateDialog add modal grouped fields, checkbox conditional, submit create client (+case) real path",
+      "BROWSER_PROOF": "_project/runs/FORTECA_029_BROWSER_PROOF.md — Dodaj klienta modal PASS",
+      "COMMIT_SHA": "PENDING_026_031_BATCH"
     },
     {
       "REFERENCE_ID": "030",
@@ -702,10 +702,10 @@
         "Anuluj"
       ],
       "VISUAL_SOT_OWNER": "MODALS/FORMS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS, edit modal prepopulated, update real path",
+      "BROWSER_PROOF": "_project/runs/FORTECA_030_BROWSER_PROOF.md — Edytuj klienta PASS",
+      "COMMIT_SHA": "PENDING_026_031_BATCH"
     },
     {
       "REFERENCE_ID": "031",
@@ -724,10 +724,10 @@
         "Utwórz sprawę"
       ],
       "VISUAL_SOT_OWNER": "MODALS/FORMS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS, CreateClientCaseDialog Nowa sprawa Title/Template create case for client PASS",
+      "BROWSER_PROOF": "_project/runs/FORTECA_031_BROWSER_PROOF.md — Nowa sprawa modal PASS",
+      "COMMIT_SHA": "PENDING_026_031_BATCH"
     },
     {
       "REFERENCE_ID": "032",
