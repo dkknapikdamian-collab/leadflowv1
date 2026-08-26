@@ -748,11 +748,11 @@
         "filters",
         "row -> CaseDetail"
       ],
-      "VISUAL_SOT_OWNER": "PAGE_SHELL + SEARCH + LIST_ROWS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "VISUAL_SOT_OWNER": "PAGE_SHELL (closeflow-page-shell.css) + SEARCH (closeflow-search-and-density.css) + LIST_ROWS (closeflow-records-and-rails.css)",
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS reuse, Cases All earliest owner PAGE_SHELL+SEARCH+LIST_ROWS gap13 radius16, progress bar, filters wired",
+      "BROWSER_PROOF": "_project/runs/FORTECA_032_BROWSER_PROOF.md — header CENTRUM OBSŁUGI, metrics Wszystkie etc, search/filter/list PASS",
+      "COMMIT_SHA": "PENDING_032_035_BATCH"
     },
     {
       "REFERENCE_ID": "033",
@@ -770,10 +770,10 @@
         "filter Czekają"
       ],
       "VISUAL_SOT_OWNER": "LIST_ROWS + BADGES",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS reuse, filtered Czekają na klienta PASS",
+      "BROWSER_PROOF": "_project/runs/FORTECA_033_BROWSER_PROOF.md — Czekają filtered PASS",
+      "COMMIT_SHA": "PENDING_032_035_BATCH"
     },
     {
       "REFERENCE_ID": "034",
@@ -791,10 +791,10 @@
         "blocked badges"
       ],
       "VISUAL_SOT_OWNER": "LIST_ROWS + BADGES",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS reuse, blocked red taxonomy PASS",
+      "BROWSER_PROOF": "_project/runs/FORTECA_034_BROWSER_PROOF.md — Zablokowane PASS",
+      "COMMIT_SHA": "PENDING_032_035_BATCH"
     },
     {
       "REFERENCE_ID": "035",
@@ -812,10 +812,10 @@
         "ready badges"
       ],
       "VISUAL_SOT_OWNER": "LIST_ROWS + BADGES",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS reuse, readyToStart green PASS",
+      "BROWSER_PROOF": "_project/runs/FORTECA_035_BROWSER_PROOF.md — Gotowe PASS",
+      "COMMIT_SHA": "PENDING_032_035_BATCH"
     },
     {
       "REFERENCE_ID": "036",
