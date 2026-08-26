@@ -38,15 +38,15 @@
   --cf-vst-color-warning-soft: #fffbeb;
   --cf-vst-color-danger: var(--cf-vst-color-delete);
   --cf-vst-color-danger-soft: var(--cf-vst-color-delete-soft);
-  --cf-vst-surface-page: #f8fafc;
-  --cf-vst-surface-canvas: #f1f5f9;
-  --cf-vst-surface-card: rgba(255, 255, 255, 0.94);
+  --cf-vst-surface-page: #F7F9FC;
+  --cf-vst-surface-canvas: #F7F9FC;
+  --cf-vst-surface-card: #ffffff;
   --cf-vst-surface-card-solid: #ffffff;
-  --cf-vst-surface-soft: #f8fafc;
-  --cf-vst-surface-border: #e2e8f0;
-  --cf-vst-surface-border-strong: #cbd5e1;
-  --cf-vst-shadow-card: 0 14px 34px rgba(15, 23, 42, 0.06);
-  --cf-vst-shadow-modal: 0 24px 70px rgba(15, 23, 42, 0.14);
+  --cf-vst-surface-soft: #F8FAFC;
+  --cf-vst-surface-border: #E5EAF2;
+  --cf-vst-surface-border-strong: #D0D5DD;
+  --cf-vst-shadow-card: 0 8px 22px rgba(16, 24, 40, 0.05);
+  --cf-vst-shadow-modal: 0 18px 45px rgba(16, 24, 40, 0.08);
   --cf-vst-text-strong: #0f172a;
   --cf-vst-text-main: #334155;
   --cf-vst-text-muted: #64748b;
@@ -59,10 +59,10 @@
   --cf-vst-shell-border: rgba(255, 255, 255, 0.10);
   --cf-vst-shell-hover: rgba(255, 255, 255, 0.08);
   --cf-vst-shell-active: rgba(255, 255, 255, 0.12);
-  --cf-vst-radius-card: 20px;
-  --cf-vst-radius-panel: 24px;
+  --cf-vst-radius-card: 16px;
+  --cf-vst-radius-panel: 16px;
   --cf-vst-radius-pill: 999px;
-  --cf-vst-radius-button: 14px;
+  --cf-vst-radius-button: 12px;
   --cf-vst-metric-number-color: var(--cf-vst-color-primary);
   --cf-vst-metric-number-weight: 950;
 }

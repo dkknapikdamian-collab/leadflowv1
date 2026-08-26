@@ -9,9 +9,9 @@ type CloseFlowPageHeaderV2Props = {
 
 const CLOSEFLOW_PAGE_HEADER_COPY: Record<CloseFlowPageHeaderKey, CloseFlowPageHeaderContent> = {
   today: {
-    kicker: 'CENTRUM DNIA',
-    title: 'Priorytety i najbliższe ruchy',
-    description: 'Szybki przegląd tego, co wymaga reakcji teraz i co warto zaplanować dalej.',
+    kicker: 'DZIŚ',
+    title: 'Dziś',
+    description: 'Twoje centrum dowodzenia na dziś. Skup się na tym, co najważniejsze.',
   },
   leads: {
     kicker: 'LEADY',

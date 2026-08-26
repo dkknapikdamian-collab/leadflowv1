@@ -7,18 +7,18 @@
 
 
 :root {
-  --cf-metric-tile-radius: 22px;
-  --cf-metric-tile-border: #eef2f7;
+  --cf-metric-tile-radius: 16px;
+  --cf-metric-tile-border: #E5EAF2;
   --cf-metric-tile-bg: #ffffff;
-  --cf-metric-tile-shadow: 0 14px 32px rgba(15, 23, 42, 0.055);
-  --cf-metric-tile-shadow-hover: 0 18px 40px rgba(15, 23, 42, 0.085);
-  --cf-metric-tile-label: #56637a;
-  --cf-metric-tile-value: #0b1220;
-  --cf-metric-tile-helper: #64748b;
-  --cf-metric-tile-icon-bg: #f6f8fb;
-  --cf-metric-tile-icon: #64748b;
-  --cf-metric-tile-min-height: 72px;
-  --cf-metric-tile-gap: 18px;
+  --cf-metric-tile-shadow: 0 8px 22px rgba(16, 24, 40, 0.05);
+  --cf-metric-tile-shadow-hover: 0 14px 26px rgba(16, 24, 40, 0.08);
+  --cf-metric-tile-label: #64748B;
+  --cf-metric-tile-value: #0F172A;
+  --cf-metric-tile-helper: #64748B;
+  --cf-metric-tile-icon-bg: #F8FAFC;
+  --cf-metric-tile-icon: #64748B;
+  --cf-metric-tile-min-height: 88px;
+  --cf-metric-tile-gap: 13px;
   --cf-metric-tile-padding-y: 16px;
   --cf-metric-tile-padding-x: 18px;
   --cf-metric-tile-label-size: 12px;

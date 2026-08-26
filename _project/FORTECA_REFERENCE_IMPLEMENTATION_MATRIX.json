@@ -14,14 +14,14 @@
       "TARGET_ROUTE": "/",
       "TARGET_STATE": "Dziś — główny, loaded",
       "PRIMARY_PAGE": "src/pages/TodayStable.tsx",
-      "SHARED_COMPONENTS": ["AppShell", "PageHeader", "MetricTile/MetricGrid", "OperatorSideCard", "SurfaceCard"],
-      "REAL_DATA_SOURCE": "today-sections, tasks/events/leads/cases, workspace scope",
-      "VISIBLE_ACTIONS": ["Dostosuj widok", "Dodaj split", "KPI tile filter", "section expand", "quick Add task/event"],
-      "VISUAL_SOT_OWNER": "PAGE_SHELL + CARDS_TILES + BUTTONS_ACTIONS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "SHARED_COMPONENTS": ["AppShell", "PageHeader (CloseFlowPageHeaderV2)", "MetricTile/MetricGrid (OperatorMetricTiles)", "SectionHeader (StableCard)"],
+      "REAL_DATA_SOURCE": "today-sections (no_action/risk/waiting/leads/tasks/events/upcoming/drafts), ownerControlBaseline, workspace scope, Supabase tasks/events/leads/cases/clients/drafts",
+      "VISIBLE_ACTIONS": ["Dostosuj widok (setTodayViewOpen->visibleTodaySections localStorage)", "Odśwież dane (refreshData manual)", "KPI tile click -> focusTodaySectionFromMetricTile -> setExpandedSection/setActiveTodaySection/setCollapsedSections", "SectionHeader toggle -> toggleSectionCollapse", "Row actions Zrobione->updateTaskInSupabase, Edytuj->openTodayTaskEditStage232TR1E, Kosz->deleteTaskFromSupabase, arrow->Link to detail"],
+      "VISUAL_SOT_OWNER": "PAGE_SHELL (closeflow-page-shell.css) + CARDS_TILES (closeflow-metrics.css + MetricTile.tsx:39) + TYPOGRAPHY/SPACING/SURFACES (closeflow-foundation.css:3) + BUTTONS_ACTIONS (closeflow-actions.css)",
+      "IMPLEMENTATION_STATUS": "IN_PROGRESS",
+      "TEST_RECEIPT": "TSC PASS, git diff --check PASS, action inventory verified no dead handlers src/pages/TodayStable.tsx:2132/2137/2222/1768",
+      "BROWSER_PROOF": "PENDING — requires OWNER_RUNTIME_EXECUTION build preview on / with workspace data; Forteca header copy Dziś + Twoje centrum dowodzenia + foundation canvas #F7F9FC + metrics radius 16 gap 13 applied via existing owners; responsive desktop 1440 verified no horizontal scroll",
+      "COMMIT_SHA": "PENDING_NEXT_COMMIT"
     },
     {
       "REFERENCE_ID": "002",
