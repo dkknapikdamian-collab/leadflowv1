@@ -36,7 +36,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS 20260827, git diff --check PASS, action inventory src/pages/TodayStable.tsx:2152-2232 wired, no dead handlers, checkbox persistence verified",
       "BROWSER_PROOF": "_project/runs/FORTECA_002_BROWSER_PROOF.md — open / -> Widok -> overlay shows Dostosuj widok, 8 checkboxes, Przywróć domyślne/Pokaż wszystko, footer Anuluj/Zapisz, comparison to 002_today_customize_view.webp PASS (light modal 16 radius, 13 gap checkboxes, subtle border)",
-      "COMMIT_SHA": "PENDING_002_COMMIT"
+      "COMMIT_SHA": "9f4c95f7c3bff9125aeca2b0d90631f462f68a1b"
     },
     {
       "REFERENCE_ID": "003",
