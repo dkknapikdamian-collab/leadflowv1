@@ -14,9 +14,20 @@
       "TARGET_ROUTE": "/",
       "TARGET_STATE": "Dziś — główny, loaded",
       "PRIMARY_PAGE": "src/pages/TodayStable.tsx",
-      "SHARED_COMPONENTS": ["AppShell", "PageHeader (CloseFlowPageHeaderV2)", "MetricTile/MetricGrid (OperatorMetricTiles)", "SectionHeader (StableCard)"],
+      "SHARED_COMPONENTS": [
+        "AppShell",
+        "PageHeader (CloseFlowPageHeaderV2)",
+        "MetricTile/MetricGrid (OperatorMetricTiles)",
+        "SectionHeader (StableCard)"
+      ],
       "REAL_DATA_SOURCE": "today-sections (no_action/risk/waiting/leads/tasks/events/upcoming/drafts), ownerControlBaseline, workspace scope, Supabase tasks/events/leads/cases/clients/drafts",
-      "VISIBLE_ACTIONS": ["Dostosuj widok (setTodayViewOpen->visibleTodaySections localStorage)", "Odśwież dane (refreshData manual)", "KPI tile click -> focusTodaySectionFromMetricTile -> setExpandedSection/setActiveTodaySection/setCollapsedSections", "SectionHeader toggle -> toggleSectionCollapse", "Row actions Zrobione->updateTaskInSupabase, Edytuj->openTodayTaskEditStage232TR1E, Kosz->deleteTaskFromSupabase, arrow->Link to detail"],
+      "VISIBLE_ACTIONS": [
+        "Dostosuj widok (setTodayViewOpen->visibleTodaySections localStorage)",
+        "Odśwież dane (refreshData manual)",
+        "KPI tile click -> focusTodaySectionFromMetricTile -> setExpandedSection/setActiveTodaySection/setCollapsedSections",
+        "SectionHeader toggle -> toggleSectionCollapse",
+        "Row actions Zrobione->updateTaskInSupabase, Edytuj->openTodayTaskEditStage232TR1E, Kosz->deleteTaskFromSupabase, arrow->Link to detail"
+      ],
       "VISUAL_SOT_OWNER": "PAGE_SHELL (closeflow-page-shell.css) + CARDS_TILES (closeflow-metrics.css + MetricTile.tsx:39) + TYPOGRAPHY/SPACING/SURFACES (closeflow-foundation.css:3) + BUTTONS_ACTIONS (closeflow-actions.css)",
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS 20260827, git diff --check PASS, visual owners extended not duplicated, header copy Dziś verified, metrics radius 16 gap 13 via closeflow-metrics.css",
@@ -29,9 +40,22 @@
       "TARGET_ROUTE": "/",
       "TARGET_STATE": "Dziś — Dostosuj widok overlay",
       "PRIMARY_PAGE": "src/pages/TodayStable.tsx",
-      "SHARED_COMPONENTS": ["Card (closeflow-surfaces-and-cards.css)", "FormFooter (closeflow-dialogs.css)", "Checkbox group (native input + label)", "Button (closeflow-actions.css)"],
+      "SHARED_COMPONENTS": [
+        "Card (closeflow-surfaces-and-cards.css)",
+        "FormFooter (closeflow-dialogs.css)",
+        "Checkbox group (native input + label)",
+        "Button (closeflow-actions.css)"
+      ],
       "REAL_DATA_SOURCE": "localStorage TODAY_VIEW_STORAGE_KEY closeflow:today:view-sections:v1 via readTodayVisibleSections:221/sanitize:212/write:232, TODAY_SECTION_KEYS:201",
-      "VISIBLE_ACTIONS": ["Widok toggle -> setTodayViewOpen:2137", "checkbox per section -> sanitize+write visibleTodaySections:2188", "Przywróć domyślne -> TODAY_SECTION_KEYS reset:2159", "Pokaż wszystko -> allKeys:2164", "Anuluj -> setTodayViewOpen false", "Zapisz -> setTodayViewOpen false", "ESC via Dialog"],
+      "VISIBLE_ACTIONS": [
+        "Widok toggle -> setTodayViewOpen:2137",
+        "checkbox per section -> sanitize+write visibleTodaySections:2188",
+        "Przywróć domyślne -> TODAY_SECTION_KEYS reset:2159",
+        "Pokaż wszystko -> allKeys:2164",
+        "Anuluj -> setTodayViewOpen false",
+        "Zapisz -> setTodayViewOpen false",
+        "ESC via Dialog"
+      ],
       "VISUAL_SOT_OWNER": "SURFACES (closeflow-surfaces-and-cards.css) + MODALS/FORMS (closeflow-dialogs.css) + BUTTONS_ACTIONS (closeflow-actions.css)",
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS 20260827, git diff --check PASS, action inventory src/pages/TodayStable.tsx:2152-2232 wired, no dead handlers, checkbox persistence verified",
@@ -44,9 +68,21 @@
       "TARGET_ROUTE": "* global",
       "TARGET_STATE": "Globalne menu Dodaj",
       "PRIMARY_PAGE": "src/components/Layout.tsx:664 global-bar + src/components/GlobalQuickActions.tsx:72 toolbar",
-      "SHARED_COMPONENTS": ["GlobalQuickActions toolbar (role=toolbar)", "Button (closeflow-actions.css)", "Dialog (closeflow-dialogs.css: TaskCreateDialog, ClientCreateDialog)", "QuickAiCapture"],
+      "SHARED_COMPONENTS": [
+        "GlobalQuickActions toolbar (role=toolbar)",
+        "Button (closeflow-actions.css)",
+        "Dialog (closeflow-dialogs.css: TaskCreateDialog, ClientCreateDialog)",
+        "QuickAiCapture"
+      ],
       "REAL_DATA_SOURCE": "none — triggers dialogs via rememberGlobalQuickAction lead/task/event + local state isTaskCreateOpen/isClientCreateOpen",
-      "VISIBLE_ACTIONS": ["Lead -> /leads?quick=lead + rememberGlobalQuickAction('lead') -> ClientCreateDialog", "Klient -> setIsClientCreateOpen true -> ClientCreateDialog", "Zadanie -> setIsTaskCreateOpen true -> TaskCreateDialog", "Wydarzenie -> /calendar?quick=event + rememberGlobalQuickAction('event') -> EventCreateDialog", "Inbox szkiców -> Link /ai-drafts", "ESC/outer close -> Dialog onOpenChange"],
+      "VISIBLE_ACTIONS": [
+        "Lead -> /leads?quick=lead + rememberGlobalQuickAction('lead') -> ClientCreateDialog",
+        "Klient -> setIsClientCreateOpen true -> ClientCreateDialog",
+        "Zadanie -> setIsTaskCreateOpen true -> TaskCreateDialog",
+        "Wydarzenie -> /calendar?quick=event + rememberGlobalQuickAction('event') -> EventCreateDialog",
+        "Inbox szkiców -> Link /ai-drafts",
+        "ESC/outer close -> Dialog onOpenChange"
+      ],
       "VISUAL_SOT_OWNER": "PAGE_SHELL (closeflow-page-shell.css) + BUTTONS_ACTIONS (closeflow-actions.css) + MODALS (closeflow-dialogs.css)",
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS 20260827, diff PASS, action inventory GlobalQuickActions.tsx:72-118 wired, OperatorTopBarRuntime not dead, no onClick={()=>{}}; existing owner reuse, no new SOT",
@@ -59,9 +95,24 @@
       "TARGET_ROUTE": "/leads",
       "TARGET_STATE": "Leady — Wszystkie",
       "PRIMARY_PAGE": "src/pages/Leads.tsx",
-      "SHARED_COMPONENTS": ["PageHeader (CloseFlowPageHeaderV2 + page-header-content.ts:30)", "MetricGrid/MetricTile gap 13 radius 16", "Search field (closeflow-search-and-density.css)", "FilterToolbar/FilterChipGroup (closeflow-search-and-density.css)", "ListRow (closeflow-records-and-rails.css)", "StatusPill (closeflow-records-and-rails.css)"],
+      "SHARED_COMPONENTS": [
+        "PageHeader (CloseFlowPageHeaderV2 + page-header-content.ts:30)",
+        "MetricGrid/MetricTile gap 13 radius 16",
+        "Search field (closeflow-search-and-density.css)",
+        "FilterToolbar/FilterChipGroup (closeflow-search-and-density.css)",
+        "ListRow (closeflow-records-and-rails.css)",
+        "StatusPill (closeflow-records-and-rails.css)"
+      ],
       "REAL_DATA_SOURCE": "leads query all workspace scoped via src/lib/leads.ts, search-normalization, workspaceId",
-      "VISIBLE_ACTIONS": ["Dodaj leada primary -> ClientCreateDialog (lead variant)", "Import CSV (if enabled) -> handler", "search onChange debounced -> query refetch", "filter Status/Źródło/Ryzyko/Kontakt -> chip onChange", "Więcej filtrów -> Disclosure", "Reset -> clear filters", "row click -> navigate /leads/:leadId"],
+      "VISIBLE_ACTIONS": [
+        "Dodaj leada primary -> ClientCreateDialog (lead variant)",
+        "Import CSV (if enabled) -> handler",
+        "search onChange debounced -> query refetch",
+        "filter Status/Źródło/Ryzyko/Kontakt -> chip onChange",
+        "Więcej filtrów -> Disclosure",
+        "Reset -> clear filters",
+        "row click -> navigate /leads/:leadId"
+      ],
       "VISUAL_SOT_OWNER": "PAGE_SHELL (closeflow-page-shell.css) + SEARCH (closeflow-search-and-density.css) + LIST_ROWS/BADGES (closeflow-records-and-rails.css) + CARDS_TILES (closeflow-metrics.css)",
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, diff PASS, reuse foundation metrics gap13 radius16, no new SOT, filter toolbar order search+filters+more+reset verified per spec §5.2",
@@ -74,9 +125,15 @@
       "TARGET_ROUTE": "/leads",
       "TARGET_STATE": "Leady — Aktywne",
       "PRIMARY_PAGE": "src/pages/Leads.tsx (reuse 004 owner)",
-      "SHARED_COMPONENTS": ["MetricTile active state (border rgba(59,130,246,.18) + ring)", "ListRow filtered"],
+      "SHARED_COMPONENTS": [
+        "MetricTile active state (border rgba(59,130,246,.18) + ring)",
+        "ListRow filtered"
+      ],
       "REAL_DATA_SOURCE": "leads active filter query status=active workspace scoped",
-      "VISIBLE_ACTIONS": ["Aktywne tile active highlight -> filter active", "row click -> /leads/:leadId"],
+      "VISIBLE_ACTIONS": [
+        "Aktywne tile active highlight -> filter active",
+        "row click -> /leads/:leadId"
+      ],
       "VISUAL_SOT_OWNER": "CARDS_TILES (closeflow-metrics.css) + LIST_ROWS (closeflow-records-and-rails.css)",
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS reuse 004, filter state active 2 rows verified, no new code needed per contract reuse",
@@ -89,9 +146,14 @@
       "TARGET_ROUTE": "/leads",
       "TARGET_STATE": "Leady — Zagrożone",
       "PRIMARY_PAGE": "src/pages/Leads.tsx (reuse)",
-      "SHARED_COMPONENTS": ["StatusPill red tone", "ListRow"],
+      "SHARED_COMPONENTS": [
+        "StatusPill red tone",
+        "ListRow"
+      ],
       "REAL_DATA_SOURCE": "owner-risk-rules highValue/highRisk, lead-health isWaitingTooLong",
-      "VISIBLE_ACTIONS": ["Zagrożone tile/select -> risk filter -> red pill row"],
+      "VISIBLE_ACTIONS": [
+        "Zagrożone tile/select -> risk filter -> red pill row"
+      ],
       "VISUAL_SOT_OWNER": "BADGES (closeflow-records-and-rails.css) + LIST_ROWS",
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS reuse, risk taxonomy red=blocked/high, visual pass",
@@ -104,9 +166,15 @@
       "TARGET_ROUTE": "/leads",
       "TARGET_STATE": "Leady — Historia",
       "PRIMARY_PAGE": "src/pages/Leads.tsx (reuse)",
-      "SHARED_COMPONENTS": ["MetricTile Historia", "ListRow history segmented"],
+      "SHARED_COMPONENTS": [
+        "MetricTile Historia",
+        "ListRow history segmented"
+      ],
       "REAL_DATA_SOURCE": "leads history filter (won/lost/moved_to_service/archived)",
-      "VISIBLE_ACTIONS": ["Historia tile -> history filter 7 rows", "row click -> detail"],
+      "VISIBLE_ACTIONS": [
+        "Historia tile -> history filter 7 rows",
+        "row click -> detail"
+      ],
       "VISUAL_SOT_OWNER": "CARDS_TILES + LIST_ROWS",
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS reuse, history not mixed with active PASS",
@@ -119,9 +187,15 @@
       "TARGET_ROUTE": "/leads",
       "TARGET_STATE": "Leady — Do odzyskania",
       "PRIMARY_PAGE": "src/pages/Leads.tsx (reuse)",
-      "SHARED_COMPONENTS": ["ListRow rescue prioritized", "Button Ustaw kolejny krok", "StatusPill"],
+      "SHARED_COMPONENTS": [
+        "ListRow rescue prioritized",
+        "Button Ustaw kolejny krok",
+        "StatusPill"
+      ],
       "REAL_DATA_SOURCE": "lost-lead-rescue rescue bucket prioritized critical->high->rest",
-      "VISIBLE_ACTIONS": ["Ustaw kolejny krok per row -> TaskCreateDialog with leadId context -> create task linked"],
+      "VISIBLE_ACTIONS": [
+        "Ustaw kolejny krok per row -> TaskCreateDialog with leadId context -> create task linked"
+      ],
       "VISUAL_SOT_OWNER": "LIST_ROWS + BUTTONS_ACTIONS (closeflow-actions.css)",
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS reuse, CTA wired real persistence path via TasksCreate, no console.log",
@@ -134,9 +208,17 @@
       "TARGET_ROUTE": "/leads",
       "TARGET_STATE": "Leady — Kosz / archiwalne",
       "PRIMARY_PAGE": "src/pages/Leads.tsx (reuse)",
-      "SHARED_COMPONENTS": ["ListRow archived", "Button Restore/Hard delete", "ConfirmDialog danger"],
+      "SHARED_COMPONENTS": [
+        "ListRow archived",
+        "Button Restore/Hard delete",
+        "ConfirmDialog danger"
+      ],
       "REAL_DATA_SOURCE": "leads archived/trash soft-delete query, restore/hard delete mutations",
-      "VISIBLE_ACTIONS": ["Restore per row -> unarchive mutation -> refetch", "Hard delete -> confirm dialog -> delete", "Empty trash bulk -> confirm"],
+      "VISIBLE_ACTIONS": [
+        "Restore per row -> unarchive mutation -> refetch",
+        "Hard delete -> confirm dialog -> delete",
+        "Empty trash bulk -> confirm"
+      ],
       "VISUAL_SOT_OWNER": "LIST_ROWS + MODALS danger (closeflow-dialogs.css)",
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS reuse, restore/hard delete verified via ConfirmDialog, danger separate PASS",
@@ -149,9 +231,21 @@
       "TARGET_ROUTE": "/leads/:leadId",
       "TARGET_STATE": "Szczegół aktywnego leada — preview",
       "PRIMARY_PAGE": "src/pages/LeadDetail.tsx:860 (preview-first, Edit on click)",
-      "SHARED_COMPONENTS": ["EntityContactCard compact left", "PageHeader back Leady", "Decision cards 4-up (closeflow-metrics.css)", "Center notes/history Task/Event timeline", "Right rail Upcoming actions rail"],
+      "SHARED_COMPONENTS": [
+        "EntityContactCard compact left",
+        "PageHeader back Leady",
+        "Decision cards 4-up (closeflow-metrics.css)",
+        "Center notes/history Task/Event timeline",
+        "Right rail Upcoming actions rail"
+      ],
       "REAL_DATA_SOURCE": "fetchLeadByIdFromSupabase, linkedTasks/linkedEvents via normalizeWorkItem, activities via buildActivityTruth, leadInService check",
-      "VISIBLE_ACTIONS": ["Back Leady -> navigate /leads", "Edytuj -> setIsEditing true + prepopulated editLead", "overflow ... -> DropdownMenu", "Ustaw kolejny krok / Rozpocznij obsługę / Otwórz sprawę contextual primary -> LeadStartServiceDialog/startLeadToCaseHandoff", "Quick actions note/task/event/brak -> openContextQuickAction via ContextActionDialogs host"],
+      "VISIBLE_ACTIONS": [
+        "Back Leady -> navigate /leads",
+        "Edytuj -> setIsEditing true + prepopulated editLead",
+        "overflow ... -> DropdownMenu",
+        "Ustaw kolejny krok / Rozpocznij obsługę / Otwórz sprawę contextual primary -> LeadStartServiceDialog/startLeadToCaseHandoff",
+        "Quick actions note/task/event/brak -> openContextQuickAction via ContextActionDialogs host"
+      ],
       "VISUAL_SOT_OWNER": "PAGE_SHELL + SURFACES (closeflow-surfaces-and-cards.css) + CARDS_TILES (closeflow-metrics.css) + RIGHT_RAIL (closeflow-records-and-rails.css) + BUTTONS_ACTIONS",
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, diff PASS, preview-first not form wall, edit populates, single status pill STAGE77 verified, no dead handlers LeadDetail.tsx:882",
@@ -164,9 +258,17 @@
       "TARGET_ROUTE": "/leads modal",
       "TARGET_STATE": "Dodaj leada — modal",
       "PRIMARY_PAGE": "src/components/ClientCreateDialog.tsx lead variant + src/pages/Leads.tsx trigger",
-      "SHARED_COMPONENTS": ["Dialog (closeflow-dialogs.css)", "FormField/Input/Select/Textarea (closeflow-dialogs.css)", "FormFooter (closeflow-dialogs.css)"],
+      "SHARED_COMPONENTS": [
+        "Dialog (closeflow-dialogs.css)",
+        "FormField/Input/Select/Textarea (closeflow-dialogs.css)",
+        "FormFooter (closeflow-dialogs.css)"
+      ],
       "REAL_DATA_SOURCE": "insertLeadToSupabase via supabase-fallback workspace scoped, duplicate check -> 013",
-      "VISIBLE_ACTIONS": ["Dodaj leada -> open Dialog receives no context", "fields nazwa*/źródło*/wartość/status/ostatni kontakt/email/telefon/firma/notes grouped", "Footer Anuluj + Utwórz leada primary, close X, ESC, validation required*, submit -> create -> toast -> close -> refetch, cancel discards"],
+      "VISIBLE_ACTIONS": [
+        "Dodaj leada -> open Dialog receives no context",
+        "fields nazwa*/źródło*/wartość/status/ostatni kontakt/email/telefon/firma/notes grouped",
+        "Footer Anuluj + Utwórz leada primary, close X, ESC, validation required*, submit -> create -> toast -> close -> refetch, cancel discards"
+      ],
       "VISUAL_SOT_OWNER": "MODALS/FORMS (closeflow-dialogs.css: For-forms) + BUTTONS_ACTIONS",
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, modal trigger exists clickable, correct context, submit invokes real persistence, cancel works, no duplicate handler",
@@ -179,9 +281,16 @@
       "TARGET_ROUTE": "/leads/:leadId modal",
       "TARGET_STATE": "Edytuj leada — modal",
       "PRIMARY_PAGE": "src/pages/LeadDetail.tsx:882 editLead state + ClientCreateDialog edit mode",
-      "SHARED_COMPONENTS": ["Dialog", "FormField prepopulated"],
+      "SHARED_COMPONENTS": [
+        "Dialog",
+        "FormField prepopulated"
+      ],
       "REAL_DATA_SOURCE": "updateLeadInSupabase with leadId workspace scoped",
-      "VISIBLE_ACTIONS": ["Edytuj -> open prepopulated same fields as 011", "Save -> updateLeadInSupabase -> close -> refetch detail", "Cancel/close -> discard, ESC, focus trap"],
+      "VISIBLE_ACTIONS": [
+        "Edytuj -> open prepopulated same fields as 011",
+        "Save -> updateLeadInSupabase -> close -> refetch detail",
+        "Cancel/close -> discard, ESC, focus trap"
+      ],
       "VISUAL_SOT_OWNER": "MODALS/FORMS",
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, edit populates existing values, validation, real update path, cancel works",
@@ -194,9 +303,19 @@
       "TARGET_ROUTE": "/leads modal",
       "TARGET_STATE": "Konflikt duplikatu leada",
       "PRIMARY_PAGE": "src/components/EntityConflictDialog.tsx:1",
-      "SHARED_COMPONENTS": ["Dialog", "ListRow candidate", "Button cluster", "StatusPill"],
+      "SHARED_COMPONENTS": [
+        "Dialog",
+        "ListRow candidate",
+        "Button cluster",
+        "StatusPill"
+      ],
       "REAL_DATA_SOURCE": "entity-conflicts duplicate check via supabase search, candidate query",
-      "VISIBLE_ACTIONS": ["Dodaj leada duplicate -> EntityConflictDialog shows candidates", "Otwórz istniejący per candidate -> navigate /leads/:candidateId", "Anuluj -> close", "Dodaj mimo to -> force create via insertLead with duplicate flag"],
+      "VISIBLE_ACTIONS": [
+        "Dodaj leada duplicate -> EntityConflictDialog shows candidates",
+        "Otwórz istniejący per candidate -> navigate /leads/:candidateId",
+        "Anuluj -> close",
+        "Dodaj mimo to -> force create via insertLead with duplicate flag"
+      ],
       "VISUAL_SOT_OWNER": "MODALS (closeflow-dialogs.css) + LIST_ROWS (closeflow-records-and-rails.css)",
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, conflict dialog trigger+context+submit invokes real path, no placeholder",
@@ -209,14 +328,24 @@
       "TARGET_ROUTE": "/leads/:leadId modal",
       "TARGET_STATE": "Lead — Dodaj zadanie",
       "PRIMARY_PAGE": "src/components/TaskCreateDialog.tsx",
-      "SHARED_COMPONENTS": ["Dialog", "FormField", "FormFooter"],
+      "SHARED_COMPONENTS": [
+        "Dialog",
+        "FormField",
+        "FormFooter"
+      ],
       "REAL_DATA_SOURCE": "tasks create with lead relation",
-      "VISIBLE_ACTIONS": ["title/type/relation/date/time/priority/status/reminder/recurrence", "Save"],
-      "VISUAL_SOT_OWNER": "MODALS/FORMS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "VISIBLE_ACTIONS": [
+        "Zadanie quick action -> open Dialog receives leadId",
+        "fields title*/type/relation leadId/date/time/priority/status/reminder/recurrence",
+        "Footer Anuluj+Zapisz",
+        "ESC/focus",
+        "submit insertTaskToSupabase leadId workspace"
+      ],
+      "VISUAL_SOT_OWNER": "MODALS/FORMS (closeflow-dialogs.css) + BUTTONS_ACTIONS",
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS, diff PASS, TaskCreateDialog trigger/context/validation/submit real path via insertTaskToSupabase leadId, cancel/focus PASS",
+      "BROWSER_PROOF": "_project/runs/FORTECA_014_BROWSER_PROOF.md — Zadanie quick action -> Dialog with lead context, grouped fields, footer Cancel+Zapisz PASS",
+      "COMMIT_SHA": "PENDING_014_020_BATCH"
     },
     {
       "REFERENCE_ID": "015",
@@ -224,14 +353,21 @@
       "TARGET_ROUTE": "/leads/:leadId modal",
       "TARGET_STATE": "Lead — Dodaj notatkę",
       "PRIMARY_PAGE": "src/components/ContextNoteDialog.tsx",
-      "SHARED_COMPONENTS": ["Dialog", "TextareaField"],
+      "SHARED_COMPONENTS": [
+        "Dialog",
+        "TextareaField"
+      ],
       "REAL_DATA_SOURCE": "notes create",
-      "VISIBLE_ACTIONS": ["note textarea", "Save"],
+      "VISIBLE_ACTIONS": [
+        "Notatka -> ContextNoteDialog",
+        "Textarea + relation",
+        "Save insertActivity note_added"
+      ],
       "VISUAL_SOT_OWNER": "MODALS/FORMS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS, diff PASS, ContextNoteDialog trigger/context/submit insertActivityToSupabase note_added PASS",
+      "BROWSER_PROOF": "_project/runs/FORTECA_015_BROWSER_PROOF.md — Notatka Textarea + relation, Save real path PASS",
+      "COMMIT_SHA": "PENDING_014_020_BATCH"
     },
     {
       "REFERENCE_ID": "016",
@@ -239,14 +375,21 @@
       "TARGET_ROUTE": "/leads/:leadId modal",
       "TARGET_STATE": "Lead — Dodaj spotkanie/wydarzenie",
       "PRIMARY_PAGE": "src/components/EventCreateDialog.tsx",
-      "SHARED_COMPONENTS": ["Dialog", "FormField"],
+      "SHARED_COMPONENTS": [
+        "Dialog",
+        "FormField"
+      ],
       "REAL_DATA_SOURCE": "calendar-items events create",
-      "VISIBLE_ACTIONS": ["event fields date/time/type/recurrence/reminder", "Save"],
-      "VISUAL_SOT_OWNER": "MODALS/FORMS + CALENDAR",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "VISIBLE_ACTIONS": [
+        "Wydarzenie -> EventCreateDialog",
+        "fields Tytul Typ Data Start Koniec etc single calendar icon",
+        "Save insertEventToSupabase"
+      ],
+      "VISUAL_SOT_OWNER": "MODALS/FORMS + CALENDAR (closeflow-dialogs.css + closeflow-calendar.css)",
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS, diff PASS, EventCreateDialog single calendar icon per spec 3.6, submit insertEventToSupabase PASS",
+      "BROWSER_PROOF": "_project/runs/FORTECA_016_BROWSER_PROOF.md — Wydarzenie fields+single icon PASS",
+      "COMMIT_SHA": "PENDING_014_020_BATCH"
     },
     {
       "REFERENCE_ID": "017",
@@ -254,14 +397,23 @@
       "TARGET_ROUTE": "/leads/:leadId modal",
       "TARGET_STATE": "Lead — Dodaj brak/blokadę",
       "PRIMARY_PAGE": "src/components/AddCaseMissingItemDialog.tsx",
-      "SHARED_COMPONENTS": ["Dialog", "Select", "FormField", "Checkbox"],
+      "SHARED_COMPONENTS": [
+        "Dialog",
+        "Select",
+        "FormField",
+        "Checkbox"
+      ],
       "REAL_DATA_SOURCE": "missing-items stage227c1",
-      "VISIBLE_ACTIONS": ["type/title/description/blocksProgress/deadline", "Save"],
+      "VISIBLE_ACTIONS": [
+        "Brak -> AddCaseMissingItemDialog",
+        "type/title/description/blocksProgress",
+        "Save missing_item task"
+      ],
       "VISUAL_SOT_OWNER": "MODALS/FORMS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS, diff PASS, AddCaseMissingItemDialog lead variant type/title/description/blocksProgress validated -> missing_item task create PASS",
+      "BROWSER_PROOF": "_project/runs/FORTECA_017_BROWSER_PROOF.md — Brak modal grouped PASS",
+      "COMMIT_SHA": "PENDING_014_020_BATCH"
     },
     {
       "REFERENCE_ID": "018",
@@ -269,14 +421,24 @@
       "TARGET_ROUTE": "/leads/:leadId manager",
       "TARGET_STATE": "Lead — Braki i blokady lista",
       "PRIMARY_PAGE": "src/pages/LeadDetail.tsx blocker manager",
-      "SHARED_COMPONENTS": ["Dialog/Card", "ListRow", "StatusPill", "ActionIcon"],
+      "SHARED_COMPONENTS": [
+        "Dialog/Card",
+        "ListRow",
+        "StatusPill",
+        "ActionIcon"
+      ],
       "REAL_DATA_SOURCE": "missing-items fetch for lead",
-      "VISIBLE_ACTIONS": ["Zobacz wszystkie braki", "toggle blocker", "Edit/Delete/Resolve"],
-      "VISUAL_SOT_OWNER": "LIST_ROWS + MODALS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "VISIBLE_ACTIONS": [
+        "Zobacz wszystkie braki -> MissingItemsManagerDialog",
+        "active list from linkedTasks",
+        "toggle Blokuje",
+        "Resolve/Edit/Delete"
+      ],
+      "VISUAL_SOT_OWNER": "LIST_ROWS (closeflow-records-and-rails.css) + MODALS",
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS, diff PASS, MissingItemsManagerDialog active source linkedTasks only, toggle/edit/delete wired optimistic+soft-delete+refresh PASS",
+      "BROWSER_PROOF": "_project/runs/FORTECA_018_BROWSER_PROOF.md — Zobacz wszystkie braki manager, active list PASS",
+      "COMMIT_SHA": "PENDING_014_020_BATCH"
     },
     {
       "REFERENCE_ID": "019",
@@ -284,14 +446,19 @@
       "TARGET_ROUTE": "/leads/:leadId prompt",
       "TARGET_STATE": "Lead — Ustaw kolejny krok prompt",
       "PRIMARY_PAGE": "src/pages/LeadDetail.tsx prompt",
-      "SHARED_COMPONENTS": ["SurfaceCard/Modal light", "Button cluster"],
+      "SHARED_COMPONENTS": [
+        "SurfaceCard/Modal light",
+        "Button cluster"
+      ],
       "REAL_DATA_SOURCE": "lead next-action state",
-      "VISIBLE_ACTIONS": ["Jutro", "Niestandardowo", "Zostaw bez kroku"],
-      "VISUAL_SOT_OWNER": "SURFACES + BUTTONS_ACTIONS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "VISIBLE_ACTIONS": [
+        "light prompt Jutro/Niestandardowo/Zostaw bez kroku wired"
+      ],
+      "VISUAL_SOT_OWNER": "SURFACES (closeflow-surfaces-and-cards.css) + BUTTONS_ACTIONS",
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS, diff PASS, Next step prompt Jutro/Niestandardowo/Zostaw bez kroku wired persistence light card not blocking PASS",
+      "BROWSER_PROOF": "_project/runs/FORTECA_019_BROWSER_PROOF.md — light prompt 3 actions wired PASS",
+      "COMMIT_SHA": "PENDING_014_020_BATCH"
     },
     {
       "REFERENCE_ID": "020",
@@ -299,14 +466,22 @@
       "TARGET_ROUTE": "/leads/:leadId modal",
       "TARGET_STATE": "Lead — Rozpocznij obsługę / utwórz sprawę",
       "PRIMARY_PAGE": "src/components/LeadStartServiceDialog.tsx",
-      "SHARED_COMPONENTS": ["Dialog", "FormField", "TemplateSelect"],
+      "SHARED_COMPONENTS": [
+        "Dialog",
+        "FormField",
+        "TemplateSelect"
+      ],
       "REAL_DATA_SOURCE": "lead-case-handoff, create-client-case",
-      "VISIBLE_ACTIONS": ["Create and redirect", "Rozpocznij obsługę"],
+      "VISIBLE_ACTIONS": [
+        "Rozpocznij obsługę -> LeadStartServiceDialog",
+        "Title/Template",
+        "Create+redirect /cases/:newCaseId"
+      ],
       "VISUAL_SOT_OWNER": "MODALS/FORMS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS, diff PASS, LeadStartServiceDialog Rozpocznij obsługę -> lead-case-handoff create case + migrate -> navigate /cases/:id PASS",
+      "BROWSER_PROOF": "_project/runs/FORTECA_020_BROWSER_PROOF.md — Rozpocznij obsługę modal create+redirect PASS",
+      "COMMIT_SHA": "PENDING_014_020_BATCH"
     },
     {
       "REFERENCE_ID": "021",
@@ -314,9 +489,19 @@
       "TARGET_ROUTE": "/clients",
       "TARGET_STATE": "Klienci — Wszyscy",
       "PRIMARY_PAGE": "src/pages/Clients.tsx",
-      "SHARED_COMPONENTS": ["PageHeader", "MetricGrid", "Search", "ListRow"],
+      "SHARED_COMPONENTS": [
+        "PageHeader",
+        "MetricGrid",
+        "Search",
+        "ListRow"
+      ],
       "REAL_DATA_SOURCE": "clients all workspace scoped",
-      "VISIBLE_ACTIONS": ["Dodaj klienta", "search", "filter pills", "row -> ClientDetail"],
+      "VISIBLE_ACTIONS": [
+        "Dodaj klienta",
+        "search",
+        "filter pills",
+        "row -> ClientDetail"
+      ],
       "VISUAL_SOT_OWNER": "PAGE_SHELL + SEARCH + LIST_ROWS",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
@@ -329,9 +514,15 @@
       "TARGET_ROUTE": "/clients",
       "TARGET_STATE": "Klienci — Bez sprawy",
       "PRIMARY_PAGE": "src/pages/Clients.tsx",
-      "SHARED_COMPONENTS": ["PageHeader", "MetricGrid", "ListRow"],
+      "SHARED_COMPONENTS": [
+        "PageHeader",
+        "MetricGrid",
+        "ListRow"
+      ],
       "REAL_DATA_SOURCE": "clients without case",
-      "VISIBLE_ACTIONS": ["filter Bez sprawy"],
+      "VISIBLE_ACTIONS": [
+        "filter Bez sprawy"
+      ],
       "VISUAL_SOT_OWNER": "LIST_ROWS",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
@@ -344,9 +535,16 @@
       "TARGET_ROUTE": "/clients",
       "TARGET_STATE": "Klienci — Wymaga kontaktu",
       "PRIMARY_PAGE": "src/pages/Clients.tsx",
-      "SHARED_COMPONENTS": ["PageHeader", "MetricGrid", "ListRow", "StatusPill"],
+      "SHARED_COMPONENTS": [
+        "PageHeader",
+        "MetricGrid",
+        "ListRow",
+        "StatusPill"
+      ],
       "REAL_DATA_SOURCE": "clients need-contact cadence",
-      "VISIBLE_ACTIONS": ["cadence badges"],
+      "VISIBLE_ACTIONS": [
+        "cadence badges"
+      ],
       "VISUAL_SOT_OWNER": "BADGES + LIST_ROWS",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
@@ -359,9 +557,15 @@
       "TARGET_ROUTE": "/clients",
       "TARGET_STATE": "Klienci — Aktywna prowizja",
       "PRIMARY_PAGE": "src/pages/Clients.tsx",
-      "SHARED_COMPONENTS": ["PageHeader", "MetricGrid", "ListRow"],
+      "SHARED_COMPONENTS": [
+        "PageHeader",
+        "MetricGrid",
+        "ListRow"
+      ],
       "REAL_DATA_SOURCE": "clients active commission, client-finance",
-      "VISIBLE_ACTIONS": ["commission metric"],
+      "VISIBLE_ACTIONS": [
+        "commission metric"
+      ],
       "VISUAL_SOT_OWNER": "CARDS_TILES + LIST_ROWS",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
@@ -374,9 +578,15 @@
       "TARGET_ROUTE": "/clients",
       "TARGET_STATE": "Klienci — Archiwalne",
       "PRIMARY_PAGE": "src/pages/Clients.tsx",
-      "SHARED_COMPONENTS": ["PageHeader", "ListRow", "Button"],
+      "SHARED_COMPONENTS": [
+        "PageHeader",
+        "ListRow",
+        "Button"
+      ],
       "REAL_DATA_SOURCE": "clients archived",
-      "VISIBLE_ACTIONS": ["Restore per row"],
+      "VISIBLE_ACTIONS": [
+        "Restore per row"
+      ],
       "VISUAL_SOT_OWNER": "LIST_ROWS + MODALS",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
@@ -389,9 +599,20 @@
       "TARGET_ROUTE": "/clients/:clientId",
       "TARGET_STATE": "Szczegół klienta",
       "PRIMARY_PAGE": "src/pages/ClientDetail.tsx",
-      "SHARED_COMPONENTS": ["PageHeader", "EntityContactCard", "MetricTile", "Tabs", "Right rail"],
+      "SHARED_COMPONENTS": [
+        "PageHeader",
+        "EntityContactCard",
+        "MetricTile",
+        "Tabs",
+        "Right rail"
+      ],
       "REAL_DATA_SOURCE": "clients single, client-cases, client-finance summary",
-      "VISIBLE_ACTIONS": ["Nowa sprawa primary", "Edytuj", "overflow", "quick actions note/task/event/brak"],
+      "VISIBLE_ACTIONS": [
+        "Nowa sprawa primary",
+        "Edytuj",
+        "overflow",
+        "quick actions note/task/event/brak"
+      ],
       "VISUAL_SOT_OWNER": "PAGE_SHELL + RIGHT_RAIL + CARDS_TILES + MODALS",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
@@ -404,9 +625,15 @@
       "TARGET_ROUTE": "/clients/:clientId",
       "TARGET_STATE": "Szczegół klienta — bez aktywnej sprawy",
       "PRIMARY_PAGE": "src/pages/ClientDetail.tsx",
-      "SHARED_COMPONENTS": ["PageHeader", "EntityContactCard", "EmptyState"],
+      "SHARED_COMPONENTS": [
+        "PageHeader",
+        "EntityContactCard",
+        "EmptyState"
+      ],
       "REAL_DATA_SOURCE": "clients single with activeCases=0",
-      "VISIBLE_ACTIONS": ["CTA Utwórz pierwszą sprawę"],
+      "VISIBLE_ACTIONS": [
+        "CTA Utwórz pierwszą sprawę"
+      ],
       "VISUAL_SOT_OWNER": "SURFACES + BUTTONS_ACTIONS",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
@@ -419,9 +646,16 @@
       "TARGET_ROUTE": "/clients/:clientId",
       "TARGET_STATE": "Szczegół klienta — sprawy zamknięte",
       "PRIMARY_PAGE": "src/pages/ClientDetail.tsx",
-      "SHARED_COMPONENTS": ["Tabs", "ListRow", "Button"],
+      "SHARED_COMPONENTS": [
+        "Tabs",
+        "ListRow",
+        "Button"
+      ],
       "REAL_DATA_SOURCE": "client-cases closed query",
-      "VISIBLE_ACTIONS": ["Przywróć sprawę per closed row", "row nav"],
+      "VISIBLE_ACTIONS": [
+        "Przywróć sprawę per closed row",
+        "row nav"
+      ],
       "VISUAL_SOT_OWNER": "LIST_ROWS + BUTTONS_ACTIONS",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
@@ -434,9 +668,17 @@
       "TARGET_ROUTE": "/clients modal",
       "TARGET_STATE": "Dodaj klienta — modal",
       "PRIMARY_PAGE": "src/components/ClientCreateDialog.tsx",
-      "SHARED_COMPONENTS": ["Dialog", "FormField", "Checkbox conditional"],
+      "SHARED_COMPONENTS": [
+        "Dialog",
+        "FormField",
+        "Checkbox conditional"
+      ],
       "REAL_DATA_SOURCE": "clients create + optional case",
-      "VISIBLE_ACTIONS": ["name/company/email/phone/lastContact/notes", "Utwórz od razu sprawę checkbox", "Anuluj/Utwórz"],
+      "VISIBLE_ACTIONS": [
+        "name/company/email/phone/lastContact/notes",
+        "Utwórz od razu sprawę checkbox",
+        "Anuluj/Utwórz"
+      ],
       "VISUAL_SOT_OWNER": "MODALS/FORMS",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
@@ -449,9 +691,16 @@
       "TARGET_ROUTE": "/clients/:clientId modal",
       "TARGET_STATE": "Edytuj klienta — modal",
       "PRIMARY_PAGE": "src/components/ClientCreateDialog.tsx",
-      "SHARED_COMPONENTS": ["Dialog", "FormField"],
+      "SHARED_COMPONENTS": [
+        "Dialog",
+        "FormField"
+      ],
       "REAL_DATA_SOURCE": "clients update",
-      "VISIBLE_ACTIONS": ["prepopulated fields", "Zapisz", "Anuluj"],
+      "VISIBLE_ACTIONS": [
+        "prepopulated fields",
+        "Zapisz",
+        "Anuluj"
+      ],
       "VISUAL_SOT_OWNER": "MODALS/FORMS",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
@@ -464,9 +713,16 @@
       "TARGET_ROUTE": "/clients/:clientId modal",
       "TARGET_STATE": "Klient — Nowa sprawa",
       "PRIMARY_PAGE": "src/components/CreateClientCaseDialog.tsx",
-      "SHARED_COMPONENTS": ["Dialog", "FormField", "TemplateSelect"],
+      "SHARED_COMPONENTS": [
+        "Dialog",
+        "FormField",
+        "TemplateSelect"
+      ],
       "REAL_DATA_SOURCE": "create-client-case with clientId",
-      "VISIBLE_ACTIONS": ["Title/Template", "Utwórz sprawę"],
+      "VISIBLE_ACTIONS": [
+        "Title/Template",
+        "Utwórz sprawę"
+      ],
       "VISUAL_SOT_OWNER": "MODALS/FORMS",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
@@ -479,9 +735,19 @@
       "TARGET_ROUTE": "/cases",
       "TARGET_STATE": "Sprawy — Wszystkie",
       "PRIMARY_PAGE": "src/pages/Cases.tsx",
-      "SHARED_COMPONENTS": ["PageHeader", "MetricGrid", "Search", "ListRow with progress"],
+      "SHARED_COMPONENTS": [
+        "PageHeader",
+        "MetricGrid",
+        "Search",
+        "ListRow with progress"
+      ],
       "REAL_DATA_SOURCE": "cases all",
-      "VISIBLE_ACTIONS": ["Dodaj sprawę", "search", "filters", "row -> CaseDetail"],
+      "VISIBLE_ACTIONS": [
+        "Dodaj sprawę",
+        "search",
+        "filters",
+        "row -> CaseDetail"
+      ],
       "VISUAL_SOT_OWNER": "PAGE_SHELL + SEARCH + LIST_ROWS",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
@@ -494,9 +760,15 @@
       "TARGET_ROUTE": "/cases",
       "TARGET_STATE": "Sprawy — Czekają na klienta",
       "PRIMARY_PAGE": "src/pages/Cases.tsx",
-      "SHARED_COMPONENTS": ["PageHeader", "MetricGrid", "ListRow"],
+      "SHARED_COMPONENTS": [
+        "PageHeader",
+        "MetricGrid",
+        "ListRow"
+      ],
       "REAL_DATA_SOURCE": "cases waiting",
-      "VISIBLE_ACTIONS": ["filter Czekają"],
+      "VISIBLE_ACTIONS": [
+        "filter Czekają"
+      ],
       "VISUAL_SOT_OWNER": "LIST_ROWS + BADGES",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
@@ -509,9 +781,15 @@
       "TARGET_ROUTE": "/cases",
       "TARGET_STATE": "Sprawy — Zablokowane",
       "PRIMARY_PAGE": "src/pages/Cases.tsx",
-      "SHARED_COMPONENTS": ["PageHeader", "MetricGrid", "ListRow"],
+      "SHARED_COMPONENTS": [
+        "PageHeader",
+        "MetricGrid",
+        "ListRow"
+      ],
       "REAL_DATA_SOURCE": "cases blocked",
-      "VISIBLE_ACTIONS": ["blocked badges"],
+      "VISIBLE_ACTIONS": [
+        "blocked badges"
+      ],
       "VISUAL_SOT_OWNER": "LIST_ROWS + BADGES",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
@@ -524,9 +802,15 @@
       "TARGET_ROUTE": "/cases",
       "TARGET_STATE": "Sprawy — Gotowe do startu",
       "PRIMARY_PAGE": "src/pages/Cases.tsx",
-      "SHARED_COMPONENTS": ["PageHeader", "MetricGrid", "ListRow"],
+      "SHARED_COMPONENTS": [
+        "PageHeader",
+        "MetricGrid",
+        "ListRow"
+      ],
       "REAL_DATA_SOURCE": "cases readyToStart",
-      "VISIBLE_ACTIONS": ["ready badges"],
+      "VISIBLE_ACTIONS": [
+        "ready badges"
+      ],
       "VISUAL_SOT_OWNER": "LIST_ROWS + BADGES",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
@@ -539,9 +823,18 @@
       "TARGET_ROUTE": "/cases modal",
       "TARGET_STATE": "Dodaj sprawę — modal",
       "PRIMARY_PAGE": "src/components/CreateClientCaseDialog.tsx (generic case create)",
-      "SHARED_COMPONENTS": ["Dialog", "FormField", "ClientPicker"],
+      "SHARED_COMPONENTS": [
+        "Dialog",
+        "FormField",
+        "ClientPicker"
+      ],
       "REAL_DATA_SOURCE": "cases create",
-      "VISIBLE_ACTIONS": ["Client picker", "Title", "Template", "Create"],
+      "VISIBLE_ACTIONS": [
+        "Client picker",
+        "Title",
+        "Template",
+        "Create"
+      ],
       "VISUAL_SOT_OWNER": "MODALS/FORMS",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
@@ -554,9 +847,15 @@
       "TARGET_ROUTE": "/cases/:caseId modal",
       "TARGET_STATE": "Edytuj sprawę — modal",
       "PRIMARY_PAGE": "src/pages/CaseDetail.tsx edit dialog",
-      "SHARED_COMPONENTS": ["Dialog", "FormField"],
+      "SHARED_COMPONENTS": [
+        "Dialog",
+        "FormField"
+      ],
       "REAL_DATA_SOURCE": "cases update",
-      "VISIBLE_ACTIONS": ["prepopulated fields", "Save"],
+      "VISIBLE_ACTIONS": [
+        "prepopulated fields",
+        "Save"
+      ],
       "VISUAL_SOT_OWNER": "MODALS/FORMS",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
@@ -569,9 +868,20 @@
       "TARGET_ROUTE": "/cases/:caseId tab Obsługa",
       "TARGET_STATE": "Szczegół sprawy — Obsługa",
       "PRIMARY_PAGE": "src/pages/CaseDetail.tsx tab Obsługa",
-      "SHARED_COMPONENTS": ["PageHeader", "Tabs", "SurfaceCard", "ListRow", "Right rail Finance"],
+      "SHARED_COMPONENTS": [
+        "PageHeader",
+        "Tabs",
+        "SurfaceCard",
+        "ListRow",
+        "Right rail Finance"
+      ],
       "REAL_DATA_SOURCE": "cases single, checklists, missing-items, tasks/events, finance, portal token",
-      "VISIBLE_ACTIONS": ["Portal klienta generate/copy", "Edytuj", "quick actions note/task/event/brak", "finance Add payment"],
+      "VISIBLE_ACTIONS": [
+        "Portal klienta generate/copy",
+        "Edytuj",
+        "quick actions note/task/event/brak",
+        "finance Add payment"
+      ],
       "VISUAL_SOT_OWNER": "PAGE_SHELL + RIGHT_RAIL + LIST_ROWS + MODALS",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
@@ -584,9 +894,16 @@
       "TARGET_ROUTE": "/cases/:caseId tab Checklisty",
       "TARGET_STATE": "Szczegół sprawy — Checklisty (ignore AI extra tabs)",
       "PRIMARY_PAGE": "src/pages/CaseDetail.tsx tab Checklisty",
-      "SHARED_COMPONENTS": ["Progress summary", "ListRow checklist items", "StatusPill"],
+      "SHARED_COMPONENTS": [
+        "Progress summary",
+        "ListRow checklist items",
+        "StatusPill"
+      ],
       "REAL_DATA_SOURCE": "cases checklists/items",
-      "VISIBLE_ACTIONS": ["Add item", "verify/reject/accept per row"],
+      "VISIBLE_ACTIONS": [
+        "Add item",
+        "verify/reject/accept per row"
+      ],
       "VISUAL_SOT_OWNER": "SURFACES + LIST_ROWS + MODALS",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
@@ -599,9 +916,16 @@
       "TARGET_ROUTE": "/cases/:caseId tab Historia",
       "TARGET_STATE": "Szczegół sprawy — Historia (ignore AI extra tabs)",
       "PRIMARY_PAGE": "src/pages/CaseDetail.tsx tab Historia",
-      "SHARED_COMPONENTS": ["Timeline", "ListRow", "StatusPill"],
+      "SHARED_COMPONENTS": [
+        "Timeline",
+        "ListRow",
+        "StatusPill"
+      ],
       "REAL_DATA_SOURCE": "cases history/activity timeline",
-      "VISIBLE_ACTIONS": ["Expand technical payload", "Open related record"],
+      "VISIBLE_ACTIONS": [
+        "Expand technical payload",
+        "Open related record"
+      ],
       "VISUAL_SOT_OWNER": "LIST_ROWS + SURFACES",
       "IMPLEMENTATION_STATUS": "TODO",
       "TEST_RECEIPT": null,
