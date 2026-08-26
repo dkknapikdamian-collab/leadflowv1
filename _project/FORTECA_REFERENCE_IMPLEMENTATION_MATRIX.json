@@ -617,7 +617,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS reuse, ClientDetail header PageHeader Nowa sprawa primary wiring verified, EntityContactCard left, hero 2 cards, tabs, right rail quick actions",
       "BROWSER_PROOF": "_project/runs/FORTECA_026_BROWSER_PROOF.md — Klient detail full PASS",
-      "COMMIT_SHA": "PENDING_026_031_BATCH"
+      "COMMIT_SHA": "04cfeafdb20fe428b3ed77629ec858c407d60526"
     },
     {
       "REFERENCE_ID": "027",
@@ -638,7 +638,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS reuse, empty active case state with CTA Utwórz pierwszą sprawę wired",
       "BROWSER_PROOF": "_project/runs/FORTECA_027_BROWSER_PROOF.md — no active case empty PASS",
-      "COMMIT_SHA": "PENDING_026_031_BATCH"
+      "COMMIT_SHA": "04cfeafdb20fe428b3ed77629ec858c407d60526"
     },
     {
       "REFERENCE_ID": "028",
@@ -660,7 +660,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS reuse, closed cases Przywróć wired via patch status",
       "BROWSER_PROOF": "_project/runs/FORTECA_028_BROWSER_PROOF.md — closed cases Przywróć PASS",
-      "COMMIT_SHA": "PENDING_026_031_BATCH"
+      "COMMIT_SHA": "04cfeafdb20fe428b3ed77629ec858c407d60526"
     },
     {
       "REFERENCE_ID": "029",
@@ -683,7 +683,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, ClientCreateDialog add modal grouped fields, checkbox conditional, submit create client (+case) real path",
       "BROWSER_PROOF": "_project/runs/FORTECA_029_BROWSER_PROOF.md — Dodaj klienta modal PASS",
-      "COMMIT_SHA": "PENDING_026_031_BATCH"
+      "COMMIT_SHA": "04cfeafdb20fe428b3ed77629ec858c407d60526"
     },
     {
       "REFERENCE_ID": "030",
@@ -705,7 +705,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, edit modal prepopulated, update real path",
       "BROWSER_PROOF": "_project/runs/FORTECA_030_BROWSER_PROOF.md — Edytuj klienta PASS",
-      "COMMIT_SHA": "PENDING_026_031_BATCH"
+      "COMMIT_SHA": "04cfeafdb20fe428b3ed77629ec858c407d60526"
     },
     {
       "REFERENCE_ID": "031",
@@ -727,7 +727,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, CreateClientCaseDialog Nowa sprawa Title/Template create case for client PASS",
       "BROWSER_PROOF": "_project/runs/FORTECA_031_BROWSER_PROOF.md — Nowa sprawa modal PASS",
-      "COMMIT_SHA": "PENDING_026_031_BATCH"
+      "COMMIT_SHA": "04cfeafdb20fe428b3ed77629ec858c407d60526"
     },
     {
       "REFERENCE_ID": "032",
