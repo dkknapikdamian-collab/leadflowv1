@@ -752,7 +752,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS reuse, Cases All earliest owner PAGE_SHELL+SEARCH+LIST_ROWS gap13 radius16, progress bar, filters wired",
       "BROWSER_PROOF": "_project/runs/FORTECA_032_BROWSER_PROOF.md — header CENTRUM OBSŁUGI, metrics Wszystkie etc, search/filter/list PASS",
-      "COMMIT_SHA": "PENDING_032_035_BATCH"
+      "COMMIT_SHA": "45f225dd3273eb919d73824bb635af4a0f119604"
     },
     {
       "REFERENCE_ID": "033",
@@ -773,7 +773,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS reuse, filtered Czekają na klienta PASS",
       "BROWSER_PROOF": "_project/runs/FORTECA_033_BROWSER_PROOF.md — Czekają filtered PASS",
-      "COMMIT_SHA": "PENDING_032_035_BATCH"
+      "COMMIT_SHA": "45f225dd3273eb919d73824bb635af4a0f119604"
     },
     {
       "REFERENCE_ID": "034",
@@ -794,7 +794,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS reuse, blocked red taxonomy PASS",
       "BROWSER_PROOF": "_project/runs/FORTECA_034_BROWSER_PROOF.md — Zablokowane PASS",
-      "COMMIT_SHA": "PENDING_032_035_BATCH"
+      "COMMIT_SHA": "45f225dd3273eb919d73824bb635af4a0f119604"
     },
     {
       "REFERENCE_ID": "035",
@@ -815,7 +815,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS reuse, readyToStart green PASS",
       "BROWSER_PROOF": "_project/runs/FORTECA_035_BROWSER_PROOF.md — Gotowe PASS",
-      "COMMIT_SHA": "PENDING_032_035_BATCH"
+      "COMMIT_SHA": "45f225dd3273eb919d73824bb635af4a0f119604"
     },
     {
       "REFERENCE_ID": "036",
@@ -835,11 +835,11 @@
         "Template",
         "Create"
       ],
-      "VISUAL_SOT_OWNER": "MODALS/FORMS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "VISUAL_SOT_OWNER": "MODALS/FORMS (closeflow-dialogs.css)",
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS, diff PASS, Add case modal Client picker Title Template submit create case workspace scoped -> refetch, cancel/ESC/focus PASS",
+      "BROWSER_PROOF": "_project/runs/FORTECA_036_BROWSER_PROOF.md — Dodaj sprawę modal 16 radius grouped PASS",
+      "COMMIT_SHA": "PENDING_036_040_BATCH"
     },
     {
       "REFERENCE_ID": "037",
@@ -857,10 +857,10 @@
         "Save"
       ],
       "VISUAL_SOT_OWNER": "MODALS/FORMS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS, Edit case modal prepopulated, update real path PASS",
+      "BROWSER_PROOF": "_project/runs/FORTECA_037_BROWSER_PROOF.md — Edytuj sprawę prepopulated PASS",
+      "COMMIT_SHA": "PENDING_036_040_BATCH"
     },
     {
       "REFERENCE_ID": "038",
@@ -882,11 +882,11 @@
         "quick actions note/task/event/brak",
         "finance Add payment"
       ],
-      "VISUAL_SOT_OWNER": "PAGE_SHELL + RIGHT_RAIL + LIST_ROWS + MODALS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "VISUAL_SOT_OWNER": "PAGE_SHELL + RIGHT_RAIL (closeflow-records-and-rails.css) + SURFACES + LIST_ROWS + MODALS",
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS, CaseDetail Obsługa header back Sprawy+status+Portal/Edytuj, decision strip Kompletność/Braki/Następny ruch/Czeka, Tabs exactly 3 Obsługa/Checklisty/Historia, sections Notatki/Zadania/Wydarzenia/Braki + quick actions + finance rail wiring verified",
+      "BROWSER_PROOF": "_project/runs/FORTECA_038_BROWSER_PROOF.md — Obsługa tab full wiring PASS, tabs 3 exactly",
+      "COMMIT_SHA": "PENDING_036_040_BATCH"
     },
     {
       "REFERENCE_ID": "039",
@@ -904,11 +904,11 @@
         "Add item",
         "verify/reject/accept per row"
       ],
-      "VISUAL_SOT_OWNER": "SURFACES + LIST_ROWS + MODALS",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "VISUAL_SOT_OWNER": "SURFACES + LIST_ROWS (closeflow-records-and-rails.css) + MODALS",
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS, Checklisty progress summary, required vs optional, rows type/status/deadline/requested, verify/reject/accept + Add item wired, ignore extra AI tabs per manifest",
+      "BROWSER_PROOF": "_project/runs/FORTECA_039_BROWSER_PROOF.md — Checklisty as style ref only, extra tabs ignored documented deviation PASS",
+      "COMMIT_SHA": "PENDING_036_040_BATCH"
     },
     {
       "REFERENCE_ID": "040",
@@ -926,11 +926,11 @@
         "Expand technical payload",
         "Open related record"
       ],
-      "VISUAL_SOT_OWNER": "LIST_ROWS + SURFACES",
-      "IMPLEMENTATION_STATUS": "TODO",
-      "TEST_RECEIPT": null,
-      "BROWSER_PROOF": null,
-      "COMMIT_SHA": null
+      "VISUAL_SOT_OWNER": "LIST_ROWS + SURFACES (closeflow-surfaces-and-cards.css)",
+      "IMPLEMENTATION_STATUS": "PASS",
+      "TEST_RECEIPT": "TSC PASS, Historia timeline grouped, entity icon+severity, title/meta/relation/time, open related, payload collapsed, ignore extra tabs same as 039",
+      "BROWSER_PROOF": "_project/runs/FORTECA_040_BROWSER_PROOF.md — Historia timeline as style ref only, extra tabs ignored PASS",
+      "COMMIT_SHA": "PENDING_036_040_BATCH"
     }
   ]
 }
