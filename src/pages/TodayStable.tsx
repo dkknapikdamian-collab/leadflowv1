@@ -2153,22 +2153,39 @@ function TodayStable() {
               <CardContent className="space-y-3 p-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="text-sm font-bold text-slate-900">Widok Dziś</p>
+                    <p className="text-sm font-bold text-slate-900">Dostosuj widok</p>
                     <p className="text-xs font-medium text-slate-500">Wybierz, które kafelki i listy mają być widoczne. Odznaczone opcje nadal zostają na tej liście.</p>
                   </div>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      const allKeys = todayTiles.map((tile) => tile.key);
-                      setVisibleTodaySections(allKeys);
-                      writeTodayVisibleSections(allKeys);
-                      setExpandedSection('all');
-                    }}
-                  >
-                    Pokaż wszystko
-                  </Button>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        const defaults = [...TODAY_SECTION_KEYS];
+                        setVisibleTodaySections(defaults);
+                        writeTodayVisibleSections(defaults);
+                        setExpandedSection('all');
+                      }}
+                      data-cf-today-customizer-action="restore-default"
+                    >
+                      Przywróć domyślne
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        const allKeys = todayTiles.map((tile) => tile.key);
+                        setVisibleTodaySections(allKeys);
+                        writeTodayVisibleSections(allKeys);
+                        setExpandedSection('all');
+                      }}
+                      data-cf-today-customizer-action="show-all"
+                    >
+                      Pokaż wszystko
+                    </Button>
+                  </div>
                 </div>
                 <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
                   {todayTiles.map((tile) => {
@@ -2210,6 +2227,10 @@ function TodayStable() {
                       </label>
                     );
                   })}
+                </div>
+                <div className="mt-4 flex flex-wrap justify-end gap-2 border-t border-slate-100 pt-4" data-cf-today-customizer-footer="true">
+                  <Button type="button" variant="ghost" onClick={() => setTodayViewOpen(false)} data-cf-today-customizer-action="cancel">Anuluj</Button>
+                  <Button type="button" onClick={() => setTodayViewOpen(false)} data-cf-today-customizer-action="save">Zapisz</Button>
                 </div>
               </CardContent>
             </Card>
