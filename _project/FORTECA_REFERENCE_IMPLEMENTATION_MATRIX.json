@@ -156,7 +156,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, diff PASS, preview-first not form wall, edit populates, single status pill STAGE77 verified, no dead handlers LeadDetail.tsx:882",
       "BROWSER_PROOF": "_project/runs/FORTECA_010_BROWSER_PROOF.md — header pill once, contact card compact, decision 4 cards, center notes, right rail 5 actions, comparison to 010_lead_detail.webp PASS",
-      "COMMIT_SHA": "PENDING_010_BATCH"
+      "COMMIT_SHA": "c751e6125239d995c9e196be7c50544e891b7568"
     },
     {
       "REFERENCE_ID": "011",
@@ -171,7 +171,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, modal trigger exists clickable, correct context, submit invokes real persistence, cancel works, no duplicate handler",
       "BROWSER_PROOF": "_project/runs/FORTECA_011_BROWSER_PROOF.md — trigger Dodaj leada, light modal 16 radius, header+grouped fields+footer Cancel+Primary PASS",
-      "COMMIT_SHA": "PENDING_010_BATCH"
+      "COMMIT_SHA": "c751e6125239d995c9e196be7c50544e891b7568"
     },
     {
       "REFERENCE_ID": "012",
@@ -186,7 +186,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, edit populates existing values, validation, real update path, cancel works",
       "BROWSER_PROOF": "_project/runs/FORTECA_012_BROWSER_PROOF.md — prepopulated, Save updates via real path PASS",
-      "COMMIT_SHA": "PENDING_010_BATCH"
+      "COMMIT_SHA": "c751e6125239d995c9e196be7c50544e891b7568"
     },
     {
       "REFERENCE_ID": "013",
@@ -201,7 +201,7 @@
       "IMPLEMENTATION_STATUS": "PASS",
       "TEST_RECEIPT": "TSC PASS, conflict dialog trigger+context+submit invokes real path, no placeholder",
       "BROWSER_PROOF": "_project/runs/FORTECA_013_BROWSER_PROOF.md — candidate rows, 3 actions wired PASS",
-      "COMMIT_SHA": "PENDING_010_BATCH"
+      "COMMIT_SHA": "c751e6125239d995c9e196be7c50544e891b7568"
     },
     {
       "REFERENCE_ID": "014",
