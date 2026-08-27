@@ -20,12 +20,14 @@ import {
   ChevronRight,
   Clock3,
   Filter,
+  Info,
   Loader2,
   Mail,
   Plus,
   RotateCcw,
   Search,
   Wallet,
+  X,
 } from 'lucide-react';
 import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 import {
@@ -169,6 +171,13 @@ function getLeadPrimaryContact(lead: any) {
   if (email) return `E-mail: ${email}`;
   if (company) return `Firma: ${company}`;
   return 'Kontakt: -';
+}
+
+function getLeadInitials(lead: any, fallbackLabel: string) {
+  const label = String(lead?.company || lead?.name || fallbackLabel || 'Lead').trim();
+  const words = label.split(/\s+/).filter(Boolean);
+  if (words.length > 1) return `${words[0][0]}${words[1][0]}`.toUpperCase();
+  return label.slice(0, 2).toUpperCase() || 'LD';
 }
 
 function buildLeadSearchText(lead: any, linkedCase?: CaseRecord) {
@@ -337,6 +346,21 @@ export default function Leads() {
   useEffect(() => {
     if (searchParams.get('quick') !== 'lead') return;
     setIsNewLeadOpen(true);
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('quick');
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if (searchParams.get('quick') !== 'active') return;
+    setShowTrash(false);
+    setValueSortEnabled(false);
+    setCadenceFilter('all');
+    setStatusFilter('');
+    setSourceFilter('');
+    setRiskFilter('all');
+    setShowMoreFilters(false);
+    setQuickFilter('active');
     const nextParams = new URLSearchParams(searchParams);
     nextParams.delete('quick');
     setSearchParams(nextParams, { replace: true });
@@ -778,6 +802,8 @@ export default function Leads() {
     trash: trashLeads.length,
   };
 
+  const activeView = !showTrash && quickFilter === 'active';
+
   const toggleQuickFilter = (filter: LeadsQuickFilter) => {
     setShowTrash(false);
     setValueSortEnabled(false);
@@ -1000,6 +1026,22 @@ export default function Leads() {
           }
         />
 
+        {activeView ? (
+          <div className="leads-active-process-banner" data-frt005-active-process-banner="true" role="status">
+            <span className="leads-active-process-icon" aria-hidden="true"><Info className="h-4 w-4" /></span>
+            <strong>Aktywne leady wymagające pilnowania procesu</strong>
+            <button
+              type="button"
+              className="leads-active-process-dismiss"
+              onClick={() => toggleQuickFilter('active')}
+              aria-label="Usuń filtr aktywnych leadów"
+              title="Pokaż wszystkie leady"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        ) : null}
+
         <div className="grid-5">
           <StatShortcutCard
             label="Wszystkie"
@@ -1022,7 +1064,7 @@ export default function Leads() {
             ariaLabel="Pokaż aktywne leady"
             valueClassName="text-slate-900"
             iconClassName="bg-blue-50 text-blue-500"
-            helper="Obecnie w procesie"
+            helper={activeView ? 'W trakcie sprzedaży' : 'Obecnie w procesie'}
           />
 
           <StatShortcutCard
@@ -1065,7 +1107,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
           data-stage96-leads-right-rail-source-truth="true"
         >
           <div className="stack">
-            <div className="leads-filter-card" data-frt004-leads-filter-card="true">
+            <div className={`leads-filter-card${activeView ? ' leads-filter-card-active' : ''}`} data-frt004-leads-filter-card="true" data-frt005-leads-active-filter-card={activeView ? 'true' : 'false'}>
               <div className="leads-filter-search">
                 <div className="search cf-main-search cf-main-search-stage177" data-cf-main-search="true" data-leads-search="true" data-stage117-leads-search-anchor="true" data-cf-main-search-source="semantic173">
               <span aria-hidden="true"><Search className="w-4 h-4" /></span>
@@ -1104,21 +1146,51 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
 
 
 
-            <div className="leads-filter-toolbar" data-frt004-leads-filter-toolbar="true">
-              <label className="leads-filter-control">
-                <span>Status</span>
-                <select
-                  className={nativeSelectClassName()}
-                  value={statusFilter}
-                  onChange={(event) => setStatusFilter(event.target.value)}
-                  aria-label="Filtr statusu"
+            <div className="leads-filter-toolbar" data-frt004-leads-filter-toolbar="true" data-frt005-leads-active-toolbar={activeView ? 'true' : 'false'}>
+              {activeView ? (
+                <button
+                  type="button"
+                  className="leads-filter-chip leads-filter-active-chip"
+                  onClick={() => toggleQuickFilter('active')}
+                  aria-label="Usuń filtr Status: aktywne"
+                  data-frt005-active-filter-chip="true"
                 >
-                  <option value="">Wszystkie statusy</option>
-                  {LEAD_STATUS_OPTIONS.filter((status) => status.value !== 'archived').map((status) => (
-                    <option key={status.value} value={status.value}>{status.label}</option>
-                  ))}
-                </select>
-              </label>
+                  <span>Status: aktywne</span>
+                  <X className="h-3.5 w-3.5" aria-hidden="true" />
+                </button>
+              ) : (
+                <label className="leads-filter-control">
+                  <span>Status</span>
+                  <select
+                    className={nativeSelectClassName()}
+                    value={statusFilter}
+                    onChange={(event) => setStatusFilter(event.target.value)}
+                    aria-label="Filtr statusu"
+                  >
+                    <option value="">Wszystkie statusy</option>
+                    {LEAD_STATUS_OPTIONS.filter((status) => status.value !== 'archived').map((status) => (
+                      <option key={status.value} value={status.value}>{status.label}</option>
+                    ))}
+                  </select>
+                </label>
+              )}
+
+              {activeView ? (
+                <label className="leads-filter-control leads-active-cadence-control">
+                  <span>Ostatni kontakt</span>
+                  <select
+                    className={nativeSelectClassName()}
+                    value={cadenceFilter}
+                    onChange={(event) => setCadenceFilter(event.target.value as ContactCadenceBucketKey | 'all')}
+                    aria-label="Filtr ostatniego kontaktu"
+                  >
+                    <option value="all">Dowolny</option>
+                    {contactCadenceBuckets.map((bucket) => (
+                      <option key={bucket.key} value={bucket.key}>{bucket.label}</option>
+                    ))}
+                  </select>
+                </label>
+              ) : null}
 
               <label className="leads-filter-control">
                 <span>Źródło</span>
@@ -1128,7 +1200,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   onChange={(event) => setSourceFilter(event.target.value)}
                   aria-label="Filtr źródła"
                 >
-                  <option value="">Wszystkie źródła</option>
+                  <option value="">{activeView ? 'Dowolne' : 'Wszystkie źródła'}</option>
                   {LEAD_SOURCE_OPTIONS.map((source) => (
                     <option key={source.value} value={source.value}>{source.label}</option>
                   ))}
@@ -1143,7 +1215,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   onChange={(event) => setRiskFilter(event.target.value as 'all' | 'at-risk')}
                   aria-label="Filtr ryzyka"
                 >
-                  <option value="all">Wszystkie poziomy</option>
+                  <option value="all">{activeView ? 'Dowolne' : 'Wszystkie poziomy'}</option>
                   <option value="at-risk">Tylko zagrożone</option>
                 </select>
               </label>
@@ -1164,7 +1236,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 onClick={resetLeadFilters}
                 data-frt004-reset-filters="true"
               >
-                Reset
+                {activeView ? 'Wyczyść filtry' : 'Reset'}
               </button>
             </div>
             </div>
@@ -1340,17 +1412,32 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
             ) : null}
 
             <div className="table-card lead-table-card w-full max-w-none" data-stage25-lead-table-card="true" data-stage117-leads-list="true">
-              <div className="leads-table-head" data-frt004-leads-table-head="true" aria-hidden="true">
-                <span>Lead</span>
-                <span>Firma / kanał</span>
-                <span>Status</span>
-                <span>Wartość</span>
-                <span>Ostatni kontakt</span>
-                <span>Następny krok</span>
-                <span>Termin</span>
-                <span>Ryzyko</span>
-                <span>Właściciel</span>
-                <span>Akcje</span>
+              <div className={`leads-table-head${activeView ? ' leads-table-head-active' : ''}`} data-frt004-leads-table-head="true" data-frt005-active-table-head={activeView ? 'true' : 'false'} aria-hidden="true">
+                {activeView ? (
+                  <>
+                    <span>Lead / firma</span>
+                    <span>Status</span>
+                    <span>Wartość</span>
+                    <span>Ostatni kontakt</span>
+                    <span>Następny krok</span>
+                    <span>Termin</span>
+                    <span>Priorytet</span>
+                    <span>Akcje</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Lead</span>
+                    <span>Firma / kanał</span>
+                    <span>Status</span>
+                    <span>Wartość</span>
+                    <span>Ostatni kontakt</span>
+                    <span>Następny krok</span>
+                    <span>Termin</span>
+                    <span>Ryzyko</span>
+                    <span>Właściciel</span>
+                    <span>Akcje</span>
+                  </>
+                )}
               </div>
               {loading || workspaceLoading ? (
                 <div className="row row-empty">
@@ -1382,6 +1469,8 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   const nextAction = nextActionByLeadId.get(leadId);
                   const nextActionMeta = buildNextActionMeta(nextAction);
                   const pending = archivePendingId === leadId;
+                  const activeIdentityLabel = companyLabel !== 'Brak firmy' ? companyLabel : (lead.name || 'Lead bez nazwy');
+                  const activeIdentityMeta = companyLabel !== 'Brak firmy' && lead.name ? lead.name : contactLabel;
                   const operationalBadges = buildRecordOperationalBadges({
                     entityType: 'lead',
                     record: lead,
@@ -1393,12 +1482,24 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   return (
                     <div key={leadId || leadIndex} className="relative group/lead-row w-full" data-lead-card-wide-layout="true">
                       <Link to={`/leads/${leadId}`} className="block">
-                        <div className="row lead-row leads-table-row lead-card-value-block cf-lead-row-inline cf-lead-row-client-aligned" data-stage231d0c-lead-card-client-aligned="true" data-ui-dictionary="LeadListCard" data-stage25-lead-row="true" data-stage31-lead-thin-row="true" data-stage14e-leads-value-layout="true" data-frt004-leads-table-row="true">
+                        <div className={`row lead-row leads-table-row lead-card-value-block cf-lead-row-inline cf-lead-row-client-aligned${activeView ? ' leads-active-table-row' : ''}`} data-stage231d0c-lead-card-client-aligned="true" data-ui-dictionary="LeadListCard" data-stage25-lead-row="true" data-stage31-lead-thin-row="true" data-stage14e-leads-value-layout="true" data-frt004-leads-table-row="true" data-frt005-active-table-row={activeView ? 'true' : 'false'}>
                         <span className="index">{leadIndex + 1}</span>
 
                         <span className="lead-main-cell">
-                          <span className="title cf-lead-list-card-name" title={lead.name || 'Lead bez nazwy'}>{lead.name || 'Lead bez nazwy'}</span>
-                          <span className="sub lead-table-contact" title={contactLabel}>{contactLabel}</span>
+                          {activeView ? (
+                            <>
+                              <span className="lead-active-avatar" aria-hidden="true">{getLeadInitials(lead, activeIdentityLabel)}</span>
+                              <span className="lead-active-identity-copy">
+                                <span className="title cf-lead-list-card-name" title={activeIdentityLabel}>{activeIdentityLabel}</span>
+                                <span className="sub lead-table-contact" title={`${activeIdentityMeta}${activeIdentityMeta !== contactLabel ? ` · ${contactLabel}` : ''}`}>{activeIdentityMeta}</span>
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="title cf-lead-list-card-name" title={lead.name || 'Lead bez nazwy'}>{lead.name || 'Lead bez nazwy'}</span>
+                              <span className="sub lead-table-contact" title={contactLabel}>{contactLabel}</span>
+                            </>
+                          )}
                         </span>
 
                         <span className="lead-company-cell">

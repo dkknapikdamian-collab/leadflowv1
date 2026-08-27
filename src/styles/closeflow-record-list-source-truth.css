@@ -1430,3 +1430,256 @@
     grid-column: 1 / -1 !important;
   }
 }
+
+/* FRT-005: active Leads state keeps the real quick-filter owner while matching
+ * the reference's process notice and selected-status chip composition. */
+#root .cf-html-view.main-leads-html > .leads-active-process-banner {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.7rem !important;
+  min-height: 2.45rem !important;
+  margin: 0 0 0.15rem !important;
+  padding: 0.48rem 0.85rem !important;
+  border: 1px solid #bfdbfe !important;
+  border-radius: 0.55rem !important;
+  background: #f0f7ff !important;
+  color: #2563eb !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-active-process-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+  color: #2563eb !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-active-process-banner strong {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  color: #2563eb !important;
+  font-size: 0.78rem !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-active-process-dismiss {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+  width: 1.75rem !important;
+  height: 1.75rem !important;
+  min-width: 1.75rem !important;
+  min-height: 1.75rem !important;
+  margin-left: auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0.4rem !important;
+  background: transparent !important;
+  color: #2563eb !important;
+  cursor: pointer !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-active-process-dismiss:hover {
+  background: #dbeafe !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-card-active {
+  grid-template-columns: minmax(190px, 1.15fr) auto minmax(135px, 1fr) minmax(120px, 0.9fr) minmax(120px, 0.9fr) auto auto !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-card-active .leads-filter-chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 0.45rem !important;
+  min-width: 0 !important;
+  height: 2.35rem !important;
+  min-height: 2.35rem !important;
+  padding: 0.35rem 0.62rem !important;
+  border: 1px solid #dbeafe !important;
+  border-radius: 0.52rem !important;
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  cursor: pointer !important;
+  font-size: 0.68rem !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-card-active .leads-filter-chip:hover {
+  background: #dbeafe !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-card-active .leads-filter-control {
+  min-width: 0 !important;
+  justify-content: flex-end !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-card-active .leads-filter-control > span {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-card-active .leads-filter-control select {
+  width: 100% !important;
+  height: 2.35rem !important;
+  min-height: 2.35rem !important;
+  padding: 0.35rem 1.8rem 0.35rem 0.62rem !important;
+  border-color: #e2e8f0 !important;
+  border-radius: 0.52rem !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+  font-size: 0.68rem !important;
+  font-weight: 750 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-card-active .leads-filter-more,
+#root .cf-html-view.main-leads-html .leads-filter-card-active .leads-filter-reset {
+  height: 2.35rem !important;
+  min-height: 2.35rem !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 72rem) {
+  #root .cf-html-view.main-leads-html .leads-filter-card-active {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) auto auto !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-filter-card-active > .leads-filter-search {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+@media (max-width: 46rem) {
+  #root .cf-html-view.main-leads-html .leads-active-process-banner {
+    align-items: flex-start !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-active-process-banner strong {
+    white-space: normal !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-filter-card-active {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-filter-card-active > .leads-filter-search {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+/* FRT-005: active rows use the reference's eight-column composition while
+ * retaining the real filter, status, action and operational-badge owners. */
+#root .cf-html-view.main-leads-html .leads-table-head-active,
+#root .cf-html-view.main-leads-html .leads-active-table-row {
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 0.95fr) minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 0.78fr) minmax(0, 0.82fr) 3rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-active-table-row {
+  min-height: 4.35rem !important;
+  padding-top: 0.58rem !important;
+  padding-bottom: 0.58rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-active-table-row > .lead-company-cell,
+#root .cf-html-view.main-leads-html .leads-active-table-row > .lead-owner-cell {
+  display: none !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-active-table-row > .lead-main-cell {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 0.62rem !important;
+}
+
+#root .cf-html-view.main-leads-html .lead-active-avatar {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 2.15rem !important;
+  width: 2.15rem !important;
+  height: 2.15rem !important;
+  border: 1px solid #bfdbfe !important;
+  border-radius: 0.68rem !important;
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  -webkit-text-fill-color: #2563eb !important;
+  font-size: 0.7rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.02em !important;
+  line-height: 1 !important;
+}
+
+#root .cf-html-view.main-leads-html .lead-active-identity-copy {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+  gap: 0.18rem !important;
+  overflow: hidden !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-active-table-row > .lead-main-cell .lead-active-identity-copy .title {
+  font-size: 0.76rem !important;
+  font-weight: 850 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-active-table-row .mini {
+  display: none !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-active-table-row > .lead-status-cell .statusline {
+  gap: 0.2rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-active-table-row > .lead-status-cell :is(.pill, .cf-status-pill) {
+  min-height: 1.32rem !important;
+  padding: 0.2rem 0.42rem !important;
+  font-size: 0.59rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-active-table-row > .lead-risk-cell .cf-status-pill {
+  min-height: 1.32rem !important;
+  padding: 0.2rem 0.42rem !important;
+  font-size: 0.59rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-active-table-row > .lead-last-contact-cell strong,
+#root .cf-html-view.main-leads-html .leads-active-table-row > .lead-due-cell strong,
+#root .cf-html-view.main-leads-html .leads-active-table-row > .lead-action-cell strong {
+  font-size: 0.72rem !important;
+}
+
+@media (min-width: 46.01rem) {
+  #root .cf-html-view.main-leads-html .leads-table-head-active,
+  #root .cf-html-view.main-leads-html .leads-active-table-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 0.95fr) minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 0.78fr) minmax(0, 0.82fr) 3rem !important;
+  }
+}
+
+@media (max-width: 46rem) {
+  #root .cf-html-view.main-leads-html .leads-active-table-row > .lead-main-cell {
+    flex-direction: row !important;
+  }
+
+  #root .cf-html-view.main-leads-html .lead-active-avatar {
+    flex-basis: 1.95rem !important;
+    width: 1.95rem !important;
+    height: 1.95rem !important;
+  }
+}

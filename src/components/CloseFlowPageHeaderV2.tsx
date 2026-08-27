@@ -16,7 +16,7 @@ const CLOSEFLOW_PAGE_HEADER_COPY: Record<CloseFlowPageHeaderKey, CloseFlowPageHe
   leads: {
     kicker: 'LEADY',
     title: 'Leady',
-    description: 'Zarządzaj procesem sprzedaży i pilnuj kolejnych ruchów.',
+    description: 'Zarządzaj procesem sprzedaży i domykaj kolejne deale.',
   },
   clients: {
     kicker: 'BAZA RELACJI',

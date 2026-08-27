@@ -27,7 +27,7 @@ test('FRT-004 Leads all state keeps real data, reference controls and pagination
   assert.match(leads, /data-frt004-leads-pagination="true"/);
   assert.match(leads, /leadów/);
   assert.match(leads, /20 \/ strona/);
-  assert.match(header, /Zarządzaj procesem sprzedaży i pilnuj kolejnych ruchów\./);
+  assert.match(header, /Zarządzaj procesem sprzedaży i domykaj kolejne deale\./);
   assert.match(listCss, /\.leads-filter-card/);
   assert.match(listCss, /\.leads-table-head/);
   assert.match(listCss, /\.leads-table-row/);
