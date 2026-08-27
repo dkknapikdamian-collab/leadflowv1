@@ -105,7 +105,7 @@
     "limitation": "The reference is 1672x941 and the available in-app browser viewport is 946x698; the live proof records the real right-edge drawer, dimmed shell, canonical controls, real preference behavior and responsive dimensions without claiming literal pixel equality across different viewport dimensions. Runtime-only deviations are documented in the browser proof and active contract."
   },
   "implementation_commit_sha": "268a3ee96016679f99019a177b17704de980f057",
-  "closeout_commit_sha": null,
-  "remote_head": null,
+  "closeout_commit_sha": "3882798ca66d35cc85d7f31fedbb9d1f1256aaa2",
+  "remote_head": "3882798ca66d35cc85d7f31fedbb9d1f1256aaa2",
   "next_stage": "FRT-003"
 }
