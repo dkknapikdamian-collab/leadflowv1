@@ -395,6 +395,98 @@ function isLeadInTrash(lead: any) {
   return visibility === 'trash' || status === 'archived';
 }
 
+type LeadHistoryOutcome = {
+  label: string;
+  reason: string;
+  detail: string;
+  tone: 'green' | 'red' | 'blue' | 'amber' | 'neutral';
+};
+
+function isLeadHistoryEntry(lead: any, linkedCase?: CaseRecord) {
+  if (isLeadInTrash(lead)) return false;
+
+  const status = String(lead?.status || '').trim().toLowerCase();
+  const salesOutcome = String(lead?.salesOutcome || lead?.sales_outcome || '').trim().toLowerCase();
+  const movedLead = {
+    ...lead,
+    linkedCaseId: lead?.linkedCaseId || linkedCase?.id,
+  };
+
+  return ['won', 'lost'].includes(status)
+    || ['won', 'lost'].includes(salesOutcome)
+    || isLeadMovedToService(movedLead);
+}
+
+function getLeadHistoryOutcome(lead: any, linkedCase?: CaseRecord): LeadHistoryOutcome {
+  const status = String(lead?.status || '').trim().toLowerCase();
+  const salesOutcome = String(lead?.salesOutcome || lead?.sales_outcome || '').trim().toLowerCase();
+
+  if (status === 'won' || salesOutcome === 'won') {
+    return {
+      label: 'Wygrany',
+      reason: 'Wygrana oferta',
+      detail: 'Wynik pochodzi z kanonicznego statusu leada.',
+      tone: 'green',
+    };
+  }
+
+  if (status === 'lost' || salesOutcome === 'lost') {
+    const lossReason = [
+      lead?.lossReason,
+      lead?.lostReason,
+      lead?.loss_reason,
+      lead?.lost_reason,
+    ].map((value) => String(value || '').trim()).find(Boolean);
+
+    return {
+      label: 'Przegrany',
+      reason: lossReason || 'Brak powodu utraty',
+      detail: lossReason ? 'Powód pochodzi z rekordu leada.' : 'Rekord nie zawiera powodu utraty.',
+      tone: 'red',
+    };
+  }
+
+  if (isLeadMovedToService({
+    ...lead,
+    linkedCaseId: lead?.linkedCaseId || linkedCase?.id,
+  })) {
+    return {
+      label: 'W obsłudze',
+      reason: 'Przeniesiony do obsługi',
+      detail: linkedCase ? 'Lead ma powiązaną sprawę w obsłudze.' : 'Ruch do obsługi pochodzi z rekordu leada.',
+      tone: 'blue',
+    };
+  }
+
+  return {
+    label: getLeadStatusLabel(status),
+    reason: 'Wynik zapisany na leadzie',
+    detail: 'Historia korzysta z aktualnego źródła statusu.',
+    tone: getLeadStatusTone(status) as LeadHistoryOutcome['tone'],
+  };
+}
+
+function getLeadHistoryCloseAt(lead: any) {
+  const candidates = [
+    lead?.closedAt,
+    lead?.closed_at,
+    lead?.wonAt,
+    lead?.won_at,
+    lead?.lostAt,
+    lead?.lost_at,
+    lead?.movedToServiceAt,
+    lead?.moved_to_service_at,
+    lead?.caseStartedAt,
+    lead?.case_started_at,
+    lead?.serviceStartedAt,
+    lead?.service_started_at,
+  ];
+
+  return candidates
+    .map((value) => String(value || '').trim())
+    .find((value) => value && !Number.isNaN(new Date(value).getTime())) || null;
+}
+
 function getRestoreStatusForLead(lead: any, linkedCase?: CaseRecord) {
   if (linkedCase || lead?.linkedCaseId || lead?.caseId || lead?.movedToServiceAt || lead?.caseStartedAt) {
     return 'moved_to_service';
@@ -423,6 +515,10 @@ export default function Leads() {
   const [statusFilter, setStatusFilter] = useState('');
   const [sourceFilter, setSourceFilter] = useState('');
   const [riskFilter, setRiskFilter] = useState<'all' | 'at-risk'>('all');
+  const [historyOutcomeFilter, setHistoryOutcomeFilter] = useState('');
+  const [historyReasonFilter, setHistoryReasonFilter] = useState('');
+  const [historyValueFilter, setHistoryValueFilter] = useState<'all' | 'under_5000' | '5000_20000' | 'over_20000'>('all');
+  const [historyClosedPeriodFilter, setHistoryClosedPeriodFilter] = useState<'all' | '30' | '90' | '365'>('365');
   const [showMoreFilters, setShowMoreFilters] = useState(false);
   const [leadPage, setLeadPage] = useState(1);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -496,6 +592,21 @@ export default function Leads() {
     setRiskFilter('at-risk');
     setShowMoreFilters(false);
     setQuickFilter('at-risk');
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('quick');
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if (searchParams.get('quick') !== 'history') return;
+    setShowTrash(false);
+    setValueSortEnabled(false);
+    setCadenceFilter('all');
+    setStatusFilter('');
+    setSourceFilter('');
+    setRiskFilter('all');
+    setShowMoreFilters(false);
+    setQuickFilter('history');
     const nextParams = new URLSearchParams(searchParams);
     nextParams.delete('quick');
     setSearchParams(nextParams, { replace: true });
@@ -793,13 +904,23 @@ export default function Leads() {
     [leads],
   );
 
+  const historyLeads = useMemo(
+    () => leads.filter((lead) => isLeadHistoryEntry(lead, resolveLinkedCaseForLead(lead))),
+    [leads, resolveLinkedCaseForLead],
+  );
+
+  const historyReasonOptions = useMemo(
+    () => Array.from(new Set(historyLeads.map((lead) => getLeadHistoryOutcome(lead, resolveLinkedCaseForLead(lead)).reason))).sort((a, b) => a.localeCompare(b, 'pl')),
+    [historyLeads, resolveLinkedCaseForLead],
+  );
+
   const serviceHistoryLeads = useMemo(
     () =>
-      activeLeads.filter((lead) => {
+      historyLeads.filter((lead) => {
         const linkedCase = resolveLinkedCaseForLead(lead);
         return isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
       }),
-    [activeLeads, resolveLinkedCaseForLead],
+    [historyLeads, resolveLinkedCaseForLead],
   );
 
   const trashLeads = useMemo(() => leads.filter((lead) => isLeadInTrash(lead)), [leads]);
@@ -859,7 +980,8 @@ export default function Leads() {
   const filteredLeads = useMemo(() => {
     // STAGE31_LEADS_THIN_NUMBERED_LIST: wyszukiwarka dziala po nazwie, telefonie, mailu, firmie, zrodle i sprawie.
     const normalizedQuery = normalizeLeadSearchValue(searchQuery);
-    const sourceLeads = showTrash ? trashLeads : activeLeads;
+    const historyView = !showTrash && quickFilter === 'history';
+    const sourceLeads = showTrash ? trashLeads : historyView ? historyLeads : activeLeads;
     const activeCadenceIds = cadenceFilter === 'all'
       ? null
       : new Set((contactCadenceGrid.buckets[cadenceFilter] || []).map((row) => row.entityId));
@@ -871,10 +993,24 @@ export default function Leads() {
       const linkedCase = resolveLinkedCaseForLead(lead);
       const movedToService = isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
       const activeLead = isActiveSalesLead({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
+      const historyEntry = isLeadHistoryEntry(lead, linkedCase);
+      const historyOutcome = getLeadHistoryOutcome(lead, linkedCase);
+      const historyCloseAt = getLeadHistoryCloseAt(lead);
+      const historyValue = Number(lead.dealValue || lead.value || lead.budget || 0);
       const matchesSearch = !normalizedQuery || buildLeadSearchText(lead, linkedCase).includes(normalizedQuery);
       const matchesStatus = !statusFilter || String(lead.status || '') === statusFilter;
       const matchesSource = !sourceFilter || String(lead.source || '') === sourceFilter;
       const matchesRisk = riskFilter === 'all' || Boolean(lead.isAtRisk);
+      const matchesHistoryOutcome = !historyOutcomeFilter
+        || (historyOutcomeFilter === 'moved_to_service' ? movedToService : String(lead.status || '').toLowerCase() === historyOutcomeFilter || String(lead.salesOutcome || lead.sales_outcome || '').toLowerCase() === historyOutcomeFilter);
+      const matchesHistoryReason = !historyReasonFilter || historyOutcome.reason === historyReasonFilter;
+      const matchesHistoryValue = historyValueFilter === 'all'
+        || (historyValueFilter === 'under_5000' && historyValue < 5000)
+        || (historyValueFilter === '5000_20000' && historyValue >= 5000 && historyValue <= 20000)
+        || (historyValueFilter === 'over_20000' && historyValue > 20000);
+      const matchesHistoryClosedPeriod = historyClosedPeriodFilter === 'all'
+        || !historyCloseAt
+        || differenceInCalendarDays(startOfDay(new Date()), startOfDay(new Date(historyCloseAt))) <= Number(historyClosedPeriodFilter);
 
       const matchesQuickFilter =
         showTrash
@@ -882,11 +1018,17 @@ export default function Leads() {
         || (quickFilter === 'active' && activeLead)
         || (quickFilter === 'at-risk' && Boolean(lead.isAtRisk))
         || (quickFilter === 'rescue' && Boolean(rescueLeadIds?.has(String(lead.id || ''))))
-        || (quickFilter === 'history' && movedToService);
+        || (quickFilter === 'history' && historyEntry);
 
-      const matchesCadence = showTrash || quickFilter === 'rescue' || !activeCadenceIds || activeCadenceIds.has(String(lead.id || ''));
+      const matchesCadence = showTrash || historyView || quickFilter === 'rescue' || !activeCadenceIds || activeCadenceIds.has(String(lead.id || ''));
 
-      return matchesSearch && matchesQuickFilter && matchesCadence && matchesStatus && matchesSource && matchesRisk;
+      return matchesSearch
+        && matchesQuickFilter
+        && matchesCadence
+        && matchesStatus
+        && matchesSource
+        && matchesRisk
+        && (!historyView || (matchesHistoryOutcome && matchesHistoryReason && matchesHistoryValue && matchesHistoryClosedPeriod));
     });
 
     if (valueSortEnabled) {
@@ -894,7 +1036,7 @@ export default function Leads() {
     }
 
     return results;
-  }, [activeLeads, cadenceFilter, contactCadenceGrid, lostLeadRescueSummary, quickFilter, resolveLinkedCaseForLead, riskFilter, searchQuery, showTrash, sourceFilter, statusFilter, trashLeads, valueSortEnabled]);
+  }, [activeLeads, cadenceFilter, contactCadenceGrid, historyClosedPeriodFilter, historyLeads, historyOutcomeFilter, historyReasonFilter, historyValueFilter, lostLeadRescueSummary, quickFilter, resolveLinkedCaseForLead, riskFilter, searchQuery, showTrash, sourceFilter, statusFilter, trashLeads, valueSortEnabled]);
 
   const leadPageSize = 20;
   const leadPageCount = Math.max(1, Math.ceil(filteredLeads.length / leadPageSize));
@@ -909,7 +1051,7 @@ export default function Leads() {
 
   useEffect(() => {
     setLeadPage(1);
-  }, [cadenceFilter, quickFilter, riskFilter, searchQuery, showTrash, sourceFilter, statusFilter, valueSortEnabled]);
+  }, [cadenceFilter, historyClosedPeriodFilter, historyOutcomeFilter, historyReasonFilter, historyValueFilter, quickFilter, riskFilter, searchQuery, showTrash, sourceFilter, statusFilter, valueSortEnabled]);
 
   const leadSearchSuggestions = useMemo(() => {
     const normalizedQuery = normalizeLeadSearchValue(searchQuery);
@@ -934,19 +1076,35 @@ export default function Leads() {
     atRisk: activeLeads.filter((lead) => Boolean(lead.isAtRisk)).length,
     rescue: lostLeadRescueSummary.total,
     linkedToCase: serviceHistoryLeads.length,
+    history: historyLeads.length,
     trash: trashLeads.length,
   };
 
   const activeView = !showTrash && quickFilter === 'active';
   const riskView = !showTrash && quickFilter === 'at-risk';
+  const historyView = !showTrash && quickFilter === 'history';
 
-  const toggleQuickFilter = (filter: LeadsQuickFilter) => {
+  const selectQuickFilter = (filter: LeadsQuickFilter) => {
     setShowTrash(false);
     setValueSortEnabled(false);
     setCadenceFilter('all');
+    setQuickFilter(filter);
+    setRiskFilter(filter === 'at-risk' ? 'at-risk' : 'all');
+    if (filter === 'history') {
+      setStatusFilter('');
+      setSourceFilter('');
+    }
+    if (filter !== 'history') {
+      setHistoryOutcomeFilter('');
+      setHistoryReasonFilter('');
+      setHistoryValueFilter('all');
+      setHistoryClosedPeriodFilter('365');
+    }
+  };
+
+  const toggleQuickFilter = (filter: LeadsQuickFilter) => {
     const nextFilter = quickFilter === filter ? 'all' : filter;
-    setQuickFilter(nextFilter);
-    setRiskFilter(nextFilter === 'at-risk' ? 'at-risk' : 'all');
+    selectQuickFilter(nextFilter);
   };
 
   const toggleValueSorting = () => {
@@ -972,6 +1130,10 @@ export default function Leads() {
     setStatusFilter('');
     setSourceFilter('');
     setRiskFilter('all');
+    setHistoryOutcomeFilter('');
+    setHistoryReasonFilter('');
+    setHistoryValueFilter('all');
+    setHistoryClosedPeriodFilter('365');
     setShowMoreFilters(false);
   };
 
@@ -980,13 +1142,18 @@ export default function Leads() {
       <div className="cf-html-view main-leads-html" data-visual-stage25-leads-full-jsx="true" data-leads-real-view="true">
         <CloseFlowPageHeaderV2
           pageKey="leads"
-          title={riskView ? (
+          title={historyView ? (
+            <span className="leads-history-header-title">
+              <span>Leady – Historia</span>
+              <span className="cf-status-pill leads-history-header-count" data-cf-status-tone="blue">{stats.history}</span>
+            </span>
+          ) : riskView ? (
             <span className="leads-risk-header-title">
               <span>Leady – Zagrożone</span>
               <span className="cf-status-pill leads-risk-header-count" data-cf-status-tone="red">{stats.atRisk}</span>
             </span>
           ) : undefined}
-          description={riskView ? 'Leady wymagające natychmiastowej uwagi i reakcji.' : undefined}
+          description={historyView ? 'Zamknięte, wygrane i przeniesione leady z zachowanym kontekstem.' : riskView ? 'Leady wymagające natychmiastowej uwagi i reakcji.' : undefined}
           actions={
             <>
               <div className="head-actions">
@@ -1173,6 +1340,33 @@ export default function Leads() {
           }
         />
 
+        <div className="leads-state-tabs" role="tablist" aria-label="Widoki leadów" data-frt007-history-tabs="true">
+          {([
+            ['all', 'Wszystkie'],
+            ['active', 'Aktywne'],
+            ['at-risk', 'Zagrożone'],
+            ['history', 'Historia'],
+            ['rescue', 'Do odzyskania'],
+          ] as Array<[LeadsQuickFilter, string]>).map(([filter, label]) => {
+            const selected = !showTrash && quickFilter === filter && !valueSortEnabled;
+            return (
+              <button
+                key={filter}
+                type="button"
+                role="tab"
+                aria-selected={selected}
+                className={selected ? 'leads-state-tab is-active' : 'leads-state-tab'}
+                data-frt007-state-tab={filter}
+                data-frt007-state-active={selected ? 'true' : 'false'}
+                onClick={() => selectQuickFilter(filter)}
+              >
+                {label}
+                {filter === 'history' ? <span className="leads-state-tab-count">{stats.history}</span> : null}
+              </button>
+            );
+          })}
+        </div>
+
         {activeView ? (
           <div className="leads-active-process-banner" data-frt005-active-process-banner="true" role="status">
             <span className="leads-active-process-icon" aria-hidden="true"><Info className="h-4 w-4" /></span>
@@ -1254,7 +1448,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
           data-stage96-leads-right-rail-source-truth="true"
         >
           <div className="stack">
-            <div className={`leads-filter-card${activeView ? ' leads-filter-card-active' : ''}${riskView ? ' leads-filter-card-risk' : ''}`} data-frt004-leads-filter-card="true" data-frt005-leads-active-filter-card={activeView ? 'true' : 'false'} data-frt006-risk-filter-card={riskView ? 'true' : 'false'}>
+            <div className={`leads-filter-card${activeView ? ' leads-filter-card-active' : ''}${riskView ? ' leads-filter-card-risk' : ''}${historyView ? ' leads-filter-card-history' : ''}`} data-frt004-leads-filter-card="true" data-frt005-leads-active-filter-card={activeView ? 'true' : 'false'} data-frt006-risk-filter-card={riskView ? 'true' : 'false'} data-frt007-history-filter-card={historyView ? 'true' : 'false'}>
               <div className="leads-filter-search">
                 <div className="search cf-main-search cf-main-search-stage177" data-cf-main-search="true" data-leads-search="true" data-stage117-leads-search-anchor="true" data-cf-main-search-source="semantic173">
               <span aria-hidden="true"><Search className="w-4 h-4" /></span>
@@ -1293,7 +1487,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
 
 
 
-            <div className="leads-filter-toolbar" data-frt004-leads-filter-toolbar="true" data-frt005-leads-active-toolbar={activeView ? 'true' : 'false'} data-frt006-risk-toolbar={riskView ? 'true' : 'false'}>
+            <div className="leads-filter-toolbar" data-frt004-leads-filter-toolbar="true" data-frt005-leads-active-toolbar={activeView ? 'true' : 'false'} data-frt006-risk-toolbar={riskView ? 'true' : 'false'} data-frt007-history-toolbar={historyView ? 'true' : 'false'}>
               {activeView ? (
                 <button
                   type="button"
@@ -1305,6 +1499,22 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   <span>Status: aktywne</span>
                   <X className="h-3.5 w-3.5" aria-hidden="true" />
                 </button>
+              ) : historyView ? (
+                <label className="leads-filter-control">
+                  <span>Status</span>
+                  <select
+                    className={nativeSelectClassName()}
+                    value={historyOutcomeFilter}
+                    onChange={(event) => setHistoryOutcomeFilter(event.target.value)}
+                    aria-label="Filtr statusu historii"
+                    data-frt007-history-status-filter="true"
+                  >
+                    <option value="">Wszystkie statusy</option>
+                    <option value="won">Wygrane</option>
+                    <option value="lost">Przegrane</option>
+                    <option value="moved_to_service">Przeniesione do obsługi</option>
+                  </select>
+                </label>
               ) : (
                 <label className="leads-filter-control">
                   <span>Status</span>
@@ -1337,24 +1547,72 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                     ))}
                   </select>
                 </label>
+              ) : historyView ? (
+                <label className="leads-filter-control">
+                  <span>Powód utraty / Wynik</span>
+                  <select
+                    className={nativeSelectClassName()}
+                    value={historyReasonFilter}
+                    onChange={(event) => setHistoryReasonFilter(event.target.value)}
+                    aria-label="Filtr powodu utraty lub wyniku"
+                    data-frt007-history-reason-filter="true"
+                  >
+                    <option value="">Wszystkie wyniki</option>
+                    {historyReasonOptions.map((reason) => <option key={reason} value={reason}>{reason}</option>)}
+                  </select>
+                </label>
               ) : null}
 
-              <label className="leads-filter-control">
-                <span>Źródło</span>
-                <select
-                  className={nativeSelectClassName()}
-                  value={sourceFilter}
-                  onChange={(event) => setSourceFilter(event.target.value)}
-                  aria-label="Filtr źródła"
-                >
-                  <option value="">{activeView ? 'Dowolne' : 'Wszystkie źródła'}</option>
-                  {LEAD_SOURCE_OPTIONS.map((source) => (
-                    <option key={source.value} value={source.value}>{source.label}</option>
-                  ))}
-                </select>
-              </label>
+              {historyView ? (
+                <label className="leads-filter-control">
+                  <span>Wartość</span>
+                  <select
+                    className={nativeSelectClassName()}
+                    value={historyValueFilter}
+                    onChange={(event) => setHistoryValueFilter(event.target.value as typeof historyValueFilter)}
+                    aria-label="Filtr wartości historii"
+                    data-frt007-history-value-filter="true"
+                  >
+                    <option value="all">Wszystkie wartości</option>
+                    <option value="under_5000">Poniżej 5 000 PLN</option>
+                    <option value="5000_20000">5 000–20 000 PLN</option>
+                    <option value="over_20000">Powyżej 20 000 PLN</option>
+                  </select>
+                </label>
+              ) : (
+                <label className="leads-filter-control">
+                  <span>Źródło</span>
+                  <select
+                    className={nativeSelectClassName()}
+                    value={sourceFilter}
+                    onChange={(event) => setSourceFilter(event.target.value)}
+                    aria-label="Filtr źródła"
+                  >
+                    <option value="">{activeView ? 'Dowolne' : 'Wszystkie źródła'}</option>
+                    {LEAD_SOURCE_OPTIONS.map((source) => (
+                      <option key={source.value} value={source.value}>{source.label}</option>
+                    ))}
+                  </select>
+                </label>
+              )}
 
-              {riskView ? (
+              {historyView ? (
+                <label className="leads-filter-control">
+                  <span>Data zamknięcia</span>
+                  <select
+                    className={nativeSelectClassName()}
+                    value={historyClosedPeriodFilter}
+                    onChange={(event) => setHistoryClosedPeriodFilter(event.target.value as typeof historyClosedPeriodFilter)}
+                    aria-label="Filtr daty zamknięcia historii"
+                    data-frt007-history-closed-period-filter="true"
+                  >
+                    <option value="365">Ostatnie 12 mies.</option>
+                    <option value="30">Ostatnie 30 dni</option>
+                    <option value="90">Ostatnie 90 dni</option>
+                    <option value="all">Wszystkie daty</option>
+                  </select>
+                </label>
+              ) : riskView ? (
                 <button
                   type="button"
                   className="leads-filter-chip leads-filter-risk-chip cf-status-pill"
@@ -1492,12 +1750,8 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                       {
                         key: 'history',
                         label: 'Historia',
-                        value: stats.linkedToCase,
-                        onClick: () => {
-                          setShowTrash(false);
-                          setQuickFilter('history');
-                          setValueSortEnabled(false);
-                        },
+                        value: stats.history,
+                        onClick: () => selectQuickFilter('history'),
                       },
                       {
                         key: 'trash',
@@ -1591,8 +1845,8 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
               </div>
             ) : null}
 
-            <div className={`table-card lead-table-card w-full max-w-none${riskView ? ' leads-risk-table-card' : ''}`} data-stage25-lead-table-card="true" data-stage117-leads-list="true" data-frt006-risk-table-card={riskView ? 'true' : 'false'}>
-              <div className={`leads-table-head${activeView ? ' leads-table-head-active' : ''}${riskView ? ' leads-table-head-risk' : ''}`} data-frt004-leads-table-head="true" data-frt005-active-table-head={activeView ? 'true' : 'false'} data-frt006-risk-table-head={riskView ? 'true' : 'false'} aria-hidden="true">
+            <div className={`table-card lead-table-card w-full max-w-none${riskView ? ' leads-risk-table-card' : ''}${historyView ? ' leads-history-table-card' : ''}`} data-stage25-lead-table-card="true" data-stage117-leads-list="true" data-frt006-risk-table-card={riskView ? 'true' : 'false'} data-frt007-history-table-card={historyView ? 'true' : 'false'}>
+              <div className={`leads-table-head${activeView ? ' leads-table-head-active' : ''}${riskView ? ' leads-table-head-risk' : ''}${historyView ? ' leads-table-head-history' : ''}`} data-frt004-leads-table-head="true" data-frt005-active-table-head={activeView ? 'true' : 'false'} data-frt006-risk-table-head={riskView ? 'true' : 'false'} data-frt007-history-table-head={historyView ? 'true' : 'false'} aria-hidden="true">
                 {riskView ? (
                   <>
                     <span>Lead / firma</span>
@@ -1612,6 +1866,17 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                     <span>Następny krok</span>
                     <span>Termin</span>
                     <span>Priorytet</span>
+                    <span>Akcje</span>
+                  </>
+                ) : historyView ? (
+                  <>
+                    <span>Lead / firma</span>
+                    <span>Status</span>
+                    <span>Wartość</span>
+                    <span>Wynik / powód</span>
+                    <span>Data zamknięcia</span>
+                    <span>Ostatni kontakt</span>
+                    <span>Powiązana sprawa</span>
                     <span>Akcje</span>
                   </>
                 ) : (
@@ -1653,6 +1918,11 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   const leadStatusLabel = getLeadStatusLabel(lead.status);
                   const leadStatusTone = getLeadStatusTone(lead.status);
                   const leadValueLabel = (Number(lead.dealValue) || 0).toLocaleString() + ' PLN';
+                  const historyOutcome = historyView ? getLeadHistoryOutcome(lead, linkedCase) : null;
+                  const historyCloseAt = historyView ? getLeadHistoryCloseAt(lead) : null;
+                  const historyCaseLabel = linkedCase
+                    ? [linkedCase.title, formatCaseStatusLabel(linkedCase.status)].filter(Boolean).join(' · ')
+                    : 'Brak powiązanej sprawy';
                   const contactLabel = getLeadPrimaryContact(lead);
                   const companyLabel = String(lead.company || '').trim() || 'Brak firmy';
                   const ownerLabel = String(lead.ownerName || lead.owner?.name || lead.owner?.fullName || lead.ownerId || '').trim() || 'Nieprzypisany';
@@ -1680,11 +1950,11 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   return (
                     <div key={leadId || leadIndex} className="relative group/lead-row w-full" data-lead-card-wide-layout="true">
                       <Link to={`/leads/${leadId}`} className="block">
-                        <div className={`row lead-row leads-table-row lead-card-value-block cf-lead-row-inline cf-lead-row-client-aligned${activeView ? ' leads-active-table-row' : ''}${riskView ? ' leads-risk-table-row' : ''}`} data-stage231d0c-lead-card-client-aligned="true" data-ui-dictionary="LeadListCard" data-stage25-lead-row="true" data-stage31-lead-thin-row="true" data-stage14e-leads-value-layout="true" data-frt004-leads-table-row="true" data-frt005-active-table-row={activeView ? 'true' : 'false'} data-frt006-risk-table-row={riskView ? 'true' : 'false'}>
+                        <div className={`row lead-row leads-table-row lead-card-value-block cf-lead-row-inline cf-lead-row-client-aligned${activeView ? ' leads-active-table-row' : ''}${riskView ? ' leads-risk-table-row' : ''}${historyView ? ' leads-history-table-row' : ''}`} data-stage231d0c-lead-card-client-aligned="true" data-ui-dictionary="LeadListCard" data-stage25-lead-row="true" data-stage31-lead-thin-row="true" data-stage14e-leads-value-layout="true" data-frt004-leads-table-row="true" data-frt005-active-table-row={activeView ? 'true' : 'false'} data-frt006-risk-table-row={riskView ? 'true' : 'false'} data-frt007-history-table-row={historyView ? 'true' : 'false'}>
                         <span className="index">{leadIndex + 1}</span>
 
-                        <span className={`lead-main-cell${riskView ? ' lead-risk-main-cell' : ''}`}>
-                          {activeView || riskView ? (
+                        <span className={`lead-main-cell${riskView ? ' lead-risk-main-cell' : ''}${historyView ? ' lead-history-main-cell' : ''}`}>
+                          {activeView || riskView || historyView ? (
                             <>
                               <span className={`lead-active-avatar${riskView ? ' lead-risk-avatar' : ''}`} aria-hidden="true">{getLeadInitials(lead, activeIdentityLabel)}</span>
                               <span className="lead-active-identity-copy">
@@ -1701,7 +1971,11 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                         </span>
 
                         <span className="lead-company-cell">
-                          {riskView ? (
+                          {historyView ? (
+                            <span className="lead-history-outcome-copy">
+                              <span className="cf-status-pill" data-cf-status-tone={historyOutcome?.tone} data-frt007-history-outcome="true">{historyOutcome?.label}</span>
+                            </span>
+                          ) : riskView ? (
                             <span className="lead-risk-reason-copy">
                               <span className="lead-risk-reason-icon" data-cf-status-tone="red" aria-hidden="true"><AlertTriangle className="h-4 w-4" /></span>
                               <span className="lead-risk-reason-text">
@@ -1718,7 +1992,12 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                         </span>
 
                         <span className="lead-status-cell">
-                          {riskView ? (
+                          {historyView ? (
+                            <span className="lead-history-reason-copy">
+                              <strong title={historyOutcome?.reason}>{historyOutcome?.reason}</strong>
+                              <span className="sub" title={historyOutcome?.detail}>{historyOutcome?.detail}</span>
+                            </span>
+                          ) : riskView ? (
                             <span className="lead-risk-next-move">
                               <span className="lead-risk-next-move-icon" data-cf-status-tone={nextActionMeta.overdue ? 'red' : nextAction ? 'blue' : 'amber'} aria-hidden="true">
                                 <Clock3 className="h-4 w-4" />
@@ -1756,7 +2035,12 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                         </span>
 
                         <span className="lead-last-contact-cell">
-                          {riskView ? (
+                          {historyView ? (
+                            <>
+                              <span className="mini">Data zamknięcia</span>
+                              <strong>{formatLeadTableDate(historyCloseAt, 'Brak daty zamknięcia')}</strong>
+                            </>
+                          ) : riskView ? (
                             <>
                               <strong className={`lead-risk-relative-value lead-risk-relative-value-${riskContact.tone}`}>{riskContact.label}</strong>
                               <span className="mini">{riskContact.detail}</span>
@@ -1770,7 +2054,12 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                         </span>
 
                         <span className="lead-action-cell">
-                          {riskView ? null : (
+                          {historyView ? (
+                            <>
+                              <span className="mini">Ostatni kontakt</span>
+                              <strong>{formatLeadTableDate(lead.lastContactAt)}</strong>
+                            </>
+                          ) : riskView ? null : (
                             <>
                               <span className="mini">Następny krok</span>
                               <strong className={nextActionMeta.overdue ? 'danger cf-lead-next-action-title' : 'cf-lead-next-action-title'} title={nextActionMeta.title}>{nextActionMeta.title}</strong>
@@ -1779,7 +2068,12 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                         </span>
 
                         <span className="lead-due-cell">
-                          {riskView ? (
+                          {historyView ? (
+                            <>
+                              <span className="mini">Powiązana sprawa</span>
+                              <strong title={historyCaseLabel}>{historyCaseLabel}</strong>
+                            </>
+                          ) : riskView ? (
                             <>
                               <strong className={`lead-risk-relative-value lead-risk-relative-value-${riskDue.tone}`}>{riskDue.label}</strong>
                               <span className="mini">{riskDue.detail}</span>
@@ -1828,8 +2122,8 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 <div className="row row-empty">
                   <span className="index">0</span>
                   <span>
-                    <span className="title">{showTrash ? 'Kosz leadów jest pusty.' : 'Brak leadów w tym widoku'}</span>
-                    <span className="sub">{showTrash ? 'Nie ma rekordów do przywrócenia.' : 'Zmień filtr albo dodaj pierwszego leada.'}</span>
+                    <span className="title">{showTrash ? 'Kosz leadów jest pusty.' : historyView ? 'Brak leadów w historii' : 'Brak leadów w tym widoku'}</span>
+                    <span className="sub">{showTrash ? 'Nie ma rekordów do przywrócenia.' : historyView ? 'Brak zamkniętych, wygranych lub przeniesionych leadów w bieżącym źródle danych.' : 'Zmień filtr albo dodaj pierwszego leada.'}</span>
                   </span>
                 </div>
               )}

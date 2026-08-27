@@ -1,6 +1,6 @@
 # FRT-007 — LEADS HISTORY
 
-CONTRACT_STATUS: LOCKED
+CONTRACT_STATUS: ACTIVE
 STAGE_ID: FRT-007
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/007_leads_history.webp
 TARGET_ROUTE: /leads
@@ -17,4 +17,3 @@ ACCEPTANCE_CRITERIA: History is derived from the real source; controls are wired
 TEST_PLAN: History filtering/action tests; browser proof for populated or truthful empty state; typecheck if TS changes; evidence reuse only with matching scope.
 PREDECESSOR: FRT-006
 SUCCESSOR: FRT-008
-

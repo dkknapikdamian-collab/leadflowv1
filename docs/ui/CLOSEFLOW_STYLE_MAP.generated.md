@@ -1,6 +1,6 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-08-27T14:41:24.950Z
+Generated: 2026-08-27T15:15:19.181Z
 
 ## CSS variables
 - --cf-canvas: src/components/VisualFoundationRuntime.tsx:11

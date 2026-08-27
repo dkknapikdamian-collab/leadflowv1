@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-007",
+  "reference_file": "docs/ui/reference/forteca-calm-light/007_leads_history.webp",
+  "reference_sha256": "1CB34F8CBBB48CDE9284EBEB2CC10C84352C7D3A7A5B11A45FE08A461E0A34B6",
+  "captured_at": "2026-08-27T15:19:50.5876840Z",
+  "capture": {
+    "browser": "Codex In-app Browser",
+    "url": "http://localhost:3000/leads",
+    "route": "/leads",
+    "viewport": {
+      "width": 946,
+      "height": 698
+    },
+    "reference_dimensions": {
+      "width": 1672,
+      "height": 941
+    },
+    "captured_in_in_app_browser": true,
+    "screenshot_artifact_path": null,
+    "tab_marked_deliverable": true
+  },
+  "runtime": {
+    "live_runtime": true,
+    "auth_required": false,
+    "auth_used": false,
+    "shell": {
+      "brand": "CloseFlow",
+      "active_navigation": "Leady",
+      "data_origin": "workspace-scoped current local runtime response"
+    },
+    "header": {
+      "title": "Leady – Historia",
+      "count": 2,
+      "description": "Zamknięte, wygrane i przeniesione leady z zachowanym kontekstem.",
+      "primary_action": "Dodaj leada",
+      "primary_action_visible": true
+    },
+    "state_tabs": {
+      "label": "Widoki leadów",
+      "selected": "Historia",
+      "selected_count": 2,
+      "available": [
+        "Wszystkie",
+        "Aktywne",
+        "Zagrożone",
+        "Historia",
+        "Do odzyskania"
+      ]
+    },
+    "metrics": {
+      "cards": 4,
+      "values": {
+        "all": 3,
+        "active": 1,
+        "active_value_pln": 24300,
+        "at_risk": 1
+      }
+    },
+    "filter_card": {
+      "visible": true,
+      "search": true,
+      "history_status": "all",
+      "history_reason": "all",
+      "history_value": "all",
+      "history_closed_period": "365",
+      "more_filters": true,
+      "reset": true
+    },
+    "table": {
+      "visible": true,
+      "visible_columns_at_available_desktop": [
+        "LEAD / FIRMA",
+        "STATUS",
+        "WARTOŚĆ",
+        "WYNIK / POWÓD",
+        "DATA ZAMKNIĘCIA",
+        "POWIĄZANA SPRAWA",
+        "AKCJE"
+      ],
+      "registered_columns": [
+        "LEAD / FIRMA",
+        "STATUS",
+        "WARTOŚĆ",
+        "WYNIK / POWÓD",
+        "DATA ZAMKNIĘCIA",
+        "OSTATNI KONTAKT",
+        "POWIĄZANA SPRAWA",
+        "AKCJE"
+      ],
+      "rows_loaded": 2,
+      "filtered_rows_label": "1–2 z 2 leadów",
+      "real_rows": [
+        {
+          "identity": "Nova Home Studio / Anna Kowalska",
+          "href": "/leads/dev-lead-1",
+          "outcome": "Przeniesiony do obsługi",
+          "outcome_detail": "Lead ma powiązaną sprawę w obsłudze.",
+          "value": "12 000 PLN",
+          "close_date": "Brak daty zamknięcia",
+          "related_case": "Wdrożenie strony sprzedażowej + automatyzacja formularzy i follow-up · in progress"
+        },
+        {
+          "identity": "M&Z Nieruchomości / Michał Zieliński",
+          "href": "/leads/dev-lead-2",
+          "outcome": "Przeniesiony do obsługi",
+          "outcome_detail": "Lead ma powiązaną sprawę w obsłudze.",
+          "value": "4500 PLN",
+          "close_date": "Brak daty zamknięcia",
+          "related_case": "Pakiet dokumentów i onboarding klienta korporacyjnego · waiting on client"
+        }
+      ],
+      "row_navigation": true,
+      "archive_action": true,
+      "horizontal_overflow": false
+    },
+    "console_errors": []
+  },
+  "interactions": {
+    "history_tab": {
+      "selected": true,
+      "filtered_rows": 2,
+      "status": "PASS"
+    },
+    "history_status_filter": {
+      "selected": "moved_to_service",
+      "filtered_rows": 2,
+      "status": "PASS"
+    },
+    "history_value_filter": {
+      "selected": "under_5000",
+      "filtered_rows": 1,
+      "status": "PASS"
+    },
+    "history_reset": {
+      "restored_rows": 2,
+      "status": "PASS"
+    },
+    "shared_actions": {
+      "row_links": "PASS",
+      "archive_action_owner_preserved": true,
+      "no_mutating_action_submitted": true
+    },
+    "responsive_layout": {
+      "desktop_available_viewport_no_horizontal_overflow": true,
+      "mobile_viewport": {
+        "width": 390,
+        "height": 844,
+        "history_heading_visible": true,
+        "history_rows": 2,
+        "horizontal_overflow": false
+      },
+      "status": "PASS"
+    }
+  },
+  "comparison": {
+    "reference_is_visual_sot": true,
+    "history_state_hierarchy_reconciled": true,
+    "structural_visual_parity": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "literal_pixel_identity_claim": false,
+    "accepted_deviations": [
+      "The reference is 1672x941 while the available in-app browser viewport is 946x698; compact desktop and mobile responsive placement are verified in the live shell.",
+      "The product shell remains CloseFlow as required by repository SOT; the reference artwork uses the Forteca light shell.",
+      "The current workspace runtime returns 3 real leads and 2 history entries rather than the reference fixture volume; no screenshot rows, owners, dates or counts were fabricated.",
+      "The two current history entries are canonical leads moved to service through linked real cases and have no source close date; the UI states that absence instead of inventing one.",
+      "Ostatni kontakt remains a registered history owner but is hidden at the compact desktop breakpoint so the related-case and action columns remain usable without horizontal overflow; the mobile card exposes the same data as stacked fields."
+    ]
+  }
+}

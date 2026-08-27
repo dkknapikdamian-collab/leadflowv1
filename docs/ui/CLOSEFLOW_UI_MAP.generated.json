@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-27T14:41:24.882Z",
+  "generatedAt": "2026-08-27T15:15:19.501Z",
   "inventoryVersion": "CLOSEFLOW_UI_MAP_INVENTORY_V1",
   "scannerVersion": "CLEAN_SCANNER_V4",
   "filesScanned": 446,
@@ -3009,11 +3009,11 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1543,
+          "line": 1797,
           "snippet": "<span className=\"index\"><AlertTriangle className=\"h-4 w-4\" /></span>"
         },
         {
-          "line": 1706,
+          "line": 1980,
           "snippet": "<span className=\"lead-risk-reason-icon\" data-cf-status-tone=\"red\" aria-hidden=\"true\"><AlertTriangle className=\"h-4 w-4\" /></span>"
         }
       ]
@@ -3034,7 +3034,7 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1849,
+          "line": 2143,
           "snippet": "<ChevronLeft className=\"h-4 w-4\" />"
         }
       ]
@@ -3047,15 +3047,15 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1282,
+          "line": 1476,
           "snippet": "<ChevronRight className=\"h-4 w-4\" />"
         },
         {
-          "line": 1809,
+          "line": 2103,
           "snippet": "<ChevronRight className=\"h-4 w-4\" />"
         },
         {
-          "line": 1859,
+          "line": 2153,
           "snippet": "<ChevronRight className=\"h-4 w-4\" />"
         }
       ]
@@ -3068,7 +3068,7 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1724,
+          "line": 2003,
           "snippet": "<Clock3 className=\"h-4 w-4\" />"
         }
       ]
@@ -3081,7 +3081,7 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1408,
+          "line": 1666,
           "snippet": "<Filter className=\"h-4 w-4\" />"
         }
       ]
@@ -3094,7 +3094,7 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1178,
+          "line": 1372,
           "snippet": "<span className=\"leads-active-process-icon\" aria-hidden=\"true\"><Info className=\"h-4 w-4\" /></span>"
         }
       ]
@@ -3107,11 +3107,11 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1634,
+          "line": 1899,
           "snippet": "<span className=\"index\"><Loader2 className=\"h-4 w-4 animate-spin\" /></span>"
         },
         {
-          "line": 1819,
+          "line": 2113,
           "snippet": "{pending ? <Loader2 className=\"h-4 w-4 animate-spin\" /> : showTrash ? <RotateCcw className=\"h-4 w-4\" /> : <DeleteActionIcon className=\"h-4 w-4\" />}"
         }
       ]
@@ -3132,7 +3132,7 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1000,
+          "line": 1167,
           "snippet": "<Plus className=\"h-4 w-4\" />"
         }
       ]
@@ -3145,11 +3145,11 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1013,
+          "line": 1180,
           "snippet": "{showTrash ? <RotateCcw className=\"h-4 w-4\" /> : <DeleteActionIcon className=\"h-4 w-4\" />}"
         },
         {
-          "line": 1819,
+          "line": 2113,
           "snippet": "{pending ? <Loader2 className=\"h-4 w-4 animate-spin\" /> : showTrash ? <RotateCcw className=\"h-4 w-4\" /> : <DeleteActionIcon className=\"h-4 w-4\" />}"
         }
       ]
@@ -3162,7 +3162,7 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1260,
+          "line": 1454,
           "snippet": "<span aria-hidden=\"true\"><Search className=\"w-4 h-4\" /></span>"
         }
       ]
@@ -3183,15 +3183,15 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1187,
+          "line": 1381,
           "snippet": "<X className=\"h-4 w-4\" />"
         },
         {
-          "line": 1306,
+          "line": 1500,
           "snippet": "<X className=\"h-3.5 w-3.5\" aria-hidden=\"true\" />"
         },
         {
-          "line": 1367,
+          "line": 1625,
           "snippet": "<X className=\"h-3.5 w-3.5\" aria-hidden=\"true\" />"
         }
       ]
@@ -8125,25 +8125,25 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1193,
+      "line": 1387,
       "component": "StatShortcutCard",
       "snippet": "<StatShortcutCard\n            label=\"Wszystkie\"\n            value={stats.total}\n            icon={LeadEntityIcon}\n            active={quickFilter === 'all' && !valueSortEnabled && !showTrash}\n            onClick={() => { setShowTrash(false); setQuickFilter('all'); setRiskFilter('all'); setValueSortEnabled(false); }}\n            title=\"Pokaż wszystkie leady\"\n            ariaLabel=\"Pokaż wszystkie leady\"\n            helper=\"Wszystkie leady\"\n          />\n\n          <StatShortcutCard"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1204,
+      "line": 1398,
       "component": "StatShortcutCard",
       "snippet": "<StatShortcutCard\n            label=\"Aktywne\"\n            value={stats.active}\n            icon={Activity}\n            active={quickFilter === 'active' && !showTrash}\n            onClick={() => toggleQuickFilter('active')}\n            title=\"Pokaż aktywne leady\"\n            ariaLabel=\"Pokaż aktywne leady\"\n            valueClassName=\"text-slate-900\"\n            iconClassName=\"bg-blue-50 text-blue-500\"\n            helper={activeView ? 'W trakcie sprzedaży' : 'Obecnie w procesie'}\n          />"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1217,
+      "line": 1411,
       "component": "StatShortcutCard",
       "snippet": "<StatShortcutCard\n            label=\"Wartość\"\n            value={`${stats.value.toLocaleString('pl-PL')} PLN`}\n            icon={Wallet}\n            active={valueSortEnabled && !showTrash}\n            onClick={toggleValueSorting}\n            title=\"Sortuj leady po wartości\"\n            ariaLabel=\"Sortuj leady po wartości\"\n            helper={valueSortEnabled ? 'Sortowanie aktywne' : 'Suma wartości aktywnych leadów'}\n          />\n\n          <StatShortcutCard"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1228,
+      "line": 1422,
       "component": "StatShortcutCard",
       "snippet": "<StatShortcutCard\n            label=\"Zagrożone\"\n            value={stats.atRisk}\n            icon={AlertTriangle}\n            active={quickFilter === 'at-risk' && !showTrash}\n            onClick={() => toggleQuickFilter('at-risk')}\n            title=\"Pokaż zagrożone leady\"\n            ariaLabel=\"Pokaż zagrożone leady\"\n            tone=\"risk\"\n            helper={riskView ? `${stats.atRisk} ${stats.atRisk === 1 ? 'lead wymaga' : stats.atRisk >= 2 && stats.atRisk <= 4 ? 'leady wymagają' : 'leadów wymaga'} natychmiastowego ruchu` : 'Leady wymagające uwagi'}\n          />"
     },
@@ -12528,73 +12528,78 @@
     },
     {
       "file": "src/pages/Leads.tsx",
+      "value": "blue",
+      "line": 1148
+    },
+    {
+      "file": "src/pages/Leads.tsx",
       "value": "red",
-      "line": 986
+      "line": 1153
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "ai",
-      "line": 1003
+      "line": 1170
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "shared",
-      "line": 1251
+      "line": 1445
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "true",
-      "line": 1259
+      "line": 1453
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "semantic173",
-      "line": 1259
+      "line": 1453
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "semantic173",
-      "line": 1277
+      "line": 1471
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "semantic173",
-      "line": 1287
+      "line": 1481
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "red",
-      "line": 1361
+      "line": 1619
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "red",
-      "line": 1550
+      "line": 1804
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "amber",
-      "line": 1551
+      "line": 1805
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "blue",
-      "line": 1552
+      "line": 1806
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "LeadListCard",
-      "line": 1683
+      "line": 1953
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "red",
-      "line": 1706
+      "line": 1980
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "green",
-      "line": 1738
+      "line": 2017
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
@@ -28377,7 +28382,23 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 984,
+      "line": 1146,
+      "classes": [
+        "leads-history-header-title"
+      ],
+      "snippet": "<span className=\"leads-history-header-title\">"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 1148,
+      "classes": [
+        "leads-history-header-count"
+      ],
+      "snippet": "<span className=\"cf-status-pill leads-history-header-count\" data-cf-status-tone=\"blue\">{stats.history}</span>"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 1151,
       "classes": [
         "leads-risk-header-title"
       ],
@@ -28385,7 +28406,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 986,
+      "line": 1153,
       "classes": [
         "leads-risk-header-count"
       ],
@@ -28393,7 +28414,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1003,
+      "line": 1170,
       "classes": [
         "leads-secondary-header-action"
       ],
@@ -28401,7 +28422,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1009,
+      "line": 1176,
       "classes": [
         "leads-secondary-header-action"
       ],
@@ -28409,7 +28430,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1020,
+      "line": 1187,
       "classes": [
         "lead-form-vnext-header"
       ],
@@ -28417,7 +28438,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1028,
+      "line": 1195,
       "classes": [
         "lead-form-section",
         "lead-form-primary-section"
@@ -28426,7 +28447,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1029,
+      "line": 1196,
       "classes": [
         "lead-form-section-head"
       ],
@@ -28434,7 +28455,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1033,
+      "line": 1200,
       "classes": [
         "lead-form-grid"
       ],
@@ -28442,7 +28463,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1121,
+      "line": 1288,
       "classes": [
         "lead-form-section"
       ],
@@ -28450,7 +28471,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1123,
+      "line": 1290,
       "classes": [
         "lead-form-grid",
         "lead-form-details-grid"
@@ -28459,7 +28480,15 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1192,
+      "line": 1343,
+      "classes": [
+        "leads-state-tabs"
+      ],
+      "snippet": "<div className=\"leads-state-tabs\" role=\"tablist\" aria-label=\"Widoki leadów\" data-frt007-history-tabs=\"true\">"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 1386,
       "classes": [
         "grid-5"
       ],
@@ -28467,7 +28496,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1425,
+      "line": 1683,
       "classes": [
         "leads-more-filters-panel"
       ],
@@ -28475,7 +28504,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1457,
+      "line": 1715,
       "classes": [
         "right-card",
         "lead-right-card",
