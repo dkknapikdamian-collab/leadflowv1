@@ -1,6 +1,6 @@
 # FRT-009 — LEADS TRASH
 
-CONTRACT_STATUS: LOCKED
+CONTRACT_STATUS: ACTIVE
 STAGE_ID: FRT-009
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/009_leads_trash.webp
 TARGET_ROUTE: /leads
@@ -17,4 +17,3 @@ ACCEPTANCE_CRITERIA: Destructive controls are explicit, safe and wired; no hidde
 TEST_PLAN: Restore/delete confirmation and scope tests; browser proof for trash state; typecheck if TS changes; build if shared delete runtime changes.
 PREDECESSOR: FRT-008
 SUCCESSOR: FRT-010
-

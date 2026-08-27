@@ -1,6 +1,6 @@
 # FRT-008 — LEADS RESCUE
 
-CONTRACT_STATUS: ACTIVE
+CONTRACT_STATUS: ACCEPTED
 STAGE_ID: FRT-008
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/008_leads_rescue.webp
 TARGET_ROUTE: /leads
