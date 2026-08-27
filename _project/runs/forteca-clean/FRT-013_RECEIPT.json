@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-013",
+  "reference_file": "docs/ui/reference/forteca-calm-light/013_lead_duplicate_conflict.webp",
+  "target_route": "/leads",
+  "target_state": "Forteca calm-light real Lead duplicate conflict during Lead creation",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+  "acceptance_authority": "CODEX",
+  "acceptance_basis": {
+    "directive_interpretation": "Codex is the acceptance authority under the owner directive for the autonomous Forteca program. This receipt is controller acceptance, not an AICG PASS claim.",
+    "reference_and_runtime": "The real /leads Lead creation flow was reconciled to the FRT-013 reference structure. The mounted conflict state is dynamic and uses current workspace candidates; reference fixture values and unsupported merge persistence were not copied.",
+    "root_cause": "The existing conflict dialog was generic, candidate data omitted source/owner/contact metadata, schema drift could make enriched candidate queries return no rows, and force-create was not distinguished from the hidden-history restore path. FRT-013 adds a scoped Forteca variant, resilient candidate reads, truthful metadata and an explicit boolean force-create boundary.",
+    "review": "Repository-native review found no actionable FRT-013 implementation finding after UUID owner redaction and preservation of the current Lead/client separation and real mutation owners."
+  },
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Reference values are never copied into runtime state or submitted to the API.",
+      "Conflict candidates are read from the current workspace through the canonical entity-conflict endpoint.",
+      "Otwórz istniejący navigates to the real Lead or Client route; no fake record is created.",
+      "Dodaj mimo to passes only an explicit boolean allowDuplicate flag and does not silently restore hidden history.",
+      "Automatic merge and potential-duplicate persistence are not exposed because the current backend has no corresponding real contract.",
+      "Styling is scoped to the mounted FRT-013 conflict dialog and canonical dialog owner.",
+      "No fake success, no-op persistence model or unapproved browser mutation was introduced."
+    ]
+  },
+  "code_changed": true,
+  "files_changed": [
+    "api/leads.ts",
+    "package.json",
+    "src/components/EntityConflictDialog.tsx",
+    "src/lib/supabase-fallback.ts",
+    "src/pages/Leads.tsx",
+    "src/server/entity-conflicts-handler.ts",
+    "src/styles/owners/closeflow-dialogs.css",
+    "tests/forteca-frt-013-lead-duplicate.test.cjs",
+    "docs/ui/CLOSEFLOW_STYLE_MAP.generated.md",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.json",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.md",
+    "docs/ui/closeflow-style-map.generated.json",
+    "audit/evidence/FRT-013_BROWSER_PROOF.json",
+    "audit/evidence/FRT-013_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/runs/forteca-clean/FRT-013_RECEIPT.json"
+  ],
+  "preserved_untracked_files": ["dist-test-today-sections.cjs"],
+  "visual_sot_owners_used": ["MODALS", "LIST_ROWS", "BUTTONS_ACTIONS", "BADGES", "SURFACES", "RESPONSIVE_DENSITY"],
+  "visible_controls_inventory": ["Candidate duplicate rows", "Otwórz istniejący", "Podgląd", "Anuluj", "Dodaj mimo to"],
+  "visible_controls_wired": "Candidate rows and metadata bind to the real conflict response; navigation uses the real entity route; preview is local-only; cancel closes the conflict flow; force-create uses the existing Lead creation mutation with an explicit API boundary.",
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "npm.cmd run test:forteca-frt-013-lead-duplicate (2/2)",
+    "FRT-011/FRT-012 and conflict regression tests (16/16)",
+    "stage226r10, stage226r10b, stage226r10c2 and stage226r10d2 guards (PASS)",
+    "npm.cmd exec tsc -- --noEmit (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS)",
+    "npm.cmd run audit:closeflow-ui-map (PASS)",
+    "npm.cmd run audit:closeflow-style-map (PASS)",
+    "npm.cmd run check:closeflow-ui-skill-pack (PASS)",
+    "npm.cmd run check:closeflow-ui-premap-contract (PASS)",
+    "npm.cmd run guard:routes:canonical (PASS)",
+    "npm.cmd run guard:ui:ssot-icons (PASS)",
+    "npm.cmd run guard:ui:ssot-semantic-colors (PASS)",
+    "npm.cmd run guard:ui:ssot-typography (PASS)",
+    "npm.cmd run guard:ui:component-clones (PASS)",
+    "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke (PARTIAL, zero writes)",
+    "Live Codex In-app Browser proof of real /leads and mounted Dodaj leada dialog (PASS entry state)"
+  ],
+  "tests_reused": [
+    "FRT-000 routing, reference manifest, Guardian boundary and visual SOT owner registry",
+    "FRT-010 real Lead route and local runtime baseline",
+    "FRT-011 real Lead creation modal and canonical field/action owners",
+    "FRT-012 real Lead data and dialog/browser baseline",
+    "Generated UI/style maps and canonical conflict/action owners"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "live duplicate-conflict submit and force-create mutation",
+      "reason": "NOT_EXECUTED_WITHOUT_USER_APPROVAL: the browser entry is real, but opening the conflict state requires submitting Add Lead; no non-mutating route exists"
+    },
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: installed Guardian entrypoint exposes only partial repository-baseline smoke coverage; pass_claim=false"
+    },
+    {
+      "test": "guard:ui:patch-layers and guard:ui:ssot-css-owners",
+      "reason": "BASELINE_DRIFT: pre-existing icon-registry direct import and global shell CSS ownership mismatch are outside the FRT-013 write set"
+    },
+    {
+      "test": "full legacy suite",
+      "reason": "BASELINE_DRIFT: 2076/2660 passed and 582 historical tests failed, including unrelated missing finance stylesheet and legacy visual/runtime expectations; no FRT-013 test was among the targeted failures"
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS_WITH_KNOWN_WARNINGS",
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-013_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "EXECUTED: PARTIAL / coverage PARTIAL / fileWrites 0"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-013_BROWSER_PROOF.json",
+    "status": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "/leads",
+    "real_create_entry": "PASS",
+    "conflict_transition": "NOT_EXERCISED_BY_DESIGN",
+    "conflict_wiring": "PASS_STATIC_AND_RUNTIME_OWNER_RECONCILED",
+    "submit": "NOT_SUBMITTED_BY_DESIGN",
+    "console_errors": 0,
+    "tab_marked_deliverable": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_STATICALLY_RECONCILED",
+    "literal_pixel_identity_claim": false,
+    "limitation": "The real conflict state requires a user-approved Lead submit; unsupported merge/potential-duplicate actions were intentionally not invented."
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "efficiency_planning": "APPLIED",
+    "marketplace_startup_receipt": "startup-7d5e9774898208ff7bf79febe8ab7a6dc2385e4c3aaa3a7c967bd91c8b6ff313",
+    "marketplace_binding": "BOUND",
+    "primary_capability": "frontend-design",
+    "project_context_reused": ["FRT-000 contracts/evidence baseline", "FRT-010 Lead runtime", "FRT-011 creation flow", "FRT-012 populated Lead runtime", "Generated UI/style maps"],
+    "evidence_reuse": ["Canonical dialog/list/action owners", "FRT-011 browser entry state", "FRT-012 local runtime and browser harness"],
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "skip_reason": "No suitable available provider was exposed for this bounded UI/data-owner change; one write owner and parent validation were required."
+  },
+  "implementation_commit_sha": "fa87c407d208cc806ac9ac6efc44320074391d26",
+  "next_stage": "FRT-014",
+  "created_at": "2026-08-27T21:25:32.7582186Z"
+}

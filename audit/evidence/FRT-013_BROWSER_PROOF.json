@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-013",
+  "reference_file": "docs/ui/reference/forteca-calm-light/013_lead_duplicate_conflict.webp",
+  "reference_sha256": "F15905A4F87C2EA2329E009B112BD7AFA714C5627193F5F3D6BD8D5228084C0A",
+  "entry_url": "http://localhost:3000/leads",
+  "runtime_url": "http://localhost:3000/leads",
+  "route": "/leads",
+  "state": "Forteca calm-light real Lead duplicate-conflict entry flow",
+  "live_runtime": true,
+  "auth_required": false,
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "record_origin": "Existing local runtime Lead records and the mounted canonical Lead creation flow; reference fixture values were not copied.",
+    "create_flow_owner": "src/pages/Leads.tsx",
+    "conflict_query_owner": "findEntityConflictsInSupabase -> /api/system?kind=entity-conflicts",
+    "lead_write_owner": "insertLeadToSupabase -> /api/leads POST",
+    "production_source": "Supabase path remains unchanged; no production auth bypass was introduced."
+  },
+  "visible_structure": {
+    "real_entry_state": [
+      "CloseFlow shell at /leads",
+      "Real Lead list with current local runtime records",
+      "Mounted Dodaj leada dialog",
+      "Canonical identity, contact, source, value, status and priority fields",
+      "Next-step controls, owner display, note field and cancel/create footer"
+    ],
+    "implemented_conflict_state": [
+      "Dynamic new-lead summary card",
+      "Dynamic candidate duplicate rows",
+      "Open existing action",
+      "Safe local candidate preview",
+      "Anuluj and explicit Dodaj mimo to actions",
+      "Truthful no-automatic-merge information callout"
+    ]
+  },
+  "interaction_proof": {
+    "real_create_entry": {
+      "status": "PASS",
+      "observed": "The real /leads page opened the mounted Dodaj leada dialog; the live snapshot exposed the canonical fields and actions, and the marked screenshot showed the implemented runtime window."
+    },
+    "conflict_modal_transition": {
+      "status": "NOT_EXERCISED_BY_DESIGN",
+      "reason": "Triggering the duplicate state requires submitting a Lead creation request. Browser policy forbids invoking Add Lead or another live mutation without explicit user confirmation; no safe non-mutating route to the conflict state exists."
+    },
+    "conflict_wiring": {
+      "status": "PASS_STATIC_AND_RUNTIME_OWNER_RECONCILED",
+      "observed": "The real handleCreateLead path calls findEntityConflictsInSupabase, stores the returned candidates and pending draft, closes the create dialog, and opens the FRT-013 variant. Candidate navigation remains real and force-create uses an explicit boolean API flag."
+    },
+    "safe_boundary": {
+      "status": "PASS",
+      "observed": "The real dialog was closed with Anuluj; no Lead, task, restore, merge or delete mutation was invoked."
+    }
+  },
+  "responsive_proof": {
+    "desktop": "PASS_ENTRY_STATE",
+    "horizontal_overflow": false,
+    "note": "The implemented Lead creation window fits the active desktop viewport and keeps its footer visible with internal scrolling. The duplicate state itself was not opened because that requires a live submit."
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "candidate_data_is_runtime_bound": true,
+    "force_create_is_explicit": true,
+    "merge_or_potential_duplicate_schema_not_invented": true,
+    "supabase_production_path_preserved": true,
+    "no_dead_submitted_controls": true,
+    "no_live_mutation_without_approval": true
+  },
+  "console_errors": 0,
+  "status": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_STATICALLY_RECONCILED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The reference contains fixture names and values; runtime candidate data is rendered from the active workspace and is not copied from the reference.",
+      "The conflict modal could not be opened non-mutatingly in the browser because its canonical entry is the real Lead creation submit flow.",
+      "The backend has no real merge handler or potential-duplicate persistence contract, so those reference actions were not invented; the runtime exposes only safe actions owned by the current domain."
+    ]
+  },
+  "tab_marked_deliverable": true,
+  "implementation_commit_sha": "fa87c407d208cc806ac9ac6efc44320074391d26",
+  "created_at": "2026-08-27T21:25:32.7582186Z"
+}
