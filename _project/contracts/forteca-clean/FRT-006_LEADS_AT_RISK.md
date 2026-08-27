@@ -1,6 +1,6 @@
 # FRT-006 — LEADS AT RISK
 
-CONTRACT_STATUS: ACTIVE
+CONTRACT_STATUS: ACCEPTED
 STAGE_ID: FRT-006
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/006_leads_at_risk.webp
 TARGET_ROUTE: /leads

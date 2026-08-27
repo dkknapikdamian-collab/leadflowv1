@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-006",
+  "reference_file": "docs/ui/reference/forteca-calm-light/006_leads_at_risk.webp",
+  "reference_sha256": "0EA99BBF9498AE3FAD2A8E1FCB4436EC1A0A3AFDFD0178CACFC79B5B5B3B2636",
+  "captured_at": "2026-08-27T14:48:20.975Z",
+  "capture": {
+    "browser": "Codex In-app Browser",
+    "url": "http://localhost:3000/leads",
+    "route": "/leads",
+    "viewport": {
+      "width": 946,
+      "height": 698
+    },
+    "reference_dimensions": {
+      "width": 1672,
+      "height": 941
+    },
+    "captured_in_in_app_browser": true,
+    "screenshot_artifact_path": null,
+    "tab_marked_deliverable": true
+  },
+  "runtime": {
+    "live_runtime": true,
+    "auth_required": false,
+    "auth_used": false,
+    "shell": {
+      "brand": "CloseFlow",
+      "active_navigation": "Leady",
+      "data_origin": "workspace-scoped current local runtime response"
+    },
+    "header": {
+      "title": "Leady – Zagrożone",
+      "count": 1,
+      "description": "Leady wymagające natychmiastowej uwagi i reakcji.",
+      "primary_action": "Dodaj leada",
+      "primary_action_visible": true
+    },
+    "metrics": {
+      "cards": 4,
+      "risk_kpi_selected": true,
+      "values": {
+        "all": 3,
+        "active": 1,
+        "active_value_pln": 24300,
+        "at_risk": 1
+      }
+    },
+    "filter_card": {
+      "visible": true,
+      "search": true,
+      "status": "all",
+      "source": "all",
+      "selected_risk_chip": "Wysokie",
+      "risk_chip_remove_label": "Usuń filtr Ryzyko: wysokie",
+      "cadence_filter": "Wszystkie",
+      "more_filters": true
+    },
+    "table": {
+      "visible": true,
+      "visible_columns_at_available_desktop": [
+        "LEAD / FIRMA",
+        "POWÓD RYZYKA",
+        "NASTĘPNY RUCH",
+        "TERMIN",
+        "WARTOŚĆ",
+        "AKCJE"
+      ],
+      "registered_columns": [
+        "LEAD / FIRMA",
+        "POWÓD RYZYKA",
+        "NASTĘPNY RUCH",
+        "TERMIN",
+        "WARTOŚĆ",
+        "OSTATNI KONTAKT",
+        "AKCJE"
+      ],
+      "rows_loaded": 1,
+      "filtered_rows_label": "1–1 z 1 leadów",
+      "real_row_identity": "M&Z Nieruchomości / Michał Zieliński",
+      "real_row_href": "/leads/dev-lead-2",
+      "real_row_reason": "Temat oznaczony jako zagrożony",
+      "real_row_reason_detail": "Oznaczenie ryzyka pochodzi z rekordu leada.",
+      "real_row_next_move": "Follow-up po ofercie (wiadomość + telefon)",
+      "real_row_due": "Jutro",
+      "real_row_value": "4500 PLN",
+      "real_row_last_contact": "Brak daty kontaktu",
+      "row_navigation": true,
+      "archive_action": true,
+      "horizontal_overflow": false
+    },
+    "console_errors": []
+  },
+  "interactions": {
+    "risk_kpi": {
+      "selected": true,
+      "filtered_rows": 1,
+      "status": "PASS"
+    },
+    "risk_chip": {
+      "cleared_to_all": true,
+      "restored_by_risk_kpi": true,
+      "status": "PASS"
+    },
+    "shared_actions": {
+      "row_link": "PASS",
+      "archive_action_owner_preserved": true,
+      "no_mutating_action_submitted": true
+    },
+    "responsive_layout": {
+      "desktop_available_viewport_no_horizontal_overflow": true,
+      "mobile_viewport": {
+        "width": 390,
+        "height": 844,
+        "risk_heading_visible": true,
+        "risk_rows": 1,
+        "horizontal_overflow": false
+      },
+      "status": "PASS"
+    }
+  },
+  "comparison": {
+    "reference_is_visual_sot": true,
+    "at_risk_state_hierarchy_reconciled": true,
+    "structural_visual_parity": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "literal_pixel_identity_claim": false,
+    "accepted_deviations": [
+      "The reference is 1672x941 while the available in-app browser viewport is 946x698; compact desktop and mobile responsive placement are verified in the live shell.",
+      "The product shell remains CloseFlow as required by repository SOT; the reference artwork uses the Forteca light shell.",
+      "The current workspace runtime returns 3 real leads and 1 at-risk lead rather than the reference fixture count 7; no screenshot rows, owners or dates were fabricated.",
+      "The risk reason is derived from canonical record state: this real record is explicitly marked at risk, but has no source contact date for an invented silence-day label.",
+      "Ostatni kontakt is retained as a registered owner but hidden at the compact desktop breakpoint so the real action column remains visible without overflow."
+    ]
+  }
+}
