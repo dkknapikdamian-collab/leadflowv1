@@ -11,7 +11,7 @@ test('FRT-004 Leads all state keeps real data, reference controls and pagination
   const header = read('src/components/CloseFlowPageHeaderV2.tsx');
   const listCss = read('src/styles/closeflow-record-list-source-truth.css');
 
-  assert.match(leads, /fetchLeadsFromSupabase\(\)/);
+  assert.match(leads, /fetchLeadsFromSupabase(?:\(\)|\(\{ includeArchived: true \}\))/);
   assert.match(leads, /useState<LeadsQuickFilter>\('all'\)/);
   assert.match(leads, /data-frt004-leads-filter-card="true"/);
   assert.match(leads, /data-frt004-leads-filter-toolbar="true"/);

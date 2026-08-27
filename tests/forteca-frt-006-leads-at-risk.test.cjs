@@ -27,7 +27,7 @@ test('FRT-006 at-risk state follows the reference composition and canonical risk
   assert.match(leads, /buildNextMoveContract\(/);
   assert.match(leads, /getLeadOwnerRiskBadges\(/);
   assert.match(leads, /readOwnerRiskSettings\(/);
-  assert.match(leads, /fetchLeadsFromSupabase\(\)/);
+  assert.match(leads, /fetchLeadsFromSupabase(?:\(\)|\(\{ includeArchived: true \}\))/);
   assert.match(leads, /data-frt006-risk-table-head=\{/);
   assert.match(leads, /data-frt006-risk-table-row=\{/);
   assert.match(leads, /onClick=\{\(\) => toggleQuickFilter\('at-risk'\)\}/);

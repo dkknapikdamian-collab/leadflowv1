@@ -2688,3 +2688,585 @@
     min-height: 1.8rem !important;
   }
 }
+
+/* FRT-009: the trash is a real list state, not a screenshot-only empty panel. */
+#root .cf-html-view.main-leads-html .leads-trash-hidden-action {
+  display: none !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-header-title {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.6rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-view {
+  display: grid !important;
+  gap: 0.9rem !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-retention-banner {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 0.7rem !important;
+  padding: 0.85rem 1rem !important;
+  border: 1px solid #fed7aa !important;
+  border-radius: 0.72rem !important;
+  background: #fff7ed !important;
+  color: #9a3412 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-retention-banner > div {
+  display: grid !important;
+  gap: 0.2rem !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-retention-banner strong,
+#root .cf-html-view.main-leads-html .leads-trash-retention-banner span {
+  line-height: 1.35 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-retention-banner span {
+  color: #c2410c !important;
+  font-size: 0.8rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-retention-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+  width: 1.6rem !important;
+  height: 1.6rem !important;
+  border-radius: 999px !important;
+  background: #ffedd5 !important;
+  color: #ea580c !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-summary-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 0.75rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-summary-card {
+  display: grid !important;
+  gap: 0.28rem !important;
+  min-width: 0 !important;
+  min-height: 7.2rem !important;
+  padding: 0.9rem 1rem !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 0.72rem !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 3%) !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-summary-label {
+  color: #64748b !important;
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-summary-card > strong {
+  color: #0f172a !important;
+  font-size: 1.4rem !important;
+  line-height: 1.1 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-summary-card > span:not(.leads-trash-summary-label),
+#root .cf-html-view.main-leads-html .leads-trash-summary-link {
+  color: #64748b !important;
+  font-size: 0.76rem !important;
+  line-height: 1.35 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-summary-link {
+  width: fit-content !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #2563eb !important;
+  cursor: pointer !important;
+  font-weight: 600 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-summary-link:hover {
+  color: #1d4ed8 !important;
+  text-decoration: underline !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-card-trash {
+  border-color: #dbe4f0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-filter-panel {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 0.8rem !important;
+  min-width: 0 !important;
+  padding: 0.75rem 0.9rem !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 0.65rem !important;
+  background: #f8fafc !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-filter-panel > div:first-child {
+  display: grid !important;
+  gap: 0.35rem !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-filter-pills {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-filter-pills button {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-table-card {
+  overflow: hidden !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-table-head,
+#root .cf-html-view.main-leads-html .leads-trash-table-row {
+  grid-template-columns: minmax(0, 1.55fr) minmax(8.5rem, 0.95fr) minmax(0, 0.95fr) minmax(0, 1.1fr) minmax(0, 0.95fr) 7.5rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-table-head {
+  min-height: 2.65rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-table-row {
+  align-items: center !important;
+  min-height: 4.55rem !important;
+}
+
+#root .cf-html-view.main-leads-html .lead-trash-main-cell {
+  display: grid !important;
+  grid-template-columns: 2.15rem minmax(0, 1fr) !important;
+  grid-template-rows: auto auto !important;
+  align-items: center !important;
+  column-gap: 0.65rem !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .lead-trash-avatar {
+  grid-row: 1 / span 2 !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  background: #eff6ff !important;
+  color: #2563eb !important;
+}
+
+#root .cf-html-view.main-leads-html .lead-trash-name {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  color: #0f172a !important;
+  font-size: 0.86rem !important;
+  font-weight: 700 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-leads-html .lead-trash-main-cell > .sub {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-leads-html .lead-trash-data-cell {
+  display: grid !important;
+  gap: 0.22rem !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .lead-trash-data-cell .mini {
+  display: none !important;
+}
+
+#root .cf-html-view.main-leads-html .lead-trash-data-cell strong {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  color: #334155 !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-leads-html .lead-trash-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-restore-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.35rem !important;
+  min-height: 2.1rem !important;
+  padding: 0.42rem 0.65rem !important;
+  border: 1px solid #bfdbfe !important;
+  border-radius: 0.5rem !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  cursor: pointer !important;
+  font-size: 0.76rem !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-restore-button:hover:not(:disabled) {
+  border-color: #93c5fd !important;
+  background: #dbeafe !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-restore-button:disabled {
+  cursor: wait !important;
+  opacity: 0.65 !important;
+}
+
+@media (max-width: 72rem) {
+  #root .cf-html-view.main-leads-html .leads-trash-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-filter-card-trash {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) auto auto !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-trash-table-head,
+  #root .cf-html-view.main-leads-html .leads-trash-table-row {
+    grid-template-columns: minmax(0, 1.45fr) minmax(8rem, 0.95fr) minmax(0, 1fr) minmax(0, 1.05fr) 7rem !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-trash-table-head > :nth-child(5),
+  #root .cf-html-view.main-leads-html .leads-trash-table-row > :nth-child(5) {
+    display: none !important;
+  }
+}
+
+@media (max-width: 46rem) {
+  #root .cf-html-view.main-leads-html .leads-trash-summary-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-trash-filter-panel {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-filter-card-trash {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-trash-table-head {
+    display: none !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-trash-table-row {
+    grid-template-columns: minmax(0, 1fr) 2.2rem !important;
+    row-gap: 0.55rem !important;
+    padding: 0.85rem !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-trash-table-row > .lead-trash-main-cell,
+  #root .cf-html-view.main-leads-html .leads-trash-table-row > .lead-trash-data-cell {
+    display: grid !important;
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-trash-table-row > .lead-trash-data-cell {
+    display: flex !important;
+    align-items: baseline !important;
+    justify-content: space-between !important;
+    gap: 0.5rem !important;
+    min-height: 1.35rem !important;
+  }
+
+  #root .cf-html-view.main-leads-html .lead-trash-data-cell .mini {
+    display: inline !important;
+    flex: 0 0 auto !important;
+    color: #64748b !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+  }
+
+  #root .cf-html-view.main-leads-html .lead-trash-data-cell strong {
+    text-align: right !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-trash-table-row > :nth-child(5) {
+    display: flex !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-trash-table-row > .lead-trash-actions {
+    grid-column: 2 !important;
+    grid-row: 1 / span 2 !important;
+    align-items: flex-start !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-trash-restore-button {
+    width: 2.1rem !important;
+    min-width: 2.1rem !important;
+    padding: 0 !important;
+    font-size: 0 !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-trash-restore-button svg {
+    margin: 0 !important;
+  }
+}
+
+/* FRT-009 visual reconciliation: the reference puts the trash notice and
+ * summary before the filter/table surface. The React tree keeps the shared
+ * filter owner in place for the other Leads states, so the trash-only items
+ * participate in the same stack with explicit visual order. */
+#root .cf-html-view.main-leads-html > .layout-list > .stack:has(> .leads-trash-view) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 0.9rem !important;
+}
+
+#root .cf-html-view.main-leads-html > .layout-list > .stack > .leads-trash-view {
+  display: contents !important;
+}
+
+#root .cf-html-view.main-leads-html > .layout-list > .stack > .leads-filter-card-trash {
+  order: 4 !important;
+}
+
+#root .cf-html-view.main-leads-html > .layout-list > .stack > .leads-more-filters-panel:has(.leads-trash-filter-panel) {
+  order: 5 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-view-actions {
+  display: none !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  flex-wrap: wrap !important;
+  gap: 0.55rem !important;
+  order: 1 !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-view-actions .btn {
+  min-height: 2.35rem !important;
+  height: 2.35rem !important;
+  padding: 0 0.82rem !important;
+  border-radius: 0.68rem !important;
+  font-size: 0.73rem !important;
+  font-weight: 800 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-view-actions .btn.soft-blue {
+  border: 1px solid #bfdbfe !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  -webkit-text-fill-color: #1d4ed8 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-view-actions .btn.primary {
+  border: 1px solid #2563eb !important;
+  background: #2563eb !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+#root .cf-html-view.main-leads-html:has(.leads-trash-header-title) > .cf-page-header-v2 .cf-page-header-v2__actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  min-width: max-content !important;
+}
+
+#root .cf-html-view.main-leads-html:has(.leads-trash-header-title) > .cf-page-header-v2 .cf-page-header-v2__actions > .head-actions {
+  display: contents !important;
+}
+
+#root .cf-html-view.main-leads-html:has(.leads-trash-header-title) > .cf-page-header-v2 .cf-page-header-v2__actions button[data-frt009-trash-export],
+#root .cf-html-view.main-leads-html:has(.leads-trash-header-title) > .cf-page-header-v2 .cf-page-header-v2__actions button[data-frt004-secondary-header-action="trash"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 2.35rem !important;
+  height: 2.35rem !important;
+  padding: 0 0.82rem !important;
+  border-radius: 0.68rem !important;
+  font-size: 0.73rem !important;
+  font-weight: 800 !important;
+}
+
+#root .cf-html-view.main-leads-html:has(.leads-trash-header-title) > .cf-page-header-v2 .cf-page-header-v2__actions button[data-frt009-trash-export] {
+  border: 1px solid #bfdbfe !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  -webkit-text-fill-color: #1d4ed8 !important;
+}
+
+#root .cf-html-view.main-leads-html:has(.leads-trash-header-title) > .cf-page-header-v2 .cf-page-header-v2__actions button[data-frt004-secondary-header-action="trash"] {
+  border: 1px solid #2563eb !important;
+  background: #2563eb !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+#root .cf-html-view.main-leads-html:has(.leads-trash-header-title) > .cf-page-header-v2 .cf-page-header-v2__actions button[data-frt004-secondary-header-action="trash"] .pill {
+  border-color: rgb(255 255 255 / 0.35) !important;
+  background: rgb(255 255 255 / 0.16) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+#root .cf-html-view.main-leads-html .cf-page-header-v2__title .leads-trash-header-title,
+#root .cf-html-view.main-leads-html .cf-page-header-v2__title .leads-trash-header-title > span {
+  display: inline !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: inherit !important;
+  -webkit-text-fill-color: currentColor !important;
+  font: inherit !important;
+  letter-spacing: inherit !important;
+  line-height: inherit !important;
+  text-transform: none !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-retention-banner {
+  order: 2 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-summary-grid {
+  order: 3 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-table-card {
+  order: 6 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-summary-card-head {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.58rem !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-summary-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+  width: 2.15rem !important;
+  height: 2.15rem !important;
+  border-radius: 0.68rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-summary-icon.is-purple {
+  background: #f3e8ff !important;
+  color: #9333ea !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-summary-icon.is-blue {
+  background: #dbeafe !important;
+  color: #2563eb !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-summary-icon.is-amber {
+  background: #fef3c7 !important;
+  color: #d97706 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-summary-icon.is-green {
+  background: #dcfce7 !important;
+  color: #16a34a !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-summary-label {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+@media (min-width: 57rem) {
+  #root .cf-html-view.main-leads-html .leads-trash-view-actions {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    z-index: 5 !important;
+  }
+
+  #root .cf-html-view.main-leads-html > .layout-list {
+    position: relative !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-filter-card-trash {
+    grid-template-columns: minmax(18rem, 1.7fr) minmax(9rem, 1fr) minmax(9rem, 1fr) minmax(10rem, 1fr) auto !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-filter-card-trash > .leads-filter-search {
+    grid-column: 1 !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-filter-card-trash > .leads-filter-toolbar {
+    display: contents !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-filter-card-trash > .leads-filter-toolbar > .leads-filter-reset {
+    display: none !important;
+  }
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-empty {
+  display: grid !important;
+  align-items: center !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  column-gap: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-empty > .index {
+  display: none !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-empty > span:last-child {
+  display: grid !important;
+  gap: 0.2rem !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-trash-empty > span:last-child > .title,
+#root .cf-html-view.main-leads-html .leads-trash-empty > span:last-child > .sub {
+  display: block !important;
+}
+
+@media (max-width: 46rem) {
+  #root .cf-html-view.main-leads-html .leads-trash-view-actions {
+    position: static !important;
+    justify-content: flex-start !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-trash-view-actions .btn {
+    flex: 1 1 10rem !important;
+  }
+}

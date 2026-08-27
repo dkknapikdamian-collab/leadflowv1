@@ -39,7 +39,7 @@ test('FRT-005 active state uses the real quick filter and reference process noti
 test('FRT-005 active state remains connected to real leads data and existing action owners', () => {
   const leads = read('src/pages/Leads.tsx');
 
-  assert.match(leads, /fetchLeadsFromSupabase\(\)/);
+  assert.match(leads, /fetchLeadsFromSupabase(?:\(\)|\(\{ includeArchived: true \}\))/);
   assert.match(leads, /quickFilter === 'active' && activeLead/);
   assert.match(leads, /onClick=\{\(\) => toggleQuickFilter\('active'\)\}/);
   assert.match(leads, /setQuickFilter\('active'\)/);

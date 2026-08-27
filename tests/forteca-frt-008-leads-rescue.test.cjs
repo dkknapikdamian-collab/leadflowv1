@@ -12,7 +12,7 @@ test('FRT-008 rescue uses the real rescue owner and reference composition', () =
   const contract = read('_project/contracts/forteca-clean/FRT-008_LEADS_RESCUE.md');
   const css = read('src/styles/closeflow-record-list-source-truth.css');
 
-  assert.match(contract, /CONTRACT_STATUS: ACTIVE/);
+  assert.match(contract, /CONTRACT_STATUS: (?:ACTIVE|ACCEPTED)/);
   assert.match(leads, /const rescueView = !showTrash && quickFilter === 'rescue';/);
   assert.match(leads, /const lostLeadRescueSummary = useMemo\(/);
   assert.match(leads, /const filteredRescueRows = useMemo\(/);

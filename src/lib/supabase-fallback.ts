@@ -562,7 +562,7 @@ export async function fetchAssistantContextFromSupabase() {
   }));
 }
 
-export async function fetchLeadsFromSupabase(params?: { clientId?: string; linkedCaseId?: string; caseId?: string; status?: string; visibility?: string }) {
+export async function fetchLeadsFromSupabase(params?: { clientId?: string; linkedCaseId?: string; caseId?: string; status?: string; visibility?: string; includeArchived?: boolean }) {
   if (isDevPreviewDataEnabled()) {
     const all = getDevPreviewData().leads as Record<string, unknown>[];
     return normalizeLeadListContract(all.filter((row) => {
@@ -580,6 +580,7 @@ export async function fetchLeadsFromSupabase(params?: { clientId?: string; linke
   if (params?.caseId) query.set('caseId', params.caseId);
   if (params?.status) query.set('status', params.status);
   if (params?.visibility) query.set('visibility', params.visibility);
+  if (params?.includeArchived) query.set('includeArchived', '1');
   return callApi<Record<string, unknown>[]>(`/api/leads${query.toString() ? `?${query.toString()}` : ''}`).then(normalizeLeadListContract);
 }
 

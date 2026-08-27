@@ -16,6 +16,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import {
   AlertTriangle,
   Activity,
+  CalendarDays,
   ChevronLeft,
   ChevronRight,
   Clock3,
@@ -133,7 +134,7 @@ const STAGE227F6_LEADS_CONTACT_CADENCE_COMPACT = 'Leads Contact Cadence Grid is 
 const STAGE231D0C_LEAD_LIST_CARD_CLIENT_VIEW_FREEZE = 'LeadListCard reuses frozen ClientListCard visual shell: size, axes, ellipsis and action column; lead data semantics stay unchanged';
 const STAGE231G_LEAD_CREATE_POTENTIAL_INPUT = 'Lead create form exposes Potencjał / wartość and persists dealValue';
 const CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER = 'Szukaj po imieniu, firmie, e-mailu, telefonie...';
-const CLOSEFLOW_STAGE134_TRASH_SEARCH_PLACEHOLDER = 'Szukaj w koszu...';
+const CLOSEFLOW_STAGE134_TRASH_SEARCH_PLACEHOLDER = 'Szukaj po nazwie, e-mailu, firmie...';
 void STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT;
 void STAGE222_R4_LEADS_CLIENTS_OPERATIONAL_BADGES;
 void STAGE223R3_LAST_CONTACT_INTAKE_LEADS;
@@ -147,6 +148,8 @@ const STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG = 'lead creation duplicate
 void STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG;
 const STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE = 'lead duplicate conflict preflight fails closed and requires explicit add anyway';
 void STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE;
+const STAGE229_FRT009_LEADS_TRASH_RUNTIME = 'FRT-009 trash renders real archived records with safe restore and no irreversible dead controls';
+void STAGE229_FRT009_LEADS_TRASH_RUNTIME;
 // Guard marker: \n\nTen lead ma powiązaną sprawę
 
 type CaseRecord = {
@@ -158,6 +161,8 @@ type CaseRecord = {
 };
 
 type LeadsQuickFilter = 'all' | 'active' | 'at-risk' | 'history' | 'rescue';
+type LeadsTrashDeletedPeriod = 'all' | '30' | '90' | 'older';
+type LeadsTrashRetentionFilter = 'all' | 'known' | 'unknown';
 
 
 function normalizeLeadSearchValue(value: unknown) {
@@ -495,6 +500,107 @@ function getLeadHistoryCloseAt(lead: any) {
     .find((value) => value && !Number.isNaN(new Date(value).getTime())) || null;
 }
 
+function getLeadTrashTimestamp(lead: any) {
+  const candidates = [
+    lead?.closedAt,
+    lead?.closed_at,
+    lead?.archivedAt,
+    lead?.archived_at,
+    lead?.deletedAt,
+    lead?.deleted_at,
+    lead?.updatedAt,
+    lead?.updated_at,
+  ];
+
+  return candidates
+    .map((value) => String(value || '').trim())
+    .find((value) => value && !Number.isNaN(new Date(value).getTime())) || null;
+}
+
+function getLeadTrashReason(lead: any) {
+  const candidates = [
+    lead?.deletionReason,
+    lead?.deletion_reason,
+    lead?.deleteReason,
+    lead?.delete_reason,
+    lead?.archiveReason,
+    lead?.archive_reason,
+    lead?.trashReason,
+    lead?.trash_reason,
+  ];
+
+  return candidates.map((value) => String(value || '').trim()).find(Boolean) || 'Brak danych';
+}
+
+function getLeadTrashRetentionAt(lead: any) {
+  const candidates = [
+    lead?.permanentDeletionAt,
+    lead?.permanent_deletion_at,
+    lead?.retentionDueAt,
+    lead?.retention_due_at,
+    lead?.hardDeleteAt,
+    lead?.hard_delete_at,
+    lead?.deletionDueAt,
+    lead?.deletion_due_at,
+  ];
+
+  return candidates
+    .map((value) => String(value || '').trim())
+    .find((value) => value && !Number.isNaN(new Date(value).getTime())) || null;
+}
+
+function getLeadTrashDeletedBy(lead: any) {
+  const scalarCandidates = [
+    lead?.deletedByName,
+    lead?.deleted_by_name,
+    lead?.archivedByName,
+    lead?.archived_by_name,
+    lead?.deletedById,
+    lead?.deleted_by,
+    lead?.archivedById,
+    lead?.archived_by,
+  ];
+  const scalarValue = scalarCandidates
+    .filter((value) => typeof value === 'string' || typeof value === 'number')
+    .map((value) => String(value).trim())
+    .find(Boolean);
+  if (scalarValue) return scalarValue;
+
+  const nestedCandidates = [
+    lead?.deletedBy?.name,
+    lead?.deleted_by?.name,
+    lead?.archivedBy?.name,
+    lead?.archived_by?.name,
+  ];
+
+  return nestedCandidates.map((value) => String(value || '').trim()).find(Boolean) || 'Brak danych';
+}
+
+function getLeadTrashLabel(lead: any) {
+  return String(lead?.company || lead?.name || lead?.email || '').trim() || 'Lead bez nazwy';
+}
+
+function getLeadTrashAgeDays(value: string | null, now = new Date()) {
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return Math.max(0, differenceInCalendarDays(startOfDay(now), startOfDay(date)));
+}
+
+function formatLeadTrashDate(value: string | null, emptyLabel = 'Brak danych') {
+  if (!value) return emptyLabel;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return emptyLabel;
+  return format(date, 'd MMM yyyy, HH:mm', { locale: pl });
+}
+
+function formatLeadTrashAgeLabel(days: number | null) {
+  if (days === null) return 'Brak danych';
+  if (days === 0) return 'Dzisiaj';
+  if (days === 1) return '1 dzień';
+  return `${days} dni`;
+}
+
 function getRestoreStatusForLead(lead: any, linkedCase?: CaseRecord) {
   if (linkedCase || lead?.linkedCaseId || lead?.caseId || lead?.movedToServiceAt || lead?.caseStartedAt) {
     return 'moved_to_service';
@@ -529,6 +635,9 @@ export default function Leads() {
   const [historyClosedPeriodFilter, setHistoryClosedPeriodFilter] = useState<'all' | '30' | '90' | '365'>('365');
   const [rescueValueFilter, setRescueValueFilter] = useState<'all' | 'under_5000' | '5000_20000' | 'over_20000'>('all');
   const [rescueOwnerFilter, setRescueOwnerFilter] = useState('');
+  const [trashReasonFilter, setTrashReasonFilter] = useState('');
+  const [trashDeletedPeriodFilter, setTrashDeletedPeriodFilter] = useState<LeadsTrashDeletedPeriod>('all');
+  const [trashRetentionFilter, setTrashRetentionFilter] = useState<LeadsTrashRetentionFilter>('all');
   const [showMoreFilters, setShowMoreFilters] = useState(false);
   const [leadPage, setLeadPage] = useState(1);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -553,6 +662,7 @@ export default function Leads() {
   const [leadSubmitting, setLeadSubmitting] = useState(false);
   const [archivePendingId, setArchivePendingId] = useState<string | null>(null);
   const [leadArchiveConfirmStage220A29, setLeadArchiveConfirmStage220A29] = useState<{ lead: any; linkedCase?: CaseRecord | null } | null>(null);
+  const [leadRestoreConfirmStage220A29, setLeadRestoreConfirmStage220A29] = useState<{ lead: any; linkedCase?: CaseRecord | null } | null>(null);
   const [conflictArchiveConfirmStage220A29, setConflictArchiveConfirmStage220A29] = useState<EntityConflictCandidate | null>(null);
   const [leadConflictOpen, setLeadConflictOpen] = useState(false);
   const [leadConflictCandidates, setLeadConflictCandidates] = useState<EntityConflictCandidate[]>([]);
@@ -639,6 +749,21 @@ export default function Leads() {
     setSearchParams(nextParams, { replace: true });
   }, [searchParams, setSearchParams]);
 
+  useEffect(() => {
+    if (searchParams.get('quick') !== 'trash') return;
+    setShowTrash(true);
+    setValueSortEnabled(false);
+    setQuickFilter('all');
+    setRiskFilter('all');
+    setTrashReasonFilter('');
+    setTrashDeletedPeriodFilter('all');
+    setTrashRetentionFilter('all');
+    setShowMoreFilters(false);
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('quick');
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
   const loadLeads = useCallback(async () => {
     if (!workspace?.id) {
       setLoading(false);
@@ -648,7 +773,7 @@ export default function Leads() {
     setLoadError(null);
     try {
       const [leadRows, caseRows, taskRows, eventRows, clientRows] = await Promise.all([
-        fetchLeadsFromSupabase(),
+        fetchLeadsFromSupabase({ includeArchived: true }),
         fetchCasesFromSupabase().catch(() => []),
         fetchTasksFromSupabase().catch(() => []),
         fetchEventsFromSupabase().catch(() => []),
@@ -889,7 +1014,35 @@ export default function Leads() {
     });
   };
 
-  const handleRestoreLead = async (event: MouseEvent<HTMLButtonElement>, lead: any) => {
+  const executeRestoreLeadStage220A29 = async (leadToRestore: any) => {
+    const leadId = String(leadToRestore?.id || '');
+    if (!leadId) return;
+
+    const linkedCase = resolveLinkedCaseForLead(leadToRestore);
+    const nextStatus = getRestoreStatusForLead(leadToRestore, linkedCase);
+    const nextVisibility = nextStatus === 'moved_to_service' ? 'archived' : 'active';
+    const nextOutcome = nextStatus === 'moved_to_service' ? 'moved_to_service' : 'open';
+
+    try {
+      setArchivePendingId(leadId);
+      await updateLeadInSupabase({
+        id: leadId,
+        status: nextStatus,
+        leadVisibility: nextVisibility,
+        salesOutcome: nextOutcome,
+        closedAt: null,
+      });
+      setLeadRestoreConfirmStage220A29(null);
+      toast.success('Lead przywrócony');
+      await loadLeads();
+    } catch (error: any) {
+      toast.error('Błąd przywracania leada: ' + (error?.message || 'REQUEST_FAILED'));
+    } finally {
+      setArchivePendingId(null);
+    }
+  };
+
+  const handleRestoreLead = (event: MouseEvent<HTMLButtonElement>, lead: any) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -902,28 +1055,7 @@ export default function Leads() {
     if (!leadId) return;
 
     const linkedCase = resolveLinkedCaseForLead(lead);
-    const nextStatus = getRestoreStatusForLead(lead, linkedCase);
-    const nextVisibility = nextStatus === 'moved_to_service' ? 'archived' : 'active';
-    const nextOutcome = nextStatus === 'moved_to_service' ? 'moved_to_service' : 'open';
-
-    if (!window.confirm('Przywrócić leada do listy: ' + (lead.name || 'Lead') + '?')) return;
-
-    try {
-      setArchivePendingId(leadId);
-      await updateLeadInSupabase({
-        id: leadId,
-        status: nextStatus,
-        leadVisibility: nextVisibility,
-        salesOutcome: nextOutcome,
-        closedAt: null,
-      });
-      toast.success('Lead przywrócony');
-      await loadLeads();
-    } catch (error: any) {
-      toast.error('Błąd przywracania leada: ' + (error?.message || 'REQUEST_FAILED'));
-    } finally {
-      setArchivePendingId(null);
-    }
+    setLeadRestoreConfirmStage220A29({ lead, linkedCase: linkedCase || null });
   };
 
   const activeLeads = useMemo(
@@ -951,6 +1083,47 @@ export default function Leads() {
   );
 
   const trashLeads = useMemo(() => leads.filter((lead) => isLeadInTrash(lead)), [leads]);
+
+  const trashReasonOptions = useMemo(
+    () => Array.from(new Set(trashLeads.map((lead) => getLeadTrashReason(lead)))).sort((a, b) => a.localeCompare(b, 'pl')),
+    [trashLeads],
+  );
+
+  const filteredTrashLeads = useMemo(() => {
+    const normalizedQuery = normalizeLeadSearchValue(searchQuery);
+
+    return [...trashLeads]
+      .filter((lead) => {
+        const deletedAt = getLeadTrashTimestamp(lead);
+        const retentionAt = getLeadTrashRetentionAt(lead);
+        const deletedBy = getLeadTrashDeletedBy(lead);
+        const reason = getLeadTrashReason(lead);
+        const ageDays = getLeadTrashAgeDays(deletedAt);
+        const searchableText = normalizeLeadSearchValue([
+          buildLeadSearchText(lead, resolveLinkedCaseForLead(lead)),
+          getLeadTrashLabel(lead),
+          reason,
+          deletedBy,
+        ].join(' '));
+        const matchesDeletedPeriod = trashDeletedPeriodFilter === 'all'
+          || (ageDays !== null && trashDeletedPeriodFilter === '30' && ageDays <= 30)
+          || (ageDays !== null && trashDeletedPeriodFilter === '90' && ageDays > 30 && ageDays <= 90)
+          || (ageDays !== null && trashDeletedPeriodFilter === 'older' && ageDays > 90);
+        const matchesRetention = trashRetentionFilter === 'all'
+          || (trashRetentionFilter === 'known' && Boolean(retentionAt))
+          || (trashRetentionFilter === 'unknown' && !retentionAt);
+
+        return (!normalizedQuery || searchableText.includes(normalizedQuery))
+          && (!trashReasonFilter || reason === trashReasonFilter)
+          && matchesDeletedPeriod
+          && matchesRetention;
+      })
+      .sort((a, b) => {
+        const aTimestamp = getLeadTrashTimestamp(a);
+        const bTimestamp = getLeadTrashTimestamp(b);
+        return (bTimestamp ? new Date(bTimestamp).getTime() : 0) - (aTimestamp ? new Date(aTimestamp).getTime() : 0);
+      });
+  }, [resolveLinkedCaseForLead, searchQuery, trashDeletedPeriodFilter, trashLeads, trashReasonFilter, trashRetentionFilter]);
 
   // RELATION_FUNNEL_SUM_FROM_ACTIVE_LEADS_AND_CLIENTS
   const relationValueEntries = useMemo(
@@ -1069,6 +1242,7 @@ export default function Leads() {
     const normalizedQuery = normalizeLeadSearchValue(searchQuery);
     const historyView = !showTrash && quickFilter === 'history';
     const sourceLeads = showTrash ? trashLeads : historyView ? historyLeads : activeLeads;
+    if (showTrash) return filteredTrashLeads;
     const activeCadenceIds = cadenceFilter === 'all'
       ? null
       : new Set((contactCadenceGrid.buckets[cadenceFilter] || []).map((row) => row.entityId));
@@ -1123,10 +1297,10 @@ export default function Leads() {
     }
 
     return results;
-  }, [activeLeads, cadenceFilter, contactCadenceGrid, historyClosedPeriodFilter, historyLeads, historyOutcomeFilter, historyReasonFilter, historyValueFilter, lostLeadRescueSummary, quickFilter, resolveLinkedCaseForLead, riskFilter, searchQuery, showTrash, sourceFilter, statusFilter, trashLeads, valueSortEnabled]);
+  }, [activeLeads, cadenceFilter, contactCadenceGrid, filteredTrashLeads, historyClosedPeriodFilter, historyLeads, historyOutcomeFilter, historyReasonFilter, historyValueFilter, lostLeadRescueSummary, quickFilter, resolveLinkedCaseForLead, riskFilter, searchQuery, showTrash, sourceFilter, statusFilter, trashLeads, valueSortEnabled]);
 
   const leadPageSize = 20;
-  const leadPageCount = Math.max(1, Math.ceil((rescueView ? filteredRescueRows.length : filteredLeads.length) / leadPageSize));
+  const leadPageCount = Math.max(1, Math.ceil((showTrash ? filteredTrashLeads.length : rescueView ? filteredRescueRows.length : filteredLeads.length) / leadPageSize));
   const pagedLeads = useMemo(
     () => filteredLeads.slice((leadPage - 1) * leadPageSize, leadPage * leadPageSize),
     [filteredLeads, leadPage],
@@ -1135,6 +1309,10 @@ export default function Leads() {
     () => filteredRescueRows.slice((leadPage - 1) * leadPageSize, leadPage * leadPageSize),
     [filteredRescueRows, leadPage],
   );
+  const pagedTrashLeads = useMemo(
+    () => filteredTrashLeads.slice((leadPage - 1) * leadPageSize, leadPage * leadPageSize),
+    [filteredTrashLeads, leadPage],
+  );
 
   useEffect(() => {
     setLeadPage((currentPage) => Math.min(currentPage, leadPageCount));
@@ -1142,7 +1320,7 @@ export default function Leads() {
 
   useEffect(() => {
     setLeadPage(1);
-  }, [cadenceFilter, historyClosedPeriodFilter, historyOutcomeFilter, historyReasonFilter, historyValueFilter, quickFilter, rescueOwnerFilter, rescueValueFilter, riskFilter, searchQuery, showTrash, sourceFilter, statusFilter, valueSortEnabled]);
+  }, [cadenceFilter, historyClosedPeriodFilter, historyOutcomeFilter, historyReasonFilter, historyValueFilter, quickFilter, rescueOwnerFilter, rescueValueFilter, riskFilter, searchQuery, showTrash, sourceFilter, statusFilter, trashDeletedPeriodFilter, trashReasonFilter, trashRetentionFilter, valueSortEnabled]);
 
   const leadSearchSuggestions = useMemo(() => {
     const normalizedQuery = normalizeLeadSearchValue(searchQuery);
@@ -1170,6 +1348,24 @@ export default function Leads() {
     history: historyLeads.length,
     trash: trashLeads.length,
   };
+
+  const trashSummary = useMemo(() => {
+    const datedLeads = trashLeads
+      .map((lead) => ({ lead, timestamp: getLeadTrashTimestamp(lead) }))
+      .filter((entry): entry is { lead: any; timestamp: string } => Boolean(entry.timestamp))
+      .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+    const oldest = datedLeads[0] || null;
+    const latest = datedLeads[datedLeads.length - 1] || null;
+
+    return {
+      count: trashLeads.length,
+      oldestAge: getLeadTrashAgeDays(oldest?.timestamp || null),
+      oldestDate: oldest?.timestamp || null,
+      latestDate: latest?.timestamp || null,
+      latestLabel: latest ? getLeadTrashLabel(latest.lead) : null,
+      restoredThisMonth: null as number | null,
+    };
+  }, [trashLeads]);
 
   const activeView = !showTrash && quickFilter === 'active';
   const riskView = !showTrash && quickFilter === 'at-risk';
@@ -1211,13 +1407,22 @@ export default function Leads() {
     setValueSortEnabled(false);
     setQuickFilter('all');
     setRiskFilter('all');
+    setTrashReasonFilter('');
+    setTrashDeletedPeriodFilter('all');
+    setTrashRetentionFilter('all');
+    setShowMoreFilters(false);
     setShowTrash((current) => !current);
   };
 
   const resetLeadFilters = () => {
+    const wasTrash = showTrash;
     setSearchQuery('');
-    setQuickFilter(rescueView ? 'rescue' : 'all');
-    setShowTrash(false);
+    if (wasTrash) {
+      setQuickFilter('all');
+    } else {
+      setQuickFilter(rescueView ? 'rescue' : 'all');
+    }
+    setShowTrash(wasTrash);
     setValueSortEnabled(false);
     setCadenceFilter('all');
     setStatusFilter('');
@@ -1229,7 +1434,35 @@ export default function Leads() {
     setHistoryClosedPeriodFilter('365');
     setRescueValueFilter('all');
     setRescueOwnerFilter('');
+    setTrashReasonFilter('');
+    setTrashDeletedPeriodFilter('all');
+    setTrashRetentionFilter('all');
     setShowMoreFilters(false);
+  };
+
+  const handleExportTrashCsv = () => {
+    const escapeCsvValue = (value: unknown) => `"${String(value ?? '').replaceAll('"', '""')}"`;
+    const rows = [
+      ['Nazwa leada', 'E-mail', 'Usunięto', 'Powód', 'Termin trwałego usunięcia', 'Usunięte przez'],
+      ...filteredTrashLeads.map((lead) => [
+        getLeadTrashLabel(lead),
+        String(lead?.email || '').trim() || 'Brak danych',
+        formatLeadTrashDate(getLeadTrashTimestamp(lead)),
+        getLeadTrashReason(lead),
+        formatLeadTrashDate(getLeadTrashRetentionAt(lead)),
+        getLeadTrashDeletedBy(lead),
+      ]),
+    ];
+    const csv = `\ufeff${rows.map((row) => row.map(escapeCsvValue).join(';')).join('\n')}`;
+    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = 'closeflow-leady-kosz.csv';
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+    toast.success(`Eksport gotowy: ${filteredTrashLeads.length} ${filteredTrashLeads.length === 1 ? 'lead' : 'leadów'}.`);
   };
 
   return (
@@ -1237,7 +1470,11 @@ export default function Leads() {
       <div className="cf-html-view main-leads-html" data-visual-stage25-leads-full-jsx="true" data-leads-real-view="true">
         <CloseFlowPageHeaderV2
           pageKey="leads"
-          title={historyView ? (
+          title={showTrash ? (
+            <span className="leads-trash-header-title">
+              <span>Kosz</span>
+            </span>
+          ) : historyView ? (
             <span className="leads-history-header-title">
               <span>Leady – Historia</span>
               <span className="cf-status-pill leads-history-header-count" data-cf-status-tone="blue">{stats.history}</span>
@@ -1248,13 +1485,13 @@ export default function Leads() {
               <span className="cf-status-pill leads-risk-header-count" data-cf-status-tone="red">{stats.atRisk}</span>
             </span>
           ) : undefined}
-          description={historyView ? 'Zamknięte, wygrane i przeniesione leady z zachowanym kontekstem.' : riskView ? 'Leady wymagające natychmiastowej uwagi i reakcji.' : rescueView ? 'Zarządzaj procesem sprzedaży i domykaj kolejne kroki.' : undefined}
+          description={showTrash ? 'Zarządzaj usuniętymi leadami. Możesz je przywrócić przed trwałym usunięciem.' : historyView ? 'Zamknięte, wygrane i przeniesione leady z zachowanym kontekstem.' : riskView ? 'Leady wymagające natychmiastowej uwagi i reakcji.' : rescueView ? 'Zarządzaj procesem sprzedaży i domykaj kolejne kroki.' : undefined}
           actions={
             <>
               <div className="head-actions">
                           <button
                             type="button"
-                            className="btn primary leads-create-action"
+                            className={`btn primary leads-create-action${showTrash ? ' leads-trash-hidden-action' : ''}`}
                             onClick={() => setIsNewLeadOpen(true)}
                             data-frt004-leads-create="true"
                             aria-label="Dodaj leada"
@@ -1262,10 +1499,20 @@ export default function Leads() {
                             <Plus className="h-4 w-4" />
                             Dodaj leada
                           </button>
-                          <Link to="/ai-drafts" className="btn soft-blue leads-secondary-header-action" data-stage26-leads-head-ai="true" data-cf-header-action="ai" data-frt004-secondary-header-action="ai">
+                          <Link to="/ai-drafts" className={`btn soft-blue leads-secondary-header-action${showTrash ? ' leads-trash-hidden-action' : ''}`} data-stage26-leads-head-ai="true" data-cf-header-action="ai" data-frt004-secondary-header-action="ai">
                             <EntityIcon entity="ai" className="h-4 w-4" />
                             Zapytaj AI
                           </Link>
+                          {showTrash ? (
+                            <button
+                              type="button"
+                              className="btn soft-blue leads-secondary-header-action"
+                              onClick={handleExportTrashCsv}
+                              data-frt009-trash-export="true"
+                            >
+                              Eksportuj CSV
+                            </button>
+                          ) : null}
                           <button
                             type="button"
                             className="btn leads-secondary-header-action"
@@ -1435,6 +1682,7 @@ export default function Leads() {
           }
         />
 
+        {!showTrash ? (
         <div className="leads-state-tabs" role="tablist" aria-label="Widoki leadów" data-frt007-history-tabs="true">
           {([
             ['all', 'Wszystkie'],
@@ -1461,6 +1709,7 @@ export default function Leads() {
             );
           })}
         </div>
+        ) : null}
 
         {activeView ? (
           <div className="leads-active-process-banner" data-frt005-active-process-banner="true" role="status">
@@ -1478,7 +1727,7 @@ export default function Leads() {
           </div>
         ) : null}
 
-        {!rescueView ? (
+        {!rescueView && !showTrash ? (
           <div className="grid-5">
             <StatShortcutCard
               label="Wszystkie"
@@ -1579,7 +1828,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
           data-stage96-leads-right-rail-source-truth="true"
         >
           <div className="stack">
-            <div className={`leads-filter-card${activeView ? ' leads-filter-card-active' : ''}${riskView ? ' leads-filter-card-risk' : ''}${historyView ? ' leads-filter-card-history' : ''}${rescueView ? ' leads-filter-card-rescue' : ''}`} data-frt004-leads-filter-card="true" data-frt005-leads-active-filter-card={activeView ? 'true' : 'false'} data-frt006-risk-filter-card={riskView ? 'true' : 'false'} data-frt007-history-filter-card={historyView ? 'true' : 'false'} data-frt008-rescue-filter-card={rescueView ? 'true' : 'false'}>
+            <div className={`leads-filter-card${activeView ? ' leads-filter-card-active' : ''}${riskView ? ' leads-filter-card-risk' : ''}${historyView ? ' leads-filter-card-history' : ''}${rescueView ? ' leads-filter-card-rescue' : ''}${showTrash ? ' leads-filter-card-trash' : ''}`} data-frt004-leads-filter-card="true" data-frt005-leads-active-filter-card={activeView ? 'true' : 'false'} data-frt006-risk-filter-card={riskView ? 'true' : 'false'} data-frt007-history-filter-card={historyView ? 'true' : 'false'} data-frt008-rescue-filter-card={rescueView ? 'true' : 'false'} data-frt009-trash-filter-card={showTrash ? 'true' : 'false'}>
               <div className="leads-filter-search">
                 <div className="search cf-main-search cf-main-search-stage177" data-cf-main-search="true" data-leads-search="true" data-stage117-leads-search-anchor="true" data-cf-main-search-source="semantic173">
               <span aria-hidden="true"><Search className="w-4 h-4" /></span>
@@ -1618,7 +1867,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
 
 
 
-            <div className="leads-filter-toolbar" data-frt004-leads-filter-toolbar="true" data-frt005-leads-active-toolbar={activeView ? 'true' : 'false'} data-frt006-risk-toolbar={riskView ? 'true' : 'false'} data-frt007-history-toolbar={historyView ? 'true' : 'false'} data-frt008-rescue-toolbar={rescueView ? 'true' : 'false'}>
+            <div className="leads-filter-toolbar" data-frt004-leads-filter-toolbar="true" data-frt005-leads-active-toolbar={activeView ? 'true' : 'false'} data-frt006-risk-toolbar={riskView ? 'true' : 'false'} data-frt007-history-toolbar={historyView ? 'true' : 'false'} data-frt008-rescue-toolbar={rescueView ? 'true' : 'false'} data-frt009-trash-toolbar={showTrash ? 'true' : 'false'}>
               {activeView ? (
                 <button
                   type="button"
@@ -1660,6 +1909,20 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                     {LEAD_SOURCE_OPTIONS.map((source) => (
                       <option key={source.value} value={source.value}>{source.label}</option>
                     ))}
+                  </select>
+                </label>
+              ) : showTrash ? (
+                <label className="leads-filter-control">
+                  <span>Powód usunięcia</span>
+                  <select
+                    className={nativeSelectClassName()}
+                    value={trashReasonFilter}
+                    onChange={(event) => setTrashReasonFilter(event.target.value)}
+                    aria-label="Filtr powodu usunięcia"
+                    data-frt009-trash-reason-filter="true"
+                  >
+                    <option value="">Wszystkie powody</option>
+                    {trashReasonOptions.map((reason) => <option key={reason} value={reason}>{reason}</option>)}
                   </select>
                 </label>
               ) : (
@@ -1722,6 +1985,22 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                     {historyReasonOptions.map((reason) => <option key={reason} value={reason}>{reason}</option>)}
                   </select>
                 </label>
+              ) : showTrash ? (
+                <label className="leads-filter-control">
+                  <span>Usunięto</span>
+                  <select
+                    className={nativeSelectClassName()}
+                    value={trashDeletedPeriodFilter}
+                    onChange={(event) => setTrashDeletedPeriodFilter(event.target.value as LeadsTrashDeletedPeriod)}
+                    aria-label="Filtr daty usunięcia"
+                    data-frt009-trash-deleted-period-filter="true"
+                  >
+                    <option value="all">Wszystkie daty</option>
+                    <option value="30">Ostatnie 30 dni</option>
+                    <option value="90">Ostatnie 90 dni</option>
+                    <option value="older">Ponad 90 dni</option>
+                  </select>
+                </label>
               ) : null}
 
               {rescueView ? (
@@ -1754,6 +2033,21 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                     <option value="under_5000">Poniżej 5 000 PLN</option>
                     <option value="5000_20000">5 000–20 000 PLN</option>
                     <option value="over_20000">Powyżej 20 000 PLN</option>
+                  </select>
+                </label>
+              ) : showTrash ? (
+                <label className="leads-filter-control">
+                  <span>Termin trwałego usunięcia</span>
+                  <select
+                    className={nativeSelectClassName()}
+                    value={trashRetentionFilter}
+                    onChange={(event) => setTrashRetentionFilter(event.target.value as LeadsTrashRetentionFilter)}
+                    aria-label="Filtr terminu trwałego usunięcia"
+                    data-frt009-trash-retention-filter="true"
+                  >
+                    <option value="all">Wszystkie rekordy</option>
+                    <option value="known">Termin zapisany</option>
+                    <option value="unknown">Brak terminu</option>
                   </select>
                 </label>
               ) : (
@@ -1805,7 +2099,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                     ))}
                   </select>
                 </label>
-              ) : riskView ? (
+              ) : showTrash ? null : riskView ? (
                 <button
                   type="button"
                   className="leads-filter-chip leads-filter-risk-chip cf-status-pill"
@@ -1871,7 +2165,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 data-frt004-more-filters="true"
               >
                 <Filter className="h-4 w-4" />
-                Więcej filtrów
+                {showTrash ? 'Filtruj' : 'Więcej filtrów'}
               </button>
               {!riskView ? (
                 <button
@@ -1880,7 +2174,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   onClick={resetLeadFilters}
                   data-frt004-reset-filters="true"
                 >
-                  {activeView ? 'Wyczyść filtry' : 'Reset'}
+                  {showTrash || activeView ? 'Wyczyść filtry' : 'Reset'}
                 </button>
               ) : null}
             </div>
@@ -1888,6 +2182,27 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
 
             {showMoreFilters ? (
               <div className="leads-more-filters-panel" data-frt004-more-filters-panel="true">
+                {showTrash ? (
+                  <div className="leads-trash-filter-panel" data-frt009-trash-filter-panel="true">
+                    <div>
+                      <span className="mini">Aktywne filtry</span>
+                      <div className="leads-trash-filter-pills">
+                        {trashReasonFilter ? (
+                          <button type="button" className="pill" onClick={() => setTrashReasonFilter('')}>Powód: {trashReasonFilter} <X className="h-3 w-3" aria-hidden="true" /></button>
+                        ) : null}
+                        {trashDeletedPeriodFilter !== 'all' ? (
+                          <button type="button" className="pill" onClick={() => setTrashDeletedPeriodFilter('all')}>Usunięto: {trashDeletedPeriodFilter === '30' ? '30 dni' : trashDeletedPeriodFilter === '90' ? '31–90 dni' : 'ponad 90 dni'} <X className="h-3 w-3" aria-hidden="true" /></button>
+                        ) : null}
+                        {trashRetentionFilter !== 'all' ? (
+                          <button type="button" className="pill" onClick={() => setTrashRetentionFilter('all')}>{trashRetentionFilter === 'known' ? 'Termin zapisany' : 'Brak terminu'} <X className="h-3 w-3" aria-hidden="true" /></button>
+                        ) : null}
+                        {!trashReasonFilter && trashDeletedPeriodFilter === 'all' && trashRetentionFilter === 'all' ? <span className="sub">Brak dodatkowych filtrów.</span> : null}
+                      </div>
+                    </div>
+                    <span className="sub">Wyniki: {filteredTrashLeads.length} z {trashLeads.length}</span>
+                    <button type="button" className="leads-filter-reset" onClick={resetLeadFilters}>Wyczyść filtry</button>
+                  </div>
+                ) : null}
                 {!showTrash ? (
                   <div className="cf-contact-cadence-strip w-full max-w-none" data-stage225-contact-cadence-grid="leads" data-stage227f6-contact-cadence-compact="leads">
                     <span hidden data-stage225-cadence-14-label="14+ dni ciszy" />
@@ -1916,7 +2231,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   </div>
                 ) : null}
 
-                <div className="leads-more-filter-content">
+                {!showTrash ? (<div className="leads-more-filter-content">
                   {/* STAGE32_OPERATOR_RAIL_GUARD_COMPAT: this is the shared rail source, moved into the reference filter disclosure. */}
                   <SimpleFiltersCard
                     className="right-card lead-right-card operator-simple-filters-card"
@@ -1992,8 +2307,186 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                     }))}
                     emptyLabel="Brak relacji z wyliczoną wartością."
                   />
-                </div>
+                </div>) : null}
               </div>
+            ) : null}
+
+
+            {showTrash ? (
+              <section className="leads-trash-view" data-frt009-trash-view="true">
+                <div className="leads-trash-view-actions" data-frt009-trash-actions="true">
+                  <button
+                    type="button"
+                    className="btn soft-blue"
+                    onClick={handleExportTrashCsv}
+                    data-frt009-trash-export-visible="true"
+                  >
+                    Eksportuj CSV
+                  </button>
+                  <button
+                    type="button"
+                    className="btn primary"
+                    onClick={toggleTrashView}
+                    data-frt009-trash-show-active="true"
+                  >
+                    Pokaż aktywne
+                  </button>
+                </div>
+                <div className="leads-trash-retention-banner" role="status" data-frt009-retention-policy="unavailable">
+                  <span className="leads-trash-retention-icon" aria-hidden="true"><Info className="h-4 w-4" /></span>
+                  <div>
+                    <strong>Leady w koszu można przywrócić przed trwałym usunięciem.</strong>
+                    <span>Termin trwałego usunięcia jest pokazywany tylko wtedy, gdy został zapisany przy rekordzie.</span>
+                  </div>
+                </div>
+
+                <div className="leads-trash-summary-grid" data-frt009-trash-summary="true">
+                  <div className="leads-trash-summary-card">
+                    <div className="leads-trash-summary-card-head">
+                      <span className="leads-trash-summary-icon is-purple" aria-hidden="true"><DeleteActionIcon className="h-4 w-4" /></span>
+                      <span className="leads-trash-summary-label">Leady w koszu</span>
+                    </div>
+                    <strong>{trashSummary.count}</strong>
+                    <button type="button" className="leads-trash-summary-link" onClick={resetLeadFilters}>Zobacz wszystkie</button>
+                  </div>
+                  <div className="leads-trash-summary-card">
+                    <div className="leads-trash-summary-card-head">
+                      <span className="leads-trash-summary-icon is-blue" aria-hidden="true"><CalendarDays className="h-4 w-4" /></span>
+                      <span className="leads-trash-summary-label">Najstarszy rekord</span>
+                    </div>
+                    <strong>{formatLeadTrashAgeLabel(trashSummary.oldestAge)}</strong>
+                    <span>Usunięto: {formatLeadTrashDate(trashSummary.oldestDate, 'Brak daty')}</span>
+                  </div>
+                  <div className="leads-trash-summary-card">
+                    <div className="leads-trash-summary-card-head">
+                      <span className="leads-trash-summary-icon is-amber" aria-hidden="true"><Clock3 className="h-4 w-4" /></span>
+                      <span className="leads-trash-summary-label">Ostatnie usunięcie</span>
+                    </div>
+                    <strong>{formatLeadTrashDate(trashSummary.latestDate, 'Brak danych')}</strong>
+                    <span>Lead: {trashSummary.latestLabel || 'Brak danych'}</span>
+                  </div>
+                  <div className="leads-trash-summary-card">
+                    <div className="leads-trash-summary-card-head">
+                      <span className="leads-trash-summary-icon is-green" aria-hidden="true"><RefreshCw className="h-4 w-4" /></span>
+                      <span className="leads-trash-summary-label">Przywrócone w tym miesiącu</span>
+                    </div>
+                    <strong>{trashSummary.restoredThisMonth === null ? 'Brak danych' : trashSummary.restoredThisMonth}</strong>
+                    <span>{trashSummary.restoredThisMonth === null ? 'Brak źródła przywróceń' : 'Z ostatnich 30 dni'}</span>
+                  </div>
+                </div>
+
+                <div className="table-card lead-table-card leads-trash-table-card w-full max-w-none" data-frt009-trash-table="true">
+                  <div className="leads-table-head leads-trash-table-head" aria-hidden="true">
+                    <span>Nazwa leada</span>
+                    <span>Usunięto</span>
+                    <span>Powód</span>
+                    <span>Termin trwałego usunięcia</span>
+                    <span>Usunięte przez</span>
+                    <span>Akcje</span>
+                  </div>
+                  {loading || workspaceLoading ? (
+                    <div className="row row-empty">
+                      <span className="index"><Loader2 className="h-4 w-4 animate-spin" /></span>
+                      <span>
+                        <span className="title">Ładowanie kosza</span>
+                        <span className="sub">Pobieram archiwalne leady z aplikacji.</span>
+                      </span>
+                    </div>
+                  ) : loadError ? (
+                    <div className="row row-empty">
+                      <span className="index">!</span>
+                      <span>
+                        <span className="title">Nie udało się pobrać kosza</span>
+                        <span className="sub">{loadError}</span>
+                      </span>
+                    </div>
+                  ) : pagedTrashLeads.length ? (
+                    <div className="leads-trash-table-body">
+                      {pagedTrashLeads.map((lead) => {
+                        const leadId = String(lead?.id || '');
+                        const trashTimestamp = getLeadTrashTimestamp(lead);
+                        const retentionTimestamp = getLeadTrashRetentionAt(lead);
+                        const label = getLeadTrashLabel(lead);
+                        return (
+                          <div className="row lead-row leads-trash-table-row" key={leadId} data-frt009-trash-row="true">
+                            <div className="lead-trash-main-cell">
+                              <span className="client-avatar lead-trash-avatar" aria-hidden="true">{getLeadInitials(lead, label)}</span>
+                              <Link to={`/leads/${leadId}`} className="lead-trash-name" title={`Otwórz leada: ${label}`}>{label}</Link>
+                              <span className="sub">{getLeadPrimaryContact(lead)}</span>
+                            </div>
+                            <div className="lead-trash-data-cell">
+                              <span className="mini">Usunięto</span>
+                              <strong>{formatLeadTrashDate(trashTimestamp)}</strong>
+                            </div>
+                            <div className="lead-trash-data-cell">
+                              <span className="mini">Powód</span>
+                              <strong>{getLeadTrashReason(lead)}</strong>
+                            </div>
+                            <div className="lead-trash-data-cell">
+                              <span className="mini">Termin</span>
+                              <strong>{formatLeadTrashDate(retentionTimestamp)}</strong>
+                            </div>
+                            <div className="lead-trash-data-cell">
+                              <span className="mini">Usunięte przez</span>
+                              <strong>{getLeadTrashDeletedBy(lead)}</strong>
+                            </div>
+                            <div className="lead-actions lead-trash-actions">
+                              <button
+                                type="button"
+                                className="leads-trash-restore-button"
+                                onClick={(event) => handleRestoreLead(event, lead)}
+                                disabled={archivePendingId === leadId}
+                                aria-label={`Przywróć leada ${label}`}
+                                data-frt009-trash-restore="true"
+                              >
+                                {archivePendingId === leadId ? <Loader2 className="h-4 w-4 animate-spin" /> : <RotateCcw className="h-4 w-4" />}
+                                Przywróć
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="row row-empty leads-trash-empty" data-frt009-trash-empty="true">
+                      <span className="index">0</span>
+                      <span>
+                        <span className="title">{trashLeads.length ? 'Brak wyników w koszu' : 'Kosz leadów jest pusty.'}</span>
+                        <span className="sub">{trashLeads.length ? 'Zmień wyszukiwanie albo wyczyść filtry.' : 'Nie ma rekordów do przywrócenia.'}</span>
+                      </span>
+                    </div>
+                  )}
+                  {!loading && !workspaceLoading && !loadError ? (
+                    <div className="leads-table-footer" data-frt009-trash-pagination="true">
+                      <span>
+                        {filteredTrashLeads.length ? `${(leadPage - 1) * leadPageSize + 1}–${Math.min(leadPage * leadPageSize, filteredTrashLeads.length)}` : '0'} z {filteredTrashLeads.length} leadów
+                      </span>
+                      <div className="leads-pagination-controls">
+                        <button
+                          type="button"
+                          className="leads-pagination-button"
+                          onClick={() => setLeadPage((currentPage) => Math.max(1, currentPage - 1))}
+                          disabled={leadPage <= 1}
+                          aria-label="Poprzednia strona kosza"
+                        >
+                          <ChevronLeft className="h-4 w-4" />
+                        </button>
+                        <span className="leads-pagination-current">{leadPage}</span>
+                        <button
+                          type="button"
+                          className="leads-pagination-button"
+                          onClick={() => setLeadPage((currentPage) => Math.min(leadPageCount, currentPage + 1))}
+                          disabled={leadPage >= leadPageCount}
+                          aria-label="Następna strona kosza"
+                        >
+                          <ChevronRight className="h-4 w-4" />
+                        </button>
+                        <span className="leads-page-size">20 / strona</span>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              </section>
             ) : null}
 
 
@@ -2128,7 +2621,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
               </section>
             ) : null}
 
-            {!rescueView ? (<div className={`table-card lead-table-card w-full max-w-none${riskView ? ' leads-risk-table-card' : ''}${historyView ? ' leads-history-table-card' : ''}`} data-stage25-lead-table-card="true" data-stage117-leads-list="true" data-frt006-risk-table-card={riskView ? 'true' : 'false'} data-frt007-history-table-card={historyView ? 'true' : 'false'}>
+            {!rescueView && !showTrash ? (<div className={`table-card lead-table-card w-full max-w-none${riskView ? ' leads-risk-table-card' : ''}${historyView ? ' leads-history-table-card' : ''}`} data-stage25-lead-table-card="true" data-stage117-leads-list="true" data-frt006-risk-table-card={riskView ? 'true' : 'false'} data-frt007-history-table-card={historyView ? 'true' : 'false'}>
               <div className={`leads-table-head${activeView ? ' leads-table-head-active' : ''}${riskView ? ' leads-table-head-risk' : ''}${historyView ? ' leads-table-head-history' : ''}`} data-frt004-leads-table-head="true" data-frt005-active-table-head={activeView ? 'true' : 'false'} data-frt006-risk-table-head={riskView ? 'true' : 'false'} data-frt007-history-table-head={historyView ? 'true' : 'false'} aria-hidden="true">
                 {riskView ? (
                   <>
@@ -2463,6 +2956,26 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
           pending={Boolean(archivePendingId)}
           onConfirm={() => leadArchiveConfirmStage220A29 ? executeArchiveLeadStage220A29(leadArchiveConfirmStage220A29.lead) : undefined}
         />
+
+        <ConfirmDialog
+          open={Boolean(leadRestoreConfirmStage220A29)}
+          onOpenChange={(open) => {
+            if (!open && !archivePendingId) setLeadRestoreConfirmStage220A29(null);
+          }}
+          title="Przywrócić leada?"
+          description={
+            leadRestoreConfirmStage220A29?.linkedCase
+              ? 'Lead ' + (leadRestoreConfirmStage220A29?.lead?.name || 'Lead') + ' ma powiązaną sprawę: ' + (leadRestoreConfirmStage220A29.linkedCase.title || leadRestoreConfirmStage220A29.linkedCase.id) + '. Zostanie przywrócony z zachowaniem powiązania.'
+              : 'Lead ' + (leadRestoreConfirmStage220A29?.lead?.name || 'Lead') + ' wróci do aktywnej listy leadów.'
+          }
+          confirmLabel="Przywróć leada"
+          cancelLabel="Anuluj"
+          confirmTone="default"
+          pending={Boolean(archivePendingId)}
+          onConfirm={() => leadRestoreConfirmStage220A29 ? executeRestoreLeadStage220A29(leadRestoreConfirmStage220A29.lead) : undefined}
+        />
+
+        <span hidden data-frt009-trash-restore-confirm="true" />
 
         <span hidden data-stage220a29-lead-trash-confirm="true" />
 

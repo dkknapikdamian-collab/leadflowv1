@@ -117,6 +117,7 @@ const LEAD_LIST_SELECT_STAGE124 = [
   'created_at',
   'updated_at',
   'moved_to_service_at',
+  'closed_at',
   'case_started_at',
   'next_action_at',
   'next_action_item_id',
@@ -758,7 +759,9 @@ function isLeadActiveForApiList(lead: Record<string, unknown>) {
     status !== 'moved_to_service' &&
     status !== 'archived' &&
     visibility !== 'archived' &&
+    visibility !== 'trash' &&
     outcome !== 'moved_to_service' &&
+    outcome !== 'archived' &&
     !linkedCaseId
   );
 }
@@ -916,6 +919,7 @@ export default async function handler(req: any, res: any) {
       const requestedLinkedCaseId = asNullableUuid(req.query?.linkedCaseId || req.query?.caseId);
       const requestedVisibility = asText(req.query?.visibility);
       const requestedStatus = asText(req.query?.status);
+      const includeArchived = ['1', 'true', 'yes'].includes(asText(req.query?.includeArchived).toLowerCase());
       const leadFilters = [
         requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : '',
         requestedClientId ? `client_id=eq.${encodeURIComponent(requestedClientId)}&` : '',
@@ -930,7 +934,7 @@ export default async function handler(req: any, res: any) {
       const fallback = withWorkspaceFilter(`leads?select=${fallbackLeadSelect}&${leadFilters}order=created_at.desc.nullslast&limit=${leadLimit}`, workspaceId);
       const result = await selectFirstAvailable([base, fallback]);
       const normalized = (result.data || []).map((row: Record<string, unknown>) => normalizeLead(row));
-      const defaultActiveList = !requestedId && !requestedVisibility && !requestedStatus && !requestedClientId && !requestedLinkedCaseId;
+      const defaultActiveList = !requestedId && !requestedVisibility && !requestedStatus && !requestedClientId && !requestedLinkedCaseId && !includeArchived;
       const visibleLeads = defaultActiveList ? normalized.filter((lead: Record<string, unknown>) => isLeadActiveForApiList(lead)) : normalized;
       if (requestedId) {
         const match = normalized.find((lead: Record<string, unknown>) => String(lead.id) === requestedId);
