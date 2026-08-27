@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-012",
+  "reference_file": "docs/ui/reference/forteca-calm-light/012_lead_edit_modal.webp",
+  "target_route": "/leads/:leadId",
+  "target_state": "Forteca calm-light populated Lead edit modal",
+  "result": "PASS",
+  "stage_status": "ACCEPTED",
+  "acceptance_authority": "CODEX",
+  "acceptance_basis": {
+    "directive_interpretation": "Codex is the acceptance authority under the owner directive for the autonomous Forteca program. This receipt is controller acceptance, not an AICG PASS claim.",
+    "reference_and_runtime": "The real /leads/dev-lead-3 runtime was reconciled against the FRT-012 reference with current Lead, activity, case handoff, delete and Supabase update owners preserved.",
+    "review": "Repository-native review found no actionable implementation finding after repairing the delete-button cascade collision and adding native required-field validation."
+  },
+  "root_cause_or_implementation_gap": "The existing edit dialog exposed only seven legacy fields, used the contact name as the only visible identity field, and did not pass optional summary, notes, priority or next-action values through the update payload. FRT-012 expands the mounted dialog, derives missing legacy values from the current record/history, adds truthful read-only controls where the schema has no writable field, and extends the existing PATCH owner for real persistence.",
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Reference values are never copied into runtime state or submitted to the API.",
+      "Every editable visible control binds to the real Lead edit draft and existing update mutation.",
+      "Position, owner and last-contact channel are explicitly read-only or derived when the current backend has no writable field.",
+      "The existing delete confirmation, move-to-case flow, permission gate, loading state and detail refresh remain behavior owners.",
+      "No fake success, no-op action or second persistence model was introduced.",
+      "Styling is scoped to the mounted FRT-012 dialog in the canonical dialog/form owner."
+    ]
+  },
+  "code_changed": true,
+  "files_changed": [
+    "api/leads.ts",
+    "package.json",
+    "src/pages/LeadDetail.tsx",
+    "src/styles/owners/closeflow-dialogs.css",
+    "tests/forteca-frt-012-lead-edit.test.cjs",
+    "docs/ui/CLOSEFLOW_STYLE_MAP.generated.md",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.json",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.md",
+    "docs/ui/closeflow-style-map.generated.json",
+    "audit/evidence/FRT-012_BROWSER_PROOF.json",
+    "audit/evidence/FRT-012_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/runs/forteca-clean/FRT-012_RECEIPT.json"
+  ],
+  "preserved_untracked_files": [
+    "dist-test-today-sections.cjs"
+  ],
+  "visual_sot_owners_used": [
+    "MODALS",
+    "FORMS",
+    "BUTTONS_ACTIONS",
+    "SURFACES",
+    "ICONS",
+    "RESPONSIVE_DENSITY"
+  ],
+  "visible_controls_inventory": {
+    "lead_identity": ["Nazwa leada", "Firma", "Imię i nazwisko", "Stanowisko"],
+    "contact": ["E-mail", "Telefon", "Ostatni kontakt"],
+    "qualification": ["Status", "Wartość", "Priorytet", "Źródło"],
+    "work_planning": ["Następny krok", "Termin", "Opiekun"],
+    "notes": ["Notatka handlowa", "character counter"],
+    "footer_actions": ["Przenieś do sprawy", "Usuń leada", "Anuluj", "Zapisz zmiany"]
+  },
+  "visible_controls_wired": "Existing values populate from the real normalized Lead and activity history; editable fields update the real draft; canonical status/source/priority/task options, required validation, date handling, save loading state, PATCH persistence, close/cancel reset, case handoff and delete confirmation are wired to existing owners.",
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "npm.cmd run test:forteca-frt-012-lead-edit (2/2)",
+    "npm.cmd run test:forteca-frt-011-lead-add (2/2)",
+    "npm.cmd run test:forteca-frt-010-lead-detail (2/2)",
+    "npm.cmd exec tsc -- --noEmit (PASS)",
+    "npm.cmd run audit:closeflow-ui-map (PASS)",
+    "npm.cmd run audit:closeflow-style-map (PASS)",
+    "npm.cmd run check:closeflow-ui-skill-pack (PASS)",
+    "npm.cmd run check:closeflow-ui-premap-contract (PASS)",
+    "npm.cmd run guard:ui:ssot-icons (PASS)",
+    "npm.cmd run guard:ui:ssot-semantic-colors (PASS)",
+    "npm.cmd run guard:ui:ssot-typography (PASS)",
+    "npm.cmd run guard:ui:component-clones (PASS)",
+    "npm.cmd run guard:routes:canonical (PASS)",
+    "npm.cmd run check:polish-mojibake (PASS)",
+    "npm.cmd run check:stage124-supabase-egress-contract (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS)",
+    "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke (PARTIAL, zero writes)",
+    "Live Codex In-app Browser proof of the populated /leads/dev-lead-3 Lead Edit modal (PASS)"
+  ],
+  "tests_reused": [
+    "FRT-000 routing, reference manifest, Guardian boundary and visual SOT owner registry",
+    "FRT-010 real Lead Detail route, runtime preview and browser baseline",
+    "FRT-011 modal, form, canonical options and local runtime harness",
+    "Generated UI/style maps and canonical dialog/form/action owners"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: the installed Guardian entrypoint exposes only partial repository-baseline smoke coverage for this target; pass_claim=false"
+    },
+    {
+      "test": "authenticated populated Lead update submission",
+      "reason": "NOT_REQUIRED_FOR_CURRENT_REFERENCE: browser proof verified the real mounted form and non-mutating controls; no user-approved live record submission was requested"
+    },
+    {
+      "test": "guard:ui:css-owner-before-cleanup and guard:ui:ssot-css-owners",
+      "reason": "BASELINE_DRIFT: pre-existing global shell ownership mismatch is outside the FRT-012 write set"
+    },
+    {
+      "test": "guard:ui:patch-layers",
+      "reason": "BASELINE_DRIFT: pre-existing direct lucide-react import in src/lib/source-of-truth/icon-registry.ts is outside the FRT-012 write set"
+    },
+    {
+      "test": "lint",
+      "reason": "NO_CANONICAL_REPOSITORY_LINT_SCRIPT_REGISTERED"
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS_WITH_KNOWN_WARNINGS",
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-012_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "EXECUTED: PARTIAL / coverage PARTIAL / fileWrites 0"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-012_BROWSER_PROOF.json",
+    "status": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "/leads/dev-lead-3",
+    "modal": "PASS",
+    "real_population": "PASS",
+    "editable_controls": "PASS",
+    "required_validation": "PASS",
+    "cancel_reset": "PASS",
+    "submit": "NOT_SUBMITTED_BY_DESIGN",
+    "delete": "NOT_INVOKED_BY_DESIGN",
+    "horizontal_overflow": false,
+    "console_errors": 0,
+    "tab_marked_deliverable": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "PASS",
+    "literal_pixel_identity_claim": false,
+    "limitation": "Runtime-derived owner and current domain values are preserved instead of copying reference fixtures; schema gaps remain truthful read-only or derived controls; submit/delete were not exercised without explicit user approval."
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "efficiency_planning": "APPLIED",
+    "marketplace_startup_receipt": "startup-c3e34187adff29c1170940710a47d2926b3c6a0665884525df1b85624cb5e66e",
+    "marketplace_binding": "BOUND",
+    "primary_capability": "frontend-design",
+    "project_context_reused": [
+      "FRT-000 contracts/evidence baseline",
+      "FRT-010 Lead Detail runtime",
+      "FRT-011 modal/add-flow evidence",
+      "Generated UI/style maps"
+    ],
+    "evidence_reuse": [
+      "Canonical form/modal/style/action owners",
+      "FRT-010 detail route",
+      "FRT-011 local runtime and browser harness"
+    ],
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "skip_reason": "No suitable available provider was exposed for this bounded UI/data-owner change; one write owner and parent validation were required."
+  },
+  "implementation_commit_sha": "04f36eec866ba7b6d4c00010820d567f1db46fb7",
+  "next_stage": "FRT-013",
+  "created_at": "2026-08-27T20:37:16.3554516Z"
+}

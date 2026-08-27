@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-012",
+  "reference_file": "docs/ui/reference/forteca-calm-light/012_lead_edit_modal.webp",
+  "reference_sha256": "65631AFAEB0B80AF35A5967D2B6E716CA5813C32E622BD616ECF110BA6D33167",
+  "entry_url": "http://localhost:3000/leads/dev-lead-3",
+  "runtime_url": "http://localhost:3000/leads/dev-lead-3",
+  "route": "/leads/dev-lead-3",
+  "state": "Forteca calm-light populated Lead edit modal",
+  "live_runtime": true,
+  "auth_required": false,
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "record_id": "dev-lead-3",
+    "record_origin": "Existing local runtime development record and activity history; reference fixture values were not copied.",
+    "form_owner": "src/pages/LeadDetail.tsx",
+    "lead_write_owner": "updateLeadInSupabase -> /api/leads PATCH",
+    "production_source": "Supabase path remains unchanged; no production auth bypass was introduced."
+  },
+  "visible_structure": {
+    "modal": [
+      "Header, title and close action",
+      "Two-column lead and contact fields",
+      "Status, value, priority and source controls",
+      "Derived last-contact, next-action, date and owner controls",
+      "Trade note with 2000-character counter",
+      "Move-to-case, delete, cancel and save footer actions"
+    ],
+    "required_markers": [
+      "Nazwa leada",
+      "Firma",
+      "Kontakt główny",
+      "E-mail",
+      "Telefon",
+      "Status",
+      "Wartość",
+      "Priorytet",
+      "Źródło",
+      "Ostatni kontakt",
+      "Następny krok",
+      "Termin",
+      "Opiekun",
+      "Notatka handlowa",
+      "Anuluj",
+      "Zapisz zmiany"
+    ]
+  },
+  "interaction_proof": {
+    "open_modal": {
+      "status": "PASS",
+      "observed": "The real /leads/dev-lead-3 Edit button opened the mounted Lead Edit modal."
+    },
+    "real_population": {
+      "status": "PASS",
+      "observed_values": [
+        "Fundacja \"Lepsze Jutro\"",
+        "Fundacja Lepsze Jutro",
+        "zarzad@fundacja.pl",
+        "+48 605 777 888",
+        "Oferta wyslana",
+        "7800 PLN",
+        "E-mail",
+        "Dev Local"
+      ],
+      "no_reference_fixture_data": true,
+      "proof_basis": "Live screenshot and runtime detail view. Browser instrumentation redacted or inconsistently exposed email/phone value properties, so those properties were not used as proof; the rendered values are visible in the live screenshot and the reset mapping is statically covered."
+    },
+    "editable_controls": {
+      "status": "PASS",
+      "observed": "Summary, priority, notes, email and phone controls accepted local edits; no submit was performed."
+    },
+    "required_validation": {
+      "status": "PASS",
+      "observed": "Native required attributes are present on lead name, company, email, status, value, priority, source, next action and date controls."
+    },
+    "cancel_reset": {
+      "status": "PASS",
+      "observed": "Anuluj discarded local changes and reopening restored the existing summary, priority and note values."
+    },
+    "submit_boundary": {
+      "status": "NOT_SUBMITTED_BY_DESIGN",
+      "reason": "No user-approved live mutation was executed; the real update path is statically covered and remains owned by updateLeadInSupabase and the PATCH endpoint."
+    },
+    "delete_boundary": {
+      "status": "NOT_INVOKED_BY_DESIGN",
+      "reason": "Delete retains its existing confirmation and mutation boundary; browser proof did not delete the development record."
+    }
+  },
+  "responsive_proof": {
+    "desktop": "PASS",
+    "horizontal_overflow": false,
+    "note": "The modal fits the active desktop viewport, keeps the footer visible and scrolls content internally; mobile proof was not required by the FRT-012 contract."
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "local_preview_is_dev_only": true,
+    "supabase_production_path_preserved": true,
+    "position_owner_last_contact_truthful_readonly": true,
+    "visible_controls_have_real_owners": true,
+    "no_dead_controls": true,
+    "modal_close_resets_draft": true
+  },
+  "console_errors": 0,
+  "status": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "PASS",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "Actual record values are authoritative and differ from reference fixture values.",
+      "Firma remains a text input because the current domain has no company-selector contract.",
+      "Stanowisko, Opiekun and Ostatni kontakt channel are read-only or derived because the current backend has no corresponding writable fields.",
+      "Browser automation did not use email/phone value properties as proof because the instrumentation redacted or inconsistently exposed them; the live screenshot shows the rendered values."
+    ]
+  },
+  "tab_marked_deliverable": true,
+  "implementation_commit_sha": "04f36eec866ba7b6d4c00010820d567f1db46fb7",
+  "created_at": "2026-08-27T20:37:16.3554516Z"
+}
