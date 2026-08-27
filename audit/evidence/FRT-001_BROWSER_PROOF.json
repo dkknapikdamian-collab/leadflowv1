@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-001",
+  "reference_file": "docs/ui/reference/forteca-calm-light/001_today_main.webp",
+  "reference_sha256": "AD7F2D4B36FC3AE5E183634F470D760C99EDDD17B5F4D7AA8D9DB9BD38CB5524",
+  "reference_dimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "captured_at": "2026-08-27T11:20:47.4995908+02:00",
+  "capture": {
+    "browser": "Codex In-app Browser",
+    "url": "http://localhost:3000/",
+    "route": "/",
+    "viewport": {
+      "width": 946,
+      "height": 698
+    },
+    "captured_in_in_app_browser": true,
+    "screenshot_artifact_path": null,
+    "tab_marked_deliverable": true
+  },
+  "runtime": {
+    "shell": {
+      "brand": "CloseFlow",
+      "active_navigation": "Dziś",
+      "sidebar_background": "rgb(255, 255, 255)"
+    },
+    "header": {
+      "title": "Dziś",
+      "description": "Najważniejsze ruchy sprzedażowe i operacyjne na dziś.",
+      "visible_actions": [
+        "Dostosuj widok",
+        "Dodaj"
+      ]
+    },
+    "metrics": [
+      {
+        "key": "leads",
+        "label": "Leady do ruchu dziś",
+        "value": "1",
+        "helper": "Wymagają zaplanowanego ruchu"
+      },
+      {
+        "key": "waiting",
+        "label": "Sprawy czekające na klienta",
+        "value": "1",
+        "helper": "Czekają na odpowiedź klienta"
+      },
+      {
+        "key": "blocked",
+        "label": "Sprawy zablokowane",
+        "value": "0",
+        "helper": "Brak blokad"
+      },
+      {
+        "key": "ready",
+        "label": "Gotowe do startu",
+        "value": "0",
+        "helper": "Brak gotowych spraw"
+      }
+    ],
+    "section_order": [
+      "leads",
+      "no_action",
+      "risk",
+      "tasks",
+      "events",
+      "drafts",
+      "upcoming"
+    ],
+    "primary_section_order": [
+      "leads",
+      "waiting",
+      "ready"
+    ],
+    "reference_row_count": 2,
+    "reference_rows": [
+      "Anna Kowalska / Nova Home Studio / Najbliższy ruch jest zaplanowany na dziś / Wykonaj zaplanowany ruch / Dzisiaj",
+      "Pakiet dokumentów i onboarding klienta korporacyjnego / Michał Zieliński / Brakuje wymaganych rzeczy od klienta albo sprawa czeka na klienta / Poproś klienta o brakujące elementy i ustaw przypomnienie / Zablokowana"
+    ],
+    "data_origin": "current local workspace runtime response"
+  },
+  "interactions": {
+    "customizer": {
+      "open": true,
+      "checkbox_count": 8,
+      "buttons": [
+        "Pokaż wszystko"
+      ],
+      "close_verified": true
+    },
+    "add_menu": {
+      "open": true,
+      "items": [
+        {
+          "label": "Szybki szkic",
+          "href": null,
+          "tag": "DIV"
+        },
+        {
+          "label": "Inbox szkiców",
+          "href": "/ai-drafts",
+          "tag": "A"
+        },
+        {
+          "label": "Lead",
+          "href": "/leads?quick=lead",
+          "tag": "A"
+        },
+        {
+          "label": "Klient",
+          "href": null,
+          "tag": "BUTTON"
+        },
+        {
+          "label": "Zadanie",
+          "href": null,
+          "tag": "BUTTON"
+        },
+        {
+          "label": "Wydarzenie",
+          "href": "/calendar?quick=event",
+          "tag": "A"
+        }
+      ],
+      "close_verified": true
+    },
+    "section_collapse": {
+      "open_before": {
+        "expanded": "true",
+        "content_hidden": false
+      },
+      "collapsed": {
+        "expanded": "false",
+        "content_hidden": true
+      },
+      "runtime_restored": {
+        "expanded": "true",
+        "content_hidden": false
+      }
+    },
+    "final_route_state": {
+      "route": "/",
+      "customizer_open": false,
+      "add_menu_open": false,
+      "lead_section_expanded": true
+    }
+  },
+  "access": {
+    "auth_required": false,
+    "auth_used": false,
+    "authenticated_populated_runtime_required_for_this_stage": false
+  },
+  "comparison": {
+    "reference_is_visual_sot": true,
+    "product_brand_preserved": "CloseFlow",
+    "structural_visual_parity": "PASS",
+    "literal_pixel_identity_claim": false,
+    "limitation": "The reference is 1672x941 while the available Codex in-app browser viewport is 946x698; the proof records live route, shell, hierarchy, real data rows, controls and responsive behavior without claiming pixel equality across different viewport dimensions."
+  }
+}

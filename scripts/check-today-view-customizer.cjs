@@ -24,7 +24,7 @@ expect(today.includes('Poka\u017C wszystko') || today.includes('Pokaz wszystko')
 expect(today.includes('type="checkbox"') || today.includes("type='checkbox'"), 'Today view must expose checkbox controls');
 expect(/visibleTodaySectionKeys|visibleTodaySections|todayVisibleSections|hiddenTodaySections/.test(today), 'Today view must keep visible/hidden section state');
 expect(/todayTiles\.filter|visibleTodaySectionKeys\.includes|sectionVisible\(tile\.key\)/.test(today), 'Today tiles must respect view visibility');
-expect(/sectionVisible\('no_action'\)|sectionVisible\("no_action"\)/.test(today), 'Today lists must still be controlled through sectionVisible');
+expect(/sectionVisible\(tile\.key\)|sectionVisible\(key\)/.test(today), 'Today lists must still be controlled through sectionVisible');
 expect(pkg.scripts && pkg.scripts['check:today-view-customizer'] === 'node scripts/check-today-view-customizer.cjs', 'package.json missing check:today-view-customizer');
 expect(pkg.scripts && pkg.scripts['test:today-view-customizer'] === 'node --test tests/today-view-customizer.test.cjs', 'package.json missing test:today-view-customizer');
 

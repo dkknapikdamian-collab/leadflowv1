@@ -31,10 +31,32 @@ function isViewAction(element: Element) {
     || text.endsWith(' widok');
 }
 
+function clearHeaderTrimState(header: HTMLElement) {
+  delete header.dataset.cfOperatorTopTrimmed;
+
+  const copy = header.querySelector<HTMLElement>('.cf-page-header-v2__copy');
+  if (copy) delete copy.dataset.cfOperatorTopTrimHidden;
+
+  const actions = header.querySelector<HTMLElement>('.cf-page-header-v2__actions');
+  if (!actions) return;
+
+  delete actions.dataset.cfOperatorTopTrimActions;
+  const controls = Array.from(actions.querySelectorAll<HTMLElement>('button, a, [role="button"]'));
+  for (const control of controls) {
+    delete control.dataset.cfTopbarOriginalViewAction;
+    delete control.dataset.cfTopbarHiddenAction;
+  }
+}
+
+function shouldKeepPageHeaderVisible(header: HTMLElement) {
+  return header.dataset.cfPageHeaderKeepVisible === 'true';
+}
+
 function findOriginalViewAction() {
   const headers = Array.from(document.querySelectorAll<HTMLElement>('.cf-page-header-v2'));
 
   for (const header of headers) {
+    if (shouldKeepPageHeaderVisible(header)) continue;
     const actions = header.querySelector<HTMLElement>('.cf-page-header-v2__actions');
     if (!actions) continue;
 
@@ -50,6 +72,11 @@ function markOldPageHeaders() {
   const headers = Array.from(document.querySelectorAll<HTMLElement>('.cf-page-header-v2'));
 
   for (const header of headers) {
+    if (shouldKeepPageHeaderVisible(header)) {
+      clearHeaderTrimState(header);
+      continue;
+    }
+
     header.dataset.cfOperatorTopTrimmed = 'true';
 
     const copy = header.querySelector<HTMLElement>('.cf-page-header-v2__copy');
@@ -134,7 +161,7 @@ export default function OperatorTopBarRuntime() {
       subtree: true,
       characterData: true,
       attributes: true,
-      attributeFilter: ['class', 'data-cf-header-action', 'aria-label', 'title'],
+      attributeFilter: ['class', 'data-cf-header-action', 'data-cf-page-header-keep-visible', 'aria-label', 'title'],
     });
 
     window.addEventListener('popstate', sync);

@@ -9,9 +9,9 @@ type CloseFlowPageHeaderV2Props = {
 
 const CLOSEFLOW_PAGE_HEADER_COPY: Record<CloseFlowPageHeaderKey, CloseFlowPageHeaderContent> = {
   today: {
-    kicker: 'CENTRUM DNIA',
-    title: 'Priorytety i najbliższe ruchy',
-    description: 'Szybki przegląd tego, co wymaga reakcji teraz i co warto zaplanować dalej.',
+    kicker: '',
+    title: 'Dziś',
+    description: 'Najważniejsze ruchy sprzedażowe i operacyjne na dziś.',
   },
   leads: {
     kicker: 'LEADY',
@@ -89,9 +89,13 @@ export function CloseFlowPageHeaderV2({ pageKey, actions }: CloseFlowPageHeaderV
   const content = CLOSEFLOW_PAGE_HEADER_COPY[pageKey] || CLOSEFLOW_PAGE_HEADER_COPY.today;
 
   return (
-    <header className="cf-page-header-v2" data-cf-page-header-v2={pageKey}>
+    <header
+      className="cf-page-header-v2"
+      data-cf-page-header-v2={pageKey}
+      data-cf-page-header-keep-visible={pageKey === 'today' ? 'true' : undefined}
+    >
       <div className="cf-page-header-v2__copy">
-        <span className="cf-page-header-v2__kicker">{content.kicker}</span>
+        {content.kicker ? <span className="cf-page-header-v2__kicker">{content.kicker}</span> : null}
         <h1 className="cf-page-header-v2__title">{content.title}</h1>
         <p className="cf-page-header-v2__description">{content.description}</p>
       </div>

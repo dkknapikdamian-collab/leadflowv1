@@ -666,19 +666,22 @@ export default function Layout({ children }: LayoutProps) {
         data-shell-main="true"
         data-current-section={currentSection}
       >
-        <div className="global-bar" data-shell-global-bar="true">
-          <div className="global-title">
-            <span className="global-dot" aria-hidden="true">
-              <CheckCircle2 className="h-4 w-4" />
-            </span>
-            <span className="global-title-copy">
-              Panel operatora <strong>{currentTitle}</strong>
-            </span>
+        {!isTodayRoute ? (
+          <div className="global-bar" data-shell-global-bar="true">
+            <div className="global-title">
+              <span className="global-dot" aria-hidden="true">
+                <CheckCircle2 className="h-4 w-4" />
+              </span>
+              <span className="global-title-copy">
+                Panel operatora <strong>{currentTitle}</strong>
+              </span>
+            </div>
+            {canUseAdminDebugToolbar ? <AdminDebugToolbar currentSection={currentSection} /> : null}
+            <GlobalQuickActions />
+            <ContextActionDialogsHost />
           </div>
-          {canUseAdminDebugToolbar ? <AdminDebugToolbar currentSection={currentSection} /> : null}
-          <GlobalQuickActions />
-          <ContextActionDialogsHost />
-        </div>
+        ) : null}
+        {isTodayRoute ? <ContextActionDialogsHost /> : null}
 
         {workspace && !hasAccess && (
           <div className="access-warning" data-shell-access-warning="true">

@@ -81,20 +81,24 @@ body,
 
   #root .cf-html-shell .sidebar,
   #root .cf-html-shell [data-shell-sidebar="true"] {
-    background-color: #0f1b31 !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #0f172a !important;
+    border-right: 1px solid #e5e7eb !important;
+    box-shadow: none !important;
   }
 
   #root .cf-html-shell .sidebar .nav-btn .nav-ico {
-    background: rgba(255, 255, 255, 0.08) !important;
-    color: #cbd5e1 !important;
-    border-color: rgba(255, 255, 255, 0.10) !important;
+    background: #f8fafc !important;
+    color: #64748b !important;
+    border-color: #e5e7eb !important;
   }
 
   #root .cf-html-shell .sidebar .nav-btn.active .nav-ico,
   #root .cf-html-shell .sidebar .nav-btn[aria-current="page"] .nav-ico {
-    background: rgba(255, 255, 255, 0.16) !important;
+    background: #2563eb !important;
     color: #ffffff !important;
-    border-color: rgba(255, 255, 255, 0.22) !important;
+    border-color: #2563eb !important;
   }
 
   #root .cf-html-shell .sidebar .nav-btn .nav-ico svg,

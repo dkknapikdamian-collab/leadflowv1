@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "evidence_type": "AICG_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-001",
+  "mode": "AUDIT_ONLY",
+  "repository": "dkknapikdamian-collab/leadflowv1",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "base_sha": "b19e7a87408b93dbcacfb180900b93d080da3569",
+  "outcome": "PARTIAL",
+  "pass_claim": false,
+  "blockers": 0,
+  "target_scan": {
+    "status": "NOT_AVAILABLE",
+    "reason": "The CloseFlow target does not expose a guardian npm script or the canonical AICG src/cli/route.ts and src/guardian/orchestrator.ts entrypoints required by the routed skill. The available canonical package currently supports its own deterministic/plugin smoke path, not a target-root scan.",
+    "attempted_command": "npm.cmd run guardian -- --smoke",
+    "attempted_result": "FAIL / Missing script: guardian",
+    "external_plugin_smoke_command": "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+    "external_plugin_smoke_result": {
+      "process": "PASS",
+      "mode": "AUDIT_ONLY",
+      "file_writes": 0,
+      "selected_capabilities": [
+        "repository-baseline"
+      ],
+      "selected_skills": [
+        "ai-code-guardian",
+        "architecture-integrity"
+      ],
+      "coverage_outcome": "PARTIAL",
+      "receipt_ids": [
+        "guardian-plugin-smoke-coverage",
+        "guardian-plugin-smoke-result"
+      ],
+      "scope": "plugin orchestration smoke only; not a CloseFlow target scan"
+    }
+  },
+  "reused_guardian_evidence": {
+    "source_stage": "FRT-000",
+    "raw_capture_path": "C:\\Users\\malim\\AppData\\Local\\Temp\\forteca-f000-guardian-final-20260827-rerun.json",
+    "raw_capture_sha256": "7bbf7331785974067bb88c32e055bf11add14d938d4430e12b68f1b265f290ec",
+    "source_repository_sha": "3d999dc206ad3d29e255c9d850c4a267c711b18f",
+    "source_tree_sha": "262b6ef6b92f74366cff6d2d22e9e48b381c818a",
+    "source_outcome": "PARTIAL",
+    "reuse_boundary": "Historical control-plane evidence is reused only for the bounded fact that there were zero blocking findings and two out-of-scope review-required HIGH findings. It is not treated as a fresh FRT-001 target scan or a PASS claim."
+  },
+  "scoped_current_evidence": {
+    "route_and_repository_guard": "PASS",
+    "today_header_actions_guard": "PASS",
+    "today_sections_test": "PASS (2/2)",
+    "today_top_tile_focus_guard": "PASS",
+    "today_view_customizer_guard": "PASS",
+    "today_view_customizer_all_options_guard": "PASS",
+    "today_refresh_tiles_match_lists_guard": "PASS",
+    "today_command_center_guard": "PASS",
+    "today_section_click_repair_guard": "PASS",
+    "ui_patch_layers_guard": "PASS",
+    "ui_ssot_icons_guard": "PASS",
+    "ui_ssot_semantic_colors_guard": "PASS",
+    "ui_ssot_typography_guard": "PASS",
+    "ui_ssot_css_owners_guard": "PASS",
+    "ui_component_clones_guard": "PASS",
+    "typescript": "PASS",
+    "git_diff_check": "PASS",
+    "build": "PASS",
+    "browser_proof": "audit/evidence/FRT-001_BROWSER_PROOF.json"
+  },
+  "findings_and_limits": {
+    "current_target_scan_findings": "NOT_AVAILABLE",
+    "known_historical_blockers": 0,
+    "known_historical_out_of_scope_review_required_high_findings": 2,
+    "aicg_raw_pass_claim": false,
+    "technical_acceptance_basis": "Codex acceptance authority under the owner directive; scoped repository guards, build, and live browser evidence are recorded separately."
+  },
+  "interpretation": "The available Guardian evidence is partial and does not authorize an AICG PASS statement. The target's scoped technical guards, typecheck, build and live browser proof pass for FRT-001. The two historical HIGH findings remain outside this stage write set and were not repaired."
+}

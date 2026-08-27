@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ClipboardList } from 'lucide-react';
+import { ChevronDown, ClipboardList, Plus } from 'lucide-react';
 /* STAGE16AA_PLAN_ACCESS_LOCKED_AI_BUTTON_COPY: Asystent AI jest w planie AI */
 
 /* STAGE16O_GLOBAL_ACTIONS_AI_COMPAT
@@ -69,12 +69,93 @@ export function subscribeGlobalQuickAction(listener: (target: GlobalQuickActionT
   return () => window.removeEventListener(QUICK_ACTION_EVENT, handler as EventListener);
 }
 
-export default function GlobalQuickActions() {
+type GlobalQuickActionsProps = {
+  placement?: 'toolbar' | 'page';
+};
+
+export default function GlobalQuickActions({ placement = 'toolbar' }: GlobalQuickActionsProps) {
   const { access } = useWorkspace();
   const [isTaskCreateOpen, setIsTaskCreateOpen] = useState(false);
   const [isClientCreateOpen, setIsClientCreateOpen] = useState(false);
+  const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
+  const addMenuRef = useRef<HTMLDivElement | null>(null);
   const canUseQuickAiCaptureByPlan = Boolean(access?.features?.lightDrafts || access?.features?.lightParser || access?.features?.fullAi);
   const canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi);
+
+  useEffect(() => {
+    if (placement !== 'page' || !isAddMenuOpen) return undefined;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target as Node | null;
+      if (target && !addMenuRef.current?.contains(target)) setIsAddMenuOpen(false);
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsAddMenuOpen(false);
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isAddMenuOpen, placement]);
+
+  if (placement === 'page') {
+    return (
+      <>
+        <div className="cf-page-add-actions" ref={addMenuRef} data-global-add-actions="true">
+          <Button
+            type="button"
+            className="cf-page-add-trigger"
+            aria-haspopup="menu"
+            aria-expanded={isAddMenuOpen}
+            data-global-add-trigger="true"
+            onClick={() => setIsAddMenuOpen((value) => !value)}
+          >
+            <Plus className="h-4 w-4" />
+            Dodaj
+            <ChevronDown className="h-4 w-4" />
+          </Button>
+
+          {isAddMenuOpen ? (
+            <div className="cf-page-add-menu" role="menu" aria-label="Dodaj" data-global-add-menu="true">
+              {canUseQuickAiCaptureByPlan ? (
+                <div className="cf-page-add-menu-item" data-global-quick-action="ai-capture" data-feature-status="Beta" role="menuitem">
+                  <QuickAiCapture />
+                </div>
+              ) : null}
+              {canUseAiDraftsByPlan ? (
+                <Link to="/ai-drafts" className="cf-page-add-menu-item" role="menuitem" data-global-quick-action="ai-drafts" aria-label="Otwórz Inbox szkiców" onClick={() => setIsAddMenuOpen(false)}>
+                  <ClipboardList className="h-4 w-4" />
+                  Inbox szkiców
+                </Link>
+              ) : null}
+              <Link to="/leads?quick=lead" className="cf-page-add-menu-item" role="menuitem" data-global-quick-action="lead" aria-label="Otwórz leady lub dodaj leada" onClick={() => { setIsAddMenuOpen(false); rememberGlobalQuickAction('lead'); }}>
+                <AddActionIcon className="h-4 w-4" />
+                Lead
+              </Link>
+              <Button type="button" variant="ghost" className="cf-page-add-menu-item" role="menuitem" data-global-quick-action="client" data-global-client-direct-modal-trigger="true" onClick={() => { setIsAddMenuOpen(false); setIsClientCreateOpen(true); }}>
+                <AddActionIcon className="h-4 w-4" />
+                Klient
+              </Button>
+              <Button type="button" variant="ghost" className="cf-page-add-menu-item" role="menuitem" data-global-quick-action="task" data-global-task-direct-modal-trigger="true" onClick={() => { setIsAddMenuOpen(false); setIsTaskCreateOpen(true); }}>
+                <AddActionIcon className="h-4 w-4" />
+                Zadanie
+              </Button>
+              <Link to="/calendar?quick=event" className="cf-page-add-menu-item" role="menuitem" data-global-quick-action="event" aria-label="Otwórz kalendarz lub dodaj wydarzenie" onClick={() => { setIsAddMenuOpen(false); rememberGlobalQuickAction('event'); }}>
+                <AddActionIcon className="h-4 w-4" />
+                Wydarzenie
+              </Link>
+            </div>
+          ) : null}
+        </div>
+        <ClientCreateDialog open={isClientCreateOpen} onOpenChange={setIsClientCreateOpen} />
+        <TaskCreateDialog open={isTaskCreateOpen} onOpenChange={setIsTaskCreateOpen} />
+      </>
+    );
+  }
+
   return (
     <>
       <div

@@ -968,3 +968,103 @@
   margin-left: auto;
   margin-right: auto;
 }
+
+/* FRT-001 shell reconciliation: the approved visual target is a calm light workspace. */
+#root .cf-html-shell > aside.sidebar[data-shell-sidebar="true"] {
+  background: #ffffff;
+  background-image: none;
+  color: #0f172a;
+  border-right: 1px solid #e5e7eb;
+  box-shadow: none;
+}
+
+#root .cf-html-shell .brand {
+  color: #0f172a;
+}
+
+#root .cf-html-shell .brand-logo {
+  background: #0f172a;
+  color: #ffffff;
+  box-shadow: none;
+}
+
+#root .cf-html-shell .brand-title strong,
+#root .cf-html-shell .brand-title span {
+  color: #0f172a;
+}
+
+#root .cf-html-shell .brand-title span,
+#root .cf-html-shell .nav-caption,
+#root .cf-html-shell .nav-badge {
+  color: #94a3b8;
+}
+
+#root .cf-html-shell .nav-btn {
+  color: #64748b;
+}
+
+#root .cf-html-shell .nav-btn:hover {
+  background: #f8fafc;
+  color: #334155;
+}
+
+#root .cf-html-shell .nav-btn.active,
+#root .cf-html-shell .nav-btn[aria-current="page"] {
+  background: #eff6ff;
+  border-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+#root .cf-html-shell .nav-ico {
+  border-color: #e5e7eb;
+  background: #f8fafc;
+  color: #64748b;
+}
+
+#root .cf-html-shell .nav-btn.active .nav-ico,
+#root .cf-html-shell .nav-btn[aria-current="page"] .nav-ico {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+#root .cf-html-shell .trial-card,
+#root .cf-html-shell .user-card {
+  border-color: #e5e7eb;
+  background: #f8fafc;
+  color: #334155;
+}
+
+#root .cf-html-shell .trial-card .top span,
+#root .cf-html-shell .trial-link,
+#root .cf-html-shell .user-card span {
+  color: #64748b;
+}
+
+#root .cf-html-shell .trial-card .top strong,
+#root .cf-html-shell .user-card strong {
+  color: #0f172a;
+}
+
+#root .cf-html-shell .trial-card .bar {
+  background: #e2e8f0;
+}
+
+#root .cf-html-shell .trial-link {
+  color: #2563eb;
+}
+
+#root .cf-html-shell .user-avatar {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+#root .cf-html-shell .sidebar-logout {
+  border-color: #e5e7eb;
+  color: #64748b;
+}
+
+#root .cf-html-shell .sidebar-logout:hover {
+  background: #f8fafc;
+  color: #334155;
+}

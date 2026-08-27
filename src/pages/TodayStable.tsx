@@ -1,6 +1,6 @@
 import { type FormEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AlertTriangle, ArrowRight, CalendarDays, CheckSquare, ChevronDown, ChevronUp, Loader2, RefreshCcw, SlidersHorizontal, TrendingUp } from 'lucide-react';
+import { AlertTriangle, ArrowRight, CalendarDays, CheckSquare, ChevronDown, ChevronUp, Clock3, Loader2, LockKeyhole, RefreshCcw, Rocket, SlidersHorizontal, Target, TrendingUp } from 'lucide-react';
 import {
   EntityIcon } from '../components/ui-system';
 import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
@@ -49,6 +49,7 @@ import { buildOwnerControlBaseline } from '../lib/owner-control/owner-control-ba
 import { readOwnerRiskSettings } from '../lib/owner-control/owner-risk-settings';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+import GlobalQuickActions from '../components/GlobalQuickActions';
 import WorkItemCard from '../components/work-item-card';
 import {
   getTodayWorkItemStatusLabel as getSotTodayWorkItemStatusLabel,
@@ -69,6 +70,8 @@ import {
   getOperationalEntryActionDecision,
   isOperationalEntryActionAllowed,
 } from '../lib/calendar-operational-entry-action-policy';
+import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
+import { caseDetailPath } from '../lib/routes';
 
 
 
@@ -499,6 +502,8 @@ function SectionHeader({
   tone,
   collapsed,
   onToggle,
+  visualNumber,
+  subtitle,
 }: {
   title: string;
   count: number;
@@ -506,19 +511,21 @@ function SectionHeader({
   tone: string;
   collapsed?: boolean;
   onToggle?: () => void;
+  visualNumber?: number;
+  subtitle?: string;
 }) {
   return (
     <button
       type="button"
       onClick={onToggle}
       aria-expanded={!collapsed}
-      className="flex w-full flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-4 text-left transition hover:bg-slate-50"
+      className="cf-today-section-header flex w-full flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-4 text-left transition hover:bg-slate-50"
     >
       <div className="flex items-center gap-3">
         <SectionHeaderIcon tone={tone} icon={icon} />
         <div>
-          <h2 className="text-base font-bold text-slate-900">{title}</h2>
-          <p className="text-xs font-medium text-slate-500">{count} wpisów</p>
+          <h2 className="cf-today-section-title text-base font-bold text-slate-900">{visualNumber ? `${visualNumber}. ${title}` : title}</h2>
+          <p className="cf-today-section-subtitle text-xs font-medium text-slate-500">{subtitle || `${count} wpisów`}</p>
         </div>
       </div>
       <div className="flex items-center gap-2">
@@ -540,8 +547,8 @@ function StableCard({ children }: { children: ReactNode }) {
 const TODAY_SECTION_TITLES: Record<TodaySectionKey, string> = {
   no_action: 'Leady bez najbliższej akcji',
   risk: 'Wysoka wartość / ryzyko',
-  waiting: 'Leady czekające',
-  leads: 'Wymaga ruchu',
+  waiting: 'Realizacja stoi przez klienta',
+  leads: 'Sprzedaż wymaga ruchu',
   tasks: 'Zadania dziś i zaległe',
   events: 'Wydarzenia dziś',
   upcoming: 'Najbliższe 7 dni',
@@ -607,8 +614,8 @@ function getTodaySectionFromTileText(value: string): TodaySectionKey | null {
   const text = normalizeSemanticLabel(value);
   if (text.includes('leady bez najblizszej akcji') || text.includes('bez najblizszej zaplanowanej akcji')) return 'no_action';
   if (text.includes('wysoka wartosc') || text.includes('ryzyko')) return 'risk';
-  if (text.includes('leady czekajace') || text.includes('czeka za dlugo')) return 'waiting';
-  if (text.includes('wymaga ruchu') || text.includes('do obslugi') || text.includes('co masz zrobic dzisiaj') || text.includes('leady do obslugi dzis') || text.includes('leady do ruchu')) return 'leads';
+  if (text.includes('leady czekajace') || text.includes('realizacja stoi') || text.includes('czeka za dlugo')) return 'waiting';
+  if (text.includes('wymaga ruchu') || text.includes('sprzedaz wymaga') || text.includes('do obslugi') || text.includes('co masz zrobic dzisiaj') || text.includes('leady do obslugi dzis') || text.includes('leady do ruchu')) return 'leads';
   if (text.includes('zadania dzis i zalegle') || text.includes('zalegle zadania') || text.includes('zadania do obslugi') || text.includes('zadania do wykonania dzis') || text.includes('zadania dzis')) return 'tasks';
   if (text.includes('wydarzenia dzis') || text.includes('wydarzenie dzis')) return 'events';
   if (text.includes('najblizsze 7 dni')) return 'upcoming';
@@ -658,6 +665,8 @@ function RowLink({
   deleting,
   taskId,
   doneKind,
+  visualVariant,
+  referenceReason,
 }: {
   key?: string;
   to: string;
@@ -674,6 +683,8 @@ function RowLink({
   deleting?: boolean;
   taskId?: string;
   doneKind?: 'task' | 'event';
+  visualVariant?: 'reference';
+  referenceReason?: string;
 }) {
   const stage80TaskRoute = typeof to === 'string' ? to : '';
   const stage80TaskPathId = stage80TaskRoute.startsWith('/tasks/') ? (stage80TaskRoute.split('?')[0].split('/').filter(Boolean).pop() || '') : '';
@@ -684,6 +695,7 @@ function RowLink({
   const isStage79TaskRow = doneKind === 'task' || Boolean(fb4TaskId) || isStage80TaskBadge;
   const [stage79TaskDoneLocal, setStage79TaskDoneLocal] = useState(false);
   const [stage79TaskDoneSaving, setStage79TaskDoneSaving] = useState(false);
+  const referenceInitials = title.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part.charAt(0)).join('').toUpperCase() || '•';
 
   async function markStage79TaskDoneFromRow() {
     if (!normalizedStage79TaskId || stage79TaskDoneSaving) return;
@@ -705,26 +717,40 @@ function RowLink({
   if (stage79TaskDoneLocal) return null;
 
   return (
-    <div data-cf-today-row-link="true" className="border-b border-slate-100 last:border-b-0 transition hover:bg-slate-50">
+    <div data-cf-today-row-link="true" data-cf-today-row-variant={visualVariant} className={'border-b border-slate-100 last:border-b-0 transition hover:bg-slate-50 ' + (visualVariant === 'reference' ? 'cf-today-reference-row' : '')}>
       <div className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="min-w-0">
+        <div className="cf-today-row-primary min-w-0">
+          {visualVariant === 'reference' ? <span className="cf-today-reference-row-avatar" aria-hidden="true">{referenceInitials}</span> : null}
           <div className="flex flex-wrap items-center gap-2">
             <Link to={to} className="font-semibold text-slate-900 break-words hover:underline">
               {title}
             </Link>
-            {badge ? (
+            {badge && visualVariant !== 'reference' ? (
               <Badge variant="outline" className="cf-status-pill rounded-full" data-cf-status-tone={badgeTone || semanticBadgeTone(badge)}>
                 {badge}
               </Badge>
             ) : null}
           </div>
-          {helper ? <p className="mt-1 text-sm text-slate-600 break-words">{helper}</p> : null}
-          {meta ? (
-            <p className="mt-1 text-xs font-medium text-slate-500">
+          {helper ? <p className="cf-today-row-helper mt-1 text-sm text-slate-600 break-words">{helper}</p> : null}
+          {meta && visualVariant !== 'reference' ? (
+            <p className="cf-today-row-meta mt-1 text-xs font-medium text-slate-500">
               {meta}
             </p>
           ) : null}
         </div>
+        {visualVariant === 'reference' ? (
+          <>
+            <p className="cf-today-reference-row-reason">{referenceReason || helper || 'Brak dodatkowego opisu.'}</p>
+            <p className="cf-today-reference-row-next">{meta || 'Brak zaplanowanego kolejnego kroku.'}</p>
+            <div className="cf-today-reference-row-status">
+              {badge ? (
+                <Badge variant="outline" className="cf-status-pill rounded-full" data-cf-status-tone={badgeTone || semanticBadgeTone(badge)}>
+                  {badge}
+                </Badge>
+              ) : null}
+            </div>
+          </>
+        ) : null}
         <div className="cf-today-row-actions flex items-center gap-2">
           {onDone ? (
             <Button
@@ -856,7 +882,10 @@ function syncTodayMetricTileFocusA11y(activeKey: TodaySectionKey | null, collaps
     section.dataset.cfExpanded = collapsedSections.includes(key) ? 'false' : 'true';
   }
 
-  const tiles = Array.from(root.querySelectorAll<HTMLElement>('button[data-cf-semantic-label]'));
+  // Keep the metric bridge scoped to the KPI owner. Section headers receive
+  // semantic metadata for their own visual taxonomy, but their aria-expanded
+  // state belongs to SectionHeader and must not be rewritten here.
+  const tiles = Array.from(root.querySelectorAll<HTMLElement>('.cf-today-primary-metrics button[data-cf-semantic-label]'));
   for (const tile of tiles) {
     const key = getTodaySectionKeyFromMetricTile(tile);
     if (!key) continue;
@@ -871,7 +900,7 @@ function normalizeFb4TodayActionText(value: unknown) {
     .toLowerCase()
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')
-    .replace(/s+/g, ' ')
+    .replace(/\s+/g, ' ')
     .trim();
 }
 
@@ -910,6 +939,8 @@ function normalizeAdminFeedbackP1TodayHeaderActions() {
   });
 
   if (!refreshButton || !viewButton || refreshButton === viewButton) return;
+
+  if (refreshButton.closest('.cf-page-header-v2[data-cf-page-header-keep-visible="true"]')) return;
 
   const refreshParent = refreshButton.parentElement;
   if (!refreshParent) return;
@@ -960,7 +991,7 @@ function TodayStable() {
   const [todayViewOpen, setTodayViewOpen] = useState(false);
   const [visibleTodaySections, setVisibleTodaySections] = useState<TodaySectionKey[]>(() => readTodayVisibleSections());
   const [actionPendingId, setActionPendingId] = useState<string>('');
-  const [collapsedSections, setCollapsedSections] = useState<TodaySectionKey[]>(() => [...TODAY_SECTION_KEYS]);
+  const [collapsedSections, setCollapsedSections] = useState<TodaySectionKey[]>([]);
   const [activeTodaySection, setActiveTodaySection] = useState<TodaySectionKey | null>(null);
   const [todayEditDraft, setTodayEditDraft] = useState<TodayEditDraft | null>(null);
   const [todayEditSaving, setTodayEditSaving] = useState(false);
@@ -1184,6 +1215,45 @@ function TodayStable() {
   const next7EndKey = addDaysKey(7);
 
   const casesById = useMemo(() => new Map(data.cases.map((caseRecord: any) => [String(caseRecord.id || ''), caseRecord])), [data.cases]);
+  const caseTasksByCaseId = useMemo(() => {
+    const map = new Map<string, any[]>();
+    for (const task of data.tasks) {
+      const caseId = String(task?.caseId || task?.case_id || '').trim();
+      if (!caseId) continue;
+      map.set(caseId, [...(map.get(caseId) || []), task]);
+    }
+    return map;
+  }, [data.tasks]);
+  const caseEventsByCaseId = useMemo(() => {
+    const map = new Map<string, any[]>();
+    for (const event of data.events) {
+      const caseId = String(event?.caseId || event?.case_id || '').trim();
+      if (!caseId) continue;
+      map.set(caseId, [...(map.get(caseId) || []), event]);
+    }
+    return map;
+  }, [data.events]);
+  const activeCaseLifecycleRows = useMemo(() => data.cases
+    .filter((caseRecord) => !isClosedStatus(caseRecord?.status))
+    .map((caseRecord) => {
+      const caseId = String(caseRecord?.id || '');
+      const lifecycle = resolveCaseLifecycleV1({
+        status: caseRecord?.status,
+        items: Array.isArray(caseRecord?.items) ? caseRecord.items : [],
+        tasks: caseTasksByCaseId.get(caseId) || [],
+        events: caseEventsByCaseId.get(caseId) || [],
+      });
+      return { record: caseRecord, lifecycle };
+    }), [caseEventsByCaseId, caseTasksByCaseId, data.cases]);
+  const waitingCaseRows = useMemo(() => activeCaseLifecycleRows.filter(({ record, lifecycle }) => {
+    const status = String(record?.status || '').trim().toLowerCase();
+    return status === 'waiting_on_client' || lifecycle.bucket === 'waiting_approval';
+  }), [activeCaseLifecycleRows]);
+  const blockedCaseRows = useMemo(() => activeCaseLifecycleRows.filter(({ record, lifecycle }) => {
+    const status = String(record?.status || '').trim().toLowerCase();
+    return lifecycle.bucket === 'blocked' && status !== 'waiting_on_client';
+  }), [activeCaseLifecycleRows]);
+  const readyCaseRows = useMemo(() => activeCaseLifecycleRows.filter(({ lifecycle }) => lifecycle.bucket === 'ready_to_start'), [activeCaseLifecycleRows]);
   const leadCasesByLeadId = useMemo(() => {
     const map = new Map<string, string[]>();
     for (const caseRecord of data.cases) {
@@ -1246,6 +1316,12 @@ function TodayStable() {
   const highValueAtRiskRows = useMemo(() => ownerControlLeadRows.filter(({ item }) => item.valuePln >= ownerControlBaseline.settings.highValueThresholdPln), [ownerControlBaseline.settings.highValueThresholdPln, ownerControlLeadRows]);
   const waitingLeadRows = useMemo(() => ownerControlLeadRows.filter(({ item }) => typeof item.silentDays === 'number' && item.silentDays >= ownerControlBaseline.settings.warningDays), [ownerControlBaseline.settings.warningDays, ownerControlLeadRows]);
   const actionRequiredRows = useMemo(() => ownerControlBaseline.items, [ownerControlBaseline.items]);
+  const leadMovementRows = useMemo(() => ownerControlLeadRows
+    .filter(({ item }) => item.entityType === 'lead')
+    .sort((left, right) => right.item.priority - left.item.priority), [ownerControlLeadRows]);
+  const priorityRows = useMemo(() => [...actionRequiredRows]
+    .sort((left, right) => right.priority - left.priority)
+    .slice(0, 3), [actionRequiredRows]);
 
   const todayEvents = useMemo(() => {
     return data.events
@@ -1397,8 +1473,8 @@ function TodayStable() {
   const todaySectionLabels = {
     no_action: 'Leady bez najbliższej akcji',
     risk: 'Wysoka wartość / ryzyko',
-    waiting: 'Leady czekające',
-    leads: 'Wymaga ruchu',
+    waiting: 'Realizacja stoi przez klienta',
+    leads: 'Sprzedaż wymaga ruchu',
     tasks: taskTileLabel,
     events: 'Wydarzenia dziś',
     upcoming: 'Najbliższe 7 dni',
@@ -1415,15 +1491,58 @@ function TodayStable() {
   }> = [
     { key: 'no_action', title: todaySectionLabels.no_action, count: noActionLeads.length, tone: 'cf-severity-text-error', activeTone: 'cf-severity-hover-error', icon: <AlertTriangle className="h-4 w-4" /> },
     { key: 'risk', title: todaySectionLabels.risk, count: highValueAtRiskRows.length, tone: 'cf-severity-text-error', activeTone: 'cf-severity-hover-error', icon: <TrendingUp className="h-4 w-4" /> },
-    { key: 'waiting', title: todaySectionLabels.waiting, count: waitingLeadRows.length, tone: 'text-orange-700', activeTone: 'hover:border-orange-200', icon: <EntityIcon entity="client" className="h-4 w-4" /> },
-    { key: 'leads', title: todaySectionLabels.leads, count: actionRequiredRows.length, tone: 'text-blue-700', activeTone: 'hover:border-blue-200', icon: <EntityIcon entity="client" className="h-4 w-4" /> },
+    { key: 'waiting', title: todaySectionLabels.waiting, count: waitingCaseRows.length + waitingLeadRows.length, tone: 'text-orange-700', activeTone: 'hover:border-orange-200', icon: <EntityIcon entity="client" className="h-4 w-4" /> },
+    { key: 'leads', title: todaySectionLabels.leads, count: leadMovementRows.length, tone: 'text-blue-700', activeTone: 'hover:border-blue-200', icon: <EntityIcon entity="client" className="h-4 w-4" /> },
     { key: 'tasks', title: todaySectionLabels.tasks, count: operatorTasks.length, tone: 'text-emerald-700', activeTone: 'hover:border-emerald-200', icon: <CheckSquare className="h-4 w-4" /> },
     { key: 'events', title: todaySectionLabels.events, count: todayEvents.length, tone: 'text-violet-700', activeTone: 'hover:border-violet-200', icon: <CalendarDays className="h-4 w-4" /> },
     { key: 'upcoming', title: todaySectionLabels.upcoming, count: upcomingRowsAll.length, tone: 'text-slate-700', activeTone: 'hover:border-slate-300', icon: <CalendarDays className="h-4 w-4" /> },
     { key: 'drafts', title: todaySectionLabels.drafts, count: pendingDrafts.length, tone: 'text-indigo-700', activeTone: 'hover:border-indigo-200', icon: <EntityIcon entity="template" className="h-4 w-4" /> },
   ];
 
-  const visibleTodayTiles = todayTiles.filter((tile) => visibleTodaySectionSet.has(tile.key));
+  const visibleTodayTiles = todayTiles.filter((tile) => sectionVisible(tile.key));
+  void visibleTodayTiles;
+
+  const todayPrimaryTiles: Array<{
+    key: TodaySectionKey | 'blocked' | 'ready';
+    title: string;
+    count: number;
+    helper: string;
+    tone: 'blue' | 'amber' | 'red' | 'green';
+    icon: ReactNode;
+  }> = [
+    {
+      key: 'leads',
+      title: 'Leady do ruchu dziś',
+      count: leadMovementRows.length,
+      helper: leadMovementRows.length ? 'Wymagają zaplanowanego ruchu' : 'Brak leadów do ruchu',
+      tone: 'blue',
+      icon: <Target className="h-5 w-5" />,
+    },
+    {
+      key: 'waiting',
+      title: 'Sprawy czekające na klienta',
+      count: waitingCaseRows.length,
+      helper: waitingCaseRows.length ? 'Czekają na odpowiedź klienta' : 'Brak oczekujących spraw',
+      tone: 'amber',
+      icon: <Clock3 className="h-5 w-5" />,
+    },
+    {
+      key: 'blocked',
+      title: 'Sprawy zablokowane',
+      count: blockedCaseRows.length,
+      helper: blockedCaseRows.length ? 'Wymagają Twojej akcji' : 'Brak blokad',
+      tone: 'red',
+      icon: <LockKeyhole className="h-5 w-5" />,
+    },
+    {
+      key: 'ready',
+      title: 'Gotowe do startu',
+      count: readyCaseRows.length,
+      helper: readyCaseRows.length ? 'Możesz rozpocząć realizację' : 'Brak gotowych spraw',
+      tone: 'green',
+      icon: <Rocket className="h-5 w-5" />,
+    },
+  ];
 
   const toggleTodaySectionVisibility = useCallback((key: TodaySectionKey) => {
     setVisibleTodaySections((current) => {
@@ -1813,22 +1932,48 @@ function TodayStable() {
       key: 'waiting',
       node: (
         <StableCard>
-          <SectionHeader title={todaySectionLabels.waiting} count={waitingLeadRows.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" collapsed={isCollapsed('waiting')} onToggle={() => toggleSectionCollapse('waiting')} />
+          <SectionHeader title={todaySectionLabels.waiting} count={waitingCaseRows.length + waitingLeadRows.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" visualNumber={2} subtitle="Sprawy czekające na materiały, akceptację lub decyzję klienta" collapsed={isCollapsed('waiting')} onToggle={() => toggleSectionCollapse('waiting')} />
+          <div className="cf-today-reference-columns" aria-hidden="true">
+            <span>Sprawa</span>
+            <span>Czego brakuje</span>
+            <span>Następny krok</span>
+            <span>Status</span>
+            <span />
+          </div>
           <div hidden={isCollapsed('waiting')}>
-            {waitingLeadRows.length ? waitingLeadRows.map(({ lead, item }) => (
-              <RowLink
-                key={String(lead.id || getLeadTitle(lead))}
-                to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
-                title={getLeadTitle(lead)}
-                helper=""
-                meta={item.suggestedAction + ' · ' + item.reason}
-                badge={item.statusLabel}
-                badgeTone={item.severity === 'critical' ? 'red' : 'amber'}
-                onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
-                onDelete={() => void handleArchiveLead(lead)}
-                deleting={actionPendingId === `lead:${String(lead.id || '')}`}
-              />
-            )) : <EmptyState text="Brak leadów w trybie waiting wymagających pilnej kontroli." />}
+            {waitingCaseRows.length || waitingLeadRows.length ? (
+              <>
+                {waitingCaseRows.map(({ record, lifecycle }) => (
+                  <RowLink
+                    key={`case:${String(record?.id || getCaseTitle(record))}`}
+                    to={caseDetailPath(String(record?.id || ''))}
+                    title={getCaseTitle(record)}
+                    helper={readText(record, ['clientName', 'client_name'], '')}
+                    referenceReason={lifecycle.headline}
+                    meta={lifecycle.nextOperatorAction}
+                    badge={lifecycle.label}
+                    badgeTone="amber"
+                    visualVariant="reference"
+                  />
+                ))}
+                {waitingLeadRows.map(({ lead, item }) => (
+                  <RowLink
+                    key={String(lead.id || getLeadTitle(lead))}
+                    to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
+                    title={getLeadTitle(lead)}
+                    helper={readText(lead, ['company', 'clientName', 'client_name', 'contactName', 'contact_name'], '')}
+                    referenceReason={item.reason}
+                    meta={item.suggestedAction}
+                    badge={item.statusLabel}
+                    badgeTone={item.severity === 'critical' ? 'red' : 'amber'}
+                    visualVariant="reference"
+                    onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
+                    onDelete={() => void handleArchiveLead(lead)}
+                    deleting={actionPendingId === `lead:${String(lead.id || '')}`}
+                  />
+                ))}
+              </>
+            ) : <EmptyState text="Brak spraw i leadów czekających na klienta." />}
           </div>
         </StableCard>
       ),
@@ -1837,17 +1982,26 @@ function TodayStable() {
       key: 'leads',
       node: (
         <StableCard>
-          <SectionHeader title={todaySectionLabels.leads} count={actionRequiredRows.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" collapsed={isCollapsed('leads')} onToggle={() => toggleSectionCollapse('leads')} />
+          <SectionHeader title={todaySectionLabels.leads} count={leadMovementRows.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" visualNumber={1} subtitle="Leady, które czekają na Twój kolejny krok" collapsed={isCollapsed('leads')} onToggle={() => toggleSectionCollapse('leads')} />
+          <div className="cf-today-reference-columns" aria-hidden="true">
+            <span>Lead / klient</span>
+            <span>Powód alarmu</span>
+            <span>Następny krok</span>
+            <span>Status</span>
+            <span />
+          </div>
           <div hidden={isCollapsed('leads')}>
-            {actionRequiredRows.length ? actionRequiredRows.map((item) => (
+            {leadMovementRows.length ? leadMovementRows.map(({ item, lead }) => (
               <RowLink
                 key={item.key}
                 to={item.href}
                 title={item.title}
-                helper=""
-                meta={item.suggestedAction + ' · ' + item.reason}
+                helper={readText(lead, ['company', 'clientName', 'client_name', 'contactName', 'contact_name'], '')}
+                referenceReason={item.reason}
+                meta={item.suggestedAction}
                 badge={item.statusLabel}
                 badgeTone={item.severity === 'critical' ? 'red' : item.severity === 'warning' ? 'amber' : 'blue'}
+                visualVariant="reference"
                 taskId={item.entityType === 'task' ? item.entityId : undefined}
                 doneKind={item.entityType === 'task' || item.entityType === 'event' ? item.entityType : undefined}
               />
@@ -2004,6 +2158,69 @@ function TodayStable() {
     },
   ];
   const visibleSectionCards = todaySectionCards.filter(({ key }) => sectionVisible(key));
+  const readyCaseSection = (
+    <StableCard>
+      <section className="cf-today-ready-section" data-cf-today-visual-section="ready">
+        <div className="cf-today-section-heading">
+          <div className="cf-today-section-heading-copy">
+            <span className="cf-today-section-heading-icon cf-today-section-heading-icon--green" aria-hidden="true"><Rocket className="h-5 w-5" /></span>
+            <div>
+              <h2 className="cf-today-section-title">3. Gotowe do ruszenia</h2>
+              <p className="cf-today-section-subtitle">Sprawy kompletne — możesz rozpocząć realizację</p>
+            </div>
+          </div>
+          <span className="cf-today-section-count cf-today-section-count--green">{readyCaseRows.length}</span>
+        </div>
+        <div className="cf-today-ready-list">
+          {readyCaseRows.length ? readyCaseRows.map(({ record, lifecycle }) => {
+            const id = String(record?.id || '');
+            return (
+              <Link key={id} to={caseDetailPath(id)} className="cf-today-ready-row">
+                <span className="cf-today-ready-row-copy">
+                  <strong>{getCaseTitle(record)}</strong>
+                  <span>{readText(record, ['clientName', 'client_name'], '') || lifecycle.nextOperatorAction}</span>
+                </span>
+                <span className="cf-today-ready-row-meta">
+                  <span className="cf-today-status-pill cf-today-status-pill--green">{lifecycle.label}</span>
+                  <span>{lifecycle.completenessPercent}%</span>
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </span>
+              </Link>
+            );
+          }) : <EmptyState text="Brak spraw gotowych do startu." />}
+        </div>
+      </section>
+    </StableCard>
+  );
+  const priorityRail = (
+    <aside className="cf-today-priority-rail" data-cf-today-priority-rail="true">
+      <div className="cf-today-priority-rail-head">
+        <div>
+          <p className="cf-today-priority-rail-kicker">PRIORYTETY</p>
+          <h2>Najważniejsze ruchy dziś</h2>
+           <p>{priorityRows.length} priorytetowe działania</p>
+        </div>
+        <span className="cf-today-priority-rail-icon" aria-hidden="true"><Target className="h-5 w-5" /></span>
+      </div>
+      <div className="cf-today-priority-list">
+        {priorityRows.length ? priorityRows.map((item, index) => (
+          <Link key={item.key} to={item.href} className="cf-today-priority-item">
+            <span className="cf-today-priority-number">{index + 1}</span>
+            <span className="cf-today-priority-copy">
+              <span className="cf-today-priority-item-topline">
+                <span className={'cf-today-status-pill cf-today-status-pill--' + semanticBadgeTone(item.statusLabel)}>{item.statusLabel}</span>
+                {item.nextMoveAt ? <span>{formatDateTime(item.nextMoveAt)}</span> : null}
+              </span>
+              <strong>{item.title}</strong>
+              <span>{item.suggestedAction || item.reason}</span>
+            </span>
+            <ArrowRight className="h-4 w-4 shrink-0 text-slate-400" aria-hidden="true" />
+          </Link>
+        )) : <EmptyState text="Brak ruchów wymagających uwagi." />}
+      </div>
+      <Link to="/leads" className="cf-today-priority-rail-link">Zobacz wszystkie leady <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
+    </aside>
+  );
 
 
   return (
@@ -2122,23 +2339,24 @@ function TodayStable() {
           ) : null}
         </DialogContent>
       </Dialog>
-      <main className="cf-route-work-root flex w-full flex-col gap-6 p-4 sm:p-6" data-p0-today-stable-rebuild="true" data-stage70-today-decision-engine-starter="true" data-stage81-today-risk-reason-next-action="true" data-stage82-today-next-7-days="true">
-        <section className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
-          <div className="cf-section-head flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <CloseFlowPageHeaderV2 pageKey="today" />
-            <div className="cf-section-head-actions flex flex-col items-end gap-2">
-              <div className="flex flex-wrap items-center justify-end gap-2">
-                {lastLoadedAt ? <span className="text-xs font-semibold text-slate-500">Ostatni odczyt: {lastLoadedAt}</span> : null}
-                <Button type="button" variant="outline" data-stage213c-c-today-manual-refresh="true" onClick={() => void refreshData({ manual: true, force: true, reason: 'manual' })} disabled={loading || manualRefreshing}>
+      <main className="cf-route-work-root cf-today-main cf-today-main--forteca" data-p0-today-stable-rebuild="true" data-stage70-today-decision-engine-starter="true" data-stage81-today-risk-reason-next-action="true" data-stage82-today-next-7-days="true">
+        <section className="cf-today-main-header" data-cf-today-header="true">
+          <CloseFlowPageHeaderV2
+            pageKey="today"
+            actions={
+              <>
+                {lastLoadedAt ? <span className="sr-only">Ostatni odczyt: {lastLoadedAt}</span> : null}
+                <Button type="button" variant="outline" className="sr-only cf-today-refresh-button" data-stage213c-c-today-manual-refresh="true" onClick={() => void refreshData({ manual: true, force: true, reason: 'manual' })} disabled={loading || manualRefreshing}>
                   {manualRefreshing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
                   {manualRefreshing ? 'Odświeżanie...' : 'Odśwież dane'}
                 </Button>
-              </div>
-              <Button type="button" size="sm" variant="outline" onClick={() => setTodayViewOpen((value) => !value)} data-today-view-toggle="true">
-                <SlidersHorizontal className="mr-2 h-4 w-4" /> Widok
-              </Button>
-            </div>
-          </div>
+                <Button type="button" size="sm" variant="outline" className="cf-today-view-button" data-cf-header-action="view" onClick={() => setTodayViewOpen((value) => !value)} data-today-view-toggle="true">
+                  <SlidersHorizontal className="mr-2 h-4 w-4" /> Dostosuj widok
+                </Button>
+                <GlobalQuickActions placement="page" />
+              </>
+            }
+          />
         </section>
 
         {errorMessage ? (
@@ -2216,43 +2434,51 @@ function TodayStable() {
           </section>
         ) : null}
 
-                <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" data-stage16ai-today-tiles-match-lists="true">
-          {visibleTodayTiles.map((tile) => {
-            const active = expandedSection === tile.key;
-            return (
+         <section className="cf-today-primary-metrics" data-stage16ai-today-tiles-match-lists="true">
+           {todayPrimaryTiles.map((tile) => {
+             const sectionTileKey: TodaySectionKey | null = tile.key === 'leads' || tile.key === 'waiting' ? tile.key : null;
+             const active = sectionTileKey !== null && expandedSection === sectionTileKey;
+             return (
               <button
                 key={tile.key}
                 type="button"
+                className="cf-today-metric-card"
                 data-cf-today-no-scroll-trap="true"
                 data-cf-semantic-label={tile.title}
                 data-cf-today-metric-tile-target={tile.key}
-                aria-controls={getTodaySectionDomId(tile.key)}
-                aria-expanded={active && !collapsedSections.includes(tile.key)}
+                data-cf-today-metric-tone={tile.tone}
+                aria-controls={sectionTileKey ? getTodaySectionDomId(sectionTileKey) : undefined}
+                aria-expanded={sectionTileKey ? active && !collapsedSections.includes(sectionTileKey) : undefined}
                 onClick={(event) => {
                   event.preventDefault();
                   event.stopPropagation();
                   event.currentTarget.blur();
-                  setExpandedSection(active ? 'all' : tile.key);
-                  setActiveTodaySection(active ? null : tile.key);
+                  if (tile.key === 'blocked') {
+                    navigate('/cases?view=blocked');
+                    return;
+                  }
+                  if (tile.key === 'ready') {
+                    navigate('/cases?view=ready');
+                    return;
+                  }
+                  if (!sectionTileKey) return;
+                  setExpandedSection(active ? 'all' : sectionTileKey);
+                  setActiveTodaySection(active ? null : sectionTileKey);
                   setCollapsedSections((current) => (
                     active
-                      ? Array.from(new Set([...current, tile.key]))
-                      : TODAY_SECTION_KEYS.filter((entry) => entry !== tile.key)
+                      ? Array.from(new Set([...current, sectionTileKey]))
+                      : TODAY_SECTION_KEYS.filter((entry) => entry !== sectionTileKey)
                   ));
                 }}
-                className="text-left"
               >
-                <Card className={
-                  'border-slate-100 transition hover:shadow-md ' +
-                  tile.activeTone +
-                  (active ? ' ring-2 ring-slate-200' : '')
-                }>
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-2">
-                      <p className="min-w-0 flex-1 truncate text-xs font-bold uppercase tracking-wide text-slate-500">{tile.title}</p>
-                      <p className={'text-2xl font-black leading-none ' + tile.tone}>{tile.count}</p>
-                      <span className={'rounded-full bg-slate-50 p-2 shrink-0 ' + tile.tone}>{tile.icon}</span>
-                    </div>
+                <Card className="cf-today-metric-card-surface">
+                  <CardContent className="cf-today-metric-card-content">
+                    <span className="cf-today-metric-icon" aria-hidden="true">{tile.icon}</span>
+                    <span className="cf-today-metric-copy">
+                      <span className="cf-today-metric-label">{tile.title}</span>
+                      <strong className="cf-today-metric-value">{tile.count}</strong>
+                      <span className="cf-today-metric-helper">{tile.helper}</span>
+                    </span>
                   </CardContent>
                 </Card>
               </button>
@@ -2260,12 +2486,31 @@ function TodayStable() {
           })}
         </section>
 
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3" data-stage232t-r1c-today-section-grid="true">
-          {visibleSectionCards.map(({ key, node }) => (
-            <div key={key} data-stage232t-r1c-today-section-card={key} className="min-w-0">
-              {node}
+        <section className="cf-today-content-grid" data-stage232t-r1c-today-section-grid="true">
+          <div className="cf-today-main-column">
+            <div className="cf-today-primary-sections">
+              {(['leads', 'waiting'] as TodaySectionKey[]).map((key) => {
+                const card = visibleSectionCards.find((entry) => entry.key === key);
+                if (!card) return null;
+                return (
+                  <div key={key} data-stage232t-r1c-today-section-card={key} className={'cf-today-section-slot cf-today-primary-section-slot cf-today-primary-section-slot--' + key}>
+                    {card.node}
+                  </div>
+                );
+              })}
+              <div data-cf-today-section-card="ready" className="cf-today-section-slot cf-today-ready-slot">
+                {readyCaseSection}
+              </div>
             </div>
-          ))}
+            <div className="cf-today-secondary-sections">
+              {visibleSectionCards.filter(({ key }) => key !== 'leads' && key !== 'waiting').map(({ key, node }) => (
+                <div key={key} data-stage232t-r1c-today-section-card={key} className="cf-today-section-slot">
+                  {node}
+                </div>
+              ))}
+            </div>
+          </div>
+          {priorityRail}
         </section>
 
         {loading ? (
