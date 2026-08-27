@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-008",
+  "reference_file": "docs/ui/reference/forteca-calm-light/008_leads_rescue.webp",
+  "reference_sha256": "F2177FEF934342BACC459346BF852E4E6D980DBB7C0BA5E79CDECD2E58558F51",
+  "captured_at": "2026-08-27T16:01:16.7245623Z",
+  "capture": {
+    "browser": "Codex In-app Browser",
+    "url": "http://localhost:3000/leads",
+    "route": "/leads",
+    "viewport": {
+      "width": 1672,
+      "height": 941
+    },
+    "reference_dimensions": {
+      "width": 1672,
+      "height": 941
+    },
+    "captured_in_in_app_browser": true,
+    "screenshot_artifact_path": null,
+    "tab_marked_deliverable": true
+  },
+  "runtime": {
+    "live_runtime": true,
+    "auth_required": false,
+    "auth_used": false,
+    "shell": {
+      "brand": "CloseFlow",
+      "active_navigation": "Leady",
+      "data_origin": "workspace-scoped current local runtime response"
+    },
+    "header": {
+      "title": "Leady",
+      "count": 3,
+      "description": "Zarządzaj procesem sprzedaży i domykaj kolejne kroki.",
+      "primary_action": "Dodaj leada",
+      "primary_action_visible": true
+    },
+    "state_tabs": {
+      "label": "Widoki leadów",
+      "selected": "Do odzyskania",
+      "selected_count": 3,
+      "available": [
+        "Wszystkie",
+        "Aktywne",
+        "Zagrożone",
+        "Historia",
+        "Do odzyskania"
+      ]
+    },
+    "rescue_summary": {
+      "visible": true,
+      "total_label": "3 leady do odzyskania",
+      "potential_label": "Potencjał 24 300 PLN",
+      "ready_label": "Działaj teraz 3",
+      "ready_detail": "Leady gotowe na kontakt",
+      "attention_label": "Wymagają uwagi 3",
+      "attention_detail": "Bez kontaktu > 7 dni",
+      "forecast_label": "Szansa na zamknięcie Brak danych",
+      "forecast_detail": "Brak kanonicznego forecastu",
+      "helper_copy": "Nie pozwól, by dobre leady uciekły."
+    },
+    "filter_card": {
+      "visible": true,
+      "search": true,
+      "source": "all",
+      "risk": "all",
+      "value": "all",
+      "last_contact": "all",
+      "owner": "all",
+      "more_filters": true,
+      "reset": true
+    },
+    "table": {
+      "visible": true,
+      "generic_leads_table_visible": false,
+      "visible_columns": [
+        "LEAD / FIRMA",
+        "POWÓD DO ODZYSKANIA",
+        "OSTATNI KONTAKT",
+        "POTENCJAŁ",
+        "SUGEROWANY NASTĘPNY KROK",
+        "ODPOWIEDZIALNY",
+        "AKCJE"
+      ],
+      "rows_loaded": 3,
+      "real_rows": [
+        {
+          "identity": "Nova Home Studio / Anna Kowalska",
+          "href": "/leads/dev-lead-1",
+          "reason": "Brak daty kontaktu",
+          "potential": "12 000 PLN",
+          "next_step": "Zaplanowany ruch",
+          "owner": "Nieprzypisany"
+        },
+        {
+          "identity": "Fundacja Lepsze Jutro / Fundacja \"Lepsze Jutro\"",
+          "href": "/leads/dev-lead-3",
+          "reason": "Brak daty kontaktu",
+          "potential": "7800 PLN",
+          "next_step": "Zaplanowany ruch",
+          "owner": "Nieprzypisany"
+        },
+        {
+          "identity": "M&Z Nieruchomości / Michał Zieliński",
+          "href": "/leads/dev-lead-2",
+          "reason": "Brak daty kontaktu",
+          "potential": "4500 PLN",
+          "next_step": "Zaplanowany ruch",
+          "owner": "Nieprzypisany"
+        }
+      ],
+      "row_navigation": true,
+      "next_action_buttons": 3,
+      "archive_action": true,
+      "horizontal_overflow": false
+    },
+    "console_errors": []
+  },
+  "interactions": {
+    "rescue_tab": {
+      "selected": true,
+      "filtered_rows": 3,
+      "status": "PASS"
+    },
+    "rescue_value_filter": {
+      "selected": "under_5000",
+      "filtered_rows": 1,
+      "status": "PASS"
+    },
+    "rescue_reset": {
+      "restored_rows": 3,
+      "still_rescue_state": true,
+      "value_after_reset": "all",
+      "status": "PASS"
+    },
+    "next_action_dialog": {
+      "trigger": "Ustaw kolejny krok",
+      "visible": true,
+      "dialog_title": "Nowe zadanie",
+      "lead_context": "Nova Home Studio",
+      "shared_owner": "TaskCreateDialog / ContextActionDialogs",
+      "no_mutating_action_submitted": true,
+      "status": "PASS"
+    },
+    "shared_actions": {
+      "row_links": "PASS",
+      "archive_action_owner_preserved": true,
+      "status": "PASS"
+    },
+    "responsive_layout": {
+      "desktop_available_viewport_no_horizontal_overflow": true,
+      "mobile_viewport": {
+        "width": 390,
+        "height": 844,
+        "rescue_heading_visible": true,
+        "rescue_selected": true,
+        "rescue_rows": 3,
+        "horizontal_overflow": false,
+        "document_width": 375,
+        "client_width": 375
+      },
+      "status": "PASS"
+    }
+  },
+  "comparison": {
+    "reference_is_visual_sot": true,
+    "rescue_state_hierarchy_reconciled": true,
+    "structural_visual_parity": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "literal_pixel_identity_claim": false,
+    "accepted_deviations": [
+      "The repository source of truth remains the CloseFlow shell while the reference artwork uses the Forteca light shell.",
+      "The current workspace runtime returns 3 real rescue rows and 24 300 PLN potential rather than the reference fixture volume of 5 rows and 73 500 PLN; no screenshot records, owners or counts were fabricated.",
+      "No canonical forecast source exists in the current runtime, so the rescue summary states Brak danych instead of inventing the reference 67% forecast.",
+      "The current leads have no canonical owner data, so the owner column states Nieprzypisany instead of fabricating names or avatars.",
+      "At compact desktop widths the contact and owner columns are hidden to preserve readable related action content without horizontal overflow; mobile restores the fields as stacked data.",
+      "The reference Import CSV/dropdown control was not added because the repository exposes no canonical import owner; the existing real Dodaj leada flow remains the supported primary action.",
+      "The quick rescue query is normalized to /leads after selecting the rescue state; the selected rescue state remains active in the live runtime."
+    ]
+  }
+}

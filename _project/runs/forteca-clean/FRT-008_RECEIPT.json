@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-008",
+  "reference_file": "docs/ui/reference/forteca-calm-light/008_leads_rescue.webp",
+  "target_route": "/leads",
+  "target_state": "Leads — Do odzyskania",
+  "result": "PASS",
+  "stage_status": "ACCEPTED",
+  "acceptance_authority": "CODEX",
+  "acceptance_basis": {
+    "owner_directive_sha256": "E3432C8126DAF2C0E0B4B5FB7060F05D60F9CB53F373904FEDEA5A2",
+    "directive_interpretation": "Codex is the acceptance authority under the owner directive for the autonomous Forteca program. This receipt is controller acceptance, not an AICG PASS claim."
+  },
+  "root_cause_or_implementation_gap": "The rescue tab existed only as a disabled summary/list boundary: it derived real rescue rows but did not reconcile reference grouping, a dedicated table, real filters, ownership or next-action CTA. FRT-008 now derives counts, priority and filtering from the workspace-scoped Leads and lost-lead-rescue owners, renders a dedicated responsive rescue table, keeps row navigation and archive semantics, and routes Ustaw kolejny krok through the shared TaskCreateDialog.",
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Rescue membership, severity and next-step state are derived from canonical lost-lead-rescue and lead fields; no screenshot record is hardcoded.",
+      "Summary counts, potential, contact cadence, risk, value and owner filters use the current workspace-scoped runtime response; missing forecast and owner data are stated rather than invented.",
+      "The reference is used for hierarchy, density and column intent only; current workspace records, counts and labels remain the source of truth.",
+      "Row navigation, soft-delete/archive behavior and task creation remain owned by existing route, mutation and ContextActionDialogs/TaskCreateDialog owners; no parallel rescue data model is introduced.",
+      "Every visible rescue control is backed by a real query, derived filter, route, existing mutation or existing task dialog; dead decorative actions are not accepted."
+    ]
+  },
+  "code_changed": true,
+  "files_changed": [
+    "src/pages/Leads.tsx",
+    "src/styles/closeflow-record-list-source-truth.css",
+    "tests/forteca-frt-008-leads-rescue.test.cjs",
+    "package.json",
+    "docs/ui/CLOSEFLOW_STYLE_MAP.generated.md",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.json",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.md",
+    "docs/ui/closeflow-style-map.generated.json",
+    "audit/evidence/FRT-008_BROWSER_PROOF.json",
+    "audit/evidence/FRT-008_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/contracts/forteca-clean/FRT-008_LEADS_RESCUE.md",
+    "_project/contracts/forteca-clean/FRT-009_LEADS_TRASH.md",
+    "_project/WORKFLOW_STATE.json",
+    "_project/runs/forteca-clean/FRT-008_RECEIPT.json"
+  ],
+  "preserved_untracked_files": ["dist-test-today-sections.cjs"],
+  "visual_sot_owners_used": [
+    "LIST_ROWS",
+    "BADGES",
+    "BUTTONS_ACTIONS",
+    "SEARCH",
+    "MODALS",
+    "SURFACES",
+    "RESPONSIVE_DENSITY",
+    "TYPOGRAPHY"
+  ],
+  "visible_controls_inventory": {
+    "primary_add_lead": 1,
+    "rescue_state_tab": 1,
+    "rescue_summary": 1,
+    "search": 1,
+    "rescue_source_filter": 1,
+    "rescue_risk_filter": 1,
+    "rescue_value_filter": 1,
+    "rescue_contact_filter": 1,
+    "rescue_owner_filter": 1,
+    "more_filters": 1,
+    "reset": 1,
+    "row_navigation": 3,
+    "row_next_step": 3,
+    "row_archive_action": 3,
+    "pagination": 1,
+    "total_known_control_groups": 16
+  },
+  "visible_controls_wired": "All visible rescue controls are backed by current workspace data, canonical rescue classification, derived filters, existing lead navigation, shared TaskCreateDialog task creation or the existing archive mutation; no unsupported import, hard-delete or fabricated action was added.",
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "node --test tests/forteca-frt-008-leads-rescue.test.cjs (2/2)",
+    "node --test tests/forteca-frt-007-leads-history.test.cjs (2/2)",
+    "node --test tests/forteca-frt-006-leads-at-risk.test.cjs (2/2)",
+    "node --test tests/forteca-frt-005-leads-active.test.cjs (2/2)",
+    "node --test tests/forteca-frt-004-leads-all.test.cjs (2/2)",
+    "node --test tests/forteca-frt-003-global-add.test.cjs (2/2)",
+    "node scripts/check-closeflow-entity-icon-registry.cjs",
+    "npm.cmd run guard:ui:ssot-icons",
+    "npm.cmd run guard:ui:ssot-semantic-colors",
+    "npm.cmd run guard:ui:ssot-typography",
+    "npm.cmd run guard:ui:component-clones",
+    "npm.cmd run check:polish-mojibake",
+    "npm.cmd run audit:closeflow-ui-map",
+    "npm.cmd run audit:closeflow-style-map",
+    "npm.cmd run check:closeflow-ui-map-inventory-v1",
+    "npm.cmd run check:closeflow-ui-skill-pack",
+    "npm.cmd run check:closeflow-ui-premap-contract",
+    "npm.cmd run guard:routes:canonical",
+    "npx.cmd tsc --noEmit --pretty false",
+    "git diff --check",
+    "npm.cmd run build",
+    "live Codex In-app Browser route/state/filter/dialog/responsive proof"
+  ],
+  "tests_reused": [
+    "FRT-000 reference manifest, routing/Guardian boundary and visual SOT owner registry",
+    "FRT-001 live shell and canonical creation-flow baseline",
+    "FRT-002 owner guards and build baseline",
+    "FRT-003 shared Add and page-header behavior regression",
+    "FRT-004 real Leads all-state query, data and pagination baseline",
+    "FRT-005 active Leads query, semantic badges, browser and responsive baseline",
+    "FRT-006 at-risk Leads semantics, browser and responsive baseline",
+    "FRT-007 history state, filters, row navigation and archive baseline"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: target repository has no guardian package script or canonical AICG target scanner entrypoint; audit summary remains PARTIAL and pass_claim=false"
+    },
+    {
+      "test": "authenticated populated runtime proof",
+      "reason": "NOT_REQUIRED: FRT-008 is independently verifiable with the available real local workspace response and no authenticated owner access is required"
+    },
+    {
+      "test": "guard:ui:ssot-css-owners",
+      "reason": "BASELINE_DRIFT: pre-existing LF-UI-SOT-007 concern mismatch for global shell semantics; FRT-008 did not repair the unrelated ownership contract"
+    },
+    {
+      "test": "guard:ui:patch-layers",
+      "reason": "BASELINE_DRIFT: pre-existing direct lucide-react import in src/lib/source-of-truth/icon-registry.ts; FRT-008 did not alter the icon registry"
+    },
+    {
+      "test": "legacy Stage222/record-list marker guards",
+      "reason": "OUT_OF_SCOPE: pre-existing baseline drift was not repaired while executing FRT-008"
+    },
+    {
+      "test": "lint",
+      "reason": "NO_CANONICAL_REPOSITORY_LINT_SCRIPT_REGISTERED"
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS_WITH_KNOWN_WARNINGS",
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-008_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "REUSED_FROM_FRT-007: PASS / coverage PARTIAL"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-008_BROWSER_PROOF.json",
+    "status": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "/leads",
+    "rescue_rows": 3,
+    "filter_interactions": "PASS",
+    "next_action_dialog": "PASS",
+    "mobile_rows": 3,
+    "horizontal_overflow": false,
+    "console_errors": 0,
+    "tab_marked_deliverable": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "literal_pixel_identity_claim": false,
+    "limitation": "The live runtime uses the CloseFlow shell and current real workspace data; the reference uses the Forteca shell and a different fixture data volume. The rescue hierarchy, selected state, summary/filter/table composition, real next-action ownership and responsive placement are reconciled at the available viewports without inventing unsupported records, owners, forecast or actions."
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "efficiency_planning": "APPLIED",
+    "project_context_reused": [
+      "FRT-000 routing/reference/Guardian baseline",
+      "FRT-007 real Leads history and browser baseline"
+    ],
+    "evidence_reuse": [
+      "FRT-003 shared header/Add regression",
+      "FRT-004 Leads all-state query and pagination baseline",
+      "FRT-005 active Leads semantic-owner and responsive baseline",
+      "FRT-006 at-risk Leads state and browser baseline",
+      "FRT-007 history state, filters and shared archive owner baseline"
+    ],
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "skip_reason": "No suitable available provider was exposed for this shared UI-owner change; one write owner and cross-state semantic validation were required in the parent workspace."
+  },
+  "implementation_commit_sha": "5871b29cedeff80e45096cf4d4bc535209fd88de",
+  "closeout_commit_sha": "ec311ad82951a7475cf27e15312bb3033da2e345",
+  "remote_head": "ec311ad82951a7475cf27e15312bb3033da2e345",
+  "next_stage": "FRT-009"
+}

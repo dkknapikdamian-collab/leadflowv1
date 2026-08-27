@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 90,
+  "state_revision": 91,
   "last_accepted": {
     "id": "FRT-008",
     "status": "PASS",
-    "commit_sha": "5871b29cedeff80e45096cf4d4bc535209fd88de",
+    "commit_sha": "ec311ad82951a7475cf27e15312bb3033da2e345",
     "evidence": "_project/runs/forteca-clean/FRT-008_RECEIPT.json; audit/evidence/FRT-008_BROWSER_PROOF.json; audit/evidence/FRT-008_GUARDIAN_AUDIT_SUMMARY.json; Codex controller acceptance under the owner directive; real Leads rescue grouping/filtering, canonical next-action ownership, responsive dedicated table, scoped tests, typecheck, build and live browser evidence PASS, Guardian raw outcome PARTIAL with zero blockers and no target-wide scan available"
   },
   "previous_accepted": {
@@ -18,10 +18,10 @@
   "current_contract_path": "_project/contracts/forteca-clean/FRT-009_LEADS_TRASH.md",
   "current_status": "ACTIVE",
   "last_accepted_stage": "FRT-008",
-  "last_accepted_commit": "5871b29cedeff80e45096cf4d4bc535209fd88de",
+  "last_accepted_commit": "ec311ad82951a7475cf27e15312bb3033da2e345",
   "next_stage": "FRT-010",
   "branch": "codex/forteca-ui-001-040-clean",
-  "remote_head": "5871b29cedeff80e45096cf4d4bc535209fd88de",
+  "remote_head": "ec311ad82951a7475cf27e15312bb3033da2e345",
   "current_workflow": {
     "id": "FRT-009",
     "kind": "TECHNICAL_IMPLEMENTATION_STAGE",
@@ -92,6 +92,7 @@
     "forteca:FRT-008:implementation@5871b29cedeff80e45096cf4d4bc535209fd88de",
     "forteca:FRT-008:browser-proof@audit/evidence/FRT-008_BROWSER_PROOF.json",
     "forteca:FRT-008:guardian-summary@audit/evidence/FRT-008_GUARDIAN_AUDIT_SUMMARY.json",
+    "forteca:FRT-008:receipt@_project/runs/forteca-clean/FRT-008_RECEIPT.json",
     "forteca:FRT-006:receipt@_project/runs/forteca-clean/FRT-006_RECEIPT.json",
     "forteca:FRT-003:implementation@307ecd9b73a0969bcca687d191a4b7b80cdf599d",
     "forteca:FRT-003:browser-proof@audit/evidence/FRT-003_BROWSER_PROOF.json",
