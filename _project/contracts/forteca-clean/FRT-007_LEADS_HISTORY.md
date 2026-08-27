@@ -1,6 +1,6 @@
 # FRT-007 — LEADS HISTORY
 
-CONTRACT_STATUS: ACTIVE
+CONTRACT_STATUS: ACCEPTED
 STAGE_ID: FRT-007
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/007_leads_history.webp
 TARGET_ROUTE: /leads

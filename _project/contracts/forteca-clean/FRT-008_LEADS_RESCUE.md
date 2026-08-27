@@ -1,6 +1,6 @@
 # FRT-008 — LEADS RESCUE
 
-CONTRACT_STATUS: LOCKED
+CONTRACT_STATUS: ACTIVE
 STAGE_ID: FRT-008
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/008_leads_rescue.webp
 TARGET_ROUTE: /leads
@@ -17,4 +17,3 @@ ACCEPTANCE_CRITERIA: Rescue list is real and prioritized by canonical rules; eve
 TEST_PLAN: Rescue classification and next-step action tests; browser proof; typecheck if TS changes; targeted guard reuse only if valid.
 PREDECESSOR: FRT-007
 SUCCESSOR: FRT-009
-
