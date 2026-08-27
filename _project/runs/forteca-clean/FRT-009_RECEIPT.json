@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-009",
+  "reference_file": "docs/ui/reference/forteca-calm-light/009_leads_trash.webp",
+  "target_route": "/leads",
+  "target_state": "Leads — Kosz / archiwalne",
+  "result": "PASS",
+  "stage_status": "ACCEPTED",
+  "acceptance_authority": "CODEX",
+  "acceptance_basis": {
+    "owner_directive_sha256": "E3432C8126DAF2C0E0B4B5FB7060F05D60F9CB53F373904FEDEA5A2",
+    "directive_interpretation": "Codex is the acceptance authority under the owner directive for the autonomous Forteca program. This receipt is controller acceptance, not an AICG PASS claim."
+  },
+  "root_cause_or_implementation_gap": "The trash state was not a real list boundary: the loader returned only active leads, archived metadata was not requested, restore used native confirmation, and the reference action ownership was hidden behind generic page-header suppression. FRT-009 now requests the real archived-capable list, excludes active records from trash, derives filters and metadata from returned records, routes restore through the existing update mutation and ConfirmDialog, and exposes only real trash actions."
+  ,"zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Trash membership is derived from canonical archive/soft-delete/outcome fields returned by the real list response; no screenshot row, count, name, owner or date is hardcoded.",
+      "Retention dates, deleted-by values, restore audit counts and deletion reasons are shown only when persisted in the record; unavailable values are stated rather than invented.",
+      "The reference controls, hierarchy, density and table intent are reconciled without reproducing unsupported 30-day policy or irreversible bulk deletion behavior.",
+      "Restore remains owned by the existing lead update mutation and shared ConfirmDialog; no parallel delete/restore data model is introduced.",
+      "Every visible trash control is backed by a real query, derived filter, export handler, route toggle, pagination owner or existing mutation; dead screenshot-only controls are not accepted."
+    ]
+  },
+  "code_changed": true,
+  "files_changed": [
+    "api/leads.ts",
+    "package.json",
+    "src/lib/supabase-fallback.ts",
+    "src/pages/Leads.tsx",
+    "src/styles/closeflow-record-list-source-truth.css",
+    "tests/forteca-frt-004-leads-all.test.cjs",
+    "tests/forteca-frt-005-leads-active.test.cjs",
+    "tests/forteca-frt-006-leads-at-risk.test.cjs",
+    "tests/forteca-frt-008-leads-rescue.test.cjs",
+    "tests/forteca-frt-009-leads-trash.test.cjs",
+    "audit/evidence/FRT-009_BROWSER_PROOF.json",
+    "audit/evidence/FRT-009_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/WORKFLOW_STATE.json",
+    "_project/runs/forteca-clean/FRT-009_RECEIPT.json"
+  ],
+  "preserved_untracked_files": ["dist-test-today-sections.cjs"],
+  "visual_sot_owners_used": [
+    "LIST_ROWS",
+    "MODALS",
+    "BUTTONS_ACTIONS",
+    "BADGES",
+    "SURFACES",
+    "SEARCH",
+    "RESPONSIVE_DENSITY",
+    "TYPOGRAPHY"
+  ],
+  "visible_controls_inventory": {
+    "trash_export": 1,
+    "show_active_leads": 1,
+    "search": 1,
+    "deleted_reason_filter": 1,
+    "deleted_period_filter": 1,
+    "retention_filter": 1,
+    "filter_submit": 1,
+    "summary_reset": 1,
+    "row_restore_owner": 1,
+    "pagination": 1,
+    "total_known_control_groups": 10
+  },
+  "visible_controls_wired": "The visible export, active-view toggle, search, trash filters, summary reset, pagination and row restore path use real runtime data or existing owners. The current real response has zero archived rows, so no Restore button is fabricated into the empty table.",
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "npm.cmd run test:forteca-frt-009-leads-trash (2/2)",
+    "node --test tests/forteca-frt-004-leads-all.test.cjs tests/forteca-frt-005-leads-active.test.cjs tests/forteca-frt-006-leads-at-risk.test.cjs tests/forteca-frt-007-leads-history.test.cjs tests/forteca-frt-008-leads-rescue.test.cjs (10/10)",
+    "npm.cmd run guard:ui:ssot-icons",
+    "npm.cmd run guard:ui:ssot-semantic-colors",
+    "npm.cmd run guard:ui:ssot-typography",
+    "npm.cmd run guard:ui:component-clones",
+    "npm.cmd run guard:routes:canonical",
+    "npm.cmd run check:polish-mojibake",
+    "npm.cmd run check:stage124-supabase-egress-contract",
+    "npx.cmd tsc --noEmit --pretty false",
+    "npm.cmd run build",
+    "git diff --check",
+    "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+    "live Codex In-app Browser desktop/mobile route, filter, export, toggle and empty-state proof"
+  ],
+  "tests_reused": [
+    "FRT-000 routing, reference manifest, Guardian boundary and visual SOT owner registry",
+    "FRT-001 live shell and canonical creation-flow baseline",
+    "FRT-002 owner guards and build baseline",
+    "FRT-003 shared Add and page-header behavior regression",
+    "FRT-004 real Leads all-state query and pagination baseline",
+    "FRT-005 active Leads query and responsive baseline",
+    "FRT-006 at-risk Leads semantics and responsive baseline",
+    "FRT-007 history state, filters, row navigation and archive baseline",
+    "FRT-008 rescue state and shared archive owner baseline"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: target repository has no guardian package script or canonical AICG target scanner entrypoint; audit summary remains PARTIAL and pass_claim=false"
+    },
+    {
+      "test": "authenticated populated archived-row browser proof",
+      "reason": "NOT_REQUIRED_FOR_CURRENT_REFERENCE: the real local runtime can independently accept the empty state; no owner authentication or synthetic archived row was introduced"
+    },
+    {
+      "test": "guard:ui:css-owner-before-cleanup and guard:ui:ssot-css-owners",
+      "reason": "BASELINE_DRIFT: pre-existing global shell ownership mismatch is outside the FRT-009 write set"
+    },
+    {
+      "test": "guard:ui:patch-layers",
+      "reason": "BASELINE_DRIFT: pre-existing direct lucide-react import in src/lib/source-of-truth/icon-registry.ts is outside the FRT-009 write set"
+    },
+    {
+      "test": "irreversible Opróżnij kosz action",
+      "reason": "NOT_IMPLEMENTED: no authorized permanent-delete or bulk-trash owner exists; a dead destructive control would violate the contract"
+    },
+    {
+      "test": "lint",
+      "reason": "NO_CANONICAL_REPOSITORY_LINT_SCRIPT_REGISTERED"
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS_WITH_KNOWN_WARNINGS",
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-009_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "EXECUTED: PARTIAL / coverage PARTIAL"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-009_BROWSER_PROOF.json",
+    "status": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "/leads",
+    "trash_rows": 0,
+    "export_interaction": "PASS",
+    "filter_interaction": "PASS",
+    "restore_path": "SOURCE_WIRED_NOT_RUNTIME_EXERCISED",
+    "mobile_empty_state": "PASS",
+    "horizontal_overflow": false,
+    "console_errors": 0,
+    "tab_marked_deliverable": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "literal_pixel_identity_claim": false,
+    "limitation": "The live runtime uses the CloseFlow shell and current real workspace data. The reference uses Forteca shell, unsupported retention fixture data and an irreversible bulk action without an authorized owner. The live hierarchy, selected trash state, summary/filter/table composition, real export/toggle ownership and responsive placement are reconciled without inventing data or policy."
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "efficiency_planning": "APPLIED",
+    "project_context_reused": [
+      "FRT-000 routing/reference/Guardian baseline",
+      "FRT-008 real Leads rescue and browser baseline"
+    ],
+    "evidence_reuse": [
+      "FRT-003 shared header/Add regression",
+      "FRT-004 Leads all-state query and pagination baseline",
+      "FRT-005 active Leads semantic-owner and responsive baseline",
+      "FRT-006 at-risk Leads state and browser baseline",
+      "FRT-007 history state and archive owner baseline",
+      "FRT-008 rescue state and shared mutation owner baseline"
+    ],
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "skip_reason": "No suitable available provider was exposed for this shared UI/data-owner change; one write owner and cross-state semantic validation were required in the parent workspace."
+  },
+  "implementation_commit_sha": "b1af2d6bef0a1adadab818509d14365fb13fd817",
+  "next_stage": "FRT-010",
+  "created_at": "2026-08-27T17:10:44.5927305Z"
+}

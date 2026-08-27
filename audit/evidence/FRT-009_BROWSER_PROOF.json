@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-009",
+  "reference_file": "docs/ui/reference/forteca-calm-light/009_leads_trash.webp",
+  "reference_sha256": "41DDB82A9D14C606035C8FD3F6FB2DFC7711F6103B6623A4C614401F53DEFFD6",
+  "entry_url": "http://localhost:3000/leads?quick=trash",
+  "runtime_url": "http://localhost:3000/leads",
+  "route": "/leads",
+  "state": "trash",
+  "live_runtime": true,
+  "auth_required": false,
+  "viewport": {
+    "width": 1672,
+    "height": 942
+  },
+  "screenshot_dimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "data_source": {
+    "mode": "real_local_runtime",
+    "request_contract": "GET /api/leads?includeArchived=1",
+    "archived_records_rendered": 0,
+    "known_active_records_excluded_from_trash": 3,
+    "synthetic_fixture_rows": false,
+    "retention_fields_present": false,
+    "restore_audit_source_present": false
+  },
+  "visible_structure": {
+    "header": [
+      "Kosz",
+      "Zarządzaj usuniętymi leadami. Możesz je przywrócić przed trwałym usunięciem.",
+      "Eksportuj CSV",
+      "Pokaż aktywne 3"
+    ],
+    "retention_banner": "Termin trwałego usunięcia jest pokazywany tylko wtedy, gdy został zapisany przy rekordzie.",
+    "summary_cards": 4,
+    "filters": [
+      "Szukaj po nazwie, e-mailu, firmie...",
+      "Powód usunięcia",
+      "Usunięto",
+      "Termin trwałego usunięcia",
+      "Filtruj"
+    ],
+    "table_columns": [
+      "Nazwa leada",
+      "Usunięto",
+      "Powód",
+      "Termin trwałego usunięcia",
+      "Usunięte przez",
+      "Akcje"
+    ],
+    "empty_state": [
+      "Kosz leadów jest pusty.",
+      "Nie ma rekordów do przywrócenia."
+    ],
+    "pagination": "0 z 0 leadów; 20 / strona"
+  },
+  "interaction_proof": {
+    "export_csv": {
+      "status": "PASS",
+      "observed": "Real export handler produced the toast Eksport gotowy: 0 leadów."
+    },
+    "deleted_period_filter": {
+      "status": "PASS",
+      "selected_value": "30",
+      "observed": "Ostatnie 30 dni is selectable and preserves the honest empty state."
+    },
+    "show_active": {
+      "status": "PASS",
+      "observed_route": "/leads",
+      "observed_state": "active leads list with 3 real records"
+    },
+    "reenter_trash": {
+      "status": "PASS",
+      "observed": "quick=trash resolves to the live Kosz state"
+    },
+    "restore": {
+      "status": "SOURCE_WIRED_NOT_RUNTIME_EXERCISED",
+      "observed": "The real restore mutation is behind ConfirmDialog; the current real response contains no archived row on which to click Restore."
+    }
+  },
+  "responsive_proof": {
+    "desktop": "PASS",
+    "mobile_viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "mobile": "PASS_WITH_EMPTY_STATE",
+    "mobile_observations": [
+      "header actions remain visible",
+      "summary cards stack to one column",
+      "trash filters use a two-column responsive grid",
+      "table headings collapse and the empty state remains readable"
+    ],
+    "horizontal_overflow": false
+  },
+  "safety_proof": {
+    "no_irreversible_bulk_empty_control": true,
+    "no_fake_retention_policy": true,
+    "no_reference_fixture_names_or_counts": true,
+    "no_native_window_confirm": true,
+    "visible_controls_have_real_owners": true
+  },
+  "console_errors": 0,
+  "status": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The live runtime uses the accepted CloseFlow shell and current workspace data; the reference uses the Forteca shell and fixture data.",
+      "The current schema/runtime exposes no persisted 30-day retention policy or restore-audit source, so the UI states that those values are shown only when saved rather than inventing them.",
+      "The current real response contains no archived lead, so the table is honestly empty and Restore is verified through source ownership rather than a fabricated row.",
+      "Bulk Opróżnij kosz is not rendered because no authorized irreversible bulk owner exists."
+    ]
+  },
+  "captured_at": "2026-08-27T17:10:44.5927305Z",
+  "implementation_commit_sha": "b1af2d6bef0a1adadab818509d14365fb13fd817"
+}
