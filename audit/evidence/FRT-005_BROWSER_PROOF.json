@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-005",
+  "reference_file": "docs/ui/reference/forteca-calm-light/005_leads_active.webp",
+  "reference_sha256": "60C59E1D1E0CE64BC63AEB7CD34BF7B14FC6A9159088F110324603A9A7BD5F71",
+  "captured_at": "2026-08-27T12:05:00.3136226Z",
+  "capture": {
+    "browser": "Codex In-app Browser",
+    "url": "http://localhost:3000/leads",
+    "route": "/leads",
+    "viewport": {
+      "width": 1298,
+      "height": 698
+    },
+    "reference_dimensions": {
+      "width": 1672,
+      "height": 941
+    },
+    "captured_in_in_app_browser": true,
+    "screenshot_artifact_path": null,
+    "tab_marked_deliverable": true
+  },
+  "runtime": {
+    "live_runtime": true,
+    "auth_required": false,
+    "auth_used": false,
+    "shell": {
+      "brand": "CloseFlow",
+      "active_navigation": "Leady",
+      "data_origin": "workspace-scoped current local runtime response"
+    },
+    "header": {
+      "title": "Leady",
+      "description": "Zarządzaj procesem sprzedaży i domykaj kolejne deale.",
+      "primary_action": "Dodaj leada",
+      "primary_action_visible": true
+    },
+    "process_banner": {
+      "visible": true,
+      "text": "Aktywne leady wymagające pilnowania procesu",
+      "dismiss_control": true
+    },
+    "metrics": {
+      "cards": 4,
+      "active_kpi_selected": true,
+      "values": {
+        "all": 3,
+        "active": 1,
+        "active_value_pln": 24300,
+        "at_risk": 1
+      }
+    },
+    "filter_card": {
+      "visible": true,
+      "search": true,
+      "selected_status_chip": "Status: aktywne",
+      "selects": ["last_contact", "source", "risk"],
+      "more_filters": true,
+      "reset": true
+    },
+    "table": {
+      "visible": true,
+      "active_columns": [
+        "LEAD / FIRMA",
+        "STATUS",
+        "WARTOŚĆ",
+        "OSTATNI KONTAKT",
+        "NASTĘPNY KROK",
+        "TERMIN",
+        "PRIORYTET",
+        "AKCJE"
+      ],
+      "rows_loaded": 1,
+      "filtered_rows_label": "1–1 z 1 leadów",
+      "real_row_identity": "Fundacja Lepsze Jutro",
+      "real_row_value": "7800 PLN",
+      "real_row_status": "Oferta wyslana",
+      "real_row_priority": "Niskie",
+      "operational_badges_preserved": ["Wysoka wartość", "Brak następnej akcji"],
+      "row_navigation": true,
+      "archive_action": true,
+      "horizontal_overflow": false,
+      "scroll_width": 1298,
+      "viewport_width": 1298
+    }
+  },
+  "interactions": {
+    "active_kpi": {
+      "selected": true,
+      "filtered_rows": 1,
+      "status": "PASS"
+    },
+    "active_status_chip": {
+      "cleared_to_all": true,
+      "restored_by_active_kpi": true,
+      "status": "PASS"
+    },
+    "shared_actions": {
+      "row_link": "PASS",
+      "archive_action_owner_preserved": true,
+      "no_mutating_action_submitted": true
+    },
+    "responsive_layout": {
+      "no_horizontal_overflow": true,
+      "status": "PASS"
+    }
+  },
+  "comparison": {
+    "reference_is_visual_sot": true,
+    "active_state_hierarchy_reconciled": true,
+    "structural_visual_parity": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "literal_pixel_identity_claim": false,
+    "accepted_deviations": [
+      "The reference is 1672x941 while the available in-app browser viewport is 1298x698; responsive placement is verified in the live shell.",
+      "The product shell remains CloseFlow as required by repository SOT; the reference artwork uses the Forteca light shell.",
+      "The current workspace runtime returns 3 real leads and 1 active lead rather than the reference fixture counts; no screenshot rows, owners or dates were fabricated.",
+      "Import CSV is omitted because no active canonical import flow exists in the runtime contract; a dead control was not invented.",
+      "Search, last-contact, source and risk controls remain because they are the registered real owners; the reference's value and owner chips have no canonical runtime owner in this stage.",
+      "Real operational badges remain visible and can make the active row taller than the artwork."
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-005",
+  "mode": "AUDIT_ONLY",
+  "outcome": "PARTIAL",
+  "pass_claim": false,
+  "blockers": 0,
+  "target_scan": {
+    "status": "NOT_AVAILABLE",
+    "reason": "The target repository exposes no guardian or AICG package script and no canonical target scanner entrypoint. npm.cmd run guardian -- --smoke returned Missing script: guardian."
+  },
+  "plugin_smoke": {
+    "status": "REUSED_FROM_FRT-004",
+    "result": "PASS",
+    "coverage": "PARTIAL",
+    "interpretation": "The installed Guardian plugin smoke is orchestration-only and does not certify this repository target; no AICG PASS is claimed."
+  },
+  "scoped_validation": {
+    "forteca_stage_test": "PASS 2/2",
+    "forteca_frt_004_regression": "PASS 2/2",
+    "forteca_frt_003_regression": "PASS 2/2",
+    "entity_icon_registry": "PASS",
+    "ui_map_audit": "PASS",
+    "style_map_audit": "PASS",
+    "ui_skill_pack": "PASS",
+    "ui_premap_contract": "PASS",
+    "typecheck": "PASS",
+    "build": "PASS",
+    "git_diff_check": "PASS",
+    "browser_proof": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS"
+  },
+  "findings": [],
+  "known_baseline_drift": [
+    "Legacy Stage222/record-list marker guards remain outside FRT-005 scope and were not repaired.",
+    "The old LF-UI-SOT-007 workflow remains ACCEPTED_AND_CLOSED and was not reconciled."
+  ],
+  "acceptance_note": "Guardian evidence is partial and non-blocking for the available local target; controller acceptance does not convert this record into an AICG PASS claim."
+}
