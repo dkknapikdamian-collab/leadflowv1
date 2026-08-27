@@ -1,6 +1,6 @@
 # FRT-001 — TODAY MAIN
 
-CONTRACT_STATUS: LOCKED
+CONTRACT_STATUS: ACTIVE
 STAGE_ID: FRT-001
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/001_today_main.webp
 TARGET_ROUTE: /
@@ -17,4 +17,3 @@ ACCEPTANCE_CRITERIA: REAL_REFERENCE_RECONCILED=YES; route/state verified; requir
 TEST_PLAN: Analyze route and owner graph; run action-wiring and relevant Today guards; typecheck if TS changes; build at required milestone/shared-runtime change; browser proof at / with responsive state; reuse only matching evidence.
 PREDECESSOR: FRT-000
 SUCCESSOR: FRT-002
-

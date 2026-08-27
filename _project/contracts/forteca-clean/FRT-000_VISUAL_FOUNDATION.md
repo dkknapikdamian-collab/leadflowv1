@@ -1,6 +1,6 @@
 # FRT-000 — VISUAL FOUNDATION AND CONTROL PLANE
 
-CONTRACT_STATUS: ACTIVE
+CONTRACT_STATUS: ACCEPTED
 STAGE_ID: FRT-000
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/manifest.json
 TARGET_ROUTE: CONTROL_PLANE
@@ -81,7 +81,8 @@ ACCEPTANCE_CRITERIA:
   Guardian audit are recorded truthfully; WORKFLOW_STATE has one current FRT-000
   stage and `next_stage` FRT-001 only; selective commit, normal push and
   remote-head verification succeed. FRT-001 remains controller-locked until
-  FRT-000 acceptance is independently recorded; no self-acceptance is claimed.
+  FRT-000 acceptance is independently recorded by the Codex controller under
+  the owner directive; no executor self-acceptance is claimed.
 
 TEST_PLAN:
   Run or reuse only the required bounded checks: audit:closeflow-ui-map,
@@ -95,4 +96,3 @@ TEST_PLAN:
 
 PREDECESSOR: NONE (new Forteca program after LF-UI-SOT-007 ACCEPTED_AND_CLOSED)
 SUCCESSOR: FRT-001
-

@@ -45,13 +45,34 @@
     "NOT_CHECKED": 3,
     "PARTIALLY_CHECKED": 28,
     "ui_browser_runtime": "NOT_AVAILABLE",
-    "reason": "FRT-000 is control-plane-only and does not require authenticated populated runtime proof; browser proof remains a later stage gate."
+    "reason": "FRT-000 is control-plane-only and does not require authenticated populated runtime proof; browser proof remains a later stage gate.",
+    "applicable_frt_000_scope": {
+      "repository_routing_and_anchor": "PASS",
+      "reference_pack_integrity": "PASS",
+      "visual_sot_and_owner_registry_index": "PASS",
+      "contract_set_and_state_validation": "PASS",
+      "premap_and_diff_guards": "PASS",
+      "selective_commit_push_remote_verification": "PASS",
+      "product_runtime_browser_proof": "NOT_APPLICABLE",
+      "authenticated_populated_runtime_proof": "NOT_APPLICABLE"
+    },
+    "not_applicable": [
+      "product runtime route-state acceptance",
+      "authenticated populated data",
+      "browser visual comparison for references 001..040"
+    ]
   },
   "raw_capture": {
     "host_temp_path": "C:\\Users\\malim\\AppData\\Local\\Temp\\forteca-f000-guardian-final-20260827-rerun.json",
     "sha256": "7bbf7331785974067bb88c32e055bf11add14d938d4430e12b68f1b265f290ec",
     "summary_is_bounded": true
   },
-  "interpretation": "AICG executed read-only with no blocking finding, but PARTIAL is not PASS. FRT-000 remains pending independent acceptance/revalidation; no future stage is unlocked by this summary.",
+  "interpretation": "AICG executed read-only with no blocking finding. The raw AICG outcome remains PARTIAL, not PASS, because the repository-wide scan retains two out-of-scope review-required findings and broader coverage is partial. The applicable FRT-000 control-plane scope is complete; runtime/browser proof is NOT_APPLICABLE for this stage and is a required gate only for FRT-001..040.",
+  "controller_acceptance_context": {
+    "authority": "CODEX",
+    "basis": "owner directive E3432C8126DAF2C0E0B4B5FB7060F05D60F9CB53F373904FEDEA5A6275BE13A2",
+    "aicg_pass_claim": false,
+    "acceptance_is_not_a_guardian_pass_claim": true
+  },
   "source": "canonical marketplace package ai-code-guardian"
 }

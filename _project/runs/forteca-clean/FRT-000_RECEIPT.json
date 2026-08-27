@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-000",
+  "reference_file": "docs/ui/reference/forteca-calm-light/manifest.json",
+  "route_state": "CONTROL_PLANE / clean Forteca program initialization without authenticated runtime proof",
+  "result": "PASS",
+  "acceptance_authority": "CODEX",
+  "acceptance_basis": {
+    "owner_directive_sha256": "E3432C8126DAF2C0E0B4B5FB7060F05D60F9CB53F373904FEDEA5A6275BE13A2",
+    "directive_interpretation": "The existing controller gate is satisfied by Codex; this is controller acceptance, not executor self-acceptance and not an AICG PASS claim."
+  },
+  "root_cause_or_implementation_gap": "The clean Forteca branch began at the accepted LF-UI-SOT-007 anchor without a canonical FRT contract directory, evidence index, or FRT next-stage pointer. The stale old-branch wording remains recorded and was not repaired.",
+  "code_changed": false,
+  "files_changed": [
+    "_project/WORKFLOW_STATE.json",
+    "_project/contracts/forteca-clean/README.md",
+    "_project/contracts/forteca-clean/FRT-000_VISUAL_FOUNDATION.md",
+    "_project/contracts/forteca-clean/FRT-001_TODAY_MAIN.md",
+    "_project/contracts/forteca-clean/FRT-002_TODAY_CUSTOMIZE.md",
+    "_project/contracts/forteca-clean/FRT-003_GLOBAL_ADD.md",
+    "_project/contracts/forteca-clean/FRT-004_LEADS_ALL.md",
+    "_project/contracts/forteca-clean/FRT-005_LEADS_ACTIVE.md",
+    "_project/contracts/forteca-clean/FRT-006_LEADS_AT_RISK.md",
+    "_project/contracts/forteca-clean/FRT-007_LEADS_HISTORY.md",
+    "_project/contracts/forteca-clean/FRT-008_LEADS_RESCUE.md",
+    "_project/contracts/forteca-clean/FRT-009_LEADS_TRASH.md",
+    "_project/contracts/forteca-clean/FRT-010_LEAD_DETAIL.md",
+    "_project/contracts/forteca-clean/FRT-011_LEAD_ADD.md",
+    "_project/contracts/forteca-clean/FRT-012_LEAD_EDIT.md",
+    "_project/contracts/forteca-clean/FRT-013_LEAD_DUPLICATE.md",
+    "_project/contracts/forteca-clean/FRT-014_LEAD_TASK.md",
+    "_project/contracts/forteca-clean/FRT-015_LEAD_NOTE.md",
+    "_project/contracts/forteca-clean/FRT-016_LEAD_EVENT.md",
+    "_project/contracts/forteca-clean/FRT-017_LEAD_ADD_BLOCKER.md",
+    "_project/contracts/forteca-clean/FRT-018_LEAD_BLOCKERS_MANAGER.md",
+    "_project/contracts/forteca-clean/FRT-019_LEAD_NEXT_STEP.md",
+    "_project/contracts/forteca-clean/FRT-020_LEAD_START_CASE.md",
+    "_project/contracts/forteca-clean/FRT-021_CLIENTS_ALL.md",
+    "_project/contracts/forteca-clean/FRT-022_CLIENTS_WITHOUT_CASE.md",
+    "_project/contracts/forteca-clean/FRT-023_CLIENTS_NEED_CONTACT.md",
+    "_project/contracts/forteca-clean/FRT-024_CLIENTS_COMMISSION.md",
+    "_project/contracts/forteca-clean/FRT-025_CLIENTS_ARCHIVED.md",
+    "_project/contracts/forteca-clean/FRT-026_CLIENT_DETAIL.md",
+    "_project/contracts/forteca-clean/FRT-027_CLIENT_NO_ACTIVE_CASE.md",
+    "_project/contracts/forteca-clean/FRT-028_CLIENT_CLOSED_CASES.md",
+    "_project/contracts/forteca-clean/FRT-029_CLIENT_ADD.md",
+    "_project/contracts/forteca-clean/FRT-030_CLIENT_EDIT.md",
+    "_project/contracts/forteca-clean/FRT-031_CLIENT_NEW_CASE.md",
+    "_project/contracts/forteca-clean/FRT-032_CASES_ALL.md",
+    "_project/contracts/forteca-clean/FRT-033_CASES_WAITING_CLIENT.md",
+    "_project/contracts/forteca-clean/FRT-034_CASES_BLOCKED.md",
+    "_project/contracts/forteca-clean/FRT-035_CASES_READY.md",
+    "_project/contracts/forteca-clean/FRT-036_CASE_ADD.md",
+    "_project/contracts/forteca-clean/FRT-037_CASE_EDIT.md",
+    "_project/contracts/forteca-clean/FRT-038_CASE_SERVICE.md",
+    "_project/contracts/forteca-clean/FRT-039_CASE_CHECKLISTS.md",
+    "_project/contracts/forteca-clean/FRT-040_CASE_HISTORY.md",
+    "_project/contracts/forteca-clean/FRT-041_FINAL_CONVERGENCE.md",
+    "audit/evidence/FRT-000_AICG_BASELINE.json",
+    "audit/evidence/FRT-000_FORTECA_BASELINE.json",
+    "audit/evidence/FRT-000_GUARDIAN_AUDIT_SUMMARY.json",
+    "docs/ui/CLOSEFLOW_STYLE_MAP.generated.md",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.json",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.md",
+    "docs/ui/closeflow-style-map.generated.json"
+  ],
+  "visual_sot_owners_used": [
+    "PAGE_SHELL",
+    "TOKENS_SEMANTIC_COLORS_TYPOGRAPHY_SPACING",
+    "SURFACES_RADII_SHADOWS",
+    "ICONS",
+    "BUTTONS_ACTIONS",
+    "CARDS_TILES",
+    "BADGES_LIST_ROWS_RIGHT_RAIL",
+    "FORMS_MODALS",
+    "SEARCH",
+    "RESPONSIVE_DENSITY"
+  ],
+  "visual_sot_owners_changed": [],
+  "control_plane_controls_total": 12,
+  "control_plane_controls_verified": 12,
+  "visible_controls_total": 0,
+  "visible_controls_wired": 0,
+  "dead_controls": 0,
+  "tests_executed": [
+    "npm.cmd run audit:closeflow-ui-map",
+    "npm.cmd run audit:closeflow-style-map",
+    "npm.cmd run check:closeflow-ui-skill-pack",
+    "npm.cmd run check:closeflow-ui-premap-contract",
+    "reference manifest/name/byte/hash/dimension verifier",
+    "FRT contract required-field and exact-set validator",
+    "WORKFLOW_STATE JSON validator",
+    "git diff --cached --check"
+  ],
+  "tests_reused": [
+    "LF-UI-SOT-007 accepted Visual SOT owner facts only; SHA/scope/configuration/freshness constrained"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "authenticated populated runtime proof",
+      "reason": "NOT_APPLICABLE for FRT-000 control-plane acceptance; required for applicable FRT-001..FRT-040 route states"
+    },
+    {
+      "test": "browser visual comparison",
+      "reason": "NOT_APPLICABLE for FRT-000; the local runtime was opened only as a user demonstration, not used as stage acceptance proof"
+    },
+    {
+      "test": "typecheck/lint/build",
+      "reason": "NOT_APPLICABLE because FRT-000 changed no product runtime code; existing matching evidence was not re-run"
+    }
+  ],
+  "typecheck": "NOT_APPLICABLE",
+  "lint": "NOT_APPLICABLE",
+  "build": "NOT_APPLICABLE",
+  "guardian": {
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "blocking_findings": 0,
+    "review_required_findings": 2,
+    "out_of_scope_high_findings": 2,
+    "applicable_coverage": "PASS",
+    "not_applicable_coverage": [
+      "product runtime route-state acceptance",
+      "authenticated populated runtime",
+      "browser visual comparison"
+    ],
+    "summary_path": "audit/evidence/FRT-000_GUARDIAN_AUDIT_SUMMARY.json",
+    "raw_capture_sha256": "7bbf7331785974067bb88c32e055bf11add14d938d4430e12b68f1b265f290ec"
+  },
+  "browser_proof": {
+    "status": "NOT_APPLICABLE",
+    "demonstration": "real local runtime opened at http://localhost:3000/; not counted as FRT-000 acceptance proof",
+    "reason": "FRT-000 has no route/state visual acceptance requirement"
+  },
+  "known_deviations": [
+    "Reference pack is reference-only and contains 40 views.",
+    "Forteca is a working visual label, not a product-brand decision.",
+    "References 039/040 contain generated extra tabs; canonical Case Detail tabs remain Obsługa, Checklisty, Historia.",
+    "AGENTS.override.md retains stale old LF branch wording; recorded only, not repaired."
+  ],
+  "commit_sha": "bd82f1ed75a490f3cad7de33e82e5f835ba14908",
+  "remote_head": "bd82f1ed75a490f3cad7de33e82e5f835ba14908",
+  "next_stage": "FRT-001"
+}
