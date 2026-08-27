@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Check } from 'lucide-react';
+import { Check, ChevronDown } from 'lucide-react';
 import { CancelActionIcon } from './ui-system';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -15,6 +15,7 @@ type TopicContactPickerProps = {
   label?: string;
   placeholder?: string;
   emptyLabel?: string;
+  appearance?: 'default' | 'forteca-select';
 };
 
 function getBadgeClass(type: TopicContactOption['type']) {
@@ -32,13 +33,15 @@ export function TopicContactPicker({
   label = 'Powiąż z tematem lub kontaktem',
   placeholder = 'Wpisz lead, klienta, sprawę, e-mail lub telefon',
   emptyLabel = 'Brak dopasowanych tematów lub kontaktów',
+  appearance = 'default',
 }: TopicContactPickerProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const isFortecaSelect = appearance === 'forteca-select';
 
   const filteredOptions = useMemo(() => filterTopicContactOptions(options, query), [options, query]);
 
   return (
-    <div className="space-y-2" data-topic-contact-picker="true">
+    <div className={`space-y-2 ${isFortecaSelect ? 'cf-topic-contact-picker--forteca-select' : ''}`} data-topic-contact-picker="true" data-topic-contact-picker-appearance={appearance}>
       <Label>{label}</Label>
       <div className="relative">
         <Input
@@ -50,10 +53,10 @@ export function TopicContactPicker({
           onFocus={() => setIsOpen(true)}
           onBlur={() => window.setTimeout(() => setIsOpen(false), 150)}
           placeholder={placeholder}
-          className="cf-topic-contact-picker-input pl-3 pr-10"
+          className={`cf-topic-contact-picker-input pl-3 pr-10 ${isFortecaSelect ? 'cf-topic-contact-picker-input--forteca-select' : ''}`}
           data-topic-contact-picker-input="true"
         />
-        {selectedOption ? (
+        {selectedOption && !isFortecaSelect ? (
           <Button
             type="button"
             size="icon"
@@ -68,6 +71,7 @@ export function TopicContactPicker({
             <CancelActionIcon className="h-4 w-4" />
           </Button>
         ) : null}
+        {isFortecaSelect ? <ChevronDown className="cf-topic-contact-picker-chevron pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" aria-hidden="true" /> : null}
 
         {isOpen ? (
           <div className="cf-topic-contact-picker-dropdown absolute z-50 mt-2 max-h-72 w-full overflow-y-auto rounded-xl border bg-white p-1 text-slate-900 shadow-xl"

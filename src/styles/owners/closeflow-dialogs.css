@@ -2866,3 +2866,415 @@ body:has([data-forteca-frt-013-lead-duplicate="true"]) .cf-vst-overlay {
     width: 100% !important;
   }
 }
+
+/* FRT-014 — Forteca calm-light Lead Detail task creation drawer.
+   The form remains the shared TaskCreateDialog and writes through the real task API. */
+body:has([data-forteca-frt-014-lead-task="true"]) .cf-vst-overlay {
+  background: rgba(15, 23, 42, 0.32) !important;
+  backdrop-filter: none !important;
+}
+
+[data-forteca-frt-014-lead-task="true"].cf-vst-dialog {
+  inset: 0 0 0 auto !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: auto !important;
+  transform: none !important;
+  translate: none !important;
+  display: flex !important;
+  width: min(412px, 100vw) !important;
+  max-width: 412px !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-left: 1px solid #e5e7eb !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  box-shadow: -18px 0 42px rgba(15, 23, 42, 0.16) !important;
+}
+
+[data-forteca-frt-014-lead-task="true"].cf-vst-dialog::before,
+[data-forteca-frt-014-lead-task="true"].cf-vst-dialog::after {
+  display: none !important;
+  content: none !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-header {
+  display: flex !important;
+  min-height: 72px !important;
+  flex: 0 0 auto !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  margin: 0 !important;
+  padding: 23px 56px 19px 22px !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  background: #ffffff !important;
+  text-align: left !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-header h2,
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-header .forteca-frt-014-title {
+  color: #111827 !important;
+  font-size: 19px !important;
+  font-weight: 760 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.025em !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .cf-vst-dialog-close {
+  top: 18px !important;
+  right: 18px !important;
+  width: 32px !important;
+  height: 32px !important;
+  padding: 6px !important;
+  border-radius: 8px !important;
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .cf-vst-dialog-close:hover,
+[data-forteca-frt-014-lead-task="true"] .cf-vst-dialog-close:focus-visible {
+  background: #f8fafc !important;
+  color: #1e293b !important;
+  opacity: 1 !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .cf-vst-dialog-close svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .event-form-vnext {
+  display: flex !important;
+  min-height: 0 !important;
+  flex: 1 1 auto !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-scroll {
+  min-height: 0 !important;
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  padding: 5px 20px 22px !important;
+  background: #ffffff !important;
+  scrollbar-color: #cbd5e1 transparent !important;
+  scrollbar-width: thin !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-scroll::-webkit-scrollbar {
+  width: 8px !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-scroll::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-scroll::-webkit-scrollbar-thumb {
+  border: 2px solid #ffffff !important;
+  border-radius: 999px !important;
+  background: #cbd5e1 !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-fields {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 15px !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-field,
+[data-forteca-frt-014-lead-task="true"] [data-topic-contact-picker] {
+  display: grid !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-field:not([data-task-create-dialog-relation-picker="true"]) {
+  gap: 4px !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-field > label,
+[data-forteca-frt-014-lead-task="true"] [data-topic-contact-picker] > label {
+  color: #475569 !important;
+  font-size: 11px !important;
+  font-weight: 720 !important;
+  line-height: 1.25 !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-field > label span {
+  color: #ef4444 !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-field input,
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-field select,
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-field textarea,
+[data-forteca-frt-014-lead-task="true"] .cf-topic-contact-picker-input {
+  width: 100% !important;
+  min-height: 38px !important;
+  border: 1px solid #dbe2ea !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+  padding: 9px 11px !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-field input::placeholder,
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-field textarea::placeholder,
+[data-forteca-frt-014-lead-task="true"] .cf-topic-contact-picker-input::placeholder {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-field input:focus,
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-field select:focus,
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-field textarea:focus,
+[data-forteca-frt-014-lead-task="true"] .cf-topic-contact-picker-input:focus {
+  border-color: #93c5fd !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.11) !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-field select {
+  min-height: 38px !important;
+  padding-right: 32px !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-field textarea {
+  min-height: 78px !important;
+  resize: vertical !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-date-time-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: 12px !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-select-control,
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-date-control,
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-time-control {
+  position: relative !important;
+  min-width: 0 !important;
+  min-height: 38px !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-select-control select {
+  appearance: none !important;
+  padding-right: 34px !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-select-icon,
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-time-icon,
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-date-icon {
+  position: absolute !important;
+  top: 50% !important;
+  right: 11px !important;
+  z-index: 2 !important;
+  width: 14px !important;
+  height: 14px !important;
+  transform: translateY(-50%) !important;
+  pointer-events: none !important;
+  color: #64748b !important;
+  stroke-width: 1.8 !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-date-input,
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-time-input {
+  position: relative !important;
+  z-index: 1 !important;
+  padding-right: 36px !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  caret-color: transparent !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-date-input::-webkit-calendar-picker-indicator,
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-time-input::-webkit-calendar-picker-indicator {
+  opacity: 0 !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-date-display,
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-time-display {
+  position: absolute !important;
+  inset: 0 34px 0 11px !important;
+  z-index: 2 !important;
+  display: flex !important;
+  align-items: center !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  color: #111827 !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+  white-space: nowrap !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .cf-topic-contact-picker--forteca-select {
+  display: grid !important;
+  gap: 6px !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .cf-topic-contact-picker-input--forteca-select {
+  padding-right: 36px !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .cf-topic-contact-picker-chevron {
+  color: #94a3b8 !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .cf-topic-contact-picker-selected-note {
+  display: none !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .cf-topic-contact-picker-dropdown {
+  margin-top: 4px !important;
+  max-height: 220px !important;
+  border-color: #dbe2ea !important;
+  border-radius: 8px !important;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.13) !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .cf-topic-contact-picker-option {
+  border-radius: 6px !important;
+  padding: 9px !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-footer {
+  display: flex !important;
+  min-height: 70px !important;
+  flex: 0 0 auto !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  margin: 0 !important;
+  padding: 15px 20px !important;
+  border-top: 1px solid #e5e7eb !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-footer button {
+  min-height: 38px !important;
+  border-radius: 8px !important;
+  padding: 9px 15px !important;
+  font-size: 12px !important;
+  font-weight: 720 !important;
+  white-space: nowrap !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-footer button:first-child {
+  border-color: #dbe2ea !important;
+  background: #ffffff !important;
+  color: #475569 !important;
+  -webkit-text-fill-color: #475569 !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-footer button:first-child:hover {
+  background: #f8fafc !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-footer button[type="submit"] {
+  border: 1px solid #2563eb !important;
+  background: #2563eb !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.16) !important;
+}
+
+[data-forteca-frt-014-lead-task="true"] .forteca-frt-014-footer button[type="submit"]:hover {
+  border-color: #1d4ed8 !important;
+  background: #1d4ed8 !important;
+}
+
+/* FRT-014 cascade reconciliation: the shared semantic modal owner applies
+   a dark field rule to every data-closeflow-modal-visual-system dialog.
+   Keep this stage's calm-light contract authoritative without changing the
+   shared runtime skin or any other dialog. */
+[data-closeflow-modal-visual-system="true"][data-forteca-frt-014-lead-task="true"][data-task-create-dialog-layout="true"].cf-vst-dialog .forteca-frt-014-field :is(input, select, textarea),
+[data-closeflow-modal-visual-system="true"][data-forteca-frt-014-lead-task="true"][data-task-create-dialog-layout="true"].cf-vst-dialog .cf-topic-contact-picker-input {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border-color: #dbe2ea !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+  color-scheme: light !important;
+}
+
+[data-closeflow-modal-visual-system="true"][data-forteca-frt-014-lead-task="true"][data-task-create-dialog-layout="true"].cf-vst-dialog .forteca-frt-014-header,
+[data-closeflow-modal-visual-system="true"][data-forteca-frt-014-lead-task="true"][data-task-create-dialog-layout="true"].cf-vst-dialog .forteca-frt-014-header h2,
+[data-closeflow-modal-visual-system="true"][data-forteca-frt-014-lead-task="true"][data-task-create-dialog-layout="true"].cf-vst-dialog .forteca-frt-014-header .forteca-frt-014-title {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+[data-closeflow-modal-visual-system="true"][data-forteca-frt-014-lead-task="true"][data-task-create-dialog-layout="true"].cf-vst-dialog .forteca-frt-014-field :is(input, select, textarea):focus,
+[data-closeflow-modal-visual-system="true"][data-forteca-frt-014-lead-task="true"][data-task-create-dialog-layout="true"].cf-vst-dialog .cf-topic-contact-picker-input:focus {
+  border-color: #93c5fd !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.11) !important;
+  outline: none !important;
+}
+
+[data-closeflow-modal-visual-system="true"][data-forteca-frt-014-lead-task="true"][data-task-create-dialog-layout="true"].cf-vst-dialog .forteca-frt-014-date-display,
+[data-closeflow-modal-visual-system="true"][data-forteca-frt-014-lead-task="true"][data-task-create-dialog-layout="true"].cf-vst-dialog .forteca-frt-014-time-display {
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+/* The native date/time value remains the interactive source of truth. Hide
+   only its browser-rendered text so the stage-specific formatted overlay is
+   not painted twice. */
+[data-closeflow-modal-visual-system="true"][data-forteca-frt-014-lead-task="true"][data-task-create-dialog-layout="true"].cf-vst-dialog .forteca-frt-014-date-control > input.forteca-frt-014-date-input,
+[data-closeflow-modal-visual-system="true"][data-forteca-frt-014-lead-task="true"][data-task-create-dialog-layout="true"].cf-vst-dialog .forteca-frt-014-time-control > input.forteca-frt-014-time-input {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
+  caret-color: transparent !important;
+}
+
+[data-closeflow-modal-visual-system="true"][data-forteca-frt-014-lead-task="true"][data-task-create-dialog-layout="true"].cf-vst-dialog .forteca-frt-014-date-display {
+  right: 25px !important;
+}
+
+@media (max-width: 480px) {
+  [data-forteca-frt-014-lead-task="true"].cf-vst-dialog {
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+
+  [data-forteca-frt-014-lead-task="true"] .forteca-frt-014-header,
+  [data-forteca-frt-014-lead-task="true"] .forteca-frt-014-scroll {
+    padding-right: 16px !important;
+    padding-left: 16px !important;
+  }
+
+  [data-forteca-frt-014-lead-task="true"] .forteca-frt-014-date-time-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  [data-forteca-frt-014-lead-task="true"] .forteca-frt-014-footer {
+    padding-right: 16px !important;
+    padding-left: 16px !important;
+  }
+}

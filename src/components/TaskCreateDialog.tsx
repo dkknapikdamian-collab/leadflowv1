@@ -1,5 +1,5 @@
 import { type FormEvent, useEffect, useMemo, useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import { CalendarDays, ChevronDown, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from './ui/button';
 import {
@@ -7,6 +7,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
+  DialogDescription,
   DialogTitle,
 } from './ui/dialog';
 import { Input } from './ui/input';
@@ -14,7 +15,7 @@ import { Label } from './ui/label';
 import { TopicContactPicker } from './topic-contact-picker';
 import { modalFooterClass } from './entity-actions';
 import { useWorkspace } from '../hooks/useWorkspace';
-import { REMINDER_MODE_OPTIONS, REMINDER_OFFSET_OPTIONS, TASK_TYPES, PRIORITY_OPTIONS } from '../lib/options';
+import { RECURRENCE_OPTIONS, REMINDER_MODE_OPTIONS, TASK_TYPES, PRIORITY_OPTIONS } from '../lib/options';
 import {
   fetchCasesFromSupabase,
   fetchClientsFromSupabase,
@@ -38,8 +39,11 @@ type TaskCreateFormState = {
   dueAt: string;
   priority: string;
   status: string;
-  reminderMode: string;
-  reminderOffsetMinutes: number;
+  recurrence: string;
+  recurrenceCustomRule: string;
+  reminderChoice: string;
+  reminderCustomAt: string;
+  description: string;
   relationQuery: string;
   leadId: string;
   caseId: string;
@@ -57,7 +61,22 @@ export type TaskCreateDialogContext = {
 
 const STAGE85_TASK_CREATE_DIALOG_CONTEXT = 'TaskCreateDialog supports relation context from lead, client and case detail screens';
 const TASK_CREATE_DIALOG_STAGE105_FORM_SOURCE = 'event-form-vnext';
-const taskCreateDialogFooterClass = modalFooterClass('event-form-footer');
+const taskCreateDialogFooterClass = `${modalFooterClass('event-form-footer')} forteca-frt-014-footer`;
+
+const FRT014_RECURRENCE_OPTIONS = [
+  ...RECURRENCE_OPTIONS.filter((option) => option.value !== 'monthly'),
+  { value: 'custom', label: 'Niestandardowa' },
+];
+
+const FRT014_REMINDER_OPTIONS = [
+  { value: '10', label: '10 min' },
+  { value: '30', label: '30 min' },
+  { value: '60', label: '1 godz.' },
+  { value: '1440', label: '1 dzień wcześniej' },
+  { value: 'all_day', label: 'Cały dzień' },
+  { value: 'custom', label: 'Niestandardowe' },
+  { value: 'none', label: REMINDER_MODE_OPTIONS.find((option) => option.value === 'none')?.label || 'Brak' },
+] as const;
 
 type TaskCreateDialogProps = {
   open: boolean;
@@ -71,12 +90,15 @@ type TaskCreateDialogProps = {
 function defaultTaskCreateForm(context?: TaskCreateDialogContext): TaskCreateFormState {
   return {
     title: '',
-    type: 'follow_up',
+    type: '',
     dueAt: toDateTimeLocalValue(new Date()),
-    priority: 'medium',
+    priority: '',
     status: 'todo',
-    reminderMode: 'none',
-    reminderOffsetMinutes: 15,
+    recurrence: 'none',
+    recurrenceCustomRule: '',
+    reminderChoice: '10',
+    reminderCustomAt: '',
+    description: '',
     relationQuery: context?.recordLabel || '',
     leadId: context?.leadId || '',
     caseId: context?.caseId || '',
@@ -84,9 +106,37 @@ function defaultTaskCreateForm(context?: TaskCreateDialogContext): TaskCreateFor
   };
 }
 
-function calculateReminderAt(dueAt: string, reminderMode: string, reminderOffsetMinutes: number) {
-  if (reminderMode === 'none') return null;
-  return localDateTimeInputToReminderUtcIso(dueAt, reminderOffsetMinutes);
+function calculateReminderAt(dueAt: string, reminderChoice: string, reminderCustomAt: string) {
+  if (reminderChoice === 'none') return null;
+  if (reminderChoice === 'custom') {
+    return reminderCustomAt ? localDateTimeInputToReminderUtcIso(reminderCustomAt, 0) : null;
+  }
+  if (reminderChoice === 'all_day') {
+    return localDateTimeInputToReminderUtcIso(`${dueAt.slice(0, 10)}T09:00`, 0);
+  }
+  return localDateTimeInputToReminderUtcIso(dueAt, Number(reminderChoice));
+}
+
+function resolveRecurrenceRule(recurrence: string, customRule: string) {
+  if (recurrence === 'daily') return 'FREQ=DAILY';
+  if (recurrence === 'weekly') return 'FREQ=WEEKLY';
+  if (recurrence === 'custom') return customRule.trim();
+  return 'none';
+}
+
+function replaceTaskDateTimePart(value: string, part: 'date' | 'time', nextValue: string) {
+  const [date = '', time = ''] = value.split('T');
+  return part === 'date'
+    ? `${nextValue}T${time}`
+    : `${date}T${nextValue}`;
+}
+
+function formatTaskDateForDisplay(value: string) {
+  const [year, month, day] = value.slice(0, 10).split('-').map(Number);
+  if (!year || !month || !day) return value.slice(0, 10);
+
+  const weekday = new Intl.DateTimeFormat('pl-PL', { weekday: 'long' }).format(new Date(year, month - 1, day));
+  return `${String(day).padStart(2, '0')}.${String(month).padStart(2, '0')}.${year} (${weekday})`;
 }
 
 export default function TaskCreateDialog({ open, onOpenChange, onSaved, context }: TaskCreateDialogProps) {
@@ -156,6 +206,11 @@ export default function TaskCreateDialog({ open, onOpenChange, onSaved, context 
     event.preventDefault();
     if (!hasAccess) return toast.error('Trial wygasł.');
     if (!form.title.trim()) return toast.error('Podaj tytuł zadania.');
+    if (!form.type) return toast.error('Wybierz typ zadania.');
+    if (!form.dueAt.slice(0, 10) || !form.dueAt.slice(11, 16)) return toast.error('Uzupełnij termin i godzinę.');
+    if (!form.priority) return toast.error('Wybierz priorytet.');
+    if (form.recurrence === 'custom' && !form.recurrenceCustomRule.trim()) return toast.error('Podaj własną regułę cykliczności.');
+    if (form.reminderChoice === 'custom' && !form.reminderCustomAt) return toast.error('Uzupełnij własny termin przypomnienia.');
 
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
@@ -166,17 +221,18 @@ export default function TaskCreateDialog({ open, onOpenChange, onSaved, context 
 
       const createdTask = await insertTaskToSupabase({
         title: form.title.trim(),
-        type: form.type || 'follow_up',
+        type: form.type,
         date: form.dueAt.slice(0, 10),
         scheduledAt: form.dueAt,
         dueAt: form.dueAt,
-        priority: form.priority || 'medium',
-        status: form.status || 'todo',
-        reminderAt: calculateReminderAt(form.dueAt, form.reminderMode, form.reminderOffsetMinutes),
-        recurrenceRule: form.reminderMode === 'recurring' ? 'FREQ=DAILY' : undefined,
-        leadId: relation.leadId || form.leadId || context?.leadId || undefined,
-        caseId: relation.caseId || form.caseId || context?.caseId || undefined,
-        clientId: relation.clientId || form.clientId || context?.clientId || undefined,
+        priority: form.priority,
+        status: form.status,
+        description: form.description.trim(),
+        reminderAt: calculateReminderAt(form.dueAt, form.reminderChoice, form.reminderCustomAt),
+        recurrenceRule: resolveRecurrenceRule(form.recurrence, form.recurrenceCustomRule),
+        leadId: relation.leadId || form.leadId || undefined,
+        caseId: relation.caseId || form.caseId || undefined,
+        clientId: relation.clientId || form.clientId || undefined,
         workspaceId,
       });
       toast.success('Zadanie dodane');
@@ -200,15 +256,14 @@ export default function TaskCreateDialog({ open, onOpenChange, onSaved, context 
         data-task-create-dialog-stage105="event-form-vnext"
         data-task-create-dialog-form="true"
         data-event-form-stage22="true"
+        data-forteca-frt-014-lead-task="true"
       >
-        <DialogHeader>
-          <DialogTitle>Nowe zadanie</DialogTitle>
+        <DialogHeader className="forteca-frt-014-header">
+          <DialogTitle>Dodaj zadanie</DialogTitle>
         </DialogHeader>
-        {context?.recordLabel ? (
-          <div className="event-form-card rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-900" data-stage85-context-relation="true">
-            Powiązanie: {context.recordLabel}
-          </div>
-        ) : null}
+        <DialogDescription className="sr-only">
+          Formularz dodawania zadania powiązanego z leadem.
+        </DialogDescription>
         <form
           onSubmit={handleSubmit}
           className="event-form-vnext"
@@ -216,66 +271,98 @@ export default function TaskCreateDialog({ open, onOpenChange, onSaved, context 
           data-calendar-entry-form-mode="quick-task"
           data-task-create-dialog-stage105="event-form-vnext"
           data-task-create-dialog-form="true"
+          data-forteca-frt-014-form="true"
         >
-          <div className="event-form-field">
-            <Label>Tytuł</Label>
-            <Input value={form.title} onChange={(event) => setForm((prev) => ({ ...prev, title: event.target.value }))} placeholder="Co trzeba zrobić?" />
-          </div>
-          <div data-task-create-dialog-relation-picker="true">
-            <TopicContactPicker
-              options={topicContactOptions}
-              selectedOption={selectedTaskRelationOption}
-              query={form.relationQuery}
-              onQueryChange={(value) => setForm((prev) => ({ ...prev, relationQuery: value, leadId: '', caseId: '', clientId: '' }))}
-              onSelect={handleSelectTaskRelation}
-              label="Powiąż z leadem, klientem albo sprawą"
-              placeholder="Wpisz lead, klienta, sprawę, e-mail lub telefon"
-            />
-          </div>
-          <div className="event-form-grid event-form-grid-2">
-            <div className="event-form-field">
-              <Label>Termin</Label>
-              <Input type="datetime-local" value={form.dueAt} onChange={(event) => setForm((prev) => ({ ...prev, dueAt: event.target.value }))} />
-            </div>
-            <div className="event-form-field">
-              <Label>Priorytet</Label>
-              <select className="event-form-select" value={form.priority} onChange={(event) => setForm((prev) => ({ ...prev, priority: event.target.value }))}>
-                {PRIORITY_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-              </select>
-            </div>
-          </div>
-          <div className="event-form-grid event-form-grid-2">
-            <div className="event-form-field">
-              <Label>Typ</Label>
-              <select className="event-form-select" value={form.type} onChange={(event) => setForm((prev) => ({ ...prev, type: event.target.value }))}>
-                {TASK_TYPES.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-              </select>
-            </div>
-            <div className="event-form-field">
-              <Label>Status</Label>
-              <select className="event-form-select" value={form.status} onChange={(event) => setForm((prev) => ({ ...prev, status: event.target.value }))}>
-                <option value="todo">Do zrobienia</option>
-                <option value="done">Zrobione</option>
-              </select>
-            </div>
-          </div>
-          <div className="event-form-grid event-form-grid-2">
-            <div className="event-form-field">
-              <Label>Przypomnienie</Label>
-              <select className="event-form-select" value={form.reminderMode} onChange={(event) => setForm((prev) => ({ ...prev, reminderMode: event.target.value }))}>
-                {REMINDER_MODE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-              </select>
-            </div>
-            <div className="event-form-field">
-              <Label>Kiedy przypomnieć</Label>
-              <select className="event-form-select" value={String(form.reminderOffsetMinutes)} disabled={form.reminderMode === 'none'} onChange={(event) => setForm((prev) => ({ ...prev, reminderOffsetMinutes: Number(event.target.value) }))}>
-                {REMINDER_OFFSET_OPTIONS.map((option) => <option key={option.value} value={String(option.value)}>{option.label}</option>)}
-              </select>
+          <div className="forteca-frt-014-scroll">
+            <div className="forteca-frt-014-fields">
+              <div className="event-form-field forteca-frt-014-field">
+                <Label htmlFor="forteca-frt-014-title">Tytuł zadania <span aria-hidden="true">*</span></Label>
+                <Input id="forteca-frt-014-title" value={form.title} onChange={(event) => setForm((prev) => ({ ...prev, title: event.target.value }))} placeholder="Wpisz tytuł zadania" required />
+              </div>
+              <div className="event-form-field forteca-frt-014-field" data-task-create-dialog-relation-picker="true">
+                <TopicContactPicker
+                  options={topicContactOptions}
+                  selectedOption={selectedTaskRelationOption}
+                  query={form.relationQuery}
+                  onQueryChange={(value) => setForm((prev) => ({ ...prev, relationQuery: value, leadId: '', caseId: '', clientId: '' }))}
+                  onSelect={handleSelectTaskRelation}
+                  label="Powiązane z leadem"
+                  placeholder="Wybierz leada"
+                  appearance="forteca-select"
+                />
+              </div>
+              <div className="event-form-field forteca-frt-014-field">
+                <Label htmlFor="forteca-frt-014-type">Typ <span aria-hidden="true">*</span></Label>
+                <div className="forteca-frt-014-select-control">
+                  <select id="forteca-frt-014-type" className="event-form-select" value={form.type} onChange={(event) => setForm((prev) => ({ ...prev, type: event.target.value }))} required>
+                    <option value="" disabled>Wybierz typ zadania</option>
+                    {TASK_TYPES.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                  </select>
+                  <ChevronDown aria-hidden="true" className="forteca-frt-014-select-icon" />
+                </div>
+              </div>
+              <div className="forteca-frt-014-date-time-grid">
+                <div className="event-form-field forteca-frt-014-field">
+                  <Label htmlFor="forteca-frt-014-date">Termin <span aria-hidden="true">*</span></Label>
+                  <div className="forteca-frt-014-date-control">
+                    <Input id="forteca-frt-014-date" className="forteca-frt-014-date-input" type="date" value={form.dueAt.slice(0, 10)} onChange={(event) => setForm((prev) => ({ ...prev, dueAt: replaceTaskDateTimePart(prev.dueAt, 'date', event.target.value) }))} required />
+                    <span className="forteca-frt-014-date-display" aria-hidden="true">{formatTaskDateForDisplay(form.dueAt)}</span>
+                    <CalendarDays aria-hidden="true" className="forteca-frt-014-date-icon" />
+                  </div>
+                </div>
+                <div className="event-form-field forteca-frt-014-field">
+                  <Label htmlFor="forteca-frt-014-time">Godzina <span aria-hidden="true">*</span></Label>
+                  <div className="forteca-frt-014-time-control">
+                    <Input id="forteca-frt-014-time" className="forteca-frt-014-time-input" type="time" value={form.dueAt.slice(11, 16)} onChange={(event) => setForm((prev) => ({ ...prev, dueAt: replaceTaskDateTimePart(prev.dueAt, 'time', event.target.value) }))} required />
+                    <span className="forteca-frt-014-time-display" aria-hidden="true">{form.dueAt.slice(11, 16)}</span>
+                    <ChevronDown aria-hidden="true" className="forteca-frt-014-time-icon" />
+                  </div>
+                </div>
+              </div>
+              <div className="event-form-field forteca-frt-014-field">
+                <Label htmlFor="forteca-frt-014-priority">Priorytet <span aria-hidden="true">*</span></Label>
+                <div className="forteca-frt-014-select-control">
+                  <select id="forteca-frt-014-priority" className="event-form-select" value={form.priority} onChange={(event) => setForm((prev) => ({ ...prev, priority: event.target.value }))} required>
+                    <option value="" disabled>Wybierz priorytet</option>
+                    {PRIORITY_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                  </select>
+                  <ChevronDown aria-hidden="true" className="forteca-frt-014-select-icon" />
+                </div>
+              </div>
+              <div className="event-form-field forteca-frt-014-field">
+                <Label htmlFor="forteca-frt-014-recurrence">Cykliczność</Label>
+                <div className="forteca-frt-014-select-control">
+                  <select id="forteca-frt-014-recurrence" className="event-form-select" value={form.recurrence} onChange={(event) => setForm((prev) => ({ ...prev, recurrence: event.target.value }))}>
+                    {FRT014_RECURRENCE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                  </select>
+                  <ChevronDown aria-hidden="true" className="forteca-frt-014-select-icon" />
+                </div>
+                {form.recurrence === 'custom' ? (
+                  <Input value={form.recurrenceCustomRule} onChange={(event) => setForm((prev) => ({ ...prev, recurrenceCustomRule: event.target.value }))} placeholder="np. FREQ=MONTHLY;BYDAY=MO" aria-label="Własna reguła cykliczności" required />
+                ) : null}
+              </div>
+              <div className="event-form-field forteca-frt-014-field">
+                <Label htmlFor="forteca-frt-014-reminder">Przypomnienie</Label>
+                <div className="forteca-frt-014-select-control">
+                  <select id="forteca-frt-014-reminder" className="event-form-select" value={form.reminderChoice} onChange={(event) => setForm((prev) => ({ ...prev, reminderChoice: event.target.value }))}>
+                    {FRT014_REMINDER_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                  </select>
+                  <ChevronDown aria-hidden="true" className="forteca-frt-014-select-icon" />
+                </div>
+                {form.reminderChoice === 'custom' ? (
+                  <Input type="datetime-local" value={form.reminderCustomAt} onChange={(event) => setForm((prev) => ({ ...prev, reminderCustomAt: event.target.value }))} aria-label="Własny termin przypomnienia" required />
+                ) : null}
+              </div>
+              <div className="event-form-field forteca-frt-014-field">
+                <Label htmlFor="forteca-frt-014-description">Notatka</Label>
+                <textarea id="forteca-frt-014-description" value={form.description} onChange={(event) => setForm((prev) => ({ ...prev, description: event.target.value }))} placeholder="Dodaj notatkę do zadania..." maxLength={4000} />
+              </div>
+              <input type="hidden" name="status" value={form.status} data-forteca-frt-014-status="todo" />
             </div>
           </div>
           <DialogFooter className={taskCreateDialogFooterClass}>
             <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>Anuluj</Button>
-            <Button type="submit" disabled={saving || workspaceLoading}>{saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Zapisz zadanie</Button>
+            <Button type="submit" disabled={saving || workspaceLoading}>{saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Dodaj zadanie</Button>
           </DialogFooter>
         </form>
       </DialogContent>

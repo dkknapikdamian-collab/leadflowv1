@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-27T21:14:17.806Z",
+  "generatedAt": "2026-08-27T22:08:01.355Z",
   "inventoryVersion": "CLOSEFLOW_UI_MAP_INVENTORY_V1",
   "scannerVersion": "CLEAN_SCANNER_V4",
   "filesScanned": 446,
@@ -272,7 +272,7 @@
       "importLine": 2,
       "usages": [
         {
-          "line": 278,
+          "line": 279,
           "snippet": "<AlertTriangle className=\"h-5 w-5\" />"
         }
       ]
@@ -285,7 +285,7 @@
       "importLine": 2,
       "usages": [
         {
-          "line": 245,
+          "line": 246,
           "snippet": "<Eye aria-hidden=\"true\" /> Podgląd <ArrowRight aria-hidden=\"true\" />"
         }
       ]
@@ -298,7 +298,7 @@
       "importLine": 2,
       "usages": [
         {
-          "line": 229,
+          "line": 230,
           "snippet": "<Check aria-hidden=\"true\" />"
         }
       ]
@@ -311,7 +311,7 @@
       "importLine": 2,
       "usages": [
         {
-          "line": 245,
+          "line": 246,
           "snippet": "<Eye aria-hidden=\"true\" /> Podgląd <ArrowRight aria-hidden=\"true\" />"
         }
       ]
@@ -324,11 +324,11 @@
       "importLine": 2,
       "usages": [
         {
-          "line": 197,
+          "line": 198,
           "snippet": "<span title=\"Dopasowania wynikają z danych bieżącego formularza i rekordów w workspace.\" aria-label=\"Informacja o dopasowaniu\"><Info /></span>"
         },
         {
-          "line": 261,
+          "line": 262,
           "snippet": "<Info aria-hidden=\"true\" />"
         }
       ]
@@ -341,7 +341,7 @@
       "importLine": 2,
       "usages": [
         {
-          "line": 168,
+          "line": 169,
           "snippet": "<span className=\"forteca-frt-013-header-icon\" aria-hidden=\"true\"><UsersRound /></span>"
         }
       ]
@@ -850,14 +850,56 @@
     },
     {
       "file": "src/components/TaskCreateDialog.tsx",
+      "imported": "CalendarDays",
+      "local": "CalendarDays",
+      "role": "event",
+      "importLine": 2,
+      "usages": [
+        {
+          "line": 306,
+          "snippet": "<CalendarDays aria-hidden=\"true\" className=\"forteca-frt-014-date-icon\" />"
+        }
+      ]
+    },
+    {
+      "file": "src/components/TaskCreateDialog.tsx",
+      "imported": "ChevronDown",
+      "local": "ChevronDown",
+      "role": "navigation",
+      "importLine": 2,
+      "usages": [
+        {
+          "line": 297,
+          "snippet": "<ChevronDown aria-hidden=\"true\" className=\"forteca-frt-014-select-icon\" />"
+        },
+        {
+          "line": 314,
+          "snippet": "<ChevronDown aria-hidden=\"true\" className=\"forteca-frt-014-time-icon\" />"
+        },
+        {
+          "line": 325,
+          "snippet": "<ChevronDown aria-hidden=\"true\" className=\"forteca-frt-014-select-icon\" />"
+        },
+        {
+          "line": 334,
+          "snippet": "<ChevronDown aria-hidden=\"true\" className=\"forteca-frt-014-select-icon\" />"
+        },
+        {
+          "line": 346,
+          "snippet": "<ChevronDown aria-hidden=\"true\" className=\"forteca-frt-014-select-icon\" />"
+        }
+      ]
+    },
+    {
+      "file": "src/components/TaskCreateDialog.tsx",
       "imported": "Loader2",
       "local": "Loader2",
       "role": "loading",
       "importLine": 2,
       "usages": [
         {
-          "line": 278,
-          "snippet": "<Button type=\"submit\" disabled={saving || workspaceLoading}>{saving ? <Loader2 className=\"mr-2 h-4 w-4 animate-spin\" /> : null}Zapisz zadanie</Button>"
+          "line": 361,
+          "snippet": "<Button type=\"submit\" disabled={saving || workspaceLoading}>{saving ? <Loader2 className=\"mr-2 h-4 w-4 animate-spin\" /> : null}Dodaj zadanie</Button>"
         }
       ]
     },
@@ -869,8 +911,21 @@
       "importLine": 2,
       "usages": [
         {
-          "line": 106,
+          "line": 110,
           "snippet": "{isSelected ? <Check className=\"mt-0.5 h-4 w-4 shrink-0 text-emerald-600\" /> : null}"
+        }
+      ]
+    },
+    {
+      "file": "src/components/topic-contact-picker.tsx",
+      "imported": "ChevronDown",
+      "local": "ChevronDown",
+      "role": "navigation",
+      "importLine": 2,
+      "usages": [
+        {
+          "line": 74,
+          "snippet": "{isFortecaSelect ? <ChevronDown className=\"cf-topic-contact-picker-chevron pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400\" aria-hidden=\"true\" /> : null}"
         }
       ]
     },
@@ -5573,6 +5628,13 @@
         "usageCount": 0
       },
       {
+        "file": "src/components/TaskCreateDialog.tsx",
+        "icon": "CalendarDays",
+        "local": "CalendarDays",
+        "importLine": 2,
+        "usageCount": 1
+      },
+      {
         "file": "src/components/ui-system/action-icon-registry.ts",
         "icon": "Calendar",
         "local": "Calendar",
@@ -7117,6 +7179,20 @@
         "icon": "ChevronRight",
         "local": "ChevronRight",
         "importLine": 3,
+        "usageCount": 1
+      },
+      {
+        "file": "src/components/TaskCreateDialog.tsx",
+        "icon": "ChevronDown",
+        "local": "ChevronDown",
+        "importLine": 2,
+        "usageCount": 5
+      },
+      {
+        "file": "src/components/topic-contact-picker.tsx",
+        "icon": "ChevronDown",
+        "local": "ChevronDown",
+        "importLine": 2,
         "usageCount": 1
       },
       {
@@ -10293,13 +10369,13 @@
     },
     {
       "file": "src/components/EntityConflictDialog.tsx",
-      "line": 224,
+      "line": 225,
       "classes": [],
       "snippet": "<div><dt>Ostatni kontakt</dt><dd>{formatDate(candidate.lastContactAt || candidate.last_contact_at)}</dd></div>"
     },
     {
       "file": "src/components/EntityConflictDialog.tsx",
-      "line": 260,
+      "line": 261,
       "classes": [
         "forteca-frt-013-info-callout"
       ],
@@ -10307,7 +10383,7 @@
     },
     {
       "file": "src/components/EntityConflictDialog.tsx",
-      "line": 299,
+      "line": 300,
       "classes": [],
       "snippet": "{candidate.hiddenReason === 'service_history' ? <p className=\"mt-2 text-xs text-slate-500\">Ten rekord wygląda na przeniesiony do obsługi lub historii. Najbezpieczniej najpierw go otworzyć.</p> : null}"
     },
@@ -25910,7 +25986,7 @@
     },
     {
       "file": "src/components/EntityConflictDialog.tsx",
-      "line": 166,
+      "line": 167,
       "classes": [
         "forteca-frt-013-header"
       ],
@@ -25918,7 +25994,7 @@
     },
     {
       "file": "src/components/EntityConflictDialog.tsx",
-      "line": 167,
+      "line": 168,
       "classes": [
         "forteca-frt-013-header-inner"
       ],
@@ -25926,7 +26002,7 @@
     },
     {
       "file": "src/components/EntityConflictDialog.tsx",
-      "line": 168,
+      "line": 169,
       "classes": [
         "forteca-frt-013-header-icon"
       ],
@@ -25934,7 +26010,7 @@
     },
     {
       "file": "src/components/EntityConflictDialog.tsx",
-      "line": 169,
+      "line": 170,
       "classes": [
         "forteca-frt-013-header-copy"
       ],
@@ -25942,7 +26018,7 @@
     },
     {
       "file": "src/components/EntityConflictDialog.tsx",
-      "line": 181,
+      "line": 182,
       "classes": [
         "forteca-frt-013-draft-card"
       ],
@@ -25950,7 +26026,7 @@
     },
     {
       "file": "src/components/EntityConflictDialog.tsx",
-      "line": 183,
+      "line": 184,
       "classes": [
         "forteca-frt-013-draft-grid"
       ],
@@ -25958,7 +26034,7 @@
     },
     {
       "file": "src/components/EntityConflictDialog.tsx",
-      "line": 195,
+      "line": 196,
       "classes": [
         "forteca-frt-013-section-heading"
       ],
@@ -25966,7 +26042,7 @@
     },
     {
       "file": "src/components/EntityConflictDialog.tsx",
-      "line": 250,
+      "line": 251,
       "classes": [
         "forteca-frt-013-preview-panel"
       ],
@@ -26411,30 +26487,19 @@
     },
     {
       "file": "src/components/TaskCreateDialog.tsx",
-      "line": 235,
+      "line": 260,
       "classes": [
-        "event-form-grid",
-        "event-form-grid-2"
+        "forteca-frt-014-header"
       ],
-      "snippet": "<div className=\"event-form-grid event-form-grid-2\">"
+      "snippet": "<DialogHeader className=\"forteca-frt-014-header\">"
     },
     {
       "file": "src/components/TaskCreateDialog.tsx",
-      "line": 247,
+      "line": 300,
       "classes": [
-        "event-form-grid",
-        "event-form-grid-2"
+        "forteca-frt-014-date-time-grid"
       ],
-      "snippet": "<div className=\"event-form-grid event-form-grid-2\">"
-    },
-    {
-      "file": "src/components/TaskCreateDialog.tsx",
-      "line": 262,
-      "classes": [
-        "event-form-grid",
-        "event-form-grid-2"
-      ],
-      "snippet": "<div className=\"event-form-grid event-form-grid-2\">"
+      "snippet": "<div className=\"forteca-frt-014-date-time-grid\">"
     },
     {
       "file": "src/components/TodayAiAssistant.tsx",
