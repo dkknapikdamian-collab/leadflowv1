@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-27T15:55:20.785Z",
+  "generatedAt": "2026-08-27T18:29:29.339Z",
   "inventoryVersion": "CLOSEFLOW_UI_MAP_INVENTORY_V1",
   "scannerVersion": "CLEAN_SCANNER_V4",
   "filesScanned": 446,
@@ -341,7 +341,7 @@
       "importLine": 10,
       "usages": [
         {
-          "line": 688,
+          "line": 704,
           "snippet": "<AlertTriangle className=\"h-4 w-4 shrink-0\" />"
         }
       ]
@@ -378,7 +378,7 @@
       "importLine": 10,
       "usages": [
         {
-          "line": 673,
+          "line": 689,
           "snippet": "<CheckCircle2 className=\"h-4 w-4\" />"
         }
       ]
@@ -452,11 +452,11 @@
       "importLine": 10,
       "usages": [
         {
-          "line": 604,
+          "line": 620,
           "snippet": "<LogOut className=\"h-4 w-4\" />"
         },
         {
-          "line": 656,
+          "line": 672,
           "snippet": "<LogOut className=\"h-4 w-4\" />"
         }
       ]
@@ -469,7 +469,7 @@
       "importLine": 10,
       "usages": [
         {
-          "line": 616,
+          "line": 632,
           "snippet": "<Menu className=\"h-6 w-6\" />"
         }
       ]
@@ -506,7 +506,7 @@
       "importLine": 10,
       "usages": [
         {
-          "line": 633,
+          "line": 649,
           "snippet": "<X className=\"h-5 w-5\" />"
         }
       ]
@@ -2789,11 +2789,15 @@
       "importLine": 49,
       "usages": [
         {
-          "line": 2406,
+          "line": 2448,
           "snippet": "<ArrowLeft className=\"h-4 w-4\" />"
         },
         {
-          "line": 2422,
+          "line": 2464,
+          "snippet": "<ArrowLeft className=\"h-4 w-4\" />"
+        },
+        {
+          "line": 2499,
           "snippet": "<ArrowLeft className=\"h-4 w-4\" />"
         }
       ]
@@ -2806,8 +2810,62 @@
       "importLine": 49,
       "usages": [
         {
-          "line": 2495,
+          "line": 2572,
           "snippet": "Otwórz sprawę <ArrowRight className=\"h-4 w-4\" />"
+        },
+        {
+          "line": 2587,
+          "snippet": "Otwórz sprawę <ArrowRight className=\"h-4 w-4\" />"
+        },
+        {
+          "line": 2778,
+          "snippet": "<><p className=\"forteca-lead-detail-summary-copy\">Lead jest już połączony ze sprawą <strong>{serviceCaseTitle}</strong>.</p><button type=\"button\" className=\"forteca-lead-detail-primary-action\" onClick={openCase} disabled={!serviceCaseId}>Otwórz sprawę <ArrowRight className=\"h-4 w-4\" /></button></>"
+        },
+        {
+          "line": 2780,
+          "snippet": "<><p className=\"forteca-lead-detail-summary-copy\">Gdy zakres i warunki są potwierdzone, utwórz sprawę i przenieś dalszą pracę do realizacji.</p><button type=\"button\" className=\"forteca-lead-detail-primary-action\" onClick={() => setIsCreateCaseOpen(true)} disabled={!hasAccess}>Rozpocznij obsługę <ArrowRight className=\"h-4 w-4\" /></button></>"
+        }
+      ]
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "imported": "Building2",
+      "local": "Building2",
+      "role": "company_property",
+      "importLine": 49,
+      "usages": [
+        {
+          "line": 2661,
+          "snippet": "<Building2 className=\"forteca-lead-detail-card-icon\" aria-hidden=\"true\" />"
+        },
+        {
+          "line": 2775,
+          "snippet": "<Building2 className=\"forteca-lead-detail-card-icon\" aria-hidden=\"true\" />"
+        },
+        {
+          "line": 2797,
+          "snippet": "<button type=\"button\" className=\"forteca-lead-detail-action forteca-lead-detail-action--case\" onClick={() => leadInService ? openCase() : setIsCreateCaseOpen(true)} disabled={!hasAccess && !serviceCaseId}><span><Building2 className=\"h-4 w-4\" /></span>{leadInService ? 'Otwórz sprawę' : 'Przenieś do sprawy'}</button>"
+        }
+      ]
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "imported": "CalendarDays",
+      "local": "CalendarDays",
+      "role": "event",
+      "importLine": 49,
+      "usages": [
+        {
+          "line": 2677,
+          "snippet": "<CalendarDays className=\"forteca-lead-detail-card-icon\" aria-hidden=\"true\" />"
+        },
+        {
+          "line": 2741,
+          "snippet": "<CalendarDays className=\"forteca-lead-detail-card-icon\" aria-hidden=\"true\" />"
+        },
+        {
+          "line": 2795,
+          "snippet": "<button type=\"button\" className=\"forteca-lead-detail-action forteca-lead-detail-action--event\" onClick={handleCreateQuickEvent} disabled={!hasAccess || leadOperationalArchive}><span><CalendarDays className=\"h-4 w-4\" /></span>Spotkanie</button>"
         }
       ]
     },
@@ -2819,24 +2877,53 @@
       "importLine": 49,
       "usages": [
         {
-          "line": 1687,
+          "line": 1729,
           "snippet": "<CheckCircle2 className=\"h-4 w-4\" /> Kontakt wykonany"
         },
         {
-          "line": 2729,
+          "line": 2681,
+          "snippet": "<span className=\"forteca-lead-detail-next-step-icon\"><CheckCircle2 className=\"h-5 w-5\" /></span>"
+        },
+        {
+          "line": 2766,
+          "snippet": "<button type=\"button\" className=\"forteca-lead-detail-secondary-action\" onClick={() => handleUpdateStatus('proposal_sent')} disabled={!hasAccess || leadInService}><CheckCircle2 className=\"h-4 w-4\" />Oznacz ofertę wysłaną</button>"
+        },
+        {
+          "line": 2794,
+          "snippet": "<button type=\"button\" className=\"forteca-lead-detail-action forteca-lead-detail-action--task\" onClick={handleCreateQuickTask} disabled={!hasAccess || leadOperationalArchive}><span><CheckCircle2 className=\"h-4 w-4\" /></span>Ustaw follow-up</button>"
+        },
+        {
+          "line": 3051,
           "snippet": "<span className=\"lead-detail-work-row__icon lead-detail-work-icon\">{isMissingItemTimelineEntry(entry) ? <SemanticIcon role=\"risk_alert\" size=\"sm\" /> : entry.kind === 'task' ? <CheckCircle2 className=\"h-4 w-4\" /> : <EntityIcon entity=\"event\" className=\"h-4 w-4\" />}</span>"
         },
         {
-          "line": 2795,
+          "line": 3117,
           "snippet": "icon: <CheckCircle2 className=\"h-4 w-4\" />,"
         },
         {
-          "line": 2824,
+          "line": 3146,
           "snippet": "<span className=\"lead-detail-work-row__icon lead-detail-work-icon\">{isMissingItemTimelineEntry(entry) ? <SemanticIcon role=\"risk_alert\" size=\"sm\" /> : entry.kind === 'task' ? <CheckCircle2 className=\"h-4 w-4\" /> : <EntityIcon entity=\"event\" className=\"h-4 w-4\" />}</span>"
         },
         {
-          "line": 2941,
+          "line": 3263,
           "snippet": "icon: <CheckCircle2 className=\"h-4 w-4\" />,"
+        }
+      ]
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "imported": "ChevronRight",
+      "local": "ChevronRight",
+      "role": "navigation",
+      "importLine": 49,
+      "usages": [
+        {
+          "line": 2687,
+          "snippet": "Otwórz <ChevronRight className=\"h-4 w-4\" />"
+        },
+        {
+          "line": 2817,
+          "snippet": "{leadActivityHistoryItems.length ? <button type=\"button\" className=\"forteca-lead-detail-link-action\" onClick={() => setActiveLeadDetailTab('activity')}>Zobacz całą aktywność <ChevronRight className=\"h-4 w-4\" /></button> : null}"
         }
       ]
     },
@@ -2848,31 +2935,43 @@
       "importLine": 49,
       "usages": [
         {
-          "line": 1693,
+          "line": 1735,
           "snippet": "<Clock className=\"h-4 w-4\" /> Oznacz waiting"
         },
         {
-          "line": 2561,
+          "line": 2707,
+          "snippet": "<Clock className=\"forteca-lead-detail-card-icon\" aria-hidden=\"true\" />"
+        },
+        {
+          "line": 2722,
+          "snippet": "<Clock className=\"forteca-lead-detail-card-icon\" aria-hidden=\"true\" />"
+        },
+        {
+          "line": 2798,
+          "snippet": "<button type=\"button\" className=\"forteca-lead-detail-action forteca-lead-detail-action--missing\" onClick={() => openLeadContextAction('blocker')} disabled={!hasAccess}><span><Clock className=\"h-4 w-4\" /></span>Brak</button>"
+        },
+        {
+          "line": 2883,
           "snippet": "<div className=\"lead-detail-card-title-row\"><Clock className=\"h-4 w-4\" /><h2>Historia aktywności</h2></div>"
         },
         {
-          "line": 2571,
+          "line": 2893,
           "snippet": "<span className=\"lead-detail-history-dot\"><Clock className=\"h-4 w-4\" /></span>"
         },
         {
-          "line": 2588,
+          "line": 2910,
           "snippet": "<span className=\"lead-detail-history-dot\"><Clock className=\"h-4 w-4\" /></span>"
         },
         {
-          "line": 2630,
+          "line": 2952,
           "snippet": "<div className=\"lead-detail-card-title-row\"><Clock className=\"h-4 w-4\" /><h2>Następny krok</h2></div>"
         },
         {
-          "line": 2777,
+          "line": 3099,
           "snippet": "icon: <Clock className=\"h-4 w-4\" />,"
         },
         {
-          "line": 2898,
+          "line": 3220,
           "snippet": "<span className=\"lead-detail-history-dot\"><Clock className=\"h-4 w-4\" /></span>"
         }
       ]
@@ -2885,11 +2984,15 @@
       "importLine": 49,
       "usages": [
         {
-          "line": 2651,
+          "line": 2761,
+          "snippet": "<DollarSign className=\"forteca-lead-detail-card-icon\" aria-hidden=\"true\" />"
+        },
+        {
+          "line": 2973,
           "snippet": "<div className=\"lead-detail-card-title-row\"><DollarSign className=\"h-4 w-4\" /><h2>Potencjał</h2></div>"
         },
         {
-          "line": 2986,
+          "line": 3308,
           "snippet": "<div className=\"lead-detail-card-title-row\"><DollarSign className=\"h-4 w-4\" /><h2>Finanse leada</h2></div>"
         }
       ]
@@ -2902,7 +3005,15 @@
       "importLine": 49,
       "usages": [
         {
-          "line": 2516,
+          "line": 2491,
+          "snippet": "<Edit2 className=\"h-4 w-4\" />"
+        },
+        {
+          "line": 2765,
+          "snippet": "<button type=\"button\" className=\"forteca-lead-detail-secondary-action\" onClick={handleStartPotentialEditingStage231G} disabled={!hasAccess}><Edit2 className=\"h-4 w-4\" />Edytuj wartość</button>"
+        },
+        {
+          "line": 2838,
           "snippet": "<Edit2 className=\"h-4 w-4\" />"
         }
       ]
@@ -2915,7 +3026,7 @@
       "importLine": 49,
       "usages": [
         {
-          "line": 2389,
+          "line": 2431,
           "snippet": "<Loader2 className=\"h-5 w-5 animate-spin\" />"
         }
       ]
@@ -2928,8 +3039,12 @@
       "importLine": 49,
       "usages": [
         {
-          "line": 1690,
+          "line": 1732,
           "snippet": "<Mail className=\"h-4 w-4\" /> Oferta wysłana"
+        },
+        {
+          "line": 2796,
+          "snippet": "<button type=\"button\" className=\"forteca-lead-detail-action forteca-lead-detail-action--offer\" onClick={() => handleUpdateStatus('proposal_sent')} disabled={!hasAccess || leadOperationalArchive}><span><Mail className=\"h-4 w-4\" /></span>Oferta wysłana</button>"
         }
       ]
     },
@@ -2941,11 +3056,11 @@
       "importLine": 49,
       "usages": [
         {
-          "line": 2887,
+          "line": 3209,
           "snippet": "{noteListening ? <MicOff className=\"h-4 w-4\" /> : <Mic className=\"h-4 w-4\" />}"
         },
         {
-          "line": 3198,
+          "line": 3520,
           "snippet": "{noteListening ? <MicOff className=\"h-4 w-4\" /> : <Mic className=\"h-4 w-4\" />}"
         }
       ]
@@ -2958,11 +3073,11 @@
       "importLine": 49,
       "usages": [
         {
-          "line": 2887,
+          "line": 3209,
           "snippet": "{noteListening ? <MicOff className=\"h-4 w-4\" /> : <Mic className=\"h-4 w-4\" />}"
         },
         {
-          "line": 3198,
+          "line": 3520,
           "snippet": "{noteListening ? <MicOff className=\"h-4 w-4\" /> : <Mic className=\"h-4 w-4\" />}"
         }
       ]
@@ -2973,7 +3088,12 @@
       "local": "MoreVertical",
       "role": "unclassified",
       "importLine": 49,
-      "usages": []
+      "usages": [
+        {
+          "line": 2481,
+          "snippet": "<MoreVertical className=\"h-5 w-5\" />"
+        }
+      ]
     },
     {
       "file": "src/pages/LeadDetail.tsx",
@@ -2983,8 +3103,16 @@
       "importLine": 49,
       "usages": [
         {
-          "line": 1681,
+          "line": 1723,
           "snippet": "<Phone className=\"h-4 w-4\" /> Dodaj zadanie"
+        },
+        {
+          "line": 2793,
+          "snippet": "{lead?.phone ? <a className=\"forteca-lead-detail-action forteca-lead-detail-action--phone\" href={`tel:${String(lead.phone)}`}><span><Phone className=\"h-4 w-4\" /></span>Zadzwoń</a> : <button type=\"button\" className=\"forteca-lead-detail-action\" disabled><span><Phone className=\"h-4 w-4\" /></span>Brak telefonu</button>}"
+        },
+        {
+          "line": 2793,
+          "snippet": "{lead?.phone ? <a className=\"forteca-lead-detail-action forteca-lead-detail-action--phone\" href={`tel:${String(lead.phone)}`}><span><Phone className=\"h-4 w-4\" /></span>Zadzwoń</a> : <button type=\"button\" className=\"forteca-lead-detail-action\" disabled><span><Phone className=\"h-4 w-4\" /></span>Brak telefonu</button>}"
         }
       ]
     },
@@ -2996,8 +3124,50 @@
       "importLine": 49,
       "usages": [
         {
-          "line": 2875,
+          "line": 2696,
           "snippet": "<Plus className=\"h-4 w-4\" />"
+        },
+        {
+          "line": 2711,
+          "snippet": "<Plus className=\"h-4 w-4\" />"
+        },
+        {
+          "line": 2753,
+          "snippet": "<button type=\"button\" className=\"forteca-lead-detail-secondary-action\" onClick={handleCreateQuickTask} disabled={!hasAccess || leadOperationalArchive}><Plus className=\"h-4 w-4\" />Dodaj follow-up</button>"
+        },
+        {
+          "line": 2792,
+          "snippet": "<button type=\"button\" className=\"forteca-lead-detail-action forteca-lead-detail-action--note\" onClick={() => setIsAddNoteOpen(true)} disabled={!hasAccess || leadInService}><span><Plus className=\"h-4 w-4\" /></span>Dodaj notatkę</button>"
+        },
+        {
+          "line": 3197,
+          "snippet": "<Plus className=\"h-4 w-4\" />"
+        }
+      ]
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "imported": "Star",
+      "local": "Star",
+      "role": "unclassified",
+      "importLine": 49,
+      "usages": [
+        {
+          "line": 2470,
+          "snippet": "<Star className=\"forteca-lead-detail-title-star\" aria-hidden=\"true\" />"
+        }
+      ]
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "imported": "UserRound",
+      "local": "UserRound",
+      "role": "person",
+      "importLine": 49,
+      "usages": [
+        {
+          "line": 2805,
+          "snippet": "<UserRound className=\"forteca-lead-detail-card-icon\" aria-hidden=\"true\" />"
         }
       ]
     },
@@ -3009,7 +3179,7 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 2263,
+          "line": 2756,
           "snippet": "<span className=\"lead-risk-reason-icon\" data-cf-status-tone=\"red\" aria-hidden=\"true\"><AlertTriangle className=\"h-4 w-4\" /></span>"
         }
       ]
@@ -3024,17 +3194,34 @@
     },
     {
       "file": "src/pages/Leads.tsx",
+      "imported": "CalendarDays",
+      "local": "CalendarDays",
+      "role": "event",
+      "importLine": 16,
+      "usages": [
+        {
+          "line": 2354,
+          "snippet": "<span className=\"leads-trash-summary-icon is-blue\" aria-hidden=\"true\"><CalendarDays className=\"h-4 w-4\" /></span>"
+        }
+      ]
+    },
+    {
+      "file": "src/pages/Leads.tsx",
       "imported": "ChevronLeft",
       "local": "ChevronLeft",
       "role": "navigation",
       "importLine": 16,
       "usages": [
         {
-          "line": 2117,
+          "line": 2472,
           "snippet": "<ChevronLeft className=\"h-4 w-4\" />"
         },
         {
-          "line": 2426,
+          "line": 2610,
+          "snippet": "<ChevronLeft className=\"h-4 w-4\" />"
+        },
+        {
+          "line": 2919,
           "snippet": "<ChevronLeft className=\"h-4 w-4\" />"
         }
       ]
@@ -3047,19 +3234,23 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1607,
+          "line": 1856,
           "snippet": "<ChevronRight className=\"h-4 w-4\" />"
         },
         {
-          "line": 2121,
+          "line": 2482,
           "snippet": "<ChevronRight className=\"h-4 w-4\" />"
         },
         {
-          "line": 2386,
+          "line": 2614,
           "snippet": "<ChevronRight className=\"h-4 w-4\" />"
         },
         {
-          "line": 2436,
+          "line": 2879,
+          "snippet": "<ChevronRight className=\"h-4 w-4\" />"
+        },
+        {
+          "line": 2929,
           "snippet": "<ChevronRight className=\"h-4 w-4\" />"
         }
       ]
@@ -3072,11 +3263,15 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1550,
+          "line": 1799,
           "snippet": "<span className=\"leads-rescue-summary-metric-icon is-amber\" aria-hidden=\"true\"><Clock3 className=\"h-4 w-4\" /></span>"
         },
         {
-          "line": 2286,
+          "line": 2362,
+          "snippet": "<span className=\"leads-trash-summary-icon is-amber\" aria-hidden=\"true\"><Clock3 className=\"h-4 w-4\" /></span>"
+        },
+        {
+          "line": 2779,
           "snippet": "<Clock3 className=\"h-4 w-4\" />"
         }
       ]
@@ -3089,7 +3284,7 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1873,
+          "line": 2167,
           "snippet": "<Filter className=\"h-4 w-4\" />"
         }
       ]
@@ -3102,8 +3297,12 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1467,
+          "line": 1716,
           "snippet": "<span className=\"leads-active-process-icon\" aria-hidden=\"true\"><Info className=\"h-4 w-4\" /></span>"
+        },
+        {
+          "line": 2336,
+          "snippet": "<span className=\"leads-trash-retention-icon\" aria-hidden=\"true\"><Info className=\"h-4 w-4\" /></span>"
         }
       ]
     },
@@ -3115,19 +3314,27 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 2015,
+          "line": 2389,
           "snippet": "<span className=\"index\"><Loader2 className=\"h-4 w-4 animate-spin\" /></span>"
         },
         {
-          "line": 2097,
+          "line": 2442,
+          "snippet": "{archivePendingId === leadId ? <Loader2 className=\"h-4 w-4 animate-spin\" /> : <RotateCcw className=\"h-4 w-4\" />}"
+        },
+        {
+          "line": 2508,
+          "snippet": "<span className=\"index\"><Loader2 className=\"h-4 w-4 animate-spin\" /></span>"
+        },
+        {
+          "line": 2590,
           "snippet": "{pending ? <Loader2 className=\"h-4 w-4 animate-spin\" /> : <MoreHorizontal className=\"h-4 w-4\" />}"
         },
         {
-          "line": 2182,
+          "line": 2675,
           "snippet": "<span className=\"index\"><Loader2 className=\"h-4 w-4 animate-spin\" /></span>"
         },
         {
-          "line": 2396,
+          "line": 2889,
           "snippet": "{pending ? <Loader2 className=\"h-4 w-4 animate-spin\" /> : showTrash ? <RotateCcw className=\"h-4 w-4\" /> : <DeleteActionIcon className=\"h-4 w-4\" />}"
         }
       ]
@@ -3148,7 +3355,7 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 2097,
+          "line": 2590,
           "snippet": "{pending ? <Loader2 className=\"h-4 w-4 animate-spin\" /> : <MoreHorizontal className=\"h-4 w-4\" />}"
         }
       ]
@@ -3161,7 +3368,7 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1262,
+          "line": 1499,
           "snippet": "<Plus className=\"h-4 w-4\" />"
         }
       ]
@@ -3174,7 +3381,7 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1544,
+          "line": 1793,
           "snippet": "<span className=\"leads-rescue-summary-metric-icon is-blue\" aria-hidden=\"true\"><PhoneCall className=\"h-4 w-4\" /></span>"
         }
       ]
@@ -3187,8 +3394,12 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1537,
+          "line": 1786,
           "snippet": "<span className=\"leads-rescue-summary-icon\" aria-hidden=\"true\"><RefreshCw className=\"h-5 w-5\" /></span>"
+        },
+        {
+          "line": 2370,
+          "snippet": "<span className=\"leads-trash-summary-icon is-green\" aria-hidden=\"true\"><RefreshCw className=\"h-4 w-4\" /></span>"
         }
       ]
     },
@@ -3200,11 +3411,15 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1275,
+          "line": 1522,
           "snippet": "{showTrash ? <RotateCcw className=\"h-4 w-4\" /> : <DeleteActionIcon className=\"h-4 w-4\" />}"
         },
         {
-          "line": 2396,
+          "line": 2442,
+          "snippet": "{archivePendingId === leadId ? <Loader2 className=\"h-4 w-4 animate-spin\" /> : <RotateCcw className=\"h-4 w-4\" />}"
+        },
+        {
+          "line": 2889,
           "snippet": "{pending ? <Loader2 className=\"h-4 w-4 animate-spin\" /> : showTrash ? <RotateCcw className=\"h-4 w-4\" /> : <DeleteActionIcon className=\"h-4 w-4\" />}"
         }
       ]
@@ -3217,7 +3432,7 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1585,
+          "line": 1834,
           "snippet": "<span aria-hidden=\"true\"><Search className=\"w-4 h-4\" /></span>"
         }
       ]
@@ -3230,7 +3445,7 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1556,
+          "line": 1805,
           "snippet": "<span className=\"leads-rescue-summary-metric-icon is-green\" aria-hidden=\"true\"><TrendingUp className=\"h-4 w-4\" /></span>"
         }
       ]
@@ -3251,16 +3466,28 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1476,
+          "line": 1725,
           "snippet": "<X className=\"h-4 w-4\" />"
         },
         {
-          "line": 1631,
+          "line": 1880,
           "snippet": "<X className=\"h-3.5 w-3.5\" aria-hidden=\"true\" />"
         },
         {
-          "line": 1818,
+          "line": 2112,
           "snippet": "<X className=\"h-3.5 w-3.5\" aria-hidden=\"true\" />"
+        },
+        {
+          "line": 2191,
+          "snippet": "<button type=\"button\" className=\"pill\" onClick={() => setTrashReasonFilter('')}>Powód: {trashReasonFilter} <X className=\"h-3 w-3\" aria-hidden=\"true\" /></button>"
+        },
+        {
+          "line": 2194,
+          "snippet": "<button type=\"button\" className=\"pill\" onClick={() => setTrashDeletedPeriodFilter('all')}>Usunięto: {trashDeletedPeriodFilter === '30' ? '30 dni' : trashDeletedPeriodFilter === '90' ? '31–90 dni' : 'ponad 90 dni'} <X className=\"h-3 w-3\" aria-hidden=\"true\" /></button>"
+        },
+        {
+          "line": 2197,
+          "snippet": "<button type=\"button\" className=\"pill\" onClick={() => setTrashRetentionFilter('all')}>{trashRetentionFilter === 'known' ? 'Termin zapisany' : 'Brak terminu'} <X className=\"h-3 w-3\" aria-hidden=\"true\" /></button>"
         }
       ]
     },
@@ -5247,6 +5474,20 @@
         "usageCount": 3
       },
       {
+        "file": "src/pages/LeadDetail.tsx",
+        "icon": "CalendarDays",
+        "local": "CalendarDays",
+        "importLine": 49,
+        "usageCount": 3
+      },
+      {
+        "file": "src/pages/Leads.tsx",
+        "icon": "CalendarDays",
+        "local": "CalendarDays",
+        "importLine": 16,
+        "usageCount": 1
+      },
+      {
         "file": "src/pages/Login.tsx",
         "icon": "CalendarDays",
         "local": "CalendarDays",
@@ -5519,7 +5760,7 @@
         "icon": "CheckCircle2",
         "local": "CheckCircle2",
         "importLine": 49,
-        "usageCount": 5
+        "usageCount": 8
       },
       {
         "file": "src/pages/Login.tsx",
@@ -5668,7 +5909,7 @@
         "icon": "DollarSign",
         "local": "DollarSign",
         "importLine": 49,
-        "usageCount": 2
+        "usageCount": 3
       },
       {
         "file": "src/pages/Leads.tsx",
@@ -5826,7 +6067,7 @@
         "icon": "Edit2",
         "local": "Edit2",
         "importLine": 49,
-        "usageCount": 1
+        "usageCount": 3
       },
       {
         "file": "src/ui-system/icons/SemanticIcon.tsx",
@@ -6082,7 +6323,7 @@
         "icon": "Loader2",
         "local": "Loader2",
         "importLine": 16,
-        "usageCount": 4
+        "usageCount": 6
       },
       {
         "file": "src/pages/Login.tsx",
@@ -6396,7 +6637,7 @@
         "icon": "Mail",
         "local": "Mail",
         "importLine": 49,
-        "usageCount": 1
+        "usageCount": 2
       },
       {
         "file": "src/pages/Leads.tsx",
@@ -6496,14 +6737,14 @@
         "icon": "RefreshCw",
         "local": "RefreshCw",
         "importLine": 16,
-        "usageCount": 1
+        "usageCount": 2
       },
       {
         "file": "src/pages/Leads.tsx",
         "icon": "RotateCcw",
         "local": "RotateCcw",
         "importLine": 16,
-        "usageCount": 2
+        "usageCount": 3
       },
       {
         "file": "src/pages/NotificationsCenter.tsx",
@@ -6601,6 +6842,13 @@
         "usageCount": 0
       },
       {
+        "file": "src/pages/LeadDetail.tsx",
+        "icon": "Building2",
+        "local": "Building2",
+        "importLine": 49,
+        "usageCount": 3
+      },
+      {
         "file": "src/pages/Settings.tsx",
         "icon": "Building2",
         "local": "Building2",
@@ -6635,7 +6883,7 @@
         "icon": "Phone",
         "local": "Phone",
         "importLine": 49,
-        "usageCount": 1
+        "usageCount": 3
       },
       {
         "file": "src/pages/Leads.tsx",
@@ -6819,28 +7067,35 @@
         "icon": "ArrowLeft",
         "local": "ArrowLeft",
         "importLine": 49,
-        "usageCount": 2
+        "usageCount": 3
       },
       {
         "file": "src/pages/LeadDetail.tsx",
         "icon": "ArrowRight",
         "local": "ArrowRight",
         "importLine": 49,
-        "usageCount": 1
+        "usageCount": 4
+      },
+      {
+        "file": "src/pages/LeadDetail.tsx",
+        "icon": "ChevronRight",
+        "local": "ChevronRight",
+        "importLine": 49,
+        "usageCount": 2
       },
       {
         "file": "src/pages/Leads.tsx",
         "icon": "ChevronLeft",
         "local": "ChevronLeft",
         "importLine": 16,
-        "usageCount": 2
+        "usageCount": 3
       },
       {
         "file": "src/pages/Leads.tsx",
         "icon": "ChevronRight",
         "local": "ChevronRight",
         "importLine": 16,
-        "usageCount": 4
+        "usageCount": 5
       },
       {
         "file": "src/pages/Login.tsx",
@@ -6975,7 +7230,7 @@
         "icon": "Plus",
         "local": "Plus",
         "importLine": 49,
-        "usageCount": 1
+        "usageCount": 5
       },
       {
         "file": "src/pages/Leads.tsx",
@@ -7324,7 +7579,14 @@
         "icon": "MoreVertical",
         "local": "MoreVertical",
         "importLine": 49,
-        "usageCount": 0
+        "usageCount": 1
+      },
+      {
+        "file": "src/pages/LeadDetail.tsx",
+        "icon": "Star",
+        "local": "Star",
+        "importLine": 49,
+        "usageCount": 1
       },
       {
         "file": "src/pages/Leads.tsx",
@@ -7338,7 +7600,7 @@
         "icon": "Info",
         "local": "Info",
         "importLine": 16,
-        "usageCount": 1
+        "usageCount": 2
       },
       {
         "file": "src/pages/Leads.tsx",
@@ -7660,6 +7922,13 @@
         "usageCount": 2
       },
       {
+        "file": "src/pages/LeadDetail.tsx",
+        "icon": "UserRound",
+        "local": "UserRound",
+        "importLine": 49,
+        "usageCount": 1
+      },
+      {
         "file": "src/pages/Login.tsx",
         "icon": "User",
         "local": "User",
@@ -7771,7 +8040,7 @@
         "icon": "X",
         "local": "X",
         "importLine": 16,
-        "usageCount": 3
+        "usageCount": 6
       },
       {
         "file": "src/server/_portal-token.ts",
@@ -8033,14 +8302,14 @@
         "icon": "Clock",
         "local": "Clock",
         "importLine": 49,
-        "usageCount": 7
+        "usageCount": 10
       },
       {
         "file": "src/pages/Leads.tsx",
         "icon": "Clock3",
         "local": "Clock3",
         "importLine": 16,
-        "usageCount": 2
+        "usageCount": 3
       },
       {
         "file": "src/pages/NotificationsCenter.tsx",
@@ -8221,25 +8490,25 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1483,
+      "line": 1732,
       "component": "StatShortcutCard",
       "snippet": "<StatShortcutCard\n              label=\"Wszystkie\"\n              value={stats.total}\n              icon={LeadEntityIcon}\n              active={quickFilter === 'all' && !valueSortEnabled && !showTrash}\n              onClick={() => { setShowTrash(false); setQuickFilter('all'); setRiskFilter('all'); setValueSortEnabled(false); }}\n              title=\"Pokaż wszystkie leady\"\n              ariaLabel=\"Pokaż wszystkie leady\"\n              helper=\"Wszystkie leady\"\n            />\n\n            <StatShortcutCard"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1494,
+      "line": 1743,
       "component": "StatShortcutCard",
       "snippet": "<StatShortcutCard\n              label=\"Aktywne\"\n              value={stats.active}\n              icon={Activity}\n              active={quickFilter === 'active' && !showTrash}\n              onClick={() => toggleQuickFilter('active')}\n              title=\"Pokaż aktywne leady\"\n              ariaLabel=\"Pokaż aktywne leady\"\n              valueClassName=\"text-slate-900\"\n              iconClassName=\"bg-blue-50 text-blue-500\"\n              helper={activeView ? 'W trakcie sprzedaży' : 'Obecnie w procesie'}\n            />"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1507,
+      "line": 1756,
       "component": "StatShortcutCard",
       "snippet": "<StatShortcutCard\n              label=\"Wartość\"\n              value={`${stats.value.toLocaleString('pl-PL')} PLN`}\n              icon={Wallet}\n              active={valueSortEnabled && !showTrash}\n              onClick={toggleValueSorting}\n              title=\"Sortuj leady po wartości\"\n              ariaLabel=\"Sortuj leady po wartości\"\n              helper={valueSortEnabled ? 'Sortowanie aktywne' : 'Suma wartości aktywnych leadów'}\n            />\n\n            <StatShortcutCard"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1518,
+      "line": 1767,
       "component": "StatShortcutCard",
       "snippet": "<StatShortcutCard\n              label=\"Zagrożone\"\n              value={stats.atRisk}\n              icon={AlertTriangle}\n              active={quickFilter === 'at-risk' && !showTrash}\n              onClick={() => toggleQuickFilter('at-risk')}\n              title=\"Pokaż zagrożone leady\"\n              ariaLabel=\"Pokaż zagrożone leady\"\n              tone=\"risk\"\n              helper={riskView ? `${stats.atRisk} ${stats.atRisk === 1 ? 'lead wymaga' : stats.atRisk >= 2 && stats.atRisk <= 4 ? 'leady wymagają' : 'leadów wymaga'} natychmiastowego ruchu` : 'Leady wymagające uwagi'}\n            />"
     },
@@ -8311,7 +8580,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 202,
+      "line": 203,
       "snippet": "const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_LEAD = {\n  entity: 'lead',\n  entityHeaderActionCluster: actionButtonClass('neutral', 'cf-entity-action-cluster'),\n  activityPanelHeader: actionButtonClass('neutral', 'cf-panel-header-actions'),\n  notePanelHeader: actionButtonClass('neutral', 'cf-panel-header-actions'),\n  tasksPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),\n  workItemsPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),\n  eventsPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),\n  calendarPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),\n  dangerActionZone: actionButtonClass('danger', 'cf-danger-action-zone'),\n  copyInlineSecondaryAction: actionButtonClass('neutral', 'cf-inline-secondary-action'),\n  placement: {\n    addNote: 'activity-panel-header',\n    dictateNote: 'activity-panel-header',\n    addTask: 'tasks-panel-header',\n    addEvent: 'events-panel-header',\n    editRecord: 'entity-header-action-cluster',\n    deleteRecord: 'danger-action-zone',\n    copy: 'info-row-inline-action',\n  },\n} as const;\n\nconst SIMPLE_RECURRENCE_OPTIONS = [\n  { value: 'none', label: 'Bez powtarzania' },\n  { value: 'daily', label: 'Codzieńnie' },\n  { value: 'weekly', label: 'Co tydzień' },\n  { value: 'monthly', label: 'Co miesiąc' },\n];"
     }
   ],
@@ -8330,7 +8599,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 655,
+      "line": 656,
       "name": "LeadActionButton",
       "snippet": "function LeadActionButton({ children, onClick, onPointerDown, disabled }: { children: ReactNode; onClick?: () => void; onPointerDown?: PointerEventHandler<HTMLButtonElement>; disabled?: boolean }) {\n  const isStartServiceActionStage14F = children === 'Rozpocznij obsługę';\n  return (\n    <button\n      type=\"button\"\n      className={isStartServiceActionStage14F ? \"lead-detail-chip-button cf-action-button cf-action-button-primary\" : \"lead-detail-chip-button cf-action-button\"}\n      data-lead-start-service={isStartServiceActionStage14F ? \"true\" : undefined}\n      onClick={onClick}\n      onPointerDown={onPointerDown}\n      disabled={disabled}\n    >\n      {children}\n    </button>\n  );\n}\n\nconst CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_LEAD_DETAIL = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';"
     }
@@ -11690,7 +11959,7 @@
     {
       "file": "src/components/Layout.tsx",
       "value": "true",
-      "line": 696
+      "line": 712
     },
     {
       "file": "src/components/layout/app-shell.tsx",
@@ -12625,62 +12894,62 @@
     {
       "file": "src/pages/Leads.tsx",
       "value": "blue",
-      "line": 1243
+      "line": 1480
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "red",
-      "line": 1248
+      "line": 1485
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "ai",
-      "line": 1265
+      "line": 1502
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "shared",
-      "line": 1576
+      "line": 1825
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "true",
-      "line": 1584
+      "line": 1833
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "semantic173",
-      "line": 1584
+      "line": 1833
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "semantic173",
-      "line": 1602
+      "line": 1851
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "semantic173",
-      "line": 1612
+      "line": 1861
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "red",
-      "line": 1812
+      "line": 2106
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "LeadListCard",
-      "line": 2236
+      "line": 2729
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "red",
-      "line": 2263
+      "line": 2756
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "green",
-      "line": 2300
+      "line": 2793
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
@@ -25676,15 +25945,7 @@
     },
     {
       "file": "src/components/Layout.tsx",
-      "line": 562,
-      "classes": [
-        "cf-html-shell"
-      ],
-      "snippet": "className=\"app closeflow-visual-semantic01 cf-html-shell\""
-    },
-    {
-      "file": "src/components/Layout.tsx",
-      "line": 610,
+      "line": 626,
       "classes": [
         "mobile-top"
       ],
@@ -25692,7 +25953,7 @@
     },
     {
       "file": "src/components/Layout.tsx",
-      "line": 623,
+      "line": 639,
       "classes": [
         "mobile-drawer-panel"
       ],
@@ -28001,7 +28262,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1640,
+      "line": 1682,
       "classes": [
         "lead-detail-work-center-header"
       ],
@@ -28009,7 +28270,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1652,
+      "line": 1694,
       "classes": [
         "lead-detail-work-center-grid"
       ],
@@ -28017,7 +28278,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1653,
+      "line": 1695,
       "classes": [
         "lead-detail-work-metric"
       ],
@@ -28025,7 +28286,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1657,
+      "line": 1699,
       "classes": [
         "lead-detail-work-metric"
       ],
@@ -28033,7 +28294,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1661,
+      "line": 1703,
       "classes": [
         "lead-detail-work-metric",
         "lead-detail-work-metric-wide"
@@ -28042,7 +28303,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2388,
+      "line": 2430,
       "classes": [
         "lead-detail-loading-card"
       ],
@@ -28050,7 +28311,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2401,
+      "line": 2443,
       "classes": [
         "lead-detail-empty-card"
       ],
@@ -28058,15 +28319,40 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2419,
+      "line": 2461,
       "classes": [
-        "lead-detail-header"
+        "forteca-lead-detail-header"
       ],
-      "snippet": "<header className=\"lead-detail-header\">"
+      "snippet": "<header className=\"forteca-lead-detail-header\" data-forteca-frt-010-lead-header=\"true\">"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2420,
+      "line": 2462,
+      "classes": [
+        "forteca-lead-detail-header-main"
+      ],
+      "snippet": "<div className=\"forteca-lead-detail-header-main\">"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 2477,
+      "classes": [
+        "forteca-lead-detail-header-actions"
+      ],
+      "snippet": "<div className=\"forteca-lead-detail-header-actions\">"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 2496,
+      "classes": [
+        "lead-detail-header",
+        "lead-detail-legacy-header"
+      ],
+      "snippet": "<header className=\"lead-detail-header lead-detail-legacy-header\">"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 2497,
       "classes": [
         "lead-detail-header-copy"
       ],
@@ -28074,7 +28360,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2434,
+      "line": 2511,
       "classes": [
         "lead-detail-header-meta",
         "lead-detail-header-contact-grid"
@@ -28083,7 +28369,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2435,
+      "line": 2512,
       "classes": [
         "lead-detail-header-meta-item"
       ],
@@ -28091,7 +28377,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2439,
+      "line": 2516,
       "classes": [
         "lead-detail-header-meta-item",
         "lead-detail-header-phone-item"
@@ -28100,7 +28386,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2446,
+      "line": 2523,
       "classes": [
         "lead-detail-header-meta-item"
       ],
@@ -28108,7 +28394,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2453,
+      "line": 2530,
       "classes": [
         "lead-detail-header-meta-item"
       ],
@@ -28116,7 +28402,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2457,
+      "line": 2534,
       "classes": [
         "lead-detail-header-meta-item"
       ],
@@ -28124,7 +28410,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2463,
+      "line": 2540,
       "classes": [
         "lead-detail-header-actions"
       ],
@@ -28132,15 +28418,128 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2504,
+      "line": 2618,
       "classes": [
-        "lead-detail-shell"
+        "forteca-lead-detail-metrics"
       ],
-      "snippet": "<div className=\"lead-detail-shell\">"
+      "snippet": "<section className=\"forteca-lead-detail-metrics\" aria-label=\"Najważniejsze informacje o leadzie\">"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2506,
+      "line": 2636,
+      "classes": [
+        "forteca-lead-detail-tabs"
+      ],
+      "snippet": "<nav className=\"forteca-lead-detail-tabs\" aria-label=\"Sekcje leada\" role=\"tablist\">"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 2651,
+      "classes": [
+        "forteca-lead-detail-content-grid"
+      ],
+      "snippet": "<div className=\"forteca-lead-detail-content-grid\">"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 2655,
+      "classes": [
+        "forteca-lead-detail-card"
+      ],
+      "snippet": "<section className=\"forteca-lead-detail-card\" data-forteca-lead-summary=\"true\">"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 2671,
+      "classes": [
+        "forteca-lead-detail-card"
+      ],
+      "snippet": "<section className=\"forteca-lead-detail-card\" data-forteca-lead-next-step=\"true\">"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 2701,
+      "classes": [
+        "forteca-lead-detail-card"
+      ],
+      "snippet": "<section className=\"forteca-lead-detail-card\" data-forteca-lead-note=\"true\">"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 2719,
+      "classes": [
+        "forteca-lead-detail-card"
+      ],
+      "snippet": "<section className=\"forteca-lead-detail-card\" data-forteca-lead-activity=\"true\">"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 2738,
+      "classes": [
+        "forteca-lead-detail-card"
+      ],
+      "snippet": "<section className=\"forteca-lead-detail-card\" data-forteca-lead-follow-up=\"true\">"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 2758,
+      "classes": [
+        "forteca-lead-detail-card"
+      ],
+      "snippet": "<section className=\"forteca-lead-detail-card\" data-forteca-lead-offer=\"true\">"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 2772,
+      "classes": [
+        "forteca-lead-detail-card"
+      ],
+      "snippet": "<section className=\"forteca-lead-detail-card\" data-forteca-lead-start=\"true\">"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 2786,
+      "classes": [
+        "forteca-lead-detail-right-rail"
+      ],
+      "snippet": "<aside className=\"forteca-lead-detail-right-rail\" aria-label=\"Akcje i ostatnia aktywność\">"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 2787,
+      "classes": [
+        "forteca-lead-detail-card"
+      ],
+      "snippet": "<section className=\"forteca-lead-detail-card forteca-lead-detail-quick-actions\" data-forteca-lead-quick-actions=\"true\">"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 2791,
+      "classes": [
+        "forteca-lead-detail-action-grid"
+      ],
+      "snippet": "<div className=\"forteca-lead-detail-action-grid\">"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 2802,
+      "classes": [
+        "forteca-lead-detail-card"
+      ],
+      "snippet": "<section className=\"forteca-lead-detail-card\" data-forteca-lead-latest-activity=\"true\">"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 2826,
+      "classes": [
+        "lead-detail-shell",
+        "lead-detail-legacy-shell"
+      ],
+      "snippet": "<div className=\"lead-detail-shell lead-detail-legacy-shell\">"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 2828,
       "classes": [
         "lead-detail-left-rail",
         "lead-detail-data-rail"
@@ -28149,7 +28548,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2510,
+      "line": 2832,
       "classes": [
         "lead-detail-section-card",
         "lead-detail-data-panel-card"
@@ -28158,7 +28557,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2511,
+      "line": 2833,
       "classes": [
         "lead-detail-section-head"
       ],
@@ -28166,7 +28565,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2521,
+      "line": 2843,
       "classes": [
         "lead-detail-data-panel-list"
       ],
@@ -28174,7 +28573,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2522,
+      "line": 2844,
       "classes": [
         "lead-detail-data-panel-row"
       ],
@@ -28182,7 +28581,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2526,
+      "line": 2848,
       "classes": [
         "lead-detail-data-panel-row"
       ],
@@ -28190,7 +28589,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2530,
+      "line": 2852,
       "classes": [
         "lead-detail-data-panel-row",
         "lead-detail-data-panel-row-copy"
@@ -28199,7 +28598,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2537,
+      "line": 2859,
       "classes": [
         "lead-detail-data-panel-row",
         "lead-detail-data-panel-row-copy"
@@ -28208,7 +28607,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2544,
+      "line": 2866,
       "classes": [
         "lead-detail-data-panel-row"
       ],
@@ -28216,7 +28615,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2548,
+      "line": 2870,
       "classes": [
         "lead-detail-data-panel-row"
       ],
@@ -28224,7 +28623,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2552,
+      "line": 2874,
       "classes": [
         "lead-detail-data-panel-row"
       ],
@@ -28232,7 +28631,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2560,
+      "line": 2882,
       "classes": [
         "lead-detail-section-card",
         "lead-detail-left-activity-history-card"
@@ -28241,7 +28640,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2563,
+      "line": 2885,
       "classes": [
         "lead-detail-activity-history-rail-list"
       ],
@@ -28249,7 +28648,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2570,
+      "line": 2892,
       "classes": [
         "lead-detail-activity-history-rail-row"
       ],
@@ -28257,7 +28656,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2583,
+      "line": 2905,
       "classes": [
         "lead-detail-activity-history-rail-more"
       ],
@@ -28265,7 +28664,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2585,
+      "line": 2907,
       "classes": [
         "lead-detail-activity-history-rail-list"
       ],
@@ -28273,7 +28672,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2587,
+      "line": 2909,
       "classes": [
         "lead-detail-activity-history-rail-row"
       ],
@@ -28281,7 +28680,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2605,
+      "line": 2927,
       "classes": [
         "lead-detail-section-card",
         "lead-detail-notes-section",
@@ -28291,7 +28690,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2611,
+      "line": 2933,
       "classes": [
         "lead-detail-section-head"
       ],
@@ -28299,7 +28698,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2628,
+      "line": 2950,
       "classes": [
         "lead-detail-top-grid"
       ],
@@ -28307,7 +28706,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2629,
+      "line": 2951,
       "classes": [
         "lead-detail-top-card"
       ],
@@ -28315,7 +28714,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2650,
+      "line": 2972,
       "classes": [
         "lead-detail-top-card"
       ],
@@ -28323,7 +28722,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2658,
+      "line": 2980,
       "classes": [
         "lead-detail-top-card"
       ],
@@ -28331,7 +28730,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2670,
+      "line": 2992,
       "classes": [
         "lead-detail-top-card"
       ],
@@ -28339,7 +28738,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2705,
+      "line": 3027,
       "classes": [
         "lead-detail-section-card",
         "lead-detail-work-summary-section",
@@ -28349,7 +28748,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2706,
+      "line": 3028,
       "classes": [
         "lead-detail-section-head"
       ],
@@ -28357,7 +28756,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2760,
+      "line": 3082,
       "classes": [
         "lead-detail-section-card"
       ],
@@ -28365,7 +28764,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2761,
+      "line": 3083,
       "classes": [
         "lead-detail-section-head"
       ],
@@ -28373,7 +28772,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2866,
+      "line": 3188,
       "classes": [
         "lead-detail-section-card",
         "lead-detail-notes-only-section"
@@ -28382,7 +28781,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2867,
+      "line": 3189,
       "classes": [
         "lead-detail-section-head"
       ],
@@ -28390,7 +28789,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2873,
+      "line": 3195,
       "classes": [
         "lead-detail-note-actions-panel"
       ],
@@ -28398,7 +28797,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2917,
+      "line": 3239,
       "classes": [
         "lead-detail-right-rail"
       ],
@@ -28406,7 +28805,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 2985,
+      "line": 3307,
       "classes": [
         "right-card",
         "lead-detail-right-card"
@@ -28415,7 +28814,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 3033,
+      "line": 3355,
       "classes": [
         "lead-detail-dialog-grid"
       ],
@@ -28423,7 +28822,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 3064,
+      "line": 3386,
       "classes": [
         "lead-detail-dialog-grid"
       ],
@@ -28431,7 +28830,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 3104,
+      "line": 3426,
       "classes": [
         "lead-detail-dialog-grid"
       ],
@@ -28439,7 +28838,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 3137,
+      "line": 3459,
       "classes": [
         "lead-detail-dialog-grid"
       ],
@@ -28447,7 +28846,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 3154,
+      "line": 3476,
       "classes": [
         "lead-detail-dialog-grid"
       ],
@@ -28455,7 +28854,7 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 3169,
+      "line": 3491,
       "classes": [
         "lead-detail-dialog-grid"
       ],
@@ -28463,7 +28862,15 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1241,
+      "line": 1474,
+      "classes": [
+        "leads-trash-header-title"
+      ],
+      "snippet": "<span className=\"leads-trash-header-title\">"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 1478,
       "classes": [
         "leads-history-header-title"
       ],
@@ -28471,7 +28878,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1243,
+      "line": 1480,
       "classes": [
         "leads-history-header-count"
       ],
@@ -28479,7 +28886,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1246,
+      "line": 1483,
       "classes": [
         "leads-risk-header-title"
       ],
@@ -28487,7 +28894,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1248,
+      "line": 1485,
       "classes": [
         "leads-risk-header-count"
       ],
@@ -28495,15 +28902,15 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1265,
+      "line": 1509,
       "classes": [
         "leads-secondary-header-action"
       ],
-      "snippet": "<Link to=\"/ai-drafts\" className=\"btn soft-blue leads-secondary-header-action\" data-stage26-leads-head-ai=\"true\" data-cf-header-action=\"ai\" data-frt004-secondary-header-action=\"ai\">"
+      "snippet": "className=\"btn soft-blue leads-secondary-header-action\""
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1271,
+      "line": 1518,
       "classes": [
         "leads-secondary-header-action"
       ],
@@ -28511,7 +28918,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1282,
+      "line": 1529,
       "classes": [
         "lead-form-vnext-header"
       ],
@@ -28519,7 +28926,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1290,
+      "line": 1537,
       "classes": [
         "lead-form-section",
         "lead-form-primary-section"
@@ -28528,7 +28935,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1291,
+      "line": 1538,
       "classes": [
         "lead-form-section-head"
       ],
@@ -28536,7 +28943,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1295,
+      "line": 1542,
       "classes": [
         "lead-form-grid"
       ],
@@ -28544,7 +28951,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1383,
+      "line": 1630,
       "classes": [
         "lead-form-section"
       ],
@@ -28552,7 +28959,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1385,
+      "line": 1632,
       "classes": [
         "lead-form-grid",
         "lead-form-details-grid"
@@ -28561,7 +28968,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1438,
+      "line": 1686,
       "classes": [
         "leads-state-tabs"
       ],
@@ -28569,7 +28976,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1482,
+      "line": 1731,
       "classes": [
         "grid-5"
       ],
@@ -28577,7 +28984,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1543,
+      "line": 1792,
       "classes": [
         "leads-rescue-summary-metric"
       ],
@@ -28585,7 +28992,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1544,
+      "line": 1793,
       "classes": [
         "leads-rescue-summary-metric-icon"
       ],
@@ -28593,7 +29000,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1549,
+      "line": 1798,
       "classes": [
         "leads-rescue-summary-metric"
       ],
@@ -28601,7 +29008,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1550,
+      "line": 1799,
       "classes": [
         "leads-rescue-summary-metric-icon"
       ],
@@ -28609,7 +29016,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1555,
+      "line": 1804,
       "classes": [
         "leads-rescue-summary-metric"
       ],
@@ -28617,7 +29024,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1556,
+      "line": 1805,
       "classes": [
         "leads-rescue-summary-metric-icon"
       ],
@@ -28625,7 +29032,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1890,
+      "line": 2184,
       "classes": [
         "leads-more-filters-panel"
       ],
@@ -28633,13 +29040,93 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1922,
+      "line": 2186,
+      "classes": [
+        "leads-trash-filter-panel"
+      ],
+      "snippet": "<div className=\"leads-trash-filter-panel\" data-frt009-trash-filter-panel=\"true\">"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 2237,
       "classes": [
         "right-card",
         "lead-right-card",
         "operator-simple-filters-card"
       ],
       "snippet": "className=\"right-card lead-right-card operator-simple-filters-card\""
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 2343,
+      "classes": [
+        "leads-trash-summary-grid"
+      ],
+      "snippet": "<div className=\"leads-trash-summary-grid\" data-frt009-trash-summary=\"true\">"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 2344,
+      "classes": [
+        "leads-trash-summary-card"
+      ],
+      "snippet": "<div className=\"leads-trash-summary-card\">"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 2345,
+      "classes": [
+        "leads-trash-summary-card-head"
+      ],
+      "snippet": "<div className=\"leads-trash-summary-card-head\">"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 2352,
+      "classes": [
+        "leads-trash-summary-card"
+      ],
+      "snippet": "<div className=\"leads-trash-summary-card\">"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 2353,
+      "classes": [
+        "leads-trash-summary-card-head"
+      ],
+      "snippet": "<div className=\"leads-trash-summary-card-head\">"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 2360,
+      "classes": [
+        "leads-trash-summary-card"
+      ],
+      "snippet": "<div className=\"leads-trash-summary-card\">"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 2361,
+      "classes": [
+        "leads-trash-summary-card-head"
+      ],
+      "snippet": "<div className=\"leads-trash-summary-card-head\">"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 2368,
+      "classes": [
+        "leads-trash-summary-card"
+      ],
+      "snippet": "<div className=\"leads-trash-summary-card\">"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 2369,
+      "classes": [
+        "leads-trash-summary-card-head"
+      ],
+      "snippet": "<div className=\"leads-trash-summary-card-head\">"
     },
     {
       "file": "src/pages/LegalPrivacy.tsx",

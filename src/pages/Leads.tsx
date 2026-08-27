@@ -16,12 +16,16 @@ import { Link, useSearchParams } from 'react-router-dom';
 import {
   AlertTriangle,
   Activity,
+  Building2,
   CalendarDays,
   ChevronLeft,
   ChevronRight,
   Clock3,
+  Flag,
   Filter,
   Info,
+  Link2,
+  ListChecks,
   Loader2,
   Mail,
   MoreHorizontal,
@@ -31,6 +35,7 @@ import {
   RotateCcw,
   Search,
   TrendingUp,
+  UserRound,
   Wallet,
   X,
 } from 'lucide-react';
@@ -68,6 +73,7 @@ import {
   fetchTasksFromSupabase,
   findEntityConflictsInSupabase,
   insertLeadToSupabase,
+  insertTaskToSupabase,
   isSupabaseConfigured,
   updateClientInSupabase,
   updateLeadInSupabase,
@@ -111,6 +117,8 @@ import { getNearestPlannedAction } from '../lib/nearest-action';
 import { buildRelationFunnelValue, buildRelationValueEntries, formatRelationValue } from '../lib/relation-value';
 import { LEAD_SOURCE_OPTIONS, getLeadSourceLabel } from '../lib/source-of-truth/lead-options';
 import { LEAD_STATUS_OPTIONS, getLeadStatusLabel, getLeadStatusTone } from '../lib/config/lead-status';
+import { TASK_TYPES } from '../lib/options';
+import { toDateTimeLocalValue } from '../lib/scheduling';
 
 // LF-UI-SOT-007 shared-source contract: import '../styles/visual-stage20-lead-form-vnext.css' is provided once by App.tsx.
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
@@ -163,6 +171,7 @@ type CaseRecord = {
 type LeadsQuickFilter = 'all' | 'active' | 'at-risk' | 'history' | 'rescue';
 type LeadsTrashDeletedPeriod = 'all' | '30' | '90' | 'older';
 type LeadsTrashRetentionFilter = 'all' | 'known' | 'unknown';
+type LeadCreateQuickAction = 'today' | 'tomorrow' | 'in_two_days' | 'friday' | 'next_week';
 
 
 function normalizeLeadSearchValue(value: unknown) {
@@ -608,12 +617,40 @@ function getRestoreStatusForLead(lead: any, linkedCase?: CaseRecord) {
   return 'new';
 }
 
+function getLeadCreateQuickActionDateTime(action: LeadCreateQuickAction, now = new Date()) {
+  const target = new Date(now);
+  let dayOffset = 0;
+  let hour = 9;
+  let minute = 0;
+
+  if (action === 'today') {
+    hour = 17;
+  } else if (action === 'tomorrow') {
+    dayOffset = 1;
+  } else if (action === 'in_two_days') {
+    dayOffset = 2;
+  } else if (action === 'friday') {
+    dayOffset = (5 - target.getDay() + 7) % 7;
+  } else {
+    dayOffset = 7;
+  }
+
+  target.setDate(target.getDate() + dayOffset);
+  target.setHours(hour, minute, 0, 0);
+  return toDateTimeLocalValue(target);
+}
+
+function getCreatedRecordId(record: any) {
+  const nested = Array.isArray(record?.data) ? record.data[0] : record?.data;
+  return String(record?.id || nested?.id || '').trim();
+}
+
 const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_LEADS = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
 const STAGE220A29_LEAD_TRASH_VST_CONFIRM = 'lead trash confirmations use CloseFlow ConfirmDialog instead of native browser confirm';
 void STAGE220A29_LEAD_TRASH_VST_CONFIRM;
 
 export default function Leads() {
-  const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
+  const { workspace, profile, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
   const [cases, setCases] = useState<CaseRecord[]>([]);
   const [clients, setClients] = useState<any[]>([]);
@@ -655,7 +692,17 @@ export default function Leads() {
     status: 'new',
     isAtRisk: false,
     lastContactAt: getDefaultLastContactDateInput(),
+    nextActionTitle: '',
+    nextActionAt: '',
+    createNextTask: false,
   });
+  const leadCreateOwnerLabel = String(
+    profile?.fullName
+      || profile?.full_name
+      || profile?.email
+      || workspace?.ownerEmail
+      || 'Nieprzypisany',
+  ).trim();
 
   const CLOSEFLOW_A2_LEAD_DUPLICATE_WARNING_BEFORE_WRITE = 'lead duplicate warning before write';
   const createLeadSubmitLockRef = useRef(false);
@@ -850,7 +897,27 @@ export default function Leads() {
   }, [events, leads, resolveLinkedCaseForLead, tasks]);
 
   const resetNewLeadForm = () => {
-    setNewLead({ name: '', email: '', phone: '', source: 'other', dealValue: '', company: '', summary: '', notes: '', status: 'new', isAtRisk: false, lastContactAt: getDefaultLastContactDateInput() });
+    setNewLead({
+      name: '',
+      email: '',
+      phone: '',
+      source: 'other',
+      dealValue: '',
+      company: '',
+      summary: '',
+      notes: '',
+      status: 'new',
+      isAtRisk: false,
+      lastContactAt: getDefaultLastContactDateInput(),
+      nextActionTitle: '',
+      nextActionAt: '',
+      createNextTask: false,
+    });
+  };
+
+  const handleNewLeadOpenChange = (open: boolean) => {
+    setIsNewLeadOpen(open);
+    if (!open) resetNewLeadForm();
   };
 
   const createLeadFromPreparedInput = async (preparedLead: any, options?: { forceDuplicate?: boolean }) => {
@@ -862,15 +929,53 @@ export default function Leads() {
     delete sanitizedPreparedLead.linked_case_id;
     delete sanitizedPreparedLead.caseId;
     delete sanitizedPreparedLead.case_id;
+    const shouldCreateNextTask = Boolean(sanitizedPreparedLead.createNextTask);
+    delete sanitizedPreparedLead.createNextTask;
     // CLOSEFLOW_A2_LEAD_FORCE_DUPLICATE_TO_ALLOW_DUPLICATE_API_MAP
-    await insertLeadToSupabase({ ...sanitizedPreparedLead, allowDuplicate: Boolean(options?.forceDuplicate), ownerId: workspace?.ownerId, workspaceId: requireWorkspaceId(workspace) });
+    const workspaceId = requireWorkspaceId(workspace);
+    const createdLead = await insertLeadToSupabase({ ...sanitizedPreparedLead, allowDuplicate: Boolean(options?.forceDuplicate), ownerId: workspace?.ownerId, workspaceId });
+    let nextTaskCreated = false;
+    let nextTaskCreationFailed = false;
+    if (shouldCreateNextTask) {
+      const createdLeadId = getCreatedRecordId(createdLead);
+      const nextActionTitle = String(sanitizedPreparedLead.nextActionTitle || '').trim();
+      const nextActionAt = String(sanitizedPreparedLead.nextActionAt || '').trim();
+      if (createdLeadId && nextActionTitle && nextActionAt) {
+        try {
+          const taskType = TASK_TYPES.find((option) => option.label === nextActionTitle)?.value || 'follow_up';
+          await insertTaskToSupabase({
+            title: nextActionTitle,
+            type: taskType,
+            date: nextActionAt.slice(0, 10),
+            scheduledAt: nextActionAt,
+            dueAt: nextActionAt,
+            priority: sanitizedPreparedLead.isAtRisk ? 'high' : 'medium',
+            status: 'todo',
+            leadId: createdLeadId,
+            ownerId: workspace?.ownerId,
+            workspaceId,
+          });
+          nextTaskCreated = true;
+        } catch {
+          nextTaskCreationFailed = true;
+        }
+      } else {
+        nextTaskCreationFailed = true;
+      }
+    }
     setSearchQuery('');
     setQuickFilter('all');
     setShowTrash(false);
     setValueSortEnabled(false);
     setCadenceFilter('all');
     await loadLeads();
-    toast.success('Lead dodany');
+    if (nextTaskCreated) {
+      toast.success('Lead i zadanie dodane');
+    } else if (nextTaskCreationFailed) {
+      toast.warning('Lead dodany, ale zadanie nie zostało utworzone.');
+    } else {
+      toast.success('Lead dodany');
+    }
     setIsNewLeadOpen(false);
     resetNewLeadForm();
   };
@@ -902,6 +1007,10 @@ export default function Leads() {
     const hasContactOrNeed = Boolean(newLead.phone.trim() || newLead.email.trim() || newLead.summary.trim() || newLead.notes.trim());
     if (!hasLeadIdentity) return toast.error('Podaj nazwę albo kontakt.');
     if (!hasContactOrNeed) return toast.error('Podaj telefon, e-mail albo opis potrzeby.');
+    const hasNextActionTitle = Boolean(newLead.nextActionTitle.trim());
+    const hasNextActionAt = Boolean(newLead.nextActionAt.trim());
+    if (hasNextActionTitle !== hasNextActionAt) return toast.error('Wybierz następny krok i termin.');
+    if (newLead.createNextTask && (!hasNextActionTitle || !hasNextActionAt)) return toast.error('Wybierz następny krok i termin zadania.');
     const lastContactError = getLastContactDateInputError(newLead.lastContactAt);
     if (lastContactError) return toast.error(lastContactError);
     createLeadSubmitLockRef.current = true;
@@ -1524,127 +1633,132 @@ export default function Leads() {
                             <span className="pill">{showTrash ? stats.total : stats.trash}</span>
                           </button>
 
-                          <Dialog open={isNewLeadOpen} onOpenChange={setIsNewLeadOpen}>
-                            <DialogContent className="lead-form-vnext-content" data-lead-form-stage20="true" aria-describedby="lead-form-stage20-description">
-                              <DialogHeader className="lead-form-vnext-header">
+                          <Dialog open={isNewLeadOpen} onOpenChange={handleNewLeadOpenChange}>
+                            <DialogContent
+                              className="lead-form-vnext-content forteca-frt-011-lead-add-content"
+                              data-lead-form-stage20="true"
+                              data-forteca-frt-011-lead-add="true"
+                              aria-describedby="lead-form-stage20-description"
+                            >
+                              <DialogHeader className="lead-form-vnext-header forteca-frt-011-header">
                                 <div>
 
-                                  <DialogTitle>Nowy lead</DialogTitle>
+                                  <DialogTitle>Dodaj leada</DialogTitle>
+                                  <p id="lead-form-stage20-description">Uzupełnij dane kontaktu i zaplanuj kolejny krok.</p>
                                 </div>
                               </DialogHeader>
 
-                              <form onSubmit={handleCreateLead} className="lead-form-vnext" data-lead-form-visual-rebuild="LEAD_FORM_VISUAL_REBUILD_STAGE20">
-                                <section className="lead-form-section lead-form-primary-section">
-                                  <div className="lead-form-section-head">
-                                    <h3>Podstawowe dane</h3>
+                              <form onSubmit={handleCreateLead} className="lead-form-vnext forteca-frt-011-form" data-lead-form-visual-rebuild="LEAD_FORM_VISUAL_REBUILD_STAGE20" data-forteca-frt-011-form="true">
+                                <section className="lead-form-section lead-form-primary-section forteca-frt-011-section" data-forteca-frt-011-basic-data="true">
+                                  <div className="lead-form-section-head forteca-frt-011-section-head">
+                                    <h3>Dane podstawowe</h3>
                                   </div>
 
-                                  <div className="lead-form-grid">
-                                    <div className="lead-form-field lead-form-field-wide">
-                                      <Label>Nazwa / kontakt</Label>
+                                  <div className="lead-form-grid forteca-frt-011-primary-grid">
+                                    <div className="lead-form-field forteca-frt-011-field">
+                                      <Label htmlFor="forteca-frt-011-lead-summary">Nazwa leada <span aria-hidden="true">*</span></Label>
                                       <Input
-                                        value={newLead.name}
-                                        onChange={(event) => setNewLead({ ...newLead, name: event.target.value })}
-                                        placeholder="Np. Jan Kowalski albo Firma ABC"
+                                        id="forteca-frt-011-lead-summary"
+                                        value={newLead.summary}
+                                        onChange={(event) => setNewLead((current) => ({ ...current, summary: event.target.value }))}
+                                        placeholder="np. Wdrożenie CRM w ACME Logistics"
                                       />
                                     </div>
 
-                                    <div className="lead-form-field">
-                                      <Label>Telefon</Label>
-                                      <Input
-                                        value={newLead.phone}
-                                        onChange={(event) => setNewLead({ ...newLead, phone: event.target.value })}
-                                        placeholder="np. 516 000 000"
-                                      />
+                                    <div className="lead-form-field forteca-frt-011-field">
+                                      <Label htmlFor="forteca-frt-011-lead-company">Firma <span aria-hidden="true">*</span></Label>
+                                      <div className="forteca-frt-011-input-with-icon">
+                                        <Building2 aria-hidden="true" />
+                                        <Input
+                                          id="forteca-frt-011-lead-company"
+                                          value={newLead.company}
+                                          onChange={(event) => setNewLead((current) => ({ ...current, company: event.target.value }))}
+                                          placeholder="np. ACME Logistics"
+                                        />
+                                      </div>
                                     </div>
 
-                                    <div className="lead-form-field">
-                                      <Label>E-mail</Label>
-                                      <Input
-                                        type="email"
-                                        value={newLead.email}
-                                        onChange={(event) => setNewLead({ ...newLead, email: event.target.value })}
-                                        placeholder="kontakt@email.pl"
-                                      />
+                                    <div className="lead-form-field forteca-frt-011-field">
+                                      <Label htmlFor="forteca-frt-011-lead-name">Imię i nazwisko <span aria-hidden="true">*</span></Label>
+                                      <div className="forteca-frt-011-input-with-icon">
+                                        <UserRound aria-hidden="true" />
+                                        <Input
+                                          id="forteca-frt-011-lead-name"
+                                          value={newLead.name}
+                                          onChange={(event) => setNewLead((current) => ({ ...current, name: event.target.value }))}
+                                          placeholder="np. Jan Kowalski"
+                                        />
+                                      </div>
                                     </div>
 
-                                    <div className="lead-form-field" data-stage223r3-lead-last-contact-input="true">
-                                      <Label>Ostatni kontakt</Label>
-                                      <Input
-                                        type="date"
-                                        value={newLead.lastContactAt}
-                                        max={getTodayDateInputValue()}
-                                        onChange={(event) => setNewLead({ ...newLead, lastContactAt: event.target.value })}
-                                      />
-                                      <small className="sub">Jeśli dodajesz starszy kontakt, wpisz dzień ostatniej rozmowy. To wpływa na oznaczenia ciszy 7/14 dni.</small>
+                                    <div className="lead-form-field forteca-frt-011-field">
+                                      <Label htmlFor="forteca-frt-011-lead-email">E-mail <span aria-hidden="true">*</span></Label>
+                                      <div className="forteca-frt-011-input-with-icon">
+                                        <Mail aria-hidden="true" />
+                                        <Input
+                                          id="forteca-frt-011-lead-email"
+                                          type="email"
+                                          value={newLead.email}
+                                          onChange={(event) => setNewLead((current) => ({ ...current, email: event.target.value }))}
+                                          placeholder="kontakt@email.pl"
+                                        />
+                                      </div>
                                     </div>
 
-                                    <div className="lead-form-field">
-                                      <Label>Źródło</Label>
+                                    <div className="lead-form-field forteca-frt-011-field">
+                                      <Label htmlFor="forteca-frt-011-lead-phone">Telefon</Label>
+                                      <div className="forteca-frt-011-phone-field">
+                                        <span className="forteca-frt-011-phone-prefix">+48</span>
+                                        <Input
+                                          id="forteca-frt-011-lead-phone"
+                                          value={newLead.phone}
+                                          onChange={(event) => setNewLead((current) => ({ ...current, phone: event.target.value }))}
+                                          placeholder="516 000 000"
+                                          inputMode="tel"
+                                        />
+                                      </div>
+                                    </div>
+
+                                    <div className="lead-form-field forteca-frt-011-field">
+                                      <Label htmlFor="forteca-frt-011-lead-source">Źródło <span aria-hidden="true">*</span></Label>
                                       <select
-                                        className="lead-form-select"
+                                        id="forteca-frt-011-lead-source"
+                                        className="lead-form-select forteca-frt-011-select"
                                         value={newLead.source}
-                                        onChange={(event) => setNewLead({ ...newLead, source: event.target.value })}
+                                        onChange={(event) => setNewLead((current) => ({ ...current, source: event.target.value }))}
                                       >
                                         {LEAD_SOURCE_OPTIONS.map((source) => (
                                           <option key={source.value} value={source.value}>{source.label}</option>
                                         ))}
                                       </select>
                                     </div>
-
-                                    <div className="lead-form-field" data-stage231g-lead-create-potential-field="true">
-                                      <Label>Potencjał / wartość</Label>
-                                      <Input
-                                        data-stage231g-lead-create-potential-input="true"
-                                        type="number"
-                                        min="0"
-                                        step="1"
-                                        value={newLead.dealValue}
-                                        onChange={(event) => setNewLead({ ...newLead, dealValue: event.target.value })}
-                                        placeholder="np. 12000"
-                                      />
-                                      <small className="sub">Kwota trafia do potencjału leada i finansów na karcie leada.</small>
-                                    </div>
-
-                                    <div className="lead-form-field lead-form-field-wide">
-                                      <Label>Temat / potrzeba</Label>
-                                      <Input
-                                        value={newLead.summary}
-                                        onChange={(event) => setNewLead({ ...newLead, summary: event.target.value })}
-                                        placeholder="Np. strona www, kampania, nieruchomość, dokumenty..."
-                                      />
-                                    </div>
-
-                                    <div className="lead-form-field lead-form-field-wide">
-                                      <Label>Notatka</Label>
-                                      <textarea
-                                        className="lead-form-textarea"
-                                        value={newLead.notes}
-                                        onChange={(event) => setNewLead({ ...newLead, notes: event.target.value })}
-                                        placeholder="Krótki kontekst rozmowy. Bez długiej odprawy."
-                                      />
-                                    </div>
                                   </div>
-                                </section>
 
-                                <details className="lead-form-section lead-form-details">
-                                  <summary>Dodatkowe pola</summary>
-                                  <div className="lead-form-grid lead-form-details-grid">
-                                    <div className="lead-form-field">
-                                      <Label>Firma</Label>
-                                      <Input
-                                        value={newLead.company}
-                                        onChange={(event) => setNewLead({ ...newLead, company: event.target.value })}
-                                        placeholder="Opcjonalnie"
-                                      />
+                                  <div className="forteca-frt-011-meta-grid">
+                                    <div className="lead-form-field forteca-frt-011-field">
+                                      <Label htmlFor="forteca-frt-011-lead-value">Wartość</Label>
+                                      <div className="forteca-frt-011-value-field">
+                                        <span aria-hidden="true">zł</span>
+                                        <Input
+                                          id="forteca-frt-011-lead-value"
+                                          data-stage231g-lead-create-potential-input="true"
+                                          type="number"
+                                          min="0"
+                                          step="1"
+                                          value={newLead.dealValue}
+                                          onChange={(event) => setNewLead((current) => ({ ...current, dealValue: event.target.value }))}
+                                          placeholder="0"
+                                        />
+                                      </div>
                                     </div>
 
-                                    <div className="lead-form-field">
-                                      <Label>Status</Label>
+                                    <div className="lead-form-field forteca-frt-011-field">
+                                      <Label htmlFor="forteca-frt-011-lead-status">Status <span aria-hidden="true">*</span></Label>
                                       <select
-                                        className="lead-form-select"
+                                        id="forteca-frt-011-lead-status"
+                                        className="lead-form-select forteca-frt-011-select"
                                         value={newLead.status}
-                                        onChange={(event) => setNewLead({ ...newLead, status: event.target.value })}
+                                        onChange={(event) => setNewLead((current) => ({ ...current, status: event.target.value }))}
                                       >
                                         {LEAD_STATUS_OPTIONS.filter((status) => status.value !== 'archived').map((status) => (
                                           <option key={status.value} value={status.value}>{status.label}</option>
@@ -1652,27 +1766,147 @@ export default function Leads() {
                                       </select>
                                     </div>
 
-                                    <label className="lead-form-checkbox">
-                                      <input
-                                        type="checkbox"
-                                        checked={newLead.isAtRisk}
-                                        onChange={(event) => setNewLead({ ...newLead, isAtRisk: event.target.checked })}
+                                    <div className="lead-form-field forteca-frt-011-field">
+                                      <Label htmlFor="forteca-frt-011-lead-priority">Priorytet</Label>
+                                      <div className="forteca-frt-011-priority-field">
+                                        <Flag aria-hidden="true" />
+                                        <select
+                                          id="forteca-frt-011-lead-priority"
+                                          className="lead-form-select forteca-frt-011-select"
+                                          value={newLead.isAtRisk ? 'high' : 'medium'}
+                                          onChange={(event) => setNewLead((current) => ({ ...current, isAtRisk: event.target.value === 'high' }))}
+                                        >
+                                          <option value="medium">Średni</option>
+                                          <option value="high">Wysoki</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </section>
+
+                                <section className="lead-form-section forteca-frt-011-section forteca-frt-011-next-step" data-forteca-frt-011-next-step="true">
+                                  <div className="lead-form-section-head forteca-frt-011-section-head">
+                                    <div>
+                                      <h3>Następny krok</h3>
+                                      <p>Zaplanuj działanie, które ma wydarzyć się po dodaniu leada.</p>
+                                    </div>
+                                    <ListChecks aria-hidden="true" />
+                                  </div>
+
+                                  <div className="forteca-frt-011-next-step-grid">
+                                    <div className="lead-form-field forteca-frt-011-field">
+                                      <Label htmlFor="forteca-frt-011-next-action-title">Działanie</Label>
+                                      <select
+                                        id="forteca-frt-011-next-action-title"
+                                        className="lead-form-select forteca-frt-011-select"
+                                        value={newLead.nextActionTitle}
+                                        onChange={(event) => setNewLead((current) => ({ ...current, nextActionTitle: event.target.value }))}
+                                      >
+                                        <option value="">Wybierz kolejny krok</option>
+                                        {TASK_TYPES.map((taskType) => (
+                                          <option key={taskType.value} value={taskType.label}>{taskType.label}</option>
+                                        ))}
+                                      </select>
+                                    </div>
+
+                                    <div className="lead-form-field forteca-frt-011-field">
+                                      <Label htmlFor="forteca-frt-011-next-action-at">Termin</Label>
+                                      <Input
+                                        id="forteca-frt-011-next-action-at"
+                                        type="datetime-local"
+                                        value={newLead.nextActionAt}
+                                        onChange={(event) => setNewLead((current) => ({ ...current, nextActionAt: event.target.value }))}
                                       />
-                                      <span>
-                                        <strong>Wysoki priorytet</strong>
-                                        <small>Oznacz, jeśli lead wymaga szybkiej reakcji.</small>
-                                      </span>
-                                    </label>
+                                    </div>
+                                  </div>
+
+                                  <div className="forteca-frt-011-quick-actions" role="group" aria-label="Szybki termin następnego kroku">
+                                    {([
+                                      ['today', 'Dziś 17:00'],
+                                      ['tomorrow', 'Jutro 09:00'],
+                                      ['in_two_days', 'Za 2 dni'],
+                                      ['friday', 'Piątek'],
+                                      ['next_week', 'Za tydzień'],
+                                    ] as Array<[LeadCreateQuickAction, string]>).map(([action, label]) => (
+                                      <button
+                                        key={action}
+                                        type="button"
+                                        className="forteca-frt-011-quick-action"
+                                        onClick={() => setNewLead((current) => ({ ...current, nextActionAt: getLeadCreateQuickActionDateTime(action) }))}
+                                      >
+                                        {label}
+                                      </button>
+                                    ))}
+                                  </div>
+
+                                  <button
+                                    type="button"
+                                    className={`forteca-frt-011-task-toggle${newLead.createNextTask ? ' is-active' : ''}`}
+                                    data-forteca-frt-011-task-toggle="true"
+                                    aria-pressed={newLead.createNextTask}
+                                    onClick={() => setNewLead((current) => ({ ...current, createNextTask: !current.createNextTask }))}
+                                  >
+                                    <Link2 aria-hidden="true" />
+                                    <span>
+                                      <strong>Dodaj zadanie od razu</strong>
+                                      <small>Zadanie zostanie zapisane razem z leadem.</small>
+                                    </span>
+                                    <span className="forteca-frt-011-toggle-indicator" aria-hidden="true" />
+                                  </button>
+                                </section>
+
+                                <section className="lead-form-section forteca-frt-011-section forteca-frt-011-context-section" data-forteca-frt-011-context="true">
+                                  <div className="forteca-frt-011-owner-row">
+                                    <div className="forteca-frt-011-owner-label">
+                                      <UserRound aria-hidden="true" />
+                                      <div>
+                                        <Label htmlFor="forteca-frt-011-owner">Opiekun <span aria-hidden="true">*</span></Label>
+                                        <small>Właściciel workspace</small>
+                                      </div>
+                                    </div>
+                                    <div id="forteca-frt-011-owner" className="forteca-frt-011-owner-value" aria-readonly="true" data-forteca-frt-011-owner="true">
+                                      {leadCreateOwnerLabel}
+                                    </div>
+                                  </div>
+
+                                  <div className="lead-form-field forteca-frt-011-field">
+                                    <Label htmlFor="forteca-frt-011-notes">Krótka notatka</Label>
+                                    <textarea
+                                      id="forteca-frt-011-notes"
+                                      className="lead-form-textarea forteca-frt-011-notes"
+                                      value={newLead.notes}
+                                      maxLength={500}
+                                      onChange={(event) => setNewLead((current) => ({ ...current, notes: event.target.value }))}
+                                      placeholder="Dodaj najważniejszy kontekst rozmowy..."
+                                    />
+                                    <div className="forteca-frt-011-character-count" aria-live="polite">{newLead.notes.length} / 500</div>
+                                  </div>
+                                </section>
+
+                                <details className="lead-form-section lead-form-details forteca-frt-011-operational-details" data-forteca-frt-011-operational-details="true">
+                                  <summary>Dane operacyjne</summary>
+                                  <div className="lead-form-grid lead-form-details-grid">
+                                    <div className="lead-form-field" data-stage223r3-lead-last-contact-input="true">
+                                      <Label htmlFor="forteca-frt-011-last-contact">Ostatni kontakt</Label>
+                                      <Input
+                                        id="forteca-frt-011-last-contact"
+                                        type="date"
+                                        value={newLead.lastContactAt}
+                                        max={getTodayDateInputValue()}
+                                        onChange={(event) => setNewLead((current) => ({ ...current, lastContactAt: event.target.value }))}
+                                      />
+                                      <small className="sub">Wpływa na oznaczenia ciszy 7/14 dni.</small>
+                                    </div>
                                   </div>
                                 </details>
 
-
-                                <DialogFooter className={modalFooterClass('lead-form-footer')}>
-                                  <Button type="button" variant="outline" onClick={() => setIsNewLeadOpen(false)}>
+                                <DialogFooter className={modalFooterClass('lead-form-footer forteca-frt-011-footer')}>
+                                  <Button type="button" variant="outline" onClick={() => handleNewLeadOpenChange(false)}>
                                     Anuluj
                                   </Button>
-                                  <Button type="submit" disabled={leadSubmitting || !workspaceReady}>
-                                    {leadSubmitting ? 'Zapisywanie...' : 'Zapisz leada'}
+                                  <Button type="submit" disabled={leadSubmitting || !workspaceReady} data-forteca-frt-011-submit="true">
+                                    <Plus aria-hidden="true" />
+                                    {leadSubmitting ? 'Dodawanie...' : 'Dodaj leada'}
                                   </Button>
                                 </DialogFooter>
                               </form>
