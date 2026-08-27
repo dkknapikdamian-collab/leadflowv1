@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 75,
+  "state_revision": 76,
   "last_accepted": {
     "id": "FRT-001",
     "status": "PASS",
-    "commit_sha": "e946fbc7036a189189c46530b3320647143f2058",
+    "commit_sha": "0ec7af824bdedb60aab2e4411cb4bb739d027a70",
     "evidence": "_project/runs/forteca-clean/FRT-001_RECEIPT.json; audit/evidence/FRT-001_BROWSER_PROOF.json; Codex controller acceptance under the owner directive; scoped technical and live browser evidence PASS, Guardian raw outcome PARTIAL with zero blockers and no target-wide scan available"
   },
   "previous_accepted": {
@@ -18,10 +18,10 @@
   "current_contract_path": "_project/contracts/forteca-clean/FRT-002_TODAY_CUSTOMIZE.md",
   "current_status": "ACTIVE",
   "last_accepted_stage": "FRT-001",
-  "last_accepted_commit": "e946fbc7036a189189c46530b3320647143f2058",
+  "last_accepted_commit": "0ec7af824bdedb60aab2e4411cb4bb739d027a70",
   "next_stage": "FRT-003",
   "branch": "codex/forteca-ui-001-040-clean",
-  "remote_head": "e946fbc7036a189189c46530b3320647143f2058",
+  "remote_head": "0ec7af824bdedb60aab2e4411cb4bb739d027a70",
   "current_workflow": {
     "id": "FRT-002",
     "kind": "TECHNICAL_IMPLEMENTATION_STAGE",
