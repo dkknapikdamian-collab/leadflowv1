@@ -42,6 +42,13 @@ export type EntityConflictCandidate = {
   company?: string | null;
   email?: string | null;
   phone?: string | null;
+  source?: string | null;
+  sourceLabel?: string | null;
+  owner?: string | null;
+  ownerName?: string | null;
+  ownerId?: string | null;
+  lastContactAt?: string | null;
+  last_contact_at?: string | null;
   status?: string | null;
   visibility?: string | null;
   state: 'active' | 'hidden' | 'moved_to_service';

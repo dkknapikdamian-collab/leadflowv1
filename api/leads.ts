@@ -1097,6 +1097,8 @@ export default async function handler(req: any, res: any) {
     await assertWorkspaceWriteAccess(finalWorkspaceId, req);
     await assertWorkspaceEntityLimit(finalWorkspaceId, 'lead');
     const nowIso = new Date().toISOString();
+    // FRT-013: only an explicit boolean force-create may bypass the hidden-history restore path.
+    const allowDuplicate = body.allowDuplicate === true;
     const status = normalizeStatus(body.status || 'new');
     const startRuleSnapshot = normalizeEnum(body.startRuleSnapshot, START_RULES, 'on_acceptance');
     const billingStatus = normalizeEnum(body.billingStatus, BILLING_STATUSES, 'not_started');
@@ -1146,23 +1148,23 @@ export default async function handler(req: any, res: any) {
 
     await assertWorkspaceEntityLimit(workspaceId, 'lead');
 
-    const restoredHiddenLeadForCreate = await restoreHiddenLeadForCreateIfNeeded(workspaceId, payload);
-      if (restoredHiddenLeadForCreate) {
-        res.status(200).json(normalizeLead(restoredHiddenLeadForCreate));
+    const restoredHiddenLeadForCreate = allowDuplicate ? null : await restoreHiddenLeadForCreateIfNeeded(workspaceId, payload);
+    if (restoredHiddenLeadForCreate) {
+      res.status(200).json(normalizeLead(restoredHiddenLeadForCreate));
+      return;
+    }
+
+    let result: Awaited<ReturnType<typeof insertLeadWithSchemaFallback>>;
+    try {
+      result = await insertLeadWithSchemaFallback(payload);
+    } catch (error) {
+      const restoredAfterDuplicate = allowDuplicate ? null : await restoreHiddenLeadForCreateAfterDuplicate(workspaceId, payload, error);
+      if (restoredAfterDuplicate) {
+        res.status(200).json(normalizeLead(restoredAfterDuplicate));
         return;
       }
-
-      let result: Awaited<ReturnType<typeof insertLeadWithSchemaFallback>>;
-      try {
-        result = await insertLeadWithSchemaFallback(payload);
-      } catch (error) {
-        const restoredAfterDuplicate = await restoreHiddenLeadForCreateAfterDuplicate(workspaceId, payload, error);
-        if (restoredAfterDuplicate) {
-          res.status(200).json(normalizeLead(restoredAfterDuplicate));
-          return;
-        }
-        throw error;
-      }
+      throw error;
+    }
     const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
     // GOOGLE_CALENDAR_STAGE09B_LEAD_CREATE_SYNC_CALL
 

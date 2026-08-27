@@ -12,7 +12,18 @@ function normalizeText(value: unknown) {
 }
 function normalizePhone(value: unknown) { return asText(value).replace(/\D/g, ''); }
 function safeField(row: Record<string, unknown>, ...keys: string[]) { for (const key of keys) { const value = asText(row[key]); if (value) return value; } return ''; }
-async function safeRows(query: string) { try { const result = await selectFirstAvailable([query]); return Array.isArray(result.data) ? result.data as Record<string, unknown>[] : []; } catch { return []; } }
+function safeDisplayOwner(row: Record<string, unknown>) {
+  const owner = safeField(row, 'owner_name', 'ownerName', 'owner_display_name', 'assigned_to_name', 'owner');
+  return owner && !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(owner) ? owner : '';
+}
+async function safeRows(query: string | string[]) {
+  try {
+    const result = await selectFirstAvailable(Array.isArray(query) ? query : [query]);
+    return Array.isArray(result.data) ? result.data as Record<string, unknown>[] : [];
+  } catch {
+    return [];
+  }
+}
 function leadHiddenReason(row: Record<string, unknown>) {
   const status = normalizeText(row.status);
   const visibility = normalizeText(row.lead_visibility || row.leadVisibility);
@@ -52,13 +63,19 @@ function buildLeadCandidate(row: Record<string, unknown>, input: Record<string, 
   const linkedCaseId = asText(row.linked_case_id || row.linkedCaseId || row.case_id || row.caseId);
   const status = asText(row.status) || 'new';
   const id = asText(row.id); if (!id) return null;
-  return { id, entityType: 'lead', label: safeField(row, 'name', 'company') || 'Lead bez nazwy', name: safeField(row, 'name'), company: safeField(row, 'company'), email: safeField(row, 'email'), phone: safeField(row, 'phone'), status, statusLabel: hiddenReasonLabel(reason), hiddenReason: reason, matchFields: matches, matches, canRestore: (reason === 'trash' || reason === 'archived') && !linkedCaseId && status !== 'moved_to_service', url: '/leads/' + encodeURIComponent(id) };
+  const source = safeField(row, 'source', 'source_primary', 'sourcePrimary');
+  const ownerName = safeDisplayOwner(row);
+  const lastContactAt = safeField(row, 'last_contact_at', 'lastContactAt');
+  return { id, entityType: 'lead', label: safeField(row, 'name', 'company') || 'Lead bez nazwy', name: safeField(row, 'name'), company: safeField(row, 'company'), email: safeField(row, 'email'), phone: safeField(row, 'phone'), source, sourceLabel: source, ownerName, lastContactAt, status, statusLabel: hiddenReasonLabel(reason), hiddenReason: reason, reason: `Dopasowanie po: ${matches.join(', ')}`, matchFields: matches, matches, canRestore: (reason === 'trash' || reason === 'archived') && !linkedCaseId && status !== 'moved_to_service', url: '/leads/' + encodeURIComponent(id) };
 }
 function buildClientCandidate(row: Record<string, unknown>, input: Record<string, unknown>) {
   const matches = matchFields(input, row); if (!matches.length) return null;
   const reason = clientHiddenReason(row);
   const id = asText(row.id); if (!id) return null;
-  return { id, entityType: 'client', label: safeField(row, 'name', 'company') || 'Klient', name: safeField(row, 'name'), company: safeField(row, 'company'), email: safeField(row, 'email'), phone: safeField(row, 'phone'), status: asText(row.status) || '', statusLabel: hiddenReasonLabel(reason), hiddenReason: reason, matchFields: matches, matches, canRestore: reason === 'trash', url: '/clients/' + encodeURIComponent(id) };
+  const source = safeField(row, 'source_primary', 'sourcePrimary', 'source');
+  const ownerName = safeDisplayOwner(row);
+  const lastContactAt = safeField(row, 'last_contact_at', 'lastContactAt');
+  return { id, entityType: 'client', label: safeField(row, 'name', 'company') || 'Klient', name: safeField(row, 'name'), company: safeField(row, 'company'), email: safeField(row, 'email'), phone: safeField(row, 'phone'), source, sourceLabel: source, ownerName, lastContactAt, status: asText(row.status) || '', statusLabel: hiddenReasonLabel(reason), hiddenReason: reason, reason: `Dopasowanie po: ${matches.join(', ')}`, matchFields: matches, matches, canRestore: reason === 'trash', url: '/clients/' + encodeURIComponent(id) };
 }
 function sortCandidates(a: any, b: any) {
   const score = (candidate: any) => { const fields = Array.isArray(candidate.matchFields) ? candidate.matchFields : []; let value = 0; if (fields.includes('email')) value += 100; if (fields.includes('phone')) value += 90; if (fields.includes('name')) value += 20; if (fields.includes('company')) value += 10; if (candidate.hiddenReason !== 'active') value += 5; return value; };
@@ -73,8 +90,16 @@ export default async function entityConflictsHandler(req: any, res: any) {
     await assertWorkspaceWriteAccess(workspaceId, req);
     const input = { targetType: asText(body.targetType || body.entityType || 'lead'), name: asText(body.name), company: asText(body.company), email: asText(body.email).toLowerCase(), phone: asText(body.phone) };
     if (!input.name && !input.company && !input.email && !input.phone) { res.status(200).json({ ok: true, candidates: [] }); return; }
-    const leadRows = await safeRows(withWorkspaceFilter('leads?select=id,name,company,email,phone,status,lead_visibility,sales_outcome,linked_case_id,client_id,updated_at,created_at&order=updated_at.desc.nullslast&limit=1000', workspaceId));
-    const clientRows = await safeRows(withWorkspaceFilter('clients?select=id,name,company,email,phone,archived_at,updated_at,created_at&order=updated_at.desc.nullslast&limit=1000', workspaceId));
+    const leadRows = await safeRows([
+      withWorkspaceFilter('leads?select=id,name,company,email,phone,source,last_contact_at,owner_name,status,lead_visibility,sales_outcome,linked_case_id,client_id,updated_at,created_at&order=updated_at.desc.nullslast&limit=1000', workspaceId),
+      withWorkspaceFilter('leads?select=id,name,company,email,phone,source,last_contact_at,status,lead_visibility,sales_outcome,linked_case_id,client_id,updated_at,created_at&order=updated_at.desc.nullslast&limit=1000', workspaceId),
+      withWorkspaceFilter('leads?select=id,name,company,email,phone,status,lead_visibility,sales_outcome,linked_case_id,client_id,updated_at,created_at&order=updated_at.desc.nullslast&limit=1000', workspaceId),
+    ]);
+    const clientRows = await safeRows([
+      withWorkspaceFilter('clients?select=id,name,company,email,phone,source_primary,last_contact_at,owner_name,archived_at,updated_at,created_at&order=updated_at.desc.nullslast&limit=1000', workspaceId),
+      withWorkspaceFilter('clients?select=id,name,company,email,phone,source_primary,last_contact_at,archived_at,updated_at,created_at&order=updated_at.desc.nullslast&limit=1000', workspaceId),
+      withWorkspaceFilter('clients?select=id,name,company,email,phone,archived_at,updated_at,created_at&order=updated_at.desc.nullslast&limit=1000', workspaceId),
+    ]);
     const candidates = [...leadRows.map((row) => buildLeadCandidate(row, input)).filter(Boolean), ...clientRows.map((row) => buildClientCandidate(row, input)).filter(Boolean)].sort(sortCandidates).slice(0, 12);
     res.status(200).json({ ok: true, candidates, conflicts: candidates });
   } catch (error: any) { res.status(500).json({ error: error?.message || 'ENTITY_CONFLICTS_FAILED' }); }

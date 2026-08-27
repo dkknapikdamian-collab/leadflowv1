@@ -1,4 +1,5 @@
-import { AlertTriangle } from 'lucide-react';
+import { useState } from 'react';
+import { AlertTriangle, ArrowRight, Check, Eye, Info, UsersRound } from 'lucide-react';
 // CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
 // CLOSEFLOW_ENTITY_CONFLICT_DIALOG_V1
 // CLOSEFLOW_A2_DUPLICATE_WARNING_ACTIONS: Pokaż / Przywróć / Dodaj mimo to / Anuluj
@@ -18,12 +19,30 @@ export type EntityConflictCandidate = {
   company?: string | null;
   email?: string | null;
   phone?: string | null;
+  source?: string | null;
+  sourceLabel?: string | null;
+  owner?: string | null;
+  ownerName?: string | null;
+  ownerId?: string | null;
+  lastContactAt?: string | null;
+  last_contact_at?: string | null;
   status?: string | null;
   statusLabel?: string;
   hiddenReason?: string;
+  reason?: string;
+  matches?: string[];
   matchFields?: string[];
   canRestore?: boolean;
   url?: string;
+};
+
+export type EntityConflictDraft = {
+  name?: string | null;
+  company?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  source?: string | null;
+  lastContactAt?: string | null;
 };
 
 function getEntityLabel(type: string) {
@@ -44,6 +63,8 @@ type EntityConflictDialogProps = {
   title?: string;
   description?: string;
   candidates: EntityConflictCandidate[];
+  variant?: 'default' | 'forteca-lead-duplicate';
+  draft?: EntityConflictDraft | null;
   createAnywayLabel?: string;
   onOpenChange: (open: boolean) => void;
   onShow: (candidate: EntityConflictCandidate) => void;
@@ -54,11 +75,75 @@ type EntityConflictDialogProps = {
   busy?: boolean;
 };
 
+function textOrDash(value: unknown) {
+  const text = typeof value === 'string' ? value.trim() : String(value ?? '').trim();
+  return text || '—';
+}
+
+function displayName(candidate: EntityConflictCandidate) {
+  return textOrDash(candidate.name || candidate.label || candidate.company);
+}
+
+function displayInitials(value: unknown) {
+  const words = String(value || '').trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return '—';
+  return words.slice(0, 2).map((word) => word[0]).join('').toUpperCase();
+}
+
+function formatSource(value: unknown) {
+  const source = String(value || '').trim().toLowerCase();
+  const labels: Record<string, string> = {
+    instagram: 'Instagram',
+    facebook: 'Facebook',
+    messenger: 'Messenger',
+    whatsapp: 'WhatsApp',
+    email: 'E-mail',
+    'e-mail': 'E-mail',
+    form: 'Formularz',
+    formularz: 'Formularz',
+    phone: 'Telefon',
+    telefon: 'Telefon',
+    referral: 'Polecenie',
+    polecenie: 'Polecenie',
+    cold_outreach: 'Cold outreach',
+    other: 'Inne',
+    inne: 'Inne',
+  };
+  return labels[source] || textOrDash(value);
+}
+
+function formatDate(value: unknown) {
+  const raw = String(value || '').trim();
+  if (!raw) return '—';
+  const date = new Date(raw);
+  if (Number.isNaN(date.getTime())) return raw;
+  return new Intl.DateTimeFormat('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
+}
+
+function getMatchFields(candidate: EntityConflictCandidate) {
+  const fields = candidate.matchFields || candidate.matches || [];
+  return Array.from(new Set(fields));
+}
+
+function getFortecaReason(candidate: EntityConflictCandidate) {
+  const fields = getMatchFields(candidate).map(getMatchLabel);
+  if (fields.length) return `Dopasowanie po: ${fields.join(', ')}`;
+  if (candidate.reason) return candidate.reason;
+  return 'Zgodne dane kontaktowe';
+}
+
+function getCandidateOwner(candidate: EntityConflictCandidate) {
+  const owner = candidate.ownerName || candidate.owner || '';
+  return owner && !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(owner) ? owner : '—';
+}
+
 export function EntityConflictDialog({
   open,
   title = 'Możliwy duplikat w bazie',
   description = 'Znaleziono podobny rekord po e-mailu, telefonie, nazwie albo firmie. Sprawdź go przed zapisem albo świadomie dodaj mimo to.',
   candidates,
+  variant = 'default',
+  draft,
   createAnywayLabel = 'Dodaj mimo to',
   onOpenChange,
   onShow,
@@ -68,9 +153,126 @@ export function EntityConflictDialog({
   onCancel,
   busy,
 }: EntityConflictDialogProps) {
+  const [previewCandidateKey, setPreviewCandidateKey] = useState<string | null>(null);
+  const isFortecaLeadDuplicate = variant === 'forteca-lead-duplicate';
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent
+        className={isFortecaLeadDuplicate ? 'forteca-frt-013-dialog' : 'max-w-2xl'}
+        data-forteca-frt-013-lead-duplicate={isFortecaLeadDuplicate ? 'true' : undefined}
+      >
+        {isFortecaLeadDuplicate ? (
+          <>
+            <DialogHeader className="forteca-frt-013-header">
+              <div className="forteca-frt-013-header-inner">
+                <span className="forteca-frt-013-header-icon" aria-hidden="true"><UsersRound /></span>
+                <div className="forteca-frt-013-header-copy">
+                  <DialogTitle className="forteca-frt-013-title">{title === 'Możliwy duplikat w bazie' ? 'Podobny lead już istnieje' : title}</DialogTitle>
+                  <p className="forteca-frt-013-description">
+                    {description === 'Znaleziono podobny rekord po e-mailu, telefonie, nazwie albo firmie. Sprawdź go przed zapisem albo świadomie dodaj mimo to.'
+                      ? `Znaleźliśmy ${candidates.length} ${candidates.length === 1 ? 'podobny lead' : 'podobne leady'}. Sprawdź istniejące rekordy albo świadomie utwórz nowy mimo to.`
+                      : description}
+                  </p>
+                </div>
+              </div>
+            </DialogHeader>
+
+            <div className="forteca-frt-013-body" data-forteca-frt-013-body="true">
+              <section className="forteca-frt-013-draft-card" data-forteca-frt-013-new-lead="true">
+                <span className="forteca-frt-013-draft-badge">NOWY LEAD</span>
+                <div className="forteca-frt-013-draft-grid">
+                  <div className="forteca-frt-013-draft-identity">
+                    <strong>{textOrDash(draft?.company)}</strong>
+                    <span>{textOrDash(draft?.name)}</span>
+                  </div>
+                  <div className="forteca-frt-013-draft-meta">
+                    <span>{textOrDash(draft?.email)}</span>
+                    <span>{textOrDash(draft?.phone)}</span>
+                  </div>
+                </div>
+              </section>
+
+              <div className="forteca-frt-013-section-heading">
+                <h3>Możliwe dopasowania</h3>
+                <span title="Dopasowania wynikają z danych bieżącego formularza i rekordów w workspace." aria-label="Informacja o dopasowaniu"><Info /></span>
+              </div>
+
+              <div className="forteca-frt-013-candidates" data-forteca-frt-013-candidates="true">
+                {candidates.map((candidate, index) => {
+                  const candidateKey = candidate.entityType + '-' + candidate.id;
+                  const isPreviewOpen = previewCandidateKey === candidateKey;
+                  return (
+                    <article className="forteca-frt-013-candidate-card" key={candidateKey} data-forteca-frt-013-candidate={candidateKey}>
+                      <div className="forteca-frt-013-candidate-head">
+                        <span className={index === 0 ? 'forteca-frt-013-match-badge forteca-frt-013-match-badge--best' : 'forteca-frt-013-match-badge'}>
+                          {index === 0 ? 'Najlepsze dopasowanie' : 'Inne dopasowanie'}
+                        </span>
+                        <span className="forteca-frt-013-entity-kind">{getEntityLabel(candidate.entityType)}</span>
+                      </div>
+
+                      <div className="forteca-frt-013-candidate-main">
+                        <span className="forteca-frt-013-initials" aria-hidden="true">{displayInitials(displayName(candidate))}</span>
+                        <div className="forteca-frt-013-candidate-identity">
+                          <strong>{displayName(candidate)}</strong>
+                          <span>{textOrDash(candidate.company)}</span>
+                        </div>
+                        <dl className="forteca-frt-013-candidate-meta">
+                          <div><dt>E-mail</dt><dd>{textOrDash(candidate.email)}</dd></div>
+                          <div><dt>Telefon</dt><dd>{textOrDash(candidate.phone)}</dd></div>
+                          <div><dt>Źródło</dt><dd>{formatSource(candidate.sourceLabel || candidate.source)}</dd></div>
+                          <div><dt>Właściciel</dt><dd>{getCandidateOwner(candidate)}</dd></div>
+                          <div><dt>Ostatni kontakt</dt><dd>{formatDate(candidate.lastContactAt || candidate.last_contact_at)}</dd></div>
+                        </dl>
+                      </div>
+
+                      <div className={index === 0 ? 'forteca-frt-013-reason forteca-frt-013-reason--best' : 'forteca-frt-013-reason'}>
+                        <Check aria-hidden="true" />
+                        <span>{getFortecaReason(candidate)}</span>
+                      </div>
+
+                      <div className="forteca-frt-013-candidate-actions">
+                        <Button type="button" variant="outline" className="forteca-frt-013-open" onClick={() => onShow(candidate)} disabled={busy}>
+                          Otwórz istniejący
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          className="forteca-frt-013-preview"
+                          onClick={() => setPreviewCandidateKey(isPreviewOpen ? null : candidateKey)}
+                          aria-expanded={isPreviewOpen}
+                          disabled={busy}
+                        >
+                          <Eye aria-hidden="true" /> Podgląd <ArrowRight aria-hidden="true" />
+                        </Button>
+                      </div>
+
+                      {isPreviewOpen ? (
+                        <div className="forteca-frt-013-preview-panel" data-forteca-frt-013-preview="true">
+                          <strong>Podgląd bieżącego rekordu</strong>
+                          <span>{textOrDash(candidate.email)} · {textOrDash(candidate.phone)} · {formatSource(candidate.sourceLabel || candidate.source)}</span>
+                        </div>
+                      ) : null}
+                    </article>
+                  );
+                })}
+              </div>
+
+              <div className="forteca-frt-013-info-callout" data-forteca-frt-013-force-create-note="true">
+                <Info aria-hidden="true" />
+                <p>Nie masz pewności? Utworzymy nowy lead jako osobny rekord po świadomym potwierdzeniu. Automatyczne scalanie nie jest wykonywane.</p>
+              </div>
+            </div>
+
+            <DialogFooter className="forteca-frt-013-footer">
+              <Button type="button" variant="outline" onClick={onCancel} disabled={busy}>Anuluj</Button>
+              <Button type="button" onClick={onCreateAnyway} disabled={busy} data-forteca-frt-013-force-create="true">
+                {busy ? 'Zapisywanie...' : createAnywayLabel}
+              </Button>
+            </DialogFooter>
+          </>
+        ) : (
+          <>
         <DialogHeader>
           <div className="flex items-start gap-3">
             <span className="mt-1 rounded-2xl bg-amber-50 p-2 text-amber-700">
@@ -122,6 +324,8 @@ export function EntityConflictDialog({
           <Button type="button" variant="outline" onClick={onCancel} disabled={busy}>Anuluj</Button>
           <Button type="button" onClick={onCreateAnyway} disabled={busy}>{busy ? 'Zapisywanie...' : createAnywayLabel}</Button>
         </DialogFooter>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );

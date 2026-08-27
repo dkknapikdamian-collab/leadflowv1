@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-27T20:34:03.455Z",
+  "generatedAt": "2026-08-27T21:14:17.806Z",
   "inventoryVersion": "CLOSEFLOW_UI_MAP_INVENTORY_V1",
   "scannerVersion": "CLEAN_SCANNER_V4",
   "filesScanned": 446,
@@ -269,11 +269,80 @@
       "imported": "AlertTriangle",
       "local": "AlertTriangle",
       "role": "risk_alert",
-      "importLine": 1,
+      "importLine": 2,
       "usages": [
         {
-          "line": 77,
+          "line": 278,
           "snippet": "<AlertTriangle className=\"h-5 w-5\" />"
+        }
+      ]
+    },
+    {
+      "file": "src/components/EntityConflictDialog.tsx",
+      "imported": "ArrowRight",
+      "local": "ArrowRight",
+      "role": "navigation",
+      "importLine": 2,
+      "usages": [
+        {
+          "line": 245,
+          "snippet": "<Eye aria-hidden=\"true\" /> Podgląd <ArrowRight aria-hidden=\"true\" />"
+        }
+      ]
+    },
+    {
+      "file": "src/components/EntityConflictDialog.tsx",
+      "imported": "Check",
+      "local": "Check",
+      "role": "task_status",
+      "importLine": 2,
+      "usages": [
+        {
+          "line": 229,
+          "snippet": "<Check aria-hidden=\"true\" />"
+        }
+      ]
+    },
+    {
+      "file": "src/components/EntityConflictDialog.tsx",
+      "imported": "Eye",
+      "local": "Eye",
+      "role": "view",
+      "importLine": 2,
+      "usages": [
+        {
+          "line": 245,
+          "snippet": "<Eye aria-hidden=\"true\" /> Podgląd <ArrowRight aria-hidden=\"true\" />"
+        }
+      ]
+    },
+    {
+      "file": "src/components/EntityConflictDialog.tsx",
+      "imported": "Info",
+      "local": "Info",
+      "role": "unclassified",
+      "importLine": 2,
+      "usages": [
+        {
+          "line": 197,
+          "snippet": "<span title=\"Dopasowania wynikają z danych bieżącego formularza i rekordów w workspace.\" aria-label=\"Informacja o dopasowaniu\"><Info /></span>"
+        },
+        {
+          "line": 261,
+          "snippet": "<Info aria-hidden=\"true\" />"
+        }
+      ]
+    },
+    {
+      "file": "src/components/EntityConflictDialog.tsx",
+      "imported": "UsersRound",
+      "local": "UsersRound",
+      "role": "person",
+      "importLine": 2,
+      "usages": [
+        {
+          "line": 168,
+          "snippet": "<span className=\"forteca-frt-013-header-icon\" aria-hidden=\"true\"><UsersRound /></span>"
         }
       ]
     },
@@ -5646,6 +5715,13 @@
         "usageCount": 1
       },
       {
+        "file": "src/components/EntityConflictDialog.tsx",
+        "icon": "Check",
+        "local": "Check",
+        "importLine": 2,
+        "usageCount": 1
+      },
+      {
         "file": "src/components/Layout.tsx",
         "icon": "CheckCircle2",
         "local": "CheckCircle2",
@@ -6494,7 +6570,7 @@
         "file": "src/components/EntityConflictDialog.tsx",
         "icon": "AlertTriangle",
         "local": "AlertTriangle",
-        "importLine": 1,
+        "importLine": 2,
         "usageCount": 1
       },
       {
@@ -7009,6 +7085,13 @@
     ],
     "navigation": [
       {
+        "file": "src/components/EntityConflictDialog.tsx",
+        "icon": "ArrowRight",
+        "local": "ArrowRight",
+        "importLine": 2,
+        "usageCount": 1
+      },
+      {
         "file": "src/components/GlobalQuickActions.tsx",
         "icon": "ChevronDown",
         "local": "ChevronDown",
@@ -7275,153 +7358,37 @@
         "usageCount": 0
       }
     ],
-    "add": [
+    "view": [
       {
-        "file": "src/components/GlobalQuickActions.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 3,
+        "file": "src/components/EntityConflictDialog.tsx",
+        "icon": "Eye",
+        "local": "Eye",
+        "importLine": 2,
         "usageCount": 1
-      },
-      {
-        "file": "src/components/ui-system/action-icon-registry.ts",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 1,
-        "usageCount": 0
-      },
-      {
-        "file": "src/pages/CaseDetail.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 22,
-        "usageCount": 4
-      },
-      {
-        "file": "src/pages/Cases.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 17,
-        "usageCount": 2
       },
       {
         "file": "src/pages/ClientDetail.tsx",
-        "icon": "Plus",
-        "local": "Plus",
+        "icon": "Eye",
+        "local": "Eye",
         "importLine": 10,
-        "usageCount": 2
-      },
-      {
-        "file": "src/pages/Clients.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 17,
         "usageCount": 1
       },
       {
-        "file": "src/pages/Dashboard.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 3,
-        "usageCount": 1
-      },
-      {
-        "file": "src/pages/LeadDetail.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 49,
-        "usageCount": 5
-      },
-      {
-        "file": "src/pages/Leads.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 16,
-        "usageCount": 2
-      },
-      {
-        "file": "src/pages/ResponseTemplates.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 2,
-        "usageCount": 1
-      },
-      {
-        "file": "src/pages/Templates.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 2,
-        "usageCount": 3
-      },
-      {
-        "file": "src/pages/Today.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 3,
-        "usageCount": 0
-      },
-      {
         "file": "src/ui-system/icons/SemanticIcon.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 6,
-        "usageCount": 0
-      }
-    ],
-    "notification": [
-      {
-        "file": "src/components/Layout.tsx",
-        "icon": "Bell",
-        "local": "Bell",
-        "importLine": 10,
-        "usageCount": 0
-      },
-      {
-        "file": "src/components/ui-system/icon-registry.ts",
-        "icon": "Bell",
-        "local": "Bell",
-        "importLine": 2,
-        "usageCount": 0
-      },
-      {
-        "file": "src/pages/PublicLanding.tsx",
-        "icon": "BellRing",
-        "local": "BellRing",
-        "importLine": 2,
-        "usageCount": 0
-      },
-      {
-        "file": "src/ui-system/icons/SemanticIcon.tsx",
-        "icon": "Bell",
-        "local": "Bell",
-        "importLine": 6,
-        "usageCount": 0
-      }
-    ],
-    "case": [
-      {
-        "file": "src/components/Layout.tsx",
-        "icon": "Briefcase",
-        "local": "Briefcase",
-        "importLine": 10,
-        "usageCount": 0
-      },
-      {
-        "file": "src/components/ui-system/icon-registry.ts",
-        "icon": "Briefcase",
-        "local": "Briefcase",
-        "importLine": 2,
-        "usageCount": 0
-      },
-      {
-        "file": "src/ui-system/icons/SemanticIcon.tsx",
-        "icon": "Briefcase",
-        "local": "Briefcase",
+        "icon": "Eye",
+        "local": "Eye",
         "importLine": 6,
         "usageCount": 0
       }
     ],
     "unclassified": [
+      {
+        "file": "src/components/EntityConflictDialog.tsx",
+        "icon": "Info",
+        "local": "Info",
+        "importLine": 2,
+        "usageCount": 2
+      },
       {
         "file": "src/components/Layout.tsx",
         "icon": "FolderKanban",
@@ -7941,72 +7908,14 @@
         "usageCount": 2
       }
     ],
-    "settings": [
-      {
-        "file": "src/components/Layout.tsx",
-        "icon": "Settings",
-        "local": "Settings",
-        "importLine": 10,
-        "usageCount": 0
-      },
-      {
-        "file": "src/components/ui-system/action-icon-registry.ts",
-        "icon": "Settings",
-        "local": "Settings",
-        "importLine": 1,
-        "usageCount": 0
-      },
-      {
-        "file": "src/components/ui-system/icon-registry.ts",
-        "icon": "Settings",
-        "local": "Settings",
-        "importLine": 2,
-        "usageCount": 0
-      },
-      {
-        "file": "src/pages/Dashboard.tsx",
-        "icon": "Settings",
-        "local": "Settings",
-        "importLine": 3,
-        "usageCount": 1
-      },
-      {
-        "file": "src/pages/NotificationsCenter.tsx",
-        "icon": "Settings2",
-        "local": "Settings2",
-        "importLine": 9,
-        "usageCount": 1
-      },
-      {
-        "file": "src/pages/Settings.tsx",
-        "icon": "Settings",
-        "local": "SettingsIcon",
-        "importLine": 2,
-        "usageCount": 0
-      },
-      {
-        "file": "src/pages/Settings.tsx",
-        "icon": "SlidersHorizontal",
-        "local": "SlidersHorizontal",
-        "importLine": 2,
-        "usageCount": 1
-      },
-      {
-        "file": "src/pages/TodayStable.tsx",
-        "icon": "SlidersHorizontal",
-        "local": "SlidersHorizontal",
-        "importLine": 3,
-        "usageCount": 1
-      },
-      {
-        "file": "src/ui-system/icons/SemanticIcon.tsx",
-        "icon": "Settings",
-        "local": "Settings",
-        "importLine": 6,
-        "usageCount": 0
-      }
-    ],
     "person": [
+      {
+        "file": "src/components/EntityConflictDialog.tsx",
+        "icon": "UsersRound",
+        "local": "UsersRound",
+        "importLine": 2,
+        "usageCount": 1
+      },
       {
         "file": "src/components/Layout.tsx",
         "icon": "Users",
@@ -8081,6 +7990,217 @@
         "file": "src/ui-system/icons/SemanticIcon.tsx",
         "icon": "UserRound",
         "local": "UserRound",
+        "importLine": 6,
+        "usageCount": 0
+      }
+    ],
+    "add": [
+      {
+        "file": "src/components/GlobalQuickActions.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 3,
+        "usageCount": 1
+      },
+      {
+        "file": "src/components/ui-system/action-icon-registry.ts",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 1,
+        "usageCount": 0
+      },
+      {
+        "file": "src/pages/CaseDetail.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 22,
+        "usageCount": 4
+      },
+      {
+        "file": "src/pages/Cases.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 17,
+        "usageCount": 2
+      },
+      {
+        "file": "src/pages/ClientDetail.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 10,
+        "usageCount": 2
+      },
+      {
+        "file": "src/pages/Clients.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 17,
+        "usageCount": 1
+      },
+      {
+        "file": "src/pages/Dashboard.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 3,
+        "usageCount": 1
+      },
+      {
+        "file": "src/pages/LeadDetail.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 49,
+        "usageCount": 5
+      },
+      {
+        "file": "src/pages/Leads.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 16,
+        "usageCount": 2
+      },
+      {
+        "file": "src/pages/ResponseTemplates.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 2,
+        "usageCount": 1
+      },
+      {
+        "file": "src/pages/Templates.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 2,
+        "usageCount": 3
+      },
+      {
+        "file": "src/pages/Today.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 3,
+        "usageCount": 0
+      },
+      {
+        "file": "src/ui-system/icons/SemanticIcon.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 6,
+        "usageCount": 0
+      }
+    ],
+    "notification": [
+      {
+        "file": "src/components/Layout.tsx",
+        "icon": "Bell",
+        "local": "Bell",
+        "importLine": 10,
+        "usageCount": 0
+      },
+      {
+        "file": "src/components/ui-system/icon-registry.ts",
+        "icon": "Bell",
+        "local": "Bell",
+        "importLine": 2,
+        "usageCount": 0
+      },
+      {
+        "file": "src/pages/PublicLanding.tsx",
+        "icon": "BellRing",
+        "local": "BellRing",
+        "importLine": 2,
+        "usageCount": 0
+      },
+      {
+        "file": "src/ui-system/icons/SemanticIcon.tsx",
+        "icon": "Bell",
+        "local": "Bell",
+        "importLine": 6,
+        "usageCount": 0
+      }
+    ],
+    "case": [
+      {
+        "file": "src/components/Layout.tsx",
+        "icon": "Briefcase",
+        "local": "Briefcase",
+        "importLine": 10,
+        "usageCount": 0
+      },
+      {
+        "file": "src/components/ui-system/icon-registry.ts",
+        "icon": "Briefcase",
+        "local": "Briefcase",
+        "importLine": 2,
+        "usageCount": 0
+      },
+      {
+        "file": "src/ui-system/icons/SemanticIcon.tsx",
+        "icon": "Briefcase",
+        "local": "Briefcase",
+        "importLine": 6,
+        "usageCount": 0
+      }
+    ],
+    "settings": [
+      {
+        "file": "src/components/Layout.tsx",
+        "icon": "Settings",
+        "local": "Settings",
+        "importLine": 10,
+        "usageCount": 0
+      },
+      {
+        "file": "src/components/ui-system/action-icon-registry.ts",
+        "icon": "Settings",
+        "local": "Settings",
+        "importLine": 1,
+        "usageCount": 0
+      },
+      {
+        "file": "src/components/ui-system/icon-registry.ts",
+        "icon": "Settings",
+        "local": "Settings",
+        "importLine": 2,
+        "usageCount": 0
+      },
+      {
+        "file": "src/pages/Dashboard.tsx",
+        "icon": "Settings",
+        "local": "Settings",
+        "importLine": 3,
+        "usageCount": 1
+      },
+      {
+        "file": "src/pages/NotificationsCenter.tsx",
+        "icon": "Settings2",
+        "local": "Settings2",
+        "importLine": 9,
+        "usageCount": 1
+      },
+      {
+        "file": "src/pages/Settings.tsx",
+        "icon": "Settings",
+        "local": "SettingsIcon",
+        "importLine": 2,
+        "usageCount": 0
+      },
+      {
+        "file": "src/pages/Settings.tsx",
+        "icon": "SlidersHorizontal",
+        "local": "SlidersHorizontal",
+        "importLine": 2,
+        "usageCount": 1
+      },
+      {
+        "file": "src/pages/TodayStable.tsx",
+        "icon": "SlidersHorizontal",
+        "local": "SlidersHorizontal",
+        "importLine": 3,
+        "usageCount": 1
+      },
+      {
+        "file": "src/ui-system/icons/SemanticIcon.tsx",
+        "icon": "Settings",
+        "local": "Settings",
         "importLine": 6,
         "usageCount": 0
       }
@@ -8478,22 +8598,6 @@
         "file": "src/ui-system/icons/SemanticIcon.tsx",
         "icon": "Clock",
         "local": "Clock",
-        "importLine": 6,
-        "usageCount": 0
-      }
-    ],
-    "view": [
-      {
-        "file": "src/pages/ClientDetail.tsx",
-        "icon": "Eye",
-        "local": "Eye",
-        "importLine": 10,
-        "usageCount": 1
-      },
-      {
-        "file": "src/ui-system/icons/SemanticIcon.tsx",
-        "icon": "Eye",
-        "local": "Eye",
         "importLine": 6,
         "usageCount": 0
       }
@@ -10171,7 +10275,39 @@
     },
     {
       "file": "src/components/EntityConflictDialog.tsx",
-      "line": 98,
+      "line": 27,
+      "classes": [],
+      "snippet": "lastContactAt?: string | null;"
+    },
+    {
+      "file": "src/components/EntityConflictDialog.tsx",
+      "line": 28,
+      "classes": [],
+      "snippet": "last_contact_at?: string | null;"
+    },
+    {
+      "file": "src/components/EntityConflictDialog.tsx",
+      "line": 45,
+      "classes": [],
+      "snippet": "lastContactAt?: string | null;"
+    },
+    {
+      "file": "src/components/EntityConflictDialog.tsx",
+      "line": 224,
+      "classes": [],
+      "snippet": "<div><dt>Ostatni kontakt</dt><dd>{formatDate(candidate.lastContactAt || candidate.last_contact_at)}</dd></div>"
+    },
+    {
+      "file": "src/components/EntityConflictDialog.tsx",
+      "line": 260,
+      "classes": [
+        "forteca-frt-013-info-callout"
+      ],
+      "snippet": "<div className=\"forteca-frt-013-info-callout\" data-forteca-frt-013-force-create-note=\"true\">"
+    },
+    {
+      "file": "src/components/EntityConflictDialog.tsx",
+      "line": 299,
       "classes": [],
       "snippet": "{candidate.hiddenReason === 'service_history' ? <p className=\"mt-2 text-xs text-slate-500\">Ten rekord wygląda na przeniesiony do obsługi lub historii. Najbezpieczniej najpierw go otworzyć.</p> : null}"
     },
@@ -11869,36 +12005,6 @@
       "line": 199,
       "classes": [],
       "snippet": "export const FIN13_CLIENT_FINANCES_ARE_CASE_FINANCES = 'FIN-13_CLIENT_FINANCES_ARE_CASE_FINANCES_V1' as const;"
-    },
-    {
-      "file": "src/components/finance/FinanceMiniSummary.tsx",
-      "line": 201,
-      "classes": [],
-      "snippet": "export function ClientFinanceRelationSummary({"
-    },
-    {
-      "file": "src/components/finance/FinanceMiniSummary.tsx",
-      "line": 205,
-      "classes": [],
-      "snippet": "payments,"
-    },
-    {
-      "file": "src/components/finance/FinanceMiniSummary.tsx",
-      "line": 207,
-      "classes": [],
-      "snippet": "}: ClientFinanceRelationSummaryProps) {"
-    },
-    {
-      "file": "src/components/finance/FinanceMiniSummary.tsx",
-      "line": 210,
-      "classes": [],
-      "snippet": "const [loadedPayments, setLoadedPayments] = useState<Array<Record<string, unknown>>>([]);"
-    },
-    {
-      "file": "src/components/finance/FinanceMiniSummary.tsx",
-      "line": 212,
-      "classes": [],
-      "snippet": "const [editingRow, setEditingRow] = useState<ClientFinanceCaseRow | null>(null);"
     }
   ],
   "placementRegions": [
@@ -25801,6 +25907,70 @@
         "sm:grid-cols-2"
       ],
       "snippet": "<div className=\"mx-auto mt-6 grid max-w-xl gap-3 sm:grid-cols-2\">"
+    },
+    {
+      "file": "src/components/EntityConflictDialog.tsx",
+      "line": 166,
+      "classes": [
+        "forteca-frt-013-header"
+      ],
+      "snippet": "<DialogHeader className=\"forteca-frt-013-header\">"
+    },
+    {
+      "file": "src/components/EntityConflictDialog.tsx",
+      "line": 167,
+      "classes": [
+        "forteca-frt-013-header-inner"
+      ],
+      "snippet": "<div className=\"forteca-frt-013-header-inner\">"
+    },
+    {
+      "file": "src/components/EntityConflictDialog.tsx",
+      "line": 168,
+      "classes": [
+        "forteca-frt-013-header-icon"
+      ],
+      "snippet": "<span className=\"forteca-frt-013-header-icon\" aria-hidden=\"true\"><UsersRound /></span>"
+    },
+    {
+      "file": "src/components/EntityConflictDialog.tsx",
+      "line": 169,
+      "classes": [
+        "forteca-frt-013-header-copy"
+      ],
+      "snippet": "<div className=\"forteca-frt-013-header-copy\">"
+    },
+    {
+      "file": "src/components/EntityConflictDialog.tsx",
+      "line": 181,
+      "classes": [
+        "forteca-frt-013-draft-card"
+      ],
+      "snippet": "<section className=\"forteca-frt-013-draft-card\" data-forteca-frt-013-new-lead=\"true\">"
+    },
+    {
+      "file": "src/components/EntityConflictDialog.tsx",
+      "line": 183,
+      "classes": [
+        "forteca-frt-013-draft-grid"
+      ],
+      "snippet": "<div className=\"forteca-frt-013-draft-grid\">"
+    },
+    {
+      "file": "src/components/EntityConflictDialog.tsx",
+      "line": 195,
+      "classes": [
+        "forteca-frt-013-section-heading"
+      ],
+      "snippet": "<div className=\"forteca-frt-013-section-heading\">"
+    },
+    {
+      "file": "src/components/EntityConflictDialog.tsx",
+      "line": 250,
+      "classes": [
+        "forteca-frt-013-preview-panel"
+      ],
+      "snippet": "<div className=\"forteca-frt-013-preview-panel\" data-forteca-frt-013-preview=\"true\">"
     },
     {
       "file": "src/components/EventCreateDialog.tsx",

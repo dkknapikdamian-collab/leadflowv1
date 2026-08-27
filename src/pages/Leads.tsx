@@ -3232,6 +3232,8 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
         <div data-closeflow-lead-conflict-dialog-v25="true">
           <EntityConflictDialog
             open={leadConflictOpen}
+            variant="forteca-lead-duplicate"
+            draft={leadConflictPendingInput}
             candidates={leadConflictCandidates.map((candidate) => candidate.entityType === 'client' ? { ...candidate, canRestore: false } : candidate)}
             onOpenChange={(open) => {
               setLeadConflictOpen(open);
