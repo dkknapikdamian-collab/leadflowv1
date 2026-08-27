@@ -421,6 +421,16 @@ export default function Cases() {
     setIsCreateCaseOpen(true);
   }, [clientCandidates, searchParams]);
 
+  useEffect(() => {
+    if (searchParams.get('quick') !== 'case') return;
+
+    setShowCreateClientFields(false);
+    setIsCreateCaseOpen(true);
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('quick');
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
   const clientSuggestions = useMemo(() => {
     const normalizedQuery = newCase.clientName.trim().toLowerCase();
     const base = normalizedQuery
