@@ -23,9 +23,13 @@ import {
   Info,
   Loader2,
   Mail,
+  MoreHorizontal,
   Plus,
+  PhoneCall,
+  RefreshCw,
   RotateCcw,
   Search,
+  TrendingUp,
   Wallet,
   X,
 } from 'lucide-react';
@@ -174,6 +178,10 @@ function getLeadPrimaryContact(lead: any) {
   if (email) return `E-mail: ${email}`;
   if (company) return `Firma: ${company}`;
   return 'Kontakt: -';
+}
+
+function getLeadOwnerLabel(lead: any) {
+  return String(lead?.ownerName || lead?.owner?.name || lead?.owner?.fullName || lead?.ownerId || '').trim() || 'Nieprzypisany';
 }
 
 function getLeadInitials(lead: any, fallbackLabel: string) {
@@ -519,6 +527,8 @@ export default function Leads() {
   const [historyReasonFilter, setHistoryReasonFilter] = useState('');
   const [historyValueFilter, setHistoryValueFilter] = useState<'all' | 'under_5000' | '5000_20000' | 'over_20000'>('all');
   const [historyClosedPeriodFilter, setHistoryClosedPeriodFilter] = useState<'all' | '30' | '90' | '365'>('365');
+  const [rescueValueFilter, setRescueValueFilter] = useState<'all' | 'under_5000' | '5000_20000' | 'over_20000'>('all');
+  const [rescueOwnerFilter, setRescueOwnerFilter] = useState('');
   const [showMoreFilters, setShowMoreFilters] = useState(false);
   const [leadPage, setLeadPage] = useState(1);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -607,6 +617,23 @@ export default function Leads() {
     setRiskFilter('all');
     setShowMoreFilters(false);
     setQuickFilter('history');
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('quick');
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if (searchParams.get('quick') !== 'rescue') return;
+    setShowTrash(false);
+    setValueSortEnabled(false);
+    setCadenceFilter('all');
+    setStatusFilter('');
+    setSourceFilter('');
+    setRiskFilter('all');
+    setRescueValueFilter('all');
+    setRescueOwnerFilter('');
+    setShowMoreFilters(false);
+    setQuickFilter('rescue');
     const nextParams = new URLSearchParams(searchParams);
     nextParams.delete('quick');
     setSearchParams(nextParams, { replace: true });
@@ -977,6 +1004,66 @@ export default function Leads() {
     [activeLeads, relatedRecordsByLeadId],
   );
 
+  const rescueView = !showTrash && quickFilter === 'rescue';
+  const activeLeadById = useMemo(
+    () => new Map(activeLeads.map((lead) => [String(lead.id || ''), lead])),
+    [activeLeads],
+  );
+
+  const rescueOwnerOptions = useMemo(
+    () => Array.from(new Set(lostLeadRescueSummary.rows.map((row) => getLeadOwnerLabel(activeLeadById.get(row.leadId))))).sort((left, right) => left.localeCompare(right, 'pl')),
+    [activeLeadById, lostLeadRescueSummary.rows],
+  );
+
+  const rescuePotential = useMemo(
+    () => lostLeadRescueSummary.rows.reduce((total, row) => total + (row.valueAmount || 0), 0),
+    [lostLeadRescueSummary.rows],
+  );
+
+  const rescueReadyCount = useMemo(
+    () => lostLeadRescueSummary.rows.filter((row) => row.hasNextMove).length,
+    [lostLeadRescueSummary.rows],
+  );
+
+  const rescueAttentionCount = useMemo(
+    () => lostLeadRescueSummary.rows.filter((row) => row.contactSilentDays === null || row.contactSilentDays >= 7).length,
+    [lostLeadRescueSummary.rows],
+  );
+
+  const filteredRescueRows = useMemo(() => {
+    const normalizedQuery = normalizeLeadSearchValue(searchQuery);
+    const activeCadenceIds = cadenceFilter === 'all'
+      ? null
+      : new Set((contactCadenceGrid.buckets[cadenceFilter] || []).map((row) => row.entityId));
+
+    return lostLeadRescueSummary.rows.filter((row) => {
+      const lead = activeLeadById.get(row.leadId);
+      const linkedCase = lead ? resolveLinkedCaseForLead(lead) : undefined;
+      const ownerLabel = getLeadOwnerLabel(lead);
+      const searchableText = normalizeLeadSearchValue([
+        buildLeadSearchText(lead, linkedCase),
+        row.title,
+        row.subtitle,
+        row.reasonLabel,
+        row.reasonDetail,
+        row.nextMoveTitle,
+      ].filter(Boolean).join(' '));
+      const value = row.valueAmount || 0;
+      const matchesValue = rescueValueFilter === 'all'
+        || (rescueValueFilter === 'under_5000' && value < 5000)
+        || (rescueValueFilter === '5000_20000' && value >= 5000 && value <= 20000)
+        || (rescueValueFilter === 'over_20000' && value > 20000);
+      const matchesRisk = riskFilter === 'all' || row.severity !== 'medium' || Boolean(lead?.isAtRisk);
+
+      return (!normalizedQuery || searchableText.includes(normalizedQuery))
+        && (!sourceFilter || String(lead?.source || '') === sourceFilter)
+        && matchesRisk
+        && matchesValue
+        && (!rescueOwnerFilter || ownerLabel === rescueOwnerFilter)
+        && (!activeCadenceIds || activeCadenceIds.has(row.leadId));
+    });
+  }, [activeLeadById, cadenceFilter, contactCadenceGrid, lostLeadRescueSummary.rows, resolveLinkedCaseForLead, rescueOwnerFilter, rescueValueFilter, riskFilter, searchQuery, sourceFilter]);
+
   const filteredLeads = useMemo(() => {
     // STAGE31_LEADS_THIN_NUMBERED_LIST: wyszukiwarka dziala po nazwie, telefonie, mailu, firmie, zrodle i sprawie.
     const normalizedQuery = normalizeLeadSearchValue(searchQuery);
@@ -1039,10 +1126,14 @@ export default function Leads() {
   }, [activeLeads, cadenceFilter, contactCadenceGrid, historyClosedPeriodFilter, historyLeads, historyOutcomeFilter, historyReasonFilter, historyValueFilter, lostLeadRescueSummary, quickFilter, resolveLinkedCaseForLead, riskFilter, searchQuery, showTrash, sourceFilter, statusFilter, trashLeads, valueSortEnabled]);
 
   const leadPageSize = 20;
-  const leadPageCount = Math.max(1, Math.ceil(filteredLeads.length / leadPageSize));
+  const leadPageCount = Math.max(1, Math.ceil((rescueView ? filteredRescueRows.length : filteredLeads.length) / leadPageSize));
   const pagedLeads = useMemo(
     () => filteredLeads.slice((leadPage - 1) * leadPageSize, leadPage * leadPageSize),
     [filteredLeads, leadPage],
+  );
+  const pagedRescueRows = useMemo(
+    () => filteredRescueRows.slice((leadPage - 1) * leadPageSize, leadPage * leadPageSize),
+    [filteredRescueRows, leadPage],
   );
 
   useEffect(() => {
@@ -1051,7 +1142,7 @@ export default function Leads() {
 
   useEffect(() => {
     setLeadPage(1);
-  }, [cadenceFilter, historyClosedPeriodFilter, historyOutcomeFilter, historyReasonFilter, historyValueFilter, quickFilter, riskFilter, searchQuery, showTrash, sourceFilter, statusFilter, valueSortEnabled]);
+  }, [cadenceFilter, historyClosedPeriodFilter, historyOutcomeFilter, historyReasonFilter, historyValueFilter, quickFilter, rescueOwnerFilter, rescueValueFilter, riskFilter, searchQuery, showTrash, sourceFilter, statusFilter, valueSortEnabled]);
 
   const leadSearchSuggestions = useMemo(() => {
     const normalizedQuery = normalizeLeadSearchValue(searchQuery);
@@ -1088,6 +1179,8 @@ export default function Leads() {
     setShowTrash(false);
     setValueSortEnabled(false);
     setCadenceFilter('all');
+    setRescueValueFilter('all');
+    setRescueOwnerFilter('');
     setQuickFilter(filter);
     setRiskFilter(filter === 'at-risk' ? 'at-risk' : 'all');
     if (filter === 'history') {
@@ -1123,7 +1216,7 @@ export default function Leads() {
 
   const resetLeadFilters = () => {
     setSearchQuery('');
-    setQuickFilter('all');
+    setQuickFilter(rescueView ? 'rescue' : 'all');
     setShowTrash(false);
     setValueSortEnabled(false);
     setCadenceFilter('all');
@@ -1134,6 +1227,8 @@ export default function Leads() {
     setHistoryReasonFilter('');
     setHistoryValueFilter('all');
     setHistoryClosedPeriodFilter('365');
+    setRescueValueFilter('all');
+    setRescueOwnerFilter('');
     setShowMoreFilters(false);
   };
 
@@ -1153,7 +1248,7 @@ export default function Leads() {
               <span className="cf-status-pill leads-risk-header-count" data-cf-status-tone="red">{stats.atRisk}</span>
             </span>
           ) : undefined}
-          description={historyView ? 'Zamknięte, wygrane i przeniesione leady z zachowanym kontekstem.' : riskView ? 'Leady wymagające natychmiastowej uwagi i reakcji.' : undefined}
+          description={historyView ? 'Zamknięte, wygrane i przeniesione leady z zachowanym kontekstem.' : riskView ? 'Leady wymagające natychmiastowej uwagi i reakcji.' : rescueView ? 'Zarządzaj procesem sprzedaży i domykaj kolejne kroki.' : undefined}
           actions={
             <>
               <div className="head-actions">
@@ -1383,56 +1478,92 @@ export default function Leads() {
           </div>
         ) : null}
 
-        <div className="grid-5">
-          <StatShortcutCard
-            label="Wszystkie"
-            value={stats.total}
-            icon={LeadEntityIcon}
-            active={quickFilter === 'all' && !valueSortEnabled && !showTrash}
-            onClick={() => { setShowTrash(false); setQuickFilter('all'); setRiskFilter('all'); setValueSortEnabled(false); }}
-            title="Pokaż wszystkie leady"
-            ariaLabel="Pokaż wszystkie leady"
-            helper="Wszystkie leady"
-          />
+        {!rescueView ? (
+          <div className="grid-5">
+            <StatShortcutCard
+              label="Wszystkie"
+              value={stats.total}
+              icon={LeadEntityIcon}
+              active={quickFilter === 'all' && !valueSortEnabled && !showTrash}
+              onClick={() => { setShowTrash(false); setQuickFilter('all'); setRiskFilter('all'); setValueSortEnabled(false); }}
+              title="Pokaż wszystkie leady"
+              ariaLabel="Pokaż wszystkie leady"
+              helper="Wszystkie leady"
+            />
 
-          <StatShortcutCard
-            label="Aktywne"
-            value={stats.active}
-            icon={Activity}
-            active={quickFilter === 'active' && !showTrash}
-            onClick={() => toggleQuickFilter('active')}
-            title="Pokaż aktywne leady"
-            ariaLabel="Pokaż aktywne leady"
-            valueClassName="text-slate-900"
-            iconClassName="bg-blue-50 text-blue-500"
-            helper={activeView ? 'W trakcie sprzedaży' : 'Obecnie w procesie'}
-          />
+            <StatShortcutCard
+              label="Aktywne"
+              value={stats.active}
+              icon={Activity}
+              active={quickFilter === 'active' && !showTrash}
+              onClick={() => toggleQuickFilter('active')}
+              title="Pokaż aktywne leady"
+              ariaLabel="Pokaż aktywne leady"
+              valueClassName="text-slate-900"
+              iconClassName="bg-blue-50 text-blue-500"
+              helper={activeView ? 'W trakcie sprzedaży' : 'Obecnie w procesie'}
+            />
 
-          <StatShortcutCard
-            label="Wartość"
-            value={`${stats.value.toLocaleString('pl-PL')} PLN`}
-            icon={Wallet}
-            active={valueSortEnabled && !showTrash}
-            onClick={toggleValueSorting}
-            title="Sortuj leady po wartości"
-            ariaLabel="Sortuj leady po wartości"
-            helper={valueSortEnabled ? 'Sortowanie aktywne' : 'Suma wartości aktywnych leadów'}
-          />
+            <StatShortcutCard
+              label="Wartość"
+              value={`${stats.value.toLocaleString('pl-PL')} PLN`}
+              icon={Wallet}
+              active={valueSortEnabled && !showTrash}
+              onClick={toggleValueSorting}
+              title="Sortuj leady po wartości"
+              ariaLabel="Sortuj leady po wartości"
+              helper={valueSortEnabled ? 'Sortowanie aktywne' : 'Suma wartości aktywnych leadów'}
+            />
 
-          <StatShortcutCard
-            label="Zagrożone"
-            value={stats.atRisk}
-            icon={AlertTriangle}
-            active={quickFilter === 'at-risk' && !showTrash}
-            onClick={() => toggleQuickFilter('at-risk')}
-            title="Pokaż zagrożone leady"
-            ariaLabel="Pokaż zagrożone leady"
-            tone="risk"
-            helper={riskView ? `${stats.atRisk} ${stats.atRisk === 1 ? 'lead wymaga' : stats.atRisk >= 2 && stats.atRisk <= 4 ? 'leady wymagają' : 'leadów wymaga'} natychmiastowego ruchu` : 'Leady wymagające uwagi'}
-          />
+            <StatShortcutCard
+              label="Zagrożone"
+              value={stats.atRisk}
+              icon={AlertTriangle}
+              active={quickFilter === 'at-risk' && !showTrash}
+              onClick={() => toggleQuickFilter('at-risk')}
+              title="Pokaż zagrożone leady"
+              ariaLabel="Pokaż zagrożone leady"
+              tone="risk"
+              helper={riskView ? `${stats.atRisk} ${stats.atRisk === 1 ? 'lead wymaga' : stats.atRisk >= 2 && stats.atRisk <= 4 ? 'leady wymagają' : 'leadów wymaga'} natychmiastowego ruchu` : 'Leady wymagające uwagi'}
+            />
 
-          {/* Do odzyskania remains a real filter in the expanded filter panel, keeping the reference KPI row at four cards. */}
-        </div>
+            {/* Do odzyskania remains a real filter in the expanded filter panel, keeping the reference KPI row at four cards. */}
+          </div>
+        ) : null}
+
+        {rescueView ? (
+          <div className="leads-rescue-summary" data-frt008-rescue-summary="true">
+            <div className="leads-rescue-summary-primary">
+              <span className="leads-rescue-summary-icon" aria-hidden="true"><RefreshCw className="h-5 w-5" /></span>
+              <div>
+                <strong>{lostLeadRescueSummary.total} {lostLeadRescueSummary.total === 1 ? 'lead do odzyskania' : lostLeadRescueSummary.total >= 2 && lostLeadRescueSummary.total <= 4 ? 'leady do odzyskania' : 'leadów do odzyskania'}</strong>
+                <span>Potencjał <b>{rescuePotential.toLocaleString('pl-PL')} PLN</b></span>
+              </div>
+            </div>
+            <div className="leads-rescue-summary-metric">
+              <span className="leads-rescue-summary-metric-icon is-blue" aria-hidden="true"><PhoneCall className="h-4 w-4" /></span>
+              <span className="mini">Działaj teraz</span>
+              <strong>{rescueReadyCount}</strong>
+              <span className="sub">Leady z zaplanowanym ruchem</span>
+            </div>
+            <div className="leads-rescue-summary-metric">
+              <span className="leads-rescue-summary-metric-icon is-amber" aria-hidden="true"><Clock3 className="h-4 w-4" /></span>
+              <span className="mini">Wymagają uwagi</span>
+              <strong>{rescueAttentionCount}</strong>
+              <span className="sub">Brak pewnej daty lub 7+ dni ciszy</span>
+            </div>
+            <div className="leads-rescue-summary-metric">
+              <span className="leads-rescue-summary-metric-icon is-green" aria-hidden="true"><TrendingUp className="h-4 w-4" /></span>
+              <span className="mini">Szansa na zamknięcie</span>
+              <strong>Brak danych</strong>
+              <span className="sub">Brak źródła prognostycznego</span>
+            </div>
+            <div className="leads-rescue-summary-copy">
+              <strong>Nie pozwól, by dobre leady uciekły.</strong>
+              <span>Szybka reakcja zwiększa szansę na domknięcie sprzedaży.</span>
+            </div>
+          </div>
+        ) : null}
 
         {/*
 // STAGE32_STAGE96_COMPAT_WIDTH_MARKER: xl:grid-cols-[minmax(0,1fr)_300px] is a legacy guard marker only; real rail width is delegated to Stage96 source truth CSS.
@@ -1448,7 +1579,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
           data-stage96-leads-right-rail-source-truth="true"
         >
           <div className="stack">
-            <div className={`leads-filter-card${activeView ? ' leads-filter-card-active' : ''}${riskView ? ' leads-filter-card-risk' : ''}${historyView ? ' leads-filter-card-history' : ''}`} data-frt004-leads-filter-card="true" data-frt005-leads-active-filter-card={activeView ? 'true' : 'false'} data-frt006-risk-filter-card={riskView ? 'true' : 'false'} data-frt007-history-filter-card={historyView ? 'true' : 'false'}>
+            <div className={`leads-filter-card${activeView ? ' leads-filter-card-active' : ''}${riskView ? ' leads-filter-card-risk' : ''}${historyView ? ' leads-filter-card-history' : ''}${rescueView ? ' leads-filter-card-rescue' : ''}`} data-frt004-leads-filter-card="true" data-frt005-leads-active-filter-card={activeView ? 'true' : 'false'} data-frt006-risk-filter-card={riskView ? 'true' : 'false'} data-frt007-history-filter-card={historyView ? 'true' : 'false'} data-frt008-rescue-filter-card={rescueView ? 'true' : 'false'}>
               <div className="leads-filter-search">
                 <div className="search cf-main-search cf-main-search-stage177" data-cf-main-search="true" data-leads-search="true" data-stage117-leads-search-anchor="true" data-cf-main-search-source="semantic173">
               <span aria-hidden="true"><Search className="w-4 h-4" /></span>
@@ -1487,7 +1618,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
 
 
 
-            <div className="leads-filter-toolbar" data-frt004-leads-filter-toolbar="true" data-frt005-leads-active-toolbar={activeView ? 'true' : 'false'} data-frt006-risk-toolbar={riskView ? 'true' : 'false'} data-frt007-history-toolbar={historyView ? 'true' : 'false'}>
+            <div className="leads-filter-toolbar" data-frt004-leads-filter-toolbar="true" data-frt005-leads-active-toolbar={activeView ? 'true' : 'false'} data-frt006-risk-toolbar={riskView ? 'true' : 'false'} data-frt007-history-toolbar={historyView ? 'true' : 'false'} data-frt008-rescue-toolbar={rescueView ? 'true' : 'false'}>
               {activeView ? (
                 <button
                   type="button"
@@ -1513,6 +1644,22 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                     <option value="won">Wygrane</option>
                     <option value="lost">Przegrane</option>
                     <option value="moved_to_service">Przeniesione do obsługi</option>
+                  </select>
+                </label>
+              ) : rescueView ? (
+                <label className="leads-filter-control">
+                  <span>Źródło</span>
+                  <select
+                    className={nativeSelectClassName()}
+                    value={sourceFilter}
+                    onChange={(event) => setSourceFilter(event.target.value)}
+                    aria-label="Filtr źródła leadów do odzyskania"
+                    data-frt008-rescue-source-filter="true"
+                  >
+                    <option value="">Wszystkie źródła</option>
+                    {LEAD_SOURCE_OPTIONS.map((source) => (
+                      <option key={source.value} value={source.value}>{source.label}</option>
+                    ))}
                   </select>
                 </label>
               ) : (
@@ -1547,6 +1694,20 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                     ))}
                   </select>
                 </label>
+              ) : rescueView ? (
+                <label className="leads-filter-control">
+                  <span>Ryzyko</span>
+                  <select
+                    className={nativeSelectClassName()}
+                    value={riskFilter}
+                    onChange={(event) => setRiskFilter(event.target.value as 'all' | 'at-risk')}
+                    aria-label="Filtr ryzyka leadów do odzyskania"
+                    data-frt008-rescue-risk-filter="true"
+                  >
+                    <option value="all">Wszystkie poziomy</option>
+                    <option value="at-risk">Wysokie</option>
+                  </select>
+                </label>
               ) : historyView ? (
                 <label className="leads-filter-control">
                   <span>Powód utraty / Wynik</span>
@@ -1563,7 +1724,23 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 </label>
               ) : null}
 
-              {historyView ? (
+              {rescueView ? (
+                <label className="leads-filter-control">
+                  <span>Wartość</span>
+                  <select
+                    className={nativeSelectClassName()}
+                    value={rescueValueFilter}
+                    onChange={(event) => setRescueValueFilter(event.target.value as typeof rescueValueFilter)}
+                    aria-label="Filtr wartości leadów do odzyskania"
+                    data-frt008-rescue-value-filter="true"
+                  >
+                    <option value="all">Wszystkie wartości</option>
+                    <option value="under_5000">Poniżej 5 000 PLN</option>
+                    <option value="5000_20000">5 000–20 000 PLN</option>
+                    <option value="over_20000">Powyżej 20 000 PLN</option>
+                  </select>
+                </label>
+              ) : historyView ? (
                 <label className="leads-filter-control">
                   <span>Wartość</span>
                   <select
@@ -1612,6 +1789,22 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                     <option value="all">Wszystkie daty</option>
                   </select>
                 </label>
+              ) : rescueView ? (
+                <label className="leads-filter-control">
+                  <span>Ostatni kontakt</span>
+                  <select
+                    className={nativeSelectClassName()}
+                    value={cadenceFilter}
+                    onChange={(event) => setCadenceFilter(event.target.value as ContactCadenceBucketKey | 'all')}
+                    aria-label="Filtr ostatniego kontaktu leadów do odzyskania"
+                    data-frt008-rescue-contact-filter="true"
+                  >
+                    <option value="all">Wszystkie daty</option>
+                    {contactCadenceBuckets.map((bucket) => (
+                      <option key={bucket.key} value={bucket.key}>{bucket.label}</option>
+                    ))}
+                  </select>
+                </label>
               ) : riskView ? (
                 <button
                   type="button"
@@ -1639,7 +1832,21 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 </label>
               )}
 
-              {riskView ? (
+              {rescueView ? (
+                <label className="leads-filter-control">
+                  <span>Odpowiedzialny</span>
+                  <select
+                    className={nativeSelectClassName()}
+                    value={rescueOwnerFilter}
+                    onChange={(event) => setRescueOwnerFilter(event.target.value)}
+                    aria-label="Filtr odpowiedzialnego leadów do odzyskania"
+                    data-frt008-rescue-owner-filter="true"
+                  >
+                    <option value="">Wszyscy odpowiedzialni</option>
+                    {rescueOwnerOptions.map((owner) => <option key={owner} value={owner}>{owner}</option>)}
+                  </select>
+                </label>
+              ) : riskView ? (
                 <label className="leads-filter-control leads-risk-cadence-control">
                   <span>Kontakt / cisza</span>
                   <select
@@ -1790,62 +1997,138 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
             ) : null}
 
 
-            {!showTrash && quickFilter === 'rescue' ? (
-              <div className="table-card lead-table-card w-full max-w-none" data-stage226-lost-lead-rescue-list="true">
+            {rescueView ? (
+              <section className="leads-rescue-view" data-frt008-rescue-view="true" data-stage226-lost-lead-rescue-list="true">
                 <span hidden data-stage226-lost-lead-rescue-filter="true" />
-                <div className="row row-empty">
-                  <span className="index"><AlertTriangle className="h-4 w-4" /></span>
-                  <span>
-                    <span className="title">Do odzyskania</span>
-                    <span className="sub">Lista priorytetowa dla właściciela: najpierw leady krytyczne, potem wysokie i średnie ryzyko.</span>
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-2 p-3 pt-0" data-stage226r7-rescue-summary="true">
-                  <span className="cf-status-pill" data-cf-status-tone="red">Krytyczne: {lostLeadRescueSummary.critical}</span>
-                  <span className="cf-status-pill" data-cf-status-tone="amber">Wysokie: {lostLeadRescueSummary.high}</span>
-                  <span className="cf-status-pill" data-cf-status-tone="blue">Średnie: {lostLeadRescueSummary.medium}</span>
-                  {lostLeadRescueSummary.total > 8 ? <span className="pill">Pokazano 8 z {lostLeadRescueSummary.total}</span> : null}
-                </div>
-                {lostLeadRescueSummary.rows.length ? (
-                  lostLeadRescueSummary.rows.slice(0, 8).map((row, rowIndex) => (
-                    <div key={row.id} className="row lead-row cf-lead-row-inline" data-stage226-lost-lead-rescue-row="true">
-                      <span className="index">{rowIndex + 1}</span>
-                      <span className="lead-main-cell">
-                        <span className="title">{row.title}</span>
-                        <span className="cf-list-row-meta">
-                          {row.subtitle ? <span className="sub">{row.subtitle}</span> : null}
-                          <span className="cf-status-pill" data-cf-status-tone={row.severity === 'critical' ? 'red' : row.severity === 'high' ? 'amber' : 'blue'}>{row.reasonLabel}</span>
-                          {row.contactSilentDays !== null ? <span className="pill">{row.contactSilentDays} dni ciszy</span> : <span className="pill">Brak daty kontaktu</span>}
-                          {row.valueAmount ? <span className="cf-list-row-value">{row.valueAmount.toLocaleString('pl-PL')} {row.valueCurrency || 'PLN'}</span> : null}
-                        </span>
-                        <span className="sub">{row.reasonDetail}</span>
-                      </span>
-                      <span className="lead-action-cell" title={row.nextMoveTitle || 'Brak zaplanowanej akcji'}>
-                        <span className="mini">Następny ruch</span>
-                        <strong>{row.nextMoveTitle || 'Brak zaplanowanej akcji'}</strong>
-                        <span className="sub">{row.nextMoveAt || 'Ustaw zadanie ręcznie po otwarciu leada.'}</span>
-                      </span>
-                      <span className="lead-actions">
-                        <Link to={row.href} className="btn ghost">Otwórz</Link>
-                        <button type="button" className="btn ghost" disabled title="Do potwierdzenia: bezpieczne tworzenie zadania z rescue">Ustaw zadanie</button>
-                        <button type="button" className="btn ghost" disabled title="Do potwierdzenia: trwały snooze rescue">Odłóż</button>
-                        <button type="button" className="btn ghost danger" disabled title="Do potwierdzenia: bezpieczne oznaczanie jako martwy">Oznacz jako martwy</button>
+                <div className="table-card lead-table-card leads-rescue-table-card w-full max-w-none" data-frt008-rescue-table="true">
+                  <div className="leads-table-head leads-rescue-table-head" aria-hidden="true">
+                    <span>Lead / firma</span>
+                    <span>Powód do odzyskania</span>
+                    <span>Ostatni kontakt</span>
+                    <span>Potencjał</span>
+                    <span>Sugerowany następny krok</span>
+                    <span>Odpowiedzialny</span>
+                    <span>Akcje</span>
+                  </div>
+                  {loading || workspaceLoading ? (
+                    <div className="row row-empty">
+                      <span className="index"><Loader2 className="h-4 w-4 animate-spin" /></span>
+                      <span>
+                        <span className="title">Ładowanie leadów</span>
+                        <span className="sub">Pobieram dane z aplikacji.</span>
                       </span>
                     </div>
-                  ))
-                ) : (
-                  <div className="row row-empty">
-                    <span className="index">0</span>
-                    <span>
-                      <span className="title">Brak leadów do odzyskania</span>
-                      <span className="sub">Brak leadów wymagających odzyskania według aktualnych reguł.</span>
-                    </span>
-                  </div>
-                )}
-              </div>
+                  ) : loadError ? (
+                    <div className="row row-empty">
+                      <span className="index">!</span>
+                      <span>
+                        <span className="title">Nie udało się pobrać leadów</span>
+                        <span className="sub">{loadError}</span>
+                      </span>
+                    </div>
+                  ) : pagedRescueRows.length ? (
+                    pagedRescueRows.map((row, rowIndex) => {
+                      const lead = activeLeadById.get(row.leadId);
+                      const companyLabel = String(lead?.company || '').trim();
+                      const leadDisplayLabel = companyLabel || row.title;
+                      const leadContactLabel = companyLabel && row.title !== companyLabel ? row.title : row.subtitle || getLeadPrimaryContact(lead);
+                      const ownerLabel = getLeadOwnerLabel(lead);
+                      const pending = archivePendingId === row.leadId;
+                      const severityLabel = row.severity === 'critical' ? 'Krytyczne' : row.severity === 'high' ? 'Wysokie' : 'Średnie';
+                      const severityTone = row.severity === 'critical' ? 'red' : row.severity === 'high' ? 'amber' : 'blue';
+                      const lastContactLabel = formatLeadTableDate(row.lastContactAt, 'Brak daty kontaktu');
+                      const contactMeta = row.contactSilentDays !== null ? `${row.contactSilentDays} ${formatPolishDays(row.contactSilentDays)} ciszy` : 'Brak pewnej daty kontaktu';
+                      const valueLabel = row.valueAmount ? `${row.valueAmount.toLocaleString('pl-PL')} ${row.valueCurrency || 'PLN'}` : 'Brak wartości';
+
+                      return (
+                        <div key={row.id} className="row lead-row leads-rescue-table-row" data-stage226-lost-lead-rescue-row="true" data-frt008-rescue-row="true">
+                          <span className="lead-main-cell">
+                            <span className="lead-active-avatar" aria-hidden="true">{getLeadInitials(lead, leadDisplayLabel)}</span>
+                            <span className="lead-active-identity-copy">
+                              <Link to={row.href} className="title cf-lead-list-card-name leads-rescue-record-link" aria-label={`Otwórz leada ${leadDisplayLabel}`}>{leadDisplayLabel}</Link>
+                              <span className="sub lead-table-contact" title={leadContactLabel}>{leadContactLabel}</span>
+                            </span>
+                          </span>
+                          <span className="lead-company-cell leads-rescue-reason-cell">
+                            <span className="title" title={row.reasonLabel}>{row.reasonLabel}</span>
+                            <span className="cf-status-pill" data-cf-status-tone={severityTone}>{severityLabel}</span>
+                            <span className="sub" title={row.reasonDetail}>{row.reasonDetail}</span>
+                          </span>
+                          <span className="lead-last-contact-cell">
+                            <span className="mini">Ostatni kontakt</span>
+                            <strong>{lastContactLabel}</strong>
+                            <span className="sub">{contactMeta}</span>
+                          </span>
+                          <span className="lead-value-cell">
+                            <span className="mini">Potencjał</span>
+                            <strong className="cf-list-row-value">{valueLabel}</strong>
+                          </span>
+                          <span className="lead-action-cell leads-rescue-next-cell">
+                            <span className="mini">Następny krok</span>
+                            <strong title={row.nextMoveTitle || 'Ustaw kolejny krok'}>{row.nextMoveTitle || 'Ustaw kolejny krok'}</strong>
+                            <span className="sub">{row.nextMoveAt ? formatLeadTableDate(row.nextMoveAt) : 'Brak zaplanowanego terminu'}</span>
+                            <button
+                              type="button"
+                              className="leads-rescue-next-action"
+                              data-context-action-kind="task"
+                              data-context-record-type="lead"
+                              data-context-record-id={row.leadId}
+                              data-context-lead-id={row.leadId}
+                              data-context-record-label={leadDisplayLabel}
+                              aria-label={`Ustaw kolejny krok dla ${leadDisplayLabel}`}
+                            >
+                              Ustaw kolejny krok
+                            </button>
+                          </span>
+                          <span className="lead-owner-cell leads-rescue-owner-cell">
+                            <span className="leads-rescue-owner-avatar" aria-hidden="true">{getLeadInitials(lead, ownerLabel)}</span>
+                            <span className="mini">Odpowiedzialny</span>
+                            <strong title={ownerLabel}>{ownerLabel}</strong>
+                          </span>
+                          <span className="lead-actions">
+                            <button
+                              type="button"
+                              className={actionIconClass('danger', 'btn ghost lead-icon-btn')}
+                              disabled={pending}
+                              onClick={(event) => lead ? handleArchiveLead(event, lead) : undefined}
+                              aria-label={`Przenieś leada ${leadDisplayLabel} do kosza`}
+                              title="Przenieś leada do kosza"
+                            >
+                              {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <MoreHorizontal className="h-4 w-4" />}
+                            </button>
+                          </span>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div className="row row-empty">
+                      <span className="index">0</span>
+                      <span>
+                        <span className="title">Brak leadów do odzyskania</span>
+                        <span className="sub">Brak leadów wymagających odzyskania według aktualnych reguł i filtrów.</span>
+                      </span>
+                    </div>
+                  )}
+                  {!loading && !workspaceLoading && !loadError ? (
+                    <div className="leads-table-footer" data-frt008-rescue-pagination="true">
+                      <span>{filteredRescueRows.length ? `${(leadPage - 1) * leadPageSize + 1}–${Math.min(leadPage * leadPageSize, filteredRescueRows.length)}` : '0'} z {filteredRescueRows.length} leadów</span>
+                      <div className="leads-pagination-controls">
+                        <button type="button" className="leads-pagination-button" onClick={() => setLeadPage((currentPage) => Math.max(1, currentPage - 1))} disabled={leadPage <= 1} aria-label="Poprzednia strona">
+                          <ChevronLeft className="h-4 w-4" />
+                        </button>
+                        <span className="leads-pagination-current">{leadPage}</span>
+                        <button type="button" className="leads-pagination-button" onClick={() => setLeadPage((currentPage) => Math.min(leadPageCount, currentPage + 1))} disabled={leadPage >= leadPageCount} aria-label="Następna strona">
+                          <ChevronRight className="h-4 w-4" />
+                        </button>
+                        <span className="leads-page-size">20 / strona</span>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              </section>
             ) : null}
 
-            <div className={`table-card lead-table-card w-full max-w-none${riskView ? ' leads-risk-table-card' : ''}${historyView ? ' leads-history-table-card' : ''}`} data-stage25-lead-table-card="true" data-stage117-leads-list="true" data-frt006-risk-table-card={riskView ? 'true' : 'false'} data-frt007-history-table-card={historyView ? 'true' : 'false'}>
+            {!rescueView ? (<div className={`table-card lead-table-card w-full max-w-none${riskView ? ' leads-risk-table-card' : ''}${historyView ? ' leads-history-table-card' : ''}`} data-stage25-lead-table-card="true" data-stage117-leads-list="true" data-frt006-risk-table-card={riskView ? 'true' : 'false'} data-frt007-history-table-card={historyView ? 'true' : 'false'}>
               <div className={`leads-table-head${activeView ? ' leads-table-head-active' : ''}${riskView ? ' leads-table-head-risk' : ''}${historyView ? ' leads-table-head-history' : ''}`} data-frt004-leads-table-head="true" data-frt005-active-table-head={activeView ? 'true' : 'false'} data-frt006-risk-table-head={riskView ? 'true' : 'false'} data-frt007-history-table-head={historyView ? 'true' : 'false'} aria-hidden="true">
                 {riskView ? (
                   <>
@@ -2156,7 +2439,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   </div>
                 </div>
               ) : null}
-            </div>
+            </div>) : null}
           </div>
 
         </div>

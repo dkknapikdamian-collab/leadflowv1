@@ -15,6 +15,7 @@
         "test:forteca-frt-005-leads-active": "node --test tests/forteca-frt-005-leads-active.test.cjs",
         "test:forteca-frt-006-leads-at-risk": "node --test tests/forteca-frt-006-leads-at-risk.test.cjs",
         "test:forteca-frt-007-leads-history": "node --test tests/forteca-frt-007-leads-history.test.cjs",
+        "test:forteca-frt-008-leads-rescue": "node --test tests/forteca-frt-008-leads-rescue.test.cjs",
         "check:closeflow-client-case-urgent-regressions": "node scripts/check-closeflow-client-case-urgent-regressions.cjs",
         "check:stage124-supabase-egress-contract": "node scripts/check-stage124-supabase-egress-contract.cjs",
         "check:calendar:stage114-mojibake": "node scripts/check-stage114-calendar-mojibake.cjs",
