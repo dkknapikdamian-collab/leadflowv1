@@ -68,3 +68,871 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* FRT-010 — Lead Detail visual SOT. The existing detail logic remains the owner of
+ * loading, mutations and dialogs; this route-local composition owns only the
+ * Forteca calm-light hierarchy shown below. */
+#root .lead-detail-vnext-page {
+  width: 100%;
+  max-width: 1480px;
+  margin: 0 auto;
+  color: #334155;
+}
+
+#root .forteca-lead-detail-header {
+  display: flex;
+  min-width: 0;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 0 0 20px;
+}
+
+#root .forteca-lead-detail-header-main,
+#root .forteca-lead-detail-header-actions,
+#root .forteca-lead-detail-title-line,
+#root .forteca-lead-detail-tags,
+#root .forteca-lead-detail-company,
+#root .forteca-lead-detail-next-step-row,
+#root .forteca-lead-detail-card-heading,
+#root .forteca-lead-detail-inline-actions,
+#root .forteca-lead-detail-latest-row,
+#root .forteca-lead-detail-follow-up-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+}
+
+#root .forteca-lead-detail-header-main {
+  gap: 16px;
+}
+
+#root .forteca-lead-detail-header-actions {
+  flex: 0 0 auto;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+#root .forteca-lead-detail-back,
+#root .forteca-lead-detail-text-action,
+#root .forteca-lead-detail-link-action,
+#root .forteca-lead-detail-secondary-action,
+#root .forteca-lead-detail-action,
+#root .forteca-lead-detail-primary-action,
+#root .forteca-lead-detail-icon-button {
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+#root .forteca-lead-detail-back {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 0;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 750;
+  background: transparent;
+}
+
+#root .forteca-lead-detail-back:hover,
+#root .forteca-lead-detail-text-action:hover,
+#root .forteca-lead-detail-link-action:hover {
+  color: #1d4ed8;
+}
+
+#root .forteca-lead-detail-identity {
+  min-width: 0;
+}
+
+#root .forteca-lead-detail-title-line {
+  gap: 9px;
+}
+
+#root .forteca-lead-detail-title-line h1 {
+  max-width: min(760px, 62vw);
+  margin: 0;
+  overflow: hidden;
+  color: #0f172a;
+  font-size: clamp(25px, 2.1vw, 34px);
+  font-weight: 850;
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .forteca-lead-detail-title-star {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  color: #f59e0b;
+  fill: #fef3c7;
+}
+
+#root .forteca-lead-detail-tags {
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+#root .forteca-lead-detail-tag {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  padding: 0 9px;
+  border: 1px solid #dbe4ef;
+  border-radius: 999px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1;
+}
+
+#root .forteca-lead-detail-tag:first-child {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+#root .forteca-lead-detail-icon-button {
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dbe4ef;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #64748b;
+  transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;
+}
+
+#root .forteca-lead-detail-icon-button:hover {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+#root .forteca-lead-detail-edit,
+#root .forteca-lead-detail-primary-action {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #2563eb;
+  border-radius: 12px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: 0 7px 18px rgba(37, 99, 235, 0.16);
+}
+
+#root .forteca-lead-detail-edit {
+  padding: 0 16px;
+}
+
+#root .forteca-lead-detail-edit:hover,
+#root .forteca-lead-detail-primary-action:hover {
+  border-color: #1d4ed8;
+  background: #1d4ed8;
+}
+
+#root .forteca-lead-detail-overflow-menu {
+  min-width: 190px;
+}
+
+#root .forteca-lead-detail {
+  display: grid;
+  min-width: 0;
+  gap: 16px;
+}
+
+#root .forteca-lead-detail-service-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 17px 20px;
+  border: 1px solid #bfdbfe;
+  border-radius: 16px;
+  background: #eff6ff;
+}
+
+#root .forteca-lead-detail-service-banner h2,
+#root .forteca-lead-detail-service-banner p {
+  margin: 0;
+}
+
+#root .forteca-lead-detail-service-banner h2 {
+  color: #0f172a;
+  font-size: 16px;
+  font-weight: 850;
+}
+
+#root .forteca-lead-detail-service-banner p {
+  margin-top: 4px;
+  color: #475569;
+  font-size: 13px;
+}
+
+#root .forteca-lead-detail-eyebrow,
+#root .forteca-lead-detail-label {
+  display: block;
+  color: #94a3b8;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.07em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+#root .forteca-lead-detail-contact-strip {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(210px, 1.35fr) repeat(3, minmax(150px, 1fr));
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 17px;
+  background: #ffffff;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.035);
+}
+
+#root .forteca-lead-detail-contact-strip > * {
+  min-width: 0;
+  padding: 17px 18px;
+}
+
+#root .forteca-lead-detail-contact-strip > * + * {
+  border-left: 1px solid #eef2f7;
+}
+
+#root .forteca-lead-detail-company {
+  gap: 11px;
+}
+
+#root .forteca-lead-detail-avatar {
+  display: inline-flex;
+  width: 39px;
+  height: 39px;
+  flex: 0 0 39px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+  background: #e0ecff;
+  color: #1d4ed8;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+#root .forteca-lead-detail-company > div,
+#root .forteca-lead-detail-contact-cell {
+  min-width: 0;
+}
+
+#root .forteca-lead-detail-company strong,
+#root .forteca-lead-detail-contact-cell strong {
+  display: block;
+  margin-top: 6px;
+  overflow: hidden;
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .forteca-lead-detail-company small,
+#root .forteca-lead-detail-contact-cell small {
+  display: block;
+  margin-top: 4px;
+  overflow: hidden;
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .forteca-lead-detail-metrics {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 17px;
+  background: #ffffff;
+}
+
+#root .forteca-lead-detail-metric {
+  min-width: 0;
+  min-height: 76px;
+  padding: 14px 13px;
+}
+
+#root .forteca-lead-detail-metric + .forteca-lead-detail-metric {
+  border-left: 1px solid #eef2f7;
+}
+
+#root .forteca-lead-detail-metric span {
+  display: block;
+  overflow: hidden;
+  color: #94a3b8;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+#root .forteca-lead-detail-metric strong {
+  display: block;
+  margin-top: 9px;
+  overflow: hidden;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .forteca-lead-detail-metric--status strong,
+#root .forteca-lead-detail-metric--active strong {
+  color: #2563eb;
+}
+
+#root .forteca-lead-detail-metric--value strong {
+  color: #0f172a;
+  font-size: 15px;
+}
+
+#root .forteca-lead-detail-metric--danger strong {
+  color: #dc2626;
+}
+
+#root .forteca-lead-detail-metric--warn strong {
+  color: #b45309;
+}
+
+#root .forteca-lead-detail-metric--good strong {
+  color: #15803d;
+}
+
+#root .forteca-lead-detail-metric--muted strong {
+  color: #94a3b8;
+}
+
+#root .forteca-lead-detail-tabs {
+  display: flex;
+  min-width: 0;
+  gap: 23px;
+  overflow-x: auto;
+  border-bottom: 1px solid #e2e8f0;
+  scrollbar-width: none;
+}
+
+#root .forteca-lead-detail-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+#root .forteca-lead-detail-tab {
+  position: relative;
+  min-height: 43px;
+  flex: 0 0 auto;
+  padding: 0 1px;
+  border: 0;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+#root .forteca-lead-detail-tab::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  border-radius: 3px 3px 0 0;
+  background: transparent;
+  content: '';
+}
+
+#root .forteca-lead-detail-tab:hover,
+#root .forteca-lead-detail-tab.is-active {
+  color: #1d4ed8;
+}
+
+#root .forteca-lead-detail-tab.is-active::after {
+  background: #2563eb;
+}
+
+#root .forteca-lead-detail-content-grid {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) 326px;
+  align-items: start;
+  gap: 18px;
+}
+
+#root .forteca-lead-detail-main-column,
+#root .forteca-lead-detail-right-rail {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 16px;
+}
+
+#root .forteca-lead-detail-card {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 17px;
+  background: #ffffff;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.035);
+}
+
+#root .forteca-lead-detail-card-heading {
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 17px;
+}
+
+#root .forteca-lead-detail-card-heading h2 {
+  margin: 5px 0 0;
+  color: #0f172a;
+  font-size: 16px;
+  font-weight: 850;
+  letter-spacing: -0.02em;
+}
+
+#root .forteca-lead-detail-card-icon {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 auto;
+  color: #94a3b8;
+}
+
+#root .forteca-lead-detail-summary-copy,
+#root .forteca-lead-detail-note-copy,
+#root .forteca-lead-detail-empty-copy,
+#root .forteca-lead-detail-empty-inline p {
+  margin: 0;
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+#root .forteca-lead-detail-empty-copy,
+#root .forteca-lead-detail-empty-inline p {
+  color: #94a3b8;
+}
+
+#root .forteca-lead-detail-facts {
+  display: grid;
+  margin: 20px 0 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+#root .forteca-lead-detail-facts > div {
+  min-width: 0;
+  padding: 12px;
+  border-radius: 11px;
+  background: #f8fafc;
+}
+
+#root .forteca-lead-detail-facts dt {
+  color: #94a3b8;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+#root .forteca-lead-detail-facts dd {
+  margin: 6px 0 0;
+  overflow: hidden;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+}
+
+#root .forteca-lead-detail-next-step-row {
+  gap: 11px;
+  padding: 13px;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  background: #f8fbff;
+}
+
+#root .forteca-lead-detail-next-step-icon {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+#root .forteca-lead-detail-next-step-row > div {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+#root .forteca-lead-detail-next-step-row strong,
+#root .forteca-lead-detail-activity-row strong,
+#root .forteca-lead-detail-latest-row strong,
+#root .forteca-lead-detail-follow-up-row strong {
+  display: block;
+  overflow: hidden;
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+}
+
+#root .forteca-lead-detail-next-step-row p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 11px;
+}
+
+#root .forteca-lead-detail-text-action,
+#root .forteca-lead-detail-link-action {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+  background: transparent;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+#root .forteca-lead-detail-secondary-action,
+#root .forteca-lead-detail-primary-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 15px;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+#root .forteca-lead-detail-secondary-action {
+  border: 1px solid #dbe4ef;
+  background: #ffffff;
+  color: #475569;
+}
+
+#root .forteca-lead-detail-secondary-action:hover {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+#root .forteca-lead-detail-primary-action {
+  border: 1px solid #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+#root .forteca-lead-detail-action-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+#root .forteca-lead-detail-action {
+  display: flex;
+  min-width: 0;
+  min-height: 48px;
+  align-items: center;
+  gap: 9px;
+  padding: 0 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 800;
+  text-align: left;
+  transition: border-color 120ms ease-out, background-color 120ms ease-out, color 120ms ease-out;
+}
+
+#root .forteca-lead-detail-action > span {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+#root .forteca-lead-detail-action:hover:not(:disabled) {
+  border-color: #bfdbfe;
+  background: #f8fbff;
+  color: #1d4ed8;
+}
+
+#root .forteca-lead-detail-action--note > span { background: #eff6ff; color: #2563eb; }
+#root .forteca-lead-detail-action--phone > span { background: #ecfdf5; color: #16a34a; }
+#root .forteca-lead-detail-action--task > span { background: #ecfdf3; color: #16a34a; }
+#root .forteca-lead-detail-action--event > span { background: #fffbeb; color: #d97706; }
+#root .forteca-lead-detail-action--offer > span { background: #f5f3ff; color: #7c3aed; }
+#root .forteca-lead-detail-action--case > span { background: #f0fdfa; color: #0f766e; }
+#root .forteca-lead-detail-action--missing > span { background: #fff7ed; color: #c2410c; }
+
+#root .forteca-lead-detail-action:disabled,
+#root .forteca-lead-detail-secondary-action:disabled,
+#root .forteca-lead-detail-primary-action:disabled,
+#root .forteca-lead-detail-text-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+#root .forteca-lead-detail-latest-list,
+#root .forteca-lead-detail-activity-list,
+#root .forteca-lead-detail-follow-up-list {
+  display: grid;
+  gap: 0;
+}
+
+#root .forteca-lead-detail-latest-row,
+#root .forteca-lead-detail-activity-row,
+#root .forteca-lead-detail-follow-up-row {
+  gap: 10px;
+  padding: 12px 0;
+}
+
+#root .forteca-lead-detail-latest-row + .forteca-lead-detail-latest-row,
+#root .forteca-lead-detail-activity-row + .forteca-lead-detail-activity-row,
+#root .forteca-lead-detail-follow-up-row + .forteca-lead-detail-follow-up-row {
+  border-top: 1px solid #eef2f7;
+}
+
+#root .forteca-lead-detail-latest-row > div,
+#root .forteca-lead-detail-activity-row > div,
+#root .forteca-lead-detail-follow-up-row > div {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+#root .forteca-lead-detail-activity-row {
+  align-items: flex-start;
+}
+
+#root .forteca-lead-detail-activity-dot {
+  display: inline-flex;
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  margin-top: 5px;
+  border-radius: 999px;
+  background: #93c5fd;
+  box-shadow: 0 0 0 4px #eff6ff;
+}
+
+#root .forteca-lead-detail-activity-row p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+#root .forteca-lead-detail-latest-row small,
+#root .forteca-lead-detail-activity-row small,
+#root .forteca-lead-detail-follow-up-row small {
+  display: block;
+  margin-top: 4px;
+  color: #94a3b8;
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+#root .forteca-lead-detail-offer-summary {
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+#root .forteca-lead-detail-offer-summary span,
+#root .forteca-lead-detail-offer-summary small {
+  color: #64748b;
+  font-size: 12px;
+}
+
+#root .forteca-lead-detail-offer-summary strong {
+  color: #0f172a;
+  font-size: 25px;
+  font-weight: 850;
+  letter-spacing: -0.04em;
+}
+
+#root .forteca-lead-detail-inline-actions {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#root .forteca-lead-detail-inline-actions .forteca-lead-detail-secondary-action {
+  margin-top: 14px;
+}
+
+@media (max-width: 1260px) {
+  #root .forteca-lead-detail-metrics {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  #root .forteca-lead-detail-metric:nth-child(5) {
+    border-left: 0;
+    border-top: 1px solid #eef2f7;
+  }
+
+  #root .forteca-lead-detail-metric:nth-child(n + 6) {
+    border-top: 1px solid #eef2f7;
+  }
+}
+
+@media (max-width: 1100px) {
+  #root .forteca-lead-detail-contact-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #root .forteca-lead-detail-contact-strip > *:nth-child(3) {
+    border-left: 0;
+    border-top: 1px solid #eef2f7;
+  }
+
+  #root .forteca-lead-detail-contact-strip > *:nth-child(4) {
+    border-top: 1px solid #eef2f7;
+  }
+
+  #root .forteca-lead-detail-content-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #root .forteca-lead-detail-right-rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  #root > main.main-lead-detail {
+    padding: 18px 14px 42px;
+  }
+
+  #root .forteca-lead-detail-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  #root .forteca-lead-detail-header-main {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  #root .forteca-lead-detail-title-line h1 {
+    max-width: calc(100vw - 58px);
+    white-space: normal;
+  }
+
+  #root .forteca-lead-detail-header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  #root .forteca-lead-detail-edit {
+    flex: 1 1 auto;
+  }
+
+  #root .forteca-lead-detail-service-banner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  #root .forteca-lead-detail-service-banner .btn {
+    width: 100%;
+  }
+
+  #root .forteca-lead-detail-contact-strip,
+  #root .forteca-lead-detail-metrics,
+  #root .forteca-lead-detail-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #root .forteca-lead-detail-contact-strip > *:nth-child(2),
+  #root .forteca-lead-detail-metric:nth-child(2),
+  #root .forteca-lead-detail-facts > div:nth-child(2) {
+    border-left: 1px solid #eef2f7;
+  }
+
+  #root .forteca-lead-detail-contact-strip > *:nth-child(3),
+  #root .forteca-lead-detail-metric:nth-child(3),
+  #root .forteca-lead-detail-facts > div:nth-child(3) {
+    border-left: 0;
+    border-top: 1px solid #eef2f7;
+  }
+
+  #root .forteca-lead-detail-contact-strip > *:nth-child(4),
+  #root .forteca-lead-detail-metric:nth-child(n + 4) {
+    border-top: 1px solid #eef2f7;
+  }
+
+  #root .forteca-lead-detail-metric {
+    min-height: 70px;
+  }
+
+  #root .forteca-lead-detail-metric + .forteca-lead-detail-metric {
+    border-left: 0;
+  }
+
+  #root .forteca-lead-detail-metric:nth-child(even) {
+    border-left: 1px solid #eef2f7;
+  }
+
+  #root .forteca-lead-detail-card {
+    padding: 16px;
+  }
+
+  #root .forteca-lead-detail-right-rail,
+  #root .forteca-lead-detail-action-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #root .forteca-lead-detail-facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #root .forteca-lead-detail-facts > div:nth-child(2),
+  #root .forteca-lead-detail-facts > div:nth-child(3) {
+    border-left: 0;
+    border-top: 1px solid #eef2f7;
+  }
+}

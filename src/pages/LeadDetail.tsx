@@ -46,7 +46,7 @@ void STAGE232I4_R16Z_R8_LEAD_MISSING_BLOCKER_TOGGLE_PRIORITY_FIX;
 void STAGE232A_R6_LEAD_MISSING_BLOCKER_ACTIVE_LIST_AND_TOP_CARD_SOURCE_TRUTH;
 import { type FormEvent, type PointerEventHandler, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, CheckCircle2, Clock, DollarSign, Edit2, Loader2, Mail, Mic, MicOff, MoreVertical, Phone, Plus } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Building2, CalendarDays, CheckCircle2, ChevronRight, Clock, DollarSign, Edit2, Loader2, Mail, Mic, MicOff, MoreVertical, Phone, Plus, Star, UserRound } from 'lucide-react';
 import { EntityIcon, SemanticIcon } from '../components/ui-system';
 import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 // LEAD_TO_CASE_FLOW_STAGE24_LEAD_DETAIL
@@ -169,6 +169,7 @@ import {
   insertEventToSupabase,
   insertTaskToSupabase,
   isSupabaseConfigured,
+  isLocalDevPreviewEnabled,
   startLeadServiceInSupabase,
   updateActivityInSupabase,
   deleteActivityFromSupabase,
@@ -909,6 +910,7 @@ export default function LeadDetail() {
   const [editLinkedEvent, setEditLinkedEvent] = useState<any | null>(null);
   const [editLinkedTaskSubmitting, setEditLinkedTaskSubmitting] = useState(false);
   const [editLinkedEventSubmitting, setEditLinkedEventSubmitting] = useState(false);
+  const [activeLeadDetailTab, setActiveLeadDetailTab] = useState<'summary' | 'activity' | 'follow-up' | 'offer' | 'start'>('summary');
   const noteRecognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const potentialInputRefStage231G = useRef<HTMLInputElement | null>(null);
   const noteVoiceDirtyRef = useRef(false);
@@ -972,7 +974,7 @@ export default function LeadDetail() {
 
   useEffect(() => {
     if (!leadId || !workspaceReady) return;
-    if (!isSupabaseConfigured()) {
+    if (!isSupabaseConfigured() && !isLocalDevPreviewEnabled()) {
       setLoadError('Brak konfiguracji Supabase.');
       setLoading(false);
       return;
@@ -1634,6 +1636,46 @@ useEffect(() => {
     }),
     [lead, leadFinance.formatted, leadFinancePanel.potential, leadPrimaryNoteText, leadRiskReasonStage14F, leadSilenceRisk, leadWorkCenter.riskLabel, leadWorkCenter.riskReason, nextTimelineEntry],
   );
+
+  const leadDetailCompany = asText(lead?.company) || asText(lead?.name) || 'Bez firmy';
+  const leadDetailContactName = asText(lead?.name) || 'Brak głównego kontaktu';
+  const leadDetailInitials = getLeadName(lead)
+    .match(/[A-Za-zÀ-ÖØ-öø-ÿ0-9]+/g)
+    ?.slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join('') || 'L';
+  const leadDetailLastContactValue = lead?.lastContactAt || (lead as any)?.last_contact_at || leadActivityHistoryItems[0]?.dateValue || lead?.createdAt;
+  const leadDetailCloseDateValue = lead?.closeDate || (lead as any)?.close_date || lead?.expectedCloseAt || (lead as any)?.expected_close_at;
+  const leadDetailSummaryText =
+    asText(lead?.description) ||
+    asText(lead?.problem) ||
+    asText(lead?.need) ||
+    asText(lead?.message) ||
+    leadPrimaryNoteText ||
+    'Brak opisu potrzeb klienta. Uzupełnij kontekst w edycji leada.';
+  const leadDetailOwner = asText(lead?.ownerName) || asText((lead as any)?.owner_name) || asText((workspace as any)?.ownerName) || 'Nieprzypisany';
+  const leadDetailBudget = asText(lead?.budget) || asText((lead as any)?.budgetRange) || asText((lead as any)?.budget_range) || leadFinance.formatted;
+  const leadDetailTags = [
+    'Lead',
+    statusLabel(lead?.status),
+    sourceLabel(lead?.source),
+    asText(lead?.segment) || asText((lead as any)?.category),
+  ].filter(Boolean).slice(0, 4);
+  const leadDetailAdditionalContacts = Array.isArray((lead as any)?.additionalContacts)
+    ? (lead as any).additionalContacts
+    : Array.isArray((lead as any)?.additional_contacts)
+      ? (lead as any).additional_contacts
+      : [];
+  const leadDetailNextAction = nextTimelineEntry
+    ? `${nextTimelineEntry.title} • ${nextTimelineEntry.dateLabel}`
+    : 'Brak zaplanowanego kroku';
+  const leadDetailTabs = [
+    { id: 'summary' as const, label: 'Podsumowanie' },
+    { id: 'activity' as const, label: 'Aktywność' },
+    { id: 'follow-up' as const, label: 'Follow-up' },
+    { id: 'offer' as const, label: 'Oferta' },
+    { id: 'start' as const, label: 'Start realizacji' },
+  ];
 
   const workCenterPanel = (
     <section className="lead-detail-work-center" data-stage="stage84-lead-detail-work-center">
@@ -2416,7 +2458,42 @@ useEffect(() => {
   return (
     <Layout>
       <main className="lead-detail-vnext-page">
-        <header className="lead-detail-header">
+        <header className="forteca-lead-detail-header" data-forteca-frt-010-lead-header="true">
+          <div className="forteca-lead-detail-header-main">
+            <button type="button" className="forteca-lead-detail-back" onClick={() => navigate(leadsPath())}>
+              <ArrowLeft className="h-4 w-4" />
+              Powrót do leadów
+            </button>
+            <div className="forteca-lead-detail-identity">
+              <div className="forteca-lead-detail-title-line">
+                <h1>{getLeadName(lead)}</h1>
+                <Star className="forteca-lead-detail-title-star" aria-hidden="true" />
+              </div>
+              <div className="forteca-lead-detail-tags" aria-label="Klasyfikacja leada">
+                {leadDetailTags.map((tag) => <span key={tag} className="forteca-lead-detail-tag">{tag}</span>)}
+              </div>
+            </div>
+          </div>
+          <div className="forteca-lead-detail-header-actions">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button type="button" className="forteca-lead-detail-icon-button" aria-label="Więcej akcji" data-forteca-lead-overflow="true">
+                  <MoreVertical className="h-5 w-5" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="forteca-lead-detail-overflow-menu">
+                <DropdownMenuItem disabled={!lead?.phone} onSelect={() => void copyValue('Telefon', String(lead?.phone || ''))}>Kopiuj telefon</DropdownMenuItem>
+                <DropdownMenuItem disabled={!lead?.email} onSelect={() => void copyValue('E-mail', String(lead?.email || ''))}>Kopiuj e-mail</DropdownMenuItem>
+                <DropdownMenuItem onSelect={handleDeleteLead}>Usuń leada</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button type="button" className="forteca-lead-detail-edit" onClick={handleStartLeadEditing}>
+              <Edit2 className="h-4 w-4" />
+              Edytuj
+            </Button>
+          </div>
+        </header>
+        <header className="lead-detail-header lead-detail-legacy-header">
           <div className="lead-detail-header-copy">
             <button type="button" className="lead-detail-back-button" onClick={() => navigate(leadsPath())}>
               <ArrowLeft className="h-4 w-4" />
@@ -2480,7 +2557,7 @@ useEffect(() => {
         </header>
 
         {showServiceBanner ? (
-          <section className="lead-detail-service-box" data-lead-in-service-box="true">
+          <section className="lead-detail-service-box lead-detail-legacy-service-box" data-lead-in-service-box="true">
             <div>
               <p className="lead-detail-box-kicker">LEAD JUŻ W OBSŁUDZE</p>
               <h2>Ten temat jest już w obsłudze</h2>
@@ -2498,10 +2575,255 @@ useEffect(() => {
         ) : null}
 
 
+        <section className="forteca-lead-detail" data-forteca-frt-010-runtime="true">
+          {leadInService ? (
+            <section className="forteca-lead-detail-service-banner" data-forteca-lead-service-banner="true">
+              <div>
+                <span className="forteca-lead-detail-eyebrow">Lead w obsłudze</span>
+                <h2>Ten temat jest już prowadzony w sprawie</h2>
+                <p>{leadServiceLockedMessage}</p>
+              </div>
+              <Button type="button" onClick={openCase} disabled={!serviceCaseId}>
+                Otwórz sprawę <ArrowRight className="h-4 w-4" />
+              </Button>
+            </section>
+          ) : null}
+
+          <section className="forteca-lead-detail-contact-strip" aria-label="Kontekst leada">
+            <div className="forteca-lead-detail-company">
+              <span className="forteca-lead-detail-avatar" aria-hidden="true">{leadDetailInitials}</span>
+              <div>
+                <span className="forteca-lead-detail-label">Firma</span>
+                <strong>{leadDetailCompany}</strong>
+                <small>{lead?.website || 'Profil firmy'}</small>
+              </div>
+            </div>
+            <div className="forteca-lead-detail-contact-cell">
+              <span className="forteca-lead-detail-label">Główny kontakt</span>
+              <strong>{leadDetailContactName}</strong>
+              <small>{lead?.email || lead?.phone || 'Brak danych kontaktowych'}</small>
+            </div>
+            <div className="forteca-lead-detail-contact-cell">
+              <span className="forteca-lead-detail-label">Dodatkowe kontakty</span>
+              <strong>{leadDetailAdditionalContacts.length ? `${leadDetailAdditionalContacts.length} zapisane` : 'Brak dodatkowych kontaktów'}</strong>
+              <small>{leadDetailAdditionalContacts.length ? leadDetailAdditionalContacts.map((contact: any) => String(contact?.name || contact?.email || contact || '')).filter(Boolean).slice(0, 2).join(', ') : '—'}</small>
+            </div>
+            <div className="forteca-lead-detail-contact-cell">
+              <span className="forteca-lead-detail-label">Źródło</span>
+              <strong>{sourceLabel(lead?.source)}</strong>
+              <small>Dodano {formatDate(lead?.createdAt, 'Brak daty')}</small>
+            </div>
+          </section>
+
+          <section className="forteca-lead-detail-metrics" aria-label="Najważniejsze informacje o leadzie">
+            {[
+              { label: 'Status', value: statusLabel(lead?.status), tone: 'status' },
+              { label: 'Wartość', value: leadFinance.formatted, tone: 'value' },
+              { label: 'Właściciel', value: leadDetailOwner, tone: 'neutral' },
+              { label: 'Ostatni kontakt', value: formatDate(leadDetailLastContactValue), tone: 'neutral' },
+              { label: 'Następny krok', value: leadDetailNextAction, tone: nextTimelineEntry ? 'active' : 'muted' },
+              { label: 'Planowane zamknięcie', value: formatDate(leadDetailCloseDateValue), tone: 'neutral' },
+              { label: 'Ryzyko', value: leadSilenceRisk.label || leadWorkCenter.riskLabel, tone: leadWorkCenter.riskTone },
+              { label: 'Dni bez ruchu', value: leadWorkCenter.daysWithoutMovementLabel, tone: 'neutral' },
+            ].map((metric) => (
+              <div key={metric.label} className={`forteca-lead-detail-metric forteca-lead-detail-metric--${metric.tone}`}>
+                <span>{metric.label}</span>
+                <strong title={metric.value}>{metric.value}</strong>
+              </div>
+            ))}
+          </section>
+
+          <nav className="forteca-lead-detail-tabs" aria-label="Sekcje leada" role="tablist">
+            {leadDetailTabs.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                role="tab"
+                aria-selected={activeLeadDetailTab === tab.id}
+                className={`forteca-lead-detail-tab ${activeLeadDetailTab === tab.id ? 'is-active' : ''}`}
+                onClick={() => setActiveLeadDetailTab(tab.id)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </nav>
+
+          <div className="forteca-lead-detail-content-grid">
+            <div className="forteca-lead-detail-main-column">
+              {activeLeadDetailTab === 'summary' ? (
+                <>
+                  <section className="forteca-lead-detail-card" data-forteca-lead-summary="true">
+                    <div className="forteca-lead-detail-card-heading">
+                      <div>
+                        <span className="forteca-lead-detail-eyebrow">Kontekst i potrzeby</span>
+                        <h2>Podsumowanie</h2>
+                      </div>
+                      <Building2 className="forteca-lead-detail-card-icon" aria-hidden="true" />
+                    </div>
+                    <p className="forteca-lead-detail-summary-copy">{leadDetailSummaryText}</p>
+                    <dl className="forteca-lead-detail-facts">
+                      <div><dt>Potrzeba klienta</dt><dd>{asText(lead?.need) || asText(lead?.problem) || 'Brak danych'}</dd></div>
+                      <div><dt>Budżet</dt><dd>{leadDetailBudget}</dd></div>
+                      <div><dt>Harmonogram</dt><dd>{formatDate(leadDetailCloseDateValue, 'Brak ustalonej daty')}</dd></div>
+                    </dl>
+                  </section>
+
+                  <section className="forteca-lead-detail-card" data-forteca-lead-next-step="true">
+                    <div className="forteca-lead-detail-card-heading">
+                      <div>
+                        <span className="forteca-lead-detail-eyebrow">Plan pracy</span>
+                        <h2>Ustaw kolejny krok</h2>
+                      </div>
+                      <CalendarDays className="forteca-lead-detail-card-icon" aria-hidden="true" />
+                    </div>
+                    {nextTimelineEntry ? (
+                      <div className="forteca-lead-detail-next-step-row">
+                        <span className="forteca-lead-detail-next-step-icon"><CheckCircle2 className="h-5 w-5" /></span>
+                        <div>
+                          <strong>{nextTimelineEntry.title}</strong>
+                          <p>{nextTimelineEntry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} · {nextTimelineEntry.dateLabel}</p>
+                        </div>
+                        <button type="button" className="forteca-lead-detail-text-action" onClick={() => nextTimelineEntry.kind === 'task' ? openLinkedTaskEditor(nextTimelineEntry.raw) : openLinkedEventEditor(nextTimelineEntry.raw)} disabled={!hasAccess}>
+                          Otwórz <ChevronRight className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="forteca-lead-detail-empty-inline">
+                        <p>Ten lead nie ma jeszcze zaplanowanego zadania ani wydarzenia.</p>
+                      </div>
+                    )}
+                    <button type="button" className="forteca-lead-detail-secondary-action" onClick={() => nextTimelineEntry ? (nextTimelineEntry.kind === 'task' ? openLinkedTaskEditor(nextTimelineEntry.raw) : openLinkedEventEditor(nextTimelineEntry.raw)) : handleCreateQuickTask()} disabled={!hasAccess || leadOperationalArchive}>
+                      <Plus className="h-4 w-4" />
+                      {nextTimelineEntry ? 'Edytuj kolejny krok' : 'Ustaw kolejny krok'}
+                    </button>
+                  </section>
+
+                  <section className="forteca-lead-detail-card" data-forteca-lead-note="true">
+                    <div className="forteca-lead-detail-card-heading">
+                      <div>
+                        <span className="forteca-lead-detail-eyebrow">Notatki operatora</span>
+                        <h2>Ostatnia notatka</h2>
+                      </div>
+                      <Clock className="forteca-lead-detail-card-icon" aria-hidden="true" />
+                    </div>
+                    {leadPrimaryNoteText ? <p className="forteca-lead-detail-note-copy">{leadPrimaryNoteText}</p> : <p className="forteca-lead-detail-empty-copy">Brak zapisanej notatki przy tym leadzie.</p>}
+                    <button type="button" className="forteca-lead-detail-secondary-action" onClick={() => setIsAddNoteOpen(true)} disabled={!hasAccess || leadInService}>
+                      <Plus className="h-4 w-4" />
+                      Dodaj notatkę
+                    </button>
+                  </section>
+                </>
+              ) : null}
+
+              {activeLeadDetailTab === 'activity' ? (
+                <section className="forteca-lead-detail-card" data-forteca-lead-activity="true">
+                  <div className="forteca-lead-detail-card-heading">
+                    <div><span className="forteca-lead-detail-eyebrow">Historia zmian</span><h2>Aktywność</h2></div>
+                    <Clock className="forteca-lead-detail-card-icon" aria-hidden="true" />
+                  </div>
+                  {leadActivityHistoryItems.length ? (
+                    <div className="forteca-lead-detail-activity-list">
+                      {leadActivityHistoryItems.map((entry) => (
+                        <article key={`detail-activity-${entry.id}`} className="forteca-lead-detail-activity-row">
+                          <span className="forteca-lead-detail-activity-dot" aria-hidden="true" />
+                          <div><strong>{entry.title}</strong><p>{entry.description}</p><small>{entry.dateLabel}</small></div>
+                        </article>
+                      ))}
+                    </div>
+                  ) : <p className="forteca-lead-detail-empty-copy">Brak zapisanej aktywności.</p>}
+                </section>
+              ) : null}
+
+              {activeLeadDetailTab === 'follow-up' ? (
+                <section className="forteca-lead-detail-card" data-forteca-lead-follow-up="true">
+                  <div className="forteca-lead-detail-card-heading">
+                    <div><span className="forteca-lead-detail-eyebrow">Następne działania</span><h2>Follow-up</h2></div>
+                    <CalendarDays className="forteca-lead-detail-card-icon" aria-hidden="true" />
+                  </div>
+                  {displayedLeadWorkEntries.length ? (
+                    <div className="forteca-lead-detail-follow-up-list">
+                      {displayedLeadWorkEntries.map((entry) => (
+                        <article key={`detail-follow-up-${entry.id}`} className="forteca-lead-detail-follow-up-row">
+                          <div><strong>{entry.title}</strong><small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} · {entry.dateLabel}</small></div>
+                          <button type="button" className="forteca-lead-detail-text-action" onClick={() => entry.kind === 'task' ? openLinkedTaskEditor(entry.raw) : openLinkedEventEditor(entry.raw)} disabled={!hasAccess}>Edytuj</button>
+                        </article>
+                      ))}
+                    </div>
+                  ) : <p className="forteca-lead-detail-empty-copy">Brak aktywnych follow-upów.</p>}
+                  <button type="button" className="forteca-lead-detail-secondary-action" onClick={handleCreateQuickTask} disabled={!hasAccess || leadOperationalArchive}><Plus className="h-4 w-4" />Dodaj follow-up</button>
+                </section>
+              ) : null}
+
+              {activeLeadDetailTab === 'offer' ? (
+                <section className="forteca-lead-detail-card" data-forteca-lead-offer="true">
+                  <div className="forteca-lead-detail-card-heading">
+                    <div><span className="forteca-lead-detail-eyebrow">Wartość i etap</span><h2>Oferta</h2></div>
+                    <DollarSign className="forteca-lead-detail-card-icon" aria-hidden="true" />
+                  </div>
+                  <div className="forteca-lead-detail-offer-summary"><span>Wartość szansy</span><strong>{leadFinance.formatted}</strong><small>Status: {statusLabel(lead?.status)}</small></div>
+                  <div className="forteca-lead-detail-inline-actions">
+                    <button type="button" className="forteca-lead-detail-secondary-action" onClick={handleStartPotentialEditingStage231G} disabled={!hasAccess}><Edit2 className="h-4 w-4" />Edytuj wartość</button>
+                    <button type="button" className="forteca-lead-detail-secondary-action" onClick={() => handleUpdateStatus('proposal_sent')} disabled={!hasAccess || leadInService}><CheckCircle2 className="h-4 w-4" />Oznacz ofertę wysłaną</button>
+                  </div>
+                </section>
+              ) : null}
+
+              {activeLeadDetailTab === 'start' ? (
+                <section className="forteca-lead-detail-card" data-forteca-lead-start="true">
+                  <div className="forteca-lead-detail-card-heading">
+                    <div><span className="forteca-lead-detail-eyebrow">Przekazanie do realizacji</span><h2>Start realizacji</h2></div>
+                    <Building2 className="forteca-lead-detail-card-icon" aria-hidden="true" />
+                  </div>
+                  {leadInService ? (
+                    <><p className="forteca-lead-detail-summary-copy">Lead jest już połączony ze sprawą <strong>{serviceCaseTitle}</strong>.</p><button type="button" className="forteca-lead-detail-primary-action" onClick={openCase} disabled={!serviceCaseId}>Otwórz sprawę <ArrowRight className="h-4 w-4" /></button></>
+                  ) : (
+                    <><p className="forteca-lead-detail-summary-copy">Gdy zakres i warunki są potwierdzone, utwórz sprawę i przenieś dalszą pracę do realizacji.</p><button type="button" className="forteca-lead-detail-primary-action" onClick={() => setIsCreateCaseOpen(true)} disabled={!hasAccess}>Rozpocznij obsługę <ArrowRight className="h-4 w-4" /></button></>
+                  )}
+                </section>
+              ) : null}
+            </div>
+
+            <aside className="forteca-lead-detail-right-rail" aria-label="Akcje i ostatnia aktywność">
+              <section className="forteca-lead-detail-card forteca-lead-detail-quick-actions" data-forteca-lead-quick-actions="true">
+                <div className="forteca-lead-detail-card-heading">
+                  <div><span className="forteca-lead-detail-eyebrow">Działaj teraz</span><h2>Szybkie akcje</h2></div>
+                </div>
+                <div className="forteca-lead-detail-action-grid">
+                  <button type="button" className="forteca-lead-detail-action forteca-lead-detail-action--note" onClick={() => setIsAddNoteOpen(true)} disabled={!hasAccess || leadInService}><span><Plus className="h-4 w-4" /></span>Dodaj notatkę</button>
+                  {lead?.phone ? <a className="forteca-lead-detail-action forteca-lead-detail-action--phone" href={`tel:${String(lead.phone)}`}><span><Phone className="h-4 w-4" /></span>Zadzwoń</a> : <button type="button" className="forteca-lead-detail-action" disabled><span><Phone className="h-4 w-4" /></span>Brak telefonu</button>}
+                  <button type="button" className="forteca-lead-detail-action forteca-lead-detail-action--task" onClick={handleCreateQuickTask} disabled={!hasAccess || leadOperationalArchive}><span><CheckCircle2 className="h-4 w-4" /></span>Ustaw follow-up</button>
+                  <button type="button" className="forteca-lead-detail-action forteca-lead-detail-action--event" onClick={handleCreateQuickEvent} disabled={!hasAccess || leadOperationalArchive}><span><CalendarDays className="h-4 w-4" /></span>Spotkanie</button>
+                  <button type="button" className="forteca-lead-detail-action forteca-lead-detail-action--offer" onClick={() => handleUpdateStatus('proposal_sent')} disabled={!hasAccess || leadOperationalArchive}><span><Mail className="h-4 w-4" /></span>Oferta wysłana</button>
+                  <button type="button" className="forteca-lead-detail-action forteca-lead-detail-action--case" onClick={() => leadInService ? openCase() : setIsCreateCaseOpen(true)} disabled={!hasAccess && !serviceCaseId}><span><Building2 className="h-4 w-4" /></span>{leadInService ? 'Otwórz sprawę' : 'Przenieś do sprawy'}</button>
+                  <button type="button" className="forteca-lead-detail-action forteca-lead-detail-action--missing" onClick={() => openLeadContextAction('blocker')} disabled={!hasAccess}><span><Clock className="h-4 w-4" /></span>Brak</button>
+                </div>
+              </section>
+
+              <section className="forteca-lead-detail-card" data-forteca-lead-latest-activity="true">
+                <div className="forteca-lead-detail-card-heading">
+                  <div><span className="forteca-lead-detail-eyebrow">Ostatnie zmiany</span><h2>Ostatnia aktywność</h2></div>
+                  <UserRound className="forteca-lead-detail-card-icon" aria-hidden="true" />
+                </div>
+                {leadActivityHistoryItems.length ? (
+                  <div className="forteca-lead-detail-latest-list">
+                    {leadActivityHistoryItems.slice(0, 4).map((entry) => (
+                      <article key={`latest-${entry.id}`} className="forteca-lead-detail-latest-row">
+                        <span className="forteca-lead-detail-activity-dot" aria-hidden="true" />
+                        <div><strong>{entry.title}</strong><small>{entry.dateLabel}</small></div>
+                      </article>
+                    ))}
+                  </div>
+                ) : <p className="forteca-lead-detail-empty-copy">Brak zapisanej aktywności.</p>}
+                {leadActivityHistoryItems.length ? <button type="button" className="forteca-lead-detail-link-action" onClick={() => setActiveLeadDetailTab('activity')}>Zobacz całą aktywność <ChevronRight className="h-4 w-4" /></button> : null}
+              </section>
+            </aside>
+          </div>
+        </section>
+
 
         <span hidden data-stage227f6-lead-top-strip-removed="true" />
 
-        <div className="lead-detail-shell">
+        <div className="lead-detail-shell lead-detail-legacy-shell">
           <aside
             className="lead-detail-left-rail lead-detail-data-rail"
             aria-label="Dane leada"

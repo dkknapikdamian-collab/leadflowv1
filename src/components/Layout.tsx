@@ -426,6 +426,7 @@ export default function Layout({ children }: LayoutProps) {
   }, [location.pathname]);
   /* STAGE232J_R1_LEADS_SCROLL_TOP_CUT_RUNTIME_FIX_END */
 
+  const isLeadDetailRoute = /^\/leads\/[^/]+$/.test(location.pathname);
   const navGroups = useMemo<NavGroup[]>(() => ([
     {
       caption: 'Start pracy',
@@ -459,7 +460,23 @@ export default function Layout({ children }: LayoutProps) {
       ],
     },
   ]), [isAdmin, canUseAiDraftsByPlan]);
-  const navItems = useMemo(() => navGroups.flatMap((group) => group.items), [navGroups]);
+  const navGroupsForShell = useMemo<NavGroup[]>(() => {
+    if (!isLeadDetailRoute) return navGroups;
+    return [{
+      caption: '',
+      items: [
+        { icon: Home, label: 'Dziś', path: '/' },
+        { icon: Users, label: 'Leady', path: '/leads' },
+        { icon: CheckSquare, label: 'Zadania', path: '/tasks' },
+        { icon: Calendar, label: 'Kalendarz', path: '/calendar' },
+        { icon: Briefcase, label: 'Sprawy', path: '/cases' },
+        { icon: History, label: 'Aktywność', path: '/activity' },
+        { icon: CreditCard, label: 'Rozliczenia', path: '/billing' },
+        { icon: Settings, label: 'Ustawienia', path: '/settings' },
+      ],
+    }];
+  }, [isLeadDetailRoute, navGroups]);
+  const navItems = useMemo(() => navGroupsForShell.flatMap((group) => group.items), [navGroupsForShell]);
   const mobileNavItems = useMemo(
     () => [
       { icon: Home, label: 'Dziś', path: '/' },
@@ -475,7 +492,6 @@ export default function Layout({ children }: LayoutProps) {
   const currentTitle = activeItem?.label || 'CloseFlow';
   const isTodayRoute = location.pathname === '/';
   const isLeadsRoute = location.pathname === '/leads';
-  const isLeadDetailRoute = /^\/leads\/[^/]+$/.test(location.pathname);
   const isClientsRoute = location.pathname === '/clients';
   const isClientDetailRoute = /^\/clients\/[^/]+$/.test(location.pathname);
   const isCasesRoute = location.pathname === '/cases';
@@ -538,7 +554,7 @@ export default function Layout({ children }: LayoutProps) {
 
   const renderNavGroups = (compact = false, onNavigate?: () => void) => (
     <>
-      {navGroups.map((group) => (
+      {navGroupsForShell.map((group) => (
         <div key={group.caption} className="nav-group">
           <div className="nav-caption">{group.caption}</div>
           <div className="nav-stack">
@@ -559,7 +575,7 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div
-      className="app closeflow-visual-semantic01 cf-html-shell"
+      className={`app closeflow-visual-semantic01 cf-html-shell ${isLeadDetailRoute ? 'cf-route-lead-detail' : ''}`}
       data-visual-stage="01-shell-sidebar"
       data-sidebar-pointer-router="true"
       onPointerDownCapture={handleSidebarPointerRouter}
@@ -574,11 +590,11 @@ export default function Layout({ children }: LayoutProps) {
         data-sidebar-layout-contract="stage195-inline"
       >
         <Link to="/" className="brand" aria-label="CloseFlow - przejdź do Dziś">
-          <span className="brand-logo" aria-hidden="true">
-            CF
+          <span className={`brand-logo ${isLeadDetailRoute ? 'forteca-shell-logo' : ''}`} aria-hidden="true">
+            {isLeadDetailRoute ? 'F' : 'CF'}
           </span>
           <span className="brand-title">
-            <strong>CloseFlow</strong>
+            <strong>{isLeadDetailRoute ? 'Forteca' : 'CloseFlow'}</strong>
           </span>
         </Link>
 
@@ -609,8 +625,8 @@ export default function Layout({ children }: LayoutProps) {
 
       <div className="mobile-top" data-shell-mobile-top="true">
         <Link to="/" className="mobile-brand" aria-label="CloseFlow - przejdź do Dziś">
-          <span className="brand-logo" aria-hidden="true">CF</span>
-          <span>CloseFlow</span>
+          <span className={`brand-logo ${isLeadDetailRoute ? 'forteca-shell-logo' : ''}`} aria-hidden="true">{isLeadDetailRoute ? 'F' : 'CF'}</span>
+          <span>{isLeadDetailRoute ? 'Forteca' : 'CloseFlow'}</span>
         </Link>
         <button type="button" className="mobile-menu-btn" onClick={() => setMobileMenuOpen(true)} aria-label="Otwórz menu">
           <Menu className="h-6 w-6" />
@@ -623,9 +639,9 @@ export default function Layout({ children }: LayoutProps) {
           <div className="mobile-drawer-panel">
             <div className="mobile-drawer-head">
               <Link to="/" onClick={() => setMobileMenuOpen(false)} className="brand mobile-drawer-brand">
-                <span className="brand-logo" aria-hidden="true">CF</span>
+                <span className={`brand-logo ${isLeadDetailRoute ? 'forteca-shell-logo' : ''}`} aria-hidden="true">{isLeadDetailRoute ? 'F' : 'CF'}</span>
                 <span className="brand-title">
-                  <strong>CloseFlow</strong>
+                  <strong>{isLeadDetailRoute ? 'Forteca' : 'CloseFlow'}</strong>
                   <span>Lead &rarr; klient &rarr; sprawa</span>
                 </span>
               </Link>

@@ -101,7 +101,7 @@ function getDevPreviewData() {
   const leads = [
     { id: 'dev-lead-1', name: 'Anna Kowalska', company: 'Nova Home Studio', email: 'anna@novahome.pl', phone: '+48 600 111 222', source: 'instagram', status: 'new', dealValue: 12000, isAtRisk: false, leadVisibility: 'active', nextActionAt: iso(3), clientId: 'dev-client-1' },
     { id: 'dev-lead-2', name: 'Michał Zieliński', company: 'M&Z Nieruchomości', email: 'michal@mz.com', phone: '+48 602 333 444', source: 'referral', status: 'waiting_response', dealValue: 4500, isAtRisk: true, leadVisibility: 'active', nextActionAt: iso(-8), clientId: 'dev-client-2' },
-    { id: 'dev-lead-3', name: 'Fundacja "Lepsze Jutro"', company: 'Fundacja Lepsze Jutro', email: 'zarzad@fundacja.pl', phone: '+48 605 777 888', source: 'email', status: 'proposal_sent', dealValue: 7800, isAtRisk: false, leadVisibility: 'active', nextActionAt: iso(24) },
+    { id: 'dev-lead-3', name: 'Fundacja "Lepsze Jutro"', company: 'Fundacja Lepsze Jutro', email: 'zarzad@fundacja.pl', phone: '+48 605 777 888', source: 'email', status: 'proposal_sent', dealValue: 7800, isAtRisk: false, leadVisibility: 'active', nextActionAt: iso(24), createdAt: iso(-72), updatedAt: iso(-9), need: 'Konsultacja i uporządkowanie procesu obsługi', closeDate: iso(240), ownerName: 'Dev Local' },
   ];
 
   const cases = [
@@ -113,11 +113,13 @@ function getDevPreviewData() {
     { id: 'dev-task-1', title: 'Przygotować propozycję harmonogramu i zakresu prac', status: 'todo', date: dateOnly(0), time: '13:30', leadId: 'dev-lead-1', caseId: 'dev-case-1', clientId: 'dev-client-1' },
     { id: 'dev-task-2', title: 'Follow-up po ofercie (wiadomość + telefon)', status: 'todo', date: dateOnly(1), time: '09:15', leadId: 'dev-lead-2', caseId: 'dev-case-2', clientId: 'dev-client-2' },
     { id: 'dev-task-3', title: 'Sprawdzić komplet dokumentów od klienta', status: 'in_progress', date: dateOnly(-1), time: '16:40', clientId: 'dev-client-3' },
+    { id: 'dev-task-4', title: 'Potwierdzić zakres i termin konsultacji', status: 'todo', date: dateOnly(2), time: '10:00', leadId: 'dev-lead-3' },
   ];
 
   const events = [
     { id: 'dev-event-1', title: 'Call kickoff - Nova Home Studio', startAt: iso(4), type: 'call', leadId: 'dev-lead-1', caseId: 'dev-case-1', clientId: 'dev-client-1' },
     { id: 'dev-event-2', title: 'Przegląd umowy i checklisty', startAt: iso(30), type: 'meeting', caseId: 'dev-case-2', clientId: 'dev-client-2' },
+    { id: 'dev-event-3', title: 'Konsultacja online', startAt: iso(52), type: 'meeting', leadId: 'dev-lead-3' },
   ];
 
   const payments = [
@@ -125,7 +127,14 @@ function getDevPreviewData() {
     { id: 'dev-pay-2', clientId: 'dev-client-2', leadId: 'dev-lead-2', caseId: 'dev-case-2', amount: 2500, currency: 'PLN', status: 'pending', dueAt: iso(72) },
   ];
 
-  return { leads, clients, cases, tasks, events, payments };
+  const activities = [
+    { id: 'dev-activity-1', leadId: 'dev-lead-3', actorType: 'operator', eventType: 'lead_created', payload: { source: 'email' }, createdAt: iso(-72) },
+    { id: 'dev-activity-2', leadId: 'dev-lead-3', actorType: 'operator', eventType: 'contacted', payload: { channel: 'email', summary: 'Wysłano podsumowanie potrzeb i propozycję terminu.' }, createdAt: iso(-28) },
+    { id: 'dev-activity-3', leadId: 'dev-lead-3', actorType: 'operator', eventType: 'note_added', payload: { content: 'Lead potwierdził zainteresowanie konsultacją. Do ustalenia pozostaje dokładny zakres.' }, createdAt: iso(-9) },
+    { id: 'dev-activity-4', leadId: 'dev-lead-1', actorType: 'operator', eventType: 'lead_created', payload: { source: 'instagram' }, createdAt: iso(-36) },
+  ];
+
+  return { leads, clients, cases, tasks, events, payments, activities };
 }
 
 
@@ -421,6 +430,7 @@ function normalizeDuplicateWriteOverride<T extends Record<string, unknown>>(inpu
 }
 
 export function isSupabaseConfigured() { return Boolean(getSupabaseConfig()); }
+export function isLocalDevPreviewEnabled() { return shouldUseDevNoAuthMocks(); }
 export async function findEntityConflictsInSupabase(input: EntityConflictCheckInput) { return callApi<{ ok: boolean; candidates: EntityConflictCandidate[]; conflicts?: EntityConflictCandidate[] }>('/api/system?kind=entity-conflicts', { method: 'POST', body: JSON.stringify(input) }); }
 export async function insertLeadToSupabase(input: LeadInsertInput) {
   return callApi<SupabaseInsertResult>('/api/leads', { method: 'POST', body: JSON.stringify(sanitizeLeadCompanyForNotNull(normalizeDuplicateWriteOverride(input as unknown as Record<string, unknown>) as unknown as LeadInsertInput)) });
@@ -693,6 +703,17 @@ export async function insertCaseItemToSupabase(input: CaseItemInput) { return ca
 export async function updateCaseItemInSupabase(input: CaseItemInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/case-items', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function deleteCaseItemFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/case-items?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
 export async function fetchActivitiesFromSupabase(params?: { caseId?: string; leadId?: string; clientId?: string; limit?: number }) {
+  if (isDevPreviewDataEnabled()) {
+    const rows = (getDevPreviewData().activities || []) as Record<string, unknown>[];
+    const filtered = rows.filter((row) => {
+      if (params?.caseId && String(row.caseId || '') !== String(params.caseId)) return false;
+      if (params?.leadId && String(row.leadId || '') !== String(params.leadId)) return false;
+      if (params?.clientId && String(row.clientId || '') !== String(params.clientId)) return false;
+      return true;
+    });
+    return normalizeActivityListContract(filtered.slice(0, params?.limit || filtered.length));
+  }
+  if (shouldUseDevNoAuthMocks()) return [];
   const query = new URLSearchParams(); if (params?.caseId) query.set('caseId', params.caseId); if (params?.leadId) query.set('leadId', params.leadId); if (params?.clientId) query.set('clientId', params.clientId); if (params?.limit) query.set('limit', String(params.limit));
   return callApi<Record<string, unknown>[]>(`/api/activities${query.toString() ? `?${query.toString()}` : ''}`).then(normalizeActivityListContract);
 }
