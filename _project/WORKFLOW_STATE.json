@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 84,
+  "state_revision": 85,
   "last_accepted": {
     "id": "FRT-005",
     "status": "PASS",
@@ -21,7 +21,7 @@
   "last_accepted_commit": "c67a9a67a9afec1bca1a8a662a5a4c0f61907920",
   "next_stage": "FRT-007",
   "branch": "codex/forteca-ui-001-040-clean",
-  "remote_head": "c67a9a67a9afec1bca1a8a662a5a4c0f61907920",
+  "remote_head": "75fb749c5910585d585431e188f9084f5a56486a",
   "current_workflow": {
     "id": "FRT-006",
     "kind": "TECHNICAL_IMPLEMENTATION_STAGE",

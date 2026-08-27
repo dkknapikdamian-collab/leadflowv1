@@ -1,6 +1,6 @@
 # FRT-006 — LEADS AT RISK
 
-CONTRACT_STATUS: LOCKED
+CONTRACT_STATUS: ACTIVE
 STAGE_ID: FRT-006
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/006_leads_at_risk.webp
 TARGET_ROUTE: /leads
@@ -17,4 +17,3 @@ ACCEPTANCE_CRITERIA: Risk state is real, semantically toned and fully wired; no 
 TEST_PLAN: Risk rule/filter and action tests; responsive browser proof; typecheck if TS changes; reuse only matching semantic-owner evidence.
 PREDECESSOR: FRT-005
 SUCCESSOR: FRT-007
-
