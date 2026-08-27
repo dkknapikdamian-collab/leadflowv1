@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-002",
+  "reference_file": "docs/ui/reference/forteca-calm-light/002_today_customize_view.webp",
+  "target_route": "/",
+  "target_state": "Today customize overlay",
+  "result": "PASS",
+  "stage_status": "ACCEPTED",
+  "acceptance_authority": "CODEX",
+  "acceptance_basis": {
+    "owner_directive_sha256": "E3432C8126DAF2C0E0B4B5FB7060F05D60F9CB53F373904FEDEA5A2",
+    "directive_interpretation": "Codex is the acceptance authority for the autonomous Forteca program. This receipt is controller acceptance under the owner directive, not an executor self-acceptance and not an AICG PASS claim."
+  },
+  "root_cause_or_implementation_gap": "The accepted Today route still used a page-local inline customizer that wrote preferences immediately, did not match the reference drawer composition, and offered no real reorder path. The correction assigns the overlay to the canonical Dialog/FormFooter/Checkbox owners, separates draft state from committed preferences, persists only on save, restores cancel/reset semantics, makes secondary-section order real in the renderer, and documents the fixed primary/ready slots and unsupported reference-only controls.",
+  "code_changed": true,
+  "files_changed": [
+    "_project/contracts/forteca-clean/FRT-002_TODAY_CUSTOMIZE.md",
+    "scripts/check-today-view-customizer.cjs",
+    "scripts/check-today-view-customizer-all-options.cjs",
+    "src/pages/TodayStable.tsx",
+    "src/styles/owners/closeflow-dialogs.css",
+    "tests/today-view-customizer.test.cjs",
+    "tests/today-view-customizer-all-options.test.cjs",
+    "audit/evidence/FRT-002_BROWSER_PROOF.json",
+    "audit/evidence/FRT-002_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/runs/forteca-clean/FRT-002_RECEIPT.json"
+  ],
+  "preserved_untracked_files": [
+    "dist-test-today-sections.cjs"
+  ],
+  "visual_sot_owners_used": [
+    "MODALS",
+    "FORMS",
+    "BUTTONS_ACTIONS",
+    "SURFACES",
+    "RESPONSIVE_DENSITY"
+  ],
+  "visible_controls_inventory": {
+    "today_header_actions": 2,
+    "customizer_option_toggles": 8,
+    "customizer_reorderable_rows": 6,
+    "customizer_footer_actions": 3,
+    "customizer_close_action": 1,
+    "total": 20
+  },
+  "visible_controls_wired": 20,
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "npm.cmd run check:today-view-customizer",
+    "npm.cmd run check:today-view-customizer-all-options",
+    "npm.cmd run test:today-view-customizer (2/2)",
+    "npm.cmd run test:today-view-customizer-all-options (2/2)",
+    "npm.cmd run guard:ui:patch-layers",
+    "npm.cmd run guard:ui:ssot-css-owners",
+    "npx.cmd tsc --noEmit",
+    "git diff --check",
+    "npm.cmd run build",
+    "live Codex In-app Browser route/state/control proof"
+  ],
+  "tests_reused": [
+    "FRT-000 reference manifest, routing integrity and visual SOT owner registry",
+    "FRT-001 live Today route/data baseline and partial Guardian boundary",
+    "FRT-001 canonical modal owner evidence where bindings remain unchanged"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: target repository exposes no guardian script or canonical AICG target scanner entrypoints; plugin smoke remains PARTIAL and no AICG PASS claim is made"
+    },
+    {
+      "test": "lint",
+      "reason": "Not required by the bounded FRT-002 test plan; typecheck, focused guards, owner guard, build and live browser proof were executed"
+    },
+    {
+      "test": "authenticated populated runtime proof",
+      "reason": "NOT_REQUIRED for this current reference and independently accepted with the unauthenticated local runtime; no authentication blocker was inferred"
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS",
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-002_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "PASS / coverage PARTIAL"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-002_BROWSER_PROOF.json",
+    "status": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "/",
+    "tab_marked_deliverable": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "literal_pixel_identity_claim": false,
+    "limitation": "The reference is 1672x941 and the available in-app browser viewport is 946x698; the live proof records the real right-edge drawer, dimmed shell, canonical controls, real preference behavior and responsive dimensions without claiming literal pixel equality across different viewport dimensions. Runtime-only deviations are documented in the browser proof and active contract."
+  },
+  "implementation_commit_sha": "268a3ee96016679f99019a177b17704de980f057",
+  "closeout_commit_sha": null,
+  "remote_head": null,
+  "next_stage": "FRT-003"
+}

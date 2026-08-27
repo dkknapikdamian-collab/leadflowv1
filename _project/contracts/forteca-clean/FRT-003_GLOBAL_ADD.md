@@ -1,6 +1,6 @@
 # FRT-003 — GLOBAL ADD
 
-CONTRACT_STATUS: LOCKED
+CONTRACT_STATUS: ACTIVE
 STAGE_ID: FRT-003
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/003_global_add_menu.webp
 TARGET_ROUTE: GLOBAL_APP_SHELL
@@ -17,4 +17,3 @@ ACCEPTANCE_CRITERIA: Global menu is reachable from the real shell; every rendere
 TEST_PLAN: Menu interaction/action-wiring tests; build checkpoint; browser proof on a representative authenticated or credential-free state as required by the current runtime; no owner credential request solely for FRT-000 history.
 PREDECESSOR: FRT-002
 SUCCESSOR: FRT-004
-

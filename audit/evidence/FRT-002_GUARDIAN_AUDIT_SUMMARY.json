@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "evidence_type": "AICG_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-002",
+  "mode": "AUDIT_ONLY",
+  "repository": "dkknapikdamian-collab/leadflowv1",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "base_sha": "268a3ee96016679f99019a177b17704de980f057",
+  "outcome": "PARTIAL",
+  "pass_claim": false,
+  "blockers": 0,
+  "target_scan": {
+    "status": "NOT_AVAILABLE",
+    "reason": "The CloseFlow target does not expose a guardian npm script or the canonical AICG target scanner entrypoints required by the routed skill. The available canonical package supports its deterministic/plugin smoke path, not a CloseFlow target-root scan.",
+    "attempted_command": "npm.cmd run guardian -- --smoke",
+    "attempted_result": "FAIL / Missing script: guardian",
+    "external_plugin_smoke_command": "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+    "external_plugin_smoke_result": {
+      "process": "PASS",
+      "mode": "AUDIT_ONLY",
+      "file_writes": 0,
+      "coverage_outcome": "PARTIAL",
+      "scope": "plugin orchestration smoke only; not a CloseFlow target scan"
+    }
+  },
+  "reused_guardian_evidence": {
+    "source_stage": "FRT-000",
+    "raw_capture_path": "C:\\Users\\malim\\AppData\\Local\\Temp\\forteca-f000-guardian-final-20260827-rerun.json",
+    "raw_capture_sha256": "7bbf7331785974067bb88c32e055bf11add14d938d4430e12b68f1b265f290ec",
+    "source_repository_sha": "3d999dc206ad3d29e255c9d850c4a267c711b18f",
+    "source_tree_sha": "262b6ef6b92f74366cff6d2d22e9e48b381c818a",
+    "source_outcome": "PARTIAL",
+    "reuse_boundary": "Historical control-plane evidence is reused only for the bounded fact that there were zero blocking findings and two out-of-scope review-required HIGH findings. It is not treated as a fresh FRT-002 target scan or a PASS claim."
+  },
+  "scoped_current_evidence": {
+    "today_view_customizer_guard": "PASS",
+    "today_view_customizer_all_options_guard": "PASS",
+    "today_view_customizer_test": "PASS (2/2)",
+    "today_view_customizer_all_options_test": "PASS (2/2)",
+    "ui_patch_layers_guard": "PASS",
+    "ui_ssot_css_owners_guard": "PASS",
+    "typescript": "PASS",
+    "git_diff_check": "PASS",
+    "build": "PASS",
+    "browser_proof": "audit/evidence/FRT-002_BROWSER_PROOF.json"
+  },
+  "findings_and_limits": {
+    "current_target_scan_findings": "NOT_AVAILABLE",
+    "known_historical_blockers": 0,
+    "known_historical_out_of_scope_review_required_high_findings": 2,
+    "aicg_raw_pass_claim": false,
+    "technical_acceptance_basis": "Codex acceptance authority under the owner directive; scoped repository guards, typecheck, build and live browser evidence are recorded separately."
+  },
+  "interpretation": "The available Guardian evidence is partial and does not authorize an AICG PASS statement. FRT-002 is accepted under the owner directive on the basis of scoped control checks, real preference behavior, typecheck, build and live browser proof; target-wide Guardian scan remains unavailable."
+}

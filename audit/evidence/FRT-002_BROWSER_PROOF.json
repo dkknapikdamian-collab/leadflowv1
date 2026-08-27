@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-002",
+  "reference_file": "docs/ui/reference/forteca-calm-light/002_today_customize_view.webp",
+  "reference_sha256": "0d6ac0831984c47564e8deb1a2c3e62702febd423f7ad8dfd15723933258018a",
+  "reference_dimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "captured_at": "2026-08-27T12:06:59.4695318+02:00",
+  "capture": {
+    "browser": "Codex In-app Browser",
+    "url": "http://localhost:3000/",
+    "route": "/",
+    "viewport": {
+      "width": 946,
+      "height": 698
+    },
+    "captured_in_in_app_browser": true,
+    "screenshot_artifact_path": null,
+    "tab_marked_deliverable": true
+  },
+  "runtime": {
+    "live_runtime": true,
+    "shell": {
+      "brand": "CloseFlow",
+      "active_navigation": "Dziś",
+      "data_origin": "current local workspace runtime response"
+    },
+    "drawer": {
+      "title": "Dostosuj widok",
+      "open": true,
+      "position": "right edge",
+      "rect": {
+        "x": 520.4000244140625,
+        "y": 0,
+        "width": 426,
+        "height": 697.6000366210938,
+        "right": 946.4000244140624,
+        "bottom": 697.6000366210938
+      },
+      "background": "rgb(255, 255, 255)",
+      "border_radius": "0px",
+      "overlay_background": "rgba(15, 23, 42, 0.42)",
+      "scroll_top": 0,
+      "visible_option_count": 8,
+      "reorderable_secondary_section_count": 6,
+      "default_reorderable_section_order": [
+        "no_action",
+        "risk",
+        "tasks",
+        "events",
+        "upcoming",
+        "drafts"
+      ],
+      "footer_background": "rgb(255, 255, 255)",
+      "buttons": [
+        "Przywróć domyślne",
+        "Anuluj",
+        "Zapisz widok",
+        "Close"
+      ]
+    }
+  },
+  "interactions": {
+    "draft_cancel": {
+      "toggled_option": "events",
+      "draft_after_toggle": false,
+      "committed_before_cancel": true,
+      "committed_after_cancel": true,
+      "status": "PASS"
+    },
+    "save_and_forced_navigation": {
+      "toggled_option": "events",
+      "committed_after_save": false,
+      "committed_after_forced_query_navigation": false,
+      "reset_to_defaults": true,
+      "default_visible_section_count_after_reset": 8,
+      "status": "PASS"
+    },
+    "reorder": {
+      "keyboard_action": "ArrowDown on first reorder row",
+      "order_after_action": [
+        "risk",
+        "no_action",
+        "tasks",
+        "events",
+        "upcoming",
+        "drafts"
+      ],
+      "secondary_runtime_order_after_save": [
+        "risk",
+        "no_action",
+        "tasks",
+        "events",
+        "upcoming",
+        "drafts"
+      ],
+      "reset_to_default_after_proof": true,
+      "status": "PASS"
+    },
+    "close_and_escape": {
+      "close_button": "PASS",
+      "escape": "PASS",
+      "status": "PASS"
+    }
+  },
+  "access": {
+    "auth_required": false,
+    "auth_used": false,
+    "authenticated_populated_runtime_required_for_this_stage": false
+  },
+  "comparison": {
+    "reference_is_visual_sot": true,
+    "product_brand_preserved": "CloseFlow",
+    "structural_visual_parity": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "literal_pixel_identity_claim": false,
+    "accepted_deviations": [
+      "The reference is 1672x941 while the available in-app browser viewport is 946x698.",
+      "The current runtime exposes eight real Today sections; the reference image shows six options.",
+      "Primary cards and the ready-to-start card retain their canonical page slots; only six secondary sections are reorderable.",
+      "Filters and number-mode controls are not exposed because they are not part of the current runtime preference contract."
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 # FRT-002 — TODAY CUSTOMIZE
 
-CONTRACT_STATUS: ACTIVE
+CONTRACT_STATUS: ACCEPTED
 STAGE_ID: FRT-002
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/002_today_customize_view.webp
 TARGET_ROUTE: /
