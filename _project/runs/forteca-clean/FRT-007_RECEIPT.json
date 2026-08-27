@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-007",
+  "reference_file": "docs/ui/reference/forteca-calm-light/007_leads_history.webp",
+  "target_route": "/leads",
+  "target_state": "Leads — Historia",
+  "result": "PASS",
+  "stage_status": "ACCEPTED",
+  "acceptance_authority": "CODEX",
+  "acceptance_basis": {
+    "owner_directive_sha256": "E3432C8126DAF2C0E0B4B5FB7060F05D60F9CB53F373904FEDEA5A2",
+    "directive_interpretation": "Codex is the acceptance authority under the owner directive for the autonomous Forteca program. This receipt is controller acceptance, not an AICG PASS claim."
+  },
+  "root_cause_or_implementation_gap": "The real Leads route exposed the history tab boundary but resolved the list from activeLeads and rendered the generic columns, so linked service cases were not represented as historical context. The implementation derives history from the real workspace-scoped lead source, excludes soft-deleted records, classifies won/lost/moved-to-service entries through canonical status and linked-case owners, wires outcome/reason/value/close-period filters, and renders real related-case context while preserving row navigation and the existing archive mutation.",
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "History membership is derived from canonical lead status, sales outcome and linked-case movement semantics; no screenshot record is hardcoded.",
+      "Outcome labels, tones, loss reasons and related-case state come from existing domain fields and owners; missing close dates are stated rather than invented.",
+      "The reference is used for hierarchy, density and column intent only; current workspace counts and records remain the source of truth.",
+      "Soft-delete semantics remain owned by isLeadInTrash and existing archive/restore behavior; no parallel history data model is introduced.",
+      "Every visible history control is backed by an existing query, derived filter, navigation owner or existing mutation; dead controls are not accepted."
+    ]
+  },
+  "code_changed": true,
+  "files_changed": [
+    "src/pages/Leads.tsx",
+    "src/styles/closeflow-record-list-source-truth.css",
+    "tests/forteca-frt-007-leads-history.test.cjs",
+    "package.json",
+    "docs/ui/CLOSEFLOW_STYLE_MAP.generated.md",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.json",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.md",
+    "docs/ui/closeflow-style-map.generated.json",
+    "audit/evidence/FRT-007_BROWSER_PROOF.json",
+    "audit/evidence/FRT-007_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/contracts/forteca-clean/FRT-007_LEADS_HISTORY.md",
+    "_project/contracts/forteca-clean/FRT-008_LEADS_RESCUE.md",
+    "_project/WORKFLOW_STATE.json",
+    "_project/runs/forteca-clean/FRT-007_RECEIPT.json"
+  ],
+  "preserved_untracked_files": ["dist-test-today-sections.cjs"],
+  "visual_sot_owners_used": [
+    "CARDS_TILES",
+    "LIST_ROWS",
+    "SURFACES",
+    "BADGES",
+    "SEARCH",
+    "BUTTONS_ACTIONS",
+    "RESPONSIVE_DENSITY",
+    "TYPOGRAPHY"
+  ],
+  "visible_controls_inventory": {
+    "primary_add_lead": 1,
+    "history_state_tab": 1,
+    "metric_cards": 4,
+    "search": 1,
+    "history_status_filter": 1,
+    "history_reason_filter": 1,
+    "history_value_filter": 1,
+    "history_close_period_filter": 1,
+    "more_filters": 1,
+    "reset": 1,
+    "row_navigation": 2,
+    "row_archive_action": 2,
+    "pagination": 1,
+    "total_known_control_groups": 13
+  },
+  "visible_controls_wired": "All visible history controls are backed by real local data, derived filters, existing lead navigation or the existing archive mutation; no unsupported import, restore or fabricated action was added.",
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "node --test tests/forteca-frt-007-leads-history.test.cjs (2/2)",
+    "node --test tests/forteca-frt-006-leads-at-risk.test.cjs (2/2)",
+    "node --test tests/forteca-frt-005-leads-active.test.cjs (2/2)",
+    "node --test tests/forteca-frt-004-leads-all.test.cjs (2/2)",
+    "node --test tests/forteca-frt-003-global-add.test.cjs (2/2)",
+    "node scripts/check-closeflow-entity-icon-registry.cjs",
+    "npm.cmd run guard:ui:ssot-icons",
+    "npm.cmd run guard:ui:ssot-semantic-colors",
+    "npm.cmd run guard:ui:ssot-typography",
+    "npm.cmd run guard:ui:component-clones",
+    "npm.cmd run check:polish-mojibake",
+    "npm.cmd run audit:closeflow-ui-map",
+    "npm.cmd run audit:closeflow-style-map",
+    "npm.cmd run check:closeflow-ui-map-inventory-v1",
+    "npm.cmd run check:closeflow-ui-skill-pack",
+    "npm.cmd run check:closeflow-ui-premap-contract",
+    "npx.cmd tsc --noEmit --pretty false",
+    "git diff --check",
+    "npm.cmd run build",
+    "live Codex In-app Browser route/state/filter/responsive proof"
+  ],
+  "tests_reused": [
+    "FRT-000 reference manifest, routing/Guardian boundary and visual SOT owner registry",
+    "FRT-001 live shell and canonical creation-flow baseline",
+    "FRT-002 owner guards and build baseline",
+    "FRT-003 shared Add and page-header behavior regression",
+    "FRT-004 real Leads all-state query, data and pagination baseline",
+    "FRT-005 active Leads query, semantic badges, browser and responsive baseline",
+    "FRT-006 at-risk Leads semantics, browser and responsive baseline"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: target repository has no guardian package script or canonical AICG target scanner entrypoint; audit summary remains PARTIAL and pass_claim=false"
+    },
+    {
+      "test": "authenticated populated runtime proof",
+      "reason": "NOT_REQUIRED: FRT-007 is independently verifiable with the available real local workspace response and no authenticated owner access is required"
+    },
+    {
+      "test": "guard:ui:ssot-css-owners",
+      "reason": "BASELINE_DRIFT: pre-existing LF-UI-SOT-007 concern mismatch for global shell semantics; FRT-007 did not repair the unrelated ownership contract"
+    },
+    {
+      "test": "guard:ui:patch-layers",
+      "reason": "BASELINE_DRIFT: pre-existing direct lucide-react import in src/lib/source-of-truth/icon-registry.ts; FRT-007 did not alter the icon registry"
+    },
+    {
+      "test": "legacy Stage222/record-list marker guards",
+      "reason": "OUT_OF_SCOPE: pre-existing baseline drift was not repaired while executing FRT-007"
+    },
+    {
+      "test": "lint",
+      "reason": "NO_CANONICAL_REPOSITORY_LINT_SCRIPT_REGISTERED"
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS",
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-007_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "REUSED_FROM_FRT-006: PASS / coverage PARTIAL"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-007_BROWSER_PROOF.json",
+    "status": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "/leads",
+    "history_rows": 2,
+    "filter_interactions": "PASS",
+    "mobile_rows": 2,
+    "horizontal_overflow": false,
+    "console_errors": 0,
+    "tab_marked_deliverable": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "literal_pixel_identity_claim": false,
+    "limitation": "The live runtime uses the CloseFlow shell and current real workspace data; the reference uses the Forteca shell and a different fixture data volume. The history hierarchy, selected state, outcome/reason/value/date/related-case composition, real controls and responsive card placement are reconciled at the available viewports without inventing unsupported records or actions."
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "efficiency_planning": "APPLIED",
+    "project_context_reused": [
+      "FRT-000 routing/reference/Guardian baseline",
+      "FRT-006 real Leads and browser baseline"
+    ],
+    "evidence_reuse": [
+      "FRT-003 shared header/Add regression",
+      "FRT-004 Leads all-state query and pagination baseline",
+      "FRT-005 active Leads semantic-owner and responsive baseline",
+      "FRT-006 at-risk Leads state and browser baseline"
+    ],
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "skip_reason": "No suitable available provider was exposed for this shared UI-owner change; one write owner and cross-state semantic validation were required in the parent workspace."
+  },
+  "implementation_commit_sha": "b978ecb3937fcbe284b185768a9ae6f344fa88a7",
+  "closeout_commit_sha": "c106f1017d8790f26f0cbe058241ae3571b54071",
+  "remote_head": "c106f1017d8790f26f0cbe058241ae3571b54071",
+  "next_stage": "FRT-008"
+}

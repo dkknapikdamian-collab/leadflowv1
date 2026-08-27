@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 88,
+  "state_revision": 89,
   "last_accepted": {
     "id": "FRT-007",
     "status": "PASS",
-    "commit_sha": "b978ecb3937fcbe284b185768a9ae6f344fa88a7",
-    "evidence": "audit/evidence/FRT-007_BROWSER_PROOF.json; audit/evidence/FRT-007_GUARDIAN_AUDIT_SUMMARY.json; Codex controller acceptance under the owner directive; real Leads history filtering, canonical outcome/date semantics, related-case context, responsive placement, scoped tests, typecheck, build and live browser evidence PASS, Guardian raw outcome PARTIAL with zero blockers and no target-wide scan available"
+    "commit_sha": "c106f1017d8790f26f0cbe058241ae3571b54071",
+    "evidence": "_project/runs/forteca-clean/FRT-007_RECEIPT.json; audit/evidence/FRT-007_BROWSER_PROOF.json; audit/evidence/FRT-007_GUARDIAN_AUDIT_SUMMARY.json; Codex controller acceptance under the owner directive; real Leads history filtering, canonical outcome/date semantics, related-case context, responsive placement, scoped tests, typecheck, build and live browser evidence PASS, Guardian raw outcome PARTIAL with zero blockers and no target-wide scan available"
   },
   "previous_accepted": {
     "id": "LF-UI-SOT-007",
@@ -18,10 +18,10 @@
   "current_contract_path": "_project/contracts/forteca-clean/FRT-008_LEADS_RESCUE.md",
   "current_status": "ACTIVE",
   "last_accepted_stage": "FRT-007",
-  "last_accepted_commit": "b978ecb3937fcbe284b185768a9ae6f344fa88a7",
+  "last_accepted_commit": "c106f1017d8790f26f0cbe058241ae3571b54071",
   "next_stage": "FRT-009",
   "branch": "codex/forteca-ui-001-040-clean",
-  "remote_head": "b978ecb3937fcbe284b185768a9ae6f344fa88a7",
+  "remote_head": "c106f1017d8790f26f0cbe058241ae3571b54071",
   "current_workflow": {
     "id": "FRT-008",
     "kind": "TECHNICAL_IMPLEMENTATION_STAGE",
@@ -87,6 +87,7 @@
     "forteca:FRT-007:implementation@b978ecb3937fcbe284b185768a9ae6f344fa88a7",
     "forteca:FRT-007:browser-proof@audit/evidence/FRT-007_BROWSER_PROOF.json",
     "forteca:FRT-007:guardian-summary@audit/evidence/FRT-007_GUARDIAN_AUDIT_SUMMARY.json",
+    "forteca:FRT-007:receipt@_project/runs/forteca-clean/FRT-007_RECEIPT.json",
     "forteca:FRT-006:receipt@_project/runs/forteca-clean/FRT-006_RECEIPT.json",
     "forteca:FRT-003:implementation@307ecd9b73a0969bcca687d191a4b7b80cdf599d",
     "forteca:FRT-003:browser-proof@audit/evidence/FRT-003_BROWSER_PROOF.json",
