@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-011",
+  "reference_file": "docs/ui/reference/forteca-calm-light/011_lead_add_modal.webp",
+  "target_route": "/leads",
+  "target_state": "Forteca calm-light Add Lead modal",
+  "result": "PASS",
+  "stage_status": "ACCEPTED",
+  "acceptance_authority": "CODEX",
+  "acceptance_basis": {
+    "directive_interpretation": "Codex is the acceptance authority under the owner directive for the autonomous Forteca program. This receipt is controller acceptance, not an AICG PASS claim.",
+    "reference_and_runtime": "The real /leads runtime was reconciled against the FRT-011 reference with the existing Lead and Task mutation owners preserved."
+  },
+  "root_cause_or_implementation_gap": "The existing Lead creation flow had the real lead write and duplicate handoff but its modal still exposed the legacy field grouping and did not provide the Forteca calm-light hierarchy, next-step controls, owner context, or real create-task toggle. FRT-011 reconciles the mounted dialog and keeps the current API, validation, duplicate protection and workspace scope as behavior owners.",
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "The dialog uses the current lead domain fields and existing insertLeadToSupabase owner; no reference-company, person or copied sample record is submitted.",
+      "The visible next-step control maps to canonical TASK_TYPES and insertTaskToSupabase; it is not a screenshot-only button.",
+      "The owner label is derived from the current workspace profile and is not hardcoded to the reference image.",
+      "Duplicate detection and the existing conflict handoff remain before the lead write; no second persistence model was introduced.",
+      "The local browser proof uses the existing DEV runtime only; the configured Supabase production path remains unchanged.",
+      "Styling is scoped to the mounted FRT-011 dialog and existing CloseFlow dialog owner; no unrelated route was restyled."
+    ]
+  },
+  "code_changed": true,
+  "files_changed": [
+    "package.json",
+    "src/pages/Leads.tsx",
+    "src/styles/owners/closeflow-dialogs.css",
+    "tests/forteca-frt-011-lead-add.test.cjs",
+    "docs/ui/CLOSEFLOW_STYLE_MAP.generated.md",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.json",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.md",
+    "docs/ui/closeflow-style-map.generated.json",
+    "audit/evidence/FRT-011_BROWSER_PROOF.json",
+    "audit/evidence/FRT-011_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/runs/forteca-clean/FRT-011_RECEIPT.json"
+  ],
+  "preserved_untracked_files": [
+    "dist-test-today-sections.cjs"
+  ],
+  "visual_sot_owners_used": [
+    "MODALS",
+    "FORMS",
+    "BUTTONS_ACTIONS",
+    "ICONS",
+    "SURFACES",
+    "RESPONSIVE_DENSITY"
+  ],
+  "visible_controls_inventory": {
+    "lead_fields": 9,
+    "next_step_controls": 7,
+    "owner_and_notes_controls": 2,
+    "footer_actions": 2,
+    "total_known_control_groups": 4
+  },
+  "visible_controls_wired": "Close and Anuluj reset the draft; lead fields remain bound to newLead; source/status/priority use canonical options; quick scheduling updates the real datetime field; the task toggle controls a real insertTaskToSupabase post-create path; submit preserves duplicate checking and workspace-scoped insert; operational last-contact data remains available in the collapsed section.",
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "npm.cmd run test:forteca-frt-011-lead-add (2/2)",
+    "npm.cmd run test:forteca-frt-010-lead-detail (2/2)",
+    "npm.cmd run guard:ui:ssot-icons",
+    "npm.cmd run guard:ui:ssot-semantic-colors",
+    "npm.cmd run guard:ui:ssot-typography",
+    "npm.cmd run guard:ui:component-clones",
+    "npm.cmd run guard:routes:canonical",
+    "npm.cmd run check:polish-mojibake",
+    "npm.cmd run check:stage124-supabase-egress-contract",
+    "npm.cmd run check:closeflow-ui-premap-contract",
+    "npm.cmd exec tsc -- --noEmit",
+    "npm.cmd run build",
+    "git diff --cached --check",
+    "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+    "live Codex In-app Browser proof of the real /leads Add Lead modal, quick scheduling, task toggle, cancel/reset and console state"
+  ],
+  "tests_reused": [
+    "FRT-000 routing, reference manifest, Guardian boundary and visual SOT owner registry",
+    "FRT-001 live shell and canonical creation-flow baseline",
+    "FRT-002 owner guards and build baseline",
+    "FRT-003 shared Add and page-header behavior regression",
+    "FRT-004 through FRT-009 Leads state, filtering, archive and trash owner baselines",
+    "FRT-010 real Lead Detail route, runtime preview and browser baseline"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: target repository has no Guardian target-wide scan entrypoint; smoke coverage is recorded as PARTIAL and pass_claim=false"
+    },
+    {
+      "test": "authenticated populated lead submission",
+      "reason": "NOT_REQUIRED_FOR_CURRENT_REFERENCE: FRT-011 browser proof verifies the real mounted form and non-mutating controls; no user-approved live record submission was needed"
+    },
+    {
+      "test": "guard:ui:css-owner-before-cleanup and guard:ui:ssot-css-owners",
+      "reason": "BASELINE_DRIFT: pre-existing global shell ownership mismatch is outside the FRT-011 write set"
+    },
+    {
+      "test": "guard:ui:patch-layers",
+      "reason": "BASELINE_DRIFT: pre-existing direct lucide-react import in src/lib/source-of-truth/icon-registry.ts is outside the FRT-011 write set"
+    },
+    {
+      "test": "lint",
+      "reason": "NO_CANONICAL_REPOSITORY_LINT_SCRIPT_REGISTERED"
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS_WITH_KNOWN_WARNINGS",
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-011_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "EXECUTED: PARTIAL / coverage PARTIAL"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-011_BROWSER_PROOF.json",
+    "status": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "/leads",
+    "modal": "PASS",
+    "quick_schedule": "PASS",
+    "task_toggle": "PASS",
+    "cancel_reset": "PASS",
+    "submit": "NOT_SUBMITTED_BY_DESIGN",
+    "horizontal_overflow": false,
+    "console_errors": 0,
+    "tab_marked_deliverable": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "PASS",
+    "literal_pixel_identity_claim": false,
+    "limitation": "Runtime-derived owner and current domain values are preserved instead of copying reference fixtures; the submit boundary was not exercised against a live record without explicit user-approved data submission."
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "efficiency_planning": "APPLIED",
+    "marketplace_startup_receipt": "startup-bd28280a6c261829936b2e187035de110b1078bae98af891bfb880360f632a4c",
+    "marketplace_binding": "BOUND",
+    "primary_capability": "frontend-design",
+    "project_context_reused": [
+      "FRT-000 routing/reference/Guardian baseline",
+      "FRT-010 Lead Detail runtime and browser baseline"
+    ],
+    "evidence_reuse": [
+      "FRT-003 shared header/Add regression",
+      "FRT-004 through FRT-009 Leads state and mutation baselines",
+      "FRT-010 real runtime/browser and DEV preview boundary"
+    ],
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "skip_reason": "No suitable available provider was exposed for this shared UI/data-owner change; one write owner and cross-state semantic validation were required in the parent workspace."
+  },
+  "implementation_commit_sha": "4f6bd2f4c3f20f050f4a05a268d32485fbd5adb3",
+  "next_stage": "FRT-012",
+  "created_at": "2026-08-27T19:15:37.5492827Z"
+}

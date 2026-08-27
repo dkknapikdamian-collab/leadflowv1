@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-011",
+  "reference_file": "docs/ui/reference/forteca-calm-light/011_lead_add_modal.webp",
+  "reference_sha256": "A17F93DDBFCE92CB550AD200D847AAE833CDD3E720A65A7A64A05FA79728F310",
+  "entry_url": "http://localhost:3000/leads",
+  "runtime_url": "http://localhost:3000/leads",
+  "route": "/leads",
+  "state": "Forteca calm-light Add Lead modal",
+  "live_runtime": true,
+  "auth_required": false,
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "form_owner": "src/pages/Leads.tsx",
+    "lead_write_owner": "insertLeadToSupabase",
+    "next_task_write_owner": "insertTaskToSupabase",
+    "preview_gate": "import.meta.env.DEV && !isSupabaseConfigured()",
+    "production_source": "Supabase path remains unchanged; no production auth bypass was introduced"
+  },
+  "visible_structure": {
+    "shell": [
+      "Forteca brand and navigation",
+      "Leady page header",
+      "real lead list behind modal"
+    ],
+    "modal": [
+      "Dodaj leada header and close action",
+      "Dane podstawowe card",
+      "Następny krok card with canonical task types and quick scheduling",
+      "real task toggle",
+      "workspace owner display",
+      "Krótka notatka with 0 / 500 counter",
+      "collapsed Dane operacyjne section",
+      "Anuluj and Dodaj leada footer actions"
+    ],
+    "required_markers": [
+      "Nazwa leada *",
+      "Firma *",
+      "Imię i nazwisko *",
+      "E-mail *",
+      "Źródło *",
+      "Status *",
+      "Opiekun *"
+    ]
+  },
+  "interaction_proof": {
+    "open_modal": {
+      "status": "PASS",
+      "observed": "The real /leads header action opened the mounted Add Lead dialog."
+    },
+    "quick_schedule": {
+      "status": "PASS",
+      "action": "Jutro 09:00",
+      "observed_value": "2026-08-28T09:00",
+      "observed": "The quick action updated the real datetime-local control and active state."
+    },
+    "task_toggle": {
+      "status": "PASS",
+      "observed_sequence": [
+        "aria-pressed=true after activation",
+        "aria-pressed=false after deactivation"
+      ],
+      "observed": "The toggle is a real form state control; no lead or task was submitted during proof."
+    },
+    "cancel_reset": {
+      "status": "PASS",
+      "observed": "Anuluj closed the dialog; reopening returned the schedule blank and the task toggle off, so abandoned draft state is not carried into a new lead."
+    },
+    "submit_boundary": {
+      "status": "NOT_SUBMITTED_BY_DESIGN",
+      "reason": "Browser proof did not create a real record without an explicit user-approved data submission. The submit path is statically covered and remains bound to the existing lead, duplicate-check and task mutation owners."
+    }
+  },
+  "responsive_proof": {
+    "desktop": "PASS",
+    "horizontal_overflow": false,
+    "observed": "The modal fits the active desktop viewport, keeps the footer visible and scrolls its content internally."
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "no_reference_person_or_company_fixture": true,
+    "local_preview_is_dev_only": true,
+    "supabase_production_path_preserved": true,
+    "duplicate_handoff_preserved": true,
+    "visible_controls_have_real_owners": true,
+    "no_dead_controls": true,
+    "modal_close_resets_draft": true
+  },
+  "console_errors": 0,
+  "status": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "PASS",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The owner value is derived from the local workspace profile (Dev Local) rather than copied from the reference image.",
+      "The UI calls the existing lead summary/name field Nazwa leada because the current domain model has no separate lead-title field.",
+      "The proof used the real unauthenticated local DEV runtime; it did not submit a new lead or create a task."
+    ]
+  },
+  "tab_marked_deliverable": true,
+  "implementation_commit_sha": "4f6bd2f4c3f20f050f4a05a268d32485fbd5adb3"
+}
