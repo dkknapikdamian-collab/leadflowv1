@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 79,
+  "state_revision": 80,
   "last_accepted": {
-    "id": "FRT-002",
+    "id": "FRT-003",
     "status": "PASS",
-    "commit_sha": "3882798ca66d35cc85d7f31fedbb9d1f1256aaa2",
-    "evidence": "_project/runs/forteca-clean/FRT-002_RECEIPT.json; audit/evidence/FRT-002_BROWSER_PROOF.json; audit/evidence/FRT-002_GUARDIAN_AUDIT_SUMMARY.json; Codex controller acceptance under the owner directive; scoped preference, visual, wiring, typecheck, build and live browser evidence PASS, Guardian raw outcome PARTIAL with zero blockers and no target-wide scan available"
+    "commit_sha": "6063a291ccf5b1e55108a1e34a7b87f2fd587838",
+    "evidence": "_project/runs/forteca-clean/FRT-003_RECEIPT.json; audit/evidence/FRT-003_BROWSER_PROOF.json; audit/evidence/FRT-003_GUARDIAN_AUDIT_SUMMARY.json; Codex controller acceptance under the owner directive; real global Add wiring, canonical case dialog flow, scoped regression tests, typecheck, build and live browser evidence PASS, Guardian raw outcome PARTIAL with zero blockers and no target-wide scan available"
   },
   "previous_accepted": {
     "id": "LF-UI-SOT-007",
@@ -17,11 +17,11 @@
   "current_stage": "FRT-004",
   "current_contract_path": "_project/contracts/forteca-clean/FRT-004_LEADS_ALL.md",
   "current_status": "ACTIVE",
-  "last_accepted_stage": "FRT-002",
-  "last_accepted_commit": "3882798ca66d35cc85d7f31fedbb9d1f1256aaa2",
+  "last_accepted_stage": "FRT-003",
+  "last_accepted_commit": "6063a291ccf5b1e55108a1e34a7b87f2fd587838",
   "next_stage": "FRT-005",
   "branch": "codex/forteca-ui-001-040-clean",
-  "remote_head": "307ecd9b73a0969bcca687d191a4b7b80cdf599d",
+  "remote_head": "6063a291ccf5b1e55108a1e34a7b87f2fd587838",
   "current_workflow": {
     "id": "FRT-004",
     "kind": "TECHNICAL_IMPLEMENTATION_STAGE",
@@ -54,9 +54,10 @@
     "stage_000_status": "PASS",
     "stage_001_status": "PASS",
     "stage_002_status": "PASS",
+    "stage_003_status": "PASS",
     "active_stage": "FRT-004",
     "future_stages": "FRT-005..FRT-041 LOCKED",
-    "accepted_receipts": ["FRT-000", "FRT-001", "FRT-002"],
+    "accepted_receipts": ["FRT-000", "FRT-001", "FRT-002", "FRT-003"],
     "auth_required_for_frt_000": false,
     "future_receipts_precreated": false
   },

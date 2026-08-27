@@ -105,7 +105,7 @@
     "limitation": "The reference is 1672x941 and the available in-app browser viewport is 1298x698; the live proof records the actual global Add menu, responsive placement, canonical actions and close behavior without claiming literal pixel equality across different viewport dimensions. Runtime-only deviations are documented in the browser proof and active contract."
   },
   "implementation_commit_sha": "307ecd9b73a0969bcca687d191a4b7b80cdf599d",
-  "closeout_commit_sha": "PENDING_FRT_003_CLOSEOUT_COMMIT",
-  "remote_head": "PENDING_FRT_003_REMOTE_VERIFICATION",
+  "closeout_commit_sha": "6063a291ccf5b1e55108a1e34a7b87f2fd587838",
+  "remote_head": "6063a291ccf5b1e55108a1e34a7b87f2fd587838",
   "next_stage": "FRT-004"
 }
