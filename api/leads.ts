@@ -1001,6 +1001,8 @@ export default async function handler(req: any, res: any) {
       if (body.email !== undefined) payload.email = asText(body.email);
       if (body.phone !== undefined) payload.phone = asText(body.phone);
       if (body.source !== undefined) payload.source = normalizeSource(body.source);
+      if (body.summary !== undefined) payload.summary = asText(body.summary);
+      if (body.notes !== undefined || body.note !== undefined) payload.notes = asText(body.notes ?? body.note);
       if (body.dealValue !== undefined || body.deal_value !== undefined || body.value !== undefined || body.contractValue !== undefined || body.contract_value !== undefined) {
         const nextLeadValueStage231GR7 = asNumber(body.dealValue ?? body.deal_value ?? body.value ?? body.contractValue ?? body.contract_value);
         payload.value = nextLeadValueStage231GR7;
@@ -1015,7 +1017,11 @@ export default async function handler(req: any, res: any) {
       // STAGE232T_R4_LEAD_NEXT_ACTION_ITEM_ID_PATCH
       // Calendar lead-shadow actions clear or update the canonical lead next-action link.
       if (body.nextActionItemId !== undefined || body.next_action_item_id !== undefined) payload.next_action_item_id = asText(body.nextActionItemId ?? body.next_action_item_id) || null;
-      if (body.isAtRisk !== undefined) {
+      if (body.priority !== undefined) {
+        const nextPriority = normalizeEnum(body.priority, new Set(['low', 'medium', 'high']), 'medium');
+        payload.priority = nextPriority;
+        payload.is_at_risk = nextPriority === 'high';
+      } else if (body.isAtRisk !== undefined) {
         payload.is_at_risk = Boolean(body.isAtRisk);
         payload.priority = body.isAtRisk ? 'high' : 'medium';
       }

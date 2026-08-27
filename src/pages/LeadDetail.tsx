@@ -611,6 +611,26 @@ function toLocalDateTime(value: unknown) {
   const parsed = asDate(value) || new Date();
   return toDateTimeLocalValue(parsed);
 }
+function toOptionalLocalDateTime(value: unknown) {
+  const parsed = asDate(value);
+  return parsed ? toDateTimeLocalValue(parsed) : '';
+}
+function toLocalDateInput(value: unknown) {
+  const parsed = asDate(value);
+  if (!parsed) return '';
+  const year = parsed.getFullYear();
+  const month = String(parsed.getMonth() + 1).padStart(2, '0');
+  const day = String(parsed.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+function mergeDateInputWithExistingTime(value: string, existing: unknown) {
+  const nextDate = value.trim();
+  if (!nextDate) return '';
+  const parsed = asDate(existing);
+  const hours = parsed ? String(parsed.getHours()).padStart(2, '0') : '09';
+  const minutes = parsed ? String(parsed.getMinutes()).padStart(2, '0') : '00';
+  return `${nextDate}T${hours}:${minutes}`;
+}
 function buildTimeline(tasks: any[], events: any[]): TimelineEntry[] {
   const taskEntries = tasks.map((task) => {
     const status = String(task.status || 'todo');
@@ -880,6 +900,7 @@ export default function LeadDetail() {
   const [isEditing, setIsEditing] = useState(false);
   const [isCreateCaseOpen, setIsCreateCaseOpen] = useState(false);
   const [createCasePending, setCreateCasePending] = useState(false);
+  const [leadEditSaving, setLeadEditSaving] = useState(false);
   const [editLead, setEditLead] = useState<any>(null);
   const [linkCaseId, setLinkCaseId] = useState('');
   const [linkingCase, setLinkingCase] = useState(false);
@@ -1123,6 +1144,27 @@ export default function LeadDetail() {
   const leadPrimaryNoteText = useMemo(() => {
     return leadSourceNoteText || leadNoteActivityItems[0]?.content || '';
   }, [leadNoteActivityItems, leadSourceNoteText]);
+
+  const leadLastContactChannel = useMemo(() => {
+    const contactActivities = [...activities]
+      .filter((activity) => {
+        const type = String(activity?.eventType || activity?.event_type || activity?.type || activity?.activityType || '').toLowerCase();
+        return type === 'contacted' || type.includes('contact') || type.includes('call') || type.includes('email') || type.includes('message');
+      })
+      .sort((left, right) => {
+        const leftDate = asDate(left?.happenedAt || left?.createdAt || left?.updatedAt)?.getTime() || 0;
+        const rightDate = asDate(right?.happenedAt || right?.createdAt || right?.updatedAt)?.getTime() || 0;
+        return rightDate - leftDate;
+      });
+    const latest = contactActivities[0];
+    const payload = latest?.payload && typeof latest.payload === 'object' ? latest.payload as Record<string, unknown> : {};
+    const channel = asText(payload.channel || latest?.channel).toLowerCase();
+    if (channel === 'phone' || channel === 'call' || channel === 'phone_call') return 'Rozmowa telefoniczna';
+    if (channel === 'email' || channel === 'mail') return 'E-mail';
+    if (channel === 'meeting' || channel === 'video') return 'Spotkanie';
+    if (channel === 'whatsapp' || channel === 'messenger' || channel === 'sms') return 'Wiadomość';
+    return latest ? 'Kontakt zapisany w historii' : 'Brak zapisanego kanału';
+  }, [activities]);
 
   const hasLeadNotesStage115B = Boolean(leadSourceNoteText || leadNoteActivityItems.length);
 
@@ -1820,33 +1862,73 @@ useEffect(() => {
     await addActivity('status_changed', { status });
   };
 
-  const handleUpdateLead = async () => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
-    if (!editLead || !leadId) return;
-    await patchLead(
-      {
-        name: editLead.name || '',
-        company: editLead.company || '',
-        email: editLead.email || '',
-        phone: editLead.phone || '',
-        source: editLead.source || 'other',
-        dealValue: Number(editLead.dealValue) || 0,
-        note: editLead.note || editLead.notes || '',
-      },
-      leadInService ? 'Dane źródłowe leada zaktualizowane' : 'Dane zaktualizowane',
-    );
-    setIsEditing(false);
-  };
-
-
   const resetLeadEditDraft = () => {
     if (!lead) return;
-    setEditLead({ ...lead });
+    setEditLead({
+      ...lead,
+      // Legacy lead rows used name and activity notes before summary/notes
+      // became optional first-class fields. Keep the edit surface populated
+      // from those real values until the user chooses to persist them.
+      summary: lead.summary || lead.title || lead.name || '',
+      email: asText(lead.email) || asText((lead as any)?.contactEmail) || asText((lead as any)?.contact_email) || '',
+      phone: asText(lead.phone) || asText((lead as any)?.contactPhone) || asText((lead as any)?.contact_phone) || '',
+      notes: lead.notes || lead.note || leadPrimaryNoteText || '',
+      status: lead.status || 'new',
+      priority: lead.priority || (lead.isAtRisk ? 'high' : 'medium'),
+      nextActionTitle: lead.nextActionTitle || lead.next_action_title || nextTimelineEntry?.title || '',
+      nextActionAt: toOptionalLocalDateTime(lead.nextActionAt || lead.next_action_at || nextTimelineEntry?.dateValue),
+    });
+  };
+
+  const handleUpdateLead = async (event?: FormEvent) => {
+    event?.preventDefault?.();
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!editLead || !leadId || leadEditSaving) return;
+    setLeadEditSaving(true);
+    try {
+      await patchLead(
+        {
+          name: editLead.name || '',
+          company: editLead.company || '',
+          email: editLead.email || '',
+          phone: editLead.phone || '',
+          summary: editLead.summary || '',
+          notes: editLead.notes || editLead.note || '',
+          source: editLead.source || 'other',
+          status: editLead.status || lead?.status || 'new',
+          priority: editLead.priority || (editLead.isAtRisk ? 'high' : 'medium'),
+          dealValue: Number(editLead.dealValue) || 0,
+          nextActionTitle: editLead.nextActionTitle || '',
+          nextActionAt: editLead.nextActionAt || null,
+        },
+        leadInService ? 'Dane źródłowe leada zaktualizowane' : 'Dane zaktualizowane',
+      );
+      setIsEditing(false);
+    } finally {
+      setLeadEditSaving(false);
+    }
   };
 
   const handleStartLeadEditing = () => {
     resetLeadEditDraft();
     setIsEditing(true);
+  };
+
+  const handleLeadEditOpenChange = (open: boolean) => {
+    setIsEditing(open);
+    if (!open) {
+      setLeadEditSaving(false);
+      resetLeadEditDraft();
+    }
+  };
+
+  const handleMoveLeadToCaseFromEdit = () => {
+    setIsEditing(false);
+    if (leadInService && serviceCaseId) {
+      navigate(caseDetailPath(serviceCaseId));
+      return;
+    }
+    setIsCreateCaseOpen(true);
   };
 
   const handleStartPotentialEditingStage231G = () => {
@@ -3452,20 +3534,209 @@ useEffect(() => {
           </DialogContent>
         </Dialog>
 
-        <Dialog open={isEditing} onOpenChange={setIsEditing}>
-          <DialogContent aria-describedby={undefined}>
-            <DialogHeader><DialogTitle>Edytuj leada</DialogTitle>
-<DialogDescription>Uzupełnij dane leada i zapisz zmiany w kartotece.</DialogDescription></DialogHeader>
-            <div className="lead-detail-dialog-grid">
-              <Label>Nazwa<Input value={editLead?.name || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, name: event.target.value }))} /></Label>
-              <Label>Firma<Input value={editLead?.company || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, company: event.target.value }))} /></Label>
-              <Label>Telefon<Input value={editLead?.phone || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, phone: event.target.value }))} /></Label>
-              <Label>E-mail<Input value={editLead?.email || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, email: event.target.value }))} /></Label>
-              <Label>Źródło<select className={modalSelectClass} value={editLead?.source || 'other'} onChange={(event) => setEditLead((current: any) => ({ ...current, source: event.target.value }))}>{LEAD_SOURCE_OPTIONS.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></Label>
-              <Label>Potencjał / wartość<Input ref={potentialInputRefStage231G} data-stage231g-potential-input="true" type="number" value={editLead?.dealValue || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, dealValue: event.target.value }))} /></Label>
-              <Label>Notatka<Textarea value={editLead?.note || editLead?.notes || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, note: event.target.value }))} /></Label>
-            </div>
-            <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setIsEditing(false)}>Anuluj</Button><Button type="button" onClick={handleUpdateLead}>Zapisz</Button></DialogFooter>
+        <Dialog open={isEditing} onOpenChange={handleLeadEditOpenChange}>
+          <DialogContent
+            className="forteca-frt-012-lead-edit-dialog"
+            data-forteca-frt-012-lead-edit="true"
+            aria-describedby={undefined}
+          >
+            <DialogHeader className="forteca-frt-012-header">
+              <DialogTitle>Edytuj leada</DialogTitle>
+              <DialogDescription className="forteca-frt-012-description">Zmień dane leada i zapisz je w kartotece.</DialogDescription>
+            </DialogHeader>
+            <form className="forteca-frt-012-form" onSubmit={handleUpdateLead} data-forteca-frt-012-form="true">
+              <div className="forteca-frt-012-grid forteca-frt-012-grid--top">
+                <div className="forteca-frt-012-field">
+                  <Label htmlFor="forteca-frt-012-lead-summary">Nazwa leada <span aria-hidden="true">*</span></Label>
+                  <Input
+                    id="forteca-frt-012-lead-summary"
+                    value={editLead?.summary || ''}
+                    onChange={(event) => setEditLead((current: any) => ({ ...current, summary: event.target.value }))}
+                    required
+                    autoFocus
+                  />
+                </div>
+                <div className="forteca-frt-012-field">
+                  <Label htmlFor="forteca-frt-012-company">Firma <span aria-hidden="true">*</span></Label>
+                  <Input
+                    id="forteca-frt-012-company"
+                    value={editLead?.company || ''}
+                    onChange={(event) => setEditLead((current: any) => ({ ...current, company: event.target.value }))}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="forteca-frt-012-section-title">Kontakt główny</div>
+
+              <div className="forteca-frt-012-grid">
+                <div className="forteca-frt-012-field">
+                  <Label htmlFor="forteca-frt-012-contact-name">Imię i nazwisko</Label>
+                  <Input
+                    id="forteca-frt-012-contact-name"
+                    value={editLead?.name || ''}
+                    onChange={(event) => setEditLead((current: any) => ({ ...current, name: event.target.value }))}
+                  />
+                </div>
+                <div className="forteca-frt-012-field">
+                  <Label htmlFor="forteca-frt-012-position">Stanowisko</Label>
+                  <Input
+                    id="forteca-frt-012-position"
+                    value={editLead?.position || editLead?.jobTitle || ''}
+                    placeholder="Brak danych w rekordzie"
+                    readOnly
+                    aria-readonly="true"
+                    data-forteca-frt-012-readonly-field="position"
+                  />
+                </div>
+                <div className="forteca-frt-012-field">
+                  <Label htmlFor="forteca-frt-012-email">E-mail <span aria-hidden="true">*</span></Label>
+                  <Input
+                    id="forteca-frt-012-email"
+                    type="email"
+                    value={editLead?.email ?? ''}
+                    onChange={(event) => setEditLead((current: any) => ({ ...current, email: event.target.value }))}
+                    required
+                  />
+                </div>
+                <div className="forteca-frt-012-field">
+                  <Label htmlFor="forteca-frt-012-phone">Telefon</Label>
+                  <Input
+                    id="forteca-frt-012-phone"
+                    value={editLead?.phone ?? ''}
+                    onChange={(event) => setEditLead((current: any) => ({ ...current, phone: event.target.value }))}
+                  />
+                </div>
+                <div className="forteca-frt-012-field">
+                  <Label htmlFor="forteca-frt-012-status">Status <span aria-hidden="true">*</span></Label>
+                  <div className="forteca-frt-012-control-shell forteca-frt-012-status-control">
+                    <span className={`forteca-frt-012-status-dot forteca-frt-012-status-dot--${editLead?.status || 'new'}`} aria-hidden="true" />
+                    <select
+                      id="forteca-frt-012-status"
+                      value={editLead?.status || 'new'}
+                      onChange={(event) => setEditLead((current: any) => ({ ...current, status: event.target.value }))}
+                      required
+                    >
+                      {LEAD_STATUS_OPTIONS.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="forteca-frt-012-field">
+                  <Label htmlFor="forteca-frt-012-value">Wartość <span aria-hidden="true">*</span></Label>
+                  <div className="forteca-frt-012-control-shell forteca-frt-012-value-control">
+                    <Input
+                      ref={potentialInputRefStage231G}
+                      id="forteca-frt-012-value"
+                      data-stage231g-potential-input="true"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={editLead?.dealValue ?? ''}
+                      onChange={(event) => setEditLead((current: any) => ({ ...current, dealValue: event.target.value }))}
+                      required
+                    />
+                    <span>{leadFinance.currency}</span>
+                  </div>
+                </div>
+                <div className="forteca-frt-012-field">
+                  <Label htmlFor="forteca-frt-012-priority">Priorytet <span aria-hidden="true">*</span></Label>
+                  <div className="forteca-frt-012-control-shell forteca-frt-012-priority-control">
+                    <select
+                      id="forteca-frt-012-priority"
+                      value={editLead?.priority || 'medium'}
+                      onChange={(event) => setEditLead((current: any) => ({ ...current, priority: event.target.value }))}
+                      required
+                    >
+                      {PRIORITY_OPTIONS.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="forteca-frt-012-field">
+                  <Label htmlFor="forteca-frt-012-source">Źródło <span aria-hidden="true">*</span></Label>
+                  <div className="forteca-frt-012-control-shell">
+                    <select
+                      id="forteca-frt-012-source"
+                      value={editLead?.source || 'other'}
+                      onChange={(event) => setEditLead((current: any) => ({ ...current, source: event.target.value }))}
+                      required
+                    >
+                      {LEAD_SOURCE_OPTIONS.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="forteca-frt-012-field">
+                  <Label>Ostatni kontakt</Label>
+                  <div className="forteca-frt-012-readonly-control" data-forteca-frt-012-readonly-field="last-contact" aria-readonly="true">
+                    <Phone aria-hidden="true" />
+                    <span>{leadLastContactChannel}</span>
+                    <span className="forteca-frt-012-control-chevron" aria-hidden="true">⌄</span>
+                  </div>
+                </div>
+                <div className="forteca-frt-012-field">
+                  <Label htmlFor="forteca-frt-012-next-action-title">Następny krok <span aria-hidden="true">*</span></Label>
+                  <div className="forteca-frt-012-control-shell">
+                    <CalendarDays aria-hidden="true" />
+                    <select
+                      id="forteca-frt-012-next-action-title"
+                      value={editLead?.nextActionTitle || ''}
+                      onChange={(event) => setEditLead((current: any) => ({ ...current, nextActionTitle: event.target.value }))}
+                      required
+                    >
+                      {editLead?.nextActionTitle && !TASK_TYPES.some((entry) => entry.value === editLead.nextActionTitle || entry.label === editLead.nextActionTitle) ? <option value={editLead.nextActionTitle}>{editLead.nextActionTitle}</option> : null}
+                      <option value="">Brak zaplanowanego kroku</option>
+                      {TASK_TYPES.map((entry) => <option key={entry.value} value={entry.label}>{entry.label}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="forteca-frt-012-field">
+                  <Label htmlFor="forteca-frt-012-next-action-date">Termin <span aria-hidden="true">*</span></Label>
+                  <div className="forteca-frt-012-control-shell">
+                    <Input
+                      id="forteca-frt-012-next-action-date"
+                      type="date"
+                      value={toLocalDateInput(editLead?.nextActionAt)}
+                      onChange={(event) => setEditLead((current: any) => ({ ...current, nextActionAt: mergeDateInputWithExistingTime(event.target.value, current?.nextActionAt) }))}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="forteca-frt-012-field">
+                  <Label>Opiekun <span aria-hidden="true">*</span></Label>
+                  <div className="forteca-frt-012-readonly-control" data-forteca-frt-012-readonly-field="owner" aria-readonly="true">
+                    <span className="forteca-frt-012-owner-avatar" aria-hidden="true">{leadDetailOwner.slice(0, 2).toUpperCase()}</span>
+                    <span>{leadDetailOwner}</span>
+                    <span className="forteca-frt-012-control-chevron" aria-hidden="true">⌄</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="forteca-frt-012-field forteca-frt-012-field--full">
+                <Label htmlFor="forteca-frt-012-notes">Notatka handlowa</Label>
+                <Textarea
+                  id="forteca-frt-012-notes"
+                  value={editLead?.notes || editLead?.note || ''}
+                  onChange={(event) => setEditLead((current: any) => ({ ...current, notes: event.target.value }))}
+                  maxLength={2000}
+                />
+                <span className="forteca-frt-012-character-count" aria-live="polite">{String(editLead?.notes || editLead?.note || '').length} / 2000</span>
+              </div>
+
+              <DialogFooter className="forteca-frt-012-footer">
+                <div className="forteca-frt-012-footer-left">
+                  <Button type="button" variant="outline" onClick={handleMoveLeadToCaseFromEdit} disabled={leadEditSaving || !hasAccess}>
+                    <EntityIcon entity="case" className="h-4 w-4" />
+                    {leadInService ? 'Otwórz sprawę' : 'Przenieś do sprawy'}
+                  </Button>
+                  <button type="button" className="forteca-frt-012-delete" onClick={handleDeleteLead} disabled={leadEditSaving || !hasAccess}>Usuń leada</button>
+                </div>
+                <div className="forteca-frt-012-footer-right">
+                  <Button type="button" variant="outline" onClick={() => handleLeadEditOpenChange(false)} disabled={leadEditSaving}>Anuluj</Button>
+                  <Button type="submit" disabled={leadEditSaving || !hasAccess}>
+                    {leadEditSaving ? 'Zapisuję...' : 'Zapisz zmiany'}
+                  </Button>
+                </div>
+              </DialogFooter>
+            </form>
           </DialogContent>
         </Dialog>
 
