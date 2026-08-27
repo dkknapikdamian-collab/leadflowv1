@@ -1,6 +1,6 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-08-14T14:17:13.168Z
+Generated: 2026-08-27T06:08:36.768Z
 
 ## CSS variables
 - --cf-canvas: src/components/VisualFoundationRuntime.tsx:11
@@ -185,24 +185,6 @@ Generated: 2026-08-14T14:17:13.168Z
 - --cf-entity-icon-notification: src/styles/design-system/closeflow-icons.css:17
 - --cf-entity-icon-settings: src/styles/design-system/closeflow-icons.css:18
 - --cf-entity-icon-billing: src/styles/design-system/closeflow-icons.css:19
-- --cf-finance-tone-bg: src/styles/finance/closeflow-finance.css:659
-- --cf-finance-tone-border: src/styles/finance/closeflow-finance.css:660
-- --cf-finance-tone-text: src/styles/finance/closeflow-finance.css:661
-- --cf-finance-tone-bg: src/styles/finance/closeflow-finance.css:665
-- --cf-finance-tone-border: src/styles/finance/closeflow-finance.css:666
-- --cf-finance-tone-text: src/styles/finance/closeflow-finance.css:667
-- --cf-finance-tone-bg: src/styles/finance/closeflow-finance.css:672
-- --cf-finance-tone-border: src/styles/finance/closeflow-finance.css:673
-- --cf-finance-tone-text: src/styles/finance/closeflow-finance.css:674
-- --cf-finance-tone-bg: src/styles/finance/closeflow-finance.css:678
-- --cf-finance-tone-border: src/styles/finance/closeflow-finance.css:679
-- --cf-finance-tone-text: src/styles/finance/closeflow-finance.css:680
-- --cf-finance-tone-bg: src/styles/finance/closeflow-finance.css:684
-- --cf-finance-tone-border: src/styles/finance/closeflow-finance.css:685
-- --cf-finance-tone-text: src/styles/finance/closeflow-finance.css:686
-- --cf-finance-tone-bg: src/styles/finance/closeflow-finance.css:690
-- --cf-finance-tone-border: src/styles/finance/closeflow-finance.css:691
-- --cf-finance-tone-text: src/styles/finance/closeflow-finance.css:692
 - --cf-action-danger-text: src/styles/owners/closeflow-actions.css:4
 - --cf-action-danger-text-hover: src/styles/owners/closeflow-actions.css:5
 - --cf-action-danger-bg: src/styles/owners/closeflow-actions.css:6
@@ -503,6 +485,24 @@ Generated: 2026-08-14T14:17:13.168Z
 - --cf-vst-layout-content-max: src/styles/owners/closeflow-foundation.css:160
 - --cf-vst-layout-right-rail: src/styles/owners/closeflow-foundation.css:161
 - --cf-vst-layout-sidebar: src/styles/owners/closeflow-foundation.css:162
+- --cf-vst-layout-gap: src/styles/owners/closeflow-foundation.css:163
+- --cf-vst-layout-gap-lg: src/styles/owners/closeflow-foundation.css:164
+- --cf-vst-card-padding: src/styles/owners/closeflow-foundation.css:165
+- --cf-vst-card-padding-compact: src/styles/owners/closeflow-foundation.css:166
+- --cf-vst-panel-padding: src/styles/owners/closeflow-foundation.css:167
+- --cf-vst-panel-padding-lg: src/styles/owners/closeflow-foundation.css:168
+- --cf-vst-row-padding-y: src/styles/owners/closeflow-foundation.css:169
+- --cf-vst-row-padding-x: src/styles/owners/closeflow-foundation.css:170
+- --cf-vst-row-min-height: src/styles/owners/closeflow-foundation.css:171
+- --cf-vst-button-height-sm: src/styles/owners/closeflow-foundation.css:172
+- --cf-vst-button-height-md: src/styles/owners/closeflow-foundation.css:173
+- --cf-vst-button-height-lg: src/styles/owners/closeflow-foundation.css:174
+- --cf-vst-button-padding-x-sm: src/styles/owners/closeflow-foundation.css:175
+- --cf-vst-button-padding-x-md: src/styles/owners/closeflow-foundation.css:176
+- --cf-vst-button-padding-x-lg: src/styles/owners/closeflow-foundation.css:177
+- --cf-vst-button-gap: src/styles/owners/closeflow-foundation.css:178
+- --cf-vst-input-height: src/styles/owners/closeflow-foundation.css:179
+- --cf-vst-input-radius: src/styles/owners/closeflow-foundation.css:180
 
 ## Danger/red local classes
 - bg-red-100: src/components/ErrorBoundary.tsx:34
@@ -758,7 +758,6 @@ Generated: 2026-08-14T14:17:13.168Z
 - src/styles/closeflow-task-form.css
 - src/styles/closeflow-vnext-ui-contract.css
 - src/styles/core/core-contracts.css
-- src/styles/finance/closeflow-finance.css
 - src/styles/owners/closeflow-calendar.css
 - src/styles/owners/closeflow-client-detail.css
 - src/styles/owners/closeflow-dialogs.css

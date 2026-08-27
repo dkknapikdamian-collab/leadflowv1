@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_FRT_000_BASELINE",
+  "stage_id": "FRT-000",
+  "program": "FORTECA_CALM_LIGHT_001_040",
+  "repository": "dkknapikdamian-collab/leadflowv1",
+  "worktree": "C:\\Users\\malim\\AppData\\Local\\Temp\\closeflow-forteca-ui-001-040-clean-20260827",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "source_sha": "3d999dc206ad3d29e255c9d850c4a267c711b18f",
+  "remote_head_at_baseline": "3d999dc206ad3d29e255c9d850c4a267c711b18f",
+  "reference_pack": {
+    "root": "docs/ui/reference/forteca-calm-light",
+    "manifest": "docs/ui/reference/forteca-calm-light/manifest.json",
+    "manifest_sha256": "3c0eccdb2c756d3a12e936ea9443bfe30b328ebf53fbae49c79a2115a551a105",
+    "integrity_report": "docs/ui/reference/forteca-calm-light/PACKAGE_INTEGRITY_REPORT.md",
+    "integrity_report_sha256": "608e9b7b858484db51b8733dd0a0b2bb8ef06690209f4855b17a1b640fa0c64",
+    "manifest_schema_version": 2,
+    "manifest_entries": 40,
+    "webp_files": 40,
+    "dimensions": "40/40 1672x941",
+    "hashes": "40/40",
+    "bytes": "40/40",
+    "verification": "PASS",
+    "runtime_proof": "REFERENCE_ONLY; not proof of current authenticated populated runtime"
+  },
+  "visual_sot_sources": [
+    {
+      "path": "_project/VISUAL_SOURCE_OF_TRUTH.md",
+      "sha256": "2636abe89579866e048b3d411436eeec5ec6a8a10f567be9817cd8140fd9ba8e"
+    },
+    {
+      "path": "docs/visual/CLOSEFLOW_VISUAL_SOURCE_OF_TRUTH.md",
+      "sha256": "406c79783234d5693b4c4d9c6f3368d9ebc21f5d4fd067811eac00802293823e"
+    },
+    {
+      "path": "src/lib/source-of-truth/visual-owner-registry.json",
+      "sha256": "bfaeecce74fb3f4bbbe09debfd6e9f040a24ff09d92837e371bc038b856c7917"
+    }
+  ],
+  "visual_owner_baseline": {
+    "purpose": "Evidence mapping only; canonical ownership remains in the referenced Visual SOT files.",
+    "PAGE_SHELL": "src/styles/owners/closeflow-page-shell.css",
+    "TOKENS_SEMANTIC_COLORS_TYPOGRAPHY_SPACING": "src/styles/owners/closeflow-foundation.css",
+    "SURFACES_RADII_SHADOWS": "src/styles/owners/closeflow-surfaces-and-cards.css",
+    "ICONS": "src/styles/design-system/closeflow-icons.css + src/ui-system/icons/SemanticIcon.tsx",
+    "BUTTONS_ACTIONS": "src/styles/owners/closeflow-actions.css + src/components/ui/button.tsx + src/components/entity-actions.tsx",
+    "CARDS_TILES": "src/styles/owners/closeflow-metrics.css + src/components/ui-system/SurfaceCard.tsx + src/components/ui-system/MetricTile.tsx",
+    "BADGES_LIST_ROWS_RIGHT_RAIL": "src/styles/owners/closeflow-records-and-rails.css",
+    "FORMS_MODALS": "src/styles/owners/closeflow-dialogs.css",
+    "SEARCH": "src/styles/owners/closeflow-search-and-density.css",
+    "RESPONSIVE_DENSITY": "src/styles/owners/closeflow-responsive-adapters.css"
+  },
+  "generated_map_outputs": [
+    {
+      "path": "docs/ui/CLOSEFLOW_UI_MAP.generated.json",
+      "sha256": "0bdd7fa0c46ba192a1dadeb9dbf5613159ab9c3e85ad8c7c3d8a62c5a2c8bc17",
+      "scanner": "CLEAN_SCANNER_V4",
+      "files_scanned": 446
+    },
+    {
+      "path": "docs/ui/CLOSEFLOW_UI_MAP.generated.md",
+      "sha256": "3bf762fb93301d9e4d37b9cc43f526b8c6110ea44a6758cf62c71543998be07e"
+    },
+    {
+      "path": "docs/ui/closeflow-style-map.generated.json",
+      "sha256": "7d7d0dc8f744711362733bb019da5d0891cbe6a2831aeb783b5b759ca15ea07c"
+    },
+    {
+      "path": "docs/ui/CLOSEFLOW_STYLE_MAP.generated.md",
+      "sha256": "793e211332c1d161861179bd09cbc41843c8bf178e459fc2d83222740295a722"
+    }
+  ],
+  "premap_checks": [
+    {
+      "command": "npm.cmd run audit:closeflow-ui-map",
+      "result": "PASS",
+      "evidence": "CLOSEFLOW_UI_MAP_INVENTORY_V1_OK; CLEAN_SCANNER_V4; directLucideIconImports=395; metricTileUsages=28; layoutEvidence=800"
+    },
+    {
+      "command": "npm.cmd run audit:closeflow-style-map",
+      "result": "PASS"
+    },
+    {
+      "command": "npm.cmd run check:closeflow-ui-skill-pack",
+      "result": "PASS"
+    },
+    {
+      "command": "npm.cmd run check:closeflow-ui-premap-contract",
+      "result": "PASS"
+    }
+  ],
+  "aicg_system_baseline": {
+    "path": "audit/evidence/FRT-000_AICG_BASELINE.json",
+    "baseline_id": "baseline-fb5c534cad17f34d12b1c3a7",
+    "baseline_sha256": "af842d3a3b15ec7588394a9ed54a8c8a28c3e63315fed7f0e5ffd23d1ae9f1ef",
+    "file_sha256": "4b516c61a46fa4042a477a36cbc7d2c0c99acd75dee95caacdc11ce2c07329ba",
+    "trigger": "MISSING_BASELINE",
+    "worktree_status": "DIRTY",
+    "module_graph_confidence": "LOW",
+    "test_graph_confidence": "LOW",
+    "created_from_source_sha": "3d999dc206ad3d29e255c9d850c4a267c711b18f"
+  },
+  "evidence_reuse": {
+    "LF-UI-SOT-007_owner_facts": {
+      "decision": "REUSE_VALID_EVIDENCE",
+      "scope": "accepted Visual SOT owner paths and terminal zero-finding facts only",
+      "invalidated_for": "new Forteca stage acceptance, new branch runtime proof, new browser proof, and new commit"
+    },
+    "LF-UI-SOT-007_runtime_and_browser_proof": {
+      "decision": "DO_NOT_REUSE",
+      "reason": "different program, branch, source SHA, and acceptance scope"
+    },
+    "reference_pack_integrity": {
+      "decision": "FRESH_EVIDENCE_REQUIRED",
+      "result": "PASS"
+    },
+    "generated_maps": {
+      "decision": "FRESH_EVIDENCE_REQUIRED",
+      "result": "PASS"
+    }
+  },
+  "test_reuse_baseline": {
+    "reuse_rule": "Reuse only when SHA, worktree, configuration, dependencies, scope, guard, and freshness all match.",
+    "reused_receipts": [],
+    "executed_now": [
+      "audit:closeflow-ui-map",
+      "audit:closeflow-style-map",
+      "check:closeflow-ui-skill-pack",
+      "check:closeflow-ui-premap-contract"
+    ],
+    "targeted_future_policy": "Run only invalidated or stage-required tests; typecheck only when TypeScript changes; full lint/build at declared milestones or when shared runtime/import changes."
+  },
+  "zero_plaster_root_cause_policy": {
+    "policy": "Every stage records the actual runtime, ownership, relation, state, or shared visual-contract cause; ‘fixed CSS’ is not an accepted root cause.",
+    "forbidden": "hotfix/repair/stage/final CSS, !important, page-local overrides, duplicate tokens/components/registries/stores/handlers, fake controls/backend/toasts/data, hardcoded screenshot data, weakened tests, or hiding broken UI",
+    "one_owner_rule": "ONE_VISUAL_CONCERN_ONE_CANONICAL_OWNER"
+  },
+  "workflow_before_transition": {
+    "state_revision": 72,
+    "current_workflow": "LF-UI-SOT-007",
+    "status": "ACCEPTED_AND_CLOSED",
+    "next_workflow": null,
+    "active_stage_count": 0
+  },
+  "routing_mismatch_record": {
+    "stale_instruction_branch": "codex/closeflow-v1-e2e-roadmap",
+    "approved_branch": "codex/forteca-ui-001-040-clean",
+    "action": "record_only; old LF-UI-SOT-007 workflow and old branch were not repaired or reconciled"
+  },
+  "auth_boundary": "FRT-000 is credential-free. Authenticated owner/browser access is requested only if a later reference state cannot be independently accepted without it.",
+  "guardian": {
+    "required": true,
+    "source": "canonical marketplace package ai-code-guardian",
+    "mode": "AUDIT_ONLY",
+    "baseline_creation": "PASS",
+    "final_audit": {
+      "summary_path": "audit/evidence/FRT-000_GUARDIAN_AUDIT_SUMMARY.json",
+      "outcome": "PARTIAL",
+      "blockers": [],
+      "read_only_integrity": "PASS",
+      "blocking_findings": 0,
+      "review_required_findings": 2,
+      "pass_claim": false
+    }
+  },
+  "task_economy": {
+    "receipt_id": "economy-0a57d489731401d872f700fda7ca1fc0267583bfad1f9c9ba5dc23063ee90447",
+    "provider_intent": "AUTO",
+    "preferred_pool": ["freebuff", "opencode"],
+    "providers_available": [],
+    "skip_reason": "SKIPPED_NOT_INSTALLED",
+    "receipt_store": "owner-local task-economy-v1.jsonl; no repository secrets"
+  },
+  "future_receipts_created": false,
+  "router": {
+    "startup_receipt": "startup-da685ab4a30b9c189b2d5b28bbdfe74ad6f1dfe3e9e588a5335234b1a1c03b00",
+    "routing_status": "DECIDED",
+    "mutation_mode": "WRITE_AUTHORIZED",
+    "binding": "BOUND",
+    "routing_fingerprint": "b4f5904b3460330937dd42d7f179b14725f5859c7e77315c04db24d7c1c4675b"
+  }
+}

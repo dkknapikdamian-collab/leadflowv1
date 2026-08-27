@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-08-14T14:17:13.950Z",
+  "generatedAt": "2026-08-27T06:08:35.700Z",
   "inventoryVersion": "CLOSEFLOW_UI_MAP_INVENTORY_V1",
   "scannerVersion": "CLEAN_SCANNER_V4",
-  "filesScanned": 448,
+  "filesScanned": 446,
   "directLucideIconImports": [
     {
       "file": "src/components/ActivityRoadmap.tsx",
@@ -13157,46 +13157,6 @@
       "file": "src/styles/closeflow-sales-funnel.css",
       "value": "green",
       "line": 451
-    },
-    {
-      "file": "src/styles/finance/closeflow-finance.css",
-      "value": "transaction",
-      "line": 657
-    },
-    {
-      "file": "src/styles/finance/closeflow-finance.css",
-      "value": "earned",
-      "line": 658
-    },
-    {
-      "file": "src/styles/finance/closeflow-finance.css",
-      "value": "commission",
-      "line": 664
-    },
-    {
-      "file": "src/styles/finance/closeflow-finance.css",
-      "value": "paid",
-      "line": 670
-    },
-    {
-      "file": "src/styles/finance/closeflow-finance.css",
-      "value": "reimbursed",
-      "line": 671
-    },
-    {
-      "file": "src/styles/finance/closeflow-finance.css",
-      "value": "remaining",
-      "line": 677
-    },
-    {
-      "file": "src/styles/finance/closeflow-finance.css",
-      "value": "cost",
-      "line": 683
-    },
-    {
-      "file": "src/styles/finance/closeflow-finance.css",
-      "value": "total",
-      "line": 689
     },
     {
       "file": "src/styles/owners/closeflow-actions.css",

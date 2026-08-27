@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-14T14:17:13.168Z",
+  "generatedAt": "2026-08-27T06:08:36.768Z",
   "cssVariables": [
     {
       "name": "--cf-canvas",
@@ -910,96 +910,6 @@
       "name": "--cf-entity-icon-billing",
       "file": "src/styles/design-system/closeflow-icons.css",
       "line": 19
-    },
-    {
-      "name": "--cf-finance-tone-bg",
-      "file": "src/styles/finance/closeflow-finance.css",
-      "line": 659
-    },
-    {
-      "name": "--cf-finance-tone-border",
-      "file": "src/styles/finance/closeflow-finance.css",
-      "line": 660
-    },
-    {
-      "name": "--cf-finance-tone-text",
-      "file": "src/styles/finance/closeflow-finance.css",
-      "line": 661
-    },
-    {
-      "name": "--cf-finance-tone-bg",
-      "file": "src/styles/finance/closeflow-finance.css",
-      "line": 665
-    },
-    {
-      "name": "--cf-finance-tone-border",
-      "file": "src/styles/finance/closeflow-finance.css",
-      "line": 666
-    },
-    {
-      "name": "--cf-finance-tone-text",
-      "file": "src/styles/finance/closeflow-finance.css",
-      "line": 667
-    },
-    {
-      "name": "--cf-finance-tone-bg",
-      "file": "src/styles/finance/closeflow-finance.css",
-      "line": 672
-    },
-    {
-      "name": "--cf-finance-tone-border",
-      "file": "src/styles/finance/closeflow-finance.css",
-      "line": 673
-    },
-    {
-      "name": "--cf-finance-tone-text",
-      "file": "src/styles/finance/closeflow-finance.css",
-      "line": 674
-    },
-    {
-      "name": "--cf-finance-tone-bg",
-      "file": "src/styles/finance/closeflow-finance.css",
-      "line": 678
-    },
-    {
-      "name": "--cf-finance-tone-border",
-      "file": "src/styles/finance/closeflow-finance.css",
-      "line": 679
-    },
-    {
-      "name": "--cf-finance-tone-text",
-      "file": "src/styles/finance/closeflow-finance.css",
-      "line": 680
-    },
-    {
-      "name": "--cf-finance-tone-bg",
-      "file": "src/styles/finance/closeflow-finance.css",
-      "line": 684
-    },
-    {
-      "name": "--cf-finance-tone-border",
-      "file": "src/styles/finance/closeflow-finance.css",
-      "line": 685
-    },
-    {
-      "name": "--cf-finance-tone-text",
-      "file": "src/styles/finance/closeflow-finance.css",
-      "line": 686
-    },
-    {
-      "name": "--cf-finance-tone-bg",
-      "file": "src/styles/finance/closeflow-finance.css",
-      "line": 690
-    },
-    {
-      "name": "--cf-finance-tone-border",
-      "file": "src/styles/finance/closeflow-finance.css",
-      "line": 691
-    },
-    {
-      "name": "--cf-finance-tone-text",
-      "file": "src/styles/finance/closeflow-finance.css",
-      "line": 692
     },
     {
       "name": "--cf-action-danger-text",
@@ -4120,56 +4030,6 @@
       "name": "--cf-surface-shadow",
       "file": "src/styles/owners/closeflow-surfaces-and-cards.css",
       "line": 88
-    },
-    {
-      "name": "--cf-bg",
-      "file": "src/styles/visual-html-theme-v14.css",
-      "line": 3
-    },
-    {
-      "name": "--cf-sidebar",
-      "file": "src/styles/visual-html-theme-v14.css",
-      "line": 4
-    },
-    {
-      "name": "--cf-text",
-      "file": "src/styles/visual-html-theme-v14.css",
-      "line": 5
-    },
-    {
-      "name": "--cf-muted",
-      "file": "src/styles/visual-html-theme-v14.css",
-      "line": 6
-    },
-    {
-      "name": "--cf-line",
-      "file": "src/styles/visual-html-theme-v14.css",
-      "line": 7
-    },
-    {
-      "name": "--cf-blue",
-      "file": "src/styles/visual-html-theme-v14.css",
-      "line": 8
-    },
-    {
-      "name": "--cf-blue-soft",
-      "file": "src/styles/visual-html-theme-v14.css",
-      "line": 9
-    },
-    {
-      "name": "--cf-shadow",
-      "file": "src/styles/visual-html-theme-v14.css",
-      "line": 10
-    },
-    {
-      "name": "--cf-shadow-soft",
-      "file": "src/styles/visual-html-theme-v14.css",
-      "line": 11
-    },
-    {
-      "name": "--cf-radius-xl",
-      "file": "src/styles/visual-html-theme-v14.css",
-      "line": 12
     }
   ],
   "dangerColorClasses": [
@@ -5161,9 +5021,6 @@
     },
     {
       "file": "src/styles/core/core-contracts.css"
-    },
-    {
-      "file": "src/styles/finance/closeflow-finance.css"
     },
     {
       "file": "src/styles/owners/closeflow-calendar.css"

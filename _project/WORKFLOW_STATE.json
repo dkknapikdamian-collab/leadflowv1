@@ -1,27 +1,61 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 72,
+  "state_revision": 73,
   "last_accepted": {
     "id": "LF-UI-SOT-007",
     "status": "ACCEPTED_AND_CLOSED",
     "commit_sha": "8316a19da0905433f73d20d49c86cf374dca29b0",
     "evidence": "LF-UI-SOT-007 accepted and closed by owner decision at the exact accepted runtime/evidence anchor 8316a19da0905433f73d20d49c86cf374dca29b0; visual SSOT terminal counters are zero, ONE_OWNER_PER_VISUAL_CONCERN=PASS, SSOT negative tests=23/23, TSC/lint/build/diff-check=PASS, Guardian final=PASS, authenticated desktop/mobile browser proof=PASS, and Vercel production version API is exact on dev-rollout-freeze; control-plane closeout does not change product runtime"
   },
+  "current_stage": "FRT-000",
+  "current_contract_path": "_project/contracts/forteca-clean/FRT-000_VISUAL_FOUNDATION.md",
+  "current_status": "ACTIVE",
+  "last_accepted_stage": "LF-UI-SOT-007",
+  "last_accepted_commit": "8316a19da0905433f73d20d49c86cf374dca29b0",
+  "next_stage": "FRT-001",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "remote_head": "3d999dc206ad3d29e255c9d850c4a267c711b18f",
   "current_workflow": {
-    "id": "LF-UI-SOT-007",
+    "id": "FRT-000",
     "kind": "TECHNICAL_IMPLEMENTATION_STAGE_DESIGN",
-    "contract_path": "_project/contracts/LF-UI-SOT-007_TRUE_VISUAL_DESIGN_SYSTEM_RUNTIME_CONSOLIDATION.md",
-    "status": "ACCEPTED_AND_CLOSED",
-    "base_sha": "1c14ff31b4c3e65ed101bb037eadfcc883cde599",
-    "base_branch": "dev-rollout-freeze",
-    "target_branch": "dev-rollout-freeze",
+    "contract_path": "_project/contracts/forteca-clean/FRT-000_VISUAL_FOUNDATION.md",
+    "status": "ACTIVE",
+    "base_sha": "3d999dc206ad3d29e255c9d850c4a267c711b18f",
+    "base_branch": "codex/forteca-ui-001-040-clean",
+    "target_branch": "codex/forteca-ui-001-040-clean",
     "blocker": null,
     "ssot_open_findings": 0,
-    "active_stage_count": 0,
-    "terminal_audit": "PASS"
+    "active_stage_count": 1,
+    "terminal_audit": "AICG_AUDIT_ONLY_PARTIAL_NO_BLOCKERS_EXTERNAL_ACCEPTANCE_PENDING",
+    "guardian_status": "PARTIAL_NON_BLOCKING;PASS_NOT_CLAIMED",
+    "acceptance_boundary": "FRT-000 cannot self-accept; controller acceptance is required before FRT-001 activation"
   },
-  "next_workflow": {"id": null, "status": "NO_CANONICAL_NEXT_CONTRACT_IN_ACTIVE_WORKFLOW_STATE"},
+  "next_workflow": {
+    "id": "FRT-001",
+    "contract_path": "_project/contracts/forteca-clean/FRT-001_TODAY_MAIN.md",
+    "status": "LOCKED",
+    "activation": "CONTROLLER_AFTER_FRT_000_ACCEPTANCE",
+    "reason": "FRT-001 is the only declared next stage; automatic self-acceptance and parallel activation are forbidden"
+  },
+  "forteca_program": {
+    "program_id": "FORTECA_CALM_LIGHT_001_040",
+    "reference_commit": "3d999dc206ad3d29e255c9d850c4a267c711b18f",
+    "reference_root": "docs/ui/reference/forteca-calm-light",
+    "reference_count": 40,
+    "contract_root": "_project/contracts/forteca-clean",
+    "contract_count": 42,
+    "stage_000_status": "ACTIVE",
+    "future_stages": "FRT-001..FRT-041 LOCKED",
+    "auth_required_for_frt_000": false,
+    "future_receipts_precreated": false
+  },
+  "routing_notes": {
+    "old_workflow": "LF-UI-SOT-007 ACCEPTED_AND_CLOSED",
+    "stale_override_branch": "codex/closeflow-v1-e2e-roadmap",
+    "approved_branch": "codex/forteca-ui-001-040-clean",
+    "routing_mismatch_action": "record only; old LF workflow and old branch were not reconciled"
+  },
   "source_evidence": [
     "docs/stages/LF-PROD-SOT-G15-R23L_LUCIDE_NAMESPACE_REGISTRY_CAST_REPAIR.md",
     "docs/stages/LF-PROD-SOT-G15-R23M-01_FIREBASE_SESSION_USER_IMPORT_NAMESPACE_CONTRACT_REPAIR.md",

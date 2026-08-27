@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "evidence_type": "AICG_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-000",
+  "mode": "AUDIT_ONLY",
+  "request_id": "forteca-f000-final",
+  "repository": "dkknapikdamian-collab/leadflowv1",
+  "repository_sha": "3d999dc206ad3d29e255c9d850c4a267c711b18f",
+  "tree_sha": "262b6ef6b92f74366cff6d2d22e9e48b381c818a",
+  "outcome": "PARTIAL",
+  "blockers": [],
+  "read_only_integrity": {
+    "unchanged": true,
+    "byte_integrity": "PASS",
+    "git_integrity": "PASS"
+  },
+  "findings": {
+    "total": 971,
+    "severity": {
+      "HIGH": 2,
+      "MEDIUM": 969
+    },
+    "blocking_true": 0,
+    "review_required": 2
+  },
+  "high_findings_outside_frt_000_write_set": [
+    {
+      "id": "PATCH_OR_WORKAROUND:PRODUCTION_IN_MEMORY_FALLBACK:1dc882f41054563a",
+      "rule": "PATCH_OR_WORKAROUND:PRODUCTION_IN_MEMORY_FALLBACK",
+      "path": "scripts/apply-stage70-82-repair.cjs",
+      "blocking": false,
+      "blocking_eligibility": "REVIEW_REQUIRED",
+      "repair_scope": "ESCALATED_REPAIR"
+    },
+    {
+      "id": "DEAD_FALLBACK:1dc882f41054563a",
+      "rule": "DEAD_FALLBACK",
+      "path": "scripts/apply-stage70-82-repair.cjs",
+      "blocking": false,
+      "blocking_eligibility": "REVIEW_REQUIRED",
+      "repair_scope": "ESCALATED_REPAIR"
+    }
+  ],
+  "coverage": {
+    "NOT_CHECKED": 3,
+    "PARTIALLY_CHECKED": 28,
+    "ui_browser_runtime": "NOT_AVAILABLE",
+    "reason": "FRT-000 is control-plane-only and does not require authenticated populated runtime proof; browser proof remains a later stage gate."
+  },
+  "raw_capture": {
+    "host_temp_path": "C:\\Users\\malim\\AppData\\Local\\Temp\\forteca-f000-guardian-final-20260827-rerun.json",
+    "sha256": "7bbf7331785974067bb88c32e055bf11add14d938d4430e12b68f1b265f290ec",
+    "summary_is_bounded": true
+  },
+  "interpretation": "AICG executed read-only with no blocking finding, but PARTIAL is not PASS. FRT-000 remains pending independent acceptance/revalidation; no future stage is unlocked by this summary.",
+  "source": "canonical marketplace package ai-code-guardian"
+}

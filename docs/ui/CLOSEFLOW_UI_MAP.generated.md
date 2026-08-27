@@ -1,6 +1,6 @@
 # CloseFlow UI Map Inventory v1
 
-Generated: 2026-08-14T14:17:13.950Z
+Generated: 2026-08-27T06:08:35.700Z
 
 Scanner: **CLEAN_SCANNER_V4**
 
@@ -8,7 +8,7 @@ Status: **mapa/inwentaryzacja, nie refactor UI**. Ten plik ma pokazać, gdzie dz
 
 ## Wynik skanowania
 
-- Pliki przeskanowane: **448**
+- Pliki przeskanowane: **446**
 - Bezpośrednie importy ikon z lucide-react: **395**
 - Użycia StatShortcutCard: **28**
 - Lokalne implementacje InfoRow/InfoLine/StatCell/ActionButton: **3**
