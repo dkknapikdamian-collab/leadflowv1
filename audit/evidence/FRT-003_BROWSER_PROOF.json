@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-003",
+  "reference_file": "docs/ui/reference/forteca-calm-light/003_global_add_menu.webp",
+  "reference_sha256": "CA6A344D965ABD123BC4910D27FDE3B569EA33821F43116B50584A8120B8C6C2",
+  "reference_dimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "captured_at": "2026-08-27T12:31:02.4507227+02:00",
+  "capture": {
+    "browser": "Codex In-app Browser",
+    "url": "http://localhost:3000/",
+    "route": "/",
+    "viewport": {
+      "width": 1298,
+      "height": 698
+    },
+    "captured_in_in_app_browser": true,
+    "screenshot_artifact_path": null,
+    "tab_marked_deliverable": true
+  },
+  "runtime": {
+    "live_runtime": true,
+    "shell": {
+      "brand": "CloseFlow",
+      "active_navigation": "Dziś",
+      "data_origin": "current local workspace runtime response"
+    },
+    "add_menu": {
+      "open": true,
+      "trigger_expanded": "true",
+      "rect": {
+        "x": 1019.2000122070312,
+        "y": 70,
+        "width": 236,
+        "height": 307.6000061035156,
+        "right": 1255.2000122070312,
+        "bottom": 377.6000061035156
+      },
+      "items": [
+        {
+          "label": "Szybki szkic",
+          "action": "ai-capture",
+          "href": null,
+          "feature_status": "Beta"
+        },
+        {
+          "label": "Inbox szkiców",
+          "action": "ai-drafts",
+          "href": "/ai-drafts",
+          "feature_status": null
+        },
+        {
+          "label": "Lead",
+          "action": "lead",
+          "href": "/leads?quick=lead",
+          "feature_status": null
+        },
+        {
+          "label": "Klient",
+          "action": "client",
+          "href": null,
+          "feature_status": null
+        },
+        {
+          "label": "Sprawa",
+          "action": "case",
+          "href": "/cases?quick=case",
+          "feature_status": null
+        },
+        {
+          "label": "Zadanie",
+          "action": "task",
+          "href": null,
+          "feature_status": null
+        },
+        {
+          "label": "Wydarzenie",
+          "action": "event",
+          "href": "/calendar?quick=event",
+          "feature_status": null
+        }
+      ]
+    }
+  },
+  "interactions": {
+    "case_action": {
+      "clicked": "Sprawa",
+      "navigated_to": "/cases",
+      "query_consumed": true,
+      "canonical_case_dialog_open": true,
+      "status": "PASS"
+    },
+    "escape": {
+      "closed": true,
+      "trigger_collapsed": true,
+      "focus_returned": true,
+      "status": "PASS"
+    },
+    "outside_click": {
+      "closed": true,
+      "trigger_collapsed": true,
+      "status": "PASS"
+    }
+  },
+  "access": {
+    "auth_required": false,
+    "auth_used": false,
+    "authenticated_populated_runtime_required_for_this_stage": false
+  },
+  "comparison": {
+    "reference_is_visual_sot": true,
+    "product_brand_preserved": "CloseFlow",
+    "structural_visual_parity": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "literal_pixel_identity_claim": false,
+    "accepted_deviations": [
+      "The reference is 1672x941 while the available in-app browser viewport is 1298x698; responsive placement is verified in the live shell.",
+      "Reference-only labels Spotkanie, Notatka, Brak / blokada and Płatność are not rendered because no canonical creation flow is registered; dead controls are intentionally excluded.",
+      "The reference search field and decorative AI composition are not a current global Add contract; Szybki szkic and Inbox szkiców use existing plan-gated runtime flows.",
+      "The current product action label is Wydarzenie; the reference artwork uses Spotkanie, but no canonical event flow is fabricated."
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 78,
+  "state_revision": 79,
   "last_accepted": {
     "id": "FRT-002",
     "status": "PASS",
@@ -14,35 +14,35 @@
     "commit_sha": "8316a19da0905433f73d20d49c86cf374dca29b0",
     "evidence": "LF-UI-SOT-007 accepted and closed by owner decision at the exact accepted runtime/evidence anchor 8316a19da0905433f73d20d49c86cf374dca29b0; visual SSOT terminal counters are zero, ONE_OWNER_PER_VISUAL_CONCERN=PASS, SSOT negative tests=23/23, TSC/lint/build/diff-check=PASS, Guardian final=PASS, authenticated desktop/mobile browser proof=PASS, and Vercel production version API is exact on dev-rollout-freeze; control-plane closeout does not change product runtime"
   },
-  "current_stage": "FRT-003",
-  "current_contract_path": "_project/contracts/forteca-clean/FRT-003_GLOBAL_ADD.md",
+  "current_stage": "FRT-004",
+  "current_contract_path": "_project/contracts/forteca-clean/FRT-004_LEADS_ALL.md",
   "current_status": "ACTIVE",
   "last_accepted_stage": "FRT-002",
   "last_accepted_commit": "3882798ca66d35cc85d7f31fedbb9d1f1256aaa2",
-  "next_stage": "FRT-004",
+  "next_stage": "FRT-005",
   "branch": "codex/forteca-ui-001-040-clean",
-  "remote_head": "3882798ca66d35cc85d7f31fedbb9d1f1256aaa2",
+  "remote_head": "307ecd9b73a0969bcca687d191a4b7b80cdf599d",
   "current_workflow": {
-    "id": "FRT-003",
+    "id": "FRT-004",
     "kind": "TECHNICAL_IMPLEMENTATION_STAGE",
-    "contract_path": "_project/contracts/forteca-clean/FRT-003_GLOBAL_ADD.md",
+    "contract_path": "_project/contracts/forteca-clean/FRT-004_LEADS_ALL.md",
     "status": "ACTIVE",
-    "base_sha": "268a3ee96016679f99019a177b17704de980f057",
+    "base_sha": "307ecd9b73a0969bcca687d191a4b7b80cdf599d",
     "base_branch": "codex/forteca-ui-001-040-clean",
     "target_branch": "codex/forteca-ui-001-040-clean",
     "blocker": null,
     "ssot_open_findings": 0,
     "active_stage_count": 1,
-    "terminal_audit": "NOT_RUN_FOR_FRT_003",
-    "guardian_status": "REQUIRED_AT_FRT_003_CLOSEOUT",
-    "acceptance_boundary": "Codex is the acceptance authority under the owner directive; FRT-003 requires real global Add state, wiring, test, Guardian and browser evidence before acceptance"
+    "terminal_audit": "NOT_RUN_FOR_FRT_004",
+    "guardian_status": "REQUIRED_AT_FRT_004_CLOSEOUT",
+    "acceptance_boundary": "Codex is the acceptance authority under the owner directive; FRT-004 requires real Leads all-state, data, filters/actions, test, Guardian and browser evidence before acceptance"
   },
   "next_workflow": {
-    "id": "FRT-004",
-    "contract_path": "_project/contracts/forteca-clean/FRT-004_LEADS_ALL.md",
+    "id": "FRT-005",
+    "contract_path": "_project/contracts/forteca-clean/FRT-005_LEADS_ACTIVE.md",
     "status": "LOCKED",
-    "activation": "CODEX_AFTER_FRT_003_ACCEPTANCE",
-    "reason": "FRT-004 remains locked until the active FRT-003 stage is accepted; one active reference only"
+    "activation": "CODEX_AFTER_FRT_004_ACCEPTANCE",
+    "reason": "FRT-005 remains locked until the active FRT-004 stage is accepted; one active reference only"
   },
   "forteca_program": {
     "program_id": "FORTECA_CALM_LIGHT_001_040",
@@ -54,8 +54,8 @@
     "stage_000_status": "PASS",
     "stage_001_status": "PASS",
     "stage_002_status": "PASS",
-    "active_stage": "FRT-003",
-    "future_stages": "FRT-004..FRT-041 LOCKED",
+    "active_stage": "FRT-004",
+    "future_stages": "FRT-005..FRT-041 LOCKED",
     "accepted_receipts": ["FRT-000", "FRT-001", "FRT-002"],
     "auth_required_for_frt_000": false,
     "future_receipts_precreated": false
@@ -68,6 +68,10 @@
     "owner_directive_acceptance_authority": "CODEX"
   },
   "source_evidence": [
+    "forteca:FRT-003:implementation@307ecd9b73a0969bcca687d191a4b7b80cdf599d",
+    "forteca:FRT-003:browser-proof@audit/evidence/FRT-003_BROWSER_PROOF.json",
+    "forteca:FRT-003:guardian-summary@audit/evidence/FRT-003_GUARDIAN_AUDIT_SUMMARY.json",
+    "forteca:FRT-003:receipt@_project/runs/forteca-clean/FRT-003_RECEIPT.json",
     "forteca:FRT-002:implementation@268a3ee96016679f99019a177b17704de980f057",
     "forteca:FRT-002:browser-proof@audit/evidence/FRT-002_BROWSER_PROOF.json",
     "forteca:FRT-002:guardian-summary@audit/evidence/FRT-002_GUARDIAN_AUDIT_SUMMARY.json",
