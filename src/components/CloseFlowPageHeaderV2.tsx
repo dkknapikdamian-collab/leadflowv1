@@ -5,6 +5,8 @@ import '../styles/closeflow-page-header-runtime.css';
 type CloseFlowPageHeaderV2Props = {
   pageKey: CloseFlowPageHeaderKey;
   actions?: ReactNode;
+  title?: ReactNode;
+  description?: ReactNode;
 };
 
 const CLOSEFLOW_PAGE_HEADER_COPY: Record<CloseFlowPageHeaderKey, CloseFlowPageHeaderContent> = {
@@ -85,7 +87,7 @@ const CLOSEFLOW_PAGE_HEADER_COPY: Record<CloseFlowPageHeaderKey, CloseFlowPageHe
   },
 };
 
-export function CloseFlowPageHeaderV2({ pageKey, actions }: CloseFlowPageHeaderV2Props) {
+export function CloseFlowPageHeaderV2({ pageKey, actions, title, description }: CloseFlowPageHeaderV2Props) {
   const content = CLOSEFLOW_PAGE_HEADER_COPY[pageKey] || CLOSEFLOW_PAGE_HEADER_COPY.today;
 
   return (
@@ -96,8 +98,8 @@ export function CloseFlowPageHeaderV2({ pageKey, actions }: CloseFlowPageHeaderV
     >
       <div className="cf-page-header-v2__copy">
         {content.kicker ? <span className="cf-page-header-v2__kicker">{content.kicker}</span> : null}
-        <h1 className="cf-page-header-v2__title">{content.title}</h1>
-        <p className="cf-page-header-v2__description">{content.description}</p>
+        <h1 className="cf-page-header-v2__title">{title ?? content.title}</h1>
+        <p className="cf-page-header-v2__description">{description ?? content.description}</p>
       </div>
 
       {actions ? <div className="cf-page-header-v2__actions">{actions}</div> : null}

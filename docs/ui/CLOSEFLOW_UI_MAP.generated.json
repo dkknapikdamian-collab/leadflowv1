@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-27T12:02:10.782Z",
+  "generatedAt": "2026-08-27T14:41:24.882Z",
   "inventoryVersion": "CLOSEFLOW_UI_MAP_INVENTORY_V1",
   "scannerVersion": "CLEAN_SCANNER_V4",
   "filesScanned": 446,
@@ -3009,8 +3009,12 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1363,
+          "line": 1543,
           "snippet": "<span className=\"index\"><AlertTriangle className=\"h-4 w-4\" /></span>"
+        },
+        {
+          "line": 1706,
+          "snippet": "<span className=\"lead-risk-reason-icon\" data-cf-status-tone=\"red\" aria-hidden=\"true\"><AlertTriangle className=\"h-4 w-4\" /></span>"
         }
       ]
     },
@@ -3030,7 +3034,7 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1601,
+          "line": 1849,
           "snippet": "<ChevronLeft className=\"h-4 w-4\" />"
         }
       ]
@@ -3043,15 +3047,15 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1135,
+          "line": 1282,
           "snippet": "<ChevronRight className=\"h-4 w-4\" />"
         },
         {
-          "line": 1561,
+          "line": 1809,
           "snippet": "<ChevronRight className=\"h-4 w-4\" />"
         },
         {
-          "line": 1611,
+          "line": 1859,
           "snippet": "<ChevronRight className=\"h-4 w-4\" />"
         }
       ]
@@ -3062,7 +3066,12 @@
       "local": "Clock3",
       "role": "time",
       "importLine": 16,
-      "usages": []
+      "usages": [
+        {
+          "line": 1724,
+          "snippet": "<Clock3 className=\"h-4 w-4\" />"
+        }
+      ]
     },
     {
       "file": "src/pages/Leads.tsx",
@@ -3072,7 +3081,7 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1230,
+          "line": 1408,
           "snippet": "<Filter className=\"h-4 w-4\" />"
         }
       ]
@@ -3085,7 +3094,7 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1031,
+          "line": 1178,
           "snippet": "<span className=\"leads-active-process-icon\" aria-hidden=\"true\"><Info className=\"h-4 w-4\" /></span>"
         }
       ]
@@ -3098,11 +3107,11 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1444,
+          "line": 1634,
           "snippet": "<span className=\"index\"><Loader2 className=\"h-4 w-4 animate-spin\" /></span>"
         },
         {
-          "line": 1571,
+          "line": 1819,
           "snippet": "{pending ? <Loader2 className=\"h-4 w-4 animate-spin\" /> : showTrash ? <RotateCcw className=\"h-4 w-4\" /> : <DeleteActionIcon className=\"h-4 w-4\" />}"
         }
       ]
@@ -3123,7 +3132,7 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 853,
+          "line": 1000,
           "snippet": "<Plus className=\"h-4 w-4\" />"
         }
       ]
@@ -3136,11 +3145,11 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 866,
+          "line": 1013,
           "snippet": "{showTrash ? <RotateCcw className=\"h-4 w-4\" /> : <DeleteActionIcon className=\"h-4 w-4\" />}"
         },
         {
-          "line": 1571,
+          "line": 1819,
           "snippet": "{pending ? <Loader2 className=\"h-4 w-4 animate-spin\" /> : showTrash ? <RotateCcw className=\"h-4 w-4\" /> : <DeleteActionIcon className=\"h-4 w-4\" />}"
         }
       ]
@@ -3153,7 +3162,7 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1113,
+          "line": 1260,
           "snippet": "<span aria-hidden=\"true\"><Search className=\"w-4 h-4\" /></span>"
         }
       ]
@@ -3174,11 +3183,15 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1040,
+          "line": 1187,
           "snippet": "<X className=\"h-4 w-4\" />"
         },
         {
-          "line": 1159,
+          "line": 1306,
+          "snippet": "<X className=\"h-3.5 w-3.5\" aria-hidden=\"true\" />"
+        },
+        {
+          "line": 1367,
           "snippet": "<X className=\"h-3.5 w-3.5\" aria-hidden=\"true\" />"
         }
       ]
@@ -6164,7 +6177,7 @@
         "icon": "AlertTriangle",
         "local": "AlertTriangle",
         "importLine": 16,
-        "usageCount": 1
+        "usageCount": 2
       },
       {
         "file": "src/pages/NotificationsCenter.tsx",
@@ -7662,7 +7675,7 @@
         "icon": "X",
         "local": "X",
         "importLine": 16,
-        "usageCount": 2
+        "usageCount": 3
       },
       {
         "file": "src/server/_portal-token.ts",
@@ -7931,7 +7944,7 @@
         "icon": "Clock3",
         "local": "Clock3",
         "importLine": 16,
-        "usageCount": 0
+        "usageCount": 1
       },
       {
         "file": "src/pages/NotificationsCenter.tsx",
@@ -8112,27 +8125,27 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1046,
+      "line": 1193,
       "component": "StatShortcutCard",
-      "snippet": "<StatShortcutCard\n            label=\"Wszystkie\"\n            value={stats.total}\n            icon={LeadEntityIcon}\n            active={quickFilter === 'all' && !valueSortEnabled && !showTrash}\n            onClick={() => { setShowTrash(false); setQuickFilter('all'); setValueSortEnabled(false); }}\n            title=\"Pokaż wszystkie leady\"\n            ariaLabel=\"Pokaż wszystkie leady\"\n            helper=\"Wszystkie leady\"\n          />\n\n          <StatShortcutCard"
+      "snippet": "<StatShortcutCard\n            label=\"Wszystkie\"\n            value={stats.total}\n            icon={LeadEntityIcon}\n            active={quickFilter === 'all' && !valueSortEnabled && !showTrash}\n            onClick={() => { setShowTrash(false); setQuickFilter('all'); setRiskFilter('all'); setValueSortEnabled(false); }}\n            title=\"Pokaż wszystkie leady\"\n            ariaLabel=\"Pokaż wszystkie leady\"\n            helper=\"Wszystkie leady\"\n          />\n\n          <StatShortcutCard"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1057,
+      "line": 1204,
       "component": "StatShortcutCard",
       "snippet": "<StatShortcutCard\n            label=\"Aktywne\"\n            value={stats.active}\n            icon={Activity}\n            active={quickFilter === 'active' && !showTrash}\n            onClick={() => toggleQuickFilter('active')}\n            title=\"Pokaż aktywne leady\"\n            ariaLabel=\"Pokaż aktywne leady\"\n            valueClassName=\"text-slate-900\"\n            iconClassName=\"bg-blue-50 text-blue-500\"\n            helper={activeView ? 'W trakcie sprzedaży' : 'Obecnie w procesie'}\n          />"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1070,
+      "line": 1217,
       "component": "StatShortcutCard",
       "snippet": "<StatShortcutCard\n            label=\"Wartość\"\n            value={`${stats.value.toLocaleString('pl-PL')} PLN`}\n            icon={Wallet}\n            active={valueSortEnabled && !showTrash}\n            onClick={toggleValueSorting}\n            title=\"Sortuj leady po wartości\"\n            ariaLabel=\"Sortuj leady po wartości\"\n            helper={valueSortEnabled ? 'Sortowanie aktywne' : 'Suma wartości aktywnych leadów'}\n          />\n\n          <StatShortcutCard"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1081,
+      "line": 1228,
       "component": "StatShortcutCard",
-      "snippet": "<StatShortcutCard\n            label=\"Zagrożone\"\n            value={stats.atRisk}\n            icon={AlertTriangle}\n            active={quickFilter === 'at-risk' && !showTrash}\n            onClick={() => toggleQuickFilter('at-risk')}\n            title=\"Pokaż zagrożone leady\"\n            ariaLabel=\"Pokaż zagrożone leady\"\n            tone=\"risk\"\n            helper=\"Leady wymagające uwagi\"\n          />"
+      "snippet": "<StatShortcutCard\n            label=\"Zagrożone\"\n            value={stats.atRisk}\n            icon={AlertTriangle}\n            active={quickFilter === 'at-risk' && !showTrash}\n            onClick={() => toggleQuickFilter('at-risk')}\n            title=\"Pokaż zagrożone leady\"\n            ariaLabel=\"Pokaż zagrożone leady\"\n            tone=\"risk\"\n            helper={riskView ? `${stats.atRisk} ${stats.atRisk === 1 ? 'lead wymaga' : stats.atRisk >= 2 && stats.atRisk <= 4 ? 'leady wymagają' : 'leadów wymaga'} natychmiastowego ruchu` : 'Leady wymagające uwagi'}\n          />"
     },
     {
       "file": "src/pages/ResponseTemplates.tsx",
@@ -8941,13 +8954,13 @@
     },
     {
       "file": "src/components/CloseFlowPageHeaderV2.tsx",
-      "line": 51,
+      "line": 53,
       "classes": [],
       "snippet": "activity: {"
     },
     {
       "file": "src/components/CloseFlowPageHeaderV2.tsx",
-      "line": 66,
+      "line": 68,
       "classes": [],
       "snippet": "billing: {"
     },
@@ -12515,58 +12528,73 @@
     },
     {
       "file": "src/pages/Leads.tsx",
+      "value": "red",
+      "line": 986
+    },
+    {
+      "file": "src/pages/Leads.tsx",
       "value": "ai",
-      "line": 856
+      "line": 1003
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "shared",
-      "line": 1104
+      "line": 1251
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "true",
-      "line": 1112
+      "line": 1259
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "semantic173",
-      "line": 1112
+      "line": 1259
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "semantic173",
-      "line": 1130
+      "line": 1277
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "semantic173",
-      "line": 1140
+      "line": 1287
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "red",
-      "line": 1370
+      "line": 1361
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "value": "red",
+      "line": 1550
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "amber",
-      "line": 1371
+      "line": 1551
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "blue",
-      "line": 1372
+      "line": 1552
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "LeadListCard",
-      "line": 1485
+      "line": 1683
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "value": "red",
+      "line": 1706
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "green",
-      "line": 1513
+      "line": 1738
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
@@ -13437,6 +13465,21 @@
       "file": "src/styles/closeflow-record-list-source-truth.css",
       "value": "menu",
       "line": 538
+    },
+    {
+      "file": "src/styles/closeflow-record-list-source-truth.css",
+      "value": "blue",
+      "line": 1826
+    },
+    {
+      "file": "src/styles/closeflow-record-list-source-truth.css",
+      "value": "amber",
+      "line": 1830
+    },
+    {
+      "file": "src/styles/closeflow-record-list-source-truth.css",
+      "value": "red",
+      "line": 1834
     },
     {
       "file": "src/styles/closeflow-sales-funnel.css",
@@ -25178,7 +25221,7 @@
     },
     {
       "file": "src/components/CloseFlowPageHeaderV2.tsx",
-      "line": 93,
+      "line": 95,
       "classes": [
         "cf-page-header-v2"
       ],
@@ -25186,7 +25229,7 @@
     },
     {
       "file": "src/components/CloseFlowPageHeaderV2.tsx",
-      "line": 97,
+      "line": 99,
       "classes": [
         "cf-page-header-v2__copy"
       ],
@@ -25194,7 +25237,7 @@
     },
     {
       "file": "src/components/CloseFlowPageHeaderV2.tsx",
-      "line": 98,
+      "line": 100,
       "classes": [
         "cf-page-header-v2__kicker"
       ],
@@ -25202,23 +25245,23 @@
     },
     {
       "file": "src/components/CloseFlowPageHeaderV2.tsx",
-      "line": 99,
+      "line": 101,
       "classes": [
         "cf-page-header-v2__title"
       ],
-      "snippet": "<h1 className=\"cf-page-header-v2__title\">{content.title}</h1>"
+      "snippet": "<h1 className=\"cf-page-header-v2__title\">{title ?? content.title}</h1>"
     },
     {
       "file": "src/components/CloseFlowPageHeaderV2.tsx",
-      "line": 100,
+      "line": 102,
       "classes": [
         "cf-page-header-v2__description"
       ],
-      "snippet": "<p className=\"cf-page-header-v2__description\">{content.description}</p>"
+      "snippet": "<p className=\"cf-page-header-v2__description\">{description ?? content.description}</p>"
     },
     {
       "file": "src/components/CloseFlowPageHeaderV2.tsx",
-      "line": 103,
+      "line": 105,
       "classes": [
         "cf-page-header-v2__actions"
       ],
@@ -28334,7 +28377,23 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 856,
+      "line": 984,
+      "classes": [
+        "leads-risk-header-title"
+      ],
+      "snippet": "<span className=\"leads-risk-header-title\">"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 986,
+      "classes": [
+        "leads-risk-header-count"
+      ],
+      "snippet": "<span className=\"cf-status-pill leads-risk-header-count\" data-cf-status-tone=\"red\">{stats.atRisk}</span>"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 1003,
       "classes": [
         "leads-secondary-header-action"
       ],
@@ -28342,7 +28401,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 862,
+      "line": 1009,
       "classes": [
         "leads-secondary-header-action"
       ],
@@ -28350,7 +28409,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 873,
+      "line": 1020,
       "classes": [
         "lead-form-vnext-header"
       ],
@@ -28358,7 +28417,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 881,
+      "line": 1028,
       "classes": [
         "lead-form-section",
         "lead-form-primary-section"
@@ -28367,7 +28426,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 882,
+      "line": 1029,
       "classes": [
         "lead-form-section-head"
       ],
@@ -28375,7 +28434,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 886,
+      "line": 1033,
       "classes": [
         "lead-form-grid"
       ],
@@ -28383,7 +28442,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 974,
+      "line": 1121,
       "classes": [
         "lead-form-section"
       ],
@@ -28391,7 +28450,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 976,
+      "line": 1123,
       "classes": [
         "lead-form-grid",
         "lead-form-details-grid"
@@ -28400,7 +28459,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1045,
+      "line": 1192,
       "classes": [
         "grid-5"
       ],
@@ -28408,7 +28467,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1245,
+      "line": 1425,
       "classes": [
         "leads-more-filters-panel"
       ],
@@ -28416,7 +28475,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1277,
+      "line": 1457,
       "classes": [
         "right-card",
         "lead-right-card",

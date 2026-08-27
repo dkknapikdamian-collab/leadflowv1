@@ -1683,3 +1683,299 @@
     height: 1.95rem !important;
   }
 }
+
+/* FRT-006: the at-risk state follows the reference composition while every
+ * reason, movement and date remains derived from the canonical lead owners. */
+#root .cf-html-view.main-leads-html .leads-risk-header-title {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.55rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-header-count {
+  min-height: 1.45rem !important;
+  padding: 0.2rem 0.48rem !important;
+  font-size: 0.68rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-card-risk {
+  grid-template-columns: minmax(250px, 1.35fr) repeat(4, minmax(116px, 0.8fr)) auto !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-card-risk .leads-filter-chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 0.45rem !important;
+  min-width: 0 !important;
+  height: 2.35rem !important;
+  min-height: 2.35rem !important;
+  padding: 0.35rem 0.62rem !important;
+  border-radius: 0.68rem !important;
+  cursor: pointer !important;
+  font-size: 0.73rem !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-card-risk .leads-filter-chip:hover {
+  border-color: var(--cf-status-red-border) !important;
+  background: var(--cf-status-red-bg) !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-card-risk .leads-risk-cadence-control select {
+  border-color: #cbd5e1 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-table-head-risk,
+#root .cf-html-view.main-leads-html .leads-risk-table-row {
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.55fr) minmax(0, 1.45fr) minmax(0, 0.9fr) minmax(0, 0.92fr) minmax(0, 1.1fr) 3rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row {
+  min-height: 4.55rem !important;
+  padding-top: 0.6rem !important;
+  padding-bottom: 0.6rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-main-cell {
+  grid-column: 1 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 0.62rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-company-cell {
+  grid-column: 2 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-status-cell {
+  grid-column: 3 !important;
+  display: flex !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-due-cell {
+  grid-column: 4 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-value-cell {
+  grid-column: 5 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-last-contact-cell {
+  grid-column: 6 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-actions {
+  grid-column: 7 !important;
+  display: inline-flex !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-action-cell,
+#root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-risk-cell,
+#root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-owner-cell {
+  display: none !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-reason-copy,
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-next-move,
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-next-move-copy {
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-reason-copy,
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-next-move {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.52rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-reason-icon,
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-next-move-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+  width: 1.65rem !important;
+  height: 1.65rem !important;
+  border-radius: 0.52rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-reason-icon {
+  color: var(--cf-status-red-text) !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-next-move-icon[data-cf-status-tone="blue"] {
+  color: var(--cf-status-blue-text) !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-next-move-icon[data-cf-status-tone="amber"] {
+  color: var(--cf-status-amber-text) !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-next-move-icon[data-cf-status-tone="red"] {
+  color: var(--cf-status-red-text) !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-reason-text,
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-next-move-copy {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 0.18rem !important;
+  overflow: hidden !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-reason-text strong,
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-next-move-copy strong {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  font-size: 0.72rem !important;
+  font-weight: 850 !important;
+  line-height: 1.15 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-reason-text .sub,
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-next-move-copy .sub,
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-last-contact-cell .mini,
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-due-cell .mini {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  font-size: 0.61rem !important;
+  font-weight: 700 !important;
+  line-height: 1.15 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-relative-value {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 0.72rem !important;
+  font-weight: 850 !important;
+  line-height: 1.15 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-relative-value-red {
+  color: var(--cf-status-red-text) !important;
+  -webkit-text-fill-color: var(--cf-status-red-text) !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-relative-value-amber {
+  color: var(--cf-status-amber-text) !important;
+  -webkit-text-fill-color: var(--cf-status-amber-text) !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-relative-value-blue {
+  color: var(--cf-status-blue-text) !important;
+  -webkit-text-fill-color: var(--cf-status-blue-text) !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-relative-value-neutral {
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-risk-table-row .lead-risk-avatar {
+  border-color: var(--cf-status-blue-border) !important;
+  background: var(--cf-status-blue-bg) !important;
+  color: var(--cf-status-blue-text) !important;
+  -webkit-text-fill-color: var(--cf-status-blue-text) !important;
+}
+
+@media (max-width: 72rem) and (min-width: 46.01rem) {
+  #root .cf-html-view.main-leads-html .leads-filter-card-risk {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) auto !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-filter-card-risk > .leads-filter-search {
+    grid-column: 1 / -1 !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-table-head-risk,
+  #root .cf-html-view.main-leads-html .leads-risk-table-row {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.35fr) minmax(0, 1.3fr) minmax(0, 0.88fr) minmax(0, 0.9fr) 3rem !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-table-head-risk > :nth-child(1) { grid-column: 1 !important; }
+  #root .cf-html-view.main-leads-html .leads-table-head-risk > :nth-child(2) { grid-column: 2 !important; }
+  #root .cf-html-view.main-leads-html .leads-table-head-risk > :nth-child(3) { grid-column: 3 !important; }
+  #root .cf-html-view.main-leads-html .leads-table-head-risk > :nth-child(4) { grid-column: 4 !important; }
+  #root .cf-html-view.main-leads-html .leads-table-head-risk > :nth-child(5) { grid-column: 5 !important; display: block !important; }
+  #root .cf-html-view.main-leads-html .leads-table-head-risk > :nth-child(6) { display: none !important; }
+  #root .cf-html-view.main-leads-html .leads-table-head-risk > :nth-child(7) { grid-column: 6 !important; display: block !important; }
+
+  #root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-last-contact-cell {
+    display: none !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-actions {
+    grid-column: 6 !important;
+  }
+}
+
+@media (max-width: 46rem) {
+  #root .cf-html-view.main-leads-html .leads-filter-card-risk {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-filter-card-risk > .leads-filter-search {
+    grid-column: 1 / -1 !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-table-head-risk {
+    display: none !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-risk-table-row {
+    grid-template-columns: minmax(0, 1fr) 2.1rem !important;
+    row-gap: 0.48rem !important;
+    padding: 0.85rem !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-main-cell,
+  #root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-company-cell,
+  #root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-status-cell,
+  #root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-value-cell,
+  #root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-last-contact-cell,
+  #root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-due-cell {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    display: flex !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-actions {
+    grid-column: 2 !important;
+    grid-row: 1 / span 2 !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-risk-table-row > .lead-value-cell {
+    text-align: left !important;
+  }
+}

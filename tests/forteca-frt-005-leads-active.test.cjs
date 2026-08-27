@@ -11,7 +11,7 @@ test('FRT-005 active state uses the real quick filter and reference process noti
   const contract = read('_project/contracts/forteca-clean/FRT-005_LEADS_ACTIVE.md');
   const css = read('src/styles/closeflow-record-list-source-truth.css');
 
-  assert.match(contract, /CONTRACT_STATUS: ACTIVE/);
+  assert.match(contract, /CONTRACT_STATUS: (?:ACTIVE|ACCEPTED)/);
   assert.match(leads, /const activeView = !showTrash && quickFilter === 'active';/);
   assert.match(leads, /searchParams\.get\('quick'\) !== 'active'/);
   assert.match(leads, /setQuickFilter\('active'\);/);

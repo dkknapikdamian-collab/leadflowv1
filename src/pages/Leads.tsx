@@ -67,7 +67,7 @@ import {
   updateClientInSupabase,
   updateLeadInSupabase,
 } from '../lib/supabase-fallback';
-import { format, isPast, parseISO } from 'date-fns';
+import { differenceInCalendarDays, format, isPast, parseISO, startOfDay } from 'date-fns';
 import { toast } from 'sonner';
 // CLOSEFLOW_LEAD_CONFLICT_RESOLUTION_V1
 // LEAD_TO_CASE_FLOW_STAGE24_LEADS_LIST
@@ -91,6 +91,9 @@ import {
   type ContactCadenceBucketKey,
 } from '../lib/owner-control/contact-cadence-grid';
 import { buildLostLeadRescue } from '../lib/owner-control/lost-lead-rescue';
+import { buildNextMoveContract } from '../lib/owner-control/next-move-contract';
+import { getLeadOwnerRiskBadges } from '../lib/owner-control/owner-risk-rules';
+import { readOwnerRiskSettings } from '../lib/owner-control/owner-risk-settings';
 import {
   dateInputToNoonIso,
   getDefaultLastContactDateInput,
@@ -267,6 +270,123 @@ function formatLeadTableDate(value: unknown, emptyLabel = 'Brak danych') {
   return format(date, 'd MMM yyyy', { locale: pl });
 }
 
+function formatPolishDays(days: number) {
+  const absoluteDays = Math.abs(days);
+  if (absoluteDays === 1) return 'dzień';
+  if (absoluteDays >= 2 && absoluteDays <= 4) return 'dni';
+  return 'dni';
+}
+
+function getLeadRelativeContact(value: unknown, now = new Date()) {
+  const raw = String(value || '').trim();
+  const date = raw ? new Date(raw) : null;
+  if (!date || Number.isNaN(date.getTime())) {
+    return { label: 'Brak danych', detail: 'Brak daty kontaktu', tone: 'neutral' as const };
+  }
+
+  const days = Math.max(0, differenceInCalendarDays(startOfDay(now), startOfDay(date)));
+  const label = days === 0 ? 'Dzisiaj' : `${days} ${formatPolishDays(days)} temu`;
+  return {
+    label,
+    detail: format(date, 'dd.MM.yyyy, HH:mm'),
+    tone: days >= 14 ? 'red' as const : days >= 7 ? 'amber' as const : 'blue' as const,
+  };
+}
+
+function getLeadRelativeDue(value: unknown, now = new Date()) {
+  const raw = String(value || '').trim();
+  const date = raw ? new Date(raw) : null;
+  if (!date || Number.isNaN(date.getTime())) {
+    return { label: 'Brak terminu', detail: 'Ustaw następny ruch', tone: 'amber' as const };
+  }
+
+  const days = differenceInCalendarDays(startOfDay(date), startOfDay(now));
+  const label = days < 0
+    ? `${Math.abs(days)} ${formatPolishDays(days)} temu`
+    : days === 0
+      ? 'Dzisiaj'
+      : days === 1
+        ? 'Jutro'
+        : `${days} dni`;
+
+  return {
+    label,
+    detail: format(date, 'dd.MM.yyyy'),
+    tone: days < 0 ? 'red' as const : days <= 1 ? 'amber' as const : 'blue' as const,
+  };
+}
+
+function buildLeadRiskReason(lead: any, nextAction: ReturnType<typeof getNearestPlannedAction>, workspace: unknown, relatedRecords: unknown[] = []) {
+  const nextMove = buildNextMoveContract({
+    entityType: 'lead',
+    entityId: String(lead?.id || ''),
+    status: lead?.status,
+    nearestAction: nextAction?.at && nextAction?.title
+      ? {
+          when: nextAction.at,
+          title: nextAction.title,
+          type: nextAction.kind,
+          status: nextAction.status,
+        }
+      : null,
+  });
+  const badges = getLeadOwnerRiskBadges(lead, {
+    settings: readOwnerRiskSettings(workspace),
+    relatedRecords,
+    nextMove,
+  });
+  const highValue = badges.some((badge) => badge.key === 'lead-high-value');
+  const silenceRisk = badges.find((badge) => badge.key.includes('contact-silence') || badge.key.includes('activity-silence'));
+  const status = String(lead?.status || '').trim().toLowerCase();
+
+  if (highValue && (nextMove.isMissing || nextMove.isOverdue)) {
+    return {
+      label: 'Wysoka wartość bez ruchu',
+      detail: silenceRisk?.reason || nextMove.reason,
+    };
+  }
+
+  if (['proposal_sent', 'waiting_response'].includes(status) && (nextMove.isMissing || nextMove.isOverdue)) {
+    return {
+      label: 'Po ofercie bez follow-up',
+      detail: nextMove.reason,
+    };
+  }
+
+  if (nextMove.isMissing) {
+    return {
+      label: 'Brak następnego kroku',
+      detail: nextMove.reason,
+    };
+  }
+
+  if (nextMove.isOverdue) {
+    return {
+      label: 'Następny krok po terminie',
+      detail: nextMove.reason,
+    };
+  }
+
+  if (silenceRisk) {
+    return {
+      label: silenceRisk.label,
+      detail: silenceRisk.reason,
+    };
+  }
+
+  if (Boolean(lead?.isAtRisk)) {
+    return {
+      label: 'Temat oznaczony jako zagrożony',
+      detail: 'Oznaczenie ryzyka pochodzi z rekordu leada.',
+    };
+  }
+
+  return {
+    label: 'Wymaga uwagi',
+    detail: 'Lead wymaga weryfikacji kolejnego ruchu.',
+  };
+}
+
 function isLeadInTrash(lead: any) {
   // STAGE30_LEADS_TRASH_STRICT_VISIBILITY: kosz leadow nie moze lapac aktywnych rekordow po samym wyniku sprzedazy.
   const status = String(lead?.status || '').trim();
@@ -361,6 +481,21 @@ export default function Leads() {
     setRiskFilter('all');
     setShowMoreFilters(false);
     setQuickFilter('active');
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('quick');
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if (searchParams.get('quick') !== 'at-risk') return;
+    setShowTrash(false);
+    setValueSortEnabled(false);
+    setCadenceFilter('all');
+    setStatusFilter('');
+    setSourceFilter('');
+    setRiskFilter('at-risk');
+    setShowMoreFilters(false);
+    setQuickFilter('at-risk');
     const nextParams = new URLSearchParams(searchParams);
     nextParams.delete('quick');
     setSearchParams(nextParams, { replace: true });
@@ -803,23 +938,28 @@ export default function Leads() {
   };
 
   const activeView = !showTrash && quickFilter === 'active';
+  const riskView = !showTrash && quickFilter === 'at-risk';
 
   const toggleQuickFilter = (filter: LeadsQuickFilter) => {
     setShowTrash(false);
     setValueSortEnabled(false);
     setCadenceFilter('all');
-    setQuickFilter((prev) => (prev === filter ? 'all' : filter));
+    const nextFilter = quickFilter === filter ? 'all' : filter;
+    setQuickFilter(nextFilter);
+    setRiskFilter(nextFilter === 'at-risk' ? 'at-risk' : 'all');
   };
 
   const toggleValueSorting = () => {
     setShowTrash(false);
     setQuickFilter('all');
+    setRiskFilter('all');
     setValueSortEnabled((prev) => !prev);
   };
 
   const toggleTrashView = () => {
     setValueSortEnabled(false);
     setQuickFilter('all');
+    setRiskFilter('all');
     setShowTrash((current) => !current);
   };
 
@@ -840,6 +980,13 @@ export default function Leads() {
       <div className="cf-html-view main-leads-html" data-visual-stage25-leads-full-jsx="true" data-leads-real-view="true">
         <CloseFlowPageHeaderV2
           pageKey="leads"
+          title={riskView ? (
+            <span className="leads-risk-header-title">
+              <span>Leady – Zagrożone</span>
+              <span className="cf-status-pill leads-risk-header-count" data-cf-status-tone="red">{stats.atRisk}</span>
+            </span>
+          ) : undefined}
+          description={riskView ? 'Leady wymagające natychmiastowej uwagi i reakcji.' : undefined}
           actions={
             <>
               <div className="head-actions">
@@ -1048,7 +1195,7 @@ export default function Leads() {
             value={stats.total}
             icon={LeadEntityIcon}
             active={quickFilter === 'all' && !valueSortEnabled && !showTrash}
-            onClick={() => { setShowTrash(false); setQuickFilter('all'); setValueSortEnabled(false); }}
+            onClick={() => { setShowTrash(false); setQuickFilter('all'); setRiskFilter('all'); setValueSortEnabled(false); }}
             title="Pokaż wszystkie leady"
             ariaLabel="Pokaż wszystkie leady"
             helper="Wszystkie leady"
@@ -1087,7 +1234,7 @@ export default function Leads() {
             title="Pokaż zagrożone leady"
             ariaLabel="Pokaż zagrożone leady"
             tone="risk"
-            helper="Leady wymagające uwagi"
+            helper={riskView ? `${stats.atRisk} ${stats.atRisk === 1 ? 'lead wymaga' : stats.atRisk >= 2 && stats.atRisk <= 4 ? 'leady wymagają' : 'leadów wymaga'} natychmiastowego ruchu` : 'Leady wymagające uwagi'}
           />
 
           {/* Do odzyskania remains a real filter in the expanded filter panel, keeping the reference KPI row at four cards. */}
@@ -1107,7 +1254,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
           data-stage96-leads-right-rail-source-truth="true"
         >
           <div className="stack">
-            <div className={`leads-filter-card${activeView ? ' leads-filter-card-active' : ''}`} data-frt004-leads-filter-card="true" data-frt005-leads-active-filter-card={activeView ? 'true' : 'false'}>
+            <div className={`leads-filter-card${activeView ? ' leads-filter-card-active' : ''}${riskView ? ' leads-filter-card-risk' : ''}`} data-frt004-leads-filter-card="true" data-frt005-leads-active-filter-card={activeView ? 'true' : 'false'} data-frt006-risk-filter-card={riskView ? 'true' : 'false'}>
               <div className="leads-filter-search">
                 <div className="search cf-main-search cf-main-search-stage177" data-cf-main-search="true" data-leads-search="true" data-stage117-leads-search-anchor="true" data-cf-main-search-source="semantic173">
               <span aria-hidden="true"><Search className="w-4 h-4" /></span>
@@ -1146,7 +1293,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
 
 
 
-            <div className="leads-filter-toolbar" data-frt004-leads-filter-toolbar="true" data-frt005-leads-active-toolbar={activeView ? 'true' : 'false'}>
+            <div className="leads-filter-toolbar" data-frt004-leads-filter-toolbar="true" data-frt005-leads-active-toolbar={activeView ? 'true' : 'false'} data-frt006-risk-toolbar={riskView ? 'true' : 'false'}>
               {activeView ? (
                 <button
                   type="button"
@@ -1207,18 +1354,49 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 </select>
               </label>
 
-              <label className="leads-filter-control">
-                <span>Ryzyko</span>
-                <select
-                  className={nativeSelectClassName()}
-                  value={riskFilter}
-                  onChange={(event) => setRiskFilter(event.target.value as 'all' | 'at-risk')}
-                  aria-label="Filtr ryzyka"
+              {riskView ? (
+                <button
+                  type="button"
+                  className="leads-filter-chip leads-filter-risk-chip cf-status-pill"
+                  data-cf-status-tone="red"
+                  onClick={() => toggleQuickFilter('at-risk')}
+                  aria-label="Usuń filtr Ryzyko: wysokie"
+                  data-frt006-risk-filter-chip="true"
                 >
-                  <option value="all">{activeView ? 'Dowolne' : 'Wszystkie poziomy'}</option>
-                  <option value="at-risk">Tylko zagrożone</option>
-                </select>
-              </label>
+                  <span>Wysokie</span>
+                  <X className="h-3.5 w-3.5" aria-hidden="true" />
+                </button>
+              ) : (
+                <label className="leads-filter-control">
+                  <span>Ryzyko</span>
+                  <select
+                    className={nativeSelectClassName()}
+                    value={riskFilter}
+                    onChange={(event) => setRiskFilter(event.target.value as 'all' | 'at-risk')}
+                    aria-label="Filtr ryzyka"
+                  >
+                    <option value="all">{activeView ? 'Dowolne' : 'Wszystkie poziomy'}</option>
+                    <option value="at-risk">Tylko zagrożone</option>
+                  </select>
+                </label>
+              )}
+
+              {riskView ? (
+                <label className="leads-filter-control leads-risk-cadence-control">
+                  <span>Kontakt / cisza</span>
+                  <select
+                    className={nativeSelectClassName()}
+                    value={cadenceFilter}
+                    onChange={(event) => setCadenceFilter(event.target.value as ContactCadenceBucketKey | 'all')}
+                    aria-label="Filtr kontaktu i ciszy"
+                  >
+                    <option value="all">Wszystkie</option>
+                    {contactCadenceBuckets.map((bucket) => (
+                      <option key={bucket.key} value={bucket.key}>{bucket.label}</option>
+                    ))}
+                  </select>
+                </label>
+              ) : null}
 
               <button
                 type="button"
@@ -1230,14 +1408,16 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 <Filter className="h-4 w-4" />
                 Więcej filtrów
               </button>
-              <button
-                type="button"
-                className="leads-filter-reset"
-                onClick={resetLeadFilters}
-                data-frt004-reset-filters="true"
-              >
-                {activeView ? 'Wyczyść filtry' : 'Reset'}
-              </button>
+              {!riskView ? (
+                <button
+                  type="button"
+                  className="leads-filter-reset"
+                  onClick={resetLeadFilters}
+                  data-frt004-reset-filters="true"
+                >
+                  {activeView ? 'Wyczyść filtry' : 'Reset'}
+                </button>
+              ) : null}
             </div>
             </div>
 
@@ -1411,9 +1591,19 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
               </div>
             ) : null}
 
-            <div className="table-card lead-table-card w-full max-w-none" data-stage25-lead-table-card="true" data-stage117-leads-list="true">
-              <div className={`leads-table-head${activeView ? ' leads-table-head-active' : ''}`} data-frt004-leads-table-head="true" data-frt005-active-table-head={activeView ? 'true' : 'false'} aria-hidden="true">
-                {activeView ? (
+            <div className={`table-card lead-table-card w-full max-w-none${riskView ? ' leads-risk-table-card' : ''}`} data-stage25-lead-table-card="true" data-stage117-leads-list="true" data-frt006-risk-table-card={riskView ? 'true' : 'false'}>
+              <div className={`leads-table-head${activeView ? ' leads-table-head-active' : ''}${riskView ? ' leads-table-head-risk' : ''}`} data-frt004-leads-table-head="true" data-frt005-active-table-head={activeView ? 'true' : 'false'} data-frt006-risk-table-head={riskView ? 'true' : 'false'} aria-hidden="true">
+                {riskView ? (
+                  <>
+                    <span>Lead / firma</span>
+                    <span>Powód ryzyka</span>
+                    <span>Następny ruch</span>
+                    <span>Termin</span>
+                    <span>Wartość</span>
+                    <span>Ostatni kontakt</span>
+                    <span>Akcje</span>
+                  </>
+                ) : activeView ? (
                   <>
                     <span>Lead / firma</span>
                     <span>Status</span>
@@ -1471,6 +1661,14 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   const pending = archivePendingId === leadId;
                   const activeIdentityLabel = companyLabel !== 'Brak firmy' ? companyLabel : (lead.name || 'Lead bez nazwy');
                   const activeIdentityMeta = companyLabel !== 'Brak firmy' && lead.name ? lead.name : contactLabel;
+                  const riskIdentityMeta = companyLabel !== 'Brak firmy' && lead.name
+                    ? [lead.name, lead.email || lead.phone].filter(Boolean).join(' · ')
+                    : contactLabel;
+                  const riskReason = riskView
+                    ? buildLeadRiskReason(lead, nextAction, workspace, relatedRecordsByLeadId.get(leadId) || [])
+                    : null;
+                  const riskContact = getLeadRelativeContact(lead.lastContactAt);
+                  const riskDue = getLeadRelativeDue(nextAction?.at);
                   const operationalBadges = buildRecordOperationalBadges({
                     entityType: 'lead',
                     record: lead,
@@ -1482,16 +1680,16 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   return (
                     <div key={leadId || leadIndex} className="relative group/lead-row w-full" data-lead-card-wide-layout="true">
                       <Link to={`/leads/${leadId}`} className="block">
-                        <div className={`row lead-row leads-table-row lead-card-value-block cf-lead-row-inline cf-lead-row-client-aligned${activeView ? ' leads-active-table-row' : ''}`} data-stage231d0c-lead-card-client-aligned="true" data-ui-dictionary="LeadListCard" data-stage25-lead-row="true" data-stage31-lead-thin-row="true" data-stage14e-leads-value-layout="true" data-frt004-leads-table-row="true" data-frt005-active-table-row={activeView ? 'true' : 'false'}>
+                        <div className={`row lead-row leads-table-row lead-card-value-block cf-lead-row-inline cf-lead-row-client-aligned${activeView ? ' leads-active-table-row' : ''}${riskView ? ' leads-risk-table-row' : ''}`} data-stage231d0c-lead-card-client-aligned="true" data-ui-dictionary="LeadListCard" data-stage25-lead-row="true" data-stage31-lead-thin-row="true" data-stage14e-leads-value-layout="true" data-frt004-leads-table-row="true" data-frt005-active-table-row={activeView ? 'true' : 'false'} data-frt006-risk-table-row={riskView ? 'true' : 'false'}>
                         <span className="index">{leadIndex + 1}</span>
 
-                        <span className="lead-main-cell">
-                          {activeView ? (
+                        <span className={`lead-main-cell${riskView ? ' lead-risk-main-cell' : ''}`}>
+                          {activeView || riskView ? (
                             <>
-                              <span className="lead-active-avatar" aria-hidden="true">{getLeadInitials(lead, activeIdentityLabel)}</span>
+                              <span className={`lead-active-avatar${riskView ? ' lead-risk-avatar' : ''}`} aria-hidden="true">{getLeadInitials(lead, activeIdentityLabel)}</span>
                               <span className="lead-active-identity-copy">
                                 <span className="title cf-lead-list-card-name" title={activeIdentityLabel}>{activeIdentityLabel}</span>
-                                <span className="sub lead-table-contact" title={`${activeIdentityMeta}${activeIdentityMeta !== contactLabel ? ` · ${contactLabel}` : ''}`}>{activeIdentityMeta}</span>
+                                <span className="sub lead-table-contact" title={riskView ? riskIdentityMeta : `${activeIdentityMeta}${activeIdentityMeta !== contactLabel ? ` · ${contactLabel}` : ''}`}>{riskView ? riskIdentityMeta : activeIdentityMeta}</span>
                               </span>
                             </>
                           ) : (
@@ -1503,26 +1701,54 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                         </span>
 
                         <span className="lead-company-cell">
-                          <span className="title" title={companyLabel}>{companyLabel}</span>
-                          <span className="sub" title={sourceLabel}>{sourceLabel}</span>
+                          {riskView ? (
+                            <span className="lead-risk-reason-copy">
+                              <span className="lead-risk-reason-icon" data-cf-status-tone="red" aria-hidden="true"><AlertTriangle className="h-4 w-4" /></span>
+                              <span className="lead-risk-reason-text">
+                                <strong title={riskReason?.label}>{riskReason?.label}</strong>
+                                <span className="sub" title={riskReason?.detail}>{riskReason?.detail}</span>
+                              </span>
+                            </span>
+                          ) : (
+                            <>
+                              <span className="title" title={companyLabel}>{companyLabel}</span>
+                              <span className="sub" title={sourceLabel}>{sourceLabel}</span>
+                            </>
+                          )}
                         </span>
 
                         <span className="lead-status-cell">
-                          <span className="statusline">
-                            <span className="cf-status-pill" data-cf-status-tone={leadStatusTone}>{leadStatusLabel}</span>
-                            {linkedCase ? <span className="cf-status-pill" data-cf-status-tone="green">Sprawa</span> : null}
-                            {operationalBadges.map((badge) => (
-                              <span
-                                key={badge.id}
-                                className="cf-status-pill"
-                                data-cf-status-tone={badge.tone}
-                                data-stage222-r4-lead-operational-badge="true"
-                                title={badge.title}
-                              >
-                                {badge.label}
+                          {riskView ? (
+                            <span className="lead-risk-next-move">
+                              <span className="lead-risk-next-move-icon" data-cf-status-tone={nextActionMeta.overdue ? 'red' : nextAction ? 'blue' : 'amber'} aria-hidden="true">
+                                <Clock3 className="h-4 w-4" />
                               </span>
-                            ))}
-                          </span>
+                              <span className="lead-risk-next-move-copy">
+                                <strong className={nextActionMeta.overdue ? 'danger cf-lead-next-action-title' : 'cf-lead-next-action-title'} title={nextAction ? nextActionMeta.title : 'Ustaw następny ruch'}>
+                                  {nextAction ? nextActionMeta.title : 'Ustawić następny ruch'}
+                                </strong>
+                                <span className="sub" title={nextAction ? nextActionMeta.subtitle : 'Brak zaplanowanego działania'}>
+                                  {nextAction ? nextActionMeta.subtitle : 'Brak zaplanowanego działania'}
+                                </span>
+                              </span>
+                            </span>
+                          ) : (
+                            <span className="statusline">
+                              <span className="cf-status-pill" data-cf-status-tone={leadStatusTone}>{leadStatusLabel}</span>
+                              {linkedCase ? <span className="cf-status-pill" data-cf-status-tone="green">Sprawa</span> : null}
+                              {operationalBadges.map((badge) => (
+                                <span
+                                  key={badge.id}
+                                  className="cf-status-pill"
+                                  data-cf-status-tone={badge.tone}
+                                  data-stage222-r4-lead-operational-badge="true"
+                                  title={badge.title}
+                                >
+                                  {badge.label}
+                                </span>
+                              ))}
+                            </span>
+                          )}
                         </span>
 
                         <span className="lead-value-cell" title={'Wartość: ' + leadValueLabel}>
@@ -1530,18 +1756,40 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                         </span>
 
                         <span className="lead-last-contact-cell">
-                          <span className="mini">Ostatni kontakt</span>
-                          <strong>{formatLeadTableDate(lead.lastContactAt)}</strong>
+                          {riskView ? (
+                            <>
+                              <strong className={`lead-risk-relative-value lead-risk-relative-value-${riskContact.tone}`}>{riskContact.label}</strong>
+                              <span className="mini">{riskContact.detail}</span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="mini">Ostatni kontakt</span>
+                              <strong>{formatLeadTableDate(lead.lastContactAt)}</strong>
+                            </>
+                          )}
                         </span>
 
                         <span className="lead-action-cell">
-                          <span className="mini">Następny krok</span>
-                          <strong className={nextActionMeta.overdue ? 'danger cf-lead-next-action-title' : 'cf-lead-next-action-title'} title={nextActionMeta.title}>{nextActionMeta.title}</strong>
+                          {riskView ? null : (
+                            <>
+                              <span className="mini">Następny krok</span>
+                              <strong className={nextActionMeta.overdue ? 'danger cf-lead-next-action-title' : 'cf-lead-next-action-title'} title={nextActionMeta.title}>{nextActionMeta.title}</strong>
+                            </>
+                          )}
                         </span>
 
                         <span className="lead-due-cell">
-                          <span className="mini">Termin</span>
-                          <strong>{nextAction?.at ? formatLeadTableDate(nextAction.at, '—') : '—'}</strong>
+                          {riskView ? (
+                            <>
+                              <strong className={`lead-risk-relative-value lead-risk-relative-value-${riskDue.tone}`}>{riskDue.label}</strong>
+                              <span className="mini">{riskDue.detail}</span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="mini">Termin</span>
+                              <strong>{nextAction?.at ? formatLeadTableDate(nextAction.at, '—') : '—'}</strong>
+                            </>
+                          )}
                         </span>
 
                         <span className="lead-risk-cell">
