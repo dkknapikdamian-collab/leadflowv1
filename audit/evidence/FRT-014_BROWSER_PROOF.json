@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-014",
+  "reference_file": "docs/ui/reference/forteca-calm-light/014_lead_add_task.webp",
+  "reference_sha256": "90886101295A896A8EF9185123B7409553B77A9FDD2C3738E9F3C2DF9CD9D6C9",
+  "entry_url": "http://localhost:3000/leads/dev-lead-3",
+  "runtime_url": "http://localhost:3000/leads/dev-lead-3",
+  "route": "/leads/dev-lead-3",
+  "state": "Forteca calm-light real Lead Detail add-task drawer",
+  "live_runtime": true,
+  "auth_required": false,
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "record_origin": "Existing local runtime Lead Detail record and canonical task relation query; reference fixture values were not copied.",
+    "visible_lead": "Fundacja \"Lepsze Jutro\"",
+    "visible_company": "Fundacja Lepsze Jutro",
+    "visible_owner": "Dev Local",
+    "task_write_owner": "insertTaskToSupabase -> /api/tasks -> api/work-items.ts -> task-route-stage124f",
+    "relation_options_owner": "Canonical TopicContactPicker options sourced from the current local workspace",
+    "production_source": "Supabase production path and workspace boundary remain unchanged; no authentication bypass was introduced."
+  },
+  "visible_structure": {
+    "drawer": "Right-side white full-height drawer, 412px at the active 1680px desktop viewport, with dimmed Lead Detail backdrop.",
+    "header": "Dodaj zadanie title and close control",
+    "fields": [
+      "Tytuł zadania *",
+      "Powiązane z leadem",
+      "Typ *",
+      "Termin *",
+      "Godzina *",
+      "Priorytet *",
+      "Cykliczność",
+      "Przypomnienie",
+      "Notatka"
+    ],
+    "footer": ["Anuluj", "Dodaj zadanie"]
+  },
+  "interaction_proof": {
+    "real_quick_action_entry": {
+      "status": "PASS",
+      "observed": "The real Lead Detail quick action Ustaw follow-up opened the mounted FRT-014 task dialog on /leads/dev-lead-3."
+    },
+    "dynamic_relation_picker": {
+      "status": "PASS",
+      "observed": "The picker exposed the current real lead, Lead type, company, email and phone metadata; no reference fixture was used."
+    },
+    "native_controls": {
+      "status": "PASS",
+      "observed": "Recurrence changed to Codziennie and reminder to 30 min, then was restored to Brak and 10 min; date/time remained real inputs with reference-shaped overlays."
+    },
+    "cancel_boundary": {
+      "status": "PASS",
+      "observed": "Anuluj closed the real dialog without invoking task submit, delete or another mutation."
+    },
+    "submit": {
+      "status": "NOT_EXERCISED_BY_DESIGN",
+      "reason": "The Add task button is wired to the real task API, but browser policy forbids invoking a live mutation without explicit user confirmation."
+    }
+  },
+  "responsive_proof": {
+    "desktop": "PASS_LIVE_ENTRY_STATE",
+    "horizontal_overflow": false,
+    "measured_drawer": {"x": 1260, "y": 0, "width": 412, "height": 942.4},
+    "measured_footer": {"x": 1260.8, "y": 872.4, "width": 411.2, "height": 70},
+    "note": "The live drawer keeps the footer at the bottom and the form in an internal scroll region."
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "lead_and_relation_data_are_runtime_bound": true,
+    "real_task_payload_fields_preserved": true,
+    "workspace_scope_preserved": true,
+    "native_date_and_time_inputs_preserved": true,
+    "no_live_mutation_without_approval": true,
+    "no_fake_success_or_toast_path": true
+  },
+  "console_errors": 0,
+  "console_warnings_new_after_description_fix": 0,
+  "historical_pre_fix_warnings_observed": 2,
+  "status": "PASS_WITH_DOCUMENTED_BROWSER_SUBMIT_BOUNDARY",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The reference contains fixture lead values and a reference date; the runtime correctly renders current local lead data and the current local date.",
+      "Task submit and activity refresh were not invoked because they are live mutations requiring user approval.",
+      "The browser viewport and operating-system native control rendering can differ from the reference capture."
+    ]
+  },
+  "tab_marked_deliverable": true,
+  "implementation_commit_sha": "d4831ebf02b59e4e996a47c17c3f95680e63589f",
+  "created_at": "2026-08-27T22:20:59.7613493Z"
+}

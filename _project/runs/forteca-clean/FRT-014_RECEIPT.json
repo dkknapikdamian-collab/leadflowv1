@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-014",
+  "reference_file": "docs/ui/reference/forteca-calm-light/014_lead_add_task.webp",
+  "target_route": "/leads/:leadId",
+  "target_state": "Forteca calm-light real Lead Detail add-task drawer",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_DOCUMENTED_BROWSER_SUBMIT_BOUNDARY",
+  "acceptance_authority": "CODEX",
+  "acceptance_basis": {
+    "directive_interpretation": "Codex is the acceptance authority under the owner directive for the autonomous Forteca program. This receipt is controller acceptance, not an AICG PASS claim.",
+    "reference_and_runtime": "The real Lead Detail quick action now opens a scoped right-side drawer matching the FRT-014 reference structure, while relation options and visible Lead values remain bound to the current runtime.",
+    "root_cause": "The shared task dialog presented the generic event-form/modal visual system and did not expose the FRT-014 relation, recurrence, reminder and note contract in the reference-shaped Lead Detail drawer. The repair keeps the real task mutation and adds a scoped FRT-014 presentation plus explicit field-to-payload mapping.",
+    "review": "Scoped repository-native review found no actionable FRT-014 implementation finding after preserving the shared task owner, real workspace/relation IDs, native controls and the browser mutation boundary."
+  },
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Reference lead names, company values and dates are never copied into runtime state or submitted to the API.",
+      "The selected relation is read from the current workspace and its real IDs are sent to the existing task write path.",
+      "The native date/time inputs remain the source of truth; display overlays only reconcile the reference visual format.",
+      "Recurrence, reminder and description map to existing task payload fields; unsupported fake schema was not invented.",
+      "Styling is scoped to the mounted FRT-014 drawer and does not globally skin unrelated dialogs.",
+      "No fake success, no-op persistence model, automatic merge or unapproved browser mutation was introduced."
+    ]
+  },
+  "code_changed": true,
+  "files_changed": [
+    "package.json",
+    "src/components/TaskCreateDialog.tsx",
+    "src/components/topic-contact-picker.tsx",
+    "src/lib/supabase-fallback.ts",
+    "src/styles/owners/closeflow-dialogs.css",
+    "tests/forteca-frt-014-lead-task.test.cjs",
+    "docs/ui/CLOSEFLOW_STYLE_MAP.generated.md",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.json",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.md",
+    "docs/ui/closeflow-style-map.generated.json",
+    "audit/evidence/FRT-014_BROWSER_PROOF.json",
+    "audit/evidence/FRT-014_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/runs/forteca-clean/FRT-014_RECEIPT.json"
+  ],
+  "preserved_untracked_files": ["dist-test-today-sections.cjs"],
+  "visual_sot_owners_used": ["MODALS", "FORMS", "BUTTONS_ACTIONS", "CALENDAR", "ICONS", "SURFACES"],
+  "visible_controls_inventory": ["Task title", "Lead relation picker", "Task type", "Date", "Time", "Priority", "Recurrence", "Reminder", "Note", "Anuluj", "Dodaj zadanie", "Close"],
+  "visible_controls_wired": "The real Lead Detail quick action opens the dialog; relation, native date/time, select controls, cancel and close are live; submit maps the form to the existing task API and was not invoked in the browser proof.",
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "npm.cmd run test:forteca-frt-014-lead-task (2/2)",
+    "npm.cmd run test:forteca-frt-011-lead-add (2/2; reused stage regression)",
+    "npm.cmd run test:forteca-frt-012-lead-edit (2/2; reused stage regression)",
+    "npm.cmd run test:forteca-frt-013-lead-duplicate (2/2; reused stage regression)",
+    "node --test tests/global-quick-actions-open-modals.test.cjs (3/3)",
+    "node --test tests/stage102-calendar-edit-modal-form-source.test.cjs (1/1)",
+    "node --test tests/stage105-calendar-modal-no-dark-inputs.test.cjs (1/1)",
+    "node --test tests/stage106-calendar-modal-inverted-visual-contract.test.cjs (1/1)",
+    "npx.cmd tsc --noEmit (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS)",
+    "npm.cmd run audit:closeflow-ui-map (PASS)",
+    "npm.cmd run audit:closeflow-style-map (PASS)",
+    "npm.cmd run check:closeflow-ui-skill-pack (PASS)",
+    "npm.cmd run check:closeflow-ui-premap-contract (PASS)",
+    "npm.cmd run guard:routes:canonical (PASS)",
+    "npm.cmd run guard:ui:ssot-icons (PASS)",
+    "npm.cmd run guard:ui:ssot-semantic-colors (PASS)",
+    "npm.cmd run guard:ui:ssot-typography (PASS)",
+    "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke (PARTIAL, zero writes)",
+    "Live Codex In-app Browser proof of real /leads/dev-lead-3 and mounted task drawer (PASS_WITH_DOCUMENTED_BROWSER_SUBMIT_BOUNDARY)"
+  ],
+  "tests_reused": [
+    "FRT-000 routing, reference manifest, Guardian boundary and visual SOT owner registry",
+    "FRT-010 real Lead route and local runtime baseline",
+    "FRT-011 real Lead creation and task action owners",
+    "FRT-012 populated Lead runtime and browser harness",
+    "FRT-013 duplicate-safe Lead relation and generated UI/style maps"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "live task submit and activity/detail refresh",
+      "reason": "NOT_EXECUTED_WITHOUT_USER_APPROVAL: the submit button invokes a real task mutation; browser policy requires explicit confirmation."
+    },
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: the installed Guardian entrypoint exposed only partial repository-baseline smoke coverage; pass_claim=false."
+    },
+    {
+      "test": "stage85 task-dialog relation-context literal assertion",
+      "reason": "BASELINE_DRIFT: the historical test expects the removed simplified Powiązanie card and old context fallback literals; FRT-013/FRT-014 intentionally use the real relation picker and real IDs."
+    },
+    {
+      "test": "full legacy suite",
+      "reason": "BASELINE_DRIFT: the repository contains unrelated historical failures and visual expectations outside the FRT-014 write set."
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS_WITH_KNOWN_WARNINGS",
+  "build_warnings": [
+    "Existing dynamic/static import overlap for src/lib/supabase-fallback.ts",
+    "Existing chunks larger than 500 kB after minification"
+  ],
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-014_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "EXECUTED: PARTIAL / coverage PARTIAL / fileWrites 0"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-014_BROWSER_PROOF.json",
+    "status": "PASS_WITH_DOCUMENTED_BROWSER_SUBMIT_BOUNDARY",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "/leads/dev-lead-3",
+    "drawer_entry": "PASS",
+    "dynamic_relation": "PASS",
+    "native_controls": "PASS",
+    "submit": "NOT_SUBMITTED_BY_DESIGN",
+    "console_errors": 0,
+    "new_warnings_after_description_fix": 0,
+    "tab_marked_deliverable": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitation": "Runtime data/date and native browser rendering are correctly real and may differ from fixture pixels; live submit was not invoked without approval."
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "efficiency_planning": "APPLIED",
+    "marketplace_startup_receipt": "startup-d529e5883fbf6d9d302024f425c75df81cd9dd9e8e7fddad20bf72d012ccdb8",
+    "marketplace_binding": "BOUND",
+    "primary_capability": "frontend-design",
+    "project_context_reused": ["FRT-000 contracts/evidence baseline", "FRT-010 Lead runtime", "FRT-011 task action baseline", "FRT-012 populated Lead runtime", "FRT-013 relation baseline", "Generated UI/style maps"],
+    "evidence_reuse": ["Canonical task dialog owner", "Real Lead Detail quick-action entry", "FRT-012 browser harness", "FRT-013 relation and workspace boundary"],
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "skip_reason": "No suitable available provider was exposed for this bounded UI/data-owner change; one write owner and parent validation were required."
+  },
+  "implementation_commit_sha": "d4831ebf02b59e4e996a47c17c3f95680e63589f",
+  "next_stage": "FRT-015",
+  "created_at": "2026-08-27T22:20:59.7613493Z"
+}
