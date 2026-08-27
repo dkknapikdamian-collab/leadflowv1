@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-004",
+  "reference_file": "docs/ui/reference/forteca-calm-light/004_leads_all.webp",
+  "target_route": "/leads",
+  "target_state": "Leads — Wszystkie",
+  "result": "PASS",
+  "stage_status": "ACCEPTED",
+  "acceptance_authority": "CODEX",
+  "acceptance_basis": {
+    "owner_directive_sha256": "E3432C8126DAF2C0E0B4B5FB7060F05D60F9CB53F373904FEDEA5A2",
+    "directive_interpretation": "Codex is the acceptance authority for the autonomous Forteca program. This receipt is controller acceptance under the owner directive, not an executor self-acceptance and not an AICG PASS claim."
+  },
+  "root_cause_or_implementation_gap": "The live Leads route was a real data surface but its all-state presentation diverged from the reference: the default quick filter was active, the reference KPI/filter hierarchy was missing, the table did not expose the reference columns, and the header promoted actions that do not belong to this state. The correction keeps the existing workspace-scoped query, action and operational-badge owners, then adds the reference-shaped KPI/filter/table composition, real status/source/risk filtering, reset and pagination while omitting the unregistered CSV import control.",
+  "code_changed": true,
+  "files_changed": [
+    "_project/contracts/forteca-clean/FRT-004_LEADS_ALL.md",
+    "_project/contracts/forteca-clean/FRT-005_LEADS_ACTIVE.md",
+    "src/pages/Leads.tsx",
+    "src/components/CloseFlowPageHeaderV2.tsx",
+    "src/components/StatShortcutCard.tsx",
+    "src/lib/source-of-truth/icon-registry.ts",
+    "src/styles/closeflow-record-list-source-truth.css",
+    "src/styles/owners/closeflow-foundation-operator.css",
+    "tests/forteca-frt-004-leads-all.test.cjs",
+    "package.json",
+    "docs/ui/CLOSEFLOW_STYLE_MAP.generated.md",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.json",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.md",
+    "docs/ui/closeflow-style-map.generated.json",
+    "audit/evidence/FRT-004_BROWSER_PROOF.json",
+    "audit/evidence/FRT-004_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/runs/forteca-clean/FRT-004_RECEIPT.json",
+    "_project/WORKFLOW_STATE.json"
+  ],
+  "preserved_untracked_files": [
+    "dist-test-today-sections.cjs"
+  ],
+  "visual_sot_owners_used": [
+    "PAGE_SHELL",
+    "CARDS_TILES",
+    "SEARCH",
+    "LIST_ROWS",
+    "BADGES",
+    "BUTTONS_ACTIONS",
+    "RESPONSIVE_DENSITY"
+  ],
+  "visible_controls_inventory": {
+    "primary_add_lead": 1,
+    "search": 1,
+    "select_filters": 3,
+    "more_filters": 1,
+    "reset": 1,
+    "row_navigation": 3,
+    "row_action_groups": 3,
+    "pagination": 1,
+    "total_known_control_groups": 14
+  },
+  "visible_controls_wired": "all controls in the inventory are backed by existing query, navigation or mutation owners",
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "node --test tests/forteca-frt-004-leads-all.test.cjs (2/2)",
+    "node --test tests/forteca-frt-003-global-add.test.cjs (2/2)",
+    "node scripts/check-closeflow-entity-icon-registry.cjs",
+    "npm.cmd run audit:closeflow-ui-map",
+    "npm.cmd run audit:closeflow-style-map",
+    "npm.cmd run check:closeflow-ui-skill-pack",
+    "npm.cmd run check:closeflow-ui-premap-contract",
+    "npx.cmd tsc --noEmit --pretty false",
+    "git diff --check",
+    "npm.cmd run build",
+    "live Codex In-app Browser route/state/control proof"
+  ],
+  "tests_reused": [
+    "FRT-000 reference manifest, routing integrity, Guardian boundary and visual SOT owner registry",
+    "FRT-001 live shell and canonical creation-flow baseline",
+    "FRT-002 owner guards and build baseline",
+    "FRT-003 global Add and shared header behavior regression"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: target repository exposes no guardian script or canonical AICG target scanner entrypoints; plugin smoke remains PARTIAL and no AICG PASS claim is made"
+    },
+    {
+      "test": "authenticated populated runtime proof",
+      "reason": "NOT_REQUIRED for this unauthenticated local Leads all-state proof; the current stage can be independently verified with the available real workspace response"
+    },
+    {
+      "test": "legacy Stage222/record-list marker guards",
+      "reason": "Executed as a diagnostic and remained at the pre-existing baseline drift (Stage222 1/3; legacy marker/source expectations absent); those owners are outside FRT-004 and were not repaired"
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS",
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-004_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "PASS / coverage PARTIAL"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-004_BROWSER_PROOF.json",
+    "status": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "/leads",
+    "tab_marked_deliverable": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "literal_pixel_identity_claim": false,
+    "limitation": "The reference is 1672x941 and the available in-app browser viewport is 1298x698; the live proof records the actual responsive runtime, real workspace data and working controls without claiming literal pixel equality across different viewport dimensions. Product-shell, data-volume, unregistered-import and retained-operational-badge deviations are explicit in the browser proof."
+  },
+  "implementation_commit_sha": "c33b3a015ce83d5d1a00b9ec3507f38e24335086",
+  "closeout_commit_sha": "8200eb847196aa1c8fd1484c895c6ac5821fbdae",
+  "remote_head": "8200eb847196aa1c8fd1484c895c6ac5821fbdae",
+  "next_stage": "FRT-005"
+}
