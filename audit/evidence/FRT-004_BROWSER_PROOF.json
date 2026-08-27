@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-004",
+  "reference_file": "docs/ui/reference/forteca-calm-light/004_leads_all.webp",
+  "reference_sha256": "6C720F4AC9BC27875B3FC03B1AEC37C67EA8E508017EB1C63759F33D35B67CA1",
+  "reference_dimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "captured_at": "2026-08-27T13:34:54.6335572+02:00",
+  "capture": {
+    "browser": "Codex In-app Browser",
+    "url": "http://localhost:3000/leads",
+    "route": "/leads",
+    "viewport": {
+      "width": 1298,
+      "height": 698
+    },
+    "captured_in_in_app_browser": true,
+    "screenshot_artifact_path": null,
+    "tab_marked_deliverable": true
+  },
+  "runtime": {
+    "live_runtime": true,
+    "shell": {
+      "brand": "CloseFlow",
+      "active_navigation": "Leady",
+      "data_origin": "workspace-scoped current local runtime response"
+    },
+    "header": {
+      "title": "Leady",
+      "description": "Zarządzaj procesem sprzedaży i pilnuj kolejnych ruchów.",
+      "primary_action": "Dodaj leada",
+      "primary_action_visible": true,
+      "legacy_secondary_header_actions_hidden": ["AI", "Kosz"]
+    },
+    "metrics": {
+      "cards": 4,
+      "values": {
+        "all": 3,
+        "active": 1,
+        "active_value_pln": 24300,
+        "at_risk": 1
+      },
+      "icons": ["users", "activity", "wallet", "alert-triangle"]
+    },
+    "filter_card": {
+      "visible": true,
+      "search_placeholder": "Szukaj po imieniu, firmie, e-mailu, telefonie...",
+      "selects": ["status", "source", "risk"],
+      "more_filters": true,
+      "reset": true,
+      "measured_rect": {
+        "x": 299.2,
+        "y": 254.875,
+        "width": 956,
+        "height": 78.7
+      }
+    },
+    "table": {
+      "visible": true,
+      "columns": [
+        "LEAD",
+        "FIRMA / KANAŁ",
+        "STATUS",
+        "WARTOŚĆ",
+        "OSTATNI KONTAKT",
+        "NASTĘPNY KROK",
+        "TERMIN",
+        "RYZYKO",
+        "WŁAŚCICIEL",
+        "AKCJE"
+      ],
+      "rows_loaded": 3,
+      "pagination": "1–3 z 3 leadów",
+      "page_size": "20 / strona",
+      "horizontal_overflow": false
+    }
+  },
+  "interactions": {
+    "more_filters": {
+      "expanded": true,
+      "real_cadence_and_simple_filters_visible": true,
+      "status": "PASS"
+    },
+    "status_filter": {
+      "selected": "new",
+      "filtered_rows": 1,
+      "status": "PASS"
+    },
+    "reset": {
+      "restored_unfiltered_rows": 3,
+      "collapsed_more_filters": true,
+      "status": "PASS"
+    },
+    "add_lead": {
+      "canonical_dialog_opened": true,
+      "dialog_title": "Nowy lead",
+      "cancelled_without_mutation": true,
+      "route_after_cancel": "/leads",
+      "status": "PASS"
+    }
+  },
+  "access": {
+    "auth_required": false,
+    "auth_used": false,
+    "authenticated_populated_runtime_required_for_this_stage": false
+  },
+  "comparison": {
+    "reference_is_visual_sot": true,
+    "product_brand_preserved": "CloseFlow",
+    "structural_visual_parity": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "literal_pixel_identity_claim": false,
+    "accepted_deviations": [
+      "The reference is 1672x941 while the available in-app browser viewport is 1298x698; responsive placement is verified in the live shell.",
+      "The product shell remains CloseFlow as required by the repository SOT; the reference artwork uses the Forteca light shell.",
+      "The current workspace runtime returns 3 real leads rather than the reference artwork's 18-row data snapshot; no fake rows, owners or dates were fabricated.",
+      "Import CSV is omitted because no active canonical import flow exists in the runtime contract; a dead control was not invented.",
+      "Existing record-level operational badges remain visible because they carry real risk/contact semantics; at the compact viewport they make some rows taller than the artwork.",
+      "AI and Kosz remain real behavior owners; AI is hidden from this reference header and Kosz remains available through the expanded real filter surface."
+    ]
+  }
+}

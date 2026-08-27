@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "evidence_type": "AICG_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-004",
+  "mode": "AUDIT_ONLY",
+  "repository": "dkknapikdamian-collab/leadflowv1",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "base_sha": "307ecd9b73a0969bcca687d191a4b7b80cdf599d",
+  "outcome": "PARTIAL",
+  "pass_claim": false,
+  "blockers": 0,
+  "target_scan": {
+    "status": "NOT_AVAILABLE",
+    "reason": "The CloseFlow target exposes neither a guardian npm script nor the canonical AICG target scanner entrypoints required by the routed Guardian skill. No target-wide AICG PASS is claimed.",
+    "attempted_command": "npm.cmd run guardian -- --smoke",
+    "attempted_result": "FAIL / Missing script: guardian",
+    "external_plugin_smoke_command": "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+    "external_plugin_smoke_result": {
+      "process": "PASS",
+      "mode": "AUDIT_ONLY",
+      "file_writes": 0,
+      "coverage_outcome": "PARTIAL",
+      "scope": "plugin orchestration smoke only; not a CloseFlow target scan"
+    }
+  },
+  "reused_guardian_evidence": {
+    "source_stages": ["FRT-000", "FRT-003"],
+    "reuse_boundary": "Prior Guardian evidence is reused only for routing and the bounded fact that the target-wide scanner is unavailable with zero registered blockers. It is not treated as a fresh FRT-004 target scan or a PASS claim."
+  },
+  "scoped_current_evidence": {
+    "forteca_frt_004_leads_all_test": "PASS (2/2)",
+    "forteca_frt_003_regression_test": "PASS (2/2)",
+    "entity_icon_registry_guard": "PASS",
+    "closeflow_ui_map_audit": "PASS",
+    "closeflow_style_map_audit": "PASS",
+    "ui_skill_pack_check": "PASS",
+    "ui_premap_contract_check": "PASS",
+    "typescript": "PASS",
+    "git_diff_check": "PASS",
+    "build": "PASS",
+    "browser_proof": "audit/evidence/FRT-004_BROWSER_PROOF.json"
+  },
+  "known_unrelated_baseline_checks": {
+    "stage222_r4_operational_badges": "FAIL / existing helper and page marker expectations are absent from the current target baseline; the FRT-004 implementation does not modify those owners and the old guard was not repaired",
+    "record_list_source_truth": "FAIL / legacy marker CLOSEFLOW_RECORD_LIST_SOURCE_TRUTH_2026_05_12 is absent from the target baseline",
+    "right_rail_source_truth": "FAIL / legacy source file marker is absent from the target baseline",
+    "visual_stage25_leads_full_jsx_html_rebuild": "FAIL / legacy page-head marker is absent from the target baseline",
+    "visual_stage26_leads_alignment": "FAIL / legacy Stage26 CSS import marker is absent from the target baseline",
+    "stage231d0b_client_list_freeze": "FAIL / legacy Stage231D0B source marker is absent from the target baseline",
+    "record_list_dedupe": "FAIL / legacy dedupe marker is absent from the target baseline"
+  },
+  "findings_and_limits": {
+    "current_target_scan_findings": "NOT_AVAILABLE",
+    "known_historical_blockers": 0,
+    "aicg_raw_pass_claim": false,
+    "technical_acceptance_basis": "Codex controller acceptance under the owner directive; scoped repository guards, typecheck, build, diff check and live browser proof are recorded separately."
+  },
+  "interpretation": "FRT-004 has no current Guardian blocker, but the available Guardian result is partial because the target-wide scan is unavailable. Acceptance must not be represented as an AICG PASS; the stage is accepted only on the owner-directed controller basis after the scoped implementation, browser and repository evidence are committed."
+}

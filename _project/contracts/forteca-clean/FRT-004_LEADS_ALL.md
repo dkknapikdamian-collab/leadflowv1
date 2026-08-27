@@ -1,6 +1,6 @@
 # FRT-004 — LEADS ALL
 
-CONTRACT_STATUS: ACTIVE
+CONTRACT_STATUS: ACCEPTED
 STAGE_ID: FRT-004
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/004_leads_all.webp
 TARGET_ROUTE: /leads
