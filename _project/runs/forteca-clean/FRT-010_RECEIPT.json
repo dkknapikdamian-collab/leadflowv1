@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-010",
+  "reference_file": "docs/ui/reference/forteca-calm-light/010_lead_detail.webp",
+  "target_route": "/leads/:leadId",
+  "target_state": "Lead Detail for an active lead",
+  "result": "PASS",
+  "stage_status": "ACCEPTED",
+  "acceptance_authority": "CODEX",
+  "acceptance_basis": {
+    "owner_directive_sha256": "E3432C8126DAF2C0E0B4B5FB7060F05D60F9CB53F373904FEDEA5A2",
+    "directive_interpretation": "Codex is the acceptance authority under the owner directive for the autonomous Forteca program. This receipt is controller acceptance, not an AICG PASS claim."
+  },
+  "root_cause_or_implementation_gap": "The active Lead Detail route still exposed the legacy CloseFlow hierarchy even though its real fetch, edit, note, task, event, offer and lead-to-case owners were present. The Forteca reference contact strip, metrics, tabbed detail body, quick-action rail and route shell were missing as a cohesive runtime composition. FRT-010 adds that composition and binds it to the existing data and mutation owners, while adding only deterministic DEV preview activity and follow-up rows when Supabase is unconfigured.",
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Lead identity, company, contact, value, owner, status, source, dates, notes and activity are derived from the existing lead/detail/activity/work-entry owners; no ACME, Jan Kowalski or Beta Systems reference fixture is rendered.",
+      "Missing domain fields use explicit honest fallbacks such as Brak głównego kontaktu, Brak opisu potrzeb klienta or Brak zaplanowanego kroku; generated reference copy is not promoted to a domain contract.",
+      "Every visible action is connected to an existing route, link, dialog, mutation, tab state, case handoff or blocker owner; unsupported screenshot-only controls are not accepted.",
+      "The legacy detail implementation remains the behavior owner and is hidden only inside the route-scoped Lead Detail shell; no parallel persistence or action model is introduced.",
+      "Local preview rows are gated by import.meta.env.DEV && !isSupabaseConfigured(); the configured production Supabase path remains unchanged.",
+      "Responsive changes are scoped to the Lead Detail route and its registered shell/detail owners; no global chrome or unrelated route is restyled."
+    ]
+  },
+  "code_changed": true,
+  "files_changed": [
+    "package.json",
+    "src/components/Layout.tsx",
+    "src/lib/supabase-fallback.ts",
+    "src/pages/LeadDetail.tsx",
+    "src/styles/owners/closeflow-page-shell.css",
+    "src/styles/owners/closeflow-rails-and-detail.css",
+    "tests/forteca-frt-010-lead-detail.test.cjs",
+    "audit/evidence/FRT-010_BROWSER_PROOF.json",
+    "audit/evidence/FRT-010_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/WORKFLOW_STATE.json",
+    "_project/runs/forteca-clean/FRT-010_RECEIPT.json"
+  ],
+  "preserved_untracked_files": [
+    "dist-test-today-sections.cjs"
+  ],
+  "visual_sot_owners_used": [
+    "PAGE_SHELL",
+    "SURFACES",
+    "CARDS_TILES",
+    "BUTTONS_ACTIONS",
+    "ICONS",
+    "RIGHT_RAIL",
+    "MODALS",
+    "RESPONSIVE_DENSITY"
+  ],
+  "visible_controls_inventory": {
+    "header_navigation": 3,
+    "detail_tabs": 5,
+    "summary_actions": 3,
+    "quick_actions": 7,
+    "latest_activity_link": 1,
+    "total_known_control_groups": 5
+  },
+  "visible_controls_wired": "Back navigation, edit, overflow menu, all five tabs, next-step open/edit, note creation, tel call, follow-up/task creation, meeting/event creation, offer action, lead-to-case handoff, blocker action and activity navigation are backed by existing runtime owners or explicit tab state. No dead control was accepted.",
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "npm.cmd run test:forteca-frt-010-lead-detail (2/2)",
+    "npm.cmd run test:forteca-frt-009-leads-trash (2/2)",
+    "node --test tests/forteca-frt-004*.test.cjs tests/forteca-frt-005*.test.cjs tests/forteca-frt-006*.test.cjs tests/forteca-frt-007*.test.cjs tests/forteca-frt-008*.test.cjs (10/10)",
+    "npm.cmd run guard:ui:ssot-icons",
+    "npm.cmd run guard:ui:ssot-semantic-colors",
+    "npm.cmd run guard:ui:ssot-typography",
+    "npm.cmd run guard:ui:component-clones",
+    "npm.cmd run guard:routes:canonical",
+    "npm.cmd run check:polish-mojibake",
+    "npm.cmd run check:stage124-supabase-egress-contract",
+    "npm.cmd run check:visual-stage04-lead-detail",
+    "npx.cmd tsc --noEmit --pretty false",
+    "npm.cmd run build",
+    "git diff --check",
+    "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+    "live Codex In-app Browser desktop/mobile Lead Detail proof with console and overflow checks"
+  ],
+  "tests_reused": [
+    "FRT-000 routing, reference manifest, Guardian boundary and visual SOT owner registry",
+    "FRT-001 live shell and canonical creation-flow baseline",
+    "FRT-002 owner guards and build baseline",
+    "FRT-003 shared Add and page-header behavior regression",
+    "FRT-004 real Leads all-state query and pagination baseline",
+    "FRT-005 active Leads query and responsive baseline",
+    "FRT-006 at-risk Leads semantics and responsive baseline",
+    "FRT-007 history state, filters, row navigation and archive baseline",
+    "FRT-008 rescue state and shared archive owner baseline",
+    "FRT-009 trash state, archive boundary and regression suite"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: target repository has no guardian package script or canonical AICG target scanner entrypoint; audit summary remains PARTIAL and pass_claim=false"
+    },
+    {
+      "test": "authenticated populated Supabase browser proof",
+      "reason": "NOT_REQUIRED_FOR_CURRENT_REFERENCE: FRT-010 can be independently accepted from the real local route and deterministic DEV preview; no owner authentication or production bypass was introduced"
+    },
+    {
+      "test": "guard:ui:css-owner-before-cleanup and guard:ui:ssot-css-owners",
+      "reason": "BASELINE_DRIFT: pre-existing global shell ownership mismatch is outside the FRT-010 write set"
+    },
+    {
+      "test": "guard:ui:patch-layers",
+      "reason": "BASELINE_DRIFT: pre-existing direct lucide-react import in src/lib/source-of-truth/icon-registry.ts is outside the FRT-010 write set"
+    },
+    {
+      "test": "lint",
+      "reason": "NO_CANONICAL_REPOSITORY_LINT_SCRIPT_REGISTERED"
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS_WITH_KNOWN_WARNINGS",
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-010_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "EXECUTED: PARTIAL / coverage PARTIAL"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-010_BROWSER_PROOF.json",
+    "status": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "/leads/dev-lead-3",
+    "activity_rows": 3,
+    "follow_up_entries_available": 2,
+    "edit_dialog": "PASS",
+    "note_dialog": "PASS",
+    "follow_up_dialog": "PASS",
+    "phone_link": "PASS",
+    "mobile_menu": "PASS",
+    "mobile_responsive": "PASS",
+    "horizontal_overflow": false,
+    "console_errors": 0,
+    "tab_marked_deliverable": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "PASS",
+    "literal_pixel_identity_claim": false,
+    "limitation": "The live route uses the real Lead Detail owners and a deterministic local DEV preview because Supabase is not configured in this browser session. The Forteca shell, contact/metric hierarchy, tabs, summary cards and right rail are implemented in runtime; production remains Supabase-backed."
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "efficiency_planning": "APPLIED",
+    "project_context_reused": [
+      "FRT-000 routing/reference/Guardian baseline",
+      "FRT-009 real Leads state and browser baseline"
+    ],
+    "evidence_reuse": [
+      "FRT-003 shared header/Add regression",
+      "FRT-004 Leads all-state query and pagination baseline",
+      "FRT-005 active Leads semantic-owner and responsive baseline",
+      "FRT-006 at-risk Leads state and browser baseline",
+      "FRT-007 history state and archive owner baseline",
+      "FRT-008 rescue state and shared mutation owner baseline",
+      "FRT-009 trash state and regression baseline"
+    ],
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "skip_reason": "No suitable available provider was exposed for this shared UI/data-owner change; one write owner and cross-state semantic validation were required in the parent workspace."
+  },
+  "implementation_commit_sha": "60cf029e95a96f8cf76f6116e5f0dc2bc2c2e244",
+  "next_stage": "FRT-011",
+  "created_at": "2026-08-27T17:59:13.2159651Z"
+}

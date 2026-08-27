@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-010",
+  "reference_file": "docs/ui/reference/forteca-calm-light/010_lead_detail.webp",
+  "reference_sha256": "2911F66E0B9090B26382B1F094F8370BBDDF882A15C24A73CEB6531738137BE8",
+  "entry_url": "http://localhost:3000/leads/dev-lead-3",
+  "runtime_url": "http://localhost:3000/leads/dev-lead-3",
+  "route": "/leads/dev-lead-3",
+  "state": "active lead detail",
+  "live_runtime": true,
+  "auth_required": false,
+  "viewport": {
+    "width": 1672,
+    "height": 942
+  },
+  "screenshot_dimensions": {
+    "width": 1671,
+    "height": 942
+  },
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "record_id": "dev-lead-3",
+    "record_name": "Fundacja \"Lepsze Jutro\"",
+    "preview_source": "src/lib/supabase-fallback.ts",
+    "preview_gate": "import.meta.env.DEV && !isSupabaseConfigured()",
+    "production_source": "Supabase path remains unchanged; local preview data is never selected for configured production runtime",
+    "local_preview_rows": true,
+    "synthetic_screenshot_rows": false,
+    "activities_rendered": 3,
+    "follow_up_entries_available": 2,
+    "auth_bypass_for_production": false
+  },
+  "visible_structure": {
+    "shell": [
+      "Forteca brand and shield mark",
+      "Dziś",
+      "Leady",
+      "Zadania",
+      "Kalendarz",
+      "Sprawy",
+      "Aktywność",
+      "Rozliczenia",
+      "Ustawienia",
+      "operator footer"
+    ],
+    "header": [
+      "Powrót do leadów",
+      "Fundacja \"Lepsze Jutro\"",
+      "Lead",
+      "Oferta wyslana",
+      "E-mail",
+      "overflow menu",
+      "Edytuj"
+    ],
+    "contact_strip": [
+      "Firma: Fundacja Lepsze Jutro",
+      "Główny kontakt: Fundacja \"Lepsze Jutro\"",
+      "zarzad@fundacja.pl",
+      "Dodatkowe kontakty: Brak dodatkowych kontaktów",
+      "Źródło: E-mail"
+    ],
+    "metrics": [
+      "Status: Oferta wyslana",
+      "Wartość: 7800 PLN",
+      "Właściciel: Dev Local",
+      "Ostatni kontakt: 27 sie 2026",
+      "Następny krok: Potwierdzić zakres i termin konsultacji",
+      "Planowane zamknięcie: 06 wrz 2026",
+      "Ryzyko: Pod kontrolą",
+      "Dni bez ruchu: 0 dni"
+    ],
+    "tabs": [
+      "Podsumowanie",
+      "Aktywność",
+      "Follow-up",
+      "Oferta",
+      "Start realizacji"
+    ],
+    "summary_cards": [
+      "Kontekst i potrzeby",
+      "Ustaw kolejny krok",
+      "Ostatnia notatka"
+    ],
+    "right_rail": [
+      "Szybkie akcje",
+      "Dodaj notatkę",
+      "Zadzwoń",
+      "Ustaw follow-up",
+      "Spotkanie",
+      "Oferta wysłana",
+      "Przenieś do sprawy",
+      "Brak",
+      "Ostatnia aktywność"
+    ]
+  },
+  "interaction_proof": {
+    "activity_tab": {
+      "status": "PASS",
+      "observed": "The live tab rendered three lead-derived activity entries."
+    },
+    "edit_lead": {
+      "status": "PASS",
+      "observed": "Edytuj opened the existing real edit dialog with lead name, company, phone, e-mail, source, potential and note fields; dialog was cancelled without mutation."
+    },
+    "add_note": {
+      "status": "PASS",
+      "observed": "Dodaj notatkę opened the existing note dialog with a real save/cancel owner; dialog was cancelled without mutation."
+    },
+    "follow_up_action": {
+      "status": "PASS",
+      "observed": "Ustaw follow-up opened the existing Nowe zadanie dialog associated with the live lead; dialog was cancelled without mutation."
+    },
+    "phone": {
+      "status": "PASS",
+      "observed_href": "tel:+48 605 777 888"
+    },
+    "mobile_menu": {
+      "status": "PASS",
+      "observed": "The route-scoped Forteca drawer opened with the canonical navigation and closed cleanly."
+    }
+  },
+  "responsive_proof": {
+    "desktop": "PASS",
+    "mobile_viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "mobile_screenshot_dimensions": {
+      "width": 390,
+      "height": 843
+    },
+    "mobile": "PASS",
+    "mobile_observations": [
+      "Forteca mobile header and menu remain available",
+      "contact and metric surfaces stack without clipping",
+      "tabs remain horizontally usable inside their own scroll container",
+      "mobile drawer remains readable",
+      "document client width equals document scroll width"
+    ],
+    "horizontal_overflow": false,
+    "desktop_scroll_width": 1672,
+    "desktop_client_width": 1672,
+    "mobile_scroll_width": 375,
+    "mobile_client_width": 375
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "no_acme_or_reference_person_fixture": true,
+    "local_preview_is_dev_only": true,
+    "supabase_production_path_preserved": true,
+    "visible_controls_have_real_owners": true,
+    "legacy_chrome_hidden_route_scoped": true,
+    "no_dead_controls": true
+  },
+  "console_errors": 0,
+  "status": "PASS_WITH_DOCUMENTED_RUNTIME_DEVIATIONS",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "PASS",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The browser proof uses the deterministic local DEV preview because Supabase is not configured in this local runtime; configured production continues through Supabase.",
+      "The current route uses the real Lead Detail owners and live interaction boundaries, while populated local values are preview data for deterministic unauthenticated proof.",
+      "Generated reference copy is not treated as a domain contract; visible values, status and actions come from the current runtime data and owners."
+    ]
+  },
+  "captured_at": "2026-08-27T17:59:13.2159651Z",
+  "implementation_commit_sha": "60cf029e95a96f8cf76f6116e5f0dc2bc2c2e244"
+}

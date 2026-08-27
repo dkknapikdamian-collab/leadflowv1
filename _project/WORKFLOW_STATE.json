@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 92,
+  "state_revision": 93,
   "last_accepted": {
-    "id": "FRT-009",
+    "id": "FRT-010",
     "status": "PASS",
-    "commit_sha": "b1af2d6bef0a1adadab818509d14365fb13fd817",
-    "evidence": "_project/runs/forteca-clean/FRT-009_RECEIPT.json; audit/evidence/FRT-009_BROWSER_PROOF.json; audit/evidence/FRT-009_GUARDIAN_AUDIT_SUMMARY.json; Codex controller acceptance under the owner directive; real Leads archive-capable query, trash filtering, safe restore boundary, scoped tests, typecheck, build and live browser evidence PASS, Guardian raw outcome PARTIAL with zero blockers and no target-wide scan available"
+    "commit_sha": "60cf029e95a96f8cf76f6116e5f0dc2bc2c2e244",
+    "evidence": "_project/runs/forteca-clean/FRT-010_RECEIPT.json; audit/evidence/FRT-010_BROWSER_PROOF.json; audit/evidence/FRT-010_GUARDIAN_AUDIT_SUMMARY.json; Codex controller acceptance under the owner directive; real Lead Detail owners, Forteca hierarchy, scoped tests, typecheck, build and live desktop/mobile browser evidence PASS, Guardian raw outcome PARTIAL with zero blockers and no target-wide scan available"
   },
   "previous_accepted": {
     "id": "LF-UI-SOT-007",
@@ -14,35 +14,35 @@
     "commit_sha": "8316a19da0905433f73d20d49c86cf374dca29b0",
     "evidence": "LF-UI-SOT-007 accepted and closed by owner decision at the exact accepted runtime/evidence anchor 8316a19da0905433f73d20d49c86cf374dca29b0; visual SSOT terminal counters are zero, ONE_OWNER_PER_VISUAL_CONCERN=PASS, SSOT negative tests=23/23, TSC/lint/build/diff-check=PASS, Guardian final=PASS, authenticated desktop/mobile browser proof=PASS, and Vercel production version API is exact on dev-rollout-freeze; control-plane closeout does not change product runtime"
   },
-  "current_stage": "FRT-010",
-  "current_contract_path": "_project/contracts/forteca-clean/FRT-010_LEAD_DETAIL.md",
+  "current_stage": "FRT-011",
+  "current_contract_path": "_project/contracts/forteca-clean/FRT-011_LEAD_ADD.md",
   "current_status": "ACTIVE",
-  "last_accepted_stage": "FRT-009",
-  "last_accepted_commit": "b1af2d6bef0a1adadab818509d14365fb13fd817",
-  "next_stage": "FRT-011",
+  "last_accepted_stage": "FRT-010",
+  "last_accepted_commit": "60cf029e95a96f8cf76f6116e5f0dc2bc2c2e244",
+  "next_stage": "FRT-012",
   "branch": "codex/forteca-ui-001-040-clean",
-  "remote_head": "b1af2d6bef0a1adadab818509d14365fb13fd817",
+  "remote_head": "60cf029e95a96f8cf76f6116e5f0dc2bc2c2e244",
   "current_workflow": {
-    "id": "FRT-010",
+    "id": "FRT-011",
     "kind": "TECHNICAL_IMPLEMENTATION_STAGE",
-    "contract_path": "_project/contracts/forteca-clean/FRT-010_LEAD_DETAIL.md",
+    "contract_path": "_project/contracts/forteca-clean/FRT-011_LEAD_ADD.md",
     "status": "ACTIVE",
-    "base_sha": "b1af2d6bef0a1adadab818509d14365fb13fd817",
+    "base_sha": "60cf029e95a96f8cf76f6116e5f0dc2bc2c2e244",
     "base_branch": "codex/forteca-ui-001-040-clean",
     "target_branch": "codex/forteca-ui-001-040-clean",
     "blocker": null,
     "ssot_open_findings": 0,
     "active_stage_count": 1,
-    "terminal_audit": "PASS_WITH_GUARDIAN_PARTIAL_AND_BROWSER_PROOF_FOR_FRT_009",
-    "guardian_status": "REQUIRED_AT_FRT_010_CLOSEOUT",
-    "acceptance_boundary": "Codex is the acceptance authority under the owner directive; FRT-010 requires real Lead Detail data, canonical navigation and mutation boundaries, targeted tests, Guardian and browser evidence before acceptance"
+    "terminal_audit": "PASS_WITH_GUARDIAN_PARTIAL_AND_BROWSER_PROOF_FOR_FRT_010",
+    "guardian_status": "REQUIRED_AT_FRT_011_CLOSEOUT",
+    "acceptance_boundary": "Codex is the acceptance authority under the owner directive; FRT-011 requires the real Lead Add modal, validation, duplicate handoff and post-create action boundaries, with targeted tests, Guardian and browser evidence before acceptance"
   },
   "next_workflow": {
-    "id": "FRT-011",
-    "contract_path": "_project/contracts/forteca-clean/FRT-011_LEAD_ADD.md",
+    "id": "FRT-012",
+    "contract_path": "_project/contracts/forteca-clean/FRT-012_LEAD_EDIT.md",
     "status": "LOCKED",
-    "activation": "CODEX_AFTER_FRT_010_ACCEPTANCE",
-    "reason": "FRT-011 remains locked until the active FRT-010 stage is accepted; one active reference only"
+    "activation": "CODEX_AFTER_FRT_011_ACCEPTANCE",
+    "reason": "FRT-012 remains locked until the active FRT-011 stage is accepted; one active reference only"
   },
   "forteca_program": {
     "program_id": "FORTECA_CALM_LIGHT_001_040",
@@ -61,9 +61,10 @@
     "stage_007_status": "PASS",
     "stage_008_status": "PASS",
     "stage_009_status": "PASS",
-    "active_stage": "FRT-010",
-    "future_stages": "FRT-011..FRT-041 LOCKED",
-    "accepted_receipts": ["FRT-000", "FRT-001", "FRT-002", "FRT-003", "FRT-004", "FRT-005", "FRT-006", "FRT-007", "FRT-008", "FRT-009"],
+    "stage_010_status": "PASS",
+    "active_stage": "FRT-011",
+    "future_stages": "FRT-012..FRT-041 LOCKED",
+    "accepted_receipts": ["FRT-000", "FRT-001", "FRT-002", "FRT-003", "FRT-004", "FRT-005", "FRT-006", "FRT-007", "FRT-008", "FRT-009", "FRT-010"],
     "auth_required_for_frt_000": false,
     "future_receipts_precreated": false
   },
@@ -318,6 +319,10 @@
     "forteca:FRT-009:implementation@b1af2d6bef0a1adadab818509d14365fb13fd817",
     "forteca:FRT-009:browser-proof@audit/evidence/FRT-009_BROWSER_PROOF.json",
     "forteca:FRT-009:guardian-summary@audit/evidence/FRT-009_GUARDIAN_AUDIT_SUMMARY.json",
-    "forteca:FRT-009:receipt@_project/runs/forteca-clean/FRT-009_RECEIPT.json"
+    "forteca:FRT-009:receipt@_project/runs/forteca-clean/FRT-009_RECEIPT.json",
+    "forteca:FRT-010:implementation@60cf029e95a96f8cf76f6116e5f0dc2bc2c2e244",
+    "forteca:FRT-010:browser-proof@audit/evidence/FRT-010_BROWSER_PROOF.json",
+    "forteca:FRT-010:guardian-summary@audit/evidence/FRT-010_GUARDIAN_AUDIT_SUMMARY.json",
+    "forteca:FRT-010:receipt@_project/runs/forteca-clean/FRT-010_RECEIPT.json"
   ]
 }
