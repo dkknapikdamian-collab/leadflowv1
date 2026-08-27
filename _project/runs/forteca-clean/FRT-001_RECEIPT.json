@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-001",
+  "reference_file": "docs/ui/reference/forteca-calm-light/001_today_main.webp",
+  "target_route": "/",
+  "target_state": "Today main",
+  "result": "PASS",
+  "stage_status": "ACCEPTED",
+  "acceptance_authority": "CODEX",
+  "acceptance_basis": {
+    "owner_directive_sha256": "E3432C8126DAF2C0E0B4B5FB7060F05D60F9CB53F373904FEDEA5A2",
+    "directive_interpretation": "Codex is the acceptance authority for the autonomous Forteca program. This receipt is controller acceptance under the owner directive, not an executor self-acceptance and not an AICG PASS claim."
+  },
+  "root_cause_or_implementation_gap": "The accepted baseline had no live Forteca Today reconciliation: the route still inherited the legacy dark shell hierarchy, the reference-oriented Today primary cards and real workspace rows were absent, the page add menu contained raw controls, and the metric accessibility bridge used a broad semantic-button selector that also rewrote SectionHeader aria-expanded state. The scoped adapter additionally exposed global shell prefixes that violated the one-owner guard. The correction assigns the visual shell to the Forteca Today route owner, keeps real data and handlers, uses the central Button primitive, scopes the metric bridge to the KPI owner, and preserves section state in SectionHeader.",
+  "code_changed": true,
+  "files_changed": [
+    "scripts/check-today-command-center.cjs",
+    "scripts/check-today-refresh-tiles-match-lists.cjs",
+    "scripts/check-today-view-customizer.cjs",
+    "src/components/CloseFlowPageHeaderV2.tsx",
+    "src/components/GlobalQuickActions.tsx",
+    "src/components/Layout.tsx",
+    "src/components/OperatorTopBarRuntime.tsx",
+    "src/components/VisualFoundationRuntime.tsx",
+    "src/pages/TodayStable.tsx",
+    "src/styles/owners/closeflow-foundation-operator.css",
+    "src/styles/owners/closeflow-foundation.css",
+    "src/styles/owners/closeflow-page-shell.css",
+    "audit/evidence/FRT-001_BROWSER_PROOF.json",
+    "audit/evidence/FRT-001_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/runs/forteca-clean/FRT-001_RECEIPT.json"
+  ],
+  "preserved_untracked_files": [
+    "dist-test-today-sections.cjs"
+  ],
+  "visual_sot_owners_used": [
+    "PAGE_SHELL",
+    "CARDS_TILES",
+    "BUTTONS_ACTIONS",
+    "LIST_ROWS",
+    "TYPOGRAPHY_SPACING_SURFACES",
+    "RESPONSIVE_DENSITY"
+  ],
+  "visible_controls_inventory": {
+    "header_actions": 2,
+    "metric_cards": 4,
+    "collapsible_section_headers": 8,
+    "customizer_checkboxes": 8,
+    "customizer_actions": 1,
+    "add_menu_items": 6,
+    "total": 29
+  },
+  "visible_controls_wired": 29,
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "npm.cmd run check:today-header-actions-stack",
+    "npm.cmd run test:today-sections (2/2)",
+    "npm.cmd run check:today-top-tile-focus",
+    "npm.cmd run check:today-view-customizer",
+    "npm.cmd run check:today-view-customizer-all-options",
+    "npm.cmd run check:today-refresh-tiles-match-lists",
+    "npm.cmd run check:today-command-center",
+    "npm.cmd run check:today-section-click-repair",
+    "npm.cmd run guard:routes:canonical (17 screens)",
+    "npm.cmd run guard:ui:patch-layers",
+    "npm.cmd run guard:ui:ssot-icons",
+    "npm.cmd run guard:ui:ssot-semantic-colors",
+    "npm.cmd run guard:ui:ssot-typography",
+    "npm.cmd run guard:ui:ssot-css-owners",
+    "npm.cmd run guard:ui:component-clones",
+    "npx.cmd tsc --noEmit",
+    "git diff --check",
+    "npm.cmd run build",
+    "live Codex In-app Browser route/state/control proof"
+  ],
+  "tests_reused": [
+    "FRT-000 reference manifest and routing integrity",
+    "FRT-000 visual SOT owner registry and generated UI/style maps",
+    "FRT-000 clean-branch baseline and selective-write boundary"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: target repository exposes no guardian script or canonical AICG target scanner entrypoints; plugin smoke was run but reports PARTIAL coverage"
+    },
+    {
+      "test": "authenticated populated runtime proof",
+      "reason": "NOT_REQUIRED for the current reference and independently accepted with the unauthenticated local runtime; no authentication blocker was inferred"
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS",
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-001_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "PASS / coverage PARTIAL",
+    "out_of_scope_high_findings": 2
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-001_BROWSER_PROOF.json",
+    "status": "PASS",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "/",
+    "tab_marked_deliverable": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "PASS",
+    "literal_pixel_identity_claim": false,
+    "limitation": "The reference is 1672x941 and the available in-app browser viewport is 946x698; the live proof records real route, hierarchy, data rows, controls and responsive behavior without claiming pixel equality across different viewport dimensions."
+  },
+  "implementation_commit_sha": "e946fbc7036a189189c46530b3320647143f2058",
+  "closeout_commit_sha": null,
+  "remote_head": null,
+  "next_stage": "FRT-002"
+}

@@ -1,6 +1,6 @@
 # FRT-002 — TODAY CUSTOMIZE
 
-CONTRACT_STATUS: LOCKED
+CONTRACT_STATUS: ACTIVE
 STAGE_ID: FRT-002
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/002_today_customize_view.webp
 TARGET_ROUTE: /
@@ -17,4 +17,3 @@ ACCEPTANCE_CRITERIA: Overlay route/state matches the reference within accepted d
 TEST_PLAN: Preference state and dialog action tests; focused responsive browser proof at / with overlay; typecheck if TS changes; reuse unchanged modal-owner evidence only when bindings match.
 PREDECESSOR: FRT-001
 SUCCESSOR: FRT-003
-
