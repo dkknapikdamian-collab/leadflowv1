@@ -12,7 +12,7 @@ test('Today view panel keeps hidden sections available for re-enable', () => {
   assert.match(src, /STAGE16AR_TODAY_VIEW_ALL_OPTIONS_FIXED/);
   assert.match(src, /\{todayTiles\.map\(\(tile\) => \{/);
   assert.match(src, /const checked = visibleTodaySectionSet\.has\(tile\.key\);/);
-  assert.match(src, /checked=\{checked\}/);
+  assert.match(src, /checked=\{draftChecked\}/);
   assert.match(src, /writeTodayVisibleSections\(next\);/);
   assert.match(src, /Poka\u017C wszystko/);
   assert.doesNotMatch(src, /visibleTodaySections\.map\s*\(/);

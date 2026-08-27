@@ -21,7 +21,7 @@ expect(today.includes('localStorage.getItem(TODAY_VIEW_STORAGE_KEY)'), 'Today vi
 expect(today.includes('localStorage.setItem(TODAY_VIEW_STORAGE_KEY'), 'Today view must persist localStorage');
 expect(today.includes('Widok'), 'Today header must expose Widok control');
 expect(today.includes('Poka\u017C wszystko') || today.includes('Pokaz wszystko'), 'Today view must expose show-all action');
-expect(today.includes('type="checkbox"') || today.includes("type='checkbox'"), 'Today view must expose checkbox controls');
+expect(/<Checkbox[\s\S]*checked=\{draftChecked\}[\s\S]*onCheckedChange/.test(today), 'Today view must expose controlled canonical Checkbox controls');
 expect(/visibleTodaySectionKeys|visibleTodaySections|todayVisibleSections|hiddenTodaySections/.test(today), 'Today view must keep visible/hidden section state');
 expect(/todayTiles\.filter|visibleTodaySectionKeys\.includes|sectionVisible\(tile\.key\)/.test(today), 'Today tiles must respect view visibility');
 expect(/sectionVisible\(tile\.key\)|sectionVisible\(key\)/.test(today), 'Today lists must still be controlled through sectionVisible');

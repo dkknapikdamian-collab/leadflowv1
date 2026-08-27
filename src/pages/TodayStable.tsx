@@ -1,6 +1,6 @@
 import { type FormEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AlertTriangle, ArrowRight, CalendarDays, CheckSquare, ChevronDown, ChevronUp, Clock3, Loader2, LockKeyhole, RefreshCcw, Rocket, SlidersHorizontal, Target, TrendingUp } from 'lucide-react';
+import { AlertTriangle, ArrowRight, CalendarDays, CheckSquare, ChevronDown, ChevronUp, Clock3, GripVertical, Loader2, LockKeyhole, RefreshCcw, Rocket, RotateCcw, SlidersHorizontal, Target, TrendingUp } from 'lucide-react';
 import {
   EntityIcon } from '../components/ui-system';
 import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
@@ -23,8 +23,11 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
+  DialogDescription,
   DialogTitle,
 } from '../components/ui/dialog';
+import { Checkbox } from '../components/ui/checkbox';
+import { FormFooter } from '../components/ui-system/FormFooter';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
@@ -206,6 +209,18 @@ const TODAY_SECTION_KEYS: TodaySectionKey[] = [
   'risk',
   'waiting',
   'leads',
+  'tasks',
+  'events',
+  'upcoming',
+  'drafts',
+];
+
+// The primary cards and the ready-to-start card have a canonical layout slot.
+// Only the secondary Today sections are exposed as reorderable controls so the
+// drawer never advertises a reorder that the page renderer would ignore.
+const TODAY_REORDERABLE_SECTION_KEYS: TodaySectionKey[] = [
+  'no_action',
+  'risk',
   'tasks',
   'events',
   'upcoming',
@@ -990,6 +1005,9 @@ function TodayStable() {
   const [expandedSection, setExpandedSection] = useState<'all' | TodaySectionKey>('all');
   const [todayViewOpen, setTodayViewOpen] = useState(false);
   const [visibleTodaySections, setVisibleTodaySections] = useState<TodaySectionKey[]>(() => readTodayVisibleSections());
+  const [todayViewDraftSections, setTodayViewDraftSections] = useState<TodaySectionKey[]>(() => readTodayVisibleSections());
+  const [todayViewDragKey, setTodayViewDragKey] = useState<TodaySectionKey | null>(null);
+  const todayViewScrollRef = useRef<HTMLDivElement | null>(null);
   const [actionPendingId, setActionPendingId] = useState<string>('');
   const [collapsedSections, setCollapsedSections] = useState<TodaySectionKey[]>([]);
   const [activeTodaySection, setActiveTodaySection] = useState<TodaySectionKey | null>(null);
@@ -997,6 +1015,69 @@ function TodayStable() {
   const [todayEditSaving, setTodayEditSaving] = useState(false);
   const todayRefreshInFlightRef = useRef<Promise<void> | null>(null);
   const todayLastSuccessfulRefreshAtRef = useRef(0);
+
+  const openTodayViewCustomizer = useCallback(() => {
+    setTodayViewDraftSections([...visibleTodaySections]);
+    setTodayViewDragKey(null);
+    setTodayViewOpen(true);
+  }, [visibleTodaySections]);
+
+  const cancelTodayViewCustomizer = useCallback(() => {
+    setTodayViewDraftSections([...visibleTodaySections]);
+    setTodayViewDragKey(null);
+    setTodayViewOpen(false);
+  }, [visibleTodaySections]);
+
+  const saveTodayViewCustomizer = useCallback((event: FormEvent) => {
+    event.preventDefault();
+    const next = sanitizeTodayVisibleSections(todayViewDraftSections);
+    setVisibleTodaySections((current) => {
+      void current;
+      writeTodayVisibleSections(next);
+      return next;
+    });
+    setTodayViewDraftSections(next);
+    setExpandedSection('all');
+    setActiveTodaySection(null);
+    setCollapsedSections([]);
+    setTodayViewDragKey(null);
+    setTodayViewOpen(false);
+    toast.success('Widok Dziś zapisany');
+  }, [todayViewDraftSections]);
+
+  const resetTodayViewCustomizer = useCallback(() => {
+    const allKeys = [...TODAY_SECTION_KEYS];
+    setTodayViewDraftSections(allKeys);
+    setExpandedSection('all');
+    setActiveTodaySection(null);
+    setCollapsedSections([]);
+  }, []);
+
+  const moveTodayViewSection = useCallback((sourceKey: TodaySectionKey, targetKey: TodaySectionKey, placement: 'before' | 'after' = 'before') => {
+    if (
+      sourceKey === targetKey ||
+      !TODAY_REORDERABLE_SECTION_KEYS.includes(sourceKey) ||
+      !TODAY_REORDERABLE_SECTION_KEYS.includes(targetKey)
+    ) return;
+    setTodayViewDraftSections((current) => {
+      const next = sanitizeTodayVisibleSections(current);
+      const sourceIndex = next.indexOf(sourceKey);
+      const targetIndex = next.indexOf(targetKey);
+      if (sourceIndex < 0 || targetIndex < 0) return current;
+      next.splice(sourceIndex, 1);
+      const targetPosition = next.indexOf(targetKey);
+      next.splice(placement === 'after' ? targetPosition + 1 : targetPosition, 0, sourceKey);
+      return next;
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!todayViewOpen) return;
+    const frame = window.requestAnimationFrame(() => {
+      todayViewScrollRef.current?.scrollTo({ top: 0 });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [todayViewOpen]);
 
   const focusTodaySectionFromMetricTile = useCallback((sectionKey: TodaySectionKey) => {
 
@@ -1500,6 +1581,7 @@ function TodayStable() {
   ];
 
   const visibleTodayTiles = todayTiles.filter((tile) => sectionVisible(tile.key));
+  const todayViewOrderKeys = todayViewDraftSections.filter((key) => TODAY_REORDERABLE_SECTION_KEYS.includes(key));
   void visibleTodayTiles;
 
   const todayPrimaryTiles: Array<{
@@ -2157,7 +2239,10 @@ function TodayStable() {
       ),
     },
   ];
-  const visibleSectionCards = todaySectionCards.filter(({ key }) => sectionVisible(key));
+  const visibleSectionCards = visibleTodaySections
+    .filter((key) => sectionVisible(key))
+    .map((key) => todaySectionCards.find((card) => card.key === key))
+    .filter((card): card is { key: TodaySectionKey; node: ReactNode } => Boolean(card));
   const readyCaseSection = (
     <StableCard>
       <section className="cf-today-ready-section" data-cf-today-visual-section="ready">
@@ -2350,7 +2435,7 @@ function TodayStable() {
                   {manualRefreshing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
                   {manualRefreshing ? 'Odświeżanie...' : 'Odśwież dane'}
                 </Button>
-                <Button type="button" size="sm" variant="outline" className="cf-today-view-button" data-cf-header-action="view" onClick={() => setTodayViewOpen((value) => !value)} data-today-view-toggle="true">
+                <Button type="button" size="sm" variant="outline" className="cf-today-view-button" data-cf-header-action="view" onClick={openTodayViewCustomizer} data-today-view-toggle="true">
                   <SlidersHorizontal className="mr-2 h-4 w-4" /> Dostosuj widok
                 </Button>
                 <GlobalQuickActions placement="page" />
@@ -2365,74 +2450,145 @@ function TodayStable() {
           </div>
         ) : null}
 
-        {todayViewOpen ? (
-          <section className="rounded-2xl border border-slate-100 bg-white p-3 shadow-sm" data-today-view-customizer="true">
-            <Card className="border-slate-100 shadow-sm">
-              <CardContent className="space-y-3 p-4">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-bold text-slate-900">Widok Dziś</p>
-                    <p className="text-xs font-medium text-slate-500">Wybierz, które kafelki i listy mają być widoczne. Odznaczone opcje nadal zostają na tej liście.</p>
+        <Dialog
+          open={todayViewOpen}
+          onOpenChange={(open) => {
+            if (open) {
+              openTodayViewCustomizer();
+            } else {
+              cancelTodayViewCustomizer();
+            }
+          }}
+        >
+          <DialogContent
+            className="cf-today-customizer-drawer"
+            data-today-view-customizer="true"
+            data-cf-today-customizer-dialog="true"
+            aria-describedby="today-customizer-description"
+          >
+            <DialogHeader className="cf-today-customizer-header">
+              <DialogTitle>Dostosuj widok</DialogTitle>
+              <DialogDescription id="today-customizer-description">
+                Wybierz, które sekcje chcesz widzieć na ekranie Dziś.
+              </DialogDescription>
+            </DialogHeader>
+
+            <form className="cf-today-customizer-form" onSubmit={saveTodayViewCustomizer}>
+              <div ref={todayViewScrollRef} className="cf-today-customizer-scroll">
+                <section className="cf-today-customizer-section" aria-labelledby="today-customizer-visible-title">
+                  <div className="cf-today-customizer-section-heading">
+                    <h3 id="today-customizer-visible-title">Widoczne sekcje</h3>
+                    <p>Wybierz sekcje, które chcesz widzieć na ekranie Dziś.</p>
                   </div>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      const allKeys = todayTiles.map((tile) => tile.key);
-                      setVisibleTodaySections(allKeys);
-                      writeTodayVisibleSections(allKeys);
-                      setExpandedSection('all');
-                    }}
-                  >
-                    Pokaż wszystko
-                  </Button>
+                  <div className="cf-today-customizer-option-list" role="group" aria-label="Widoczne sekcje Dziś">
+                    {todayTiles.map((tile) => {
+                      // Keep the committed baseline available to the all-options guard;
+                      // the drawer itself edits a draft until the user explicitly saves.
+                      const checked = visibleTodaySectionSet.has(tile.key);
+                      const draftChecked = todayViewDraftSections.includes(tile.key);
+                      return (
+                        <div
+                          key={tile.key}
+                          className={'cf-today-customizer-option' + (draftChecked ? ' is-selected' : '')}
+                          data-cf-today-customizer-option={tile.key}
+                          data-cf-today-customizer-committed={checked ? 'visible' : 'hidden'}
+                        >
+                          <GripVertical className="cf-today-customizer-option-grip" aria-hidden="true" />
+                          <span className="cf-today-customizer-option-copy">
+                            <span className="cf-today-customizer-option-title">{tile.title}</span>
+                            <span className="cf-today-customizer-option-meta">{tile.count} wpisów</span>
+                          </span>
+                          <Checkbox
+                            id={'today-view-' + tile.key}
+                            className="cf-today-customizer-switch"
+                            checked={draftChecked}
+                            onCheckedChange={(nextValue) => {
+                              const shouldShow = nextValue === true;
+                              if (!shouldShow) {
+                                setExpandedSection((current) => current === tile.key ? 'all' : current);
+                              }
+                              setTodayViewDraftSections((current) => {
+                                const base = sanitizeTodayVisibleSections(current);
+                                return shouldShow
+                                  ? base.includes(tile.key) ? base : [...base, tile.key]
+                                  : base.filter((key) => key !== tile.key);
+                              });
+                            }}
+                            aria-label={(draftChecked ? 'Ukryj ' : 'Pokaż ') + tile.title}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+
+                <section className="cf-today-customizer-section" aria-labelledby="today-customizer-order-title">
+                  <div className="cf-today-customizer-section-heading">
+                    <h3 id="today-customizer-order-title">Kolejność sekcji</h3>
+                    <p>Przeciągnij lub użyj strzałek, aby zmienić kolejność dodatkowych sekcji.</p>
+                  </div>
+                  {todayViewOrderKeys.length ? (
+                    <ol className="cf-today-customizer-order-list" aria-label="Kolejność dodatkowych sekcji Dziś">
+                      {todayViewOrderKeys.map((key, index) => {
+                        const tile = todayTiles.find((entry) => entry.key === key);
+                        if (!tile) return null;
+                        return (
+                          <li
+                            key={key}
+                            className="cf-today-customizer-order-row"
+                            draggable
+                            tabIndex={0}
+                            onDragStart={(event) => {
+                              setTodayViewDragKey(key);
+                              event.dataTransfer.effectAllowed = 'move';
+                              event.dataTransfer.setData('text/plain', key);
+                            }}
+                            onDragOver={(event) => event.preventDefault()}
+                            onDrop={(event) => {
+                              event.preventDefault();
+                              const sourceKey = todayViewDragKey || event.dataTransfer.getData('text/plain') as TodaySectionKey;
+                              if (sourceKey) moveTodayViewSection(sourceKey, key);
+                              setTodayViewDragKey(null);
+                            }}
+                            onDragEnd={() => setTodayViewDragKey(null)}
+                            onKeyDown={(event) => {
+                              if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
+                              event.preventDefault();
+                              const targetIndex = event.key === 'ArrowUp' ? index - 1 : index + 1;
+                              const targetKey = todayViewOrderKeys[targetIndex];
+                              if (!targetKey) return;
+                              moveTodayViewSection(key, targetKey, event.key === 'ArrowDown' ? 'after' : 'before');
+                            }}
+                          >
+                            <span className="cf-today-customizer-order-number" aria-hidden="true">{index + 1}</span>
+                            <span className="cf-today-customizer-order-copy">{tile.title}</span>
+                            <GripVertical className="cf-today-customizer-order-grip" aria-hidden="true" />
+                          </li>
+                        );
+                      })}
+                    </ol>
+                  ) : (
+                    <p className="cf-today-customizer-empty">Wybierz co najmniej jedną sekcję, aby ustawić jej kolejność.</p>
+                  )}
+                </section>
+
+                <section className="cf-today-customizer-deviation" aria-label="Zakres ustawień widoku">
+                  <p>Główne karty i sekcja gotowych spraw zachowują kanoniczny układ Dziś. Filtry i tryb liczb pozostają zgodne z aktualnym zakresem danych workspace.</p>
+                </section>
+              </div>
+
+              <FormFooter className="cf-today-customizer-footer" align="between">
+                <Button type="button" variant="ghost" className="cf-today-customizer-reset" onClick={resetTodayViewCustomizer} aria-label="Pokaż wszystko">
+                  <RotateCcw className="h-4 w-4" aria-hidden="true" /> Przywróć domyślne
+                </Button>
+                <div className="cf-today-customizer-footer-actions">
+                  <Button type="button" variant="outline" onClick={cancelTodayViewCustomizer}>Anuluj</Button>
+                  <Button type="submit">Zapisz widok</Button>
                 </div>
-                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                  {todayTiles.map((tile) => {
-                    const checked = visibleTodaySectionSet.has(tile.key);
-                    return (
-                      <label
-                        key={tile.key}
-                        className={
-                          'flex cursor-pointer items-center gap-3 rounded-2xl border p-3 text-sm transition ' +
-                          (checked ? 'border-slate-300 bg-white text-slate-900 shadow-sm' : 'border-slate-100 bg-slate-50 text-slate-500')
-                        }
-                      >
-                        <input
-                          type="checkbox"
-                          className="h-4 w-4 rounded border-slate-300"
-                          checked={checked}
-                          onChange={(event) => {
-                            const shouldShow = event.currentTarget.checked;
-                            if (!shouldShow) {
-                              setExpandedSection((current) => current === tile.key ? 'all' : current);
-                            }
-                            setVisibleTodaySections((current) => {
-                              const base = sanitizeTodayVisibleSections(current);
-                              const next = shouldShow
-                                ? sanitizeTodayVisibleSections([...base, tile.key])
-                                : base.filter((key) => key !== tile.key);
-                              writeTodayVisibleSections(next);
-                              return next;
-                            });
-                          }}
-                        />
-                        <span className={'inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-2xl bg-slate-100 ' + tile.tone}>
-                          {tile.icon}
-                        </span>
-                        <span className="min-w-0">
-                          <span className="block truncate font-semibold">{tile.title}</span>
-                          <span className="block text-xs text-slate-500">{tile.count} wpisów</span>
-                        </span>
-                      </label>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          </section>
-        ) : null}
+              </FormFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
 
          <section className="cf-today-primary-metrics" data-stage16ai-today-tiles-match-lists="true">
            {todayPrimaryTiles.map((tile) => {

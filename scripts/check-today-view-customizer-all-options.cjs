@@ -16,7 +16,7 @@ function need(condition, message) {
 need(src.includes('STAGE16AR_TODAY_VIEW_ALL_OPTIONS_FIXED'), 'missing Stage16AR marker');
 need(src.includes('{todayTiles.map((tile) => {'), 'view checkbox panel must be sourced from all todayTiles');
 need(src.includes('const checked = visibleTodaySectionSet.has(tile.key);'), 'checkbox state must use visibleTodaySectionSet, not filtered option source');
-need(src.includes('checked={checked}'), 'checkbox input must be controlled');
+need(src.includes('checked={draftChecked}'), 'canonical Checkbox control must be driven by the draft state');
 need(src.includes('setVisibleTodaySections((current) => {'), 'checkbox must update visible sections by callback');
 need(src.includes('writeTodayVisibleSections(next);'), 'visibility changes must persist to localStorage');
 need(src.includes('Poka\u017C wszystko'), 'view panel must allow restoring all options');
