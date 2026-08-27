@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-27T06:08:35.700Z",
+  "generatedAt": "2026-08-27T11:29:34.337Z",
   "inventoryVersion": "CLOSEFLOW_UI_MAP_INVENTORY_V1",
   "scannerVersion": "CLEAN_SCANNER_V4",
   "filesScanned": 446,
@@ -292,14 +292,44 @@
     },
     {
       "file": "src/components/GlobalQuickActions.tsx",
+      "imported": "ChevronDown",
+      "local": "ChevronDown",
+      "role": "navigation",
+      "importLine": 3,
+      "usages": [
+        {
+          "line": 127,
+          "snippet": "<ChevronDown className=\"h-4 w-4\" />"
+        }
+      ]
+    },
+    {
+      "file": "src/components/GlobalQuickActions.tsx",
       "imported": "ClipboardList",
       "local": "ClipboardList",
       "role": "copy",
       "importLine": 3,
       "usages": [
         {
-          "line": 92,
+          "line": 139,
+          "snippet": "<ClipboardList className=\"h-4 w-4\" />"
+        },
+        {
+          "line": 186,
           "snippet": "<ClipboardList className=\"mr-2 h-4 w-4\" />"
+        }
+      ]
+    },
+    {
+      "file": "src/components/GlobalQuickActions.tsx",
+      "imported": "Plus",
+      "local": "Plus",
+      "role": "add",
+      "importLine": 3,
+      "usages": [
+        {
+          "line": 125,
+          "snippet": "<Plus className=\"h-4 w-4\" />"
         }
       ]
     },
@@ -311,7 +341,7 @@
       "importLine": 10,
       "usages": [
         {
-          "line": 685,
+          "line": 688,
           "snippet": "<AlertTriangle className=\"h-4 w-4 shrink-0\" />"
         }
       ]
@@ -348,7 +378,7 @@
       "importLine": 10,
       "usages": [
         {
-          "line": 672,
+          "line": 673,
           "snippet": "<CheckCircle2 className=\"h-4 w-4\" />"
         }
       ]
@@ -1260,6 +1290,30 @@
       "usages": []
     },
     {
+      "file": "src/lib/source-of-truth/icon-registry.ts",
+      "imported": "Activity",
+      "local": "Activity",
+      "role": "unclassified",
+      "importLine": 1,
+      "usages": []
+    },
+    {
+      "file": "src/lib/source-of-truth/icon-registry.ts",
+      "imported": "Users",
+      "local": "Users",
+      "role": "person",
+      "importLine": 1,
+      "usages": []
+    },
+    {
+      "file": "src/lib/source-of-truth/icon-registry.ts",
+      "imported": "Wallet",
+      "local": "Wallet",
+      "role": "finance",
+      "importLine": 1,
+      "usages": []
+    },
+    {
       "file": "src/pages/Activity.tsx",
       "imported": "Activity",
       "local": "ActivityIcon",
@@ -2050,11 +2104,11 @@
       "importLine": 17,
       "usages": [
         {
-          "line": 872,
+          "line": 882,
           "snippet": "<Link to={caseDetailPath(record.id)} aria-label={`Otwórz sprawę ${record.title || ''}`}><ChevronRight className=\"h-4 w-4\" /></Link>"
         },
         {
-          "line": 942,
+          "line": 952,
           "snippet": "<ChevronRight className=\"h-4 w-4\" />"
         }
       ]
@@ -2091,7 +2145,7 @@
       "importLine": 17,
       "usages": [
         {
-          "line": 888,
+          "line": 898,
           "snippet": "{deletePending && caseToDelete?.id === record.id ? <Loader2 className=\"h-4 w-4 animate-spin\" /> : <DeleteActionIcon className={trashActionIconClass(\"h-4 w-4\")} />}"
         }
       ]
@@ -2104,11 +2158,11 @@
       "importLine": 17,
       "usages": [
         {
-          "line": 584,
+          "line": 594,
           "snippet": "<Plus className=\"h-4 w-4\" /> Nowa sprawa"
         },
         {
-          "line": 639,
+          "line": 649,
           "snippet": "<Plus className=\"h-4 w-4\" />"
         }
       ]
@@ -2121,7 +2175,7 @@
       "importLine": 17,
       "usages": [
         {
-          "line": 776,
+          "line": 786,
           "snippet": "<span aria-hidden=\"true\"><Search className=\"h-4 w-4\" /></span>"
         }
       ]
@@ -2955,8 +3009,29 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1087,
+          "line": 1291,
           "snippet": "<span className=\"index\"><AlertTriangle className=\"h-4 w-4\" /></span>"
+        }
+      ]
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "imported": "Activity",
+      "local": "Activity",
+      "role": "unclassified",
+      "importLine": 16,
+      "usages": []
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "imported": "ChevronLeft",
+      "local": "ChevronLeft",
+      "role": "navigation",
+      "importLine": 16,
+      "usages": [
+        {
+          "line": 1500,
+          "snippet": "<ChevronLeft className=\"h-4 w-4\" />"
         }
       ]
     },
@@ -2968,11 +3043,15 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1041,
+          "line": 1093,
           "snippet": "<ChevronRight className=\"h-4 w-4\" />"
         },
         {
-          "line": 1220,
+          "line": 1460,
+          "snippet": "<ChevronRight className=\"h-4 w-4\" />"
+        },
+        {
+          "line": 1510,
           "snippet": "<ChevronRight className=\"h-4 w-4\" />"
         }
       ]
@@ -2991,7 +3070,12 @@
       "local": "Filter",
       "role": "filter",
       "importLine": 16,
-      "usages": []
+      "usages": [
+        {
+          "line": 1158,
+          "snippet": "<Filter className=\"h-4 w-4\" />"
+        }
+      ]
     },
     {
       "file": "src/pages/Leads.tsx",
@@ -3001,11 +3085,11 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1141,
+          "line": 1357,
           "snippet": "<span className=\"index\"><Loader2 className=\"h-4 w-4 animate-spin\" /></span>"
         },
         {
-          "line": 1230,
+          "line": 1470,
           "snippet": "{pending ? <Loader2 className=\"h-4 w-4 animate-spin\" /> : showTrash ? <RotateCcw className=\"h-4 w-4\" /> : <DeleteActionIcon className=\"h-4 w-4\" />}"
         }
       ]
@@ -3020,17 +3104,30 @@
     },
     {
       "file": "src/pages/Leads.tsx",
+      "imported": "Plus",
+      "local": "Plus",
+      "role": "add",
+      "importLine": 16,
+      "usages": [
+        {
+          "line": 827,
+          "snippet": "<Plus className=\"h-4 w-4\" />"
+        }
+      ]
+    },
+    {
+      "file": "src/pages/Leads.tsx",
       "imported": "RotateCcw",
       "local": "RotateCcw",
       "role": "refresh",
       "importLine": 16,
       "usages": [
         {
-          "line": 782,
+          "line": 840,
           "snippet": "{showTrash ? <RotateCcw className=\"h-4 w-4\" /> : <DeleteActionIcon className=\"h-4 w-4\" />}"
         },
         {
-          "line": 1230,
+          "line": 1470,
           "snippet": "{pending ? <Loader2 className=\"h-4 w-4 animate-spin\" /> : showTrash ? <RotateCcw className=\"h-4 w-4\" /> : <DeleteActionIcon className=\"h-4 w-4\" />}"
         }
       ]
@@ -3043,16 +3140,16 @@
       "importLine": 16,
       "usages": [
         {
-          "line": 1019,
+          "line": 1071,
           "snippet": "<span aria-hidden=\"true\"><Search className=\"w-4 h-4\" /></span>"
         }
       ]
     },
     {
       "file": "src/pages/Leads.tsx",
-      "imported": "TrendingUp",
-      "local": "TrendingUp",
-      "role": "unclassified",
+      "imported": "Wallet",
+      "local": "Wallet",
+      "role": "finance",
       "importLine": 16,
       "usages": []
     },
@@ -4426,11 +4523,11 @@
       "importLine": 3,
       "usages": [
         {
-          "line": 1416,
+          "line": 1573,
           "snippet": "{ key: 'no_action', title: todaySectionLabels.no_action, count: noActionLeads.length, tone: 'cf-severity-text-error', activeTone: 'cf-severity-hover-error', icon: <AlertTriangle className=\"h-4 w-4\" /> },"
         },
         {
-          "line": 1768,
+          "line": 1969,
           "snippet": "<SectionHeader title={todaySectionLabels.no_action} count={noActionLeads.length} icon={<AlertTriangle className=\"h-5 w-5\" />} tone=\"cf-severity:error\" collapsed={isCollapsed('no_action')} onToggle={() => toggleSectionCollapse('no_action')} />"
         }
       ]
@@ -4443,8 +4540,20 @@
       "importLine": 3,
       "usages": [
         {
-          "line": 779,
+          "line": 820,
           "snippet": "<ArrowRight className=\"h-4 w-4 shrink-0\" />"
+        },
+        {
+          "line": 2271,
+          "snippet": "<ArrowRight className=\"h-4 w-4\" aria-hidden=\"true\" />"
+        },
+        {
+          "line": 2302,
+          "snippet": "<ArrowRight className=\"h-4 w-4 shrink-0 text-slate-400\" aria-hidden=\"true\" />"
+        },
+        {
+          "line": 2306,
+          "snippet": "<Link to=\"/leads\" className=\"cf-today-priority-rail-link\">Zobacz wszystkie leady <ArrowRight className=\"h-4 w-4\" aria-hidden=\"true\" /></Link>"
         }
       ]
     },
@@ -4456,19 +4565,19 @@
       "importLine": 3,
       "usages": [
         {
-          "line": 1421,
+          "line": 1578,
           "snippet": "{ key: 'events', title: todaySectionLabels.events, count: todayEvents.length, tone: 'text-violet-700', activeTone: 'hover:border-violet-200', icon: <CalendarDays className=\"h-4 w-4\" /> },"
         },
         {
-          "line": 1422,
+          "line": 1579,
           "snippet": "{ key: 'upcoming', title: todaySectionLabels.upcoming, count: upcomingRowsAll.length, tone: 'text-slate-700', activeTone: 'hover:border-slate-300', icon: <CalendarDays className=\"h-4 w-4\" /> },"
         },
         {
-          "line": 1895,
+          "line": 2131,
           "snippet": "<SectionHeader title={todaySectionLabels.events} count={todayEvents.length} icon={<CalendarDays className=\"h-5 w-5\" />} tone=\"bg-indigo-50 text-indigo-700\" collapsed={isCollapsed('events')} onToggle={() => toggleSectionCollapse('events')} />"
         },
         {
-          "line": 1943,
+          "line": 2179,
           "snippet": "<SectionHeader title={todaySectionLabels.upcoming} count={upcomingRowsAll.length} icon={<CalendarDays className=\"h-5 w-5\" />} tone=\"bg-indigo-50 text-indigo-700\" collapsed={isCollapsed('upcoming')} onToggle={() => toggleSectionCollapse('upcoming')} />"
         }
       ]
@@ -4481,11 +4590,11 @@
       "importLine": 3,
       "usages": [
         {
-          "line": 1420,
+          "line": 1577,
           "snippet": "{ key: 'tasks', title: todaySectionLabels.tasks, count: operatorTasks.length, tone: 'text-emerald-700', activeTone: 'hover:border-emerald-200', icon: <CheckSquare className=\"h-4 w-4\" /> },"
         },
         {
-          "line": 1863,
+          "line": 2099,
           "snippet": "<SectionHeader title={todaySectionLabels.tasks} count={operatorTasks.length} icon={<CheckSquare className=\"h-5 w-5\" />} tone=\"bg-emerald-50 text-emerald-700\" collapsed={isCollapsed('tasks')} onToggle={() => toggleSectionCollapse('tasks')} />"
         }
       ]
@@ -4498,7 +4607,7 @@
       "importLine": 3,
       "usages": [
         {
-          "line": 526,
+          "line": 548,
           "snippet": "{collapsed ? <ChevronDown className=\"h-4 w-4 text-slate-400\" /> : <ChevronUp className=\"h-4 w-4 text-slate-400\" />}"
         }
       ]
@@ -4511,8 +4620,38 @@
       "importLine": 3,
       "usages": [
         {
-          "line": 526,
+          "line": 548,
           "snippet": "{collapsed ? <ChevronDown className=\"h-4 w-4 text-slate-400\" /> : <ChevronUp className=\"h-4 w-4 text-slate-400\" />}"
+        }
+      ]
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "imported": "Clock3",
+      "local": "Clock3",
+      "role": "time",
+      "importLine": 3,
+      "usages": [
+        {
+          "line": 1609,
+          "snippet": "icon: <Clock3 className=\"h-5 w-5\" />,"
+        }
+      ]
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "imported": "GripVertical",
+      "local": "GripVertical",
+      "role": "unclassified",
+      "importLine": 3,
+      "usages": [
+        {
+          "line": 2496,
+          "snippet": "<GripVertical className=\"cf-today-customizer-option-grip\" aria-hidden=\"true\" />"
+        },
+        {
+          "line": 2565,
+          "snippet": "<GripVertical className=\"cf-today-customizer-order-grip\" aria-hidden=\"true\" />"
         }
       ]
     },
@@ -4524,20 +4663,33 @@
       "importLine": 3,
       "usages": [
         {
-          "line": 775,
+          "line": 816,
           "snippet": "{deleting ? <Loader2 className=\"h-4 w-4 animate-spin\" /> : <DeleteActionIcon className=\"h-4 w-4\" />}"
         },
         {
-          "line": 2117,
+          "line": 2419,
           "snippet": "{todayEditSaving ? <Loader2 className=\"mr-2 h-4 w-4 animate-spin\" /> : null}"
         },
         {
-          "line": 2133,
+          "line": 2435,
           "snippet": "{manualRefreshing ? <Loader2 className=\"mr-2 h-4 w-4 animate-spin\" /> : <RefreshCcw className=\"mr-2 h-4 w-4\" />}"
         },
         {
-          "line": 2273,
+          "line": 2674,
           "snippet": "<Loader2 className=\"mr-2 inline h-4 w-4 animate-spin\" /> Ładowanie danych"
+        }
+      ]
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "imported": "LockKeyhole",
+      "local": "LockKeyhole",
+      "role": "unclassified",
+      "importLine": 3,
+      "usages": [
+        {
+          "line": 1617,
+          "snippet": "icon: <LockKeyhole className=\"h-5 w-5\" />,"
         }
       ]
     },
@@ -4549,8 +4701,38 @@
       "importLine": 3,
       "usages": [
         {
-          "line": 2133,
+          "line": 2435,
           "snippet": "{manualRefreshing ? <Loader2 className=\"mr-2 h-4 w-4 animate-spin\" /> : <RefreshCcw className=\"mr-2 h-4 w-4\" />}"
+        }
+      ]
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "imported": "Rocket",
+      "local": "Rocket",
+      "role": "unclassified",
+      "importLine": 3,
+      "usages": [
+        {
+          "line": 1625,
+          "snippet": "icon: <Rocket className=\"h-5 w-5\" />,"
+        },
+        {
+          "line": 2251,
+          "snippet": "<span className=\"cf-today-section-heading-icon cf-today-section-heading-icon--green\" aria-hidden=\"true\"><Rocket className=\"h-5 w-5\" /></span>"
+        }
+      ]
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "imported": "RotateCcw",
+      "local": "RotateCcw",
+      "role": "refresh",
+      "importLine": 3,
+      "usages": [
+        {
+          "line": 2582,
+          "snippet": "<RotateCcw className=\"h-4 w-4\" aria-hidden=\"true\" /> Przywróć domyślne"
         }
       ]
     },
@@ -4562,8 +4744,25 @@
       "importLine": 3,
       "usages": [
         {
-          "line": 2138,
-          "snippet": "<SlidersHorizontal className=\"mr-2 h-4 w-4\" /> Widok"
+          "line": 2439,
+          "snippet": "<SlidersHorizontal className=\"mr-2 h-4 w-4\" /> Dostosuj widok"
+        }
+      ]
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "imported": "Target",
+      "local": "Target",
+      "role": "goal",
+      "importLine": 3,
+      "usages": [
+        {
+          "line": 1601,
+          "snippet": "icon: <Target className=\"h-5 w-5\" />,"
+        },
+        {
+          "line": 2288,
+          "snippet": "<span className=\"cf-today-priority-rail-icon\" aria-hidden=\"true\"><Target className=\"h-5 w-5\" /></span>"
         }
       ]
     },
@@ -4575,11 +4774,11 @@
       "importLine": 3,
       "usages": [
         {
-          "line": 1417,
+          "line": 1574,
           "snippet": "{ key: 'risk', title: todaySectionLabels.risk, count: highValueAtRiskRows.length, tone: 'cf-severity-text-error', activeTone: 'cf-severity-hover-error', icon: <TrendingUp className=\"h-4 w-4\" /> },"
         },
         {
-          "line": 1792,
+          "line": 1993,
           "snippet": "<SectionHeader title={todaySectionLabels.risk} count={highValueAtRiskRows.length} icon={<TrendingUp className=\"h-5 w-5\" />} tone=\"cf-severity:error\" collapsed={isCollapsed('risk')} onToggle={() => toggleSectionCollapse('risk')} />"
         }
       ]
@@ -5347,11 +5546,25 @@
         "usageCount": 0
       },
       {
+        "file": "src/lib/source-of-truth/icon-registry.ts",
+        "icon": "Wallet",
+        "local": "Wallet",
+        "importLine": 1,
+        "usageCount": 0
+      },
+      {
         "file": "src/pages/LeadDetail.tsx",
         "icon": "DollarSign",
         "local": "DollarSign",
         "importLine": 49,
         "usageCount": 2
+      },
+      {
+        "file": "src/pages/Leads.tsx",
+        "icon": "Wallet",
+        "local": "Wallet",
+        "importLine": 16,
+        "usageCount": 0
       },
       {
         "file": "src/pages/Settings.tsx",
@@ -5532,7 +5745,7 @@
         "icon": "ClipboardList",
         "local": "ClipboardList",
         "importLine": 3,
-        "usageCount": 1
+        "usageCount": 2
       },
       {
         "file": "src/components/LeadAiFollowupDraft.tsx",
@@ -6210,6 +6423,13 @@
         "usageCount": 1
       },
       {
+        "file": "src/pages/TodayStable.tsx",
+        "icon": "RotateCcw",
+        "local": "RotateCcw",
+        "importLine": 3,
+        "usageCount": 1
+      },
+      {
         "file": "src/ui-system/icons/SemanticIcon.tsx",
         "icon": "RefreshCw",
         "local": "RefreshCw",
@@ -6314,60 +6534,14 @@
         "usageCount": 0
       }
     ],
-    "notification": [
-      {
-        "file": "src/components/Layout.tsx",
-        "icon": "Bell",
-        "local": "Bell",
-        "importLine": 10,
-        "usageCount": 0
-      },
-      {
-        "file": "src/components/ui-system/icon-registry.ts",
-        "icon": "Bell",
-        "local": "Bell",
-        "importLine": 2,
-        "usageCount": 0
-      },
-      {
-        "file": "src/pages/PublicLanding.tsx",
-        "icon": "BellRing",
-        "local": "BellRing",
-        "importLine": 2,
-        "usageCount": 0
-      },
-      {
-        "file": "src/ui-system/icons/SemanticIcon.tsx",
-        "icon": "Bell",
-        "local": "Bell",
-        "importLine": 6,
-        "usageCount": 0
-      }
-    ],
-    "case": [
-      {
-        "file": "src/components/Layout.tsx",
-        "icon": "Briefcase",
-        "local": "Briefcase",
-        "importLine": 10,
-        "usageCount": 0
-      },
-      {
-        "file": "src/components/ui-system/icon-registry.ts",
-        "icon": "Briefcase",
-        "local": "Briefcase",
-        "importLine": 2,
-        "usageCount": 0
-      },
-      {
-        "file": "src/ui-system/icons/SemanticIcon.tsx",
-        "icon": "Briefcase",
-        "local": "Briefcase",
-        "importLine": 6,
-        "usageCount": 0
-      }
-    ],
     "navigation": [
+      {
+        "file": "src/components/GlobalQuickActions.tsx",
+        "icon": "ChevronDown",
+        "local": "ChevronDown",
+        "importLine": 3,
+        "usageCount": 1
+      },
       {
         "file": "src/components/Layout.tsx",
         "icon": "ChevronRight",
@@ -6531,10 +6705,17 @@
       },
       {
         "file": "src/pages/Leads.tsx",
+        "icon": "ChevronLeft",
+        "local": "ChevronLeft",
+        "importLine": 16,
+        "usageCount": 1
+      },
+      {
+        "file": "src/pages/Leads.tsx",
         "icon": "ChevronRight",
         "local": "ChevronRight",
         "importLine": 16,
-        "usageCount": 2
+        "usageCount": 3
       },
       {
         "file": "src/pages/Login.tsx",
@@ -6590,7 +6771,7 @@
         "icon": "ArrowRight",
         "local": "ArrowRight",
         "importLine": 3,
-        "usageCount": 1
+        "usageCount": 4
       },
       {
         "file": "src/pages/TodayStable.tsx",
@@ -6610,6 +6791,152 @@
         "file": "src/ui-system/icons/SemanticIcon.tsx",
         "icon": "ArrowRight",
         "local": "ArrowRight",
+        "importLine": 6,
+        "usageCount": 0
+      }
+    ],
+    "add": [
+      {
+        "file": "src/components/GlobalQuickActions.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 3,
+        "usageCount": 1
+      },
+      {
+        "file": "src/components/ui-system/action-icon-registry.ts",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 1,
+        "usageCount": 0
+      },
+      {
+        "file": "src/pages/CaseDetail.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 22,
+        "usageCount": 4
+      },
+      {
+        "file": "src/pages/Cases.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 17,
+        "usageCount": 2
+      },
+      {
+        "file": "src/pages/ClientDetail.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 10,
+        "usageCount": 2
+      },
+      {
+        "file": "src/pages/Clients.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 17,
+        "usageCount": 1
+      },
+      {
+        "file": "src/pages/Dashboard.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 3,
+        "usageCount": 1
+      },
+      {
+        "file": "src/pages/LeadDetail.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 49,
+        "usageCount": 1
+      },
+      {
+        "file": "src/pages/Leads.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 16,
+        "usageCount": 1
+      },
+      {
+        "file": "src/pages/ResponseTemplates.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 2,
+        "usageCount": 1
+      },
+      {
+        "file": "src/pages/Templates.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 2,
+        "usageCount": 3
+      },
+      {
+        "file": "src/pages/Today.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 3,
+        "usageCount": 0
+      },
+      {
+        "file": "src/ui-system/icons/SemanticIcon.tsx",
+        "icon": "Plus",
+        "local": "Plus",
+        "importLine": 6,
+        "usageCount": 0
+      }
+    ],
+    "notification": [
+      {
+        "file": "src/components/Layout.tsx",
+        "icon": "Bell",
+        "local": "Bell",
+        "importLine": 10,
+        "usageCount": 0
+      },
+      {
+        "file": "src/components/ui-system/icon-registry.ts",
+        "icon": "Bell",
+        "local": "Bell",
+        "importLine": 2,
+        "usageCount": 0
+      },
+      {
+        "file": "src/pages/PublicLanding.tsx",
+        "icon": "BellRing",
+        "local": "BellRing",
+        "importLine": 2,
+        "usageCount": 0
+      },
+      {
+        "file": "src/ui-system/icons/SemanticIcon.tsx",
+        "icon": "Bell",
+        "local": "Bell",
+        "importLine": 6,
+        "usageCount": 0
+      }
+    ],
+    "case": [
+      {
+        "file": "src/components/Layout.tsx",
+        "icon": "Briefcase",
+        "local": "Briefcase",
+        "importLine": 10,
+        "usageCount": 0
+      },
+      {
+        "file": "src/components/ui-system/icon-registry.ts",
+        "icon": "Briefcase",
+        "local": "Briefcase",
+        "importLine": 2,
+        "usageCount": 0
+      },
+      {
+        "file": "src/ui-system/icons/SemanticIcon.tsx",
+        "icon": "Briefcase",
+        "local": "Briefcase",
         "importLine": 6,
         "usageCount": 0
       }
@@ -6725,6 +7052,13 @@
         "icon": "Activity",
         "local": "Activity",
         "importLine": 2,
+        "usageCount": 0
+      },
+      {
+        "file": "src/lib/source-of-truth/icon-registry.ts",
+        "icon": "Activity",
+        "local": "Activity",
+        "importLine": 1,
         "usageCount": 0
       },
       {
@@ -6869,8 +7203,8 @@
       },
       {
         "file": "src/pages/Leads.tsx",
-        "icon": "TrendingUp",
-        "local": "TrendingUp",
+        "icon": "Activity",
+        "local": "Activity",
         "importLine": 16,
         "usageCount": 0
       },
@@ -7058,6 +7392,27 @@
       },
       {
         "file": "src/pages/TodayStable.tsx",
+        "icon": "GripVertical",
+        "local": "GripVertical",
+        "importLine": 3,
+        "usageCount": 2
+      },
+      {
+        "file": "src/pages/TodayStable.tsx",
+        "icon": "LockKeyhole",
+        "local": "LockKeyhole",
+        "importLine": 3,
+        "usageCount": 1
+      },
+      {
+        "file": "src/pages/TodayStable.tsx",
+        "icon": "Rocket",
+        "local": "Rocket",
+        "importLine": 3,
+        "usageCount": 2
+      },
+      {
+        "file": "src/pages/TodayStable.tsx",
         "icon": "TrendingUp",
         "local": "TrendingUp",
         "importLine": 3,
@@ -7142,6 +7497,13 @@
         "icon": "UserRound",
         "local": "UserRound",
         "importLine": 2,
+        "usageCount": 0
+      },
+      {
+        "file": "src/lib/source-of-truth/icon-registry.ts",
+        "icon": "Users",
+        "local": "Users",
+        "importLine": 1,
         "usageCount": 0
       },
       {
@@ -7300,7 +7662,7 @@
         "icon": "Filter",
         "local": "Filter",
         "importLine": 16,
-        "usageCount": 0
+        "usageCount": 1
       },
       {
         "file": "src/pages/NotificationsCenter.tsx",
@@ -7320,85 +7682,6 @@
         "file": "src/ui-system/icons/SemanticIcon.tsx",
         "icon": "Filter",
         "local": "Filter",
-        "importLine": 6,
-        "usageCount": 0
-      }
-    ],
-    "add": [
-      {
-        "file": "src/components/ui-system/action-icon-registry.ts",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 1,
-        "usageCount": 0
-      },
-      {
-        "file": "src/pages/CaseDetail.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 22,
-        "usageCount": 4
-      },
-      {
-        "file": "src/pages/Cases.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 17,
-        "usageCount": 2
-      },
-      {
-        "file": "src/pages/ClientDetail.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 10,
-        "usageCount": 2
-      },
-      {
-        "file": "src/pages/Clients.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 17,
-        "usageCount": 1
-      },
-      {
-        "file": "src/pages/Dashboard.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 3,
-        "usageCount": 1
-      },
-      {
-        "file": "src/pages/LeadDetail.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 49,
-        "usageCount": 1
-      },
-      {
-        "file": "src/pages/ResponseTemplates.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 2,
-        "usageCount": 1
-      },
-      {
-        "file": "src/pages/Templates.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 2,
-        "usageCount": 3
-      },
-      {
-        "file": "src/pages/Today.tsx",
-        "icon": "Plus",
-        "local": "Plus",
-        "importLine": 3,
-        "usageCount": 0
-      },
-      {
-        "file": "src/ui-system/icons/SemanticIcon.tsx",
-        "icon": "Plus",
-        "local": "Plus",
         "importLine": 6,
         "usageCount": 0
       }
@@ -7528,6 +7811,13 @@
         "usageCount": 2
       },
       {
+        "file": "src/pages/TodayStable.tsx",
+        "icon": "Target",
+        "local": "Target",
+        "importLine": 3,
+        "usageCount": 2
+      },
+      {
         "file": "src/ui-system/icons/SemanticIcon.tsx",
         "icon": "Target",
         "local": "Target",
@@ -7635,6 +7925,13 @@
         "usageCount": 0
       },
       {
+        "file": "src/pages/TodayStable.tsx",
+        "icon": "Clock3",
+        "local": "Clock3",
+        "importLine": 3,
+        "usageCount": 1
+      },
+      {
         "file": "src/ui-system/icons/SemanticIcon.tsx",
         "icon": "Clock",
         "local": "Clock",
@@ -7723,25 +8020,25 @@
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 739,
+      "line": 749,
       "component": "StatShortcutCard",
       "snippet": "<StatShortcutCard\n            label=\"Otwarte sprawy\"\n            value={stats.open}\n            icon={FileText}\n            tone=\"blue\"\n            active={caseView === 'open'}\n            onClick={() => setCaseViewStage231B0R9('open')}\n          />\n          <StatShortcutCard\n            label=\"Czeka na klienta\"\n            value={stats.waiting}\n            icon={Clock}"
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 747,
+      "line": 757,
       "component": "StatShortcutCard",
       "snippet": "<StatShortcutCard\n            label=\"Czeka na klienta\"\n            value={stats.waiting}\n            icon={Clock}\n            tone=\"amber\"\n            active={caseView === 'waiting' || caseView === 'approval'}\n            onClick={() => toggleCaseView('waiting')}\n          />\n          <StatShortcutCard\n            label=\"Zablokowane\"\n            value={stats.blocked}\n            icon={AlertTriangle}"
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 755,
+      "line": 765,
       "component": "StatShortcutCard",
       "snippet": "<StatShortcutCard\n            label=\"Zablokowane\"\n            value={stats.blocked}\n            icon={AlertTriangle}\n            tone=\"red\"\n            active={caseView === 'blocked'}\n            onClick={() => toggleCaseView('blocked')}\n          />\n          <StatShortcutCard\n            label=\"Gotowe\"\n            value={stats.ready}\n            icon={CheckCircle2}"
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 763,
+      "line": 773,
       "component": "StatShortcutCard",
       "snippet": "<StatShortcutCard\n            label=\"Gotowe\"\n            value={stats.ready}\n            icon={CheckCircle2}\n            tone=\"green\"\n            active={caseView === 'ready'}\n            onClick={() => toggleCaseView('ready')}\n          />\n        </div>\n\n        <div className=\"layout-list\">\n          <div className=\"stack\">"
     },
@@ -7771,33 +8068,27 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 946,
+      "line": 1004,
       "component": "StatShortcutCard",
-      "snippet": "<StatShortcutCard\n            label=\"Wszystkie\"\n            value={stats.total}\n            icon={LeadEntityIcon}\n            active={quickFilter === 'all' && !valueSortEnabled && !showTrash}\n            onClick={() => { setShowTrash(false); setQuickFilter('all'); setValueSortEnabled(false); }}\n            title=\"Pokaż wszystkie leady\"\n            ariaLabel=\"Pokaż wszystkie leady\"\n          />\n\n          <StatShortcutCard\n            label=\"Aktywne\""
+      "snippet": "<StatShortcutCard\n            label=\"Wszystkie\"\n            value={stats.total}\n            icon={LeadEntityIcon}\n            active={quickFilter === 'all' && !valueSortEnabled && !showTrash}\n            onClick={() => { setShowTrash(false); setQuickFilter('all'); setValueSortEnabled(false); }}\n            title=\"Pokaż wszystkie leady\"\n            ariaLabel=\"Pokaż wszystkie leady\"\n            helper=\"Wszystkie leady\"\n          />\n\n          <StatShortcutCard"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 956,
+      "line": 1015,
       "component": "StatShortcutCard",
-      "snippet": "<StatShortcutCard\n            label=\"Aktywne\"\n            value={stats.active}\n            icon={TrendingUp}\n            active={quickFilter === 'active' && !showTrash}\n            onClick={() => toggleQuickFilter('active')}\n            title=\"Pokaż aktywne leady\"\n            ariaLabel=\"Pokaż aktywne leady\"\n            valueClassName=\"text-slate-900\"\n            iconClassName=\"bg-blue-50 text-blue-500\"\n          />"
+      "snippet": "<StatShortcutCard\n            label=\"Aktywne\"\n            value={stats.active}\n            icon={Activity}\n            active={quickFilter === 'active' && !showTrash}\n            onClick={() => toggleQuickFilter('active')}\n            title=\"Pokaż aktywne leady\"\n            ariaLabel=\"Pokaż aktywne leady\"\n            valueClassName=\"text-slate-900\"\n            iconClassName=\"bg-blue-50 text-blue-500\"\n            helper=\"Obecnie w procesie\"\n          />"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 968,
+      "line": 1028,
       "component": "StatShortcutCard",
-      "snippet": "<StatShortcutCard\n            label=\"Wartość\"\n            value={`${stats.value.toLocaleString('pl-PL')} PLN`}\n            icon={TrendingUp}\n            active={valueSortEnabled && !showTrash}\n            onClick={toggleValueSorting}\n            title=\"Sortuj leady po wartości\"\n            ariaLabel=\"Sortuj leady po wartości\"\n            helper={valueSortEnabled ? 'sortowanie aktywne' : 'kliknij, aby sortować!'}\n          />\n\n          <StatShortcutCard"
+      "snippet": "<StatShortcutCard\n            label=\"Wartość\"\n            value={`${stats.value.toLocaleString('pl-PL')} PLN`}\n            icon={Wallet}\n            active={valueSortEnabled && !showTrash}\n            onClick={toggleValueSorting}\n            title=\"Sortuj leady po wartości\"\n            ariaLabel=\"Sortuj leady po wartości\"\n            helper={valueSortEnabled ? 'Sortowanie aktywne' : 'Suma wartości aktywnych leadów'}\n          />\n\n          <StatShortcutCard"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 979,
+      "line": 1039,
       "component": "StatShortcutCard",
-      "snippet": "<StatShortcutCard\n            label=\"Zagrożone\"\n            value={stats.atRisk}\n            icon={AlertTriangle}\n            active={quickFilter === 'at-risk' && !showTrash}\n            onClick={() => toggleQuickFilter('at-risk')}\n            title=\"Pokaż zagrożone leady\"\n            ariaLabel=\"Pokaż zagrożone leady\"\n            tone=\"risk\"\n          />\n\n          <StatShortcutCard"
-    },
-    {
-      "file": "src/pages/Leads.tsx",
-      "line": 990,
-      "component": "StatShortcutCard",
-      "snippet": "<StatShortcutCard\n            label=\"Do odzyskania\"\n            value={stats.rescue}\n            icon={AlertTriangle}\n            active={quickFilter === 'rescue' && !showTrash}\n            onClick={() => toggleQuickFilter('rescue')}\n            title=\"Pokaż leady do odzyskania\"\n            ariaLabel=\"Pokaż leady do odzyskania\"\n            tone=\"risk\"\n            helper={lostLeadRescueSummary.critical ? `${lostLeadRescueSummary.critical} krytyczne` : 'sprawdź ciszę'}\n          />"
+      "snippet": "<StatShortcutCard\n            label=\"Zagrożone\"\n            value={stats.atRisk}\n            icon={AlertTriangle}\n            active={quickFilter === 'at-risk' && !showTrash}\n            onClick={() => toggleQuickFilter('at-risk')}\n            title=\"Pokaż zagrożone leady\"\n            ariaLabel=\"Pokaż zagrożone leady\"\n            tone=\"risk\"\n            helper=\"Leady wymagające uwagi\"\n          />"
     },
     {
       "file": "src/pages/ResponseTemplates.tsx",
@@ -11221,32 +11512,32 @@
     {
       "file": "src/components/GlobalQuickActions.tsx",
       "value": "ai",
-      "line": 90
+      "line": 184
     },
     {
       "file": "src/components/GlobalQuickActions.tsx",
       "value": "neutral",
-      "line": 97
+      "line": 191
     },
     {
       "file": "src/components/GlobalQuickActions.tsx",
       "value": "neutral",
-      "line": 103
+      "line": 197
     },
     {
       "file": "src/components/GlobalQuickActions.tsx",
       "value": "neutral",
-      "line": 108
+      "line": 202
     },
     {
       "file": "src/components/GlobalQuickActions.tsx",
       "value": "neutral",
-      "line": 112
+      "line": 206
     },
     {
       "file": "src/components/Layout.tsx",
       "value": "true",
-      "line": 693
+      "line": 696
     },
     {
       "file": "src/components/layout/app-shell.tsx",
@@ -11996,27 +12287,27 @@
     {
       "file": "src/pages/Cases.tsx",
       "value": "ai",
-      "line": 573
+      "line": 583
     },
     {
       "file": "src/pages/Cases.tsx",
       "value": "semantic173",
-      "line": 775
+      "line": 785
     },
     {
       "file": "src/pages/Cases.tsx",
       "value": "amber",
-      "line": 846
+      "line": 856
     },
     {
       "file": "src/pages/Cases.tsx",
       "value": "trash-action-source",
-      "line": 878
+      "line": 888
     },
     {
       "file": "src/pages/Cases.tsx",
       "value": "true",
-      "line": 937
+      "line": 947
     },
     {
       "file": "src/pages/ClientDetail.tsx",
@@ -12181,62 +12472,57 @@
     {
       "file": "src/pages/Leads.tsx",
       "value": "ai",
-      "line": 773
+      "line": 830
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "shared",
-      "line": 1012
+      "line": 1062
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "true",
-      "line": 1018
+      "line": 1070
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "semantic173",
-      "line": 1018
+      "line": 1070
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "semantic173",
-      "line": 1036
+      "line": 1088
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "semantic173",
-      "line": 1046
+      "line": 1098
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "red",
-      "line": 1094
+      "line": 1298
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "amber",
-      "line": 1095
+      "line": 1299
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "blue",
-      "line": 1096
+      "line": 1300
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "LeadListCard",
-      "line": 1179
+      "line": 1396
     },
     {
       "file": "src/pages/Leads.tsx",
       "value": "green",
-      "line": 1192
-    },
-    {
-      "file": "src/pages/Leads.tsx",
-      "value": "shared",
-      "line": 1250
+      "line": 1412
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
@@ -12386,32 +12672,67 @@
     {
       "file": "src/pages/TodayStable.tsx",
       "value": "true",
-      "line": 632
+      "line": 654
     },
     {
       "file": "src/pages/TodayStable.tsx",
       "value": "true",
-      "line": 708
+      "line": 735
     },
     {
       "file": "src/pages/TodayStable.tsx",
       "value": "true",
-      "line": 1006
+      "line": 958
     },
     {
       "file": "src/pages/TodayStable.tsx",
       "value": "true",
-      "line": 1132
+      "line": 1118
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "value": "true",
+      "line": 1244
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "value": "ready",
+      "line": 2248
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "value": "true",
+      "line": 2281
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "value": "true",
+      "line": 2428
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "value": "view",
+      "line": 2438
     },
     {
       "file": "src/pages/TodayStable.tsx",
       "value": "error",
-      "line": 2145
+      "line": 2448
     },
     {
       "file": "src/pages/TodayStable.tsx",
       "value": "true",
-      "line": 2226
+      "line": 2466
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "value": "true",
+      "line": 2602
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "value": "ready",
+      "line": 2657
     },
     {
       "file": "src/pages/UiPreviewVNext.tsx",
@@ -14937,6 +15258,41 @@
       "file": "src/styles/owners/closeflow-dialogs.css",
       "value": "delete",
       "line": 793
+    },
+    {
+      "file": "src/styles/owners/closeflow-dialogs.css",
+      "value": "true",
+      "line": 814
+    },
+    {
+      "file": "src/styles/owners/closeflow-foundation-operator.css",
+      "value": "blue",
+      "line": 317
+    },
+    {
+      "file": "src/styles/owners/closeflow-foundation-operator.css",
+      "value": "amber",
+      "line": 322
+    },
+    {
+      "file": "src/styles/owners/closeflow-foundation-operator.css",
+      "value": "red",
+      "line": 327
+    },
+    {
+      "file": "src/styles/owners/closeflow-foundation-operator.css",
+      "value": "green",
+      "line": 332
+    },
+    {
+      "file": "src/styles/owners/closeflow-foundation-operator.css",
+      "value": "green",
+      "line": 942
+    },
+    {
+      "file": "src/styles/owners/closeflow-foundation-operator.css",
+      "value": "red",
+      "line": 947
     },
     {
       "file": "src/styles/owners/closeflow-foundation.css",
@@ -24778,15 +25134,15 @@
     },
     {
       "file": "src/components/CloseFlowPageHeaderV2.tsx",
-      "line": 92,
+      "line": 93,
       "classes": [
         "cf-page-header-v2"
       ],
-      "snippet": "<header className=\"cf-page-header-v2\" data-cf-page-header-v2={pageKey}>"
+      "snippet": "className=\"cf-page-header-v2\""
     },
     {
       "file": "src/components/CloseFlowPageHeaderV2.tsx",
-      "line": 93,
+      "line": 97,
       "classes": [
         "cf-page-header-v2__copy"
       ],
@@ -24794,15 +25150,15 @@
     },
     {
       "file": "src/components/CloseFlowPageHeaderV2.tsx",
-      "line": 94,
+      "line": 98,
       "classes": [
         "cf-page-header-v2__kicker"
       ],
-      "snippet": "<span className=\"cf-page-header-v2__kicker\">{content.kicker}</span>"
+      "snippet": "{content.kicker ? <span className=\"cf-page-header-v2__kicker\">{content.kicker}</span> : null}"
     },
     {
       "file": "src/components/CloseFlowPageHeaderV2.tsx",
-      "line": 95,
+      "line": 99,
       "classes": [
         "cf-page-header-v2__title"
       ],
@@ -24810,7 +25166,7 @@
     },
     {
       "file": "src/components/CloseFlowPageHeaderV2.tsx",
-      "line": 96,
+      "line": 100,
       "classes": [
         "cf-page-header-v2__description"
       ],
@@ -24818,7 +25174,7 @@
     },
     {
       "file": "src/components/CloseFlowPageHeaderV2.tsx",
-      "line": 99,
+      "line": 103,
       "classes": [
         "cf-page-header-v2__actions"
       ],
@@ -26673,7 +27029,7 @@
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 588,
+      "line": 598,
       "classes": [
         "client-case-form-header"
       ],
@@ -26681,7 +27037,7 @@
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 595,
+      "line": 605,
       "classes": [
         "client-case-form-section"
       ],
@@ -26689,7 +27045,7 @@
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 596,
+      "line": 606,
       "classes": [
         "client-case-form-section-head"
       ],
@@ -26697,7 +27053,7 @@
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 601,
+      "line": 611,
       "classes": [
         "client-case-form-grid"
       ],
@@ -26705,7 +27061,7 @@
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 673,
+      "line": 683,
       "classes": [
         "client-case-form-grid"
       ],
@@ -26713,7 +27069,7 @@
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 738,
+      "line": 748,
       "classes": [
         "grid-4"
       ],
@@ -26721,7 +27077,7 @@
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 908,
+      "line": 918,
       "classes": [
         "cases-right-rail"
       ],
@@ -26729,7 +27085,7 @@
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 910,
+      "line": 920,
       "classes": [
         "cases-shortcuts-rail-card",
         "operator-simple-filters-card"
@@ -26738,7 +27094,7 @@
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 926,
+      "line": 936,
       "classes": [
         "right-card",
         "cases-risk-rail-card"
@@ -26747,7 +27103,7 @@
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 927,
+      "line": 937,
       "classes": [
         "panel-head",
         "cf-rail-card-title"
@@ -26756,7 +27112,7 @@
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 939,
+      "line": 949,
       "classes": [
         "cf-rail-risk-row"
       ],
@@ -26764,7 +27120,7 @@
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 941,
+      "line": 951,
       "classes": [
         "cf-rail-risk-copy",
         "cf-rail-risk-title",
@@ -27934,7 +28290,23 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 789,
+      "line": 830,
+      "classes": [
+        "leads-secondary-header-action"
+      ],
+      "snippet": "<Link to=\"/ai-drafts\" className=\"btn soft-blue leads-secondary-header-action\" data-stage26-leads-head-ai=\"true\" data-cf-header-action=\"ai\" data-frt004-secondary-header-action=\"ai\">"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 836,
+      "classes": [
+        "leads-secondary-header-action"
+      ],
+      "snippet": "className=\"btn leads-secondary-header-action\""
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 847,
       "classes": [
         "lead-form-vnext-header"
       ],
@@ -27942,7 +28314,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 797,
+      "line": 855,
       "classes": [
         "lead-form-section",
         "lead-form-primary-section"
@@ -27951,7 +28323,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 798,
+      "line": 856,
       "classes": [
         "lead-form-section-head"
       ],
@@ -27959,7 +28331,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 802,
+      "line": 860,
       "classes": [
         "lead-form-grid"
       ],
@@ -27967,7 +28339,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 890,
+      "line": 948,
       "classes": [
         "lead-form-section"
       ],
@@ -27975,7 +28347,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 892,
+      "line": 950,
       "classes": [
         "lead-form-grid",
         "lead-form-details-grid"
@@ -27984,7 +28356,7 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 945,
+      "line": 1003,
       "classes": [
         "grid-5"
       ],
@@ -27992,21 +28364,21 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1250,
+      "line": 1173,
       "classes": [
-        "lead-right-rail",
-        "cf-operator-right-rail"
+        "leads-more-filters-panel"
       ],
-      "snippet": "<div className=\"lead-right-rail cf-operator-right-rail\" data-stage117-leads-right-rail=\"true\" data-stage177-leads-rail-source=\"clients-aligned\" data-stage25-leads-right-rail=\"true\" data-semantic32-leads-value-rail=\"true\" data-stage96-leads-right-rail-source-tr"
+      "snippet": "<div className=\"leads-more-filters-panel\" data-frt004-more-filters-panel=\"true\">"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 1254,
+      "line": 1205,
       "classes": [
+        "right-card",
         "lead-right-card",
         "operator-simple-filters-card"
       ],
-      "snippet": "className=\"lead-right-card operator-simple-filters-card\""
+      "snippet": "className=\"right-card lead-right-card operator-simple-filters-card\""
     },
     {
       "file": "src/pages/LegalPrivacy.tsx",
@@ -29418,7 +29790,31 @@
     },
     {
       "file": "src/pages/TodayStable.tsx",
-      "line": 1949,
+      "line": 537,
+      "classes": [
+        "cf-today-section-header"
+      ],
+      "snippet": "className=\"cf-today-section-header flex w-full flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-4 text-left transition hover:bg-slate-50\""
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 542,
+      "classes": [
+        "cf-today-section-title"
+      ],
+      "snippet": "<h2 className=\"cf-today-section-title text-base font-bold text-slate-900\">{visualNumber ? `${visualNumber}. ${title}` : title}</h2>"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 543,
+      "classes": [
+        "cf-today-section-subtitle"
+      ],
+      "snippet": "<p className=\"cf-today-section-subtitle text-xs font-medium text-slate-500\">{subtitle || `${count} wpisów`}</p>"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2185,
       "classes": [
         "grid"
       ],
@@ -29426,23 +29822,113 @@
     },
     {
       "file": "src/pages/TodayStable.tsx",
-      "line": 2127,
+      "line": 2248,
       "classes": [
-        "cf-section-head"
+        "cf-today-ready-section"
       ],
-      "snippet": "<div className=\"cf-section-head flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between\">"
+      "snippet": "<section className=\"cf-today-ready-section\" data-cf-today-visual-section=\"ready\">"
     },
     {
       "file": "src/pages/TodayStable.tsx",
-      "line": 2129,
+      "line": 2249,
       "classes": [
-        "cf-section-head-actions"
+        "cf-today-section-heading"
       ],
-      "snippet": "<div className=\"cf-section-head-actions flex flex-col items-end gap-2\">"
+      "snippet": "<div className=\"cf-today-section-heading\">"
     },
     {
       "file": "src/pages/TodayStable.tsx",
-      "line": 2145,
+      "line": 2250,
+      "classes": [
+        "cf-today-section-heading-copy"
+      ],
+      "snippet": "<div className=\"cf-today-section-heading-copy\">"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2251,
+      "classes": [
+        "cf-today-section-heading-icon",
+        "cf-today-section-heading-icon--green"
+      ],
+      "snippet": "<span className=\"cf-today-section-heading-icon cf-today-section-heading-icon--green\" aria-hidden=\"true\"><Rocket className=\"h-5 w-5\" /></span>"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2253,
+      "classes": [
+        "cf-today-section-title"
+      ],
+      "snippet": "<h2 className=\"cf-today-section-title\">3. Gotowe do ruszenia</h2>"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2254,
+      "classes": [
+        "cf-today-section-subtitle"
+      ],
+      "snippet": "<p className=\"cf-today-section-subtitle\">Sprawy kompletne — możesz rozpocząć realizację</p>"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2257,
+      "classes": [
+        "cf-today-section-count",
+        "cf-today-section-count--green"
+      ],
+      "snippet": "<span className=\"cf-today-section-count cf-today-section-count--green\">{readyCaseRows.length}</span>"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2281,
+      "classes": [
+        "cf-today-priority-rail"
+      ],
+      "snippet": "<aside className=\"cf-today-priority-rail\" data-cf-today-priority-rail=\"true\">"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2282,
+      "classes": [
+        "cf-today-priority-rail-head"
+      ],
+      "snippet": "<div className=\"cf-today-priority-rail-head\">"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2284,
+      "classes": [
+        "cf-today-priority-rail-kicker"
+      ],
+      "snippet": "<p className=\"cf-today-priority-rail-kicker\">PRIORYTETY</p>"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2288,
+      "classes": [
+        "cf-today-priority-rail-icon"
+      ],
+      "snippet": "<span className=\"cf-today-priority-rail-icon\" aria-hidden=\"true\"><Target className=\"h-5 w-5\" /></span>"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2306,
+      "classes": [
+        "cf-today-priority-rail-link"
+      ],
+      "snippet": "<Link to=\"/leads\" className=\"cf-today-priority-rail-link\">Zobacz wszystkie leady <ArrowRight className=\"h-4 w-4\" aria-hidden=\"true\" /></Link>"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2428,
+      "classes": [
+        "cf-today-main-header"
+      ],
+      "snippet": "<section className=\"cf-today-main-header\" data-cf-today-header=\"true\">"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2448,
       "classes": [
         "cf-severity-panel"
       ],
@@ -29450,33 +29936,155 @@
     },
     {
       "file": "src/pages/TodayStable.tsx",
-      "line": 2173,
+      "line": 2469,
       "classes": [
-        "grid",
-        "sm:grid-cols-2",
-        "lg:grid-cols-4"
+        "cf-today-customizer-header"
       ],
-      "snippet": "<div className=\"grid gap-2 sm:grid-cols-2 lg:grid-cols-4\">"
+      "snippet": "<DialogHeader className=\"cf-today-customizer-header\">"
     },
     {
       "file": "src/pages/TodayStable.tsx",
-      "line": 2219,
+      "line": 2478,
       "classes": [
-        "grid",
-        "sm:grid-cols-2",
-        "lg:grid-cols-4"
+        "cf-today-customizer-section"
       ],
-      "snippet": "<section className=\"grid gap-3 sm:grid-cols-2 lg:grid-cols-4\" data-stage16ai-today-tiles-match-lists=\"true\">"
+      "snippet": "<section className=\"cf-today-customizer-section\" aria-labelledby=\"today-customizer-visible-title\">"
     },
     {
       "file": "src/pages/TodayStable.tsx",
-      "line": 2263,
+      "line": 2479,
       "classes": [
-        "grid",
-        "md:grid-cols-2",
-        "xl:grid-cols-3"
+        "cf-today-customizer-section-heading"
       ],
-      "snippet": "<section className=\"grid gap-4 md:grid-cols-2 xl:grid-cols-3\" data-stage232t-r1c-today-section-grid=\"true\">"
+      "snippet": "<div className=\"cf-today-customizer-section-heading\">"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2525,
+      "classes": [
+        "cf-today-customizer-section"
+      ],
+      "snippet": "<section className=\"cf-today-customizer-section\" aria-labelledby=\"today-customizer-order-title\">"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2526,
+      "classes": [
+        "cf-today-customizer-section-heading"
+      ],
+      "snippet": "<div className=\"cf-today-customizer-section-heading\">"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2593,
+      "classes": [
+        "cf-today-primary-metrics"
+      ],
+      "snippet": "<section className=\"cf-today-primary-metrics\" data-stage16ai-today-tiles-match-lists=\"true\">"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2601,
+      "classes": [
+        "cf-today-metric-card"
+      ],
+      "snippet": "className=\"cf-today-metric-card\""
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2630,
+      "classes": [
+        "cf-today-metric-card-surface"
+      ],
+      "snippet": "<Card className=\"cf-today-metric-card-surface\">"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2631,
+      "classes": [
+        "cf-today-metric-card-content"
+      ],
+      "snippet": "<CardContent className=\"cf-today-metric-card-content\">"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2632,
+      "classes": [
+        "cf-today-metric-icon"
+      ],
+      "snippet": "<span className=\"cf-today-metric-icon\" aria-hidden=\"true\">{tile.icon}</span>"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2633,
+      "classes": [
+        "cf-today-metric-copy"
+      ],
+      "snippet": "<span className=\"cf-today-metric-copy\">"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2634,
+      "classes": [
+        "cf-today-metric-label"
+      ],
+      "snippet": "<span className=\"cf-today-metric-label\">{tile.title}</span>"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2635,
+      "classes": [
+        "cf-today-metric-value"
+      ],
+      "snippet": "<strong className=\"cf-today-metric-value\">{tile.count}</strong>"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2636,
+      "classes": [
+        "cf-today-metric-helper"
+      ],
+      "snippet": "<span className=\"cf-today-metric-helper\">{tile.helper}</span>"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2645,
+      "classes": [
+        "cf-today-content-grid"
+      ],
+      "snippet": "<section className=\"cf-today-content-grid\" data-stage232t-r1c-today-section-grid=\"true\">"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2647,
+      "classes": [
+        "cf-today-primary-sections"
+      ],
+      "snippet": "<div className=\"cf-today-primary-sections\">"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2657,
+      "classes": [
+        "cf-today-section-slot"
+      ],
+      "snippet": "<div data-cf-today-section-card=\"ready\" className=\"cf-today-section-slot cf-today-ready-slot\">"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2661,
+      "classes": [
+        "cf-today-secondary-sections"
+      ],
+      "snippet": "<div className=\"cf-today-secondary-sections\">"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 2663,
+      "classes": [
+        "cf-today-section-slot"
+      ],
+      "snippet": "<div key={key} data-stage232t-r1c-today-section-card={key} className=\"cf-today-section-slot\">"
     },
     {
       "file": "src/pages/UiPreviewVNext.tsx",

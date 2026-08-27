@@ -1,3 +1,4 @@
+import { Activity, Users, Wallet } from 'lucide-react';
 import { ACTION_ICON_MAP } from '../../components/ui-system/action-icon-registry';
 import { semanticIconConfig } from '../../ui-system/icons/SemanticIcon';
 import type { CloseflowAppLucideIcon } from '../../components/ui-system/icon-registry';
@@ -13,6 +14,11 @@ export const APP_ICONS = {
     icon: ACTION_ICON_MAP.add,
     label: 'Dodaj',
     semanticGroup: 'action',
+  },
+  activity: {
+    icon: Activity,
+    label: 'Aktywność',
+    semanticGroup: 'system',
   },
   alert: {
     icon: semanticIconConfig.risk_alert.defaultIcon,
@@ -83,6 +89,16 @@ export const APP_ICONS = {
     icon: ACTION_ICON_MAP.delete,
     label: 'Usuń',
     semanticGroup: 'action',
+  },
+  users: {
+    icon: Users,
+    label: 'Leady',
+    semanticGroup: 'record',
+  },
+  wallet: {
+    icon: Wallet,
+    label: 'Wartość',
+    semanticGroup: 'record',
   },
   close: {
     icon: ACTION_ICON_MAP.cancel,

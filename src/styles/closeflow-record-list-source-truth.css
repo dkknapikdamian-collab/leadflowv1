@@ -839,3 +839,594 @@
   font-size: 0.74rem;
   font-weight: 850;
 }
+
+/* FRT-004: the live Leads all-state composition follows the approved reference structure. */
+#root:has(.cf-html-view.main-leads-html) .main.main-leads > [data-shell-global-bar="true"] {
+  /* The route header owns the visible Leads actions; keep global action logic mounted for other routes. */
+  display: none !important;
+}
+
+#root .cf-html-view.main-leads-html > .cf-page-header-v2 .cf-page-header-v2__kicker {
+  /* The supplied Leads reference starts directly with the page title. */
+  display: none !important;
+}
+
+#root .cf-html-view.main-leads-html > .cf-page-header-v2 {
+  min-height: 0 !important;
+  padding: 0 0 1.35rem !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#root .cf-html-view.main-leads-html > .cf-page-header-v2 .cf-page-header-v2__copy {
+  max-width: none !important;
+  gap: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html > .cf-page-header-v2 .cf-page-header-v2__kicker {
+  margin-bottom: 0.55rem !important;
+  padding: 0.38rem 0.58rem !important;
+  border-color: #bfdbfe !important;
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  -webkit-text-fill-color: #2563eb !important;
+  font-size: 0.68rem !important;
+  letter-spacing: 0.08em !important;
+}
+
+#root .cf-html-view.main-leads-html > .cf-page-header-v2 .cf-page-header-v2__title {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  font-size: clamp(2rem, 3.2vw, 2.55rem) !important;
+  line-height: 1 !important;
+  letter-spacing: -0.055em !important;
+}
+
+#root .cf-html-view.main-leads-html > .cf-page-header-v2 .cf-page-header-v2__description {
+  max-width: 46rem !important;
+  margin-top: 0.58rem !important;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  font-size: 0.88rem !important;
+  line-height: 1.45 !important;
+}
+
+#root .cf-html-view.main-leads-html > .cf-page-header-v2 .cf-page-header-v2__actions {
+  min-width: 0 !important;
+  align-self: start !important;
+  display: block !important;
+}
+
+#root .cf-html-view.main-leads-html > .cf-page-header-v2 .cf-page-header-v2__actions > .head-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  flex-wrap: wrap !important;
+  gap: 0.5rem !important;
+}
+
+#root .cf-html-view.main-leads-html > .cf-page-header-v2 .cf-page-header-v2__actions .btn {
+  min-height: 2.45rem !important;
+  height: 2.45rem !important;
+  padding: 0 0.85rem !important;
+  border-radius: 0.78rem !important;
+  font-size: 0.75rem !important;
+}
+
+#root .cf-html-view.main-leads-html > .cf-page-header-v2 .cf-page-header-v2__actions .leads-create-action {
+  border-color: #2563eb !important;
+  background: #2563eb !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: 0 0.5rem 1.1rem rgb(37 99 235 / 0.18) !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-secondary-header-action {
+  /* These actions remain available through the expanded filter surface; the reference header exposes only its primary CTA. */
+  display: none !important;
+}
+
+#root .cf-html-view.main-leads-html > .grid-5 {
+  margin-bottom: 1.15rem !important;
+}
+
+#root .cf-html-view.main-leads-html > .layout-list {
+  display: block !important;
+  width: 100% !important;
+  margin-top: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html > .layout-list > .stack {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 0.85rem !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-toolbar {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto auto !important;
+  align-items: end !important;
+  gap: 0.65rem !important;
+  width: 100% !important;
+  padding: 0.78rem !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 0.95rem !important;
+  background: #ffffff !important;
+  box-shadow: 0 0.45rem 1.35rem rgb(15 23 42 / 0.035) !important;
+  box-sizing: border-box !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-control {
+  display: grid !important;
+  min-width: 0 !important;
+  gap: 0.28rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-control > span {
+  color: #64748b !important;
+  font-size: 0.63rem !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.075em !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-control select {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 2.35rem !important;
+  min-height: 2.35rem !important;
+  padding: 0 0.68rem !important;
+  border-color: #cbd5e1 !important;
+  border-radius: 0.68rem !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+}
+
+#root .cf-html-view.main-leads-html :is(.leads-filter-more, .leads-filter-reset) {
+  min-height: 2.35rem !important;
+  height: 2.35rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.38rem !important;
+  padding: 0 0.72rem !important;
+  border-radius: 0.68rem !important;
+  white-space: nowrap !important;
+  font-size: 0.73rem !important;
+  font-weight: 850 !important;
+  cursor: pointer !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-more {
+  border: 1px solid #cbd5e1 !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-more[aria-expanded="true"] {
+  border-color: #93c5fd !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-reset {
+  border: 0 !important;
+  background: transparent !important;
+  color: #2563eb !important;
+  -webkit-text-fill-color: #2563eb !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-more-filters-panel {
+  display: grid !important;
+  gap: 0.85rem !important;
+  width: 100% !important;
+  padding: 0.85rem !important;
+  border: 1px solid #dbeafe !important;
+  border-radius: 0.95rem !important;
+  background: #f8fbff !important;
+  box-sizing: border-box !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-more-filter-content {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 0.85rem !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-more-filter-content > aside {
+  min-width: 0 !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-more-filters-panel .cf-contact-cadence-strip {
+  margin: 0 !important;
+  border-color: #dbeafe !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-table-head,
+#root .cf-html-view.main-leads-html .leads-table-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1.15fr) minmax(0, 0.9fr) minmax(0, 0.85fr) minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 0.75fr) minmax(0, 0.75fr) minmax(0, 0.9fr) 3rem !important;
+  column-gap: 0.58rem !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-table-head {
+  min-height: 2.65rem !important;
+  padding: 0 1rem !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  background: #f8fafc !important;
+  color: #64748b !important;
+  font-size: 0.61rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.06em !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-table-head > span {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-leads-html .lead-table-card {
+  gap: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 1rem !important;
+  background: #ffffff !important;
+  box-shadow: 0 0.65rem 1.8rem rgb(15 23 42 / 0.045) !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-table-row {
+  min-height: 4rem !important;
+  padding: 0.7rem 1rem !important;
+  border-top: 1px solid #eef2f7 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  transition: background-color 140ms ease !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-table-row:hover {
+  background: #f8fbff !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-table-row > .index {
+  display: none !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-table-row > :is(.lead-main-cell, .lead-company-cell, .lead-status-cell, .lead-value-cell, .lead-last-contact-cell, .lead-action-cell, .lead-due-cell, .lead-risk-cell, .lead-owner-cell, .lead-actions) {
+  grid-column: auto !important;
+  grid-row: 1 !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  align-self: center !important;
+  justify-self: stretch !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-table-row > :is(.lead-main-cell, .lead-company-cell, .lead-status-cell, .lead-last-contact-cell, .lead-action-cell, .lead-due-cell, .lead-risk-cell, .lead-owner-cell) {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 0.18rem !important;
+  overflow: hidden !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-table-row > .lead-main-cell .title,
+#root .cf-html-view.main-leads-html .leads-table-row > .lead-company-cell .title,
+#root .cf-html-view.main-leads-html .leads-table-row > .lead-owner-cell strong,
+#root .cf-html-view.main-leads-html .leads-table-row > .lead-last-contact-cell strong,
+#root .cf-html-view.main-leads-html .leads-table-row > .lead-due-cell strong {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  font-size: 0.75rem !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-table-row :is(.lead-table-contact, .lead-company-cell .sub, .lead-owner-cell .mini, .lead-last-contact-cell .mini, .lead-due-cell .mini, .lead-action-cell .mini, .lead-risk-cell .mini) {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  font-size: 0.63rem !important;
+  font-weight: 700 !important;
+  line-height: 1.15 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-table-row > .lead-status-cell .statusline {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 0.24rem !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-table-row > .lead-status-cell :is(.pill, .cf-status-pill),
+#root .cf-html-view.main-leads-html .leads-table-row > .lead-risk-cell .cf-status-pill {
+  max-width: 100% !important;
+  min-height: 1.45rem !important;
+  padding: 0.25rem 0.45rem !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 0.61rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-table-row > .lead-value-cell {
+  overflow: hidden !important;
+  text-align: left !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-table-row > .lead-value-cell strong {
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  font-size: 0.75rem !important;
+  font-weight: 850 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-table-row > .lead-action-cell strong {
+  max-width: 100% !important;
+  display: -webkit-box !important;
+  overflow: hidden !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+  overflow-wrap: anywhere !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-table-row > .lead-actions {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 0.28rem !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-table-row > .lead-actions :is(.btn, button) {
+  width: 1.9rem !important;
+  min-width: 1.9rem !important;
+  height: 1.9rem !important;
+  min-height: 1.9rem !important;
+  padding: 0 !important;
+  border-radius: 0.58rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-table-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 0.75rem !important;
+  min-height: 3.35rem !important;
+  padding: 0.65rem 1rem !important;
+  border-top: 1px solid #e2e8f0 !important;
+  color: #64748b !important;
+  font-size: 0.7rem !important;
+  font-weight: 750 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-pagination-controls {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-pagination-button,
+#root .cf-html-view.main-leads-html .leads-pagination-current {
+  width: 1.85rem !important;
+  height: 1.85rem !important;
+  min-width: 1.85rem !important;
+  min-height: 1.85rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 0.48rem !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+  font-size: 0.7rem !important;
+  font-weight: 850 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-pagination-button:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.42 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-pagination-current {
+  border-color: #2563eb !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  -webkit-text-fill-color: #1d4ed8 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-page-size {
+  margin-left: 0.35rem !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 72rem) {
+  #root .cf-html-view.main-leads-html .leads-filter-toolbar {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-filter-more,
+  #root .cf-html-view.main-leads-html .leads-filter-reset {
+    grid-column: span 1 !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-table-head,
+  #root .cf-html-view.main-leads-html .leads-table-row {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.1fr) minmax(0, 0.9fr) minmax(0, 0.85fr) minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 0.8fr) 3rem !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-table-head > :nth-child(5),
+  #root .cf-html-view.main-leads-html .leads-table-head > :nth-child(7),
+  #root .cf-html-view.main-leads-html .leads-table-head > :nth-child(8),
+  #root .cf-html-view.main-leads-html .leads-table-head > :nth-child(9),
+  #root .cf-html-view.main-leads-html .leads-table-row > :is(.lead-last-contact-cell, .lead-due-cell, .lead-risk-cell, .lead-owner-cell) {
+    display: none !important;
+  }
+}
+
+@media (max-width: 46rem) {
+  #root .cf-html-view.main-leads-html > .cf-page-header-v2 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.8rem !important;
+  }
+
+  #root .cf-html-view.main-leads-html > .cf-page-header-v2 .cf-page-header-v2__actions,
+  #root .cf-html-view.main-leads-html > .cf-page-header-v2 .cf-page-header-v2__actions > .head-actions {
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-filter-toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-filter-more,
+  #root .cf-html-view.main-leads-html .leads-filter-reset {
+    grid-column: span 1 !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-more-filter-content {
+    grid-template-columns: 1fr !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-table-head {
+    display: none !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-table-row {
+    grid-template-columns: minmax(0, 1fr) 2.1rem !important;
+    row-gap: 0.48rem !important;
+    padding: 0.85rem !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-table-row > :is(.lead-main-cell, .lead-company-cell, .lead-status-cell, .lead-value-cell, .lead-last-contact-cell, .lead-action-cell, .lead-due-cell, .lead-risk-cell, .lead-owner-cell) {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-table-row > .lead-actions {
+    grid-column: 2 !important;
+    grid-row: 1 / span 2 !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-table-row > :is(.lead-company-cell, .lead-status-cell, .lead-value-cell, .lead-last-contact-cell, .lead-action-cell, .lead-due-cell, .lead-risk-cell, .lead-owner-cell) {
+    display: none !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-table-footer {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+  }
+}
+
+/* FRT-004: the search and primary filters are one reference-aligned control card. */
+#root .cf-html-view.main-leads-html .leads-filter-card {
+  display: grid !important;
+  grid-template-columns: minmax(250px, 1.35fr) repeat(3, minmax(115px, 0.8fr)) auto auto !important;
+  align-items: end !important;
+  gap: 0.65rem !important;
+  width: 100% !important;
+  padding: 0.78rem !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 0.95rem !important;
+  background: #ffffff !important;
+  box-shadow: 0 0.45rem 1.35rem rgb(15 23 42 / 0.035) !important;
+  box-sizing: border-box !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-search {
+  position: relative !important;
+  display: block !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-card .leads-filter-search > .search {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 2.35rem !important;
+  min-height: 2.35rem !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-card .leads-filter-search > .suggestions {
+  position: absolute !important;
+  top: calc(100% + 0.35rem) !important;
+  right: 0 !important;
+  left: 0 !important;
+  z-index: 20 !important;
+  margin: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-card > .leads-filter-toolbar {
+  display: contents !important;
+  width: auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#root .cf-html-view.main-leads-html .leads-filter-card > .leads-filter-toolbar > .leads-filter-control,
+#root .cf-html-view.main-leads-html .leads-filter-card > .leads-filter-toolbar > :is(.leads-filter-more, .leads-filter-reset) {
+  min-width: 0 !important;
+}
+
+@media (max-width: 72rem) {
+  #root .cf-html-view.main-leads-html .leads-filter-card {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) auto auto !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-filter-card > .leads-filter-search {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+@media (max-width: 46rem) {
+  #root .cf-html-view.main-leads-html .leads-filter-card {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #root .cf-html-view.main-leads-html .leads-filter-card > .leads-filter-search {
+    grid-column: 1 / -1 !important;
+  }
+}

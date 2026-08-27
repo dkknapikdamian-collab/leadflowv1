@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-27T06:08:36.768Z",
+  "generatedAt": "2026-08-27T11:29:35.322Z",
   "cssVariables": [
     {
       "name": "--cf-canvas",
@@ -4609,7 +4609,7 @@
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 863
+      "line": 873
     },
     {
       "file": "src/pages/ClientDetail.tsx",

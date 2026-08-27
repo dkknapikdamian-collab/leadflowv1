@@ -16,7 +16,7 @@ const CLOSEFLOW_PAGE_HEADER_COPY: Record<CloseFlowPageHeaderKey, CloseFlowPageHe
   leads: {
     kicker: 'LEADY',
     title: 'Leady',
-    description: 'Lista aktywnych tematów sprzedażowych. Tu zapisujesz kontakty, pilnujesz wartości i szybko widzisz, które leady wymagają ruchu.',
+    description: 'Zarządzaj procesem sprzedaży i pilnuj kolejnych ruchów.',
   },
   clients: {
     kicker: 'BAZA RELACJI',

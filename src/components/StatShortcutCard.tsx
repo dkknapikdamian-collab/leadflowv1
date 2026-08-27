@@ -102,6 +102,9 @@ function resolveMetricTone(label: string, valueClassName: string, iconClassName:
 
 function resolveMetricIconName(icon: ComponentType<{ className?: string }>): IconName {
   const rawName = String((icon as { displayName?: string; name?: string }).displayName || (icon as { name?: string }).name || '').toLowerCase();
+  if (rawName.includes('lead')) return 'users';
+  if (rawName.includes('activity')) return 'activity';
+  if (rawName.includes('wallet')) return 'wallet';
   if (rawName.includes('alert')) return 'alert';
   if (rawName.includes('calendar')) return 'calendar';
   if (rawName.includes('check')) return 'check';

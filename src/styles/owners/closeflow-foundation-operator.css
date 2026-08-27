@@ -834,3 +834,136 @@
     min-height: 0;
   }
 }
+
+/*
+ * FRT-004 / Leads metric composition.
+ * MetricCard remains the shared semantic component; this route-scoped layout
+ * only places its label, value, helper and icon into the reference tile shape.
+ */
+#root .cf-html-view.main-leads-html > .grid-5 > [data-cf-operator-metric-tile] {
+  min-width: 0 !important;
+  min-height: 7.15rem !important;
+  padding: 0 !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 0.95rem !important;
+  background: #ffffff !important;
+  box-shadow: 0 0.55rem 1.5rem rgb(15 23 42 / 0.045) !important;
+  overflow: hidden !important;
+}
+
+#root .cf-html-view.main-leads-html > .grid-5 > [data-cf-operator-metric-tile]:hover,
+#root .cf-html-view.main-leads-html > .grid-5 > [data-cf-operator-metric-tile]:focus-visible {
+  border-color: #bfdbfe !important;
+  box-shadow: 0 0.75rem 1.8rem rgb(37 99 235 / 0.1) !important;
+  outline: none !important;
+  transform: translateY(-1px);
+}
+
+#root .cf-html-view.main-leads-html > .grid-5 > [data-cf-operator-metric-tile] > [data-cf-operator-metric-tile-content] {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  grid-template-rows: auto auto minmax(0, 1fr) !important;
+  align-items: start !important;
+  min-height: 7.05rem !important;
+  gap: 0.18rem 0.7rem !important;
+  padding: 1rem 1.05rem 0.9rem !important;
+  box-sizing: border-box !important;
+}
+
+#root .cf-html-view.main-leads-html > .grid-5 > [data-cf-operator-metric-tile] .cf-operator-metric-text,
+#root .cf-html-view.main-leads-html > .grid-5 > [data-cf-operator-metric-tile] .cf-operator-metric-value-row {
+  display: contents !important;
+}
+
+#root .cf-html-view.main-leads-html > .grid-5 > [data-cf-operator-metric-tile] .cf-operator-metric-label {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  font-size: 0.62rem !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.06em !important;
+  line-height: 1.2 !important;
+  text-overflow: ellipsis !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-leads-html > .grid-5 > [data-cf-operator-metric-tile] .cf-operator-metric-value {
+  grid-column: 1 !important;
+  grid-row: 2 !important;
+  align-self: center !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  font-size: 1.2rem !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1.1 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-leads-html > .grid-5 > [data-cf-operator-metric-tile] .cf-operator-metric-helper {
+  grid-column: 1 !important;
+  grid-row: 3 !important;
+  align-self: end !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  font-size: 0.68rem !important;
+  font-weight: 600 !important;
+  line-height: 1.25 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-leads-html > .grid-5 > [data-cf-operator-metric-tile] .cf-operator-metric-icon {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  display: inline-flex !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  min-width: 2rem !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  border-radius: 0.65rem !important;
+  background: #eff6ff !important;
+  color: #2563eb !important;
+}
+
+#root .cf-html-view.main-leads-html > .grid-5 > [data-cf-operator-metric-tile][data-cf-operator-metric-tone="green"] .cf-operator-metric-icon {
+  background: #f5f3ff !important;
+  color: #7c3aed !important;
+}
+
+#root .cf-html-view.main-leads-html > .grid-5 > [data-cf-operator-metric-tile][data-cf-operator-metric-tone="red"] .cf-operator-metric-icon {
+  background: #fff1f2 !important;
+  color: #e11d48 !important;
+}
+
+#root .cf-html-view.main-leads-html > .grid-5 > [data-cf-operator-metric-tile] > [data-cf-operator-metric-tile-content]::after {
+  content: '›' !important;
+  grid-column: 2 !important;
+  grid-row: 3 !important;
+  align-self: end !important;
+  justify-self: end !important;
+  color: #334155 !important;
+  font-size: 1.55rem !important;
+  font-weight: 500 !important;
+  line-height: 0.8 !important;
+}
+
+@media (max-width: 46rem) {
+  #root .cf-html-view.main-leads-html > .grid-5 > [data-cf-operator-metric-tile] > [data-cf-operator-metric-tile-content] {
+    min-height: 6.5rem !important;
+    padding: 0.85rem !important;
+  }
+}

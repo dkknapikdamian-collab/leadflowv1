@@ -1,6 +1,6 @@
 # FRT-004 — LEADS ALL
 
-CONTRACT_STATUS: LOCKED
+CONTRACT_STATUS: ACTIVE
 STAGE_ID: FRT-004
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/004_leads_all.webp
 TARGET_ROUTE: /leads
@@ -17,4 +17,3 @@ ACCEPTANCE_CRITERIA: `/leads` all state is real and loaded; controls are classif
 TEST_PLAN: Leads filter/search/action tests; typecheck if TS changes; browser proof for all-state and responsive list; reuse matching list-owner evidence.
 PREDECESSOR: FRT-003
 SUCCESSOR: FRT-005
-
