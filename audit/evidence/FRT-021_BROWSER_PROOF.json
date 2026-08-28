@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-021",
+  "reference_file": "docs/ui/reference/forteca-calm-light/021_clients_all.webp",
+  "reference_sha256": "D92C2C4C6EFA545AED04EBA5F56F6CFDFB9E9A268F202C0CC5225674E76BD715",
+  "entry_url": "http://localhost:3000/clients?frt021=all&refresh=12",
+  "runtime_url": "http://localhost:3000/clients?frt021=all&refresh=12",
+  "route": "/clients",
+  "state": "Forteca calm-light Clients — Wszyscy",
+  "live_runtime": true,
+  "auth_required": false,
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "record_origin": "Existing workspace-scoped client, case, contact and next-action owners; reference screenshot fixtures were not copied into runtime state.",
+    "visible_clients": ["Anna Kowalska", "Katarzyna Wrona", "Michał Zieliński"],
+    "production_path": "The page uses fetchClientsFromSupabase() and the existing client/case/action handlers; no screenshot-only collection or fake create-case flow was added."
+  },
+  "visible_structure": {
+    "viewport": {"width": 946, "height": 698, "device_pixel_ratio": 1.25},
+    "root_marker": "data-forteca-frt-021-runtime=\"true\"",
+    "root_count": 1,
+    "shell_marker": ".cf-html-shell.cf-route-clients",
+    "table_marker": "data-forteca-frt-021-table=\"true\"",
+    "row_count": 3,
+    "kpi_values": {
+      "Wszyscy": "3",
+      "Aktywni": "2",
+      "Bez sprawy": "1",
+      "Aktywna prowizja": "0 PLN"
+    },
+    "body_overflow": "false",
+    "search_reset": "PASS",
+    "reference_copy_present": true,
+    "reference_copy": [
+      "Klienci",
+      "Zarządzaj relacjami i prowadź klientów od kontaktu do sprawy.",
+      "Import CSV",
+      "Dodaj klienta",
+      "Aktywna sprawa",
+      "Ostatni kontakt",
+      "Najbliższy ruch",
+      "Prowizja"
+    ]
+  },
+  "interaction_proof": {
+    "search": {
+      "status": "PASS",
+      "observed": "The real list changed from three visible clients to one visible row, Anna Kowalska, after entering Anna; keyboard reset restored all three rows."
+    },
+    "filters": {
+      "status": "PASS",
+      "observed": "The Więcej filtrów control opened the filter panel with aria-expanded=true and the panel marker present; it closed cleanly."
+    },
+    "add_client": {
+      "status": "PASS",
+      "observed": "The existing controlled ClientCreateDialog mounted as Nowy klient with Anuluj and Zapisz klienta; the dialog was closed without creating a record."
+    },
+    "row_actions": {
+      "status": "PASS",
+      "observed": "The first real client row opened the action menu with Otwórz klienta and Przenieś do kosza; the menu was closed without mutation."
+    },
+    "post_interaction_state": {
+      "status": "PASS",
+      "observed": "Search, filter panel, dialog and menu were closed; three real rows remained and document overflow stayed false."
+    }
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "workspace_scope_preserved": true,
+    "existing_client_actions_preserved": true,
+    "no_duplicate_list_owner": true,
+    "no_fake_success": true,
+    "no_unapproved_live_mutation": true,
+    "semantic_color_source_of_truth_preserved": true
+  },
+  "console_errors": 0,
+  "console_warnings": 0,
+  "screenshot_displayed_in_codex_browser": true,
+  "screenshot_path": null,
+  "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The live in-app viewport is 946x698, while the static reference capture uses a different desktop capture viewport.",
+      "The live list uses real workspace data and therefore differs from screenshot fixture values.",
+      "Destructive archive and create mutations were not invoked during browser proof; existing handlers and action menu wiring remain in the live source."
+    ]
+  },
+  "implementation_commit": "b88a93c380d08ffd040814b1bc28c830ccbc54b7",
+  "remote_head_verified": "b88a93c380d08ffd040814b1bc28c830ccbc54b7",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "created_at": "2026-08-28T22:37:03.0522854Z"
+}
