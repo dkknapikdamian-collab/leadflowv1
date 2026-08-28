@@ -519,6 +519,7 @@ function SectionHeader({
   onToggle,
   visualNumber,
   subtitle,
+  referenceHeader,
 }: {
   title: string;
   count: number;
@@ -528,24 +529,29 @@ function SectionHeader({
   onToggle?: () => void;
   visualNumber?: number;
   subtitle?: string;
+  referenceHeader?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onToggle}
       aria-expanded={!collapsed}
+      data-cf-today-section-header-variant={referenceHeader ? 'reference' : 'default'}
       className="cf-today-section-header flex w-full flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-4 text-left transition hover:bg-slate-50"
     >
-      <div className="flex items-center gap-3">
+      <div className="cf-today-section-header-leading flex items-center gap-3">
         <SectionHeaderIcon tone={tone} icon={icon} />
-        <div>
-          <h2 className="cf-today-section-title text-base font-bold text-slate-900">{visualNumber ? `${visualNumber}. ${title}` : title}</h2>
+        <div className="cf-today-section-header-copy">
+          <div className="cf-today-section-title-line">
+            <h2 className="cf-today-section-title text-base font-bold text-slate-900">{visualNumber ? `${visualNumber}. ${title}` : title}</h2>
+            {referenceHeader ? <Badge variant="secondary" className="cf-today-section-count-badge rounded-full">{count}</Badge> : null}
+          </div>
           <p className="cf-today-section-subtitle text-xs font-medium text-slate-500">{subtitle || `${count} wpisów`}</p>
         </div>
       </div>
-      <div className="flex items-center gap-2">
-        <Badge variant="secondary" className="rounded-full bg-slate-100 text-slate-700">{count}</Badge>
-        {collapsed ? <ChevronDown className="h-4 w-4 text-slate-400" /> : <ChevronUp className="h-4 w-4 text-slate-400" />}
+      <div className="cf-today-section-header-controls flex items-center gap-2">
+        {!referenceHeader ? <Badge variant="secondary" className="rounded-full bg-slate-100 text-slate-700">{count}</Badge> : null}
+        {!referenceHeader ? (collapsed ? <ChevronDown className="h-4 w-4 text-slate-400" /> : <ChevronUp className="h-4 w-4 text-slate-400" />) : null}
       </div>
     </button>
   );
@@ -556,7 +562,7 @@ function EmptyState({ text }: { text: string }) {
 }
 
 function StableCard({ children }: { children: ReactNode }) {
-  return <Card className="border-slate-100 shadow-sm"><CardContent className="p-0">{children}</CardContent></Card>;
+  return <Card className="cf-today-stable-card border-slate-100 shadow-sm"><CardContent className="p-0">{children}</CardContent></Card>;
 }
 
 const TODAY_SECTION_TITLES: Record<TodaySectionKey, string> = {
@@ -2014,7 +2020,7 @@ function TodayStable() {
       key: 'waiting',
       node: (
         <StableCard>
-          <SectionHeader title={todaySectionLabels.waiting} count={waitingCaseRows.length + waitingLeadRows.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" visualNumber={2} subtitle="Sprawy czekające na materiały, akceptację lub decyzję klienta" collapsed={isCollapsed('waiting')} onToggle={() => toggleSectionCollapse('waiting')} />
+          <SectionHeader title={todaySectionLabels.waiting} count={waitingCaseRows.length + waitingLeadRows.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" visualNumber={2} subtitle="Sprawy czekające na materiały, akceptację lub decyzję klienta" referenceHeader collapsed={isCollapsed('waiting')} onToggle={() => toggleSectionCollapse('waiting')} />
           <div className="cf-today-reference-columns" aria-hidden="true">
             <span>Sprawa</span>
             <span>Czego brakuje</span>
@@ -2064,7 +2070,7 @@ function TodayStable() {
       key: 'leads',
       node: (
         <StableCard>
-          <SectionHeader title={todaySectionLabels.leads} count={leadMovementRows.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" visualNumber={1} subtitle="Leady, które czekają na Twój kolejny krok" collapsed={isCollapsed('leads')} onToggle={() => toggleSectionCollapse('leads')} />
+          <SectionHeader title={todaySectionLabels.leads} count={leadMovementRows.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" visualNumber={1} subtitle="Leady, które czekają na Twój kolejny krok" referenceHeader collapsed={isCollapsed('leads')} onToggle={() => toggleSectionCollapse('leads')} />
           <div className="cf-today-reference-columns" aria-hidden="true">
             <span>Lead / klient</span>
             <span>Powód alarmu</span>
@@ -2248,13 +2254,14 @@ function TodayStable() {
       <section className="cf-today-ready-section" data-cf-today-visual-section="ready">
         <div className="cf-today-section-heading">
           <div className="cf-today-section-heading-copy">
-            <span className="cf-today-section-heading-icon cf-today-section-heading-icon--green" aria-hidden="true"><Rocket className="h-5 w-5" /></span>
-            <div>
-              <h2 className="cf-today-section-title">3. Gotowe do ruszenia</h2>
+            <div className="cf-today-section-heading-content">
+              <div className="cf-today-section-title-line">
+                <h2 className="cf-today-section-title">3. Gotowe do ruszenia</h2>
+                <span className="cf-today-section-count cf-today-section-count--reference">{readyCaseRows.length}</span>
+              </div>
               <p className="cf-today-section-subtitle">Sprawy kompletne — możesz rozpocząć realizację</p>
             </div>
           </div>
-          <span className="cf-today-section-count cf-today-section-count--green">{readyCaseRows.length}</span>
         </div>
         <div className="cf-today-ready-list">
           {readyCaseRows.length ? readyCaseRows.map(({ record, lifecycle }) => {

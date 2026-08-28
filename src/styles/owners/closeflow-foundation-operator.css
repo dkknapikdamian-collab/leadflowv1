@@ -82,13 +82,19 @@
  * priority rail is a sibling of the primary content column. These selectors
  * intentionally stay route-scoped so other screens retain their contracts.
  */
-.cf-today-main.cf-today-main--forteca {
+#root .cf-today-main.cf-today-main--forteca {
   display: grid;
   width: 100%;
   max-width: 1400px;
   min-width: 0;
   gap: 24px;
   padding: 0;
+  /* The route owns this visual composition while semantic colors remain
+   * inherited from the shared Forteca light token set. */
+  --cf-vst-surface-card: var(--cf-vst-surface-card-solid);
+  --cf-vst-surface-border: #e5eaf2;
+  --cf-vst-radius-card: 16px;
+  --cf-vst-shadow-card: 0 3px 12px rgba(15, 23, 42, 0.045);
 }
 
 .cf-today-main--forteca .cf-today-main-header {
@@ -117,18 +123,19 @@
   gap: 8px;
 }
 
-.cf-today-main--forteca .cf-today-main-header .cf-page-header-v2__title {
+#root .cf-today-main--forteca .cf-today-main-header .cf-page-header-v2__title {
   min-width: 0;
   margin: 0;
   color: #0f172a;
-  font-size: clamp(28px, 2.35vw, 36px);
+  -webkit-text-fill-color: #0f172a;
+  font-size: clamp(28px, 2.15vw, 32px);
   font-weight: 800;
   letter-spacing: -0.045em;
   line-height: 1.08;
   overflow-wrap: normal;
 }
 
-.cf-today-main--forteca .cf-today-main-header .cf-page-header-v2__description {
+#root .cf-today-main--forteca .cf-today-main-header .cf-page-header-v2__description {
   max-width: 680px;
   margin: 0;
   color: #64748b;
@@ -279,8 +286,8 @@
   grid-row: 1;
   place-items: center;
   border-radius: 12px;
-  background: #eff6ff;
-  color: #2563eb;
+  background: var(--cf-vst-color-primary-soft);
+  color: var(--cf-vst-color-primary);
 }
 
 .cf-today-main--forteca .cf-today-metric-copy {
@@ -315,23 +322,23 @@
 }
 
 .cf-today-main--forteca [data-cf-today-metric-tone="blue"] .cf-today-metric-icon {
-  background: #eff6ff;
-  color: #2563eb;
+  background: var(--cf-vst-color-primary-soft);
+  color: var(--cf-vst-color-primary);
 }
 
 .cf-today-main--forteca [data-cf-today-metric-tone="amber"] .cf-today-metric-icon {
-  background: #fff7ed;
-  color: #ea580c;
+  background: var(--cf-vst-color-warning-soft);
+  color: var(--cf-vst-color-warning);
 }
 
 .cf-today-main--forteca [data-cf-today-metric-tone="red"] .cf-today-metric-icon {
-  background: #fef2f2;
-  color: #dc2626;
+  background: var(--cf-vst-color-danger-soft);
+  color: var(--cf-vst-color-danger);
 }
 
 .cf-today-main--forteca [data-cf-today-metric-tone="green"] .cf-today-metric-icon {
-  background: #ecfdf5;
-  color: #059669;
+  background: var(--cf-vst-color-success-soft);
+  color: var(--cf-vst-color-success);
 }
 
 .cf-today-main--forteca .cf-today-content-grid {
@@ -365,35 +372,93 @@
   min-width: 0;
 }
 
-.cf-today-main--forteca .cf-today-primary-section-slot .cf-today-section-header {
-  min-height: 76px;
+#root .cf-today-main--forteca .cf-today-stable-card {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border-color: var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+}
+
+#root .cf-today-main--forteca .cf-today-primary-section-slot .cf-today-section-header {
+  min-height: 56px;
   align-items: center;
-  padding: 15px 18px;
+  padding: 7px 18px;
   border-color: #f1f5f9;
   background: #ffffff;
 }
 
-.cf-today-main--forteca .cf-today-primary-section-slot .cf-today-section-header > div:first-child {
+#root .cf-today-main--forteca .cf-today-primary-section-slot .cf-today-section-header > div:first-child {
   min-width: 0;
 }
 
-.cf-today-main--forteca .cf-today-primary-section-slot .cf-today-section-header > div:first-child > div:last-child {
+#root .cf-today-main--forteca .cf-today-primary-section-slot .cf-today-section-header > div:first-child > div:last-child {
   min-width: 0;
 }
 
-.cf-today-main--forteca .cf-today-primary-section-slot .cf-severity-dot {
-  display: grid;
-  width: 34px;
-  height: 34px;
-  flex: 0 0 34px;
-  place-items: center;
+#root .cf-today-main--forteca .cf-today-primary-section-slot .cf-severity-dot {
+  display: none;
+}
+
+#root .cf-today-main--forteca .cf-today-primary-section-slot .cf-today-section-header > div:first-child {
+  gap: 0;
+}
+
+#root .cf-today-main--forteca .cf-today-primary-section-slot .cf-today-section-header > div:last-child {
+  gap: 8px;
+}
+
+#root .cf-today-main--forteca .cf-today-primary-section-slot [data-cf-today-section-header-variant="reference"] .cf-today-section-title-line {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+#root .cf-today-main--forteca .cf-today-primary-section-slot .cf-today-section-count-badge {
+  display: inline-flex;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px !important;
+  border: 0 !important;
+  border-radius: var(--cf-vst-radius-pill);
+  background: var(--cf-vst-color-danger-soft) !important;
+  color: var(--cf-vst-color-danger) !important;
+  -webkit-text-fill-color: var(--cf-vst-color-danger) !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+}
+
+#root .cf-today-main--forteca .cf-today-ready-section .cf-today-section-heading-copy {
+  gap: 0;
+}
+
+#root .cf-today-main--forteca .cf-today-ready-section .cf-today-section-title-line {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+#root .cf-today-main--forteca .cf-today-ready-section .cf-today-section-count--reference {
+  display: inline-flex;
+  min-width: 20px;
+  min-height: 20px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
   border: 0;
-  border-radius: 10px;
-  background: #eff6ff;
-  color: #2563eb;
+  border-radius: var(--cf-vst-radius-pill);
+  background: var(--cf-vst-color-danger-soft);
+  color: var(--cf-vst-color-danger);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
 }
 
-.cf-today-main--forteca .cf-today-primary-section-slot .cf-today-section-title {
+#root .cf-today-main--forteca .cf-today-primary-section-slot .cf-today-section-title {
   overflow-wrap: normal;
   font-size: 15px;
   line-height: 1.35;
@@ -556,8 +621,8 @@
 }
 
 .cf-today-main--forteca .cf-today-section-heading-icon--green {
-  background: #ecfdf5;
-  color: #059669;
+  background: var(--cf-vst-color-success-soft);
+  color: var(--cf-vst-color-success);
 }
 
 .cf-today-main--forteca .cf-today-section-title,
@@ -583,8 +648,8 @@
 }
 
 .cf-today-main--forteca .cf-today-section-count--green {
-  background: #ecfdf5;
-  color: #047857;
+  background: var(--cf-vst-color-success-soft);
+  color: var(--cf-vst-color-success);
 }
 
 .cf-today-main--forteca .cf-today-ready-list,
