@@ -236,12 +236,10 @@ export default function LeadStartServiceDialog({
       ? 0
       : null;
   const checklistDescription = hasNoChecklist
-    ? 'Nie zostanie utworzona checklista, ponieważ wybrano opcję „Bez checklisty”.'
+    ? 'Nie zostanie dodana checklista, ponieważ wybrano opcję „Bez checklisty”.'
     : hasChecklistTemplate
-      ? resolvedChecklistTaskCount === null
-        ? 'Zostanie przygotowana checklista z wybranego szablonu; liczba zadań pochodzi z jego konfiguracji.'
-        : 'Zostanie przygotowana checklista z wybranego szablonu zgodnie z planem startu.'
-      : 'Nie zostanie utworzona checklista, dopóki nie wybierzesz szablonu.';
+      ? 'Zostanie dodana checklista na podstawie wybranego szablonu.'
+      : 'Nie zostanie dodana checklista, dopóki nie wybierzesz szablonu.';
   const checklistTaskCountLabel = hasChecklistTemplate
     ? resolvedChecklistTaskCount === null
       ? 'Nie określono'
@@ -250,10 +248,10 @@ export default function LeadStartServiceDialog({
   const clientLinkDescription = !draft.clientPortal
     ? 'Włącz Portal klienta, aby móc udostępnić i wysłać link.'
     : draft.sendClientLink
-      ? 'Wysłanie linku jest zaplanowane po przygotowaniu portalu; zależy od poprawnej konfiguracji wysyłki.'
+      ? 'Klient otrzyma dostęp do portalu z wglądem w sprawę i postępy.'
       : 'Portal klienta zostanie przygotowany, ale link nie zostanie wysłany automatycznie.';
   const taskDescription = draft.createFirstTask
-    ? 'Zadanie jest uwzględnione w planie startu; utworzenie zależy od walidacji i dostępnych uprawnień.'
+    ? 'Pierwsze zadanie dla operatora zostanie utworzone automatycznie.'
     : 'Nie zostanie utworzone, ponieważ opcja tworzenia pierwszego zadania jest wyłączona.';
 
   useEffect(() => {
@@ -498,7 +496,7 @@ export default function LeadStartServiceDialog({
             <aside className="forteca-frt-020-start-case__preview" aria-label="Podgląd planu utworzenia">
               <div className="forteca-frt-020-start-case__preview-heading">
                 <h2>Podgląd tego, co zostanie utworzone</h2>
-                <p>Po kliknięciu „Utwórz sprawę” system podejmie próbę utworzenia elementów zgodnie z wybranymi opcjami.</p>
+                <p>Po kliknięciu „Utwórz sprawę” zostaną utworzone następujące elementy.</p>
               </div>
 
               <div className="forteca-frt-020-start-case__preview-list">
@@ -506,7 +504,7 @@ export default function LeadStartServiceDialog({
                   icon="case"
                   tone="primary"
                   title="Sprawa"
-                  description={`Nowa sprawa zostanie utworzona dla klienta ${draft.clientName || 'tego klienta'}; właściciel i termin pokazują wybrany plan startu.`}
+                  description={`Nowa sprawa zostanie utworzona dla klienta ${draft.clientName || 'tego klienta'}.`}
                 >
                   <PreviewRow label="Nazwa sprawy" value={draft.title || 'Nowa sprawa'} />
                   <PreviewRow label="Typ usługi" value={draft.serviceType || 'Wdrożenie systemu'} />
@@ -543,7 +541,7 @@ export default function LeadStartServiceDialog({
                 >
                   <PreviewRow label="Nazwa zadania" value={draft.createFirstTask ? 'Kick-off i zebranie wymagań' : 'Nie utworzono'} />
                   <PreviewRow label="Termin" value={draft.createFirstTask ? addDaysToDate(draft.startDate, 2) : '—'} />
-                  <PreviewRow label="Planowany operator" value={draft.createFirstTask ? (draft.owner || 'Nie określono') : '—'} />
+                  <PreviewRow label="Przypisane do" value={draft.createFirstTask ? (draft.owner || 'Nie określono') : '—'} />
                 </PreviewBlock>
               </div>
             </aside>

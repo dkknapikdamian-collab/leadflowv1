@@ -76,6 +76,24 @@ test('FRT-020 exposes a controlled, preview-safe real-flow dialog', () => {
   assert.doesNotMatch(source, /#[0-9a-f]{3,8}\b/i);
 });
 
+test('FRT-020 keeps the reference preview copy and sample plan aligned without a fixture customer', () => {
+  const source = read(componentPath);
+  const leadDetail = read(leadDetailPath);
+
+  for (const copy of [
+    'Po kliknięciu „Utwórz sprawę” zostaną utworzone następujące elementy.',
+    'Zostanie dodana checklista na podstawie wybranego szablonu.',
+    'Klient otrzyma dostęp do portalu z wglądem w sprawę i postępy.',
+    'Pierwsze zadanie dla operatora zostanie utworzone automatycznie.',
+    'Przypisane do',
+  ]) {
+    assert.ok(source.includes(copy), `missing reference-aligned FRT-020 copy: ${copy}`);
+  }
+
+  assert.match(leadDetail, /checklistTaskCount: 18/);
+  assert.doesNotMatch(source, /ACME Logistics|ACME Sp\. z o\.o\.|Jan Kowalski/);
+});
+
 test('FRT-020 wires the dialog to the existing Lead-to-Case mutation', () => {
   const leadDetail = read(leadDetailPath);
   const handoff = read(handoffPath);

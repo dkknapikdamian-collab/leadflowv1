@@ -261,11 +261,12 @@ const modalSelectClass = 'lead-detail-modal-select';
 
 const FRT020_REFERENCE_DRAFT: Pick<
   LeadStartServiceDraft,
-  'title' | 'serviceType' | 'checklistTemplate' | 'value' | 'currency' | 'owner' | 'startDate' | 'clientPortal' | 'sendClientLink' | 'createFirstTask'
+  'title' | 'serviceType' | 'checklistTemplate' | 'checklistTaskCount' | 'value' | 'currency' | 'owner' | 'startDate' | 'clientPortal' | 'sendClientLink' | 'createFirstTask'
 > = {
   title: 'Wdrożenie systemu CRM',
   serviceType: 'Wdrożenie systemu',
   checklistTemplate: 'Wdrożenie CRM – standard',
+  checklistTaskCount: 18,
   value: '240 000',
   currency: 'PLN',
   owner: 'Damian Knapik',
