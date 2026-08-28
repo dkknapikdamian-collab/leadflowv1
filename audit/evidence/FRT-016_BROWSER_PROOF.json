@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-016",
+  "reference_file": "docs/ui/reference/forteca-calm-light/016_lead_add_event.webp",
+  "reference_sha256": "D723815A76A7455463E04CB073965203520A0979629E69FF54011F4815AA7A9D",
+  "entry_url": "http://localhost:3000/leads/dev-lead-3",
+  "runtime_url": "http://localhost:3000/leads/dev-lead-3",
+  "route": "/leads/dev-lead-3",
+  "state": "Forteca calm-light real Lead Detail add-event drawer",
+  "live_runtime": true,
+  "auth_required": false,
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "record_origin": "Existing local runtime Lead Detail record and current lead/event relation data; reference fixture values were not copied.",
+    "visible_lead": "Fundacja \"Lepsze Jutro\"",
+    "visible_company": "Fundacja Lepsze Jutro",
+    "visible_owner": "Dev Local",
+    "visible_relation": "Fundacja Lepsze Jutro · zarzad@fundacja.pl",
+    "event_write_owner": "EventCreateDialog -> /api/events -> src/server/event-route-stage124f.ts -> workspace-scoped event insert",
+    "lead_refresh_owner": "LeadDetail event success path -> current lead/activity/calendar refresh owners",
+    "production_source": "Supabase production path and workspace boundary remain unchanged; no authentication bypass was introduced."
+  },
+  "visible_structure": {
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "drawer": "Right-side white event drawer with dimmed Lead Detail backdrop, matching the FRT-016 reference composition.",
+    "measured_drawer": {
+      "x": 642,
+      "y": 16,
+      "width": 630,
+      "height": 688,
+      "right": 1272,
+      "bottom": 704
+    },
+    "header": "Zaplanuj spotkanie title and shared close control",
+    "fields": [
+      "Tytuł *",
+      "Typ spotkania",
+      "Online",
+      "Telefon",
+      "Na miejscu",
+      "Data *",
+      "Dzień tygodnia",
+      "Godzina rozpoczęcia *",
+      "Godzina zakończenia *",
+      "Lokalizacja / link online",
+      "Uczestnicy",
+      "Notatka",
+      "Przypomnienie",
+      "Cykliczność"
+    ],
+    "footer": [
+      "Anuluj",
+      "Dodaj do kalendarza"
+    ],
+    "visible_capability_boundary": "Location/link is explicitly rendered as unsupported by the current event schema; the linked lead is the real supported participant/relation and no fake location or participant persistence is claimed."
+  },
+  "interaction_proof": {
+    "real_quick_action_entry": {
+      "status": "PASS",
+      "observed": "The real visible Spotkanie action opened the mounted FRT-016 event drawer on /leads/dev-lead-3 after a fresh runtime reload."
+    },
+    "dynamic_lead_and_relation": {
+      "status": "PASS",
+      "observed": "The current Lead Detail record and linked lead relation are rendered from the local runtime; no ACME or other reference fixture value was used."
+    },
+    "meeting_mode_controls": {
+      "status": "PASS",
+      "observed": "Online, Telefon and Na miejscu controls are mounted as the three visible meeting-mode options."
+    },
+    "native_date_time_controls": {
+      "status": "PASS",
+      "observed": "Title, native date, start/end time, reminder, recurrence, note, relation and action controls are mounted; canonical Europe/Warsaw date-time normalization remains the write source of truth."
+    },
+    "cancel_boundary": {
+      "status": "NOT_EXERCISED",
+      "reason": "The drawer remained open as the marked deliverable proof; no destructive or live write action was invoked."
+    },
+    "submit": {
+      "status": "NOT_EXERCISED_BY_DESIGN",
+      "reason": "Dodaj do kalendarza invokes the real event mutation; browser policy forbids invoking a live write without explicit user confirmation."
+    },
+    "submit_action_invoked": false,
+    "controls_observed": {
+      "title": true,
+      "meeting_modes": 3,
+      "save": true,
+      "cancel": true,
+      "reminder": true,
+      "recurrence": true
+    },
+    "document_overflow": {
+      "document_width": 1280,
+      "client_width": 1280,
+      "horizontal_overflow": false
+    }
+  },
+  "visual_source_of_truth": {
+    "status": "PASS",
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "stage_owner": "src/styles/owners/closeflow-dialogs.css",
+    "action_owner": "src/styles/owners/closeflow-actions.css",
+    "semantic_delete_base": "--cf-vst-color-delete",
+    "derived_delete_variants": [
+      "--cf-vst-color-delete-strong",
+      "--cf-vst-color-delete-soft",
+      "--cf-vst-color-delete-border"
+    ],
+    "consumer_adapters": [
+      "src/styles/closeflow-record-list-source-truth.css",
+      "src/styles/owners/closeflow-records-and-rails.css",
+      "src/components/entity-actions.tsx"
+    ],
+    "stage_literal_color_values": 0,
+    "policy": "Reference discrepancies do not create per-screen color exceptions; one semantic concern maps to one VST token owner. Every trash icon resolves to the same --cf-vst-color-delete base, with variants derived from that owner."
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "lead_and_relation_data_are_runtime_bound": true,
+    "event_payload_preserves_workspace_and_relation_scope": true,
+    "active_event_route_relation_guards": true,
+    "lead_refresh_reconciliation_is_fail_closed": true,
+    "unsupported_location_and_participant_schema_not_faked": true,
+    "no_live_mutation_without_approval": true,
+    "no_fake_success_or_toast_path": true,
+    "no_parallel_store_or_migration": true
+  },
+  "console_errors": 0,
+  "console_warnings": 4,
+  "console_warning_baseline": "Four identical Missing Description or aria-describedby={undefined} warnings were observed from hidden/legacy DialogContent instances outside the active FRT-016 event dialog. The live FRT-016 DialogContent has aria-describedby=forteca-frt-016-description and a mounted DialogDescription. No FRT-016-specific runtime error was observed.",
+  "proof_freshness": {
+    "visual_capture": "Captured after the FRT-016 drawer implementation on the live local runtime.",
+    "post_capture_changes": "Subsequent review remediation changed active-route workspace authorization, fail-closed LeadDetail reconciliation, test ownership assertions and canonical delete color adapters; these are non-visual hardening changes.",
+    "current_source_revalidation": "Current source was revalidated with focused tests, combined regression tests, typecheck, build, semantic color/icon/typography guards and diff check.",
+    "geometry_impact": "No geometry or drawer presentation change was made after the visual capture."
+  },
+  "status": "PASS_WITH_DOCUMENTED_REFERENCE_CAPABILITY_AND_BROWSER_SUBMIT_BOUNDARIES",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The reference contains fixture values and a reference date; the runtime correctly renders current local lead data and native date/time controls.",
+      "Location/link and additional participant persistence are outside the current supported event schema and are explicitly not faked.",
+      "Event submit and calendar refresh after mutation were not invoked because they are live writes requiring user approval.",
+      "The browser viewport and operating-system native control rendering can differ from the reference capture."
+    ]
+  },
+  "tab_marked_deliverable": true,
+  "implementation_commit_sha": "4a6d8f14ec360b83c16e0de96afe660d4c5f9f1a",
+  "created_at": "2026-08-28T07:33:43.0352853Z"
+}

@@ -1,0 +1,258 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-016",
+  "reference_file": "docs/ui/reference/forteca-calm-light/016_lead_add_event.webp",
+  "target_route": "/leads/:leadId",
+  "target_state": "Forteca calm-light real Lead Detail add-event drawer",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_DOCUMENTED_REFERENCE_CAPABILITY_AND_BROWSER_SUBMIT_BOUNDARIES",
+  "acceptance_authority": "CODEX",
+  "acceptance_basis": {
+    "directive_interpretation": "Codex is the acceptance authority under the owner directive for the autonomous Forteca program. This receipt is controller acceptance, not an AICG PASS claim.",
+    "reference_and_runtime": "The real Lead Detail Spotkanie action opens a scoped right-side event drawer with the FRT-016 reference structure, while lead values, relation data and event write owners remain bound to the current runtime.",
+    "root_cause": "The shared EventCreateDialog exposed only the generic activity form and did not provide the FRT-016 title, meeting modes, date/time, reminder, recurrence, relation and recent event contract. The active event route also lacked complete workspace validation for optional lead/case/client relations, LeadDetail optimistic reconciliation was fail-open when response metadata was absent, and trash color adapters had independent fallback ownership. The repair added a scoped real drawer, preserved the active event/timezone/calendar owners, added fail-closed relation checks, and made the delete family derive from one VST base token.",
+    "review": "Independent repository-native review initially returned CONDITIONAL_FAIL for the active route owner, relation workspace validation, fail-closed LeadDetail reconciliation and delete color ownership. Parent validation and bounded remediation resolved those findings; final focused and combined tests pass, typecheck/build pass, semantic color/icon/typography guards pass, and Guardian smoke is recorded as PARTIAL with zero writes and zero blockers.",
+    "baseline_findings": "Guardian raw coverage is PARTIAL with zero blockers; unrelated pre-existing CSS-owner, patch-layer icon-registry and Today no-scroll findings remain recorded and were not widened into this stage."
+  },
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Reference fixture lead names, company values, event text and dates are never copied into runtime state or submitted to the API.",
+      "Current lead, relation and workspace-scoped IDs are read from the existing runtime owners.",
+      "No fake location, online link or additional participant persistence was invented; unsupported capabilities are explicitly disclosed in the live drawer.",
+      "Every semantic color is resolved from the canonical --cf-vst-* token owner; reference discrepancies never create a second color source.",
+      "The only literal semantic delete red is --cf-vst-color-delete; strong, soft and border variants derive from it, and every trash icon/hover/legacy adapter resolves to that family.",
+      "No fake success, no-op persistence model, automatic merge, silent fallback or unapproved browser mutation was introduced."
+    ]
+  },
+  "color_source_of_truth": {
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "stage_owner": "src/styles/owners/closeflow-dialogs.css",
+    "action_owner": "src/styles/owners/closeflow-actions.css",
+    "semantic_delete_base": "--cf-vst-color-delete",
+    "derived_variants": [
+      "--cf-vst-color-delete-strong",
+      "--cf-vst-color-delete-soft",
+      "--cf-vst-color-delete-border"
+    ],
+    "consumer_adapters": [
+      "src/styles/closeflow-record-list-source-truth.css",
+      "src/styles/owners/closeflow-records-and-rails.css",
+      "src/components/entity-actions.tsx"
+    ],
+    "stage_literal_color_values": 0,
+    "policy": "Reference discrepancies do not create per-screen color exceptions; one semantic concern maps to one VST token owner across every window and repeated component instance."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "api/work-items.ts",
+    "docs/ui/CLOSEFLOW_STYLE_MAP.generated.md",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.json",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.md",
+    "docs/ui/closeflow-style-map.generated.json",
+    "src/components/EventCreateDialog.tsx",
+    "src/components/entity-actions.tsx",
+    "src/lib/supabase-fallback.ts",
+    "src/pages/LeadDetail.tsx",
+    "src/server/event-route-stage124f.ts",
+    "src/styles/closeflow-record-list-source-truth.css",
+    "src/styles/owners/closeflow-actions.css",
+    "src/styles/owners/closeflow-dialogs.css",
+    "src/styles/owners/closeflow-foundation.css",
+    "src/styles/owners/closeflow-records-and-rails.css",
+    "tests/forteca-frt-016-lead-event.test.cjs",
+    "audit/evidence/FRT-016_BROWSER_PROOF.json",
+    "audit/evidence/FRT-016_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/runs/forteca-clean/FRT-016_RECEIPT.json",
+    "_project/WORKFLOW_STATE.json"
+  ],
+  "preserved_untracked_files": [
+    "dist-test-today-sections.cjs"
+  ],
+  "visual_sot_owners_used": [
+    "MODALS",
+    "FORMS",
+    "CALENDAR",
+    "BUTTONS_ACTIONS",
+    "ICONS",
+    "SURFACES"
+  ],
+  "visible_controls_inventory": [
+    "Tytuł",
+    "Typ spotkania",
+    "Online",
+    "Telefon",
+    "Na miejscu",
+    "Data",
+    "Dzień tygodnia",
+    "Godzina rozpoczęcia",
+    "Godzina zakończenia",
+    "Lokalizacja / link online",
+    "Uczestnicy",
+    "Notatka",
+    "Przypomnienie",
+    "Cykliczność",
+    "Anuluj",
+    "Dodaj do kalendarza",
+    "Close"
+  ],
+  "visible_controls_wired": "The real Lead Detail Spotkanie action opens the event drawer; title, meeting modes, date/time, reminder, recurrence, relation, note, unsupported-capability disclosure, cancel/close and save are mounted. Save maps to the existing workspace-scoped event mutation and was intentionally not invoked in the browser proof.",
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "node --test tests/forteca-frt-016-lead-event.test.cjs (15/15 PASS)",
+    "node --test tests/forteca-frt-014-lead-task.test.cjs tests/forteca-frt-015-lead-note.test.cjs tests/forteca-frt-016-lead-event.test.cjs tests/stage228r53-form-label-accessibility.test.cjs (23/23 PASS)",
+    "npx.cmd tsc --noEmit (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS)",
+    "npm.cmd run guard:ui:ssot-semantic-colors (PASS)",
+    "npm.cmd run guard:ui:ssot-icons (PASS)",
+    "npm.cmd run guard:ui:ssot-typography (PASS)",
+    "npm.cmd run guard:ui:ssot-css-owners (BASELINE_FAIL)",
+    "npm.cmd run guard:ui:patch-layers (BASELINE_FAIL)",
+    "npm.cmd run verify:closeflow:quiet (BASELINE_FAIL)",
+    "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke (PARTIAL, zero writes)",
+    "Live Codex In-app Browser proof of real /leads/dev-lead-3 and mounted event drawer (PASS_WITH_DOCUMENTED_REFERENCE_CAPABILITY_AND_BROWSER_SUBMIT_BOUNDARIES)",
+    "git diff --check (PASS)"
+  ],
+  "tests_reused": [
+    "FRT-000 routing, reference manifest, Guardian boundary and visual SOT owner registry",
+    "FRT-010 real Lead route and local runtime baseline",
+    "FRT-011 Lead action owners",
+    "FRT-012 populated Lead runtime and browser harness",
+    "FRT-013 relation and workspace baseline",
+    "FRT-014 real Lead task drawer and calendar/form owner baseline",
+    "FRT-015 real Lead note drawer and activity refresh baseline"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "live event submit and calendar refresh after mutation",
+      "reason": "NOT_EXECUTED_WITHOUT_USER_APPROVAL: the save button invokes a real event mutation; browser policy requires explicit confirmation."
+    },
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: the installed Guardian entrypoint exposed only partial repository-baseline smoke coverage; pass_claim=false."
+    },
+    {
+      "test": "guard:ui:ssot-css-owners",
+      "reason": "BASELINE_FINDING: existing global shell adapter concern mismatch in src/styles/closeflow-record-list-source-truth.css; FRT-016 did not modify the underlying global shell contract."
+    },
+    {
+      "test": "guard:ui:patch-layers",
+      "reason": "BASELINE_FINDING: existing direct lucide-react import in src/lib/source-of-truth/icon-registry.ts; FRT-016 did not modify that file."
+    },
+    {
+      "test": "npm.cmd run verify:closeflow:quiet",
+      "reason": "BASELINE_FINDING: existing Today tile no-scroll trap; FRT-016 did not modify Today code."
+    },
+    {
+      "test": "full legacy suite",
+      "reason": "BASELINE_DRIFT: unrelated historical failures and visual expectations exist outside the FRT-016 write set."
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS_WITH_KNOWN_WARNINGS",
+  "build_warnings": [
+    "Existing dynamic/static import overlap for src/lib/supabase-fallback.ts",
+    "Existing chunks larger than 500 kB after minification"
+  ],
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-016_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "EXECUTED: PARTIAL / coverage PARTIAL / fileWrites 0"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-016_BROWSER_PROOF.json",
+    "status": "PASS_WITH_DOCUMENTED_REFERENCE_CAPABILITY_AND_BROWSER_SUBMIT_BOUNDARIES",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "/leads/dev-lead-3",
+    "drawer_entry": "PASS",
+    "dynamic_data": "PASS",
+    "semantic_color_tokens": "PASS",
+    "native_controls": "PASS",
+    "submit": "NOT_SUBMITTED_BY_DESIGN",
+    "console_errors": 0,
+    "console_warnings": 4,
+    "tab_marked_deliverable": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitation": "Runtime data, native control rendering and explicitly unsupported current-schema capabilities correctly remain real and can differ from fixture pixels; live submit was not invoked without approval."
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "efficiency_planning": "APPLIED",
+    "marketplace_startup_receipt": "startup-4a1b89a3d52007383c31efef60a075fe00f0047d21e06ca9c6bf94db2aeb5e20",
+    "marketplace_binding": "BOUND",
+    "primary_capability": "frontend-design",
+    "project_context_reused": [
+      "FRT-000 contracts/evidence baseline",
+      "FRT-010 Lead runtime",
+      "FRT-011 action baseline",
+      "FRT-012 populated Lead runtime",
+      "FRT-013 relation/workspace baseline",
+      "FRT-014 task/calendar baseline",
+      "FRT-015 note/activity baseline",
+      "Generated UI/style maps"
+    ],
+    "evidence_reuse": [
+      "Real Lead Detail quick-action entry",
+      "FRT-012 browser harness",
+      "FRT-013 relation/workspace boundary",
+      "FRT-014 calendar/form owner baseline",
+      "Canonical semantic color and icon token guards"
+    ],
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "skip_reason": "No suitable available provider was exposed for this bounded UI/data-owner change; one write owner per path and parent validation were required.",
+    "subagents": [
+      {
+        "role": "EventCreateDialog implementation",
+        "agent": "Carver",
+        "result": "COMPLETED; scoped drawer and dialog owner changes; no commit/push"
+      },
+      {
+        "role": "LeadDetail integration",
+        "agent": "Descartes",
+        "result": "COMPLETED; real LeadDetail event host/refresh integration; tsc and focused checks"
+      },
+      {
+        "role": "focused test owner",
+        "agent": "Hubble",
+        "result": "COMPLETED; 15/15 focused tests after active-route alignment"
+      },
+      {
+        "role": "independent repository-native review",
+        "agent": "Boyle",
+        "result": "CONDITIONAL_FAIL initially; findings remediated and parent revalidated"
+      },
+      {
+        "role": "semantic color hardening",
+        "agent": "Linnaeus",
+        "result": "COMPLETED; one delete token owner and adapter reconciliation; semantic color guard/build pass"
+      },
+      {
+        "role": "test contract correction",
+        "agent": "Avicenna",
+        "result": "COMPLETED; active route/test assertions corrected; 15/15 focused tests"
+      },
+      {
+        "role": "active route authorization hardening",
+        "agent": "Faraday",
+        "result": "COMPLETED; workspace-scoped lead/case/client relation checks; tsc/guard-order checks"
+      }
+    ]
+  },
+  "implementation_commit_sha": "4a6d8f14ec360b83c16e0de96afe660d4c5f9f1a",
+  "next_stage": "FRT-017",
+  "created_at": "2026-08-28T07:33:43.0352853Z"
+}
