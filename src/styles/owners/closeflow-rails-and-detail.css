@@ -485,6 +485,19 @@
   gap: 18px;
 }
 
+/* FRT-018: the blockers manager owns the full detail canvas and its own rail. */
+#root .forteca-lead-detail-content-grid.forteca-lead-detail-content-grid--blockers {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+#root .forteca-lead-detail-content-grid.forteca-lead-detail-content-grid--blockers > .forteca-lead-detail-right-rail {
+  display: none;
+}
+
+#root .forteca-lead-detail-content-grid.forteca-lead-detail-content-grid--blockers > .forteca-lead-detail-main-column {
+  width: 100%;
+}
+
 #root .forteca-lead-detail-main-column,
 #root .forteca-lead-detail-right-rail {
   display: grid;

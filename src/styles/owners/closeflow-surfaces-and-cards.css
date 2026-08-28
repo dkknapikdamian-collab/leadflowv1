@@ -124,3 +124,240 @@ pre.cf-readable-panel {
 .cf-vst-card-description {
   color: var(--cf-vst-text-muted) !important;
 }
+
+/* FRT-018: Lead blockers manager surface and layout use the shared calm-light SOT. */
+#root [data-forteca-frt-018-manager] {
+  background: var(--cf-vst-surface-card-solid);
+  border: 1px solid var(--cf-vst-surface-border);
+  border-radius: var(--cf-vst-radius-card);
+  box-shadow: var(--cf-vst-shadow-card);
+  color: var(--cf-vst-text-strong);
+  display: grid;
+  gap: var(--cf-vst-space-xl);
+  padding: var(--cf-vst-space-2xl);
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-manager-header,
+#root [data-forteca-frt-018-manager] .forteca-frt-018-table-toolbar,
+#root [data-forteca-frt-018-manager] .forteca-frt-018-rail-heading,
+#root [data-forteca-frt-018-manager] .forteca-frt-018-info-heading {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--cf-vst-space-lg);
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-manager-header h2 {
+  color: var(--cf-vst-text-strong);
+  font-size: var(--cf-vst-font-size-section-title);
+  font-weight: var(--cf-vst-font-weight-heavy);
+  letter-spacing: -0.02em;
+  line-height: var(--cf-vst-line-height-title);
+  margin: var(--cf-vst-space-2xs) 0 var(--cf-vst-space-sm);
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-manager-header p,
+#root [data-forteca-frt-018-manager] .forteca-frt-018-info-card p {
+  color: var(--cf-vst-text-muted);
+  font-size: var(--cf-vst-font-size-body-sm);
+  line-height: var(--cf-vst-line-height-body);
+  margin: 0;
+  max-width: 690px;
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-eyebrow,
+#root [data-forteca-frt-018-manager] .forteca-frt-018-source-note,
+#root [data-forteca-frt-018-manager] .forteca-frt-018-table-toolbar span {
+  color: var(--cf-vst-text-muted);
+  font-size: var(--cf-vst-font-size-meta);
+  font-weight: var(--cf-vst-font-weight-semibold);
+  line-height: var(--cf-vst-line-height-button);
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-eyebrow {
+  color: var(--cf-vst-color-primary-strong);
+  display: block;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-manager-header-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cf-vst-space-sm);
+  justify-content: flex-end;
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-summary-grid {
+  display: grid;
+  gap: var(--cf-vst-space-md);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-summary-card,
+#root [data-forteca-frt-018-manager] .forteca-frt-018-table-card,
+#root [data-forteca-frt-018-manager] .forteca-frt-018-rail-card,
+#root [data-forteca-frt-018-manager] .forteca-frt-018-info-card {
+  background: var(--cf-vst-surface-card-solid);
+  border: 1px solid var(--cf-vst-surface-border);
+  border-radius: var(--cf-vst-radius-button);
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-summary-card {
+  display: grid;
+  gap: var(--cf-vst-space-2xs);
+  min-height: 112px;
+  padding: var(--cf-vst-space-lg);
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-summary-card span,
+#root [data-forteca-frt-018-manager] .forteca-frt-018-summary-card small {
+  color: var(--cf-vst-text-muted);
+  font-size: var(--cf-vst-font-size-meta);
+  font-weight: var(--cf-vst-font-weight-semibold);
+  line-height: var(--cf-vst-line-height-body);
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-summary-card strong {
+  color: var(--cf-vst-text-strong);
+  font-size: var(--cf-vst-font-size-metric-lg);
+  font-weight: var(--cf-vst-font-weight-heavy);
+  line-height: var(--cf-vst-line-height-tight);
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-summary-card[data-forteca-frt-018-tone="danger"] {
+  border-top: 3px solid var(--cf-vst-color-delete);
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-summary-card[data-forteca-frt-018-tone="warning"] {
+  border-top: 3px solid var(--cf-vst-color-event);
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-summary-card[data-forteca-frt-018-tone="success"] {
+  border-top: 3px solid var(--cf-vst-color-task);
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-manager-grid {
+  align-items: start;
+  display: grid;
+  gap: var(--cf-vst-space-lg);
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 326px);
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-table-card {
+  min-width: 0;
+  overflow: hidden;
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-table-toolbar {
+  align-items: center;
+  border-bottom: 1px solid var(--cf-vst-surface-border);
+  padding: var(--cf-vst-space-lg);
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-table-toolbar > div {
+  display: grid;
+  gap: var(--cf-vst-space-2xs);
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-table-toolbar strong,
+#root [data-forteca-frt-018-manager] .forteca-frt-018-rail-heading strong,
+#root [data-forteca-frt-018-manager] .forteca-frt-018-info-heading strong {
+  color: var(--cf-vst-text-strong);
+  font-size: var(--cf-vst-font-size-card-title);
+  font-weight: var(--cf-vst-font-weight-bold);
+  line-height: var(--cf-vst-line-height-title);
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-rail,
+#root [data-forteca-frt-018-manager] .forteca-frt-018-info-card {
+  display: grid;
+  gap: var(--cf-vst-space-md);
+  min-width: 0;
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-rail-card,
+#root [data-forteca-frt-018-manager] .forteca-frt-018-info-card {
+  min-width: 0;
+  padding: var(--cf-vst-space-lg);
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-rail-heading svg {
+  color: var(--cf-vst-text-faint);
+  height: 18px;
+  width: 18px;
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-info-heading {
+  align-items: center;
+  justify-content: flex-start;
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-info-heading svg {
+  color: var(--cf-vst-color-primary);
+  height: 18px;
+  width: 18px;
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-info-card p {
+  color: var(--cf-vst-text-main);
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-empty {
+  align-items: center;
+  color: var(--cf-vst-text-muted);
+  display: grid;
+  gap: var(--cf-vst-space-sm);
+  justify-items: center;
+  padding: var(--cf-vst-space-3xl) var(--cf-vst-space-lg);
+  text-align: center;
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-empty svg {
+  color: var(--cf-vst-color-task);
+  height: 30px;
+  width: 30px;
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-empty strong {
+  color: var(--cf-vst-text-strong);
+  font-size: var(--cf-vst-font-size-card-title);
+}
+
+#root [data-forteca-frt-018-manager] .forteca-frt-018-empty p {
+  color: var(--cf-vst-text-muted);
+  font-size: var(--cf-vst-font-size-body-sm);
+  margin: 0;
+}
+
+@media (max-width: 1120px) {
+  #root [data-forteca-frt-018-manager] .forteca-frt-018-manager-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #root [data-forteca-frt-018-manager] .forteca-frt-018-rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  #root [data-forteca-frt-018-manager] {
+    padding: var(--cf-vst-space-lg);
+  }
+
+  #root [data-forteca-frt-018-manager] .forteca-frt-018-manager-header,
+  #root [data-forteca-frt-018-manager] .forteca-frt-018-table-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  #root [data-forteca-frt-018-manager] .forteca-frt-018-manager-header-actions {
+    justify-content: stretch;
+  }
+
+  #root [data-forteca-frt-018-manager] .forteca-frt-018-summary-grid,
+  #root [data-forteca-frt-018-manager] .forteca-frt-018-rail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

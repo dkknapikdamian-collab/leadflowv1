@@ -122,6 +122,7 @@ import { openContextQuickAction, type ContextActionKind } from '../components/Co
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';
 import { MissingItemsManagerDialog, type MissingItemsManagerItem } from '../components/detail/MissingItemsManagerDialog';
+import { LeadBlockersManagerPanel } from '../components/detail/LeadBlockersManagerPanel';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -527,6 +528,36 @@ function buildLeadMissingActivityMetadataStage232AR8(activities: any[]) {
   return { byTaskId, byTitle };
 }
 
+function countResolvedLeadMissingItemsStage232I4R18(activities: any[], activeItems: MissingItemsManagerItem[]) {
+  const activeKeys = new Set<string>();
+  for (const item of activeItems || []) {
+    const raw = item?.raw || item || {};
+    const id = String(raw?.id || item?.id || '').trim();
+    const titleKey = normalizeMissingActivityTitleStage232AR8(raw?.title || item?.title || '');
+    if (id) activeKeys.add('id:' + id);
+    if (titleKey) activeKeys.add('title:' + titleKey);
+  }
+
+  const resolvedKeys = new Set<string>();
+  for (const activity of activities || []) {
+    const payload = activity?.payload && typeof activity.payload === 'object' ? activity.payload : {};
+    const eventType = String(activity?.eventType || activity?.event_type || activity?.type || '').toLowerCase();
+    const payloadKind = String(payload?.kind || payload?.type || '').toLowerCase();
+    const payloadStatus = String(payload?.status || '').toLowerCase();
+    const isResolvedMissing = eventType.includes('missing_item_resolved')
+      || (eventType.includes('missing_item') && ['done', 'completed', 'resolved', 'closed'].includes(payloadStatus))
+      || (payloadKind.includes('missing_item') && ['done', 'completed', 'resolved', 'closed'].includes(payloadStatus));
+    if (!isResolvedMissing) continue;
+
+    const taskId = String(payload?.taskId || payload?.task_id || '').trim();
+    const titleKey = normalizeMissingActivityTitleStage232AR8(payload?.title || payload?.itemTitle || activity?.title || '');
+    const key = taskId ? 'id:' + taskId : titleKey ? 'title:' + titleKey : '';
+    if (key && !activeKeys.has(key)) resolvedKeys.add(key);
+  }
+
+  return resolvedKeys.size;
+}
+
 function readActivityMissingMetadataStage232AR8(item: any, index: ReturnType<typeof buildLeadMissingActivityMetadataStage232AR8>) {
   const raw = item?.raw || item || {};
   const id = String(raw?.id || item?.id || '').replace(/^task:/, '').trim();
@@ -592,6 +623,13 @@ function isLinkedThroughLeadOrCase(item: Record<string, unknown>, leadId: string
   if (directLeadId === leadId) return true;
   if (caseId && directCaseId === caseId) return true;
   return false;
+}
+function isLeadMissingItemInCurrentScopeStage232I4R18(entry: any, currentLeadId: unknown, currentCaseId?: unknown) {
+  const normalizedLeadId = String(currentLeadId || '').trim();
+  const normalizedCaseId = String(currentCaseId || '').trim();
+  const raw = entry?.raw && typeof entry.raw === 'object' ? entry.raw : entry;
+  if (!normalizedLeadId || !raw || typeof raw !== 'object') return false;
+  return isLinkedThroughLeadOrCase(raw as Record<string, unknown>, normalizedLeadId, normalizedCaseId || null);
 }
 function getActivityTitle(activity: any) {
   return getActivityTimelineTitle(activity, { statusLabel, formatDateTime, formatMoney });
@@ -931,7 +969,7 @@ export default function LeadDetail() {
   const [editLinkedEvent, setEditLinkedEvent] = useState<any | null>(null);
   const [editLinkedTaskSubmitting, setEditLinkedTaskSubmitting] = useState(false);
   const [editLinkedEventSubmitting, setEditLinkedEventSubmitting] = useState(false);
-  const [activeLeadDetailTab, setActiveLeadDetailTab] = useState<'summary' | 'activity' | 'follow-up' | 'offer' | 'start'>('summary');
+  const [activeLeadDetailTab, setActiveLeadDetailTab] = useState<'summary' | 'activity' | 'blockers' | 'follow-up' | 'offer' | 'start'>('summary');
   const noteRecognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const potentialInputRefStage231G = useRef<HTMLInputElement | null>(null);
   const noteVoiceDirtyRef = useRef(false);
@@ -1304,13 +1342,17 @@ export default function LeadDetail() {
         },
       };
       setLinkedTasks((currentTasks: any[]) => dedupeById([optimisticTask, ...currentTasks]));
-      await addActivity('missing_item_created', {
-        title,
-        status,
-        blocksProgress: leadMissingManagerBlocksProgress,
-        source: 'stage232i4_r14_lead_missing_manager_dialog',
-        taskId: String((savedTask as any)?.id || ''),
-      });
+      try {
+        await addActivity('missing_item_created', {
+          title,
+          status,
+          blocksProgress: leadMissingManagerBlocksProgress,
+          source: 'stage232i4_r14_lead_missing_manager_dialog',
+          taskId: String((savedTask as any)?.id || ''),
+        });
+      } catch (activityError: any) {
+        console.warn('FRT-018 missing-item create committed but activity history write failed', activityError);
+      }
       setLeadMissingManagerTitle('');
       setLeadMissingManagerBlocksProgress(false);
       setLeadMissingManagerError('');
@@ -1333,6 +1375,10 @@ export default function LeadDetail() {
     const taskId = String(task?.id || entry?.id || '').trim();
     if (!taskId) {
       toast.error('Brak ID braku. Nie można zmienić blokady.');
+      return;
+    }
+    if (!isLeadMissingItemInCurrentScopeStage232I4R18(entry, leadId, serviceCaseId)) {
+      toast.error('Brak nie należy do bieżącego leada. Nie można zmienić blokady.');
       return;
     }
     const taskTitle = String(task?.title || entry?.title || 'Brak');
@@ -1358,14 +1404,18 @@ export default function LeadDetail() {
         },
       } as any);
       setLinkedTasks((currentTasks: any[]) => currentTasks.map((item: any) => String(item?.id || '') === taskId ? { ...item, status: nextStatus, priority: nextPriorityStage232I4R16ZR8, blocksProgress, payload: { ...(item?.payload || {}), blocksProgress, priority: nextPriorityStage232I4R16ZR8, status: nextStatus, source: 'stage232i4_r16z_r10_lead_missing_checkbox_activity_source_fix' } } : item));
-      await addActivity('missing_item_state_updated', {
-        taskId,
-        title: taskTitle,
-        status: nextStatus,
-        blocksProgress,
-        priority: nextPriorityStage232I4R16ZR8,
-        source: 'stage232i4_r16z_r10_lead_missing_checkbox_activity_source_fix',
-      });
+      try {
+        await addActivity('missing_item_state_updated', {
+          taskId,
+          title: taskTitle,
+          status: nextStatus,
+          blocksProgress,
+          priority: nextPriorityStage232I4R16ZR8,
+          source: 'stage232i4_r16z_r10_lead_missing_checkbox_activity_source_fix',
+        });
+      } catch (activityError: any) {
+        console.warn('FRT-018 missing-item blocker change committed but activity history write failed', activityError);
+      }
       toast.success(blocksProgress ? 'Brak ustawiony jako blokujący' : 'Brak nie blokuje sprawy');
       await loadLead({ silent: true });
     } catch (error: any) {
@@ -1377,13 +1427,17 @@ export default function LeadDetail() {
   const handleResolveLeadMissingItemStage228R13 = async (entry: any) => {
     if (!hasAccess) {
       toast.error('Trial wygasł.');
-      return;
+      return false;
     }
     const task = entry?.raw || entry || {};
     const taskId = String(task?.id || '').trim();
     if (!taskId) {
       toast.error('Brak ID braku. Nie można oznaczyć jako rozwiązany.');
-      return;
+      return false;
+    }
+    if (!isLeadMissingItemInCurrentScopeStage232I4R18(entry, leadId, serviceCaseId)) {
+      toast.error('Brak nie należy do bieżącego leada. Nie można oznaczyć go jako rozwiązany.');
+      return false;
     }
     const resolvedAt = new Date().toISOString();
 
@@ -1403,17 +1457,23 @@ export default function LeadDetail() {
           source: 'stage228r13_lead_missing_item_status_resolve',
         },
       } as any);
-      await addActivity('missing_item_resolved', {
-        taskId,
-        title: String(task?.title || entry?.title || 'Brak'),
-        status: 'resolved',
-        resolvedAt,
-        source: 'stage228r13_lead_missing_item_status_resolve',
-      });
+      try {
+        await addActivity('missing_item_resolved', {
+          taskId,
+          title: String(task?.title || entry?.title || 'Brak'),
+          status: 'resolved',
+          resolvedAt,
+          source: 'stage228r13_lead_missing_item_status_resolve',
+        });
+      } catch (activityError: any) {
+        console.warn('FRT-018 missing-item resolve committed but activity history write failed', activityError);
+      }
       toast.success('Brak oznaczony jako rozwiązany');
       await loadLead({ silent: true });
+      return true;
     } catch (error: any) {
       toast.error(`Nie udało się rozwiązać braku: ${error?.message || 'REQUEST_FAILED'}`);
+      return false;
     } finally {
       setLinkedEntryActionId(null);
     }
@@ -1431,35 +1491,82 @@ export default function LeadDetail() {
       toast.error('Brak ID braku. Nie można usunąć.');
       return;
     }
+    if (!isLeadMissingItemInCurrentScopeStage232I4R18(entry, leadId, serviceCaseId)) {
+      toast.error('Brak nie należy do bieżącego leada. Nie można go usunąć.');
+      return;
+    }
     if (!window.confirm('Usunąć ten brak?')) return;
 
     const deletedAt = new Date().toISOString();
     const taskTitle = String(task?.title || entry?.title || 'Brak');
-    const scheduledAt = String(task?.scheduledAt || task?.dueAt || task?.date || deletedAt);
     let optimisticSnapshot: any[] | null = null;
+    let deletionCommitted = false;
 
     try {
       setLinkedEntryActionId(`missing:${taskId}:delete`);
+      optimisticSnapshot = [...linkedTasks];
       setLinkedTasks((previous) => previous.filter((item: any) => String(item?.id || '') !== taskId));
 
       await hardDeleteTaskFromSupabase(taskId);
+      deletionCommitted = true;
 
-      await addActivity('missing_item_deleted', {
-        taskId,
-        title: taskTitle,
-        status: 'deleted',
-        deletedAt,
-        source: 'stage228r17_missing_item_delete_contract',
-      });
+      try {
+        await addActivity('missing_item_deleted', {
+          taskId,
+          title: taskTitle,
+          status: 'deleted',
+          deletedAt,
+          source: 'stage228r17_missing_item_delete_contract',
+        });
+      } catch (activityError: any) {
+        console.warn('FRT-018 missing-item delete committed but activity history write failed', activityError);
+      }
 
       toast.success('Brak usunięty');
       await loadLead({ silent: true });
     } catch (error: any) {
-      if (optimisticSnapshot) setLinkedTasks(optimisticSnapshot);
+      if (!deletionCommitted && optimisticSnapshot) setLinkedTasks(optimisticSnapshot);
       toast.error(`Błąd usuwania braku: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
     }
+  };
+
+  const openLeadMissingManagerStage232I4R18 = () => {
+    setLeadMissingManagerTitle('');
+    setLeadMissingManagerBlocksProgress(false);
+    setLeadMissingManagerError('');
+    setLeadMissingManagerOpen(true);
+  };
+
+  const handleEditLeadMissingItemStage232I4R18 = (entry: MissingItemsManagerItem) => {
+    const task = entry?.raw || entry || {};
+    if (!String(task?.id || '').trim()) {
+      toast.error('Brak ID braku. Nie można otworzyć edycji.');
+      return;
+    }
+    if (!isLeadMissingItemInCurrentScopeStage232I4R18(entry, leadId, serviceCaseId)) {
+      toast.error('Brak nie należy do bieżącego leada. Nie można go edytować.');
+      return;
+    }
+    openLinkedTaskEditor(task);
+  };
+
+  const handleResolveAllLeadMissingStage232I4R18 = async () => {
+    const openItems = leadMissingManagerItemsStage232I4R14.filter((item) => {
+      const status = String(item?.status || item?.raw?.status || item?.payload?.status || '').toLowerCase();
+      return !['done', 'completed', 'resolved', 'closed'].includes(status);
+    });
+    let resolvedCount = 0;
+    for (const item of openItems) {
+      const resolved = await handleResolveLeadMissingItemStage228R13(item);
+      if (!resolved) {
+        toast.error(`Zatrzymano po ${resolvedCount} z ${openItems.length} pozycji. Sprawdź historię zmian.`);
+        return;
+      }
+      resolvedCount += 1;
+    }
+    if (resolvedCount > 0) toast.success(`Rozwiązano ${resolvedCount} ${resolvedCount === 1 ? 'brak' : 'braki'}.`);
   };
 
   const openLeadPaymentDialog = (type: 'deposit' | 'partial') => {
@@ -1602,6 +1709,10 @@ useEffect(() => {
     }),
     [activeMissingItemEntriesStage232AR8, lead, leadMissingActivityMetadataStage232AR8],
   );
+  const resolvedLeadMissingCountStage232I4R18 = useMemo(
+    () => countResolvedLeadMissingItemsStage232I4R18(activities, leadMissingManagerItemsStage232I4R14),
+    [activities, leadMissingManagerItemsStage232I4R14],
+  );
   const leadNextActionEntries = useMemo(
     () => activeLeadWorkEntries.filter((entry) => !isMissingItemTimelineEntry(entry) && !activeMissingTaskIdsStage232AR8.has(String(entry.raw?.id || '').trim()) && (entry.kind === 'task' || entry.kind === 'event')),
     [activeLeadWorkEntries, activeMissingTaskIdsStage232AR8],
@@ -1742,6 +1853,7 @@ useEffect(() => {
   const leadDetailTabs = [
     { id: 'summary' as const, label: 'Podsumowanie' },
     { id: 'activity' as const, label: 'Aktywność' },
+    { id: 'blockers' as const, label: 'Braki i blokady' },
     { id: 'follow-up' as const, label: 'Follow-up' },
     { id: 'offer' as const, label: 'Oferta' },
     { id: 'start' as const, label: 'Start realizacji' },
@@ -2767,7 +2879,7 @@ useEffect(() => {
             ))}
           </nav>
 
-          <div className="forteca-lead-detail-content-grid">
+          <div className={`forteca-lead-detail-content-grid ${activeLeadDetailTab === 'blockers' ? 'forteca-lead-detail-content-grid--blockers' : ''}`}>
             <div className="forteca-lead-detail-main-column">
               {activeLeadDetailTab === 'summary' ? (
                 <>
@@ -2832,6 +2944,22 @@ useEffect(() => {
                     </button>
                   </section>
                 </>
+              ) : null}
+
+              {activeLeadDetailTab === 'blockers' ? (
+                <LeadBlockersManagerPanel
+                  items={leadMissingManagerItemsStage232I4R14}
+                  resolvedCount={resolvedLeadMissingCountStage232I4R18}
+                  canMutate={hasAccess && !leadOperationalArchive}
+                  isSaving={leadMissingManagerSaving || linkedEntryActionId !== null}
+                  onAdd={openLeadMissingManagerStage232I4R18}
+                  onEdit={handleEditLeadMissingItemStage232I4R18}
+                  onToggleBlocker={handleToggleLeadMissingBlockerStage232I4R14}
+                  onResolve={handleResolveLeadMissingItemStage228R13}
+                  onResolveAll={handleResolveAllLeadMissingStage232I4R18}
+                  onDelete={handleDeleteLeadMissingItemStage228R15}
+                  onShowHistory={() => setActiveLeadDetailTab('activity')}
+                />
               ) : null}
 
               {activeLeadDetailTab === 'activity' ? (
@@ -3132,7 +3260,7 @@ useEffect(() => {
                         className="lead-detail-inline-action"
                         data-stage232a-r9-view-all-missing-action="true"
                         data-stage232i4-r14-lead-open-missing-manager="true"
-                        onClick={() => setLeadMissingManagerOpen(true)}
+                        onClick={openLeadMissingManagerStage232I4R18}
                       >
                         Zobacz wszystkie braki
                       </button>
@@ -3455,7 +3583,7 @@ useEffect(() => {
           blockerValue={leadMissingManagerBlocksProgress}
           error={leadMissingManagerError}
           isSaving={leadMissingManagerSaving || linkedEntryActionId !== null}
-          canMutate={hasAccess}
+          canMutate={hasAccess && !leadOperationalArchive}
           items={leadMissingManagerItemsStage232I4R14}
           onTitleChange={(value) => {
             setLeadMissingManagerTitle(value);
@@ -3464,7 +3592,7 @@ useEffect(() => {
           onBlockerChange={setLeadMissingManagerBlocksProgress}
           onAdd={handleAddLeadMissingFromManagerStage232I4R14}
           onToggleBlocker={handleToggleLeadMissingBlockerStage232I4R14}
-          onResolve={handleResolveLeadMissingItemStage228R13}
+          onResolve={(entry) => { void handleResolveLeadMissingItemStage228R13(entry); }}
           onDelete={handleDeleteLeadMissingItemStage228R15}
         />
 <Dialog open={isCreateCaseOpen} onOpenChange={setIsCreateCaseOpen}>
