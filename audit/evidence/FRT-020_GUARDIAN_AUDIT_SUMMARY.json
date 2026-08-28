@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-020",
+  "mode": "AUDIT_ONLY",
+  "command": "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+  "raw_outcome": "PARTIAL",
+  "coverageOutcome": "PARTIAL",
+  "pass_claim": false,
+  "fileWrites": 0,
+  "selectedCapabilities": ["repository-baseline"],
+  "selectedSkills": ["ai-code-guardian", "architecture-integrity"],
+  "receiptIds": ["guardian-plugin-smoke-coverage", "guardian-plugin-smoke-result"],
+  "blockers": 0,
+  "target_wide_scan": "NOT_AVAILABLE",
+  "repository": {
+    "branch": "codex/forteca-ui-001-040-clean",
+    "implementation_commit": "2cd44eb4ec060fed75e1f8dedfbaf82a75cd7d46"
+  },
+  "stage_validation": {
+    "focused_tests": "8/8 PASS",
+    "typescript": "PASS",
+    "production_build": "PASS_WITH_KNOWN_WARNINGS",
+    "diff_check": "PASS",
+    "guard_ui_ssot_semantic_colors": "PASS",
+    "guard_ui_ssot_icons": "PASS",
+    "guard_ui_ssot_typography": "PASS",
+    "browser_runtime": "PASS_WITH_NON_MUTATING_DEV_INSPECTION_ENTRY",
+    "browser_console_errors": 0,
+    "browser_console_warnings": 0,
+    "independent_review": "PENDING_AT_GUARDIAN_CAPTURE"
+  },
+  "known_baseline_findings": [
+    "guard:ui:ssot-css-owners reports the existing concern mismatch for the global shell adapter in src/styles/closeflow-record-list-source-truth.css; FRT-020 did not introduce or modify that concern.",
+    "guard:ui:patch-layers reports the existing direct lucide-react import in src/lib/source-of-truth/icon-registry.ts; FRT-020 did not modify the file.",
+    "verify:closeflow:quiet reports the existing Today tile no-scroll trap STAGE223_R2AD_TODAY_TILE_NO_SCROLL_TRAP_FAIL; FRT-020 did not modify Today code.",
+    "The installed Guardian entrypoint exposes partial repository-baseline coverage and no target-wide scan."
+  ],
+  "interpretation": "Guardian smoke completed with zero writes and no returned blocker. Coverage remains PARTIAL, so no full target-wide Guardian PASS is claimed.",
+  "color_policy": {
+    "status": "PASS",
+    "semantic_task_base": "--cf-vst-color-task",
+    "semantic_primary_base": "--cf-vst-color-primary",
+    "semantic_payment_base": "--cf-vst-color-payment",
+    "semantic_case_item_base": "--cf-vst-color-case-item",
+    "stage_literal_color_values": 0,
+    "rule": "Reference-image discrepancies never create per-window color exceptions. Repeated semantic icons use their shared VST family, and all trash/delete icons use the shared delete family."
+  },
+  "created_at": "2026-08-28T20:00:00.000Z"
+}

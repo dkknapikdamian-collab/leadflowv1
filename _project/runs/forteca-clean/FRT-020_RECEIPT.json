@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-020",
+  "reference_file": "docs/ui/reference/forteca-calm-light/020_lead_start_case.webp",
+  "reference_sha256": "8CBF3903DE5B8ADF1E49DA7150F1A737B5E8FB43AC854826E904604BE1D289FB",
+  "target_route": "/leads/:leadId",
+  "target_state": "Lead Detail — start service/create case",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_NON_MUTATING_DEV_INSPECTION_AND_GUARDIAN_PARTIAL_BOUNDARY",
+  "acceptance_authority": "CODEX_AFTER_PARENT_REVIEW",
+  "acceptance_basis": {
+    "directive_interpretation": "The approved Forteca branch is the sole implementation route. The parent independently checked repository identity, the exact reference, source-of-truth ownership, focused tests, typecheck, build, Guardian output, live browser DOM and screenshot before closeout.",
+    "root_cause": "The Lead Detail start-service path lacked the complete reference-aligned case-creation modal and a sufficiently explicit guarded transition contract. The implementation gap covered form/preview ownership, client/case provisioning fields, idempotency and safe navigation evidence.",
+    "repair": "FRT-020 adds the controlled LeadStartServiceDialog, binds it to the existing Lead-to-Case operation, preserves workspace/entity scope, adds idempotency and provisioning guards, redirects to canonical case detail, centralizes semantic VST colors and aligns the live preview copy/sample plan with the reference.",
+    "review_status": "The parent reviewed the final source diff, reference image, live runtime geometry, copy, semantic colors, console output and mutation boundary. A new independent subagent could not be spawned because the Codex subagent thread limit was already reached; no independent reviewer PASS is claimed.",
+    "guardian_interpretation": "Guardian smoke is AUDIT_ONLY/PARTIAL with zero writes and zero returned blockers. A full target-wide Guardian PASS is not claimed because the installed entrypoint exposes only partial repository-baseline coverage.",
+    "browser_boundary": "The real Lead Detail route renders the mounted production component in a DEV-only preview mode. Preview submit is guarded before mutation; the normal interactive path remains wired to real provisioning and canonical navigation."
+  },
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Reference fixture customer names and screenshot-only values are never inserted into runtime state or API payloads.",
+      "Current lead, client, case and workspace owners remain the source of runtime identity and scope.",
+      "The existing Lead-to-Case service remains the mutation owner; no parallel case flow or screenshot-only workflow was added.",
+      "Provisioning claims, returned IDs, owner/workspace validation and idempotency guards fail closed before unsafe linkage.",
+      "Reference-image discrepancies never create per-window color exceptions. Repeated semantic icons resolve through shared VST families.",
+      "All trash/delete icons continue to resolve through the canonical --cf-vst-color-delete family.",
+      "No fake success, automatic merge, silent fallback, unapproved browser mutation or production merge was introduced."
+    ]
+  },
+  "color_source_of_truth": {
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "action_owner": "src/styles/owners/closeflow-actions.css",
+    "dialog_owner": "src/styles/owners/closeflow-dialogs.css",
+    "icon_owner": "src/ui-system/icons/SemanticIcon.tsx and src/components/ui-system/ActionIcon.tsx",
+    "semantic_tone_adapters": {
+      "primary": "--cf-vst-color-primary",
+      "task": "--cf-vst-color-task",
+      "payment": "--cf-vst-color-payment",
+      "case_item": "--cf-vst-color-case-item",
+      "delete": "--cf-vst-color-delete"
+    },
+    "stage_literal_color_values": 0,
+    "policy": "Each semantic concern has one VST token owner across every window and repeated component instance. Reference drift does not create local palette copies."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "api/leads.ts",
+    "package.json",
+    "scripts/check-lead-to-case-flow.cjs",
+    "src/components/LeadStartServiceDialog.tsx",
+    "src/lib/lead-case-handoff.ts",
+    "src/lib/supabase-fallback.ts",
+    "src/pages/LeadDetail.tsx",
+    "src/server/_portal-token.ts",
+    "src/server/lead-start-service-provision.ts",
+    "src/server/lead-to-case.ts",
+    "src/styles/owners/closeflow-actions.css",
+    "src/styles/owners/closeflow-dialogs.css",
+    "src/ui-system/icons/SemanticIcon.tsx",
+    "supabase/migrations/20260828090000_frt020_lead_start_service_provisioning_idempotency.sql",
+    "tests/forteca-frt-020-lead-start-case.test.cjs",
+    "tests/lead-to-case-flow.test.cjs"
+  ],
+  "current_visual_alignment_files": [
+    "src/components/LeadStartServiceDialog.tsx",
+    "src/pages/LeadDetail.tsx",
+    "tests/forteca-frt-020-lead-start-case.test.cjs"
+  ],
+  "visual_sot_owners_used": ["MODALS", "FORMS", "BUTTONS_ACTIONS", "SURFACES", "ICONS", "TYPOGRAPHY"],
+  "visible_controls_inventory": [
+    "Nazwa sprawy",
+    "Typ usługi",
+    "Szablon checklisty",
+    "Wartość",
+    "Właściciel sprawy",
+    "Termin startu",
+    "Portal klienta",
+    "Wyślij link klientowi",
+    "Utwórz pierwszy następny krok dla operatora",
+    "Anuluj",
+    "Utwórz sprawę",
+    "Zamknij"
+  ],
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "node --test tests/forteca-frt-020-lead-start-case.test.cjs tests/lead-start-service-case-redirect.test.cjs (8/8 PASS)",
+    "npm.cmd run guard:ui:ssot-semantic-colors (PASS)",
+    "npm.cmd run guard:ui:ssot-icons (PASS)",
+    "npm.cmd run guard:ui:ssot-typography (PASS)",
+    "npx.cmd tsc --noEmit (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS)",
+    "git diff --check (PASS)",
+    "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke (PARTIAL, zero writes, zero blockers)",
+    "Live Codex In-app Browser proof of the real mounted dialog, DOM geometry, semantic colors and no-error console (PASS_WITH_NON_MUTATING_PREVIEW)",
+    "Parent comparison of docs/ui/reference/forteca-calm-light/020_lead_start_case.webp against live runtime screenshot (STRUCTURAL_PARITY_PASS)"
+  ],
+  "tests_reused": [
+    "FRT-000 routing, reference manifest, Guardian boundary and visual SOT owner registry",
+    "FRT-010 real Lead route and local runtime baseline",
+    "FRT-011 Lead action owners",
+    "FRT-012 populated Lead runtime and browser harness",
+    "FRT-013 relation and workspace boundary",
+    "FRT-014 task/calendar persistence baseline",
+    "FRT-016 canonical semantic delete color and icon baseline",
+    "FRT-017 missing-item task/activity handoff baseline",
+    "FRT-018 scoped Lead mutation baseline",
+    "FRT-019 Lead Detail controlled dialog and non-mutating browser proof boundary"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "live browser submit and post-submit persistence observation",
+      "reason": "NOT_EXECUTED_BY_DESIGN: the interactive action creates real client/case/operational records. The DEV preview is deliberately non-mutating; source-level integration tests cover the real path and fail-closed guards."
+    },
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: installed Guardian entrypoint exposes only partial repository-baseline smoke coverage; pass_claim=false."
+    },
+    {
+      "test": "independent final reviewer PASS",
+      "reason": "PROCESS_BOUNDARY: Codex subagent thread limit prevented a fresh bounded reviewer from being spawned; no reviewer PASS is claimed."
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS_WITH_KNOWN_WARNINGS",
+  "build_warnings": [
+    "Existing dynamic/static import overlap for src/lib/supabase-fallback.ts",
+    "Existing chunks larger than 500 kB after minification"
+  ],
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-020_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "EXECUTED: PARTIAL / coverage PARTIAL / fileWrites 0"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-020_BROWSER_PROOF.json",
+    "screenshot_path": null,
+    "status": "PASS_WITH_NON_MUTATING_DEV_INSPECTION_ENTRY",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "/leads/dev-lead-3?frt020=start-service&refresh=1",
+    "preview_mode": "preview",
+    "modal_geometry": "x=396.6, y=20.4, width=794, height=677.6 at 1538x698",
+    "preview_cards": 4,
+    "checked_toggles": 3,
+    "interactive_submit": "NOT_EXECUTED_BY_DESIGN",
+    "console_errors": 0,
+    "console_warnings": 0,
+    "screenshot_displayed_in_codex_browser": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The live local viewport differs from the static reference capture viewport.",
+      "Underlying Lead Detail data is real local data and differs from the reference fixture.",
+      "Live submit was not invoked because it would create real records without explicit approval."
+    ]
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "efficiency_planning": "APPLIED",
+    "marketplace_binding": "BOUND",
+    "primary_capabilities": ["frontend-design-studio", "ai-code-guardian", "agent-efficiency-guardian"],
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_skip_reason": "Marketplace discovery exposed no available preferred provider; one write owner per path and parent validation remained required.",
+    "subagents": [{
+      "role": "bounded implementation/review support",
+      "result": "No new subagent was available for this closeout because the Codex subagent thread limit was reached; parent validation completed and no independent PASS is claimed."
+    }]
+  },
+  "implementation_commit_sha": "2cd44eb4ec060fed75e1f8dedfbaf82a75cd7d46",
+  "remote_head_verified": "2cd44eb4ec060fed75e1f8dedfbaf82a75cd7d46",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "created_at": "2026-08-28T20:02:00.000Z"
+}

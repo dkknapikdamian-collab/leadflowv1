@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 102,
+  "state_revision": 103,
   "last_accepted": {
-    "id": "FRT-019",
+    "id": "FRT-020",
     "status": "PASS",
-    "commit_sha": "253dda137028a85401b077b2463cea25ba92bca0",
-    "evidence": "_project/runs/forteca-clean/FRT-019_RECEIPT.json; audit/evidence/FRT-019_BROWSER_PROOF.json; audit/evidence/FRT-019_GUARDIAN_AUDIT_SUMMARY.json; Codex parent acceptance after source, reference and live runtime review; real Lead next-step prompt with persisted task/event handoff, fail-closed pointer and relation validation, preview-safe browser proof, canonical semantic color ownership and focused tests; Guardian raw outcome PARTIAL with zero blockers; independent final-review attempts timed out or were interrupted without a usable PASS and are not claimed as PASS"
+    "commit_sha": "2cd44eb4ec060fed75e1f8dedfbaf82a75cd7d46",
+    "evidence": "_project/runs/forteca-clean/FRT-020_RECEIPT.json; audit/evidence/FRT-020_BROWSER_PROOF.json; audit/evidence/FRT-020_GUARDIAN_AUDIT_SUMMARY.json; Codex parent acceptance after source, reference and live runtime review; real guarded Lead-to-Case transition and reference-aligned start-service modal, preview-safe browser proof, canonical semantic color ownership and focused tests; Guardian raw outcome PARTIAL with zero blockers; independent reviewer PASS is not claimed because the subagent thread limit was reached"
   },
   "previous_accepted": {
     "id": "LF-UI-SOT-007",
@@ -14,35 +14,35 @@
     "commit_sha": "8316a19da0905433f73d20d49c86cf374dca29b0",
     "evidence": "LF-UI-SOT-007 accepted and closed by owner decision at the exact accepted runtime/evidence anchor 8316a19da0905433f73d20d49c86cf374dca29b0; visual SSOT terminal counters are zero, ONE_OWNER_PER_VISUAL_CONCERN=PASS, SSOT negative tests=23/23, TSC/lint/build/diff-check=PASS, Guardian final=PASS, authenticated desktop/mobile browser proof=PASS, and Vercel production version API is exact on dev-rollout-freeze; control-plane closeout does not change product runtime"
   },
-  "current_stage": "FRT-020",
-  "current_contract_path": "_project/contracts/forteca-clean/FRT-020_LEAD_START_CASE.md",
+  "current_stage": "FRT-021",
+  "current_contract_path": "_project/contracts/forteca-clean/FRT-021_CLIENTS_ALL.md",
   "current_status": "ACTIVE",
-  "last_accepted_stage": "FRT-019",
-  "last_accepted_commit": "253dda137028a85401b077b2463cea25ba92bca0",
-  "next_stage": "FRT-020",
+  "last_accepted_stage": "FRT-020",
+  "last_accepted_commit": "2cd44eb4ec060fed75e1f8dedfbaf82a75cd7d46",
+  "next_stage": "FRT-021",
   "branch": "codex/forteca-ui-001-040-clean",
-  "remote_head": "253dda137028a85401b077b2463cea25ba92bca0",
+  "remote_head": "2cd44eb4ec060fed75e1f8dedfbaf82a75cd7d46",
   "current_workflow": {
-    "id": "FRT-020",
+    "id": "FRT-021",
     "kind": "TECHNICAL_IMPLEMENTATION_STAGE",
-    "contract_path": "_project/contracts/forteca-clean/FRT-020_LEAD_START_CASE.md",
+    "contract_path": "_project/contracts/forteca-clean/FRT-021_CLIENTS_ALL.md",
     "status": "ACTIVE",
-    "base_sha": "253dda137028a85401b077b2463cea25ba92bca0",
+    "base_sha": "2cd44eb4ec060fed75e1f8dedfbaf82a75cd7d46",
     "base_branch": "codex/forteca-ui-001-040-clean",
     "target_branch": "codex/forteca-ui-001-040-clean",
     "blocker": null,
     "ssot_open_findings": 0,
     "active_stage_count": 1,
-    "terminal_audit": "FRT_019_ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_NON_MUTATING_BROWSER_PREVIEW_AND_CENTRAL_SEMANTIC_COLOR_POLICY_AND_DOCUMENTED_INDEPENDENT_REVIEW_TIMEOUT",
-    "guardian_status": "REQUIRED_AT_FRT_020_CLOSEOUT",
-    "acceptance_boundary": "Codex is the acceptance authority under the owner directive; FRT-020 requires a real safe Lead-to-Client/Case transition and start-service modal, existing domain owner preservation, focused tests, Guardian and browser evidence before acceptance"
+    "terminal_audit": "FRT_020_ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_NON_MUTATING_BROWSER_PREVIEW_AND_CENTRAL_SEMANTIC_COLOR_POLICY_AND_DOCUMENTED_SUBAGENT_LIMIT",
+    "guardian_status": "REQUIRED_AT_FRT_021_CLOSEOUT",
+    "acceptance_boundary": "Codex is the acceptance authority under the owner directive; FRT-021 requires a real workspace-scoped all-clients route with shared list/search/action owners, focused tests, Guardian and browser evidence before acceptance"
   },
   "next_workflow": {
-    "id": "FRT-020",
-    "contract_path": "_project/contracts/forteca-clean/FRT-020_LEAD_START_CASE.md",
+    "id": "FRT-021",
+    "contract_path": "_project/contracts/forteca-clean/FRT-021_CLIENTS_ALL.md",
     "status": "LOCKED",
-    "activation": "CODEX_AFTER_FRT_019_ACCEPTANCE",
-    "reason": "FRT-020 is now the only active stage after FRT-019 acceptance; one active reference only"
+    "activation": "CODEX_AFTER_FRT_020_ACCEPTANCE",
+    "reason": "FRT-021 is now the only active stage after FRT-020 acceptance; one active reference only"
   },
   "forteca_program": {
     "program_id": "FORTECA_CALM_LIGHT_001_040",
@@ -71,9 +71,10 @@
     "stage_017_status": "PASS",
     "stage_018_status": "PASS",
     "stage_019_status": "PASS",
-    "active_stage": "FRT-020",
-    "future_stages": "FRT-021..FRT-041 LOCKED",
-    "accepted_receipts": ["FRT-000", "FRT-001", "FRT-002", "FRT-003", "FRT-004", "FRT-005", "FRT-006", "FRT-007", "FRT-008", "FRT-009", "FRT-010", "FRT-011", "FRT-012", "FRT-013", "FRT-014", "FRT-015", "FRT-016", "FRT-017", "FRT-018", "FRT-019"],
+    "stage_020_status": "PASS",
+    "active_stage": "FRT-021",
+    "future_stages": "FRT-022..FRT-041 LOCKED",
+    "accepted_receipts": ["FRT-000", "FRT-001", "FRT-002", "FRT-003", "FRT-004", "FRT-005", "FRT-006", "FRT-007", "FRT-008", "FRT-009", "FRT-010", "FRT-011", "FRT-012", "FRT-013", "FRT-014", "FRT-015", "FRT-016", "FRT-017", "FRT-018", "FRT-019", "FRT-020"],
     "auth_required_for_frt_000": false,
     "future_receipts_precreated": false
   },
@@ -382,6 +383,15 @@
     "forteca:FRT-019:visual-color-policy@canonical VST semantic tones; trash/delete owner --cf-vst-color-delete; reference discrepancies do not create per-window color exceptions",
     "forteca:FRT-019:browser-boundary@non-mutating DEV preview; interactive save not invoked",
     "forteca:FRT-019:review@parent-source-reference-runtime-review; independent-review-timeout-no-pass-claim",
-    "forteca:FRT-019:root-cause@missing real Lead next-step prompt; repaired persistence/pointer/relation/VST ownership"
+    "forteca:FRT-019:root-cause@missing real Lead next-step prompt; repaired persistence/pointer/relation/VST ownership",
+    "forteca:FRT-020:implementation@2cd44eb4ec060fed75e1f8dedfbaf82a75cd7d46",
+    "forteca:FRT-020:browser-proof@audit/evidence/FRT-020_BROWSER_PROOF.json",
+    "forteca:FRT-020:guardian-summary@audit/evidence/FRT-020_GUARDIAN_AUDIT_SUMMARY.json",
+    "forteca:FRT-020:receipt@_project/runs/forteca-clean/FRT-020_RECEIPT.json",
+    "forteca:FRT-020:tests@static-8-tsc-build-semantic-color-icon-typography-guards-pass",
+    "forteca:FRT-020:visual-color-policy@canonical VST semantic tones; trash/delete owner --cf-vst-color-delete; reference discrepancies do not create per-window color exceptions",
+    "forteca:FRT-020:browser-boundary@non-mutating DEV preview; interactive submit not invoked",
+    "forteca:FRT-020:review@parent-source-reference-runtime-review; independent-reviewer-pass-not-claimed-after-subagent-thread-limit",
+    "forteca:FRT-020:root-cause@missing complete reference-aligned Lead-to-Case start modal and explicit guarded provisioning/idempotency contract"
   ]
 }

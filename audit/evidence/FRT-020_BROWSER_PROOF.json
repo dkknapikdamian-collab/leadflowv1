@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-020",
+  "reference_file": "docs/ui/reference/forteca-calm-light/020_lead_start_case.webp",
+  "reference_sha256": "8CBF3903DE5B8ADF1E49DA7150F1A737B5E8FB43AC854826E904604BE1D289FB",
+  "entry_url": "http://localhost:3000/leads/dev-lead-3?frt020=start-service&refresh=1",
+  "runtime_url": "http://localhost:3000/leads/dev-lead-3?frt020=start-service&refresh=1",
+  "route": "/leads/:leadId",
+  "state": "Forteca calm-light real Lead Detail — start service/create case",
+  "live_runtime": true,
+  "auth_required": false,
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "record_origin": "Existing local runtime Lead Detail record and workspace-scoped owners; reference fixture values were not copied into runtime state.",
+    "visible_lead": "Fundacja \"Lepsze Jutro\"",
+    "visible_owner": "Dev Local",
+    "dialog_mount": "LeadDetail mounts the same controlled LeadStartServiceDialog used by the normal start-service action; the DEV-only query selects mode=preview for non-mutating visual inspection.",
+    "production_source": "The normal interactive path remains bound to the existing Lead-to-Case service and navigation handlers; the inspection query is guarded by import.meta.env.DEV."
+  },
+  "visible_structure": {
+    "viewport": {"width": 1538, "height": 698, "device_pixel_ratio": 1.25},
+    "root_marker": "data-forteca-frt-020-start-case=\"true\"",
+    "root_count": 1,
+    "preview_mode": "preview",
+    "modal_rect": {"x": 396.6, "y": 20.4, "width": 794, "height": 677.6},
+    "form_rect": {"x": 397.4, "y": 93.29, "width": 792.4, "height": 603.91},
+    "preview_rect": {"x": 789.4, "y": 93.29, "width": 378.4, "height": 531.91},
+    "footer_rect": {"x": 397.4, "y": 633.2, "width": 792.4, "height": 64},
+    "field_count": 7,
+    "preview_card_count": 4,
+    "checked_toggle_count": 3,
+    "body_overflow": "hidden",
+    "reference_copy_present": true,
+    "reference_copy": [
+      "Rozpocznij obsługę",
+      "Po kliknięciu „Utwórz sprawę” zostaną utworzone następujące elementy.",
+      "Liczba zadań",
+      "Przypisane do"
+    ],
+    "fixture_customer_absent": true
+  },
+  "semantic_color_proof": {
+    "preview_icon_colors": [
+      {"color": "rgb(37, 99, 235)", "background": "rgb(239, 246, 255)"},
+      {"color": "rgb(124, 58, 237)", "background": "rgb(245, 243, 255)"},
+      {"color": "rgb(22, 163, 74)", "background": "rgb(236, 253, 243)"},
+      {"color": "rgb(217, 119, 6)", "background": "rgb(255, 251, 235)"}
+    ],
+    "submit_background": "rgb(37, 99, 235)",
+    "source_of_truth": "FRT-020 dialog styles resolve through --cf-vst-color-primary, --cf-vst-color-payment, --cf-vst-color-task and --cf-vst-color-event; no stage-local literal colors were introduced."
+  },
+  "interaction_proof": {
+    "preview_mount": {"status": "PASS", "observed": "The real Lead Detail route rendered one FRT-020 dialog with the expected two-column form and four preview cards."},
+    "safe_submit_boundary": {"status": "PASS", "observed": "Preview submit retained the reference blue visual treatment, had disabled=false and pointer-events=auto for visual parity, while the preview handler returns before any mutation."},
+    "real_submit": {"status": "NOT_EXECUTED_BY_DESIGN", "reason": "The interactive control creates a real client/case and operational records. The mounted DEV inspection entry is intentionally non-mutating; focused integration tests cover the production handoff, scope, returned-id and idempotency contract markers."}
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "runtime_lead_and_workspace_data_preserved": true,
+    "production_interactive_handler_preserved": true,
+    "preview_is_non_mutating": true,
+    "no_duplicate_flow": true,
+    "no_fake_success": true,
+    "no_unapproved_live_mutation": true
+  },
+  "console_errors": 0,
+  "console_warnings": 0,
+  "screenshot_displayed_in_codex_browser": true,
+  "screenshot_path": null,
+  "status": "PASS_WITH_NON_MUTATING_DEV_INSPECTION_ENTRY",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The live local viewport is 1538x698, while the static reference capture uses a different capture viewport.",
+      "Underlying runtime lead data is real local data and differs from the reference fixture.",
+      "Live submit was not invoked because it would create real records; the interactive source path remains wired and tested."
+    ]
+  },
+  "implementation_commit": "2cd44eb4ec060fed75e1f8dedfbaf82a75cd7d46",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "created_at": "2026-08-28T19:54:00.000Z"
+}
