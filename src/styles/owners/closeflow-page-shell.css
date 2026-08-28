@@ -1255,3 +1255,182 @@
     padding: 22px 18px 92px;
   }
 }
+
+/* FRT-021 — Clients all uses the same Forteca calm-light shell as the approved
+ * reference. The page owns content layout; this owner only owns the shell. */
+#root .cf-html-shell.cf-route-clients {
+  grid-template-columns: 270px minmax(0, 1fr);
+  background: var(--cf-vst-surface-canvas);
+}
+
+#root .cf-html-shell.cf-route-clients > aside.sidebar[data-shell-sidebar="true"] {
+  padding: 26px 14px 16px;
+  border-right: 1px solid var(--cf-vst-surface-border);
+  background: var(--cf-vst-surface-card-solid);
+  box-shadow: none;
+}
+
+#root .cf-html-shell.cf-route-clients .brand {
+  gap: 11px;
+  padding: 0 12px 27px;
+  border-bottom: 0;
+}
+
+#root .cf-html-shell.cf-route-clients .brand-logo.forteca-shell-logo {
+  width: 30px;
+  height: 38px;
+  flex-basis: 30px;
+  border-radius: 10px 10px 13px 13px;
+  background: var(--cf-vst-color-primary);
+  color: var(--cf-vst-surface-card-solid);
+  font-size: var(--cf-vst-font-size-body);
+  letter-spacing: 0;
+  box-shadow: none;
+  clip-path: polygon(50% 0%, 91% 16%, 87% 67%, 73% 87%, 50% 100%, 27% 87%, 13% 67%, 9% 16%);
+}
+
+#root .cf-html-shell.cf-route-clients .brand-title strong {
+  color: var(--cf-vst-text-strong);
+  font-size: 22px;
+  font-weight: var(--cf-vst-font-weight-heavy);
+  letter-spacing: -0.045em;
+}
+
+#root .cf-html-shell.cf-route-clients .nav-scroll {
+  padding-top: 19px;
+  scrollbar-width: none;
+}
+
+#root .cf-html-shell.cf-route-clients .nav-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+#root .cf-html-shell.cf-route-clients .nav-group + .nav-group,
+#root .cf-html-shell.cf-route-clients .nav-caption {
+  display: none;
+}
+
+#root .cf-html-shell.cf-route-clients .nav-stack {
+  gap: 4px;
+}
+
+#root .cf-html-shell.cf-route-clients .nav-btn {
+  min-height: 40px;
+  gap: 12px;
+  padding: 0 12px;
+  border-color: transparent;
+  border-radius: 11px;
+  color: var(--cf-vst-text-muted);
+  font-size: var(--cf-vst-font-size-body);
+  font-weight: var(--cf-vst-font-weight-semibold);
+}
+
+#root .cf-html-shell.cf-route-clients .nav-btn:hover {
+  background: var(--cf-vst-surface-soft);
+  color: var(--cf-vst-text-main);
+}
+
+#root .cf-html-shell.cf-route-clients .nav-btn.active,
+#root .cf-html-shell.cf-route-clients .nav-btn[aria-current="page"] {
+  background: var(--cf-vst-color-primary-soft);
+  border-color: transparent;
+  color: var(--cf-vst-color-primary);
+}
+
+#root .cf-html-shell.cf-route-clients .nav-ico,
+#root .cf-html-shell.cf-route-clients .nav-btn.active .nav-ico,
+#root .cf-html-shell.cf-route-clients .nav-btn[aria-current="page"] .nav-ico {
+  width: 24px;
+  height: 24px;
+  flex-basis: 24px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: currentColor;
+}
+
+#root .cf-html-shell.cf-route-clients .nav-badge {
+  background: var(--cf-vst-color-primary-soft);
+  color: var(--cf-vst-color-primary-strong);
+}
+
+#root .cf-html-shell.cf-route-clients .sidebar-footer {
+  gap: 12px;
+  padding-top: 15px;
+  border-top: 1px solid var(--cf-vst-surface-border);
+}
+
+#root .cf-html-shell.cf-route-clients .trial-card {
+  display: none;
+}
+
+#root .cf-html-shell.cf-route-clients .user-card {
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+#root .cf-html-shell.cf-route-clients .user-avatar {
+  background: var(--cf-vst-surface-soft);
+  color: var(--cf-vst-text-muted);
+}
+
+#root .cf-html-shell.cf-route-clients .user-card strong {
+  color: var(--cf-vst-text-strong);
+}
+
+#root .cf-html-shell.cf-route-clients .user-card span {
+  color: var(--cf-vst-text-muted);
+}
+
+#root .cf-html-shell.cf-route-clients .sidebar-logout {
+  min-height: 32px;
+  justify-content: flex-start;
+  padding: 0 10px;
+  border: 0;
+  color: var(--cf-vst-text-muted);
+}
+
+#root .cf-html-shell.cf-route-clients .sidebar-logout:hover {
+  background: var(--cf-vst-surface-soft);
+  color: var(--cf-vst-text-main);
+}
+
+#root .cf-html-shell > .main.main-clients > .global-bar {
+  display: none !important;
+}
+
+#root .cf-html-shell.cf-route-clients > .main.main-clients {
+  padding: 31px 34px 40px;
+}
+
+@media (max-width: 860px) {
+  #root .cf-html-shell.cf-route-clients {
+    display: block;
+  }
+
+  #root .cf-html-shell.cf-route-clients .mobile-top {
+    min-height: 60px;
+    padding: 10px 18px;
+    border-bottom-color: var(--cf-vst-surface-border);
+  }
+
+  #root .cf-html-shell.cf-route-clients .mobile-brand {
+    color: var(--cf-vst-text-strong);
+    font-size: var(--cf-vst-font-size-section-title);
+    letter-spacing: -0.035em;
+  }
+
+  #root .cf-html-shell.cf-route-clients .mobile-brand .brand-logo.forteca-shell-logo {
+    width: 27px;
+    height: 32px;
+    flex-basis: 27px;
+    border-radius: 9px 9px 12px 12px;
+    font-size: var(--cf-vst-font-size-body-sm);
+  }
+
+  #root .cf-html-shell.cf-route-clients > .main.main-clients {
+    padding: 22px 18px 92px;
+  }
+}
