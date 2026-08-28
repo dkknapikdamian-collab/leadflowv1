@@ -1189,6 +1189,9 @@ export default function LeadDetail() {
     if (leadOperationalArchive) return toast.error('Dodawaj dalsze wydarzenia w sprawie.');
     openLeadContextAction('event');
   };
+  const handleCreateQuickNote = () => {
+    openLeadContextAction('note');
+  };
 
   const handleAddLeadMissingFromManagerStage232I4R14 = async () => {
     if (!hasAccess) {
@@ -1823,9 +1826,9 @@ useEffect(() => {
   );
 
   const addActivity = async (eventType: string, payload: Record<string, unknown>) => {
-    if (!leadId) return;
+    if (!leadId) return false;
     const workspaceId = requireWorkspaceId(workspace);
-    if (!workspaceId) return;
+    if (!workspaceId) return false;
     try {
       await insertActivityToSupabase({
         leadId,
@@ -1836,10 +1839,15 @@ useEffect(() => {
         payload,
         workspaceId,
       });
-      const rows = await fetchActivitiesFromSupabase({ leadId, limit: 100 });
-      setActivities(rows as any[]);
+      try {
+        const rows = await fetchActivitiesFromSupabase({ leadId, limit: 100 });
+        setActivities(rows as any[]);
+      } catch {
+        // The mutation already succeeded; the next Lead Detail refresh will reconcile the list.
+      }
+      return true;
     } catch {
-      // activity is best effort
+      return false;
     }
   };
 
@@ -2085,7 +2093,11 @@ useEffect(() => {
     if (!content || !hasAccess || addingNote) return;
     try {
       setAddingNote(true);
-      await addActivity('note_added', { content });
+      const saved = await addActivity('note_added', { content });
+      if (!saved) {
+        toast.error('Nie udało się zapisać notatki.');
+        return;
+      }
       setNote('');
       setIsAddNoteOpen(false);
       noteVoiceDirtyRef.current = false;
@@ -2789,7 +2801,7 @@ useEffect(() => {
                       <Clock className="forteca-lead-detail-card-icon" aria-hidden="true" />
                     </div>
                     {leadPrimaryNoteText ? <p className="forteca-lead-detail-note-copy">{leadPrimaryNoteText}</p> : <p className="forteca-lead-detail-empty-copy">Brak zapisanej notatki przy tym leadzie.</p>}
-                    <button type="button" className="forteca-lead-detail-secondary-action" onClick={() => setIsAddNoteOpen(true)} disabled={!hasAccess || leadInService}>
+                    <button type="button" className="forteca-lead-detail-secondary-action" onClick={handleCreateQuickNote} disabled={!hasAccess || leadInService}>
                       <Plus className="h-4 w-4" />
                       Dodaj notatkę
                     </button>
@@ -2871,7 +2883,7 @@ useEffect(() => {
                   <div><span className="forteca-lead-detail-eyebrow">Działaj teraz</span><h2>Szybkie akcje</h2></div>
                 </div>
                 <div className="forteca-lead-detail-action-grid">
-                  <button type="button" className="forteca-lead-detail-action forteca-lead-detail-action--note" onClick={() => setIsAddNoteOpen(true)} disabled={!hasAccess || leadInService}><span><Plus className="h-4 w-4" /></span>Dodaj notatkę</button>
+                  <button type="button" className="forteca-lead-detail-action forteca-lead-detail-action--note" onClick={handleCreateQuickNote} disabled={!hasAccess || leadInService}><span><Plus className="h-4 w-4" /></span>Dodaj notatkę</button>
                   {lead?.phone ? <a className="forteca-lead-detail-action forteca-lead-detail-action--phone" href={`tel:${String(lead.phone)}`}><span><Phone className="h-4 w-4" /></span>Zadzwoń</a> : <button type="button" className="forteca-lead-detail-action" disabled><span><Phone className="h-4 w-4" /></span>Brak telefonu</button>}
                   <button type="button" className="forteca-lead-detail-action forteca-lead-detail-action--task" onClick={handleCreateQuickTask} disabled={!hasAccess || leadOperationalArchive}><span><CheckCircle2 className="h-4 w-4" /></span>Ustaw follow-up</button>
                   <button type="button" className="forteca-lead-detail-action forteca-lead-detail-action--event" onClick={handleCreateQuickEvent} disabled={!hasAccess || leadOperationalArchive}><span><CalendarDays className="h-4 w-4" /></span>Spotkanie</button>
@@ -3275,7 +3287,7 @@ useEffect(() => {
               </div>
               {!leadInService ? (
                 <div className="lead-detail-note-actions-panel" data-stage216j3f-note-actions-only="true">
-                  <Button type="button" onClick={() => setIsAddNoteOpen(true)} disabled={!hasAccess}>
+                  <Button type="button" onClick={handleCreateQuickNote} disabled={!hasAccess}>
                     <Plus className="h-4 w-4" />
                     Dodaj notatkę
                   </Button>
@@ -3334,7 +3346,7 @@ useEffect(() => {
                   label: 'Notatka',
                   tone: 'note',
                   icon: <EntityIcon entity="template" className="h-4 w-4" />,
-                  onClick: () => setIsAddNoteOpen(true),
+                  onClick: handleCreateQuickNote,
                   disabled: !hasAccess,
                   data: { 'data-stage227e3-lead-action': 'note' },
                 },

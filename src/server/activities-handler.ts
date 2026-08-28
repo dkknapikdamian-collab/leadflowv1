@@ -1,10 +1,10 @@
 // STAGE223_R2U_ACTIVITIES_SYSTEM_ROUTE_CONSOLIDATION
 // Moved from api/activities.ts to keep Vercel Hobby api/*.ts budget under 12.
 /* STAGE16_SCOPED_MUTATION_ENDPOINT: workspace-owned mutations must scope service-role writes by workspace_id. */
-import { deleteById, insertWithVariants, selectFirstAvailable, updateById, updateByIdScoped, deleteByIdScoped, updateByWorkspaceAndId, deleteByWorkspaceAndId } from './_supabase.js';
+import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, updateById, updateByIdScoped, deleteByIdScoped, updateByWorkspaceAndId, deleteByWorkspaceAndId } from './_supabase.js';
 import { readPortalSession, requireOperatorCaseAccess, requirePortalSessionContext } from './_portal-token.js';
 import { requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
-import { writeAuthErrorResponse } from './_supabase-auth.js';
+import { RequestAuthError, requireSupabaseRequestContext, writeAuthErrorResponse } from './_supabase-auth.js';
 import { normalizeActivityContract } from '../lib/data-contract.js';
 
 const A26_ACTIVITY_DELETE_NOTE_LOCK = 'activities endpoint supports PATCH and DELETE for voice note cleanup';
@@ -48,6 +48,33 @@ function getActivityId(req: any, body: Record<string, unknown>) {
   return asText(req.query?.id || body.id);
 }
 
+function getActivityPayload(row: any): Record<string, unknown> {
+  return row?.payload && typeof row.payload === 'object' && !Array.isArray(row.payload)
+    ? row.payload as Record<string, unknown>
+    : {};
+}
+
+function isPrivateActivity(row: any) {
+  return asText(getActivityPayload(row).visibility).toLowerCase() === 'private';
+}
+
+function filterOperatorActivityRows(rows: any[], verifiedActorId: string) {
+  const normalizedActorId = asText(verifiedActorId).toLowerCase();
+  return rows.filter((row) => {
+    if (!isPrivateActivity(row)) return true;
+    const rowActorId = asText(row?.actor_id).toLowerCase();
+    return Boolean(normalizedActorId && rowActorId && rowActorId === normalizedActorId);
+  });
+}
+
+async function requireOperatorActorId(req: any) {
+  const context = await requireSupabaseRequestContext(req);
+  const actorId = asText(context.userId);
+  if (!actorId) throw new RequestAuthError(401, 'AUTH_ACTOR_REQUIRED');
+  if (!isUuid(actorId)) throw new RequestAuthError(500, 'AUTH_ACTOR_ID_INCOMPATIBLE');
+  return actorId;
+}
+
 export default async function handler(req: any, res: any) {
   try {
     const body = parseBody(req);
@@ -71,6 +98,7 @@ export default async function handler(req: any, res: any) {
         return;
       }
 
+      const operatorActorId = await requireOperatorActorId(req);
       const workspaceId = await resolveRequestWorkspaceId(req);
       if (!workspaceId) throw new Error('AUTH_WORKSPACE_REQUIRED');
       const filters = [];
@@ -80,12 +108,13 @@ export default async function handler(req: any, res: any) {
       const filterQuery = filters.length ? `&${filters.join('&')}` : '';
       const result = await selectFirstAvailable([withWorkspaceFilter(`activities?select=*&order=created_at.desc&limit=${limit}${filterQuery}`, workspaceId)]);
       const rows = Array.isArray(result.data) ? result.data : [];
-      res.status(200).json(rows.map(normalizeActivity));
+      res.status(200).json(filterOperatorActivityRows(rows, operatorActorId).map(normalizeActivity));
       return;
     }
 
     if (req.method === 'POST') {
       let workspaceId: string | null = null;
+      let operatorActorId: string | null = null;
       if (portalMode) {
         if (!caseId) {
           res.status(400).json({ error: 'CASE_ID_REQUIRED' });
@@ -94,6 +123,7 @@ export default async function handler(req: any, res: any) {
         const ctx = await requirePortalSessionContext(caseId, portalSession);
         workspaceId = ctx.workspaceId || null;
       } else {
+        operatorActorId = await requireOperatorActorId(req);
         workspaceId = await resolveRequestWorkspaceId(req);
         if (!workspaceId) throw new Error('AUTH_WORKSPACE_REQUIRED');
         if (caseId) await requireOperatorCaseAccess(req, caseId);
@@ -105,7 +135,7 @@ export default async function handler(req: any, res: any) {
         lead_id: leadId || null,
         client_id: clientId || null,
         owner_id: asText(body.ownerId) || null,
-        actor_id: asText(body.actorId) || null,
+        actor_id: portalMode ? (asText(body.actorId) || null) : operatorActorId,
         actor_type: portalMode ? 'client' : (asText(body.actorType) || 'operator'),
         event_type: asText(body.eventType) || 'activity',
         payload: body.payload && typeof body.payload === 'object' ? sanitizeActivityPayloadValue(body.payload) : {},
