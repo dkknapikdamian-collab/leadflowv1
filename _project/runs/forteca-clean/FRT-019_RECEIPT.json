@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-019",
+  "reference_file": "docs/ui/reference/forteca-calm-light/019_lead_next_step_prompt.webp",
+  "reference_sha256": "C56093D0A1548495A00B3C06DA7D7E57F849C57FEFDC0DA1B3EE6F0906199B52",
+  "target_route": "/leads/:leadId",
+  "target_state": "Lead Detail — set next step prompt",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_NON_MUTATING_DEV_INSPECTION_AND_GUARDIAN_PARTIAL_BOUNDARY",
+  "acceptance_authority": "CODEX_AFTER_PARENT_REVIEW",
+  "acceptance_basis": {
+    "directive_interpretation": "The approved Forteca branch is the sole implementation route. The parent controller independently checked the real runtime, exact reference, source-of-truth ownership, focused tests, Guardian output, browser proof, commit and remote head before closing FRT-019.",
+    "reference_and_runtime": "The real LeadNextStepPrompt is mounted by LeadDetail at /leads/dev-lead-3?frt019=prompt. The DEV-only entry renders the same controlled component and production handlers while forcing mode=preview so visual inspection cannot write a task, event, lead or activity record.",
+    "root_cause": "The lead next-step prompt was missing as a real controlled Lead Detail flow. The implementation gap included missing task/event handoff, missing persisted next-action pointer integrity, relation validation gaps and a duplicated SemanticIcon palette map. The reference also exposed a modal-width and suggestion-copy fit requirement.",
+    "repair": "FRT-019 adds the real controlled prompt, Lead Detail task/event persistence, returned-ID-before-lead-link guard, lead pointer-aware nearest-action selection, fail-closed lead/task relation checks, VST-only semantic icon tones, a 740px reference-aligned modal and non-truncating suggestion copy. Preview save is disabled and guarded as a no-op.",
+    "review_status": "Three bounded implementation subagents completed scoped work and the parent independently reviewed the final source, reference images, live DOM geometry, computed colors, interactions and gates. Dalton and Mendel did not return a usable final report before timeout; James returned BLOCKED only because its read-only review was interrupted before it could read the required files. No independent reviewer PASS is claimed.",
+    "guardian_interpretation": "Guardian smoke is AUDIT_ONLY/PARTIAL with zero writes and zero returned blockers. A full target-wide Guardian PASS is not claimed because the installed entrypoint exposes only partial repository-baseline coverage.",
+    "browser_boundary": "The browser proof intentionally does not click the real Save action. The normal interactive path remains wired to real persistence, while the mounted DEV inspection entry exposes the same UI without mutation."
+  },
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Reference fixture lead names, company values, rows, dates and counts are never copied into runtime state or submitted to the API.",
+      "Current lead, client, case and workspace IDs are read from existing runtime owners and preserved in task/event scope.",
+      "The prompt uses the existing task/event and activity sources; it does not create a parallel store or screenshot-only workflow.",
+      "A returned task/event ID is required before the lead next-action pointer is written.",
+      "Reference-image discrepancies never create per-window color exceptions. Semantic tones resolve through the canonical VST adapter.",
+      "The semantic delete base is --cf-vst-color-delete; strong, soft and border variants derive from it, and every trash/delete icon resolves to that family.",
+      "No fake success, no-op persistence model, automatic merge, silent fallback, unapproved browser mutation or production merge was introduced."
+    ]
+  },
+  "color_source_of_truth": {
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "action_owner": "src/styles/owners/closeflow-actions.css",
+    "icon_owner": "src/ui-system/icons/SemanticIcon.tsx and src/components/ui-system/ActionIcon.tsx",
+    "dialog_owner": "src/styles/owners/closeflow-dialogs.css",
+    "semantic_delete_base": "--cf-vst-color-delete",
+    "derived_delete_variants": [
+      "--cf-vst-color-delete-strong",
+      "--cf-vst-color-delete-soft",
+      "--cf-vst-color-delete-border"
+    ],
+    "semantic_tone_adapters": {
+      "task": "--cf-vst-color-task",
+      "primary": "--cf-vst-color-primary",
+      "event": "--cf-vst-color-event",
+      "danger": "--cf-vst-color-delete",
+      "contact": "--cf-vst-color-status",
+      "note": "--cf-vst-color-note"
+    },
+    "stage_literal_color_values": 0,
+    "policy": "Each semantic concern has one VST token owner across every window and repeated component instance. Reference drift does not create local palette copies; all trash/delete icons share the same red delete family."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "api/leads.ts",
+    "src/components/detail/LeadNextStepPrompt.tsx",
+    "src/lib/nearest-action.ts",
+    "src/pages/LeadDetail.tsx",
+    "src/server/task-route-stage124f.ts",
+    "src/styles/owners/closeflow-dialogs.css",
+    "src/styles/owners/closeflow-foundation.css",
+    "src/ui-system/icons/SemanticIcon.tsx",
+    "tests/forteca-frt-019-lead-next-step-prompt.test.cjs"
+  ],
+  "preserved_worktree_files": [
+    "docs/ui/CLOSEFLOW_STYLE_MAP.generated.md",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.json",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.md",
+    "docs/ui/closeflow-style-map.generated.json",
+    "dist-test-today-sections.cjs"
+  ],
+  "visual_sot_owners_used": [
+    "MODALS",
+    "FORMS",
+    "BUTTONS_ACTIONS",
+    "SURFACES",
+    "ICONS",
+    "TYPOGRAPHY"
+  ],
+  "visible_controls_inventory": [
+    "Ustaw kolejny krok teraz",
+    "Przypomnij jutro",
+    "Zostaw bez kroku",
+    "Rozmowa telefoniczna",
+    "Follow-up e-mail",
+    "Wyślij ofertę",
+    "Spotkanie online",
+    "Anuluj",
+    "Zapisz",
+    "Zamknij"
+  ],
+  "visible_controls_wired": "Every prompt choice is controlled and rendered. The normal interactive Lead Detail entry validates choice/date/time, creates the supported task or event, requires the returned item ID, patches the lead pointer and records activity. Cancel, close and Escape close the prompt without persistence. The DEV preview disables Save and guards the handler as a no-op.",
+  "backend_boundary": "Lead PATCH validates a supplied next_action_item_id in the current workspace and requires its lead relation to match. Task POST validates scoped lead/case/client relations and cross-entity consistency before insert. Task and event creation retain the current workspace/lead/client/case scope. Creation and subsequent lead/activity writes remain sequential existing API calls; a future server transaction could reduce orphan risk if a later write fails.",
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "node --test tests/forteca-frt-019-lead-next-step-prompt.test.cjs tests/forteca-frt-018-lead-blockers-manager.test.cjs (12/12 PASS)",
+    "node --import tsx --test tests/nearest-action.test.cjs (3/3 PASS)",
+    "npm.cmd exec -- tsc --noEmit (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS)",
+    "npm.cmd run guard:ui:ssot-semantic-colors (PASS)",
+    "npm.cmd run guard:ui:ssot-icons (PASS)",
+    "npm.cmd run guard:ui:ssot-typography (PASS)",
+    "git diff --check (PASS)",
+    "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke (PARTIAL, zero writes, zero blockers)",
+    "Live Codex In-app Browser proof of the real mounted prompt and non-mutating interactions (PASS)",
+    "Parent reference comparison of docs/ui/reference/forteca-calm-light/019_lead_next_step_prompt.webp against audit/evidence/FRT-019_BROWSER_PROOF.png (PASS_WITH_PREVIEW_BOUNDARY)"
+  ],
+  "tests_reused": [
+    "FRT-000 routing, reference manifest, Guardian boundary and visual SOT owner registry",
+    "FRT-010 real Lead route and local runtime baseline",
+    "FRT-011 Lead action owners",
+    "FRT-012 populated Lead runtime and browser harness",
+    "FRT-013 relation and workspace boundary",
+    "FRT-014 task/calendar persistence baseline",
+    "FRT-015 note/activity persistence baseline",
+    "FRT-016 canonical semantic delete color and icon baseline",
+    "FRT-017 real missing-item form and task/activity handoff baseline",
+    "FRT-018 Lead blockers manager and scoped mutation baseline"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "live browser Save and post-submit persistence observation",
+      "reason": "NOT_EXECUTED_BY_DESIGN: the visible interactive Save action creates a real task/event and activity record; the mounted DEV proof is preview-only and the user did not authorize a live mutation. Static integration tests cover the interactive path and returned-ID guard."
+    },
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: installed Guardian entrypoint exposes only partial repository-baseline smoke coverage; pass_claim=false."
+    },
+    {
+      "test": "guard:ui:ssot-css-owners, guard:ui:patch-layers and verify:closeflow:quiet",
+      "reason": "BASELINE_FINDINGS: existing global shell adapter concern mismatch, direct icon-registry import and Today tile no-scroll trap are outside the FRT-019 write set."
+    },
+    {
+      "test": "independent final reviewer PASS",
+      "reason": "PROCESS_BOUNDARY: spawned reviewers did not return a usable final report within the safe autonomous wait window; no reviewer PASS is claimed. Parent source/reference/runtime review is recorded as the acceptance basis."
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS_WITH_KNOWN_WARNINGS",
+  "build_warnings": [
+    "Existing dynamic/static import overlap for src/lib/supabase-fallback.ts",
+    "Existing chunks larger than 500 kB after minification"
+  ],
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-019_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "EXECUTED: PARTIAL / coverage PARTIAL / fileWrites 0"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-019_BROWSER_PROOF.json",
+    "screenshot_path": "audit/evidence/FRT-019_BROWSER_PROOF.png",
+    "screenshot_sha256": "A54B778AFFF113B7BA3B0B26EA66491E9128B2B3A88C0C769CD7A1F6E44D0E44",
+    "status": "PASS_WITH_NON_MUTATING_DEV_INSPECTION_ENTRY",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "/leads/dev-lead-3?frt019=prompt",
+    "preview_mode": "preview",
+    "save_disabled": true,
+    "modal_geometry": "x=470, y=130.15, width=740, height=647.7 at 1680x940",
+    "suggestion_copy_overflow": false,
+    "cancel": "PASS",
+    "interactive_save": "NOT_EXECUTED_BY_DESIGN",
+    "console_errors": 0,
+    "console_warnings": 0,
+    "tab_marked_deliverable": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "Underlying Lead Detail runtime data is real local data and differs from the reference fixture.",
+      "The DEV-only inspection entry exposes the mounted prompt without mutating the seed lead; normal production entry remains interactive.",
+      "Native browser/operating-system rendering can differ from a static reference capture.",
+      "Live Save was not invoked because it would create a real task/event and activity record.",
+      "The screenshot shows the safe preview disabled state; the production interactive Save control uses the same component and is not disabled by mode."
+    ]
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "efficiency_planning": "APPLIED",
+    "marketplace_startup_receipt": "startup-8581d9371943d55d8cf5614069bfc6cb07e9ca5a145ff01b862cb1ae02e61aa4",
+    "project_context_receipt": "pctx-57936f06",
+    "routing_fingerprint": "3293abe7",
+    "marketplace_binding": "BOUND",
+    "primary_capabilities": [
+      "frontend-design-studio",
+      "ai-code-guardian",
+      "agent-efficiency-guardian"
+    ],
+    "project_context_reused": [
+      "FRT-000 contracts/evidence baseline",
+      "FRT-010..FRT-018 Lead runtime, action, relation, persistence, browser and visual-token evidence"
+    ],
+    "evidence_reuse": [
+      "FRT-012 real Lead browser harness",
+      "FRT-013 workspace/relation boundary",
+      "FRT-016 canonical semantic delete token family",
+      "FRT-017 task/activity handoff",
+      "FRT-018 scoped Lead mutation baseline"
+    ],
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "skip_reason": "No suitable available preferred provider was exposed for this bounded UI/data-owner change; one write owner per path and parent validation were required.",
+    "subagents": [
+      {
+        "role": "bounded preview-safety worker",
+        "agent": "Copernicus",
+        "result": "COMPLETED; scoped read-only/code audit findings incorporated"
+      },
+      {
+        "role": "bounded relation-integrity worker",
+        "agent": "Ampere",
+        "result": "COMPLETED; scoped relation/pointer findings incorporated"
+      },
+      {
+        "role": "bounded semantic-color worker",
+        "agent": "Anscombe",
+        "result": "COMPLETED; central VST color policy findings incorporated"
+      },
+      {
+        "role": "independent final reviewer",
+        "agent": "Dalton / James / Socrates / Mendel",
+        "result": "NO_USABLE_FINAL_REPORT; timeouts or interrupted read-only review; no PASS claim"
+      }
+    ]
+  },
+  "implementation_commit_sha": "253dda137028a85401b077b2463cea25ba92bca0",
+  "remote_head_verified": "253dda137028a85401b077b2463cea25ba92bca0",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "created_at": "2026-08-28T14:17:38.3944690Z"
+}

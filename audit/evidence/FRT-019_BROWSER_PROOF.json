@@ -1,0 +1,195 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-019",
+  "reference_file": "docs/ui/reference/forteca-calm-light/019_lead_next_step_prompt.webp",
+  "reference_sha256": "C56093D0A1548495A00B3C06DA7D7E57F849C57FEFDC0DA1B3EE6F0906199B52",
+  "entry_url": "http://localhost:3000/leads/dev-lead-3?frt019=prompt",
+  "runtime_url": "http://localhost:3000/leads/dev-lead-3?frt019=prompt",
+  "route": "/leads/:leadId",
+  "state": "Forteca calm-light real Lead Detail — FRT-019 next-step prompt",
+  "live_runtime": true,
+  "auth_required": false,
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "record_origin": "Existing local runtime Lead Detail record and current workspace-scoped lead/task/activity owners; reference fixture values were not copied.",
+    "visible_lead": "Fundacja \"Lepsze Jutro\"",
+    "visible_owner": "Dev Local",
+    "prompt_mount": "The real LeadNextStepPrompt is mounted by LeadDetail and uses the same controlled component, handlers and persistence path as the normal no-next-step entry.",
+    "dev_entry_reason": "The local seed Lead has an existing next-step task, while the reference prompt represents the no-next-step state. The DEV-only frt019=prompt query exposes the mounted prompt for non-mutating visual inspection without changing seed data or bypassing production code paths.",
+    "production_source": "Supabase production path, workspace boundary and normal Lead Detail trigger remain unchanged; the inspection query is guarded by import.meta.env.DEV."
+  },
+  "visible_structure": {
+    "viewport": {
+      "width": 1680,
+      "height": 940
+    },
+    "root_marker": "data-forteca-frt-019-next-step=true",
+    "root_count": 1,
+    "preview_mode": "preview",
+    "save_button_enabled": false,
+    "modal_rect": {
+      "x": 470,
+      "y": 130.15,
+      "width": 740,
+      "height": 647.7
+    },
+    "choice_list_rect": {
+      "x": 506.8,
+      "y": 275.55,
+      "width": 666.4,
+      "height": 240
+    },
+    "choice_rects": {
+      "set_now": {
+        "x": 506.8,
+        "y": 275.55,
+        "width": 206.13,
+        "height": 240,
+        "background": "rgb(236, 253, 243)",
+        "border": "rgb(187, 247, 208)",
+        "icon_color": "rgb(22, 163, 74)"
+      },
+      "remind_tomorrow": {
+        "x": 736.92,
+        "y": 275.55,
+        "width": 206.14,
+        "height": 240,
+        "background": "rgb(239, 246, 255)",
+        "border": "rgb(191, 219, 254)",
+        "icon_color": "rgb(37, 99, 235)"
+      },
+      "without_step": {
+        "x": 967.06,
+        "y": 275.55,
+        "width": 206.13,
+        "height": 240,
+        "background": "rgb(255, 251, 235)",
+        "border": "rgb(254, 215, 170)",
+        "icon_color": "rgb(217, 119, 6)"
+      }
+    },
+    "suggestion_rects": {
+      "phone_call": {
+        "x": 506.8,
+        "y": 571.05,
+        "width": 160.6,
+        "height": 62,
+        "icon_color": "rgb(22, 163, 74)"
+      },
+      "follow_up_email": {
+        "x": 675.4,
+        "y": 571.05,
+        "width": 160.6,
+        "height": 62,
+        "icon_color": "rgb(37, 99, 235)"
+      },
+      "send_offer": {
+        "x": 844,
+        "y": 571.05,
+        "width": 160.6,
+        "height": 62,
+        "icon_color": "rgb(37, 99, 235)"
+      },
+      "online_meeting": {
+        "x": 1012.6,
+        "y": 571.05,
+        "width": 160.6,
+        "height": 62,
+        "icon_color": "rgb(37, 99, 235)"
+      }
+    },
+    "suggestion_copy": {
+      "titles": [
+        "Rozmowa telefoniczna",
+        "Follow-up e-mail",
+        "Wyślij ofertę",
+        "Spotkanie online"
+      ],
+      "title_overflow": false,
+      "title_text_overflow": "clip",
+      "title_white_space": "normal"
+    },
+    "initial_state": {
+      "selected_choice_count": 0,
+      "schedule_input_count": 0,
+      "body_overflow": "hidden",
+      "modal_overflow": "auto",
+      "save_enabled": false
+    }
+  },
+  "interaction_proof": {
+    "set_now": {
+      "status": "PASS",
+      "observed": "Selecting Ustaw kolejny krok teraz selected the choice and rendered date/time inputs with a real tomorrow 09:00 default."
+    },
+    "suggested_action": {
+      "status": "PASS",
+      "observed": "Selecting Rozmowa telefoniczna selected the suggestion and retained the set-now choice."
+    },
+    "remind_tomorrow": {
+      "status": "PASS",
+      "observed": "Selecting Przypomnij jutro selected only that choice, removed schedule inputs and cleared the suggestion selection."
+    },
+    "cancel": {
+      "status": "PASS",
+      "observed": "Anuluj closed the prompt and no task, event, lead or activity mutation was submitted."
+    },
+    "save": {
+      "status": "NOT_EXECUTED_BY_DESIGN",
+      "reason": "The mounted DEV preview sets mode=preview, disables the real save control and guards the handler as a no-op. The browser proof therefore cannot submit a task/event/lead/activity mutation; static integration tests cover the interactive persistence path and returned-id guard."
+    }
+  },
+  "visual_source_of_truth": {
+    "status": "PASS",
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "dialog_owner": "src/styles/owners/closeflow-dialogs.css",
+    "icon_owner": "src/ui-system/icons/SemanticIcon.tsx and src/components/ui-system/ActionIcon.tsx",
+    "semantic_tokens": {
+      "task": "--cf-vst-color-task = #16a34a",
+      "primary": "--cf-vst-color-primary = #2563eb",
+      "event": "--cf-vst-color-event = #d97706",
+      "delete": "--cf-vst-color-delete = #dc2626",
+      "backdrop": "--cf-vst-overlay-backdrop = rgba(15, 23, 42, 0.34)"
+    },
+    "mapping": {
+      "set_now": "task family",
+      "remind_tomorrow": "primary family",
+      "without_step": "event family",
+      "phone_call_suggestion": "task family",
+      "other_suggestions": "primary family"
+    },
+    "stage_literal_color_values": 0,
+    "repeated_semantic_icon_policy": "Reference-image discrepancies never create per-window color exceptions. Every repeated semantic icon uses its shared VST family; all trash/delete icons across the product use the same --cf-vst-color-delete family."
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "lead_and_workspace_data_are_runtime_bound": true,
+    "payload_preserves_workspace_lead_client_case_scope": true,
+    "real_task_and_event_endpoints": true,
+    "lead_next_action_linkage_persisted": true,
+    "returned_item_id_required_before_lead_link": true,
+    "preview_save_disabled_and_guarded": true,
+    "dev_preview_is_non_mutating": true,
+    "no_fake_success_or_noop_persistence": true,
+    "no_duplicate_store_or_migration": true
+  },
+  "console_errors": 0,
+  "console_warnings": 0,
+  "screenshot_path": "audit/evidence/FRT-019_BROWSER_PROOF.png",
+  "screenshot_sha256": "A54B778AFFF113B7BA3B0B26EA66491E9128B2B3A88C0C769CD7A1F6E44D0E44",
+  "status": "PASS_WITH_NON_MUTATING_DEV_INSPECTION_ENTRY",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "Underlying Lead Detail runtime data is real local data and differs from the reference fixture.",
+      "The DEV-only inspection entry exposes the mounted prompt without mutating the seed lead; the normal production entry remains conditional on the lead having no next step.",
+      "Native browser/operating-system rendering can differ from a static reference capture.",
+      "Live save was not invoked without explicit approval because it would create a real task/event and activity record."
+    ]
+  },
+  "tab_marked_deliverable": true,
+  "created_at": "2026-08-28T13:49:11.7439926Z"
+}
