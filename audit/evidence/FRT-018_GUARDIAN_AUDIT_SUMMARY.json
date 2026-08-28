@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-018",
+  "mode": "AUDIT_ONLY",
+  "command": "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+  "raw_outcome": "PARTIAL",
+  "coverageOutcome": "PARTIAL",
+  "pass_claim": false,
+  "fileWrites": 0,
+  "selectedCapabilities": [
+    "repository-baseline"
+  ],
+  "selectedSkills": [
+    "ai-code-guardian",
+    "architecture-integrity"
+  ],
+  "receiptIds": [
+    "guardian-plugin-smoke-coverage",
+    "guardian-plugin-smoke-result"
+  ],
+  "blockers": 0,
+  "target_wide_scan": "NOT_AVAILABLE",
+  "stage_validation": {
+    "focused_frt_018_tests": "5/5 PASS",
+    "typescript": "PASS",
+    "production_build": "PASS_WITH_KNOWN_WARNINGS",
+    "diff_check": "PASS",
+    "guard_ui_ssot_semantic_colors": "PASS",
+    "guard_ui_ssot_icons": "PASS",
+    "guard_ui_ssot_typography": "PASS",
+    "browser_runtime": "PASS_WITH_TRUTHFUL_EMPTY_RUNTIME_AND_UNSUPPORTED_BULK_REMINDER_BOUNDARY",
+    "independent_review": "Maxwell: PASS"
+  },
+  "stage_scope_findings": [],
+  "known_baseline_findings": [
+    "guard:ui:ssot-css-owners reports the existing concern mismatch for the global shell adapter in src/styles/closeflow-record-list-source-truth.css; FRT-018 did not introduce or modify that concern.",
+    "guard:ui:patch-layers reports the existing direct lucide-react import in src/lib/source-of-truth/icon-registry.ts; FRT-018 did not modify the file.",
+    "verify:closeflow:quiet reports the existing Today tile no-scroll trap STAGE223_R2AD_TODAY_TILE_NO_SCROLL_TRAP_FAIL; FRT-018 did not modify Today code.",
+    "The predecessor Forteca baseline records one unrelated FRT-007 fixture-leakage failure in src/pages/Leads.tsx; FRT-018 did not modify Leads.tsx."
+  ],
+  "interpretation": "Guardian smoke completed with zero writes and no returned blocker, but only partial repository-baseline coverage was available; no full target-wide Guardian PASS is claimed. Existing baseline failures remain explicitly recorded and are outside the FRT-018 write set.",
+  "color_policy": {
+    "status": "PASS",
+    "semantic_delete_base": "--cf-vst-color-delete",
+    "derived_variants": [
+      "--cf-vst-color-delete-strong",
+      "--cf-vst-color-delete-soft",
+      "--cf-vst-color-delete-border"
+    ],
+    "stage_literal_color_values": 0,
+    "rule": "All repeated trash/delete icon instances use the same semantic delete token family; reference-image color drift never creates a second source of truth."
+  },
+  "created_at": "2026-08-28T12:05:37.5383239Z"
+}

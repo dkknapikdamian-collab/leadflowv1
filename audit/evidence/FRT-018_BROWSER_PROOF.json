@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-018",
+  "reference_file": "docs/ui/reference/forteca-calm-light/018_lead_missing_blockers_list.webp",
+  "reference_sha256": "94A2EB80866E940D31D0B70603EF68992C4E449011F8C85C18254D8ACF71C0BD",
+  "entry_url": "http://localhost:3000/leads/dev-lead-3",
+  "runtime_url": "http://localhost:3000/leads/dev-lead-3",
+  "route": "/leads/dev-lead-3",
+  "state": "Forteca calm-light real Lead Detail — Braki i blokady manager",
+  "live_runtime": true,
+  "auth_required": false,
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "record_origin": "Existing local runtime Lead Detail record and current workspace-scoped lead/task/activity owners; reference fixture values were not copied.",
+    "visible_lead": "Fundacja \"Lepsze Jutro\"",
+    "visible_company": "Fundacja Lepsze Jutro",
+    "visible_owner": "Dev Local",
+    "manager_source": "Active missing-item entries derived from the existing LeadDetail linked task/activity source; no case_items parallel active store.",
+    "refresh_owner": "Existing LeadDetail task/activity refresh owner.",
+    "production_source": "Supabase production path and workspace boundary remain unchanged; no authentication bypass was introduced."
+  },
+  "visible_structure": {
+    "viewport": {
+      "width": 1680,
+      "height": 940
+    },
+    "active_tab": "Braki i blokady",
+    "manager_marker": "data-forteca-frt-018-manager=true; data-forteca-frt-018-source=lead-missing-items",
+    "manager_rect": {
+      "x": 313,
+      "y": 380,
+      "width": 1306,
+      "height": 679,
+      "right": 1619,
+      "bottom": 1059
+    },
+    "manager_scroll": {
+      "scrollWidth": 1304,
+      "clientWidth": 1304,
+      "horizontal_overflow": false
+    },
+    "outer_legacy_right_rail": {
+      "display": "none",
+      "reason": "The blockers manager owns the full detail canvas and its own rail."
+    },
+    "manager_right_rail_rect": {
+      "x": 1264,
+      "y": 626,
+      "width": 326,
+      "height": 404,
+      "right": 1590,
+      "bottom": 1030
+    },
+    "visible_sections": [
+      "Kontrola postępu / Braki i blokady",
+      "Braki blokujące",
+      "Oczekujące",
+      "Rozwiązane",
+      "Aktywne braki",
+      "Szybkie akcje",
+      "Jak działają braki?"
+    ],
+    "runtime_empty_state": "Brak otwartych braków",
+    "reference_fixture_data_copied": false
+  },
+  "interaction_proof": {
+    "tab_entry": {
+      "status": "PASS",
+      "observed": "The real Lead Detail tab opened the implemented blockers manager on /leads/dev-lead-3."
+    },
+    "add_form_entry": {
+      "status": "PASS",
+      "observed": "The visible Dodaj brak action opened the real existing missing-item form with title, category, description, priority, due date and blocker controls."
+    },
+    "cancel_boundary": {
+      "status": "PASS",
+      "observed": "Anuluj closed the form without submitting a task/activity mutation and returned to the implemented manager."
+    },
+    "visible_controls": {
+      "add": true,
+      "resolve_all": true,
+      "edit_rows": true,
+      "resolve_rows": true,
+      "delete_rows": true,
+      "csv_export": true,
+      "history": true,
+      "bulk_reminder": "DISABLED_TRUTHFULLY"
+    },
+    "submit": {
+      "status": "NOT_EXECUTED_BY_DESIGN",
+      "reason": "The form save is a real task/activity mutation; browser policy requires explicit confirmation before invoking a live write. Focused runtime/source tests cover the persistence path without creating unapproved data."
+    },
+    "submit_action_invoked": false
+  },
+  "visual_source_of_truth": {
+    "status": "PASS",
+    "owners": {
+      "surfaces": "src/styles/owners/closeflow-surfaces-and-cards.css",
+      "lists_and_badges": "src/styles/owners/closeflow-records-and-rails.css",
+      "buttons_and_actions": "src/styles/owners/closeflow-actions.css",
+      "shared_foundation": "src/styles/owners/closeflow-foundation.css",
+      "icons": "src/components/ui-system/ActionIcon.tsx and src/components/ui-system"
+    },
+    "semantic_delete_base": "--cf-vst-color-delete",
+    "derived_delete_variants": [
+      "--cf-vst-color-delete-strong",
+      "--cf-vst-color-delete-soft",
+      "--cf-vst-color-delete-border"
+    ],
+    "runtime_delete_token": "#dc2626",
+    "runtime_delete_strong_token": "color-mix(in srgb, #dc2626 70%, #0f172a 30%)",
+    "stage_literal_color_values": 0,
+    "visible_trash_icon_instances_in_empty_state": 0,
+    "policy": "Reference-image discrepancies never create per-window color exceptions. Every repeated trash/delete icon resolves to the same semantic delete family from one VST source."
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "lead_and_workspace_data_are_runtime_bound": true,
+    "payload_preserves_workspace_and_lead_scope": true,
+    "missing_item_uses_task_activity_source_of_truth": true,
+    "case_items_not_used_as_parallel_active_store": true,
+    "unsupported_bulk_reminder_not_faked": true,
+    "relation_checks_fail_closed": true,
+    "delete_is_confirmed_and_server_soft_delete_is_preserved": true,
+    "no_live_mutation_without_approval": true,
+    "no_fake_success_or_noop_persistence": true,
+    "no_duplicate_store_or_migration": true
+  },
+  "console_errors": 0,
+  "console_warnings": 0,
+  "screenshot_path": "audit/evidence/FRT-018_BROWSER_PROOF.png",
+  "screenshot_sha256": "CD410EB204C1E51A31E321600FFC6D551319DAA4C21E5BF0FA49073AEB6BC2A0",
+  "status": "PASS_WITH_TRUTHFUL_EMPTY_RUNTIME_AND_UNSUPPORTED_BULK_REMINDER_BOUNDARY",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "Runtime lead data is real local data and therefore differs from the reference fixture.",
+      "The current runtime has no active missing rows, so ACME/reference rows and counts were not fabricated.",
+      "Bulk reminder remains disabled because the current runtime exposes no safe supported endpoint.",
+      "Browser/operating-system rendering and the usable scroll region can differ from a static reference capture.",
+      "Live submit was not invoked without explicit user approval."
+    ]
+  },
+  "tab_marked_deliverable": true,
+  "implementation_commit_sha": "b5a2867e82cef8b7ec7eb3ffee96c6925cd89708",
+  "created_at": "2026-08-28T12:05:37.5383239Z"
+}

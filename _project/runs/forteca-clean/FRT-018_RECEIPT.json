@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-018",
+  "reference_file": "docs/ui/reference/forteca-calm-light/018_lead_missing_blockers_list.webp",
+  "reference_sha256": "94A2EB80866E940D31D0B70603EF68992C4E449011F8C85C18254D8ACF71C0BD",
+  "target_route": "/leads/:leadId",
+  "target_state": "Lead Detail — missing items/blockers manager",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_TRUTHFUL_EMPTY_RUNTIME_AND_UNSUPPORTED_BULK_REMINDER_BOUNDARY",
+  "acceptance_authority": "CODEX_AFTER_INDEPENDENT_REVIEW",
+  "acceptance_basis": {
+    "directive_interpretation": "The parent controller validates the real implementation, exact evidence, independent review and remote commit before recording PASS and activating FRT-019.",
+    "reference_and_runtime": "The real Lead Detail Braki i blokady tab renders the manager on /leads/dev-lead-3 from the existing linked task/activity source. Runtime values remain real and reference fixture rows were not copied.",
+    "root_cause": "The manager was rendered inside the outer two-column Lead Detail canvas while also rendering its own right rail, so the old global rail remained in parallel and overlapped the manager rail. The state/actions also needed relation checks, persisted blocker priority, resolved-history counting and post-commit delete handling.",
+    "repair": "FRT-018 adds the real manager panel, makes blockers the full detail canvas while hiding the outer rail, keeps the active task/activity source, scopes every mutation to the current lead/case, persists blocker state through supported priority fields, preserves confirmed server soft-delete semantics, exposes truthful empty/unsupported states and routes visual semantics through shared SOT tokens/icons.",
+    "review_status": "Volta initially returned BLOCKED before the evidence and final safeguards were complete; its findings were addressed. Maxwell completed the post-remediation independent code review with PASS and no blocking findings.",
+    "guardian_interpretation": "Guardian smoke is AUDIT_ONLY/PARTIAL with zero writes and zero returned blockers; no full Guardian PASS is claimed because target-wide coverage is unavailable."
+  },
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Reference fixture lead names, company values, blocker rows, dates and counts are never copied into runtime state or submitted to the API.",
+      "Current lead, client, case and workspace IDs are read from existing runtime owners and preserved in task/activity scope.",
+      "Missing/blocker records use the existing linked task/activity source of truth; case_items are not a parallel active store.",
+      "Unsupported bulk reminder is disabled with truthful copy because the current runtime has no safe supported endpoint.",
+      "Every semantic color resolves from canonical --cf-vst-* token owners; reference-image discrepancies never create per-screen color exceptions.",
+      "The delete semantic base is --cf-vst-color-delete; strong, soft and border variants derive from it, and every trash icon resolves to that family.",
+      "No fake success, no-op persistence model, automatic merge, silent fallback, unapproved browser mutation or production merge was introduced."
+    ]
+  },
+  "color_source_of_truth": {
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "action_owner": "src/styles/owners/closeflow-actions.css",
+    "list_owner": "src/styles/owners/closeflow-records-and-rails.css",
+    "surface_owner": "src/styles/owners/closeflow-surfaces-and-cards.css",
+    "semantic_delete_base": "--cf-vst-color-delete",
+    "derived_variants": [
+      "--cf-vst-color-delete-strong",
+      "--cf-vst-color-delete-soft",
+      "--cf-vst-color-delete-border"
+    ],
+    "consumer_adapters": [
+      "src/styles/closeflow-record-list-source-truth.css",
+      "src/components/entity-actions.tsx",
+      "src/components/ui-system/ActionIcon.tsx"
+    ],
+    "stage_literal_color_values": 0,
+    "policy": "One semantic concern maps to one VST token owner across every window and repeated component instance; all trash/delete icons share the same semantic delete family."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "src/components/detail/LeadBlockersManagerPanel.tsx",
+    "src/pages/LeadDetail.tsx",
+    "src/styles/owners/closeflow-actions.css",
+    "src/styles/owners/closeflow-rails-and-detail.css",
+    "src/styles/owners/closeflow-records-and-rails.css",
+    "src/styles/owners/closeflow-surfaces-and-cards.css",
+    "tests/forteca-frt-018-lead-blockers-manager.test.cjs"
+  ],
+  "preserved_worktree_files": [
+    "docs/ui/CLOSEFLOW_STYLE_MAP.generated.md",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.json",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.md",
+    "docs/ui/closeflow-style-map.generated.json",
+    "dist-test-today-sections.cjs"
+  ],
+  "visual_sot_owners_used": [
+    "LIST_ROWS",
+    "BADGES",
+    "BUTTONS_ACTIONS",
+    "SURFACES",
+    "ICONS",
+    "DETAIL_RAIL_LAYOUT"
+  ],
+  "visible_controls_inventory": [
+    "Dodaj brak",
+    "Oznacz jako rozwiązane",
+    "Blokada checkbox",
+    "Edytuj",
+    "Rozwiąż",
+    "Usuń",
+    "Eksportuj do CSV",
+    "Zobacz historię zmian",
+    "Dowiedz się więcej",
+    "Wyślij przypomnienie do wszystkich — Niedostępne"
+  ],
+  "visible_controls_wired": "Every visible supported control is wired to an existing owner: add opens the real missing-item form; resolve-all iterates current open items; the blocker checkbox persists supported priority plus task/activity state; edit opens the existing task editor; resolve writes done/resolved state and activity; delete confirms, optimistically updates only the scoped list and preserves the committed server soft-delete; CSV exports current runtime rows; history routes to the existing LeadDetail activity tab. The bulk reminder is explicitly disabled because its backend capability is absent.",
+  "backend_boundary": "The task PATCH route strips unsupported missing_item status values, so blocker toggle persistence uses the supported high/medium priority field while preserving the existing missing_item type. DELETE is a verified server soft-delete. Activity history is best effort after a committed mutation and never causes a committed delete to reappear locally. Client relation checks fail closed and server workspace/owner scoping remains authoritative.",
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "node --test tests/forteca-frt-018-lead-blockers-manager.test.cjs (5/5 PASS)",
+    "npm.cmd exec -- tsc --noEmit (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS)",
+    "npm.cmd run guard:ui:ssot-semantic-colors (PASS)",
+    "npm.cmd run guard:ui:ssot-icons (PASS)",
+    "npm.cmd run guard:ui:ssot-typography (PASS)",
+    "git diff --check (PASS)",
+    "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke (PARTIAL, zero writes, zero blockers)",
+    "Live Codex In-app Browser proof of real /leads/dev-lead-3 manager and add-form entry (PASS_WITH_DOCUMENTED_EMPTY_RUNTIME_AND_SUBMIT_BOUNDARY)",
+    "Independent post-remediation review by Maxwell (PASS)"
+  ],
+  "tests_reused": [
+    "FRT-000 routing, reference manifest, Guardian boundary and visual SOT owner registry",
+    "FRT-010 real Lead route and local runtime baseline",
+    "FRT-011 Lead action owners",
+    "FRT-012 populated Lead runtime and browser harness",
+    "FRT-013 relation and workspace baseline",
+    "FRT-014 task/calendar persistence baseline",
+    "FRT-015 note/activity persistence baseline",
+    "FRT-016 canonical semantic delete color and icon baseline",
+    "FRT-017 real missing-item form and source handoff baseline"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "live browser submit and post-submit list/rail observation",
+      "reason": "NOT_EXECUTED_WITHOUT_USER_APPROVAL: the visible submit invokes a real task/activity mutation; browser policy requires explicit confirmation before a live form submission."
+    },
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: installed Guardian entrypoint exposes only partial repository-baseline smoke coverage; pass_claim=false."
+    },
+    {
+      "test": "guard:ui:ssot-css-owners, guard:ui:patch-layers and verify:closeflow:quiet",
+      "reason": "BASELINE_FINDINGS: existing global shell adapter concern mismatch, direct icon-registry import and Today tile no-scroll trap are outside the FRT-018 write set."
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS_WITH_KNOWN_WARNINGS",
+  "build_warnings": [
+    "Existing dynamic/static import overlap for src/lib/supabase-fallback.ts",
+    "Existing chunks larger than 500 kB after minification"
+  ],
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-018_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "EXECUTED: PARTIAL / coverage PARTIAL / fileWrites 0"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-018_BROWSER_PROOF.json",
+    "screenshot_path": "audit/evidence/FRT-018_BROWSER_PROOF.png",
+    "status": "PASS_WITH_TRUTHFUL_EMPTY_RUNTIME_AND_UNSUPPORTED_BULK_REMINDER_BOUNDARY",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "/leads/dev-lead-3",
+    "manager_entry": "PASS",
+    "add_form_entry": "PASS",
+    "semantic_color_tokens": "PASS",
+    "outer_rail_hidden": true,
+    "horizontal_overflow": false,
+    "submit": "NOT_SUBMITTED_BY_DESIGN",
+    "console_errors": 0,
+    "console_warnings": 0,
+    "tab_marked_deliverable": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitation": "Runtime data, native browser rendering, usable scroll region and explicitly unsupported current-schema capabilities remain real and can differ from fixture pixels; semantic colors do not diverge by screen or icon instance."
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "efficiency_planning": "APPLIED",
+    "marketplace_startup_receipt": "startup-8581d9371943d55d8cf5614069bfc6cb07e9ca5a145ff01b862cb1ae02e61aa4",
+    "project_context_receipt": "pctx-57936f06",
+    "routing_fingerprint": "3293abe7",
+    "marketplace_binding": "BOUND",
+    "primary_capabilities": [
+      "frontend-design-studio",
+      "ai-code-guardian",
+      "agent-efficiency-guardian"
+    ],
+    "project_context_reused": [
+      "FRT-000 contracts/evidence baseline",
+      "FRT-010..FRT-017 Lead runtime, action, relation, persistence, browser and visual-token evidence"
+    ],
+    "evidence_reuse": [
+      "FRT-012 real Lead browser harness",
+      "FRT-013 workspace/relation boundary",
+      "FRT-016 canonical semantic delete token family",
+      "FRT-017 missing-item form and task/activity handoff"
+    ],
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "skip_reason": "No suitable available preferred provider was exposed for this bounded UI/data-owner change; one write owner per path and parent validation were required.",
+    "subagents": [
+      {
+        "role": "pre-evidence independent review",
+        "agent": "Volta",
+        "result": "BLOCKED before final evidence; relation/persistence/receipt concerns were addressed and revalidated by parent"
+      },
+      {
+        "role": "post-remediation independent review",
+        "agent": "Maxwell",
+        "result": "PASS; no blocking findings after code and source-of-truth review"
+      },
+      {
+        "role": "stale prior reviewers",
+        "agent": "Mill and Confucius",
+        "result": "CLOSED; stale context, no write owner retained"
+      }
+    ]
+  },
+  "implementation_commit_sha": "b5a2867e82cef8b7ec7eb3ffee96c6925cd89708",
+  "remote_head_verified": "b5a2867e82cef8b7ec7eb3ffee96c6925cd89708",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "created_at": "2026-08-28T12:05:37.5383239Z"
+}
