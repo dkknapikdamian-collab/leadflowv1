@@ -3,7 +3,7 @@ import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, supabaseR
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
 import { buildLeadMovedToServicePayload } from '../src/server/_lead-service.js';
 import { assertWorkspaceEntityLimit, assertWorkspaceFeatureAccess, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
-import { requireSupabaseRequestContext, writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
+import { RequestAuthError, requireSupabaseRequestContext, writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 import { normalizeLeadContract } from '../src/lib/data-contract.js';
 import { LEAD_STATUS_VALUES, normalizeLeadStatus } from '../src/lib/domain-statuses.js';
 import { createGoogleCalendarEvent, deleteGoogleCalendarEvent, getGoogleCalendarConnection, updateGoogleCalendarEvent } from '../src/server/google-calendar-sync.js';
@@ -407,6 +407,42 @@ async function safeSelectRows(query: string) {
   } catch {
     return [];
   }
+}
+
+async function validateLeadNextActionItemPatch(
+  leadId: string,
+  workspaceId: string,
+  body: Record<string, unknown>,
+): Promise<string | null | undefined> {
+  const hasCamelCaseField = Object.prototype.hasOwnProperty.call(body, 'nextActionItemId');
+  const hasSnakeCaseField = Object.prototype.hasOwnProperty.call(body, 'next_action_item_id');
+  if (!hasCamelCaseField && !hasSnakeCaseField) return undefined;
+
+  // An explicitly supplied camel-case value wins, including null. This keeps
+  // an intentional clear from being replaced by a legacy snake-case alias.
+  const rawValue = hasCamelCaseField && body.nextActionItemId !== undefined
+    ? body.nextActionItemId
+    : body.next_action_item_id;
+  if (rawValue === undefined) return undefined;
+  if (rawValue === null) return null;
+
+  const nextActionItemId = asText(rawValue);
+  if (!nextActionItemId) {
+    throw new RequestAuthError(400, 'LEAD_NEXT_ACTION_ITEM_ID_INVALID');
+  }
+
+  const workItem = await requireScopedRow(
+    'work_items',
+    nextActionItemId,
+    workspaceId,
+    'LEAD_NEXT_ACTION_ITEM_NOT_FOUND',
+  );
+  const workItemLeadId = asText(workItem.lead_id || workItem.leadId);
+  if (!workItemLeadId || workItemLeadId.toLowerCase() !== leadId.toLowerCase()) {
+    throw new RequestAuthError(409, 'LEAD_NEXT_ACTION_ITEM_LEAD_MISMATCH');
+  }
+
+  return nextActionItemId;
 }
 
 async function sumLeadPaidPayments(workspaceId: string, leadId: string) {
@@ -1016,7 +1052,8 @@ export default async function handler(req: any, res: any) {
       if (body.nextActionTitle !== undefined) payload.next_action_title = normalizeNextActionTitle(body.nextActionTitle);
       // STAGE232T_R4_LEAD_NEXT_ACTION_ITEM_ID_PATCH
       // Calendar lead-shadow actions clear or update the canonical lead next-action link.
-      if (body.nextActionItemId !== undefined || body.next_action_item_id !== undefined) payload.next_action_item_id = asText(body.nextActionItemId ?? body.next_action_item_id) || null;
+      const nextActionItemIdPatch = await validateLeadNextActionItemPatch(String(body.id), workspaceId, body);
+      if (nextActionItemIdPatch !== undefined) payload.next_action_item_id = nextActionItemIdPatch;
       if (body.priority !== undefined) {
         const nextPriority = normalizeEnum(body.priority, new Set(['low', 'medium', 'high']), 'medium');
         payload.priority = nextPriority;

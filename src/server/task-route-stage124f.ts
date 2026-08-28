@@ -1,7 +1,8 @@
 // STAGE124F_VERCEL_HOBBY_CONSOLIDATED_TASK_ROUTE
 // STAGE124D_SUPABASE_EGRESS_LIGHT_TASK_ROUTE
 import { deleteByIdScoped, insertWithVariants, selectFirstAvailable, updateByIdScoped, updateWhere } from './_supabase.js';
-import { requireRequestIdentity, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
+import { requireRequestIdentity, resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from './_request-scope.js';
+import { RequestAuthError } from './_supabase-auth.js';
 import { normalizeTaskListContract } from '../lib/data-contract.js';
 import { normalizeCloseFlowDateTimeToUtcIso } from '../lib/calendar-timezone-contract.js';
 import { markGoogleCalendarMutationSyncState } from './google-calendar-mutation-sync-state-marker.js';
@@ -219,6 +220,111 @@ async function syncLeadNextAction(workspaceId: string, leadId: unknown, item: { 
     next_action_item_id: item.id ? String(item.id) : null,
     updated_at: new Date().toISOString(),
   });
+}
+
+type TaskRelationKeyStageFRT019 = 'leadId' | 'caseId' | 'clientId';
+type TaskRelationRowsStageFRT019 = Partial<Record<TaskRelationKeyStageFRT019, Record<string, unknown>>>;
+
+const TASK_RELATION_RULES_STAGEFRT019 = [
+  ['leadId', 'lead_id', 'leads', 'TASK_LEAD_WORKSPACE_RELATION_NOT_FOUND'],
+  ['caseId', 'case_id', 'cases', 'TASK_CASE_WORKSPACE_RELATION_NOT_FOUND'],
+  ['clientId', 'client_id', 'clients', 'TASK_CLIENT_WORKSPACE_RELATION_NOT_FOUND'],
+] as const;
+
+function sameTaskRelationIdStageFRT019(left: unknown, right: unknown) {
+  const normalizedLeft = asText(left).toLowerCase();
+  const normalizedRight = asText(right).toLowerCase();
+  return Boolean(normalizedLeft && normalizedRight && normalizedLeft === normalizedRight);
+}
+
+function readTaskRelationIdStageFRT019(row: Record<string, unknown> | undefined, keys: string[]) {
+  if (!row) return '';
+  for (const key of keys) {
+    const value = asText(row[key]);
+    if (value) return value;
+  }
+  return '';
+}
+
+function taskRelationBodyValueStageFRT019(body: Record<string, unknown>, camelCaseKey: string, snakeCaseKey: string) {
+  if (body[camelCaseKey] !== undefined) return body[camelCaseKey];
+  return body[snakeCaseKey];
+}
+
+async function validateTaskRelationsStageFRT019(
+  body: Record<string, unknown>,
+  workspaceId: string,
+) {
+  const relationIds: Record<TaskRelationKeyStageFRT019, string | null> = {
+    leadId: null,
+    caseId: null,
+    clientId: null,
+  };
+  const relationRows: TaskRelationRowsStageFRT019 = {};
+
+  for (const [camelCaseKey, snakeCaseKey, table, notFoundCode] of TASK_RELATION_RULES_STAGEFRT019) {
+    const rawValue = taskRelationBodyValueStageFRT019(body, camelCaseKey, snakeCaseKey);
+    if (rawValue === undefined) continue;
+
+    const relationId = asText(rawValue);
+    relationIds[camelCaseKey] = relationId || null;
+    if (!relationId) continue;
+
+    relationRows[camelCaseKey] = await requireScopedRow(
+      table,
+      relationId,
+      workspaceId,
+      notFoundCode,
+    );
+  }
+
+  const leadId = relationIds.leadId;
+  const caseId = relationIds.caseId;
+  const clientId = relationIds.clientId;
+  const leadRow = relationRows.leadId;
+  const caseRow = relationRows.caseId;
+
+  const leadCaseId = readTaskRelationIdStageFRT019(leadRow, ['linked_case_id', 'linkedCaseId', 'case_id', 'caseId']);
+  const caseLeadId = readTaskRelationIdStageFRT019(caseRow, ['lead_id', 'leadId']);
+  const leadClientId = readTaskRelationIdStageFRT019(leadRow, ['client_id', 'clientId']);
+  const caseClientId = readTaskRelationIdStageFRT019(caseRow, ['client_id', 'clientId']);
+
+  if (leadId && caseId) {
+    if ((leadCaseId && !sameTaskRelationIdStageFRT019(leadCaseId, caseId))
+      || (caseLeadId && !sameTaskRelationIdStageFRT019(caseLeadId, leadId))) {
+      throw new RequestAuthError(409, 'TASK_LEAD_CASE_RELATION_MISMATCH');
+    }
+    if (!sameTaskRelationIdStageFRT019(leadCaseId, caseId)
+      && !sameTaskRelationIdStageFRT019(caseLeadId, leadId)) {
+      throw new RequestAuthError(409, 'TASK_LEAD_CASE_RELATION_UNCONFIRMED');
+    }
+  }
+
+  if (caseId && clientId) {
+    if (caseClientId && !sameTaskRelationIdStageFRT019(caseClientId, clientId)) {
+      throw new RequestAuthError(409, 'TASK_CASE_CLIENT_RELATION_MISMATCH');
+    }
+    if (!sameTaskRelationIdStageFRT019(caseClientId, clientId)) {
+      throw new RequestAuthError(409, 'TASK_CASE_CLIENT_RELATION_UNCONFIRMED');
+    }
+  }
+
+  if (leadId && clientId) {
+    if (leadClientId && !sameTaskRelationIdStageFRT019(leadClientId, clientId)) {
+      throw new RequestAuthError(409, 'TASK_LEAD_CLIENT_RELATION_MISMATCH');
+    }
+
+    const confirmedThroughCase = Boolean(
+      caseId
+      && sameTaskRelationIdStageFRT019(caseClientId, clientId)
+      && (sameTaskRelationIdStageFRT019(leadCaseId, caseId) || sameTaskRelationIdStageFRT019(caseLeadId, leadId)),
+    );
+    if (!sameTaskRelationIdStageFRT019(leadClientId, clientId) && !confirmedThroughCase) {
+      throw new RequestAuthError(409, 'TASK_LEAD_CLIENT_RELATION_UNCONFIRMED');
+    }
+  }
+
+  return relationIds;
 }
 
 async function readTasks(req: any, workspaceId: string) {
@@ -442,6 +548,7 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
       : body.date
         ? normalizeCloseFlowDateTimeToUtcIso(String(body.date) + 'T09:00')
         : null;
+    const taskRelationsStageFRT019 = await validateTaskRelationsStageFRT019(body, workspaceId);
 
     const taskInsertBaseStageG14 = {
       workspace_id: workspaceId,
@@ -449,9 +556,9 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
       // Outbound Google Calendar sync is user-scoped and checks created_by_user_id.
       // New tasks must be stamped with the authenticated request user, not null.
       created_by_user_id: requestUserIdStage232GR3 || null,
-      lead_id: body.leadId || null,
-      case_id: body.caseId || null,
-      client_id: body.clientId || null,
+      lead_id: taskRelationsStageFRT019.leadId,
+      case_id: taskRelationsStageFRT019.caseId,
+      client_id: taskRelationsStageFRT019.clientId,
       record_type: 'task',
       type: body.type || 'task',
       title: body.title,
@@ -498,8 +605,8 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
 
     const result = await insertWithVariants(['work_items'], [payload]);
     const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
-    if (body.leadId && !isMissingItemTypeForLeadNextActionStage228R17(body.type || payload.type)) {
-      await syncLeadNextAction(workspaceId, body.leadId, {
+    if (taskRelationsStageFRT019.leadId && !isMissingItemTypeForLeadNextActionStage228R17(body.type || payload.type)) {
+      await syncLeadNextAction(workspaceId, taskRelationsStageFRT019.leadId, {
         id: (inserted as Record<string, unknown>).id,
         title: body.title,
         scheduledAt,

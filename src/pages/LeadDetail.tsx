@@ -123,6 +123,14 @@ import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';
 import { MissingItemsManagerDialog, type MissingItemsManagerItem } from '../components/detail/MissingItemsManagerDialog';
 import { LeadBlockersManagerPanel } from '../components/detail/LeadBlockersManagerPanel';
+import {
+  LeadNextStepPrompt,
+  type LeadNextStepAction,
+  type LeadNextStepChoice,
+  type LeadNextStepField,
+  type LeadNextStepPromptMode,
+  type LeadNextStepSelection,
+} from '../components/detail/LeadNextStepPrompt';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -196,6 +204,21 @@ const STAGE227E3_SHARED_QUICK_ACTIONS_BAR_LEAD = 'LeadDetail uses shared QuickAc
 void STAGE227E3_SHARED_QUICK_ACTIONS_BAR_LEAD;
 const STAGE227E3_LEAD_DETAIL_SHARED_QUICK_ACTIONS_BAR = 'LeadDetail uses shared QuickActionsBar visual source with CaseDetail';
 void STAGE227E3_LEAD_DETAIL_SHARED_QUICK_ACTIONS_BAR;
+
+const FRT019_LEAD_NEXT_STEP_PROMPT_RUNTIME = 'FRT-019 Lead Detail next-step prompt creates real linked task/event records and keeps Lead next-action linkage in sync';
+void FRT019_LEAD_NEXT_STEP_PROMPT_RUNTIME;
+
+const FRT019_LEAD_NEXT_STEP_ACTIONS: Record<LeadNextStepAction, {
+  title: string;
+  description: string;
+  kind: 'task' | 'event';
+  type: string;
+}> = {
+  phone_call: { title: 'Rozmowa telefoniczna', description: 'Skontaktuj się z klientem', kind: 'task', type: 'phone' },
+  follow_up_email: { title: 'Follow-up e-mail', description: 'Wyślij e-mail z follow-upem', kind: 'task', type: 'reply' },
+  send_offer: { title: 'Wyślij ofertę', description: 'Prześlij ofertę handlową', kind: 'task', type: 'send_offer' },
+  online_meeting: { title: 'Spotkanie online', description: 'Zaplanuj spotkanie', kind: 'event', type: 'meeting' },
+};
 
 const STAGE223_R2X_LEAD_DETAIL_VERTICAL_RHYTHM_SECTION_COPY = 'Notatki leada Zadania i wydarzenia Historia kontaktu';
 void STAGE223_R2X_LEAD_DETAIL_VERTICAL_RHYTHM_SECTION_COPY;
@@ -969,6 +992,12 @@ export default function LeadDetail() {
   const [editLinkedEvent, setEditLinkedEvent] = useState<any | null>(null);
   const [editLinkedTaskSubmitting, setEditLinkedTaskSubmitting] = useState(false);
   const [editLinkedEventSubmitting, setEditLinkedEventSubmitting] = useState(false);
+  const [leadNextStepPromptOpen, setLeadNextStepPromptOpen] = useState(false);
+  const [leadNextStepChoice, setLeadNextStepChoice] = useState<LeadNextStepChoice | null>(null);
+  const [leadNextStepAction, setLeadNextStepAction] = useState<LeadNextStepAction | null>(null);
+  const [leadNextStepDate, setLeadNextStepDate] = useState('');
+  const [leadNextStepTime, setLeadNextStepTime] = useState('');
+  const [leadNextStepSaving, setLeadNextStepSaving] = useState(false);
   const [activeLeadDetailTab, setActiveLeadDetailTab] = useState<'summary' | 'activity' | 'blockers' | 'follow-up' | 'offer' | 'start'>('summary');
   const noteRecognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const potentialInputRefStage231G = useRef<HTMLInputElement | null>(null);
@@ -1103,6 +1132,9 @@ export default function LeadDetail() {
   const serviceCaseStatusLabel = String(associatedCase?.status || createCaseDraft.status || 'ready_to_start').replaceAll('_', ' ');
   const serviceMovedAtLabel = formatDateTime(lead?.movedToServiceAt || lead?.serviceStartedAt || associatedCase?.serviceStartedAt || associatedCase?.createdAt);
   const leadOperationalArchive = Boolean(leadMovedToService || associatedCase || startServiceSuccess);
+  const frt019DevPromptPreview = import.meta.env.DEV &&
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search || '').get('frt019') === 'prompt';
   const leadInService = Boolean(leadOperationalArchive || isLeadInServiceStatus(lead?.status));
   const leadRiskReasonStage14F =
     asText(lead?.riskReason) ||
@@ -1244,6 +1276,9 @@ export default function LeadDetail() {
       recordLabel: getLeadName(lead),
     });
   };
+
+  const handleLeadNextStepPreviewSave = async () => undefined;
+  const leadNextStepPromptMode: LeadNextStepPromptMode = frt019DevPromptPreview ? 'preview' : 'interactive';
   const handleCreateQuickTask = () => {
     if (leadOperationalArchive) return toast.error('Dodawaj dalsze zadania w sprawie.');
     openLeadContextAction('task');
@@ -1255,6 +1290,203 @@ export default function LeadDetail() {
   const handleCreateQuickNote = () => {
     openLeadContextAction('note');
   };
+
+  const resetLeadNextStepPrompt = () => {
+    setLeadNextStepPromptOpen(false);
+    setLeadNextStepChoice(null);
+    setLeadNextStepAction(null);
+    setLeadNextStepDate('');
+    setLeadNextStepTime('');
+  };
+
+  const getLeadNextStepDefaultDateTime = () => {
+    const target = new Date();
+    target.setDate(target.getDate() + 1);
+    target.setHours(9, 0, 0, 0);
+    return toDateTimeLocalValue(target);
+  };
+
+  const openLeadNextStepPrompt = () => {
+    if (leadOperationalArchive) {
+      toast.error('Dodawaj dalsze zadania w sprawie.');
+      return;
+    }
+    setLeadNextStepChoice(null);
+    setLeadNextStepAction(null);
+    setLeadNextStepDate('');
+    setLeadNextStepTime('');
+    setLeadNextStepPromptOpen(true);
+  };
+
+  const handleLeadNextStepChange = (field: LeadNextStepField, value: string) => {
+    if (field === 'date') setLeadNextStepDate(value);
+    if (field === 'time') setLeadNextStepTime(value);
+  };
+
+  const handleLeadNextStepSelect = (selection: LeadNextStepSelection) => {
+    if (selection.kind === 'choice') {
+      setLeadNextStepChoice(selection.value);
+      if (selection.value !== 'set_now') setLeadNextStepAction(null);
+      if (selection.value === 'set_now' && (!leadNextStepDate || !leadNextStepTime)) {
+        const defaultDateTime = getLeadNextStepDefaultDateTime();
+        setLeadNextStepDate(defaultDateTime.slice(0, 10));
+        setLeadNextStepTime(defaultDateTime.slice(11, 16));
+      }
+      return;
+    }
+
+    setLeadNextStepAction(selection.value);
+    setLeadNextStepChoice('set_now');
+    if (!leadNextStepDate || !leadNextStepTime) {
+      const defaultDateTime = getLeadNextStepDefaultDateTime();
+      setLeadNextStepDate(defaultDateTime.slice(0, 10));
+      setLeadNextStepTime(defaultDateTime.slice(11, 16));
+    }
+  };
+
+  const handleLeadNextStepSave = async () => {
+    if (!leadId || leadNextStepSaving) return;
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
+    if (leadOperationalArchive) {
+      toast.error('Dodawaj dalsze zadania w sprawie.');
+      return;
+    }
+    if (!leadNextStepChoice) {
+      toast.error('Wybierz sposób obsługi kolejnego kroku.');
+      return;
+    }
+
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) {
+      toast.error('Kontekst workspace nie jest jeszcze gotowy.');
+      return;
+    }
+
+    let scheduledAt = '';
+    let savedItemId = '';
+    let savedItemTitle = '';
+    try {
+      setLeadNextStepSaving(true);
+
+      if (leadNextStepChoice === 'without_step') {
+        await updateLeadInSupabase({
+          id: leadId,
+          nextActionTitle: '',
+          nextActionAt: null,
+          nextActionItemId: null,
+        });
+        await addActivity('lead_next_step_skipped', {
+          source: 'forteca-frt-019-next-step-prompt',
+          choice: leadNextStepChoice,
+        });
+        toast.success('Lead zapisany bez kolejnego kroku');
+        resetLeadNextStepPrompt();
+        await loadLead({ silent: true });
+        return;
+      }
+
+      if (leadNextStepChoice === 'set_now') {
+        if (!leadNextStepAction) {
+          toast.error('Wybierz sugerowany kolejny krok.');
+          return;
+        }
+        if (!leadNextStepDate || !leadNextStepTime) {
+          toast.error('Uzupełnij datę i godzinę realizacji.');
+          return;
+        }
+        scheduledAt = `${leadNextStepDate}T${leadNextStepTime}`;
+        if (!Number.isFinite(new Date(scheduledAt).getTime())) {
+          toast.error('Podaj prawidłowy termin kolejnego kroku.');
+          return;
+        }
+
+        const action = FRT019_LEAD_NEXT_STEP_ACTIONS[leadNextStepAction];
+        savedItemTitle = action.title;
+        if (action.kind === 'event') {
+          const eventTime = buildStartEndPair(scheduledAt);
+          const createdEvent = await insertEventToSupabase({
+            title: action.title,
+            type: action.type,
+            ...eventTime,
+            status: 'scheduled',
+            leadId,
+            clientId: lead?.clientId ? String(lead.clientId) : null,
+            caseId: serviceCaseId || null,
+            workspaceId,
+          });
+          savedItemId = String((createdEvent as any)?.id || '').trim();
+        } else {
+          const createdTask = await insertTaskToSupabase({
+            title: action.title,
+            type: action.type,
+            date: leadNextStepDate,
+            scheduledAt,
+            dueAt: scheduledAt,
+            priority: 'medium',
+            status: 'todo',
+            leadId,
+            clientId: lead?.clientId ? String(lead.clientId) : null,
+            caseId: serviceCaseId || null,
+            workspaceId,
+          });
+          savedItemId = String((createdTask as any)?.id || '').trim();
+        }
+      } else {
+        scheduledAt = getLeadNextStepDefaultDateTime();
+        savedItemTitle = 'Przypomnij sobie o tym leadzie jutro';
+        const createdTask = await insertTaskToSupabase({
+          title: savedItemTitle,
+          type: 'follow_up',
+          date: scheduledAt.slice(0, 10),
+          scheduledAt,
+          dueAt: scheduledAt,
+          priority: 'medium',
+          status: 'todo',
+          leadId,
+          clientId: lead?.clientId ? String(lead.clientId) : null,
+          caseId: serviceCaseId || null,
+          workspaceId,
+        });
+        savedItemId = String((createdTask as any)?.id || '').trim();
+      }
+
+      if (!savedItemId) throw new Error('SAVED_NEXT_STEP_ID_MISSING');
+      await updateLeadInSupabase({
+        id: leadId,
+        nextActionTitle: savedItemTitle,
+        nextActionAt: scheduledAt,
+        nextActionItemId: savedItemId,
+      });
+      await addActivity('lead_next_step_created', {
+        source: 'forteca-frt-019-next-step-prompt',
+        choice: leadNextStepChoice,
+        action: leadNextStepAction,
+        title: savedItemTitle,
+        scheduledAt,
+        itemId: savedItemId,
+      });
+      toast.success('Kolejny krok zapisany');
+      resetLeadNextStepPrompt();
+      await loadLead({ silent: true });
+    } catch (error: any) {
+      const message = String(error?.message || 'REQUEST_FAILED');
+      toast.error(`Nie udało się zapisać kolejnego kroku: ${message}`);
+    } finally {
+      setLeadNextStepSaving(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!frt019DevPromptPreview || loading || !lead || leadOperationalArchive) return;
+    setLeadNextStepChoice(null);
+    setLeadNextStepAction(null);
+    setLeadNextStepDate('');
+    setLeadNextStepTime('');
+    setLeadNextStepPromptOpen(true);
+  }, [frt019DevPromptPreview, lead, leadOperationalArchive, loading]);
 
   const handleAddLeadMissingFromManagerStage232I4R14 = async () => {
     if (!hasAccess) {
@@ -1717,6 +1949,7 @@ useEffect(() => {
     () => activeLeadWorkEntries.filter((entry) => !isMissingItemTimelineEntry(entry) && !activeMissingTaskIdsStage232AR8.has(String(entry.raw?.id || '').trim()) && (entry.kind === 'task' || entry.kind === 'event')),
     [activeLeadWorkEntries, activeMissingTaskIdsStage232AR8],
   );
+  const leadNextActionItemId = asText(lead?.nextActionItemId || (lead as any)?.next_action_item_id);
   const displayedLeadWorkEntries = leadNextActionEntries.slice(0, 5);
   const leadActiveWorkPreviewEntries = activeLeadWorkEntries
     .map((entry) => activeMissingTaskIdsStage232AR8.has(String(entry.raw?.id || '').trim())
@@ -1736,9 +1969,10 @@ useEffect(() => {
   const nearestPlannedAction = useMemo(() => getNearestPlannedAction({
     leadId: String(leadId || ''),
     caseId: associatedCase?.id ? String(associatedCase.id) : undefined,
+    nextActionItemId: leadNextActionItemId || undefined,
     tasks: linkedTasks,
     events: linkedEvents,
-  }), [associatedCase?.id, leadId, linkedEvents, linkedTasks]);
+  }), [associatedCase?.id, leadId, leadNextActionItemId, linkedEvents, linkedTasks]);
   const nextTimelineEntry = useMemo(() => {
     if (!nearestPlannedAction?.id) return leadNextActionEntries[0] || null;
     return leadNextActionEntries.find((entry) => String(entry.raw?.id || '') === nearestPlannedAction.id) || leadNextActionEntries[0] || null;
@@ -2923,7 +3157,7 @@ useEffect(() => {
                         <p>Ten lead nie ma jeszcze zaplanowanego zadania ani wydarzenia.</p>
                       </div>
                     )}
-                    <button type="button" className="forteca-lead-detail-secondary-action" onClick={() => nextTimelineEntry ? (nextTimelineEntry.kind === 'task' ? openLinkedTaskEditor(nextTimelineEntry.raw) : openLinkedEventEditor(nextTimelineEntry.raw)) : handleCreateQuickTask()} disabled={!hasAccess || leadOperationalArchive}>
+                    <button type="button" className="forteca-lead-detail-secondary-action" data-forteca-frt-019-next-step-trigger="true" onClick={() => nextTimelineEntry ? (nextTimelineEntry.kind === 'task' ? openLinkedTaskEditor(nextTimelineEntry.raw) : openLinkedEventEditor(nextTimelineEntry.raw)) : openLeadNextStepPrompt()} disabled={!hasAccess || leadOperationalArchive}>
                       <Plus className="h-4 w-4" />
                       {nextTimelineEntry ? 'Edytuj kolejny krok' : 'Ustaw kolejny krok'}
                     </button>
@@ -3934,6 +4168,21 @@ useEffect(() => {
             <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setEditLinkedEvent(null)}>Anuluj</Button><Button type="button" onClick={handleSaveLinkedEventEdit} disabled={editLinkedEventSubmitting}>{editLinkedEventSubmitting ? 'Zapisuję...' : 'Zapisz'}</Button></DialogFooter>
           </DialogContent>
         </Dialog>
+
+        <LeadNextStepPrompt
+          open={leadNextStepPromptOpen}
+          mode={leadNextStepPromptMode}
+          selectedChoice={leadNextStepChoice}
+          selectedAction={leadNextStepAction}
+          date={leadNextStepDate}
+          time={leadNextStepTime}
+          onClose={resetLeadNextStepPrompt}
+          onChange={handleLeadNextStepChange}
+          onSelect={handleLeadNextStepSelect}
+          onSave={frt019DevPromptPreview ? handleLeadNextStepPreviewSave : handleLeadNextStepSave}
+          onCancel={resetLeadNextStepPrompt}
+          isSaving={leadNextStepSaving}
+        />
 
                 <Dialog open={isAddNoteOpen} onOpenChange={(open) => { setIsAddNoteOpen(open); if (!open) { stopNoteSpeech(); setNoteInterimText(''); } }}>
           <DialogContent data-stage216j3f-add-note-dialog="true" aria-describedby={undefined}>

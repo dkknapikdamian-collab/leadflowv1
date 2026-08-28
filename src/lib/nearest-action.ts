@@ -22,6 +22,7 @@ export type GetNearestPlannedActionInput = {
   leadId?: EntityId;
   caseId?: EntityId;
   clientId?: EntityId;
+  nextActionItemId?: EntityId;
   tasks?: unknown[];
   events?: unknown[];
   now?: Date;
@@ -81,6 +82,7 @@ export function getNearestPlannedAction({
   leadId,
   caseId,
   clientId,
+  nextActionItemId,
   tasks = [],
   events = [],
   now = new Date(),
@@ -139,7 +141,12 @@ export function getNearestPlannedAction({
   }
 
   candidates.sort((left, right) => left.atDate.getTime() - right.atDate.getTime());
-  const nearest = candidates[0];
+  // The saved pointer is trusted only after the candidate has passed the same
+  // active, linked and date-valid filters as every other action. If it is
+  // stale, closed, unrelated or missing, retain the nearest-action fallback.
+  const preferredId = asText(nextActionItemId);
+  const nearest = (preferredId ? candidates.find((candidate) => candidate.id === preferredId) : null)
+    || candidates[0];
 
   return {
     kind: nearest.kind,

@@ -122,6 +122,56 @@
   --cf-vst-kind-border: var(--cf-vst-color-delete-border);
 }
 
+/*
+ * SemanticIcon adapter: the component exposes only a semantic tone class;
+ * this canonical VST owner resolves every tone to an existing token. This
+ * is intentionally the sole palette bridge for SemanticIcon, so reference
+ * image drift cannot create per-consumer icon colors (delete stays red).
+ */
+.cf-vst-semantic-icon {
+  color: var(--cf-vst-text-main, currentColor);
+}
+
+.cf-vst-semantic-icon-tone-primary,
+.cf-vst-semantic-icon-tone-notification {
+  color: var(--cf-vst-color-primary, currentColor);
+}
+
+.cf-vst-semantic-icon-tone-neutral,
+.cf-vst-semantic-icon-tone-time {
+  color: var(--cf-vst-text-muted, currentColor);
+}
+
+.cf-vst-semantic-icon-tone-danger {
+  color: var(--cf-vst-color-delete, currentColor);
+}
+
+.cf-vst-semantic-icon-tone-contact,
+.cf-vst-semantic-icon-tone-person {
+  color: var(--cf-vst-color-status, currentColor);
+}
+
+.cf-vst-semantic-icon-tone-ai,
+.cf-vst-semantic-icon-tone-finance {
+  color: var(--cf-vst-color-payment, currentColor);
+}
+
+.cf-vst-semantic-icon-tone-case {
+  color: var(--cf-vst-color-case-item, currentColor);
+}
+
+.cf-vst-semantic-icon-tone-event {
+  color: var(--cf-vst-color-event, currentColor);
+}
+
+.cf-vst-semantic-icon-tone-note {
+  color: var(--cf-vst-color-note, currentColor);
+}
+
+.cf-vst-semantic-icon-tone-task {
+  color: var(--cf-vst-color-task, currentColor);
+}
+
 
 
 :root {
@@ -186,7 +236,7 @@
   --cf-vst-placeholder-color: var(--cf-vst-text-faint);
   --cf-vst-modal-width-sm: 420px;
   --cf-vst-modal-width-md: 560px;
-  --cf-vst-modal-width-lg: 760px;
+  --cf-vst-modal-width-lg: 740px;
   --cf-vst-modal-padding: 22px;
   --cf-vst-modal-header-gap: 8px;
   --cf-vst-modal-footer-gap: 10px;

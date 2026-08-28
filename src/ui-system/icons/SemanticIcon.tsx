@@ -18,12 +18,14 @@ import {
   FileText,
   Filter,
   Loader2,
+  Lightbulb,
   LogIn,
   LogOut,
   Mail,
   Pencil,
   Phone,
   Pin,
+  PauseCircle,
   Plus,
   RefreshCw,
   Search,
@@ -55,11 +57,13 @@ export type SemanticIconRole =
   | 'filter'
   | 'finance'
   | 'goal'
+  | 'hint'
   | 'loading'
   | 'navigation'
   | 'note'
   | 'notification'
   | 'person'
+  | 'pause'
   | 'phone'
   | 'pin'
   | 'refresh'
@@ -112,11 +116,13 @@ export const semanticIconConfig = {
   filter: { role: 'filter', tone: 'neutral', label: 'Filtr', defaultIcon: Filter, migrationStage: 'later' },
   finance: { role: 'finance', tone: 'finance', label: 'Finanse', defaultIcon: DollarSign, migrationStage: 'Finance V1' },
   goal: { role: 'goal', tone: 'primary', label: 'Cel', defaultIcon: Target, migrationStage: 'later' },
+  hint: { role: 'hint', tone: 'neutral', label: 'Wskazówka', defaultIcon: Lightbulb, migrationStage: 'UI-2' },
   loading: { role: 'loading', tone: 'neutral', label: 'Ładowanie', defaultIcon: Loader2, migrationStage: 'later' },
   navigation: { role: 'navigation', tone: 'neutral', label: 'Nawigacja', defaultIcon: ArrowRight, migrationStage: 'later' },
   note: { role: 'note', tone: 'note', label: 'Notatka', defaultIcon: FileText, migrationStage: 'UI-4' },
   notification: { role: 'notification', tone: 'notification', label: 'Powiadomienie', defaultIcon: Bell, migrationStage: 'later' },
   person: { role: 'person', tone: 'person', label: 'Osoba', defaultIcon: UserRound, migrationStage: 'UI-3' },
+  pause: { role: 'pause', tone: 'event', label: 'Wstrzymane', defaultIcon: PauseCircle, migrationStage: 'UI-2' },
   phone: { role: 'phone', tone: 'contact', label: 'Telefon', defaultIcon: Phone, migrationStage: 'UI-3' },
   pin: { role: 'pin', tone: 'neutral', label: 'Przypięte', defaultIcon: Pin, migrationStage: 'later' },
   refresh: { role: 'refresh', tone: 'neutral', label: 'Odśwież', defaultIcon: RefreshCw, migrationStage: 'later' },
@@ -145,21 +151,12 @@ export const semanticIconCriticalRoles = [
 
 export type SemanticIconCriticalRole = (typeof semanticIconCriticalRoles)[number];
 
-const toneClassName: Record<SemanticIconTone, string> = {
-  primary: 'text-blue-600',
-  neutral: 'text-slate-500',
-  danger: 'text-rose-600',
-  contact: 'text-slate-600',
-  ai: 'text-violet-600',
-  case: 'text-slate-700',
-  event: 'text-indigo-600',
-  finance: 'text-emerald-600',
-  note: 'text-amber-700',
-  notification: 'text-blue-600',
-  person: 'text-slate-600',
-  task: 'text-emerald-600',
-  time: 'text-slate-500',
-};
+function semanticToneClassName(tone: SemanticIconTone) {
+  // Color ownership lives in the canonical VST CSS adapter. Keeping the
+  // tone in the class name preserves the public API without copying palette
+  // values or Tailwind color utilities into this runtime component.
+  return `cf-vst-semantic-icon-tone-${tone}`;
+}
 
 const sizeClassName: Record<SemanticIconSize, string> = {
   xs: 'h-3.5 w-3.5',
@@ -202,11 +199,13 @@ export function SemanticIcon({
   return (
     <Icon
       className={cx(
+        'cf-vst-semantic-icon',
         sizeClassName[size],
-        toneClassName[resolvedTone],
+        semanticToneClassName(resolvedTone),
         role === 'loading' && 'animate-spin',
         className,
       )}
+      data-cf-vst-icon-tone={resolvedTone}
       focusable="false"
       {...accessibleProps}
       {...props}
