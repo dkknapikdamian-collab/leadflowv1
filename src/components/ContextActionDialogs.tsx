@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { CONTEXT_ACTION_CONTRACT, STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY_V1 } from '../lib/context-action-contract';
 import { requireWorkspaceId } from '../lib/workspace-context';
-import { buildMissingItemModalDraft, type MissingItemKind } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
+import { buildMissingItemModalDraft, type MissingItemKind, type MissingItemPriority } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
 import { insertActivityToSupabase, insertCaseItemToSupabase, insertTaskToSupabase } from '../lib/supabase-fallback';
 import { useWorkspace } from '../hooks/useWorkspace';
 import TaskCreateDialog, { type TaskCreateDialogContext } from './TaskCreateDialog';
@@ -160,8 +160,10 @@ export default function ContextActionDialogsHost() {
   const [request, setRequest] = useState<ContextActionRequest | null>(null);
   const [missingTitle, setMissingTitle] = useState('');
   const [missingNote, setMissingNote] = useState('');
-  const [missingKind, setMissingKind] = useState<MissingItemKind>('document');
-  const [missingBlocksProgress, setMissingBlocksProgress] = useState(true);
+  const [missingKind, setMissingKind] = useState<MissingItemKind | ''>('');
+  const [missingPriority, setMissingPriority] = useState<MissingItemPriority | ''>('');
+  const [missingDueDate, setMissingDueDate] = useState('');
+  const [missingBlocksProgress, setMissingBlocksProgress] = useState(false);
   const [missingBlockScope, setMissingBlockScope] = useState('');
   const [missingError, setMissingError] = useState('');
   const [missingSaving, setMissingSaving] = useState(false);
@@ -169,8 +171,10 @@ export default function ContextActionDialogsHost() {
   const resetMissingState = () => {
     setMissingTitle('');
     setMissingNote('');
-    setMissingKind('document');
-    setMissingBlocksProgress(true);
+    setMissingKind('');
+    setMissingPriority('');
+    setMissingDueDate('');
+    setMissingBlocksProgress(false);
     setMissingBlockScope('');
     setMissingError('');
   };
@@ -244,7 +248,15 @@ export default function ContextActionDialogsHost() {
           entityId: request.recordId,
           entityLabel: request.recordLabel || (request.recordType === 'lead' ? 'Lead' : request.recordType === 'client' ? 'Klient' : 'Sprawa'),
         },
-        { title: missingTitle, note: missingNote, missingKind, blocksProgress: missingBlocksProgress, blockScope: missingBlockScope },
+        {
+          title: missingTitle,
+          note: missingNote,
+          missingKind,
+          priority: missingPriority,
+          dueDate: missingDueDate,
+          blocksProgress: missingBlocksProgress,
+          blockScope: missingBlockScope,
+        },
       );
     } catch (error: any) {
       setMissingError(error?.message || 'Wpisz, czego brakuje.');
@@ -255,6 +267,8 @@ export default function ContextActionDialogsHost() {
     const stage232aMissingItemMetadata = {
       marker232A: 'stage232a_missing_blocker_contract_r4',
       missingKind: draft.missingKind,
+      priority: draft.priority,
+      dueDate: draft.dueDate,
       blocksProgress: draft.blocksProgress,
       blockScope: draft.blockScope || null,
     };
@@ -277,12 +291,14 @@ export default function ContextActionDialogsHost() {
           title: draft.title,
           type: 'missing_item',
           status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item',
-          priority: draft.blocksProgress ? 'high' : 'medium',
+          priority: draft.priority,
           leadId: leadId || null,
           clientId: clientId || null,
           caseId: caseId || null,
-          scheduledAt: now,
-          dueAt: now,
+          date: draft.dueDate,
+          scheduledAt: `${draft.dueDate}T09:00`,
+          dueAt: draft.dueDate,
+          description: draft.note,
           workspaceId,
           missingKind: draft.missingKind,
           blocksProgress: draft.blocksProgress,
@@ -300,12 +316,12 @@ export default function ContextActionDialogsHost() {
             type: 'missing_item',
             status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item',
             title: draft.title,
-            note: draft.note || null,
-            content: draft.note || null,
+            note: draft.note,
+            content: draft.note,
             createdAt: now,
             ...stage232aMissingItemMetadata,
           },
-        } as any);
+        });
 
         await insertActivityToSupabase({
           leadId: leadId || null,
@@ -339,12 +355,14 @@ export default function ContextActionDialogsHost() {
           title: draft.title,
           type: 'missing_item',
           status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item',
-          priority: draft.blocksProgress ? 'high' : 'medium',
+          priority: draft.priority,
           leadId: leadId || null,
           clientId: clientId || null,
           caseId: caseId || null,
-          scheduledAt: now,
-          dueAt: now,
+          date: draft.dueDate,
+          scheduledAt: `${draft.dueDate}T09:00`,
+          dueAt: draft.dueDate,
+          description: draft.note,
           workspaceId,
           missingKind: draft.missingKind,
           blocksProgress: draft.blocksProgress,
@@ -355,11 +373,11 @@ export default function ContextActionDialogsHost() {
             type: 'missing_item',
             status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item',
             title: draft.title,
-            note: draft.note || null,
+            note: draft.note,
             createdAt: now,
             ...stage232aMissingItemMetadata,
           },
-        } as any);
+        });
 
         await insertActivityToSupabase({
           leadId: leadId || null,
@@ -395,6 +413,8 @@ export default function ContextActionDialogsHost() {
           type: 'missing_item',
           status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item',
           missingKind: draft.missingKind,
+          priority: draft.priority,
+          dueDate: draft.dueDate,
           blocksProgress: draft.blocksProgress,
           blockScope: draft.blockScope || null,
           displayKind: 'missing',
@@ -405,6 +425,8 @@ export default function ContextActionDialogsHost() {
             type: 'missing_item',
             status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item',
             missingKind: draft.missingKind,
+            priority: draft.priority,
+            dueDate: draft.dueDate,
             blocksProgress: draft.blocksProgress,
             blockScope: draft.blockScope || null,
             displayKind: 'missing',
@@ -462,6 +484,8 @@ export default function ContextActionDialogsHost() {
         titleValue={missingTitle}
         noteValue={missingNote}
         missingKindValue={missingKind}
+        priorityValue={missingPriority}
+        dueDateValue={missingDueDate}
         blocksProgressValue={missingBlocksProgress}
         blockScopeValue={missingBlockScope}
         error={missingError}
@@ -469,6 +493,8 @@ export default function ContextActionDialogsHost() {
         onTitleChange={(value) => { setMissingTitle(value); if (missingError) setMissingError(''); }}
         onNoteChange={setMissingNote}
         onMissingKindChange={setMissingKind}
+        onPriorityChange={setMissingPriority}
+        onDueDateChange={(value) => { setMissingDueDate(value); if (missingError) setMissingError(''); }}
         onBlocksProgressChange={setMissingBlocksProgress}
         onBlockScopeChange={setMissingBlockScope}
         onCancel={close}

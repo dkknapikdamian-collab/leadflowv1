@@ -24,7 +24,10 @@ type ProfileSettingsUpdate = { fullName?: string; companyName?: string; email?: 
 type WorkspaceSettingsUpdate = { workspaceId: string; planId?: string; subscriptionStatus?: string; trialEndsAt?: string | null; billingProvider?: string | null; providerCustomerId?: string | null; providerSubscriptionId?: string | null; nextBillingAt?: string | null; cancelAtPeriodEnd?: boolean; dailyDigestEnabled?: boolean; dailyDigestEmailEnabled?: boolean; lastDigestSentAt?: string | null; dailyDigestHour?: number; dailyDigestTimezone?: string | null; dailyDigestRecipientEmail?: string | null; timezone?: string | null; ownerControlWarningDays?: number; ownerControlCriticalDays?: number; ownerControlHighValueThresholdPln?: number };
 type TaskInsertInput = { title: string; type?: string; date?: string; scheduledAt?: string;
   dueAt?: string; priority?: string; status?: string; leadId?: string | null; reminderAt?: string | null; recurrenceRule?: string; caseId?: string | null;
-  clientId?: string | null; ownerId?: string; workspaceId?: string; description?: string };
+  clientId?: string | null; ownerId?: string; workspaceId?: string; description?: string;
+  missingKind?: string; blocksProgress?: boolean; blockScope?: string | null;
+  sourceEntityType?: string; sourceEntityId?: string; recordType?: string; recordId?: string | null;
+  payload?: Record<string, unknown> };
 type EventInsertInput = { title: string; type?: string; startAt: string;
   scheduledAt?: string; endAt?: string; reminderAt?: string; recurrenceRule?: string; status?: string; leadId?: string | null; caseId?: string | null;
   clientId?: string | null; workspaceId?: string; description?: string };

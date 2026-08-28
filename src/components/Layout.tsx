@@ -694,10 +694,10 @@ export default function Layout({ children }: LayoutProps) {
             </div>
             {canUseAdminDebugToolbar ? <AdminDebugToolbar currentSection={currentSection} /> : null}
             <GlobalQuickActions />
-            <ContextActionDialogsHost />
           </div>
         ) : null}
-        {isTodayRoute ? <ContextActionDialogsHost /> : null}
+        {/* Keep dialog portals outside route-specific global-bar visibility rules. */}
+        <ContextActionDialogsHost />
 
         {workspace && !hasAccess && (
           <div className="access-warning" data-shell-access-warning="true">
