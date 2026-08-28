@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-022",
+  "reference_file": "docs/ui/reference/forteca-calm-light/022_clients_without_case.webp",
+  "reference_sha256": "b7b6d59f28c9bd8f4bdb80e83312d79cfd1429c6bc0968ce4ac2d8ce9ecbd1de",
+  "target_route": "/clients",
+  "target_state": "Clients — without active case",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_AFTER_PARENT_REVIEW",
+  "acceptance_basis": {
+    "directive_interpretation": "The approved Forteca branch is the sole implementation route. The parent independently checked repository identity, the exact reference, source-of-truth ownership, focused tests, typecheck, build, Guardian output, live browser DOM, non-mutating interactions and screenshot before closeout.",
+    "root_cause": "The existing Clients route did not expose a dedicated relation-derived without-case state with the reference hierarchy; the filter, KPI and side-guide owners were absent for this state.",
+    "repair": "FRT-022 adds a real without-case route state using the existing client/case counters and workspace data, reference-aligned tabs/KPIs/toolbar/list/guide layout, existing row navigation and archive handlers, focused guards and a tokenized stage stylesheet.",
+    "review_status": "Parent review completed against the static reference, final source diff, real runtime DOM, interaction outcomes, semantic token usage and browser screenshot. No independent reviewer PASS is claimed because the configured Codex subagent capacity was exhausted by usage-limit errors earlier in the mission.",
+    "guardian_interpretation": "Guardian smoke is AUDIT_ONLY/PARTIAL with zero writes and zero returned blockers. A full target-wide Guardian PASS is not claimed.",
+    "browser_boundary": "The real /clients route was exercised with search, filter-panel, view toggle and row action menu. Destructive archive and create mutations were intentionally not invoked; existing production handlers remain wired."
+  },
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Reference fixture clients and screenshot-only values are never inserted into runtime state or API payloads.",
+      "The without-case KPI and list derive from the existing workspace-scoped client/case relation and live contact/action owners.",
+      "Existing client navigation and archive handlers remain the mutation owners; no parallel client flow was added.",
+      "Reference-image discrepancies never create per-window color exceptions. Repeated semantic icons resolve through shared VST families.",
+      "All trash/delete icons continue to resolve through the canonical --cf-vst-color-delete family.",
+      "No fake success, automatic merge, silent fallback, unapproved browser mutation or production merge was introduced."
+    ]
+  },
+  "color_source_of_truth": {
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "action_owner": "src/styles/owners/closeflow-actions.css",
+    "icon_owner": "src/ui-system/icons/SemanticIcon.tsx and src/components/ui-system/ActionIcon.tsx",
+    "stage_adapter": "src/styles/forteca-clients-without-case.css",
+    "semantic_tone_adapters": {
+      "primary": "--cf-vst-color-primary",
+      "task": "--cf-vst-color-task",
+      "event": "--cf-vst-color-event",
+      "payment": "--cf-vst-color-payment",
+      "delete": "--cf-vst-color-delete"
+    },
+    "stage_literal_color_values": 0,
+    "policy": "Each semantic concern has one VST token owner across every window and repeated component instance. Reference drift does not create local palette copies."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "src/pages/Clients.tsx",
+    "src/styles/forteca-clients-without-case.css",
+    "tests/forteca-frt-022-clients-without-case.test.cjs"
+  ],
+  "visual_sot_owners_used": ["PAGE_SHELL", "SEARCH", "LIST_ROWS", "BADGES", "CARDS_TILES", "BUTTONS_ACTIONS", "RESPONSIVE_DENSITY"],
+  "visible_controls_inventory": [
+    "Import CSV",
+    "Dodaj klienta",
+    "relation tabs",
+    "search",
+    "Status",
+    "Ostatni kontakt",
+    "Więcej filtrów",
+    "view toggle",
+    "row navigation",
+    "row actions",
+    "pagination",
+    "Dowiedz się więcej"
+  ],
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "node --test tests/forteca-frt-022-clients-without-case.test.cjs (4/4 PASS)",
+    "npx.cmd tsc --noEmit (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS)",
+    "git diff --check (PASS)",
+    "stage CSS/TSX raw color scan (NO_RAW_COLOR_LITERAL)",
+    "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke (PARTIAL, zero writes, zero blockers)",
+    "Live Codex In-app Browser proof at the 1672x941 reference capture size of real /clients without-case rows, search, filter panel, view toggle, row menu and no fresh console errors (PASS)",
+    "Parent comparison of docs/ui/reference/forteca-calm-light/022_clients_without_case.webp against live runtime screenshot (STRUCTURAL_PARITY_PASS)"
+  ],
+  "tests_reused": [
+    "FRT-000 routing, reference manifest, Guardian boundary and visual SOT owner registry",
+    "FRT-010 to FRT-019 client/lead relation, workspace scope, semantic icon and list evidence",
+    "FRT-020 Forteca shell, guarded action and browser harness baseline",
+    "FRT-021 Clients all-state runtime and shared shell/action ownership"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "live create-client and archive mutations",
+      "reason": "NOT_EXECUTED_BY_DESIGN: the controls create or mutate real workspace records; browser proof exercised mounts/navigation/menu without unapproved mutation."
+    },
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: installed Guardian entrypoint exposes only partial repository-baseline smoke coverage; pass_claim=false."
+    },
+    {
+      "test": "independent final reviewer PASS",
+      "reason": "PROCESS_BOUNDARY: configured Codex subagent attempts returned usage-limit errors; parent review completed and no independent PASS is claimed."
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS_WITH_KNOWN_WARNINGS",
+  "build_warnings": [
+    "Existing dynamic/static import overlap for src/lib/supabase-fallback.ts",
+    "Existing chunks larger than 500 kB after minification"
+  ],
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-022_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "EXECUTED: PARTIAL / coverage PARTIAL / fileWrites 0"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-022_BROWSER_PROOF.json",
+    "screenshot_path": null,
+    "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "http://localhost:3000/clients?frt022=without-case&refresh=22",
+    "visible_rows": 1,
+    "search_result_rows": 1,
+    "filter_panel": "PASS",
+    "view_toggle": "PASS",
+    "row_actions": "PASS; not mutated",
+    "console_errors": 0,
+    "console_warnings": 0,
+    "screenshot_displayed_in_codex_browser": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The browser reported a one-pixel inner-height rounding difference from the static capture.",
+      "Underlying client data is real workspace data and differs from reference fixture values.",
+      "Live destructive mutations were not invoked because they would change real workspace records."
+    ]
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "efficiency_planning": "APPLIED",
+    "marketplace_binding": "BOUND",
+    "primary_capabilities": ["frontend-design-studio", "ai-code-guardian", "agent-efficiency-guardian"],
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_skip_reason": "Marketplace discovery exposed no available preferred provider. No additional subagent dispatch was made for FRT-022 because the three configured Codex subagent slots had already returned usage-limit errors; parent validation remained the write-owner and acceptance authority.",
+    "subagents": []
+  },
+  "implementation_commit_sha": "9ae0ea21aeb554860e8046337aee1e6910389c18",
+  "remote_head_verified": "9ae0ea21aeb554860e8046337aee1e6910389c18",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "created_at": "2026-08-28T23:20:07.263Z"
+}

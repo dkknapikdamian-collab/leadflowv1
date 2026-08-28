@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-022",
+  "reference_file": "docs/ui/reference/forteca-calm-light/022_clients_without_case.webp",
+  "reference_sha256": "b7b6d59f28c9bd8f4bdb80e83312d79cfd1429c6bc0968ce4ac2d8ce9ecbd1de",
+  "entry_url": "http://localhost:3000/clients?frt022=without-case&refresh=22",
+  "runtime_url": "http://localhost:3000/clients?frt022=without-case&refresh=22",
+  "route": "/clients",
+  "state": "Forteca calm-light Clients — without active case",
+  "live_runtime": true,
+  "auth_required": false,
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "record_origin": "Existing workspace-scoped client, case, contact and next-action owners; reference screenshot fixtures were not copied into runtime state.",
+    "relation_truth": "The without-case tab is derived from countersByClientId and contains one live client while the workspace contains three live clients and two clients with cases.",
+    "visible_clients": ["Katarzyna Wrona"],
+    "visible_client_links": ["/clients/dev-client-3"],
+    "production_path": "The page uses fetchClientsFromSupabase(), the existing workspace-scoped client/case relation and existing client action handlers; no screenshot-only collection or fake create-case flow was added."
+  },
+  "visible_structure": {
+    "requested_reference_viewport": {"width": 1672, "height": 941},
+    "observed_browser_viewport": {"width": 1672, "height": 942, "scroll_width": 1672, "scroll_height": 942},
+    "root_marker": "data-forteca-frt-022-runtime=\"true\"",
+    "root_count": 1,
+    "shell_marker": ".cf-html-shell.cf-route-clients",
+    "tabs_marker": "data-forteca-frt-022-tabs=\"true\"",
+    "toolbar_marker": "data-forteca-frt-022-toolbar-shell=\"true\"",
+    "table_marker": "data-forteca-frt-022-table=\"true\"",
+    "guide_marker": "data-forteca-frt-022-guide=\"true\"",
+    "active_tab": "Bez sprawy 1",
+    "row_count": 1,
+    "kpi_values": {
+      "Klienci bez sprawy": "1",
+      "Nowi klienci (30 dni)": "0",
+      "Wymaga kwalifikacji": "1",
+      "Ostatni kontakt (7 dni)": "0"
+    },
+    "geometry": {
+      "page": {"x": 277.2, "y": 27, "width": 1370.6, "height": 882.4},
+      "tabs": {"x": 277.2, "y": 65, "width": 1370.6, "height": 36.8},
+      "kpis": {"x": 277.2, "y": 123.8, "width": 1370.6, "height": 118},
+      "toolbar": {"x": 277.2, "y": 271.8, "width": 1370.6, "height": 41.6},
+      "list_card": {"x": 277.2, "y": 335.4, "width": 1042.6, "height": 574},
+      "guide": {"x": 1373.8, "y": 335.4, "width": 274, "height": 574}
+    },
+    "search_placeholder": "Szukaj klienta, telefonu lub e-maila...",
+    "search_value_at_closeout": "",
+    "body_overflow": false,
+    "reference_copy_present": true,
+    "reference_copy": [
+      "Klienci",
+      "Import CSV",
+      "Dodaj klienta",
+      "Wszyscy klienci",
+      "Z aktywną sprawą",
+      "Bez sprawy",
+      "Klienci bez sprawy",
+      "Wymaga kwalifikacji",
+      "Ostatni kontakt (7 dni)",
+      "Sugerowany ruch",
+      "Dowiedz się więcej"
+    ]
+  },
+  "interaction_proof": {
+    "search": {
+      "status": "PASS",
+      "observed": "The real relation-filtered list narrowed to Katarzyna Wrona after entering Katarzyna and returned to the one unfiltered without-case row after keyboard clearing."
+    },
+    "filters": {
+      "status": "PASS",
+      "observed": "The Więcej filtrów control opened its real owner/tag filter panel with aria-expanded=true and closed cleanly."
+    },
+    "view_switch": {
+      "status": "PASS",
+      "observed": "The real list-view toggle changed aria-pressed to true and applied the compact table mode, then returned to the default table mode."
+    },
+    "row_actions": {
+      "status": "PASS",
+      "observed": "The live Katarzyna Wrona row opened the existing action menu with Otwórz klienta and Przenieś do kosza; no mutation was invoked."
+    },
+    "guide": {
+      "status": "PASS",
+      "observed": "The guide contains reference-aligned explanatory text and a real /leads link; guide copy has no fake onClick handler."
+    },
+    "post_interaction_state": {
+      "status": "PASS",
+      "observed": "Filter panel, compact mode, search and row menu were closed; one real without-case row remained and document overflow stayed false."
+    }
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "relation_filter_is_data_derived": true,
+    "workspace_scope_preserved": true,
+    "existing_client_actions_preserved": true,
+    "no_duplicate_list_owner": true,
+    "no_fake_success": true,
+    "no_unapproved_live_mutation": true,
+    "semantic_color_source_of_truth_preserved": true
+  },
+  "console_errors": 0,
+  "console_warnings": 0,
+  "screenshot_displayed_in_codex_browser": true,
+  "screenshot_path": null,
+  "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The browser reported a one-pixel inner-height rounding difference from the 1672x941 static capture.",
+      "The live list uses real workspace data, so counts and row population intentionally differ from screenshot fixture values.",
+      "Destructive archive and create mutations were not invoked during browser proof; existing handlers and action menu wiring remain in the live source."
+    ]
+  },
+  "implementation_commit": "9ae0ea21aeb554860e8046337aee1e6910389c18",
+  "remote_head_verified": "9ae0ea21aeb554860e8046337aee1e6910389c18",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "created_at": "2026-08-28T23:20:07.263Z"
+}
