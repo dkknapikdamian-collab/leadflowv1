@@ -1,0 +1,195 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-015",
+  "reference_file": "docs/ui/reference/forteca-calm-light/015_lead_add_note.webp",
+  "target_route": "/leads/:leadId",
+  "target_state": "Forteca calm-light real Lead Detail add-note drawer",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_DOCUMENTED_BROWSER_SUBMIT_BOUNDARY",
+  "acceptance_authority": "CODEX",
+  "acceptance_basis": {
+    "directive_interpretation": "Codex is the acceptance authority under the owner directive for the autonomous Forteca program. This receipt is controller acceptance, not an AICG PASS claim.",
+    "reference_and_runtime": "The real Lead Detail note action opens a scoped right-side drawer with the FRT-015 reference structure, while lead values, activity relations and recent notes remain bound to the current runtime.",
+    "root_cause": "The shared ContextNoteDialog exposed only the generic activity form and did not provide the FRT-015 title, rich editor, semantic tags, visibility, date, relation and recent-notes contract. The repair preserved the real activity write/read owners and added a scoped Forteca presentation with dynamic runtime data.",
+    "review": "Backend privacy review and parent repository-native validation found no unresolved FRT-015 finding. Private-row reads are fail-closed by verified operator actor context, body.actorId is ignored for operator writes, and the browser proof verified the real entry path without invoking an unapproved mutation.",
+    "baseline_findings": "Guardian raw coverage is PARTIAL with zero blockers; unrelated pre-existing CSS-owner, patch-layer icon-registry and Today no-scroll findings remain recorded and were not widened into this stage."
+  },
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Reference lead names, company values, note text and dates are never copied into runtime state or submitted to the API.",
+      "Current lead/activity data and real workspace-scoped IDs are read from the existing runtime owners.",
+      "The native date input remains the source of truth; its display overlay only reconciles the reference presentation.",
+      "Rich text is sanitized before payload construction; unsupported fake schema was not invented.",
+      "Every stage color is resolved from the canonical --cf-vst-* token owner. Reference pixels never create a second color source.",
+      "Semantic note tags map to the canonical task/payment/note/event token families; the FRT-015 stage CSS contains zero literal color values.",
+      "Existing and future trash actions in this scope use EntityTrashButton/trashActionIconClass and the canonical --cf-vst-color-delete token family; a red reference pixel never overrides that owner.",
+      "Private notes are filtered by verified actor identity and operator-provided actorId is not trusted.",
+      "No fake success, no-op persistence model, automatic merge or unapproved browser mutation was introduced."
+    ]
+  },
+  "color_source_of_truth": {
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "stage_owner": "src/styles/owners/closeflow-dialogs.css",
+    "stage_literal_color_values": 0,
+    "semantic_color_mappings": {
+      "Rozmowa": ["--cf-vst-color-task-soft", "--cf-vst-color-task-border", "--cf-vst-color-task"],
+      "Oferta": ["--cf-vst-color-payment-soft", "--cf-vst-color-payment-border", "--cf-vst-color-payment"],
+      "Spotkanie": ["--cf-vst-color-note-soft", "--cf-vst-color-note-border", "--cf-vst-color-note"],
+      "Feedback klienta": ["--cf-vst-color-event-soft", "--cf-vst-color-event-border", "--cf-vst-color-event"]
+    },
+    "destructive_icon_token": "--cf-vst-color-delete",
+    "policy": "One semantic concern has one token owner across every window and repeated component instance; reference images may differ, but implementation colors do not drift by screen."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "package.json",
+    "src/components/ContextNoteDialog.tsx",
+    "src/pages/LeadDetail.tsx",
+    "src/server/activities-handler.ts",
+    "src/styles/owners/closeflow-dialogs.css",
+    "tests/forteca-frt-015-lead-note.test.cjs",
+    "tests/forteca-frt-015-activity-privacy.test.cjs",
+    "docs/ui/CLOSEFLOW_STYLE_MAP.generated.md",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.json",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.md",
+    "docs/ui/closeflow-style-map.generated.json",
+    "audit/evidence/FRT-015_BROWSER_PROOF.json",
+    "audit/evidence/FRT-015_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/runs/forteca-clean/FRT-015_RECEIPT.json",
+    "_project/WORKFLOW_STATE.json"
+  ],
+  "preserved_untracked_files": ["dist-test-today-sections.cjs"],
+  "visual_sot_owners_used": ["MODALS", "FORMS", "BUTTONS_ACTIONS", "ICONS", "SURFACES"],
+  "visible_controls_inventory": [
+    "Tytuł notatki",
+    "Treść notatki",
+    "Styl tekstu",
+    "Formatowanie treści notatki",
+    "Sugerowane tagi",
+    "Tagi",
+    "Widoczność",
+    "Data wpisu",
+    "Powiązanie z aktywnością",
+    "Ostatnie notatki",
+    "Anuluj",
+    "Zapisz notatkę",
+    "Close"
+  ],
+  "visible_controls_wired": "The real Lead Detail Dodaj notatkę action opens the drawer; title, rich editor, tag controls, visibility, date, activity relation, cancel/close and save are mounted. Save maps to the existing activity mutation and was intentionally not invoked in the browser proof.",
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "npm.cmd run test:forteca-frt-015-lead-note (6/6 PASS)",
+    "node --test tests/forteca-frt-015-activity-privacy.test.cjs (4/4 PASS)",
+    "npm.cmd run test:forteca-frt-011-lead-add (2/2 PASS)",
+    "npm.cmd run test:forteca-frt-012-lead-edit (2/2 PASS)",
+    "npm.cmd run test:forteca-frt-013-lead-duplicate (2/2 PASS)",
+    "npm.cmd run test:forteca-frt-014-lead-task (2/2 PASS)",
+    "node --test tests/global-quick-actions-open-modals.test.cjs (12/12 PASS)",
+    "node --test tests/stage102-calendar-edit-modal-form-source.test.cjs (1/1 PASS)",
+    "node --test tests/stage105-calendar-modal-no-dark-inputs.test.cjs (1/1 PASS)",
+    "node --test tests/stage106-calendar-modal-inverted-visual-contract.test.cjs (1/1 PASS)",
+    "npx.cmd tsc --noEmit (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS)",
+    "npm.cmd run audit:closeflow-ui-map (PASS)",
+    "npm.cmd run audit:closeflow-style-map (PASS)",
+    "npm.cmd run check:closeflow-ui-skill-pack (PASS)",
+    "npm.cmd run check:closeflow-ui-premap-contract (PASS)",
+    "npm.cmd run guard:routes:canonical (PASS)",
+    "npm.cmd run guard:ui:ssot-icons (PASS)",
+    "npm.cmd run guard:ui:ssot-semantic-colors (PASS)",
+    "npm.cmd run guard:ui:ssot-typography (PASS)",
+    "npm.cmd run guard:ui:component-clones (PASS)",
+    "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke (PARTIAL, zero writes)",
+    "Live Codex In-app Browser proof of real /leads/dev-lead-3 and mounted note drawer (PASS_WITH_DOCUMENTED_BROWSER_SUBMIT_BOUNDARY)"
+  ],
+  "tests_reused": [
+    "FRT-000 routing, reference manifest, Guardian boundary and visual SOT owner registry",
+    "FRT-010 real Lead route and local runtime baseline",
+    "FRT-011 Lead creation and action owners",
+    "FRT-012 populated Lead runtime and browser harness",
+    "FRT-013 duplicate-safe relation and generated UI/style maps",
+    "FRT-014 real Lead task drawer and calendar/form owner baseline"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "live note submit and activity refresh after mutation",
+      "reason": "NOT_EXECUTED_WITHOUT_USER_APPROVAL: the save button invokes a real activity mutation; browser policy requires explicit confirmation."
+    },
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: the installed Guardian entrypoint exposed only partial repository-baseline smoke coverage; pass_claim=false."
+    },
+    {
+      "test": "guard:ui:ssot-css-owners",
+      "reason": "BASELINE_FINDING: existing global shell adapter concern mismatch in src/styles/closeflow-record-list-source-truth.css; FRT-015 did not modify that file."
+    },
+    {
+      "test": "guard:ui:patch-layers",
+      "reason": "BASELINE_FINDING: existing direct lucide-react import in src/lib/source-of-truth/icon-registry.ts; FRT-015 did not modify that file."
+    },
+    {
+      "test": "npm.cmd run verify:closeflow:quiet",
+      "reason": "BASELINE_FINDING: existing Today tile no-scroll trap; FRT-015 did not modify Today code."
+    },
+    {
+      "test": "full legacy suite",
+      "reason": "BASELINE_DRIFT: unrelated historical failures and visual expectations exist outside the FRT-015 write set."
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS_WITH_KNOWN_WARNINGS",
+  "build_warnings": [
+    "Existing dynamic/static import overlap for src/lib/supabase-fallback.ts",
+    "Existing chunks larger than 500 kB after minification"
+  ],
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-015_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "EXECUTED: PARTIAL / coverage PARTIAL / fileWrites 0"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-015_BROWSER_PROOF.json",
+    "status": "PASS_WITH_DOCUMENTED_BROWSER_SUBMIT_BOUNDARY",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "/leads/dev-lead-3",
+    "drawer_entry": "PASS",
+    "dynamic_data": "PASS",
+    "semantic_color_tokens": "PASS",
+    "native_controls": "PASS",
+    "submit": "NOT_SUBMITTED_BY_DESIGN",
+    "console_errors": 0,
+    "console_warnings": 0,
+    "tab_marked_deliverable": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitation": "Runtime data/date and native browser rendering correctly remain real and can differ from fixture pixels; live submit was not invoked without approval."
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "efficiency_planning": "APPLIED",
+    "marketplace_startup_receipt": "startup-718cd401529e574eb258210340d97bc0352b63fd9c548d66315accb06bb592d3",
+    "marketplace_binding": "BOUND",
+    "primary_capability": "frontend-design",
+    "project_context_reused": ["FRT-000 contracts/evidence baseline", "FRT-010 Lead runtime", "FRT-011 task action baseline", "FRT-012 populated Lead runtime", "FRT-013 relation baseline", "Generated UI/style maps"],
+    "evidence_reuse": ["Canonical ContextNoteDialog owner", "Real Lead Detail quick-action entry", "FRT-012 browser harness", "FRT-013 relation/workspace boundary", "Canonical semantic color and icon token guards"],
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "skip_reason": "No suitable available provider was exposed for this bounded UI/data-owner change; one write owner and parent validation were required."
+  },
+  "implementation_commit_sha": "ac59c6efa2238e8513995b09b4fc881201ffec5a",
+  "next_stage": "FRT-016",
+  "created_at": "2026-08-28T06:14:35.6816250Z"
+}

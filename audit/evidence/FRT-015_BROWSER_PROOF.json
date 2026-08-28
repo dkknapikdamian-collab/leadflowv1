@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-015",
+  "reference_file": "docs/ui/reference/forteca-calm-light/015_lead_add_note.webp",
+  "reference_sha256": "55701572395DAF1339B67ACA1179FCBCCE67BDC75C7F31DBDB6A4652015F9740",
+  "entry_url": "http://localhost:3000/leads/dev-lead-3",
+  "runtime_url": "http://localhost:3000/leads/dev-lead-3",
+  "route": "/leads/dev-lead-3",
+  "state": "Forteca calm-light real Lead Detail add-note drawer",
+  "live_runtime": true,
+  "auth_required": false,
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "record_origin": "Existing local runtime Lead Detail record and current activities query; reference fixture values were not copied.",
+    "visible_lead": "Fundacja \"Lepsze Jutro\"",
+    "visible_company": "Fundacja Lepsze Jutro",
+    "visible_owner": "Dev Local",
+    "note_write_owner": "insertActivityToSupabase -> /api/activities -> activities-handler -> verified operator actor context",
+    "activity_read_owner": "fetchActivitiesFromSupabase -> /api/activities -> workspace-scoped current lead query",
+    "production_source": "Supabase production path and workspace boundary remain unchanged; no authentication bypass was introduced."
+  },
+  "visible_structure": {
+    "viewport": {"width": 1280, "height": 720},
+    "drawer": "Right-side white full-height drawer, 620px at the active 1280px desktop viewport, with dimmed Lead Detail backdrop.",
+    "measured_drawer": {"x": 660, "y": 0, "width": 620, "height": 720},
+    "measured_scroll_region": {"x": 661, "y": 68, "width": 619, "height": 580},
+    "measured_footer": {"x": 661, "y": 648, "width": 619, "height": 72},
+    "header": "Dodaj notatkę title and shared close control",
+    "fields": [
+      "Tytuł notatki *",
+      "Treść notatki *",
+      "Styl tekstu",
+      "Formatowanie treści notatki",
+      "Sugerowane tagi",
+      "Tagi",
+      "Widoczność",
+      "Data wpisu *",
+      "Powiązanie z aktywnością",
+      "Ostatnie notatki"
+    ],
+    "footer": ["Anuluj", "Zapisz notatkę"]
+  },
+  "interaction_proof": {
+    "real_quick_action_entry": {
+      "status": "PASS",
+      "observed": "The real Lead Detail Dodaj notatkę action opened the mounted FRT-015 drawer on /leads/dev-lead-3."
+    },
+    "dynamic_lead_and_activities": {
+      "status": "PASS",
+      "observed": "The current Lead Detail record and current activity relation options/recent note are rendered from the local runtime; no reference fixture was used."
+    },
+    "semantic_tag_controls": {
+      "status": "PASS",
+      "observed": "Rozmowa, Oferta, Spotkanie and Feedback klienta are interactive controls carrying the stage tag data contract and the canonical semantic color token mappings."
+    },
+    "native_controls": {
+      "status": "PASS",
+      "observed": "Title, rich-text editor, tags, visibility, entry date and activity relation controls are mounted; entry date keeps the native date input as its source of truth while the display uses the reference-shaped format."
+    },
+    "cancel_boundary": {
+      "status": "NOT_EXERCISED",
+      "reason": "The drawer remained open as the marked deliverable proof; no submit or destructive action was invoked."
+    },
+    "submit": {
+      "status": "NOT_EXERCISED_BY_DESIGN",
+      "reason": "The Zapisz notatkę button invokes the real activity mutation; browser policy forbids invoking a live write without explicit user confirmation."
+    }
+  },
+  "visual_source_of_truth": {
+    "status": "PASS",
+    "owner": "src/styles/owners/closeflow-foundation.css",
+    "stage_owner": "src/styles/owners/closeflow-dialogs.css",
+    "semantic_color_mappings": {
+      "Rozmowa": ["--cf-vst-color-task-soft", "--cf-vst-color-task-border", "--cf-vst-color-task"],
+      "Oferta": ["--cf-vst-color-payment-soft", "--cf-vst-color-payment-border", "--cf-vst-color-payment"],
+      "Spotkanie": ["--cf-vst-color-note-soft", "--cf-vst-color-note-border", "--cf-vst-color-note"],
+      "Feedback klienta": ["--cf-vst-color-event-soft", "--cf-vst-color-event-border", "--cf-vst-color-event"]
+    },
+    "stage_literal_color_values": 0,
+    "runtime_computed_colors": {
+      "Rozmowa": {"background": "rgb(236, 253, 243)", "border": "rgb(187, 247, 208)", "color": "rgb(22, 163, 74)"},
+      "Oferta": {"background": "rgb(245, 243, 255)", "border": "rgb(221, 214, 254)", "color": "rgb(124, 58, 237)"},
+      "Spotkanie": {"background": "rgb(239, 246, 255)", "border": "rgb(191, 219, 254)", "color": "rgb(37, 99, 235)"},
+      "Feedback klienta": {"background": "rgb(255, 251, 235)", "border": "rgb(254, 215, 170)", "color": "rgb(217, 119, 6)"}
+    },
+    "destructive_icon_policy": "Future and existing trash actions must use EntityTrashButton/trashActionIconClass and the canonical --cf-vst-color-delete token family; reference pixels never override this owner."
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "lead_and_activity_data_are_runtime_bound": true,
+    "note_payload_fields_preserved": true,
+    "workspace_scope_preserved": true,
+    "private_visibility_actor_boundary_hardened": true,
+    "rich_text_sanitization_preserved": true,
+    "no_live_mutation_without_approval": true,
+    "no_fake_success_or_toast_path": true
+  },
+  "console_errors": 0,
+  "console_warnings": 0,
+  "status": "PASS_WITH_DOCUMENTED_BROWSER_SUBMIT_BOUNDARY",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The reference contains fixture lead values and a reference date; the runtime correctly renders current local lead data and the current local date.",
+      "Note submit and activity refresh after mutation were not invoked because they are live writes requiring user approval.",
+      "The browser viewport and operating-system native control rendering can differ from the reference capture."
+    ]
+  },
+  "tab_marked_deliverable": true,
+  "implementation_commit_sha": "ac59c6efa2238e8513995b09b4fc881201ffec5a",
+  "created_at": "2026-08-28T06:14:35.6816250Z"
+}

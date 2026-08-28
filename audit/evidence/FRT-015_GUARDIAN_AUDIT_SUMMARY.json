@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-015",
+  "mode": "AUDIT_ONLY",
+  "command": "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+  "raw_outcome": "PARTIAL",
+  "coverageOutcome": "PARTIAL",
+  "pass_claim": false,
+  "fileWrites": 0,
+  "selectedCapabilities": ["repository-baseline"],
+  "selectedSkills": ["ai-code-guardian", "architecture-integrity"],
+  "receiptIds": ["guardian-plugin-smoke-coverage", "guardian-plugin-smoke-result"],
+  "blockers": 0,
+  "target_wide_scan": "NOT_AVAILABLE",
+  "interpretation": "Guardian smoke completed against the FRT-015 implementation commit with zero writes and no returned blocker, but only partial repository-baseline coverage was available; no full target-wide Guardian PASS is claimed.",
+  "stage_scope_observation": "FRT-015 note dialog source, verified operator activity actor boundary, private-row filtering, scoped visual CSS, canonical Button primitive usage and evidence boundary were reviewed under the required Guardian boundary.",
+  "known_baseline_findings": [
+    "guard:ui:ssot-css-owners reports an existing concern mismatch for the global shell adapter in src/styles/closeflow-record-list-source-truth.css; FRT-015 did not modify that file.",
+    "guard:ui:patch-layers reports an existing direct lucide-react import in src/lib/source-of-truth/icon-registry.ts; FRT-015 did not modify that file.",
+    "verify:closeflow:quiet reports the existing today tile no-scroll trap contract failure; FRT-015 did not modify Today code."
+  ],
+  "created_at": "2026-08-28T06:14:35.6816250Z"
+}
