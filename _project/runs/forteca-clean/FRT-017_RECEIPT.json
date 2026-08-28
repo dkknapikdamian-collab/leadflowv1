@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-017",
+  "reference_file": "docs/ui/reference/forteca-calm-light/017_lead_add_missing_blocker.webp",
+  "target_route": "/leads/:leadId",
+  "target_state": "Lead Detail — add missing item/blocker modal",
+  "result": "PENDING_INDEPENDENT_REVIEW",
+  "stage_status": "IMPLEMENTED_WITH_DOCUMENTED_BROWSER_SUBMIT_BOUNDARY",
+  "acceptance_authority": "PENDING_PARENT_CONTROLLER_AFTER_INDEPENDENT_REVIEW",
+  "acceptance_basis": {
+    "directive_interpretation": "The parent controller must validate the implementation, exact evidence and independent review before recording PASS or activating FRT-018.",
+    "reference_and_runtime": "The real Lead Detail Brak action opens the calm-light blocker modal on /leads/dev-lead-3; runtime lead and workspace values remain real and reference fixtures are not copied.",
+    "root_cause": "The prior shared Brak host did not expose the complete FRT-017 calm-light field contract, missing-item validation accepted arbitrary categories and impossible dates, task/activity payloads did not consistently carry the visual form fields, the Lead Detail host was hidden inside the global bar, and active records needed an explicit workspace/lead-checked saved-record handoff.",
+    "repair": "FRT-017 adds the real modal, shared copy and validation contract, task/activity persistence fields, fail-closed lead/workspace saved-record reconciliation, and a visible host outside the hidden global bar while preserving the existing task/activity source of truth.",
+    "review_status": "Initial independent review by Aristotle returned BLOCKED for the missing receipt, an evidence button-label mismatch and the browser live-submit boundary. Receipt and label findings are being remediated; live submit remains intentionally uninvoked because it is a real mutation requiring explicit confirmation under browser policy.",
+    "guardian_interpretation": "Guardian smoke is AUDIT_ONLY/PARTIAL with zero writes; no full Guardian PASS is claimed."
+  },
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Reference fixture lead names, company values, blocker text and dates are never copied into runtime state or submitted to the API.",
+      "Current lead, client, case and workspace IDs are read from existing runtime owners and preserved in the task/activity payload.",
+      "Missing/blocker records use the existing task/activity source of truth; case_items remain legacy/checklist compatibility and are not a parallel active store.",
+      "Unsupported responsible-person and client-decision persistence is explicitly disabled with contract copy rather than faked.",
+      "Every semantic color resolves from the canonical --cf-vst-* token owner; reference-image discrepancies never create per-screen color exceptions.",
+      "The delete semantic base is --cf-vst-color-delete; strong, soft and border variants derive from it, and every trash icon resolves to that family.",
+      "No fake success, no-op persistence model, automatic merge, silent fallback, unapproved browser mutation or production merge was introduced."
+    ]
+  },
+  "color_source_of_truth": {
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "stage_owner": "src/styles/owners/closeflow-dialogs.css",
+    "action_owner": "src/styles/owners/closeflow-actions.css",
+    "semantic_delete_base": "--cf-vst-color-delete",
+    "derived_variants": [
+      "--cf-vst-color-delete-strong",
+      "--cf-vst-color-delete-soft",
+      "--cf-vst-color-delete-border"
+    ],
+    "consumer_adapters": [
+      "src/styles/closeflow-record-list-source-truth.css",
+      "src/styles/owners/closeflow-records-and-rails.css",
+      "src/components/entity-actions.tsx"
+    ],
+    "stage_literal_color_values": 0,
+    "policy": "One semantic concern maps to one VST token owner across every window and repeated component instance; all trash/delete icons share the same semantic delete family."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "audit/evidence/FRT-017_BROWSER_PROOF.png",
+    "src/components/ContextActionDialogs.tsx",
+    "src/components/Layout.tsx",
+    "src/components/detail/MissingItemQuickActionModal.tsx",
+    "src/lib/missing-items/stage227c2-missing-item-modal-contract.ts",
+    "src/lib/supabase-fallback.ts",
+    "src/pages/ClientDetail.tsx",
+    "src/styles/owners/closeflow-dialogs.css",
+    "tests/forteca-frt-017-lead-blocker-runtime.test.cjs",
+    "tests/forteca-frt-017-lead-blocker.test.cjs"
+  ],
+  "preserved_worktree_files": [
+    "docs/ui/CLOSEFLOW_STYLE_MAP.generated.md",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.json",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.md",
+    "docs/ui/closeflow-style-map.generated.json",
+    "dist-test-today-sections.cjs"
+  ],
+  "visual_sot_owners_used": [
+    "MODALS",
+    "FORMS",
+    "BUTTONS_ACTIONS",
+    "BADGES",
+    "ICONS",
+    "SURFACES"
+  ],
+  "visible_controls_inventory": [
+    "Tytuł",
+    "Kategoria",
+    "Opis",
+    "Poziom pilności",
+    "Odpowiedzialny",
+    "Termin oczekiwany",
+    "Czy blokuje start realizacji?",
+    "Co blokuje?",
+    "Czy wymaga decyzji klienta?",
+    "Anuluj",
+    "Dodaj brak",
+    "Close"
+  ],
+  "visible_controls_wired": "The real Lead Detail Brak action opens the modal; title, category, description, priority, due date and blocking scope are validated and mapped to the existing task/activity mutation. Save emits the existing saved-record event; LeadDetail accepts it only with matching lead and workspace relations, locally prepends the task and silently reloads the real source.",
+  "unsupported_controls": [
+    "Odpowiedzialny is visible but disabled because the current contract has no first-class assignment persistence field.",
+    "Czy wymaga decyzji klienta? is visible but disabled because the current contract has no first-class decision persistence field."
+  ],
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "node --test tests/forteca-frt-017-lead-blocker.test.cjs (6/6 PASS before refresh-handoff assertion; rerun required after remediation)",
+    "node --test tests/forteca-frt-017-lead-blocker-runtime.test.cjs (4/4 PASS)",
+    "npx.cmd tsc --noEmit (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS)",
+    "npm.cmd run guard:ui:ssot-semantic-colors (PASS)",
+    "npm.cmd run guard:ui:ssot-icons (PASS)",
+    "npm.cmd run guard:ui:ssot-typography (PASS)",
+    "git diff --check (PASS)",
+    "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke (PARTIAL, zero writes)",
+    "Live Codex In-app Browser proof of real /leads/dev-lead-3 modal (PASS_WITH_DOCUMENTED_REFERENCE_CAPABILITY_AND_BROWSER_SUBMIT_BOUNDARY)"
+  ],
+  "tests_reused": [
+    "FRT-000 routing, reference manifest, Guardian boundary and visual SOT owner registry",
+    "FRT-010 real Lead route and local runtime baseline",
+    "FRT-011 Lead action owners",
+    "FRT-012 populated Lead runtime and browser harness",
+    "FRT-013 relation and workspace baseline",
+    "FRT-014 task/calendar persistence baseline",
+    "FRT-015 note/activity persistence baseline",
+    "FRT-016 Lead event drawer and canonical delete color baseline"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "live browser submit and post-submit list/rail observation",
+      "reason": "NOT_EXECUTED_WITHOUT_USER_APPROVAL: the visible submit invokes a real task/activity mutation; the browser skill requires explicit confirmation before a live form submission. Runtime persistence plus source-level active-list/refresh assertions cover the write and handoff without creating unapproved data."
+    },
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: installed Guardian entrypoint exposes only partial repository-baseline smoke coverage; pass_claim=false."
+    },
+    {
+      "test": "guard:ui:ssot-css-owners, guard:ui:patch-layers and verify:closeflow:quiet",
+      "reason": "BASELINE_FINDINGS: existing global shell adapter concern mismatch, direct icon-registry import and Today tile no-scroll trap are outside the FRT-017 write set."
+    },
+    {
+      "test": "combined Forteca baseline",
+      "reason": "BASELINE_DRIFT: 55 tests pass and 1 unrelated pre-existing FRT-007 fixture-leakage assertion fails in src/pages/Leads.tsx; FRT-017 did not modify Leads.tsx."
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS_WITH_KNOWN_WARNINGS",
+  "build_warnings": [
+    "Existing dynamic/static import overlap for src/lib/supabase-fallback.ts",
+    "Existing chunks larger than 500 kB after minification"
+  ],
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-017_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "EXECUTED: PARTIAL / coverage PARTIAL / fileWrites 0"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-017_BROWSER_PROOF.json",
+    "screenshot_path": "audit/evidence/FRT-017_BROWSER_PROOF.png",
+    "status": "PASS_WITH_DOCUMENTED_REFERENCE_CAPABILITY_AND_BROWSER_SUBMIT_BOUNDARIES",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "/leads/dev-lead-3",
+    "modal_entry": "PASS",
+    "dynamic_data": "PASS",
+    "field_interaction": "PASS",
+    "semantic_color_tokens": "PASS",
+    "submit": "NOT_SUBMITTED_BY_DESIGN",
+    "console_errors": 0,
+    "console_warnings": 0,
+    "tab_marked_deliverable": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitation": "Runtime data, native browser rendering, usable scroll region and explicitly unsupported current-schema capabilities remain real and can differ from fixture pixels; semantic colors do not diverge by screen or icon instance."
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "efficiency_planning": "APPLIED",
+    "marketplace_startup_receipt": "startup-2653b2aa076c7bb67608dab70c0774d5694df006a31c17c0a3e55f969a16ccde",
+    "marketplace_binding": "BOUND",
+    "primary_capabilities": [
+      "frontend-design",
+      "code-quality"
+    ],
+    "project_context_reused": [
+      "FRT-000 contracts/evidence baseline",
+      "FRT-010..FRT-016 Lead runtime, action, relation, persistence, browser and visual-token evidence"
+    ],
+    "evidence_reuse": [
+      "FRT-012 real Lead browser harness",
+      "FRT-013 workspace/relation boundary",
+      "FRT-016 canonical semantic delete token family"
+    ],
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "skip_reason": "No suitable available preferred provider was exposed for this bounded UI/data-owner change; one write owner per path and parent validation were required.",
+    "subagents": [
+      {
+        "role": "focused static FRT-017 test owner",
+        "agent": "Turing",
+        "result": "COMPLETED; 6/6 PASS; no commit/push"
+      },
+      {
+        "role": "runtime persistence test owner",
+        "agent": "Pauli",
+        "result": "COMPLETED; 4/4 PASS; no commit/push"
+      },
+      {
+        "role": "independent repository-native review",
+        "agent": "Aristotle",
+        "result": "BLOCKED; receipt and evidence mismatch remediation in progress; browser live-submit boundary documented"
+      },
+      {
+        "role": "prior independent review",
+        "agent": "Sartre",
+        "result": "BLOCKED; findings remediated before current review"
+      }
+    ]
+  },
+  "implementation_commit_sha": "0d3811cc7c36c23269e8173ed16b6c43b859c4f7",
+  "next_stage": "FRT-018",
+  "created_at": "2026-08-28T09:14:43.6487925Z"
+}

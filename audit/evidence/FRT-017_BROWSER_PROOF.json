@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-017",
+  "reference_file": "docs/ui/reference/forteca-calm-light/017_lead_add_missing_blocker.webp",
+  "reference_sha256": "773CB03ABC5251C6A050062A559E3C2F1FA37E2677A59D678E1306080FB20A60",
+  "entry_url": "http://localhost:3000/leads/dev-lead-3",
+  "runtime_url": "http://localhost:3000/leads/dev-lead-3",
+  "route": "/leads/dev-lead-3",
+  "state": "Forteca calm-light real Lead Detail add-missing-blocker modal",
+  "live_runtime": true,
+  "auth_required": false,
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "record_origin": "Existing local runtime Lead Detail record and current workspace-scoped lead/task/activity owners; reference fixture values were not copied.",
+    "visible_lead": "Fundacja \"Lepsze Jutro\"",
+    "visible_company": "Fundacja Lepsze Jutro",
+    "visible_owner": "Dev Local",
+    "blocker_write_owner": "ContextActionDialogs and ClientDetail -> task/activity missing_item source -> existing workspace-scoped work-item route",
+    "refresh_owner": "Existing lead/client task and activity refresh owners",
+    "production_source": "Supabase production path and workspace boundary remain unchanged; no authentication bypass was introduced."
+  },
+  "visible_structure": {
+    "viewport": {
+      "width": 1680,
+      "height": 940
+    },
+    "modal": "Centered white calm-light blocker dialog with dimmed real Lead Detail backdrop.",
+    "measured_modal": {
+      "x": 607,
+      "y": 110,
+      "width": 466,
+      "height": 720,
+      "right": 1073,
+      "bottom": 830
+    },
+    "header": {
+      "title": "Dodaj brak / blokadę",
+      "subtitle": "Zarejestruj brakujące elementy lub blokady, które mogą wpływać na realizację projektu."
+    },
+    "fields": [
+      "Tytuł",
+      "Kategoria",
+      "Opis",
+      "Priorytet",
+      "Odpowiedzialna osoba",
+      "Termin",
+      "Czy blokuje postęp?",
+      "Decyzja klienta"
+    ],
+    "actions": [
+      "Anuluj",
+      "Zapisz brak / blokadę",
+      "Close"
+    ],
+    "capability_boundary": "Odpowiedzialna osoba and Decyzja klienta are visibly present but disabled with explicit no-contract copy because the current backend has no first-class persistence owner for those fields; no fake persistence is claimed."
+  },
+  "interaction_proof": {
+    "real_quick_action_entry": {
+      "status": "PASS",
+      "observed": "The real visible Brak action opened the mounted FRT-017 modal on /leads/dev-lead-3."
+    },
+    "initial_form_state": {
+      "status": "PASS",
+      "observed": "Fresh open reset title, category, priority, due date and note to empty values and blocking to false."
+    },
+    "field_interaction": {
+      "status": "PASS",
+      "observed": "Title, category, priority, due date and description accepted the reference-shaped interaction values; the blocking control toggled to true and exposed the conditional scope row."
+    },
+    "cancel_reset_boundary": {
+      "status": "PASS",
+      "observed": "Cancel closed the modal; reopening showed the clean initial state."
+    },
+    "submit": {
+      "status": "NOT_EXECUTED_BY_DESIGN",
+      "reason": "Dodaj brak invokes the real task/activity mutation; browser policy forbids invoking a live write without explicit user confirmation. The persistence path is covered by the bounded runtime harness and the active-list handoff is covered by source-level contract tests."
+    },
+    "submit_action_invoked": false,
+    "controls_observed": {
+      "title": true,
+      "category": true,
+      "description": true,
+      "priority": true,
+      "responsible": true,
+      "due_date": true,
+      "blocking": true,
+      "client_decision": true,
+      "save": true,
+      "cancel": true,
+      "close": true
+    }
+  },
+  "visual_source_of_truth": {
+    "status": "PASS",
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "stage_owner": "src/styles/owners/closeflow-dialogs.css",
+    "action_owner": "src/styles/owners/closeflow-actions.css",
+    "semantic_delete_base": "--cf-vst-color-delete",
+    "derived_delete_variants": [
+      "--cf-vst-color-delete-strong",
+      "--cf-vst-color-delete-soft",
+      "--cf-vst-color-delete-border"
+    ],
+    "consumer_adapters": [
+      "src/styles/closeflow-record-list-source-truth.css",
+      "src/styles/owners/closeflow-records-and-rails.css",
+      "src/components/entity-actions.tsx"
+    ],
+    "stage_literal_color_values": 0,
+    "policy": "Reference discrepancies do not create per-screen color exceptions; one semantic concern maps to one VST token owner across every window and repeated component instance. Every trash icon resolves to the same --cf-vst-color-delete family."
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "lead_and_workspace_data_are_runtime_bound": true,
+    "payload_preserves_workspace_and_lead_scope": true,
+    "missing_item_uses_task_activity_source_of_truth": true,
+    "case_items_not_used_as_parallel_active_store": true,
+    "unsupported_fields_not_faked": true,
+    "no_live_mutation_without_approval": true,
+    "no_fake_success_or_toast_path": true,
+    "no_duplicate_store_or_migration": true
+  },
+  "console_errors": 0,
+  "console_warnings": 0,
+  "screenshot_path": "audit/evidence/FRT-017_BROWSER_PROOF.png",
+  "proof_freshness": {
+    "visual_capture": "Captured after the FRT-017 implementation commit on the live local runtime.",
+    "source_revalidation": "Current source was revalidated with focused tests, runtime persistence harness, typecheck, production build, semantic color/icon/typography guards and diff check.",
+    "fixture_boundary": "The screenshot shows the real local Fundacja Lepsze Jutro lead, not the ACME reference fixture."
+  },
+  "status": "PASS_WITH_DOCUMENTED_REFERENCE_CAPABILITY_AND_BROWSER_SUBMIT_BOUNDARIES",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "Runtime lead data is real local data and therefore differs from reference fixture values.",
+      "Responsible-person and client-decision persistence are outside the current schema and are explicitly disabled rather than faked.",
+      "Browser/operating-system rendering and the usable scroll region can differ from a static reference capture.",
+      "Live submit was not invoked without explicit user approval."
+    ]
+  },
+  "tab_marked_deliverable": true,
+  "implementation_commit_sha": "0d3811cc7c36c23269e8173ed16b6c43b859c4f7",
+  "created_at": "2026-08-28T09:14:43.6487925Z"
+}

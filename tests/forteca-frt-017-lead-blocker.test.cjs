@@ -10,6 +10,7 @@ const paths = Object.freeze({
   modal: 'src/components/detail/MissingItemQuickActionModal.tsx',
   contextActions: 'src/components/ContextActionDialogs.tsx',
   clientDetail: 'src/pages/ClientDetail.tsx',
+  leadDetail: 'src/pages/LeadDetail.tsx',
   modalContract: 'src/lib/missing-items/stage227c2-missing-item-modal-contract.ts',
   dialogStyles: 'src/styles/owners/closeflow-dialogs.css',
 });
@@ -234,6 +235,7 @@ test('FRT-017 propagates priority and due date through the shared modal, Context
 test('FRT-017 keeps ContextAction and ClientDetail persistence fields, relations and active-list propagation explicit', () => {
   const host = read(paths.contextActions);
   const clientDetail = read(paths.clientDetail);
+  const leadDetail = read(paths.leadDetail);
   const hostSave = sourceBetween(host, 'const handleSaveBlocker = async () => {', '  const openTask');
   const clientSave = sourceBetween(clientDetail, 'const handleSaveClientMissingItemStage227C3B = useCallback(async () => {', '  const handleToggleClientMissingBlockerStage232I4R13F');
   const templateQuote = String.fromCharCode(96);
@@ -286,6 +288,12 @@ test('FRT-017 keeps ContextAction and ClientDetail persistence fields, relations
   assertIncludes(hostSave, 'emitCloseflowWorkItemNoFlickerMutation', 'ContextAction active-list propagation');
   assertIncludes(hostSave, 'recordType: request.recordType', 'ContextAction active-list relation');
   assertIncludes(hostSave, 'recordId: request.recordId', 'ContextAction active-list record relation');
+
+  assertIncludes(leadDetail, "window.addEventListener('closeflow:context-action-saved'", 'LeadDetail refresh listener');
+  assert.match(leadDetail, /const belongsToLead = Boolean\(savedLeadId\)\s*&&\s*savedLeadId === String\(leadId\)/);
+  assert.match(leadDetail, /const belongsToWorkspace = Boolean\(savedWorkspaceId\)\s*&&\s*savedWorkspaceId === workspaceId/);
+  assertIncludes(leadDetail, 'setLinkedTasks((currentTasks: any[]) => dedupeById([savedRecord, ...currentTasks]));', 'LeadDetail active-list saved-record handoff');
+  assertIncludes(leadDetail, 'void loadLead({ silent: true });', 'LeadDetail post-save refresh');
 
   assert.equal((clientSave.match(/insertTaskToSupabase\(\{/g) || []).length, 1, 'ClientDetail must persist one normalized task record');
   assert.equal((clientSave.match(/insertActivityToSupabase\(\{/g) || []).length, 1, 'ClientDetail must persist one creation activity');
