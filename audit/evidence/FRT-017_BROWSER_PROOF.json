@@ -50,7 +50,7 @@
     ],
     "actions": [
       "Anuluj",
-      "Zapisz brak / blokadę",
+      "Dodaj brak",
       "Close"
     ],
     "capability_boundary": "Odpowiedzialna osoba and Decyzja klienta are visibly present but disabled with explicit no-contract copy because the current backend has no first-class persistence owner for those fields; no fake persistence is claimed."
