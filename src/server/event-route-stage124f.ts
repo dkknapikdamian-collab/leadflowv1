@@ -1,7 +1,7 @@
 // STAGE124F_VERCEL_HOBBY_CONSOLIDATED_EVENT_ROUTE
 // STAGE124D_SUPABASE_EGRESS_LIGHT_EVENT_ROUTE
 import { deleteByIdScoped, insertWithVariants, selectFirstAvailable, updateByIdScoped, updateWhere } from './_supabase.js';
-import { requireRequestIdentity, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
+import { requireRequestIdentity, requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
 import { normalizeEventListContract } from '../lib/data-contract.js';
 import { normalizeCloseFlowDateTimeToUtcIso } from '../lib/calendar-timezone-contract.js';
 import { markGoogleCalendarMutationSyncState } from './google-calendar-mutation-sync-state-marker.js';
@@ -122,6 +122,31 @@ async function syncLeadNextAction(workspaceId: string, leadId: unknown, item: { 
   });
 }
 
+const EVENT_RELATION_WORKSPACE_RULES_STAGE232T_R4 = [
+  ['leadId', 'leads', 'EVENT_LEAD_WORKSPACE_RELATION_NOT_FOUND'],
+  ['caseId', 'cases', 'EVENT_CASE_WORKSPACE_RELATION_NOT_FOUND'],
+  ['clientId', 'clients', 'EVENT_CLIENT_WORKSPACE_RELATION_NOT_FOUND'],
+] as const;
+
+type ValidatedEventRelationsStage232T_R4 = Partial<Record<'leadId' | 'caseId' | 'clientId', string | null>>;
+
+async function assertEventRelationsInWorkspaceStage232T_R4(
+  body: Record<string, unknown>,
+  workspaceId: string,
+): Promise<ValidatedEventRelationsStage232T_R4> {
+  const validated: ValidatedEventRelationsStage232T_R4 = {};
+
+  for (const [bodyField, table, errorCode] of EVENT_RELATION_WORKSPACE_RULES_STAGE232T_R4) {
+    if (body[bodyField] === undefined) continue;
+    const relationId = asText(body[bodyField]);
+    validated[bodyField] = relationId || null;
+    if (!relationId) continue;
+    await requireScopedRow(table, relationId, workspaceId, errorCode);
+  }
+
+  return validated;
+}
+
 
 const CALENDAR_HIDDEN_EVENT_STATUSES_STAGE229A = new Set(['done', 'completed', 'cancelled', 'canceled', 'archived', 'deleted', 'removed']);
 function shouldHideEventFromCalendarStage229A(value: unknown) { return CALENDAR_HIDDEN_EVENT_STATUSES_STAGE229A.has(asText(value).toLowerCase()); }
@@ -191,6 +216,10 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
         return;
       }
 
+      // Linked business rows must belong to the verified request workspace before
+      // the event is persisted or any lead next-action side effect is attempted.
+      const validatedEventRelationsStage232T_R4 = await assertEventRelationsInWorkspaceStage232T_R4(body, workspaceId);
+
       const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
       if (body.title !== undefined) payload.title = body.title;
       if (body.type !== undefined) payload.type = body.type;
@@ -202,9 +231,9 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
         payload.scheduled_at = iso;
       }
       if (body.endAt !== undefined) payload.end_at = body.endAt ? normalizeCloseFlowDateTimeToUtcIso(body.endAt) : null;
-      if (body.leadId !== undefined) payload.lead_id = body.leadId || null;
-      if (body.caseId !== undefined) payload.case_id = body.caseId || null;
-      if (body.clientId !== undefined) payload.client_id = body.clientId || null;
+      if (validatedEventRelationsStage232T_R4.leadId !== undefined) payload.lead_id = validatedEventRelationsStage232T_R4.leadId;
+      if (validatedEventRelationsStage232T_R4.caseId !== undefined) payload.case_id = validatedEventRelationsStage232T_R4.caseId;
+      if (validatedEventRelationsStage232T_R4.clientId !== undefined) payload.client_id = validatedEventRelationsStage232T_R4.clientId;
       if (body.reminderAt !== undefined) payload.reminder = body.reminderAt || 'none';
       if (body.recurrenceRule !== undefined) payload.recurrence = body.recurrenceRule || 'none';
 
@@ -219,8 +248,8 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
 
       const data = await updateByIdScoped('work_items', String(body.id), workspaceId, payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };
-      if (body.leadId) {
-        await syncLeadNextAction(workspaceId, body.leadId, {
+      if (validatedEventRelationsStage232T_R4.leadId) {
+        await syncLeadNextAction(workspaceId, validatedEventRelationsStage232T_R4.leadId, {
           id: body.id,
           title: body.title ?? payload.title,
           startAt: body.startAt ?? payload.start_at,
@@ -332,15 +361,18 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
 
     const nowIso = new Date().toISOString();
     const startAt = body.startAt ? normalizeCloseFlowDateTimeToUtcIso(body.startAt) || nowIso : nowIso;
+    // The POST method gate above is followed by the same workspace relation guard
+    // before the event payload, Google sync state, or insert is built.
+    const validatedEventRelationsStage232T_R4 = await assertEventRelationsInWorkspaceStage232T_R4(body, workspaceId);
     const eventInsertBaseStageG13 = {
       workspace_id: workspaceId,
       // STAGE232G_R3_GOOGLE_CALENDAR_USER_ONBOARDING_AND_OWNER_STAMP
       // Outbound Google Calendar sync is user-scoped and checks created_by_user_id.
       // New events must be stamped with the authenticated request user, not null.
       created_by_user_id: requestUserIdStage232GR3 || null,
-      lead_id: body.leadId || null,
-      case_id: body.caseId || null,
-      client_id: body.clientId || null,
+      lead_id: validatedEventRelationsStage232T_R4.leadId || null,
+      case_id: validatedEventRelationsStage232T_R4.caseId || null,
+      client_id: validatedEventRelationsStage232T_R4.clientId || null,
       record_type: 'event',
       type: body.type || 'meeting',
       title: body.title,
@@ -380,8 +412,8 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
 
     const result = await insertWithVariants(['work_items'], [payload]);
     const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
-    if (body.leadId) {
-      await syncLeadNextAction(workspaceId, body.leadId, {
+    if (validatedEventRelationsStage232T_R4.leadId) {
+      await syncLeadNextAction(workspaceId, validatedEventRelationsStage232T_R4.leadId, {
         id: (inserted as Record<string, unknown>).id,
         title: body.title,
         startAt,

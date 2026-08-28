@@ -2096,13 +2096,13 @@
   --cf-page-header-ai-border-hover: #c4b5fd;
   --cf-page-header-ai-shadow: 0 8px 18px rgba(124, 58, 237, 0.12);
 
-  --cf-page-header-danger-text: var(--cf-trash-icon-color, #dc2626);
-  --cf-page-header-danger-text-hover: var(--cf-trash-icon-hover-color, #b91c1c);
-  --cf-page-header-danger-bg: #ffffff;
-  --cf-page-header-danger-bg-hover: #fef2f2;
-  --cf-page-header-danger-border: var(--cf-trash-icon-border, rgba(220, 38, 38, 0.22));
-  --cf-page-header-danger-border-hover: var(--cf-trash-icon-hover-border, rgba(220, 38, 38, 0.34));
-  --cf-page-header-danger-shadow: 0 8px 18px rgba(220, 38, 38, 0.08);
+  --cf-page-header-danger-text: var(--cf-vst-color-delete);
+  --cf-page-header-danger-text-hover: var(--cf-vst-color-delete);
+  --cf-page-header-danger-bg: var(--cf-vst-surface-card-solid);
+  --cf-page-header-danger-bg-hover: var(--cf-vst-color-delete-soft);
+  --cf-page-header-danger-border: var(--cf-vst-color-delete-border);
+  --cf-page-header-danger-border-hover: var(--cf-vst-color-delete-border);
+  --cf-page-header-danger-shadow: 0 8px 18px color-mix(in srgb, var(--cf-vst-color-delete) 8%, transparent);
 
   --cf-page-header-action-height: 38px;
   --cf-page-header-action-radius: 14px;

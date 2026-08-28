@@ -1005,27 +1005,39 @@ export default function LeadDetail() {
 
   const STAGE228R15_LEAD_CONTEXT_ACTION_REFRESH_LISTENER = 'LeadDetail listens to closeflow:context-action-saved and reloads without manual refresh';
   void STAGE228R15_LEAD_CONTEXT_ACTION_REFRESH_LISTENER;
+  const STAGE016_LEAD_EVENT_REFRESH_SCOPE = 'LeadDetail accepts shared event saves only for the active lead/workspace and reconciles linked events through the existing reload path';
+  void STAGE016_LEAD_EVENT_REFRESH_SCOPE;
 
   useEffect(() => {
     if (!leadId || !workspaceReady) return;
     const listener = (event: Event) => {
+      const workspaceId = requireWorkspaceId(workspace);
+      if (!workspaceId) return;
       const detail = ((event as CustomEvent<any>).detail || {}) as any;
       if (!detail?.recordType || !detail?.recordId) return;
       if (detail.recordType === 'lead' && String(detail.recordId) !== String(leadId)) return;
       if (detail.leadId && String(detail.leadId) !== String(leadId)) return;
+      const detailWorkspaceId = String(detail.workspaceId || detail.workspace_id || '').trim();
+      if (detailWorkspaceId && detailWorkspaceId !== workspaceId) return;
 
       const savedRecord = detail.savedRecord && typeof detail.savedRecord === 'object' ? detail.savedRecord as any : null;
       if (savedRecord) {
         const savedId = String(savedRecord.id || '').trim();
         const savedKind = String(detail.kind || savedRecord.kind || savedRecord.entityKind || '').toLowerCase();
         const savedType = String(savedRecord.type || '').toLowerCase();
-        const belongsToLead = !savedRecord.leadId || String(savedRecord.leadId) === String(leadId);
+        const savedLeadId = String(savedRecord.leadId || savedRecord.lead_id || '').trim();
+        const savedWorkspaceId = String(savedRecord.workspaceId || savedRecord.workspace_id || '').trim();
+        // Optimistic rows are safe only when the mutation response carries both
+        // verified relation dimensions. Missing metadata must fail closed; the
+        // subsequent real reload remains the reconciliation path.
+        const belongsToLead = Boolean(savedLeadId) && savedLeadId === String(leadId);
+        const belongsToWorkspace = Boolean(savedWorkspaceId) && savedWorkspaceId === workspaceId;
 
-        if (savedId && belongsToLead && (savedKind === 'task' || savedKind === 'blocker' || savedType === 'missing_item' || savedRecord.scheduledAt || savedRecord.dueAt || savedRecord.dateAt)) {
+        if (savedId && belongsToLead && belongsToWorkspace && (savedKind === 'task' || savedKind === 'blocker' || savedType === 'missing_item' || savedRecord.scheduledAt || savedRecord.dueAt || savedRecord.dateAt)) {
           setLinkedTasks((currentTasks: any[]) => dedupeById([savedRecord, ...currentTasks]));
         }
 
-        if (savedId && belongsToLead && (savedKind === 'event' || savedRecord.startAt || savedRecord.endAt)) {
+        if (savedId && belongsToLead && belongsToWorkspace && (savedKind === 'event' || savedType === 'event')) {
           setLinkedEvents((currentEvents: any[]) => dedupeById([savedRecord, ...currentEvents]));
         }
       }
@@ -1034,7 +1046,7 @@ export default function LeadDetail() {
     };
     window.addEventListener('closeflow:context-action-saved', listener as EventListener);
     return () => window.removeEventListener('closeflow:context-action-saved', listener as EventListener);
-  }, [leadId, workspaceReady]);
+  }, [leadId, workspace?.id, workspaceReady]);
 
   useEffect(() => {
     const STAGE227F5_CLEAR_LEGACY_HASH = true;
@@ -1171,13 +1183,26 @@ export default function LeadDetail() {
 
   const leadServiceLockedMessage = 'Ten temat jest już w obsłudze. Dalszą pracę prowadź w sprawie.';
   const STAGE86_CONTEXT_ACTION_EXPLICIT_TRIGGERS = 'Lead detail uses shared context action dialogs instead of local simplified quick forms';
+  const STAGE016_LEAD_EVENT_CONTEXT_SCOPE = 'Lead Detail event action requires the current workspace and forwards the live lead/client/case relation to the shared EventCreateDialog';
+  void STAGE016_LEAD_EVENT_CONTEXT_SCOPE;
   const openLeadContextAction = (kind: ContextActionKind) => {
     if (!leadId) return;
+    const workspaceId = kind === 'event' ? requireWorkspaceId(workspace) : undefined;
+    if (kind === 'event' && !workspaceId) {
+      toast.error('Kontekst workspace nie jest jeszcze gotowy.');
+      return;
+    }
     openContextQuickAction({
       kind,
       recordType: 'lead',
       recordId: leadId,
       leadId,
+      ...(kind === 'event'
+        ? {
+            clientId: lead?.clientId ? String(lead.clientId) : undefined,
+            caseId: associatedCase?.id ? String(associatedCase.id) : undefined,
+          }
+        : {}),
       recordLabel: getLeadName(lead),
     });
   };

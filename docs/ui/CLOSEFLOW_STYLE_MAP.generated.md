@@ -1,6 +1,6 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-08-28T06:06:07.005Z
+Generated: 2026-08-28T06:50:31.852Z
 
 ## CSS variables
 - --cf-canvas: src/components/VisualFoundationRuntime.tsx:11
@@ -201,37 +201,37 @@ Generated: 2026-08-28T06:06:07.005Z
 - --cf-session-action-danger-text-hover: src/styles/owners/closeflow-actions.css:67
 - --cf-session-action-danger-bg-hover: src/styles/owners/closeflow-actions.css:68
 - --cf-session-action-danger-focus: src/styles/owners/closeflow-actions.css:69
-- --cf-trash-icon-color: src/styles/owners/closeflow-actions.css:154
-- --cf-trash-icon-hover-color: src/styles/owners/closeflow-actions.css:155
-- --cf-trash-icon-bg: src/styles/owners/closeflow-actions.css:156
-- --cf-trash-icon-hover-bg: src/styles/owners/closeflow-actions.css:157
-- --cf-trash-icon-border: src/styles/owners/closeflow-actions.css:158
-- --cf-trash-icon-hover-border: src/styles/owners/closeflow-actions.css:159
-- --cf-header-action-primary-bg: src/styles/owners/closeflow-actions.css:217
-- --cf-header-action-primary-bg-hover: src/styles/owners/closeflow-actions.css:218
-- --cf-header-action-primary-border: src/styles/owners/closeflow-actions.css:219
-- --cf-header-action-primary-border-hover: src/styles/owners/closeflow-actions.css:220
-- --cf-header-action-primary-text: src/styles/owners/closeflow-actions.css:221
-- --cf-header-action-primary-shadow: src/styles/owners/closeflow-actions.css:222
-- --cf-header-action-ai-bg: src/styles/owners/closeflow-actions.css:224
-- --cf-header-action-ai-bg-hover: src/styles/owners/closeflow-actions.css:225
-- --cf-header-action-ai-border: src/styles/owners/closeflow-actions.css:226
-- --cf-header-action-ai-border-hover: src/styles/owners/closeflow-actions.css:227
-- --cf-header-action-ai-text: src/styles/owners/closeflow-actions.css:228
-- --cf-header-action-ai-shadow: src/styles/owners/closeflow-actions.css:229
-- --cf-header-action-secondary-bg: src/styles/owners/closeflow-actions.css:231
-- --cf-header-action-secondary-bg-hover: src/styles/owners/closeflow-actions.css:232
-- --cf-header-action-secondary-border: src/styles/owners/closeflow-actions.css:233
-- --cf-header-action-secondary-border-hover: src/styles/owners/closeflow-actions.css:234
-- --cf-header-action-secondary-text: src/styles/owners/closeflow-actions.css:235
-- --cf-header-action-secondary-shadow: src/styles/owners/closeflow-actions.css:236
-- --cf-action-cluster-gap: src/styles/owners/closeflow-actions.css:294
-- --cf-action-cluster-gap: src/styles/owners/closeflow-actions.css:299
-- --cf-form-actions-gap: src/styles/owners/closeflow-actions.css:319
-- --cf-form-actions-mobile-gap: src/styles/owners/closeflow-actions.css:320
-- --cf-form-actions-padding-top: src/styles/owners/closeflow-actions.css:321
-- --cf-form-actions-border: src/styles/owners/closeflow-actions.css:322
-- --cf-form-actions-danger-gap: src/styles/owners/closeflow-actions.css:323
+- --cf-trash-icon-color: src/styles/owners/closeflow-actions.css:155
+- --cf-trash-icon-hover-color: src/styles/owners/closeflow-actions.css:156
+- --cf-trash-icon-bg: src/styles/owners/closeflow-actions.css:157
+- --cf-trash-icon-hover-bg: src/styles/owners/closeflow-actions.css:158
+- --cf-trash-icon-border: src/styles/owners/closeflow-actions.css:159
+- --cf-trash-icon-hover-border: src/styles/owners/closeflow-actions.css:160
+- --cf-header-action-primary-bg: src/styles/owners/closeflow-actions.css:218
+- --cf-header-action-primary-bg-hover: src/styles/owners/closeflow-actions.css:219
+- --cf-header-action-primary-border: src/styles/owners/closeflow-actions.css:220
+- --cf-header-action-primary-border-hover: src/styles/owners/closeflow-actions.css:221
+- --cf-header-action-primary-text: src/styles/owners/closeflow-actions.css:222
+- --cf-header-action-primary-shadow: src/styles/owners/closeflow-actions.css:223
+- --cf-header-action-ai-bg: src/styles/owners/closeflow-actions.css:225
+- --cf-header-action-ai-bg-hover: src/styles/owners/closeflow-actions.css:226
+- --cf-header-action-ai-border: src/styles/owners/closeflow-actions.css:227
+- --cf-header-action-ai-border-hover: src/styles/owners/closeflow-actions.css:228
+- --cf-header-action-ai-text: src/styles/owners/closeflow-actions.css:229
+- --cf-header-action-ai-shadow: src/styles/owners/closeflow-actions.css:230
+- --cf-header-action-secondary-bg: src/styles/owners/closeflow-actions.css:232
+- --cf-header-action-secondary-bg-hover: src/styles/owners/closeflow-actions.css:233
+- --cf-header-action-secondary-border: src/styles/owners/closeflow-actions.css:234
+- --cf-header-action-secondary-border-hover: src/styles/owners/closeflow-actions.css:235
+- --cf-header-action-secondary-text: src/styles/owners/closeflow-actions.css:236
+- --cf-header-action-secondary-shadow: src/styles/owners/closeflow-actions.css:237
+- --cf-action-cluster-gap: src/styles/owners/closeflow-actions.css:295
+- --cf-action-cluster-gap: src/styles/owners/closeflow-actions.css:300
+- --cf-form-actions-gap: src/styles/owners/closeflow-actions.css:320
+- --cf-form-actions-mobile-gap: src/styles/owners/closeflow-actions.css:321
+- --cf-form-actions-padding-top: src/styles/owners/closeflow-actions.css:322
+- --cf-form-actions-border: src/styles/owners/closeflow-actions.css:323
+- --cf-form-actions-danger-gap: src/styles/owners/closeflow-actions.css:324
 - --cf-cal-page-bg: src/styles/owners/closeflow-calendar.css:4
 - --cf-cal-page-glow: src/styles/owners/closeflow-calendar.css:5
 - --cf-cal-surface: src/styles/owners/closeflow-calendar.css:7

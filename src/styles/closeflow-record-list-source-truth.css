@@ -315,20 +315,20 @@
   font-weight: 850;
 }
 #root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-button {
-  border-color: var(--cf-trash-border-color, #fecaca);
-  background: var(--cf-trash-bg, #ffffff);
-  color: var(--cf-trash-text-color, #334155);
+  border-color: var(--cf-trash-border-color);
+  background: var(--cf-trash-bg);
+  color: var(--cf-trash-text-color);
   box-shadow: none;
 }
 
 #root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-button:hover {
-  border-color: var(--cf-trash-border-hover-color, #fca5a5);
-  background: var(--cf-trash-bg-hover, rgba(254, 242, 242, 0.72));
+  border-color: var(--cf-trash-border-hover-color);
+  background: var(--cf-trash-bg-hover);
 }
 
 #root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-icon,
 #root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-task-card) .cf-trash-action-button svg {
-  color: var(--cf-trash-icon-color, #dc2626);
+  color: var(--cf-trash-icon-color);
 }
 #root .cf-html-view.main-templates-html [data-cf-template-card-source="record-list-source-truth"] {
   width: 100%;
@@ -362,13 +362,13 @@
 }
 
 #root .cf-html-view.main-templates-html [data-cf-template-delete-action="true"] {
-  border-color: rgb(254 202 202);
-  background: rgb(255 255 255);
+  border-color: var(--cf-vst-color-delete-border);
+  background: var(--cf-vst-surface-card-solid);
 }
 
 #root .cf-html-view.main-templates-html [data-cf-template-delete-action="true"]:hover {
-  border-color: rgb(248 113 113);
-  background: rgb(254 242 242);
+  border-color: var(--cf-vst-color-delete);
+  background: var(--cf-vst-color-delete-soft);
 }
 
 #root .cf-html-view.main-templates-html [data-cf-template-card-items="true"] > .cf-readable-panel {
@@ -417,14 +417,14 @@
 
 #root .cf-html-view.main-templates-html [data-cf-template-delete-action="true"],
 #root .cf-html-view.main-templates-html [data-cf-template-delete-action="menu"] {
-  border-color: rgb(254 202 202);
-  background: rgb(255 255 255);
+  border-color: var(--cf-vst-color-delete-border);
+  background: var(--cf-vst-surface-card-solid);
 }
 
 #root .cf-html-view.main-templates-html [data-cf-template-delete-action="true"]:hover,
 #root .cf-html-view.main-templates-html [data-cf-template-delete-action="menu"]:hover {
-  border-color: rgb(248 113 113);
-  background: rgb(254 242 242);
+  border-color: var(--cf-vst-color-delete);
+  background: var(--cf-vst-color-delete-soft);
 }
 
 #root .cf-html-view.main-templates-html [data-cf-template-card-items="true"] > .cf-readable-panel {
@@ -581,14 +581,14 @@
 }
 
 .cf-case-row-delete-icon-action {
-  border-color: rgba(244, 63, 94, 0.18);
-  color: #e11d48;
-  background: #fff;
+  border-color: var(--cf-vst-color-delete-border);
+  color: var(--cf-vst-color-delete);
+  background: var(--cf-vst-surface-card-solid);
 }
 
 .cf-case-row-delete-icon-action:hover {
-  border-color: rgba(244, 63, 94, 0.32);
-  background: #fff1f2;
+  border-color: var(--cf-vst-color-delete);
+  background: var(--cf-vst-color-delete-soft);
 }
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line {
   grid-template-columns: minmax(2.15rem, 2.5rem) minmax(0, 1fr) minmax(5rem, auto);
@@ -3183,8 +3183,9 @@
 }
 
 #root .cf-html-view.main-leads-html .leads-trash-summary-icon.is-purple {
-  background: #f3e8ff !important;
-  color: #9333ea !important;
+  /* This slot renders DeleteActionIcon; its red is owned by the VST delete family. */
+  background: var(--cf-vst-color-delete-soft) !important;
+  color: var(--cf-vst-color-delete) !important;
 }
 
 #root .cf-html-view.main-leads-html .leads-trash-summary-icon.is-blue {

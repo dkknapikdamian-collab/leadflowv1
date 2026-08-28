@@ -28,10 +28,11 @@
   --cf-vst-color-case-item: #0f766e;
   --cf-vst-color-case-item-soft: #f0fdfa;
   --cf-vst-color-case-item-border: #99f6e4;
+  /* Delete family: one literal semantic owner; every variant derives from it. */
   --cf-vst-color-delete: #dc2626;
-  --cf-vst-color-delete-strong: #991b1b;
-  --cf-vst-color-delete-soft: #fef2f2;
-  --cf-vst-color-delete-border: #fecaca;
+  --cf-vst-color-delete-strong: color-mix(in srgb, var(--cf-vst-color-delete) 70%, var(--cf-vst-text-strong) 30%);
+  --cf-vst-color-delete-soft: color-mix(in srgb, var(--cf-vst-color-delete) 6%, var(--cf-vst-surface-card-solid) 94%);
+  --cf-vst-color-delete-border: color-mix(in srgb, var(--cf-vst-color-delete) 31%, var(--cf-vst-surface-card-solid) 69%);
   --cf-vst-color-success: #16a34a;
   --cf-vst-color-success-soft: #ecfdf3;
   --cf-vst-color-warning: #d97706;

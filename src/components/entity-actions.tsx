@@ -125,7 +125,7 @@ export const CLOSEFLOW_TRASH_ACTION_SOURCE_OF_TRUTH = {
   owner: 'src/components/entity-actions.tsx',
   buttonClass: 'cf-trash-action-button',
   iconClass: 'cf-trash-action-icon',
-  tokenColor: '--cf-trash-icon-color',
+  tokenColor: '--cf-vst-color-delete',
   reason: 'one source of truth for trash icon action color and shape',
 } as const;
 

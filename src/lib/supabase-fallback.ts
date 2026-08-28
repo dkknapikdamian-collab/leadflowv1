@@ -27,7 +27,7 @@ type TaskInsertInput = { title: string; type?: string; date?: string; scheduledA
   clientId?: string | null; ownerId?: string; workspaceId?: string; description?: string };
 type EventInsertInput = { title: string; type?: string; startAt: string;
   scheduledAt?: string; endAt?: string; reminderAt?: string; recurrenceRule?: string; status?: string; leadId?: string | null; caseId?: string | null;
-  clientId?: string | null; workspaceId?: string };
+  clientId?: string | null; workspaceId?: string; description?: string };
 type CaseUpsertInput = { id?: string; title?: string; clientName?: string; clientId?: string | null; clientEmail?: string; clientPhone?: string; status?: string; billingStatus?: string; billingModelSnapshot?: string; contractValue?: number; expectedRevenue?: number; caseValue?: number; value?: number; currency?: string; commissionMode?: string; commissionBase?: string; commissionRate?: number; commissionAmount?: number; commissionStatus?: string; serviceProfileId?: string | null; startedAt?: string | null; completedAt?: string | null; lastActivityAt?: string | null; serviceStartedAt?: string | null; completenessPercent?: number; leadId?: string | null; createdFromLead?: boolean; portalReady?: boolean; paidAmount?: number; remainingAmount?: number; primaryForClient?: boolean; replacePrimaryCase?: boolean; workspaceId?: string };
 const STAGE220A25_CASE_CREATE_FROM_CLIENT_FINANCE_SYNC = 'client create can create primary case with contractValue and finance sync guard';
 void STAGE220A25_CASE_CREATE_FROM_CLIENT_FINANCE_SYNC;

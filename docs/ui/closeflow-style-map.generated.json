@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-28T06:06:07.005Z",
+  "generatedAt": "2026-08-28T06:50:31.852Z",
   "cssVariables": [
     {
       "name": "--cf-canvas",
@@ -994,157 +994,157 @@
     {
       "name": "--cf-trash-icon-color",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 154
+      "line": 155
     },
     {
       "name": "--cf-trash-icon-hover-color",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 155
+      "line": 156
     },
     {
       "name": "--cf-trash-icon-bg",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 156
+      "line": 157
     },
     {
       "name": "--cf-trash-icon-hover-bg",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 157
+      "line": 158
     },
     {
       "name": "--cf-trash-icon-border",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 158
+      "line": 159
     },
     {
       "name": "--cf-trash-icon-hover-border",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 159
+      "line": 160
     },
     {
       "name": "--cf-header-action-primary-bg",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 217
+      "line": 218
     },
     {
       "name": "--cf-header-action-primary-bg-hover",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 218
+      "line": 219
     },
     {
       "name": "--cf-header-action-primary-border",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 219
+      "line": 220
     },
     {
       "name": "--cf-header-action-primary-border-hover",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 220
+      "line": 221
     },
     {
       "name": "--cf-header-action-primary-text",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 221
+      "line": 222
     },
     {
       "name": "--cf-header-action-primary-shadow",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 222
+      "line": 223
     },
     {
       "name": "--cf-header-action-ai-bg",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 224
+      "line": 225
     },
     {
       "name": "--cf-header-action-ai-bg-hover",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 225
+      "line": 226
     },
     {
       "name": "--cf-header-action-ai-border",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 226
+      "line": 227
     },
     {
       "name": "--cf-header-action-ai-border-hover",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 227
+      "line": 228
     },
     {
       "name": "--cf-header-action-ai-text",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 228
+      "line": 229
     },
     {
       "name": "--cf-header-action-ai-shadow",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 229
+      "line": 230
     },
     {
       "name": "--cf-header-action-secondary-bg",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 231
+      "line": 232
     },
     {
       "name": "--cf-header-action-secondary-bg-hover",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 232
+      "line": 233
     },
     {
       "name": "--cf-header-action-secondary-border",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 233
+      "line": 234
     },
     {
       "name": "--cf-header-action-secondary-border-hover",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 234
+      "line": 235
     },
     {
       "name": "--cf-header-action-secondary-text",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 235
+      "line": 236
     },
     {
       "name": "--cf-header-action-secondary-shadow",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 236
+      "line": 237
     },
     {
       "name": "--cf-action-cluster-gap",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 294
+      "line": 295
     },
     {
       "name": "--cf-action-cluster-gap",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 299
+      "line": 300
     },
     {
       "name": "--cf-form-actions-gap",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 319
+      "line": 320
     },
     {
       "name": "--cf-form-actions-mobile-gap",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 320
+      "line": 321
     },
     {
       "name": "--cf-form-actions-padding-top",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 321
+      "line": 322
     },
     {
       "name": "--cf-form-actions-border",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 322
+      "line": 323
     },
     {
       "name": "--cf-form-actions-danger-gap",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 323
+      "line": 324
     },
     {
       "name": "--cf-cal-page-bg",
@@ -5144,127 +5144,127 @@
     {
       "name": "--cf-header-action-primary-bg",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 217
+      "line": 218
     },
     {
       "name": "--cf-header-action-primary-bg-hover",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 218
+      "line": 219
     },
     {
       "name": "--cf-header-action-primary-border",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 219
+      "line": 220
     },
     {
       "name": "--cf-header-action-primary-border-hover",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 220
+      "line": 221
     },
     {
       "name": "--cf-header-action-primary-text",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 221
+      "line": 222
     },
     {
       "name": "--cf-header-action-primary-shadow",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 222
+      "line": 223
     },
     {
       "name": "--cf-header-action-ai-bg",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 224
+      "line": 225
     },
     {
       "name": "--cf-header-action-ai-bg-hover",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 225
+      "line": 226
     },
     {
       "name": "--cf-header-action-ai-border",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 226
+      "line": 227
     },
     {
       "name": "--cf-header-action-ai-border-hover",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 227
+      "line": 228
     },
     {
       "name": "--cf-header-action-ai-text",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 228
+      "line": 229
     },
     {
       "name": "--cf-header-action-ai-shadow",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 229
+      "line": 230
     },
     {
       "name": "--cf-header-action-secondary-bg",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 231
+      "line": 232
     },
     {
       "name": "--cf-header-action-secondary-bg-hover",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 232
+      "line": 233
     },
     {
       "name": "--cf-header-action-secondary-border",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 233
+      "line": 234
     },
     {
       "name": "--cf-header-action-secondary-border-hover",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 234
+      "line": 235
     },
     {
       "name": "--cf-header-action-secondary-text",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 235
+      "line": 236
     },
     {
       "name": "--cf-header-action-secondary-shadow",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 236
+      "line": 237
     },
     {
       "name": "--cf-action-cluster-gap",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 294
+      "line": 295
     },
     {
       "name": "--cf-action-cluster-gap",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 299
+      "line": 300
     },
     {
       "name": "--cf-form-actions-gap",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 319
+      "line": 320
     },
     {
       "name": "--cf-form-actions-mobile-gap",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 320
+      "line": 321
     },
     {
       "name": "--cf-form-actions-padding-top",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 321
+      "line": 322
     },
     {
       "name": "--cf-form-actions-border",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 322
+      "line": 323
     },
     {
       "name": "--cf-form-actions-danger-gap",
       "file": "src/styles/owners/closeflow-actions.css",
-      "line": 323
+      "line": 324
     },
     {
       "name": "--cf-modal-danger",
