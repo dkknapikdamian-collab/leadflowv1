@@ -5,15 +5,15 @@
   "reference_file": "docs/ui/reference/forteca-calm-light/017_lead_add_missing_blocker.webp",
   "target_route": "/leads/:leadId",
   "target_state": "Lead Detail — add missing item/blocker modal",
-  "result": "PENDING_INDEPENDENT_REVIEW",
-  "stage_status": "IMPLEMENTED_WITH_DOCUMENTED_BROWSER_SUBMIT_BOUNDARY",
-  "acceptance_authority": "PENDING_PARENT_CONTROLLER_AFTER_INDEPENDENT_REVIEW",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_DOCUMENTED_REFERENCE_CAPABILITY_AND_BROWSER_SUBMIT_BOUNDARIES",
+  "acceptance_authority": "CODEX_AFTER_INDEPENDENT_REVIEW",
   "acceptance_basis": {
     "directive_interpretation": "The parent controller must validate the implementation, exact evidence and independent review before recording PASS or activating FRT-018.",
     "reference_and_runtime": "The real Lead Detail Brak action opens the calm-light blocker modal on /leads/dev-lead-3; runtime lead and workspace values remain real and reference fixtures are not copied.",
     "root_cause": "The prior shared Brak host did not expose the complete FRT-017 calm-light field contract, missing-item validation accepted arbitrary categories and impossible dates, task/activity payloads did not consistently carry the visual form fields, the Lead Detail host was hidden inside the global bar, and active records needed an explicit workspace/lead-checked saved-record handoff.",
     "repair": "FRT-017 adds the real modal, shared copy and validation contract, task/activity persistence fields, fail-closed lead/workspace saved-record reconciliation, and a visible host outside the hidden global bar while preserving the existing task/activity source of truth.",
-    "review_status": "Initial independent review by Aristotle returned BLOCKED for the missing receipt, an evidence button-label mismatch and the browser live-submit boundary. Receipt and label findings are being remediated; live submit remains intentionally uninvoked because it is a real mutation requiring explicit confirmation under browser policy.",
+    "review_status": "Aristotle and Herschel returned BLOCKED on receipt/evidence mismatches; those findings were remediated. Final independent review by Goodall returned PASS after verifying the exact button copy, persistence, active-list handoff, visual token ownership, tests and evidence. Live submit remains intentionally uninvoked because it is a real mutation requiring explicit confirmation under browser policy; runtime POST plus source-level list/reload proof cover the boundary.",
     "guardian_interpretation": "Guardian smoke is AUDIT_ONLY/PARTIAL with zero writes; no full Guardian PASS is claimed."
   },
   "zero_plaster_policy": {
@@ -210,6 +210,11 @@
         "role": "independent repository-native review",
         "agent": "Aristotle",
         "result": "BLOCKED; receipt and evidence mismatch remediation in progress; browser live-submit boundary documented"
+      },
+      {
+        "role": "post-remediation independent review",
+        "agent": "Goodall",
+        "result": "PASS; exact evidence copy, persistence, active-list refresh, visual tokens and browser boundary verified; Guardian PARTIAL retained"
       },
       {
         "role": "prior independent review",
