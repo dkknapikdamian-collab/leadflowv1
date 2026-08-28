@@ -5362,3 +5362,750 @@ body:has([data-forteca-frt-016-lead-event="true"]) .cf-vst-overlay {
     align-items: stretch !important;
   }
 }
+
+/* FRT-020: Lead-to-case start modal. The reference has a calm two-column
+   decision surface; every semantic tone resolves through the foundation VST
+   variables so repeated entity/action colors stay identical across windows. */
+.forteca-frt-020-start-case {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: var(--cf-vst-z-modal) !important;
+  display: grid !important;
+  place-items: center !important;
+  min-width: 0 !important;
+  padding: var(--cf-vst-space-lg) !important;
+  overflow: auto !important;
+  overscroll-behavior: contain !important;
+  font-family: var(--cf-vst-font-family-app) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.forteca-frt-020-start-case__backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  background: var(--cf-vst-overlay-backdrop) !important;
+  backdrop-filter: blur(1px) !important;
+}
+
+.forteca-frt-020-start-case__surface {
+  position: relative !important;
+  z-index: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  width: min(794px, calc(100vw - 32px)) !important;
+  height: min(734px, calc(100dvh - var(--cf-vst-space-xl))) !important;
+  max-height: min(734px, calc(100dvh - var(--cf-vst-space-xl))) !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-input-radius) !important;
+  background: var(--cf-vst-surface-card-solid) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+  transform: translate(calc(var(--cf-vst-space-3xl) - var(--cf-vst-space-2xs)), calc(var(--cf-vst-space-2xl) + var(--cf-vst-space-xs))) !important;
+}
+
+.forteca-frt-020-start-case__header {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: var(--cf-vst-space-lg) !important;
+  flex: 0 0 auto !important;
+  padding: var(--cf-vst-space-xl) var(--cf-vst-modal-padding) var(--cf-vst-space-lg) !important;
+}
+
+.forteca-frt-020-start-case__heading {
+  min-width: 0 !important;
+  display: grid !important;
+  gap: var(--cf-vst-space-sm) !important;
+}
+
+.forteca-frt-020-start-case__heading h1 {
+  margin: 0 !important;
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-section-title) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-title) !important;
+  letter-spacing: var(--cf-vst-letter-spacing-tight) !important;
+}
+
+.forteca-frt-020-start-case__heading p {
+  max-width: 620px !important;
+  margin: 0 !important;
+  color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+}
+
+.forteca-frt-020-start-case__close {
+  width: var(--cf-vst-icon-box-md) !important;
+  height: var(--cf-vst-icon-box-md) !important;
+  min-height: var(--cf-vst-icon-box-md) !important;
+  flex: 0 0 auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--cf-vst-text-muted) !important;
+  box-shadow: none !important;
+}
+
+.forteca-frt-020-start-case__close:hover,
+.forteca-frt-020-start-case__close:focus-visible {
+  background: var(--cf-vst-surface-soft) !important;
+  color: var(--cf-vst-text-strong) !important;
+  outline: none !important;
+  box-shadow: var(--cf-vst-input-focus-ring) !important;
+}
+
+.forteca-frt-020-start-case__form {
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+}
+
+.forteca-frt-020-start-case__content {
+  min-height: 0 !important;
+  flex: 1 1 auto !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 352px) minmax(0, 1fr) !important;
+  align-items: stretch !important;
+  gap: var(--cf-vst-layout-gap) !important;
+  overflow: visible !important;
+  padding: 0 var(--cf-vst-modal-padding) var(--cf-vst-space-md) !important;
+}
+
+.forteca-frt-020-start-case__form-column,
+.forteca-frt-020-start-case__preview {
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  scrollbar-color: var(--cf-vst-surface-border-strong) transparent !important;
+  scrollbar-width: thin !important;
+}
+
+.forteca-frt-020-start-case__form-column {
+  display: grid !important;
+  gap: var(--cf-vst-space-md) !important;
+  padding: var(--cf-vst-space-sm) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-space-sm) !important;
+  background: var(--cf-vst-surface-card-solid) !important;
+}
+
+.forteca-frt-020-start-case__field {
+  min-width: 0 !important;
+  display: grid !important;
+  grid-template-columns: var(--cf-vst-icon-box-sm) minmax(0, 1fr) !important;
+  align-items: start !important;
+  gap: var(--cf-vst-space-sm) !important;
+}
+
+.forteca-frt-020-start-case__field-icon,
+.forteca-frt-020-start-case__toggle-icon {
+  display: inline-flex !important;
+  width: var(--cf-vst-icon-box-sm) !important;
+  height: var(--cf-vst-icon-box-sm) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+  border: 1px solid var(--cf-vst-color-primary-border) !important;
+  border-radius: var(--cf-vst-space-sm) !important;
+  background: var(--cf-vst-color-primary-soft) !important;
+  color: var(--cf-vst-color-primary) !important;
+}
+
+.forteca-frt-020-start-case__field-icon .cf-entity-icon,
+.forteca-frt-020-start-case__field-icon .cf-vst-semantic-icon,
+.forteca-frt-020-start-case__toggle-icon .cf-entity-icon,
+.forteca-frt-020-start-case__toggle-icon .cf-vst-semantic-icon {
+  color: currentColor !important;
+}
+
+.forteca-frt-020-start-case__field--service .forteca-frt-020-start-case__field-icon {
+  border-color: var(--cf-vst-color-task-border) !important;
+  background: var(--cf-vst-color-task-soft) !important;
+  color: var(--cf-vst-color-task) !important;
+}
+
+.forteca-frt-020-start-case__field--template .forteca-frt-020-start-case__field-icon {
+  border-color: var(--cf-vst-color-payment-border) !important;
+  background: var(--cf-vst-color-payment-soft) !important;
+  color: var(--cf-vst-color-payment) !important;
+}
+
+.forteca-frt-020-start-case__field--value .forteca-frt-020-start-case__field-icon,
+.forteca-frt-020-start-case__field--owner .forteca-frt-020-start-case__field-icon,
+.forteca-frt-020-start-case__field--date .forteca-frt-020-start-case__field-icon {
+  border-color: var(--cf-vst-color-primary-border) !important;
+  background: var(--cf-vst-color-primary-soft) !important;
+  color: var(--cf-vst-color-primary) !important;
+}
+
+.forteca-frt-020-start-case__field-body {
+  min-width: 0 !important;
+  display: grid !important;
+  gap: var(--cf-vst-space-2xs) !important;
+}
+
+.forteca-frt-020-start-case__field-label {
+  color: var(--cf-vst-label-color) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+  line-height: 1.2 !important;
+}
+
+.forteca-frt-020-start-case__input {
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: calc(var(--cf-vst-input-height) - var(--cf-vst-space-sm)) !important;
+  padding: 0 var(--cf-vst-space-md) !important;
+  border: 1px solid var(--cf-vst-input-border) !important;
+  border-radius: var(--cf-vst-space-sm) !important;
+  background: var(--cf-vst-surface-card-solid) !important;
+  color: var(--cf-vst-text-strong) !important;
+  caret-color: var(--cf-vst-color-primary) !important;
+  color-scheme: light !important;
+  font: inherit !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+  box-shadow: none !important;
+}
+
+.forteca-frt-020-start-case__input::placeholder {
+  color: var(--cf-vst-text-faint) !important;
+}
+
+.forteca-frt-020-start-case__input:focus-visible {
+  border-color: var(--cf-vst-input-focus-border) !important;
+  outline: none !important;
+  box-shadow: var(--cf-vst-input-focus-ring) !important;
+}
+
+.forteca-frt-020-start-case__input:disabled {
+  cursor: not-allowed !important;
+  opacity: var(--cf-vst-disabled-opacity) !important;
+}
+
+.forteca-frt-020-start-case__select-wrap,
+.forteca-frt-020-start-case__owner-control,
+.forteca-frt-020-start-case__date-control,
+.forteca-frt-020-start-case__currency-select-wrap {
+  position: relative !important;
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.forteca-frt-020-start-case__select {
+  appearance: none !important;
+  padding-right: 36px !important;
+}
+
+.forteca-frt-020-start-case__select-icon {
+  position: absolute !important;
+  right: var(--cf-vst-space-md) !important;
+  width: var(--cf-vst-icon-size-xs) !important;
+  height: var(--cf-vst-icon-size-xs) !important;
+  color: var(--cf-vst-text-muted) !important;
+  pointer-events: none !important;
+  transform: rotate(90deg) !important;
+}
+
+.forteca-frt-020-start-case__currency-input {
+  min-width: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, calc(var(--cf-vst-icon-box-lg) + var(--cf-vst-space-2xl))) !important;
+  align-items: center !important;
+  gap: var(--cf-vst-space-sm) !important;
+}
+
+.forteca-frt-020-start-case__currency-select {
+  appearance: none !important;
+  padding-right: calc(var(--cf-vst-icon-size-xs) + var(--cf-vst-space-lg)) !important;
+  color: var(--cf-vst-text-strong) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+}
+
+.forteca-frt-020-start-case__currency-select-icon {
+  position: absolute !important;
+  right: var(--cf-vst-space-md) !important;
+  width: var(--cf-vst-icon-size-xs) !important;
+  height: var(--cf-vst-icon-size-xs) !important;
+  color: var(--cf-vst-text-muted) !important;
+  pointer-events: none !important;
+  transform: rotate(90deg) !important;
+}
+
+.forteca-frt-020-start-case__owner-control .forteca-frt-020-start-case__input {
+  padding-left: calc(var(--cf-vst-icon-box-sm) + var(--cf-vst-space-lg)) !important;
+}
+
+.forteca-frt-020-start-case__avatar {
+  position: absolute !important;
+  left: var(--cf-vst-space-sm) !important;
+  z-index: 1 !important;
+  display: inline-flex !important;
+  width: var(--cf-vst-icon-box-sm) !important;
+  height: var(--cf-vst-icon-box-sm) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: var(--cf-vst-radius-pill) !important;
+  background: var(--cf-vst-color-primary-soft) !important;
+  color: var(--cf-vst-color-primary-strong) !important;
+  font-size: var(--cf-vst-font-size-micro) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  pointer-events: none !important;
+}
+
+.forteca-frt-020-start-case__date-control .forteca-frt-020-start-case__input {
+  padding-right: calc(var(--cf-vst-icon-size-md) + var(--cf-vst-space-xl)) !important;
+}
+
+.forteca-frt-020-start-case__date-icon {
+  position: absolute !important;
+  right: var(--cf-vst-space-md) !important;
+  z-index: 1 !important;
+  width: var(--cf-vst-icon-size-sm) !important;
+  height: var(--cf-vst-icon-size-sm) !important;
+  color: var(--cf-vst-color-primary) !important;
+  pointer-events: none !important;
+}
+
+.forteca-frt-020-start-case__toggles {
+  display: grid !important;
+  gap: var(--cf-vst-space-sm) !important;
+  margin-top: 0 !important;
+  padding-top: var(--cf-vst-space-sm) !important;
+  border-top: 1px solid var(--cf-vst-surface-border) !important;
+}
+
+.forteca-frt-020-start-case__toggle {
+  min-width: 0 !important;
+  display: grid !important;
+  grid-template-columns: var(--cf-vst-icon-box-sm) minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: var(--cf-vst-space-md) !important;
+  cursor: pointer !important;
+}
+
+.forteca-frt-020-start-case__toggle > input {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+}
+
+.forteca-frt-020-start-case__toggle-copy {
+  min-width: 0 !important;
+  display: grid !important;
+  gap: var(--cf-vst-space-2xs) !important;
+}
+
+.forteca-frt-020-start-case__toggle-copy strong {
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-label) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+  line-height: 1.2 !important;
+}
+
+.forteca-frt-020-start-case__toggle-copy span {
+  color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-micro) !important;
+  line-height: 1.2 !important;
+}
+
+.forteca-frt-020-start-case__switch {
+  position: relative !important;
+  display: inline-flex !important;
+  width: var(--cf-vst-icon-box-md) !important;
+  height: calc(var(--cf-vst-space-lg) + var(--cf-vst-space-2xs)) !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  padding: 2px !important;
+  border: 1px solid var(--cf-vst-surface-border-strong) !important;
+  border-radius: var(--cf-vst-radius-pill) !important;
+  background: var(--cf-vst-surface-border-strong) !important;
+  transition: background-color 120ms ease, border-color 120ms ease !important;
+}
+
+.forteca-frt-020-start-case__switch-thumb {
+  width: var(--cf-vst-space-md) !important;
+  height: var(--cf-vst-space-md) !important;
+  border-radius: var(--cf-vst-radius-pill) !important;
+  background: var(--cf-vst-surface-card-solid) !important;
+  box-shadow: var(--cf-vst-shadow-sm) !important;
+  transition: transform 120ms ease !important;
+}
+
+.forteca-frt-020-start-case__toggle > input:checked + .forteca-frt-020-start-case__toggle-icon + .forteca-frt-020-start-case__toggle-copy + .forteca-frt-020-start-case__switch {
+  border-color: var(--cf-vst-color-primary) !important;
+  background: var(--cf-vst-color-primary) !important;
+}
+
+.forteca-frt-020-start-case__toggle > input:checked + .forteca-frt-020-start-case__toggle-icon + .forteca-frt-020-start-case__toggle-copy + .forteca-frt-020-start-case__switch .forteca-frt-020-start-case__switch-thumb {
+  transform: translateX(var(--cf-vst-space-md)) !important;
+}
+
+.forteca-frt-020-start-case__toggle > input:focus-visible + .forteca-frt-020-start-case__toggle-icon + .forteca-frt-020-start-case__toggle-copy + .forteca-frt-020-start-case__switch {
+  box-shadow: var(--cf-vst-input-focus-ring) !important;
+}
+
+.forteca-frt-020-start-case__client-context {
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: var(--cf-vst-space-sm) !important;
+  padding: var(--cf-vst-space-sm) var(--cf-vst-space-md) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-input-radius) !important;
+  background: var(--cf-vst-surface-soft) !important;
+}
+
+.forteca-frt-020-start-case__client-context > .cf-entity-icon {
+  color: var(--cf-vst-color-primary) !important;
+}
+
+.forteca-frt-020-start-case__client-context > span {
+  min-width: 0 !important;
+  display: grid !important;
+  gap: var(--cf-vst-space-2xs) !important;
+}
+
+.forteca-frt-020-start-case__client-context strong,
+.forteca-frt-020-start-case__client-context small {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.forteca-frt-020-start-case__client-context strong {
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+}
+
+.forteca-frt-020-start-case__client-context small {
+  color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+}
+
+.forteca-frt-020-start-case__existing-link {
+  border-top: 1px solid var(--cf-vst-surface-border) !important;
+  padding-top: var(--cf-vst-space-sm) !important;
+}
+
+.forteca-frt-020-start-case__existing-link summary {
+  cursor: pointer !important;
+  color: var(--cf-vst-color-primary-strong) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+}
+
+.forteca-frt-020-start-case__existing-link-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: var(--cf-vst-space-sm) !important;
+  margin-top: var(--cf-vst-space-sm) !important;
+}
+
+.forteca-frt-020-start-case__existing-link-row button {
+  min-height: var(--cf-vst-button-height-md) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+}
+
+.forteca-frt-020-start-case__preview {
+  display: grid !important;
+  gap: var(--cf-vst-space-sm) !important;
+  padding: var(--cf-vst-space-md) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-space-sm) !important;
+  background: var(--cf-vst-surface-soft) !important;
+}
+
+.forteca-frt-020-start-case__preview-heading {
+  display: grid !important;
+  gap: var(--cf-vst-space-xs) !important;
+}
+
+.forteca-frt-020-start-case__preview-heading h2 {
+  margin: 0 !important;
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-label) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: 1.2 !important;
+}
+
+.forteca-frt-020-start-case__preview-heading p {
+  margin: 0 !important;
+  color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+}
+
+.forteca-frt-020-start-case__preview-list {
+  display: grid !important;
+  gap: var(--cf-vst-space-xs) !important;
+}
+
+.forteca-frt-020-start-case__preview-card {
+  min-width: 0 !important;
+  display: grid !important;
+  gap: var(--cf-vst-space-xs) !important;
+  padding: var(--cf-vst-space-xs) var(--cf-vst-space-md) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-space-sm) !important;
+  background: var(--cf-vst-surface-card-solid) !important;
+}
+
+.forteca-frt-020-start-case__preview-card-heading {
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: var(--cf-vst-space-sm) !important;
+}
+
+.forteca-frt-020-start-case__preview-icon {
+  display: inline-flex !important;
+  width: var(--cf-vst-icon-box-sm) !important;
+  height: var(--cf-vst-icon-box-sm) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+  border-radius: var(--cf-vst-space-sm) !important;
+}
+
+.forteca-frt-020-start-case__surface[role="dialog"] .forteca-frt-020-start-case__preview-icon--case {
+  background: var(--cf-vst-color-case-item-soft) !important;
+  color: var(--cf-vst-color-case-item) !important;
+}
+
+.forteca-frt-020-start-case__surface[role="dialog"] .forteca-frt-020-start-case__preview-icon--primary {
+  background: var(--cf-vst-color-primary-soft) !important;
+  color: var(--cf-vst-color-primary) !important;
+}
+
+.forteca-frt-020-start-case__surface[role="dialog"] .forteca-frt-020-start-case__preview-icon--template {
+  background: var(--cf-vst-color-payment-soft) !important;
+  color: var(--cf-vst-color-payment) !important;
+}
+
+.forteca-frt-020-start-case__surface[role="dialog"] .forteca-frt-020-start-case__preview-icon--client {
+  background: var(--cf-vst-color-task-soft) !important;
+  color: var(--cf-vst-color-task) !important;
+}
+
+.forteca-frt-020-start-case__surface[role="dialog"] .forteca-frt-020-start-case__preview-icon--task {
+  background: var(--cf-vst-color-task-soft) !important;
+  color: var(--cf-vst-color-task) !important;
+}
+
+.forteca-frt-020-start-case__surface[role="dialog"] .forteca-frt-020-start-case__preview-icon--event {
+  background: var(--cf-vst-color-event-soft) !important;
+  color: var(--cf-vst-color-event) !important;
+}
+
+.forteca-frt-020-start-case__preview-icon .cf-entity-icon,
+.forteca-frt-020-start-case__preview-icon .cf-vst-semantic-icon {
+  color: currentColor !important;
+}
+
+.forteca-frt-020-start-case__preview-card-heading h3 {
+  min-width: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-label) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.forteca-frt-020-start-case__preview-card-body {
+  display: grid !important;
+  gap: 2px !important;
+}
+
+.forteca-frt-020-start-case__preview-card-description {
+  margin: 0 !important;
+  color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-micro) !important;
+  line-height: 1.35 !important;
+}
+
+.forteca-frt-020-start-case__preview-row {
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: baseline !important;
+  justify-content: space-between !important;
+  gap: var(--cf-vst-space-sm) !important;
+}
+
+.forteca-frt-020-start-case__preview-row span,
+.forteca-frt-020-start-case__preview-row strong {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.forteca-frt-020-start-case__preview-row span {
+  color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-micro) !important;
+  line-height: 1.2 !important;
+}
+
+.forteca-frt-020-start-case__preview-row strong {
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-micro) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+  line-height: 1.2 !important;
+  text-align: right !important;
+}
+
+.forteca-frt-020-start-case__footer {
+  min-height: 72px !important;
+  flex: 0 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: var(--cf-vst-modal-footer-gap) !important;
+  padding: var(--cf-vst-space-md) var(--cf-vst-modal-padding) !important;
+  border-top: 1px solid var(--cf-vst-surface-border) !important;
+  background: var(--cf-vst-surface-card-solid) !important;
+}
+
+.forteca-frt-020-start-case__footer button {
+  min-height: var(--cf-vst-button-height-md) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--cf-vst-button-gap) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+}
+
+.forteca-frt-020-start-case__cancel {
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  background: var(--cf-vst-surface-card-solid) !important;
+  color: var(--cf-vst-text-main) !important;
+  box-shadow: none !important;
+}
+
+.forteca-frt-020-start-case__cancel:hover,
+.forteca-frt-020-start-case__cancel:focus-visible {
+  border-color: var(--cf-vst-color-primary-border) !important;
+  background: var(--cf-vst-shell-hover) !important;
+  color: var(--cf-vst-color-primary-strong) !important;
+  outline: none !important;
+  box-shadow: var(--cf-vst-input-focus-ring) !important;
+}
+
+.forteca-frt-020-start-case__submit {
+  border: 1px solid var(--cf-vst-color-primary) !important;
+  background: var(--cf-vst-color-primary) !important;
+  color: var(--cf-vst-surface-card-solid) !important;
+  box-shadow: none !important;
+}
+
+.forteca-frt-020-start-case__submit:hover,
+.forteca-frt-020-start-case__submit:focus-visible {
+  border-color: var(--cf-vst-color-primary-strong) !important;
+  background: var(--cf-vst-color-primary-strong) !important;
+  color: var(--cf-vst-surface-card-solid) !important;
+  outline: none !important;
+  box-shadow: var(--cf-vst-input-focus-ring) !important;
+}
+
+.forteca-frt-020-start-case__submit-icon {
+  display: inline-flex !important;
+  width: var(--cf-vst-icon-box-sm) !important;
+  height: var(--cf-vst-icon-box-sm) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+  border: 1px solid currentColor !important;
+  border-radius: var(--cf-vst-radius-pill) !important;
+  color: currentColor !important;
+}
+
+.forteca-frt-020-start-case__submit-icon .cf-action-icon {
+  display: inline-flex !important;
+  width: var(--cf-vst-icon-size-sm) !important;
+  height: var(--cf-vst-icon-size-sm) !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.forteca-frt-020-start-case__submit-icon .cf-action-icon-svg,
+.forteca-frt-020-start-case__submit-icon .cf-vst-semantic-icon {
+  width: var(--cf-vst-icon-size-sm) !important;
+  height: var(--cf-vst-icon-size-sm) !important;
+  color: currentColor !important;
+}
+
+.forteca-frt-020-start-case__footer button:disabled {
+  cursor: not-allowed !important;
+  opacity: var(--cf-vst-disabled-opacity) !important;
+}
+
+@media (min-width: 641px) and (max-height: 760px) {
+  .forteca-frt-020-start-case__header {
+    padding-top: var(--cf-vst-space-md) !important;
+    padding-bottom: var(--cf-vst-space-md) !important;
+  }
+
+  .forteca-frt-020-start-case__content {
+    padding-bottom: var(--cf-vst-space-sm) !important;
+  }
+
+  .forteca-frt-020-start-case__form-column {
+    gap: var(--cf-vst-space-sm) !important;
+  }
+
+  .forteca-frt-020-start-case__footer {
+    min-height: calc(var(--cf-vst-space-3xl) + var(--cf-vst-space-xl) + var(--cf-vst-space-sm)) !important;
+    padding-top: var(--cf-vst-space-sm) !important;
+    padding-bottom: var(--cf-vst-space-sm) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .forteca-frt-020-start-case__content {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .forteca-frt-020-start-case {
+    padding: var(--cf-vst-space-sm) !important;
+  }
+
+  .forteca-frt-020-start-case__surface {
+    width: calc(100vw - 16px) !important;
+    height: auto !important;
+    max-height: calc(100dvh - 16px) !important;
+    transform: none !important;
+  }
+
+  .forteca-frt-020-start-case__header,
+  .forteca-frt-020-start-case__content,
+  .forteca-frt-020-start-case__footer {
+    padding-right: var(--cf-vst-space-lg) !important;
+    padding-left: var(--cf-vst-space-lg) !important;
+  }
+
+  .forteca-frt-020-start-case__footer {
+    flex-direction: column-reverse !important;
+    align-items: stretch !important;
+  }
+
+  .forteca-frt-020-start-case__footer button {
+    width: 100% !important;
+  }
+}

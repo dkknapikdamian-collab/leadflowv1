@@ -8,6 +8,11 @@ import { normalizeLeadContract } from '../src/lib/data-contract.js';
 import { LEAD_STATUS_VALUES, normalizeLeadStatus } from '../src/lib/domain-statuses.js';
 import { createGoogleCalendarEvent, deleteGoogleCalendarEvent, getGoogleCalendarConnection, updateGoogleCalendarEvent } from '../src/server/google-calendar-sync.js';
 import { startLeadServiceOperation } from '../src/server/lead-to-case.js';
+import {
+  buildLeadServiceResultFromExisting,
+  provisionLeadStartService,
+  validateLeadStartServiceRequest,
+} from '../src/server/lead-start-service-provision.js';
 
 const SOURCE_ALIASES: Record<string, string> = {
   instagram: 'instagram',
@@ -201,9 +206,43 @@ function sumPartialPayments(value: unknown) {
 }
 
 function asNumber(value: unknown) {
-  const parsed = Number(value);
+  const normalized = typeof value === 'string'
+    ? value.replace(/\s/g, '').replace(',', '.')
+    : value;
+  const parsed = Number(normalized);
   if (!Number.isFinite(parsed)) return 0;
   return Math.max(0, parsed);
+}
+
+function asBoolean(value: unknown, fallback = false) {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === 'true' || normalized === '1') return true;
+    if (normalized === 'false' || normalized === '0') return false;
+  }
+  return fallback;
+}
+
+function hasExtendedLeadServiceFields(body: Record<string, unknown>) {
+  return [
+    'value',
+    'caseValue',
+    'contractValue',
+    'currency',
+    'portalReady',
+    'clientPortal',
+    'startDate',
+    'serviceType',
+    'checklistTemplate',
+    'owner',
+    'ownerId',
+    'owner_id',
+    'sendClientLink',
+    'createFirstTask',
+    'idempotencyKey',
+    'idempotency_key',
+  ].some((field) => Object.prototype.hasOwnProperty.call(body, field));
 }
 
 const LEAD_COMMISSION_MODES = new Set(['none', 'percent', 'fixed']);
@@ -376,6 +415,20 @@ async function startLeadServiceWithSupabaseRpc(input: {
       throw new Error('CASE_CREATE_FAILED');
     }
 
+    const clientId = asText(result.clientId || caseRow.clientId || caseRow.client_id || client.id);
+    if (!clientId) throw new Error('CLIENT_CREATE_FAILED');
+    const serviceStartedAt = asText(
+      result.movedToServiceAt
+      || result.serviceStartedAt
+      || lead.movedToServiceAt
+      || lead.moved_to_service_at
+      || lead.caseStartedAt
+      || lead.case_started_at
+      || caseRow.serviceStartedAt
+      || caseRow.service_started_at,
+    );
+    if (!serviceStartedAt) throw new Error('LEAD_SERVICE_TIMESTAMP_MISSING');
+
     return {
       lead: normalizeLead({ ...lead, id: input.leadId }),
       case: {
@@ -383,14 +436,22 @@ async function startLeadServiceWithSupabaseRpc(input: {
         id: caseId,
         title: asText(caseRow.title) || asText(input.body.title) || 'Powiązana sprawa',
         leadId: input.leadId,
-        clientId: asText(result.clientId || caseRow.clientId || caseRow.client_id || client.id) || undefined,
+        clientId,
         createdFromLead: true,
-        serviceStartedAt: asText(result.movedToServiceAt || caseRow.serviceStartedAt || caseRow.service_started_at) || new Date().toISOString(),
+        serviceStartedAt,
+        contractValue: asNumber(caseRow.contractValue ?? caseRow.contract_value ?? caseRow.expectedRevenue ?? caseRow.expected_revenue),
+        expectedRevenue: asNumber(caseRow.expectedRevenue ?? caseRow.expected_revenue ?? caseRow.contractValue ?? caseRow.contract_value),
+        currency: normalizeCurrency(caseRow.currency),
+        portalReady: caseRow.portalReady ?? caseRow.portal_ready ?? false,
       },
       client: {
         ...client,
-        id: asText(result.clientId || client.id),
+        id: clientId,
       },
+      caseId,
+      clientId,
+      movedToServiceAt: serviceStartedAt,
+      serviceStartedAt,
     };
   } catch (error) {
     if (isLeadServiceRpcFallbackError(error)) {
@@ -528,7 +589,11 @@ async function handleStartService(body: Record<string, unknown>, workspaceId: st
 
   // A24_RPC_HANDOFF_BEFORE_LEGACY_FALLBACK
   // Prefer one Supabase transaction via RPC. Keep legacy fallback until migration is applied.
+  const extended = hasExtendedLeadServiceFields(body);
   const rpcResult = await startLeadServiceWithSupabaseRpc({ body, workspaceId, leadId, leadRow });
+  if (extended && !rpcResult) {
+    throw new RequestAuthError(503, 'LEAD_SERVICE_RPC_REQUIRED_FOR_FRT020');
+  }
   if (rpcResult) {
     return rpcResult;
   }
@@ -542,13 +607,18 @@ async function handleStartService(body: Record<string, unknown>, workspaceId: st
   };
   const clientRow = await ensureClientForLead(workspaceId, leadContext);
   const clientId = asNullableUuid(clientRow.id);
+  if (!clientId) throw new Error('CLIENT_CREATE_FAILED');
   const caseStatus = normalizeEnum(body.caseStatus || body.status, new Set(['new', 'waiting_on_client', 'blocked', 'to_approve', 'ready_to_start', 'in_progress', 'on_hold', 'completed', 'canceled']), 'in_progress');
   const caseTitle = asText(body.title) || asText(leadRow.name) || `${asText(clientRow.name) || 'Klient'} - obsługa`;
 
   const paidFromPayments = await sumLeadPaidPayments(workspaceId, leadId);
   const paidFromLegacy = sumPartialPayments(leadRow.partial_payments || leadRow.partialPayments);
   const paidAmount = paidFromPayments > 0 ? paidFromPayments : paidFromLegacy;
-  const expectedRevenue = asNumber(leadRow.value || leadRow.deal_value);
+  const expectedRevenue = asNumber(body.value ?? body.caseValue ?? body.contractValue ?? body.dealValue ?? leadRow.value ?? leadRow.deal_value);
+  const currency = normalizeCurrency(body.currency ?? leadRow.currency);
+  const portalReady = body.portalReady !== undefined
+    ? asBoolean(body.portalReady)
+    : asBoolean(body.clientPortal, false);
 
   const casePayload: Record<string, unknown> = {
     workspace_id: workspaceId,
@@ -571,9 +641,9 @@ async function handleStartService(body: Record<string, unknown>, workspaceId: st
     expected_revenue: expectedRevenue,
     paid_amount: paidAmount,
     remaining_amount: Math.max(0, expectedRevenue - paidAmount),
-    currency: normalizeCurrency(leadRow.currency),
+    currency,
     completeness_percent: 0,
-    portal_ready: false,
+    portal_ready: portalReady,
     started_at: caseStatus === 'in_progress' ? nowIso : null,
     completed_at: caseStatus === 'completed' ? nowIso : null,
     last_activity_at: nowIso,
@@ -611,7 +681,7 @@ async function handleStartService(body: Record<string, unknown>, workspaceId: st
     payload: { caseId, caseTitle, leadName: asText(leadRow.name) },
     created_at: nowIso,
     updated_at: nowIso,
-  }).catch(() => null);
+  });
 
   await insertActivityWithSchemaFallback({
     workspace_id: workspaceId,
@@ -624,7 +694,7 @@ async function handleStartService(body: Record<string, unknown>, workspaceId: st
     payload: { caseId, caseTitle, movedToServiceAt: nowIso },
     created_at: nowIso,
     updated_at: nowIso,
-  }).catch(() => null);
+  });
 
   const refreshedLeadRows = await safeSelectRows(withWorkspaceFilter(`leads?select=*&id=eq.${encodeURIComponent(leadId)}&limit=1`, workspaceId));
 
@@ -638,6 +708,10 @@ async function handleStartService(body: Record<string, unknown>, workspaceId: st
       leadId,
       createdFromLead: true,
       serviceStartedAt: nowIso,
+      contractValue: expectedRevenue,
+      expectedRevenue,
+      currency,
+      portalReady,
     },
     client: {
       id: asText(clientRow.id),
@@ -645,6 +719,10 @@ async function handleStartService(body: Record<string, unknown>, workspaceId: st
       email: asText(clientRow.email || leadContext.email),
       phone: asText(clientRow.phone || leadContext.phone),
     },
+    caseId,
+    clientId,
+    movedToServiceAt: nowIso,
+    serviceStartedAt: nowIso,
   };
 }
 
@@ -1008,13 +1086,89 @@ export default async function handler(req: any, res: any) {
         res.status(404).json({ error: 'LEAD_NOT_FOUND' });
         return;
       }
-      const existingCaseId = asText(leadRow.linked_case_id || leadRow.linkedCaseId);
+      const extended = hasExtendedLeadServiceFields(body);
+      const validation = extended
+        ? await validateLeadStartServiceRequest({ request: req, body, workspaceId, leadId, leadRow })
+        : null;
+      const linkedCaseId = asText(leadRow.linked_case_id || leadRow.linkedCaseId);
+      const linkedCaseRows = linkedCaseId
+        ? await safeSelectRows(withWorkspaceFilter(`cases?select=*&id=eq.${encodeURIComponent(linkedCaseId)}&limit=1`, workspaceId))
+        : [];
+      const leadCaseRows = await safeSelectRows(withWorkspaceFilter(`cases?select=*&lead_id=eq.${encodeURIComponent(leadId)}&limit=1`, workspaceId));
+      const existingCaseRow = linkedCaseRows[0] || leadCaseRows[0] || null;
+      const existingCaseId = asText(existingCaseRow?.id || linkedCaseId);
+
+      if (existingCaseRow && extended && validation) {
+        const existingResult = await buildLeadServiceResultFromExisting({
+          workspaceId,
+          leadId,
+          leadRow,
+          caseRow: existingCaseRow,
+        });
+        const data = await provisionLeadStartService({
+          request: req,
+          body,
+          workspaceId,
+          leadId,
+          leadRow,
+          result: existingResult,
+          plan: validation,
+        });
+        res.status(200).json({ ...data, reused: true });
+        return;
+      }
+
       if (existingCaseId) {
         res.status(409).json({ error: 'LEAD_ALREADY_HAS_CASE' });
         return;
       }
-      const rpcResult = await startLeadServiceWithSupabaseRpc({ body, workspaceId, leadId, leadRow });
-      const data = rpcResult || await startLeadServiceOperation({ body, workspaceId, leadId, leadRow });
+
+      // Keep the canonical RPC as the first mutation for extended forms too.
+      // The option-specific provisioner runs only after the transactional
+      // lead/client/case transition has returned a real case id.
+      let rpcResult: Record<string, unknown> | null = null;
+      try {
+        rpcResult = await startLeadServiceWithSupabaseRpc({ body, workspaceId, leadId, leadRow });
+      } catch (error) {
+        // A concurrent retry can win the RPC row lock between the read above
+        // and this call. Extended requests are safe to resume from that case.
+        if (!extended || String((error as Error)?.message || error) !== 'LEAD_ALREADY_HAS_CASE') throw error;
+        const concurrentCases = await safeSelectRows(withWorkspaceFilter(`cases?select=*&lead_id=eq.${encodeURIComponent(leadId)}&limit=1`, workspaceId));
+        const concurrentCase = concurrentCases[0];
+        if (!concurrentCase || !validation) throw error;
+        const existingResult = await buildLeadServiceResultFromExisting({
+          workspaceId,
+          leadId,
+          leadRow,
+          caseRow: concurrentCase,
+        });
+        const data = await provisionLeadStartService({
+          request: req,
+          body,
+          workspaceId,
+          leadId,
+          leadRow,
+          result: existingResult,
+          plan: validation,
+        });
+        res.status(200).json({ ...data, reused: true });
+        return;
+      }
+      if (extended && !rpcResult) {
+        throw new RequestAuthError(503, 'LEAD_SERVICE_RPC_REQUIRED_FOR_FRT020');
+      }
+      const coreResult = rpcResult || await startLeadServiceOperation({ body, workspaceId, leadId, leadRow });
+      const data = extended && validation
+        ? await provisionLeadStartService({
+          request: req,
+          body,
+          workspaceId,
+          leadId,
+          leadRow,
+          result: coreResult,
+          plan: validation,
+        })
+        : coreResult;
       res.status(200).json(data);
       return;
     }

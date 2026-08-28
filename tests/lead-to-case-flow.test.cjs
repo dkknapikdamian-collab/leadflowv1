@@ -6,13 +6,13 @@ const path = require('node:path');
 const root = process.cwd();
 const read = (rel) => fs.readFileSync(path.join(root, rel), 'utf8');
 
-test('lead start service uses shared server operation and redirects to /cases/:id', () => {
+test('lead start service uses shared server operation and redirects to the canonical case route', () => {
   const leadsApi = read('api/leads.ts');
   const leadDetail = read('src/pages/LeadDetail.tsx');
 
   assert.match(leadsApi, /startLeadServiceOperation/);
   assert.match(leadsApi, /LEAD_ALREADY_HAS_CASE/);
-  assert.match(leadDetail, /navigate\(`\/cases\/\$\{/);
+  assert.match(leadDetail, /caseDetailPath\(result\.caseId\)/);
 });
 
 test('server operation persists lead moved-to-service activity payload', () => {

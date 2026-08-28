@@ -19,6 +19,7 @@ import {
   Filter,
   Loader2,
   Lightbulb,
+  Link2,
   LogIn,
   LogOut,
   Mail,
@@ -59,6 +60,7 @@ export type SemanticIconRole =
   | 'goal'
   | 'hint'
   | 'loading'
+  | 'link'
   | 'navigation'
   | 'note'
   | 'notification'
@@ -118,6 +120,7 @@ export const semanticIconConfig = {
   goal: { role: 'goal', tone: 'primary', label: 'Cel', defaultIcon: Target, migrationStage: 'later' },
   hint: { role: 'hint', tone: 'neutral', label: 'Wskazówka', defaultIcon: Lightbulb, migrationStage: 'UI-2' },
   loading: { role: 'loading', tone: 'neutral', label: 'Ładowanie', defaultIcon: Loader2, migrationStage: 'later' },
+  link: { role: 'link', tone: 'task', label: 'Link', defaultIcon: Link2, migrationStage: 'UI-3' },
   navigation: { role: 'navigation', tone: 'neutral', label: 'Nawigacja', defaultIcon: ArrowRight, migrationStage: 'later' },
   note: { role: 'note', tone: 'note', label: 'Notatka', defaultIcon: FileText, migrationStage: 'UI-4' },
   notification: { role: 'notification', tone: 'notification', label: 'Powiadomienie', defaultIcon: Bell, migrationStage: 'later' },

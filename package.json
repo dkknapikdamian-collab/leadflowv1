@@ -23,6 +23,7 @@
         "test:forteca-frt-013-lead-duplicate": "node --test tests/forteca-frt-013-lead-duplicate.test.cjs",
         "test:forteca-frt-014-lead-task": "node --test tests/forteca-frt-014-lead-task.test.cjs",
         "test:forteca-frt-015-lead-note": "node --test tests/forteca-frt-015-lead-note.test.cjs",
+        "test:forteca-frt-020-start-case": "node --test tests/forteca-frt-020-lead-start-case.test.cjs",
         "check:closeflow-client-case-urgent-regressions": "node scripts/check-closeflow-client-case-urgent-regressions.cjs",
         "check:stage124-supabase-egress-contract": "node scripts/check-stage124-supabase-egress-contract.cjs",
         "check:calendar:stage114-mojibake": "node scripts/check-stage114-calendar-mojibake.cjs",

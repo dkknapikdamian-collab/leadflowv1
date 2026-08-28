@@ -12,6 +12,8 @@ It does not create a second backend flow. The server remains the source of truth
 - archives the lead from active sales work.
 */
 
+type StartLeadServiceValue = number | string;
+
 type StartLeadServiceFn = (input: {
   id: string;
   title: string;
@@ -19,6 +21,19 @@ type StartLeadServiceFn = (input: {
   clientName?: string;
   clientEmail?: string;
   clientPhone?: string;
+  value?: StartLeadServiceValue;
+  caseValue?: StartLeadServiceValue;
+  contractValue?: StartLeadServiceValue;
+  currency?: string;
+  portalReady?: boolean;
+  clientPortal?: boolean;
+  startDate?: string;
+  serviceType?: string;
+  checklistTemplate?: string;
+  owner?: string;
+  ownerId?: string;
+  sendClientLink?: boolean;
+  createFirstTask?: boolean;
   workspaceId?: string;
 }) => Promise<Record<string, unknown>>;
 
@@ -33,6 +48,19 @@ export type LeadToCaseHandoffInput = {
     clientEmail?: string;
     clientPhone?: string;
     status?: string;
+    value?: StartLeadServiceValue;
+    caseValue?: StartLeadServiceValue;
+    contractValue?: StartLeadServiceValue;
+    currency?: string;
+    portalReady?: boolean;
+    clientPortal?: boolean;
+    startDate?: string;
+    serviceType?: string;
+    checklistTemplate?: string;
+    owner?: string;
+    ownerId?: string;
+    sendClientLink?: boolean;
+    createFirstTask?: boolean;
   };
   workspaceId: string;
   tasks?: Record<string, unknown>[];
@@ -50,6 +78,7 @@ export type LeadToCaseHandoffResult = {
   lead: Record<string, unknown>;
   case: Record<string, unknown>;
   client: Record<string, unknown>;
+  provisioning?: Record<string, unknown>;
 };
 
 function asText(value: unknown) {
@@ -100,20 +129,31 @@ async function linkOpenOperationalItems(input: {
     return id && leadId === input.leadId && !caseId && !isDoneLike(event.status);
   });
 
-  await Promise.allSettled([
-    ...activeTasks.map((task) => input.updateTask?.({
+  if (activeTasks.length > 0 && !input.updateTask) {
+    throw new Error('LEAD_TASK_LINKER_MISSING');
+  }
+  if (activeEvents.length > 0 && !input.updateEvent) {
+    throw new Error('LEAD_EVENT_LINKER_MISSING');
+  }
+
+  const operations: Promise<unknown>[] = [];
+  for (const task of activeTasks) {
+    operations.push(input.updateTask!({
       id: asText(task.id),
       leadId: input.leadId,
       caseId: input.caseId,
-      clientId: input.clientId || null,
-    })),
-    ...activeEvents.map((event) => input.updateEvent?.({
+      clientId: input.clientId,
+    }));
+  }
+  for (const event of activeEvents) {
+    operations.push(input.updateEvent!({
       id: asText(event.id),
       leadId: input.leadId,
       caseId: input.caseId,
-      clientId: input.clientId || null,
-    })),
-  ]);
+      clientId: input.clientId,
+    }));
+  }
+  await Promise.all(operations);
 }
 
 export async function startLeadToCaseHandoff(input: LeadToCaseHandoffInput): Promise<LeadToCaseHandoffResult> {
@@ -134,6 +174,19 @@ export async function startLeadToCaseHandoff(input: LeadToCaseHandoffInput): Pro
     clientName: firstText(input.draft?.clientName, input.lead.name, input.lead.company),
     clientEmail: firstText(input.draft?.clientEmail, input.lead.email),
     clientPhone: firstText(input.draft?.clientPhone, input.lead.phone),
+    value: input.draft?.value,
+    caseValue: input.draft?.caseValue,
+    contractValue: input.draft?.contractValue,
+    currency: input.draft?.currency,
+    portalReady: input.draft?.portalReady,
+    clientPortal: input.draft?.clientPortal,
+    startDate: input.draft?.startDate,
+    serviceType: input.draft?.serviceType,
+    checklistTemplate: input.draft?.checklistTemplate,
+    owner: input.draft?.owner,
+    ownerId: input.draft?.ownerId,
+    sendClientLink: input.draft?.sendClientLink,
+    createFirstTask: input.draft?.createFirstTask,
     workspaceId: input.workspaceId,
   });
 
@@ -144,8 +197,20 @@ export async function startLeadToCaseHandoff(input: LeadToCaseHandoffInput): Pro
   const caseId = firstText(caseRow.id, result.caseId, result.linkedCaseId, leadRow.linkedCaseId, leadRow.caseId);
   if (!caseId) throw new Error('CASE_CREATE_FAILED');
 
-  const clientId = firstText(clientRow.id, result.clientId, leadRow.clientId, caseRow.clientId);
-  const movedToServiceAt = firstText(leadRow.movedToServiceAt, leadRow.caseStartedAt, caseRow.serviceStartedAt, new Date().toISOString());
+  const clientId = firstText(clientRow.id, result.clientId, caseRow.clientId, leadRow.clientId);
+  if (!clientId) throw new Error('CLIENT_CREATE_FAILED');
+
+  const movedToServiceAt = firstText(
+    result.movedToServiceAt,
+    result.serviceStartedAt,
+    leadRow.movedToServiceAt,
+    leadRow.moved_to_service_at,
+    leadRow.caseStartedAt,
+    leadRow.case_started_at,
+    caseRow.serviceStartedAt,
+    caseRow.service_started_at,
+  );
+  if (!movedToServiceAt) throw new Error('LEAD_SERVICE_TIMESTAMP_MISSING');
   const caseTitle = firstText(caseRow.title, title);
 
   await linkOpenOperationalItems({
@@ -187,5 +252,6 @@ export async function startLeadToCaseHandoff(input: LeadToCaseHandoffInput): Pro
       ...clientRow,
       id: clientId,
     },
+    provisioning: getNestedObject(result, 'provisioning'),
   };
 }

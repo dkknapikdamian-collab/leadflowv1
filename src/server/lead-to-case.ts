@@ -16,9 +16,22 @@ function asRecord(value: unknown) {
 }
 
 function asNumber(value: unknown) {
-  const parsed = Number(value);
+  const normalized = typeof value === 'string'
+    ? value.replace(/\s/g, '').replace(',', '.')
+    : value;
+  const parsed = Number(normalized);
   if (!Number.isFinite(parsed)) return 0;
   return Math.max(0, parsed);
+}
+
+function asBoolean(value: unknown, fallback = false) {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === 'true' || normalized === '1') return true;
+    if (normalized === 'false' || normalized === '0') return false;
+  }
+  return fallback;
 }
 
 function normalizePartialPayments(value: unknown) {
@@ -84,7 +97,7 @@ function omitMissingColumn(payload: Record<string, unknown>, column: string) {
   return nextPayload;
 }
 
-const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at', 'expected_revenue', 'paid_amount', 'remaining_amount', 'currency']);
+const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at', 'expected_revenue', 'paid_amount', 'remaining_amount', 'currency', 'contract_value']);
 const OPTIONAL_ACTIVITY_COLUMNS = new Set(['owner_id', 'actor_id', 'actor_type', 'event_type', 'payload', 'lead_id', 'case_id', 'workspace_id', 'created_at', 'updated_at']);
 const OPTIONAL_LEAD_COLUMNS = new Set(['linked_case_id', 'client_id', 'moved_to_service_at', 'lead_visibility', 'sales_outcome', 'case_started_at', 'next_action_title', 'next_action_at', 'next_action_item_id', 'updated_at']);
 
@@ -201,13 +214,22 @@ export async function startLeadServiceOperation(input: {
   };
   const clientRow = await ensureClientForLead(workspaceId, leadContext);
   const clientId = asNullableUuid(clientRow.id);
+  if (!clientId) throw new Error('CLIENT_CREATE_FAILED');
   const caseStatus = normalizeEnum(body.caseStatus || body.status, CASE_STATUSES, 'in_progress');
   const caseTitle = asText(body.title) || asText(leadRow.name) || `${asText(clientRow.name) || 'Klient'} - obsługa`;
 
   const paidFromPayments = await sumLeadPaidPayments(workspaceId, leadId);
   const paidFromLegacy = sumPartialPayments(leadRow.partial_payments || leadRow.partialPayments);
   const paidAmount = paidFromPayments > 0 ? paidFromPayments : paidFromLegacy;
-  const expectedRevenue = asNumber(leadRow.value || leadRow.deal_value);
+  const expectedRevenue = asNumber(body.value ?? body.caseValue ?? body.contractValue ?? body.dealValue ?? leadRow.value ?? leadRow.deal_value);
+  const currency = normalizeCurrency(body.currency ?? leadRow.currency);
+  const portalReady = body.portalReady !== undefined
+    ? asBoolean(body.portalReady)
+    : asBoolean(body.clientPortal, false);
+
+  // The canonical cases schema has started_at/service_started_at for the
+  // actual transition instant, but no planned-start field. Keep the form's
+  // display-only startDate out of those fields instead of changing history.
 
   const casePayload: Record<string, unknown> = {
     workspace_id: workspaceId,
@@ -221,12 +243,13 @@ export async function startLeadServiceOperation(input: {
     status: caseStatus,
     billing_status: normalizeEnum(leadRow.billing_status || leadRow.billingStatus, BILLING_STATUSES, 'not_started'),
     billing_model_snapshot: normalizeEnum(leadRow.billing_model_snapshot || leadRow.billingModelSnapshot, BILLING_MODELS, 'manual'),
+    contract_value: expectedRevenue,
     expected_revenue: expectedRevenue,
     paid_amount: paidAmount,
     remaining_amount: Math.max(0, expectedRevenue - paidAmount),
-    currency: normalizeCurrency(leadRow.currency),
+    currency,
     completeness_percent: 0,
-    portal_ready: false,
+    portal_ready: portalReady,
     started_at: caseStatus === 'in_progress' ? nowIso : null,
     completed_at: caseStatus === 'completed' ? nowIso : null,
     last_activity_at: nowIso,
@@ -262,7 +285,7 @@ export async function startLeadServiceOperation(input: {
     payload: { caseId, caseTitle, leadName: asText(leadRow.name) },
     created_at: nowIso,
     updated_at: nowIso,
-  }).catch(() => null);
+  });
 
   await insertActivityWithSchemaFallback({
     workspace_id: workspaceId,
@@ -275,7 +298,7 @@ export async function startLeadServiceOperation(input: {
     payload: { caseId, caseTitle, movedToServiceAt: nowIso },
     created_at: nowIso,
     updated_at: nowIso,
-  }).catch(() => null);
+  });
 
   const refreshedLeadRows = await safeSelectRows(withWorkspaceFilter(`leads?select=*&id=eq.${encodeURIComponent(leadId)}&limit=1`, workspaceId));
 
@@ -289,6 +312,10 @@ export async function startLeadServiceOperation(input: {
       leadId,
       createdFromLead: true,
       serviceStartedAt: nowIso,
+      contractValue: expectedRevenue,
+      expectedRevenue,
+      currency,
+      portalReady,
     },
     client: {
       id: asText(clientRow.id),
@@ -298,5 +325,7 @@ export async function startLeadServiceOperation(input: {
     },
     caseId,
     movedToServiceAt: nowIso,
+    clientId,
+    serviceStartedAt: nowIso,
   };
 }

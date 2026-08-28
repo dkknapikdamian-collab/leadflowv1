@@ -123,6 +123,10 @@ import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';
 import { MissingItemsManagerDialog, type MissingItemsManagerItem } from '../components/detail/MissingItemsManagerDialog';
 import { LeadBlockersManagerPanel } from '../components/detail/LeadBlockersManagerPanel';
+import LeadStartServiceDialog, {
+  type LeadStartServiceDraft,
+  type LeadStartServiceDraftField,
+} from '../components/LeadStartServiceDialog';
 import {
   LeadNextStepPrompt,
   type LeadNextStepAction,
@@ -254,6 +258,43 @@ const SIMPLE_RECURRENCE_OPTIONS = [
 ];
 
 const modalSelectClass = 'lead-detail-modal-select';
+
+const FRT020_REFERENCE_DRAFT: Pick<
+  LeadStartServiceDraft,
+  'title' | 'serviceType' | 'checklistTemplate' | 'value' | 'currency' | 'owner' | 'startDate' | 'clientPortal' | 'sendClientLink' | 'createFirstTask'
+> = {
+  title: 'Wdrożenie systemu CRM',
+  serviceType: 'Wdrożenie systemu',
+  checklistTemplate: 'Wdrożenie CRM – standard',
+  value: '240 000',
+  currency: 'PLN',
+  owner: 'Damian Knapik',
+  startDate: '12.05.2025',
+  clientPortal: true,
+  sendClientLink: true,
+  createFirstTask: true,
+};
+
+function buildLeadStartServiceDraft(leadRow: any): LeadStartServiceDraft {
+  const name = String(leadRow?.name || 'Lead').trim() || 'Lead';
+  const dealValue = Number(leadRow?.dealValue ?? leadRow?.deal_value ?? 0);
+  return {
+    title: `${name} - obsługa`,
+    clientName: String(leadRow?.name || ''),
+    clientEmail: String(leadRow?.email || ''),
+    clientPhone: String(leadRow?.phone || ''),
+    status: 'ready_to_start',
+    serviceType: 'Wdrożenie systemu',
+    checklistTemplate: 'Wdrożenie CRM – standard',
+    value: dealValue > 0 ? dealValue.toLocaleString('pl-PL') : '240 000',
+    currency: String(leadRow?.currency || 'PLN'),
+    owner: String(leadRow?.ownerName || leadRow?.owner_name || 'Damian Knapik'),
+    startDate: new Date().toLocaleDateString('pl-PL'),
+    clientPortal: true,
+    sendClientLink: true,
+    createFirstTask: true,
+  };
+}
 
 type TimelineEntry = {
   id: string;
@@ -965,13 +1006,7 @@ export default function LeadDetail() {
   const [editLead, setEditLead] = useState<any>(null);
   const [linkCaseId, setLinkCaseId] = useState('');
   const [linkingCase, setLinkingCase] = useState(false);
-  const [createCaseDraft, setCreateCaseDraft] = useState({
-    title: '',
-    clientName: '',
-    clientEmail: '',
-    clientPhone: '',
-    status: 'ready_to_start',
-  });
+  const [createCaseDraft, setCreateCaseDraft] = useState<LeadStartServiceDraft>(() => buildLeadStartServiceDraft(null));
   const [startServiceSuccess, setStartServiceSuccess] = useState<{ caseId: string; title: string } | null>(null);
   const [linkedEntryActionId, setLinkedEntryActionId] = useState<string | null>(null);
   const [leadPayments, setLeadPayments] = useState<any[]>([]);
@@ -1044,13 +1079,7 @@ export default function LeadDetail() {
       setActivities(Array.isArray(activityRows) ? activityRows : []);
       setLeadPayments(Array.isArray(paymentRows) ? paymentRows : []);
       setLinkCaseId(currentCase?.id ? String(currentCase.id) : '');
-      setCreateCaseDraft({
-        title: `${String((leadRow as any)?.name || 'Lead').trim() || 'Lead'} - obsługa`,
-        clientName: String((leadRow as any)?.name || ''),
-        clientEmail: String((leadRow as any)?.email || ''),
-        clientPhone: String((leadRow as any)?.phone || ''),
-        status: 'ready_to_start',
-      });
+      setCreateCaseDraft(buildLeadStartServiceDraft(leadRow));
     } catch (error: any) {
       const message = error?.message || 'Nie udało się pobrać danych leada';
       setLoadError(message);
@@ -1135,6 +1164,9 @@ export default function LeadDetail() {
   const frt019DevPromptPreview = import.meta.env.DEV &&
     typeof window !== 'undefined' &&
     new URLSearchParams(window.location.search || '').get('frt019') === 'prompt';
+  const frt020DevStartCasePreview = import.meta.env.DEV &&
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search || '').get('frt020') === 'start-service';
   const leadInService = Boolean(leadOperationalArchive || isLeadInServiceStatus(lead?.status));
   const leadRiskReasonStage14F =
     asText(lead?.riskReason) ||
@@ -1487,6 +1519,12 @@ export default function LeadDetail() {
     setLeadNextStepTime('');
     setLeadNextStepPromptOpen(true);
   }, [frt019DevPromptPreview, lead, leadOperationalArchive, loading]);
+
+  useEffect(() => {
+    if (!frt020DevStartCasePreview || loading || !lead || leadInService) return;
+    setCreateCaseDraft((current) => ({ ...current, ...FRT020_REFERENCE_DRAFT }));
+    setIsCreateCaseOpen(true);
+  }, [frt020DevStartCasePreview, lead?.id, leadInService, loading]);
 
   const handleAddLeadMissingFromManagerStage232I4R14 = async () => {
     if (!hasAccess) {
@@ -2805,9 +2843,14 @@ useEffect(() => {
     }
   };
 
+  const handleCreateCaseDraftChange = (field: LeadStartServiceDraftField, value: string | boolean) => {
+    setCreateCaseDraft((current) => ({ ...current, [field]: value } as LeadStartServiceDraft));
+  };
+
   const handleStartService = async (event?: FormEvent) => {
     event?.preventDefault?.();
 
+    if (frt020DevStartCasePreview) return;
     if (!leadId || !lead) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
     if (leadInService && serviceCaseId) {
@@ -2846,7 +2889,14 @@ useEffect(() => {
         movedToServiceAt: result.movedToServiceAt,
       }));
       setIsCreateCaseOpen(false);
-      toast.success('Sprawa utworzona. Przechodzę do obsługi.');
+      const provisioningWarnings = Array.isArray(result.provisioning?.warnings)
+        ? result.provisioning.warnings.map((warning) => String(warning)).filter(Boolean)
+        : [];
+      if (provisioningWarnings.length > 0) {
+        toast.warning(`Sprawa utworzona z ostrzeżeniami: ${provisioningWarnings.join(', ')}`);
+      } else {
+        toast.success('Sprawa utworzona. Przechodzę do obsługi.');
+      }
       await loadLead();
       navigate(caseDetailPath(result.caseId));
     } catch (error: any) {
@@ -3829,33 +3879,23 @@ useEffect(() => {
           onResolve={(entry) => { void handleResolveLeadMissingItemStage228R13(entry); }}
           onDelete={handleDeleteLeadMissingItemStage228R15}
         />
-<Dialog open={isCreateCaseOpen} onOpenChange={setIsCreateCaseOpen}>
-          <DialogContent aria-describedby={undefined}>
-            <DialogHeader><DialogTitle>Rozpocznij obsługę</DialogTitle>
-<DialogDescription>Uzupełnij dane i zapisz zmiany w kartotece leada.</DialogDescription></DialogHeader>
-            <div className="lead-detail-dialog-grid">
-              <Label>Tytuł sprawy<Input value={createCaseDraft.title} onChange={(event) => setCreateCaseDraft((current) => ({ ...current, title: event.target.value }))} /></Label>
-              <Label>Klient<Input value={createCaseDraft.clientName} onChange={(event) => setCreateCaseDraft((current) => ({ ...current, clientName: event.target.value }))} /></Label>
-              <Label>E-mail<Input value={createCaseDraft.clientEmail} onChange={(event) => setCreateCaseDraft((current) => ({ ...current, clientEmail: event.target.value }))} /></Label>
-              <Label>Telefon<Input value={createCaseDraft.clientPhone} onChange={(event) => setCreateCaseDraft((current) => ({ ...current, clientPhone: event.target.value }))} /></Label>
-              {availableCasesToLink.length > 0 ? (
-                <Label>Podłącz istniejącą sprawę
-                  <select className={modalSelectClass} value={linkCaseId} onChange={(event) => setLinkCaseId(event.target.value)}>
-                    <option value="">Nie podpinaj</option>
-                    {availableCasesToLink.map((entry: any) => (
-                      <option key={String(entry.id)} value={String(entry.id)}>{String(entry.title || entry.clientName || 'Sprawa bez nazwy')}</option>
-                    ))}
-                  </select>
-                </Label>
-              ) : null}
-            </div>
-            <DialogFooter className={modalFooterClass()}>
-              <Button type="button" variant="outline" onClick={() => setIsCreateCaseOpen(false)}>Anuluj</Button>
-              {linkCaseId ? <Button type="button" variant="outline" onClick={handleLinkExistingCase} disabled={linkingCase}>{linkingCase ? 'Podpinam...' : 'Podepnij sprawę'}</Button> : null}
-              <Button type="button" onClick={handleStartService} disabled={createCasePending}>{createCasePending ? 'Tworzę...' : 'Rozpocznij obsługę'}</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <LeadStartServiceDialog
+          open={isCreateCaseOpen}
+          mode={frt020DevStartCasePreview ? 'preview' : 'interactive'}
+          draft={createCaseDraft}
+          submitting={createCasePending}
+          onOpenChange={setIsCreateCaseOpen}
+          onConfirm={() => { void handleStartService(); }}
+          onDraftChange={handleCreateCaseDraftChange}
+          existingCaseOptions={availableCasesToLink.map((entry: any) => ({
+            id: String(entry.id || ''),
+            title: String(entry.title || entry.clientName || 'Sprawa bez nazwy'),
+          })).filter((entry) => entry.id)}
+          selectedExistingCaseId={linkCaseId}
+          linkingExistingCase={linkingCase}
+          onExistingCaseChange={setLinkCaseId}
+          onLinkExistingCase={() => { void handleLinkExistingCase(); }}
+        />
 
 
         <Dialog open={Boolean(leadPaymentDialogType)} onOpenChange={(open) => !open && closeLeadPaymentDialog()}>

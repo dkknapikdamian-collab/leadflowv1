@@ -446,7 +446,28 @@ export async function insertLeadToSupabase(input: LeadInsertInput) {
   return callApi<SupabaseInsertResult>('/api/leads', { method: 'POST', body: JSON.stringify(sanitizeLeadCompanyForNotNull(normalizeDuplicateWriteOverride(input as unknown as Record<string, unknown>) as unknown as LeadInsertInput)) });
 }
 export const createLeadFromAiDraftApprovalInSupabase = insertLeadToSupabase;
-export async function startLeadServiceInSupabase(input: { id: string; title: string; caseStatus?: string; clientName?: string; clientEmail?: string; clientPhone?: string; workspaceId?: string }) {
+export async function startLeadServiceInSupabase(input: {
+  id: string;
+  title: string;
+  caseStatus?: string;
+  clientName?: string;
+  clientEmail?: string;
+  clientPhone?: string;
+  value?: number | string;
+  caseValue?: number | string;
+  contractValue?: number | string;
+  currency?: string;
+  portalReady?: boolean;
+  clientPortal?: boolean;
+  startDate?: string;
+  serviceType?: string;
+  checklistTemplate?: string;
+  owner?: string;
+  ownerId?: string;
+  sendClientLink?: boolean;
+  createFirstTask?: boolean;
+  workspaceId?: string;
+}) {
   return callApi<Record<string, unknown>>('/api/leads', { method: 'POST', body: JSON.stringify({ action: 'start_service', ...input }) });
 }
 export async function fetchClientsFromSupabase(params?: { includeArchived?: boolean }) {

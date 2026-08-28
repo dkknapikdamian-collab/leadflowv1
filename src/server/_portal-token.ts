@@ -90,8 +90,10 @@ export async function requireOperatorCaseAccess(req: any, caseId: string) {
   return workspaceId;
 }
 
-async function findCaseById(caseId: string) {
-  const result = await selectFirstAvailable([`cases?select=*&id=eq.${encodeURIComponent(caseId)}&limit=1`]);
+async function findCaseById(caseId: string, workspaceId?: string | null) {
+  const baseQuery = `cases?select=*&id=eq.${encodeURIComponent(caseId)}&limit=1`;
+  const query = workspaceId ? `${baseQuery}&workspace_id=eq.${encodeURIComponent(workspaceId)}` : baseQuery;
+  const result = await selectFirstAvailable([query]);
   const rows = Array.isArray(result.data) ? result.data : [];
   return (rows[0] || null) as Record<string, unknown> | null;
 }
@@ -203,18 +205,28 @@ export async function requirePortalSessionContext(caseId: string, sessionToken: 
   return { caseRow, tokenRow, workspaceId, session };
 }
 
-export async function upsertPortalTokenForCase(caseId: string, plaintextToken: string, expiresAt: string | null) {
+export async function upsertPortalTokenForCase(
+  caseId: string,
+  plaintextToken: string,
+  expiresAt: string | null,
+  workspaceId?: string | null,
+) {
   const now = nowIso();
-  await supabaseRequest(`client_portal_tokens?case_id=eq.${encodeURIComponent(caseId)}&revoked_at=is.null`, {
+  const caseRow = await findCaseById(caseId, workspaceId);
+  if (!caseRow) throw new Error('CASE_NOT_FOUND');
+  const resolvedWorkspaceId = asText(workspaceId) || asText((caseRow as Record<string, unknown>).workspace_id) || null;
+  const workspaceFilter = resolvedWorkspaceId
+    ? `&workspace_id=eq.${encodeURIComponent(resolvedWorkspaceId)}`
+    : '';
+  await supabaseRequest(`client_portal_tokens?case_id=eq.${encodeURIComponent(caseId)}&revoked_at=is.null${workspaceFilter}`, {
     method: 'PATCH',
     body: JSON.stringify({ revoked_at: now, updated_at: now }),
-  }).catch(() => null);
+  });
 
-  const caseRow = await findCaseById(caseId);
-  const workspaceId = caseRow ? await findWorkspaceId((caseRow as Record<string, unknown>).workspace_id) : null;
+  const tokenWorkspaceId = resolvedWorkspaceId || await findWorkspaceId((caseRow as Record<string, unknown>).workspace_id);
 
   const payload = {
-    workspace_id: workspaceId,
+    workspace_id: tokenWorkspaceId,
     case_id: caseId,
     token_hash: hashPortalToken(plaintextToken),
     expires_at: expiresAt,
@@ -230,8 +242,9 @@ export async function upsertPortalTokenForCase(caseId: string, plaintextToken: s
     body: JSON.stringify(payload),
   });
 
-  await supabaseRequest(`cases?id=eq.${encodeURIComponent(caseId)}`, {
+  const caseUpdatePath = `cases?id=eq.${encodeURIComponent(caseId)}${workspaceFilter}`;
+  await supabaseRequest(caseUpdatePath, {
     method: 'PATCH',
     body: JSON.stringify({ portal_ready: true, updated_at: now }),
-  }).catch(() => null);
+  });
 }

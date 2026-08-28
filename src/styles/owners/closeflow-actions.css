@@ -1,13 +1,14 @@
 /* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:actions","concerns":["BUTTONS_ACTIONS"],"scope":"global","consumerRoots":["src/styles/closeflow-visual-source-truth.css"],"role":"canonical-owner","boundary":"global-semantic","whyNotGlobal":"This file is the registered semantic owner for its declared concerns.","whyNotDuplicate":"The registry maps each declared concern to this single reachable owner.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 /* LF-UI-IMPORTANT_BOUNDARY: SEMANTIC_OWNER_CASCADE */
 :root {
-  --cf-action-danger-text: #be123c;
-  --cf-action-danger-text-hover: #9f1239;
-  --cf-action-danger-bg: #fff1f2;
-  --cf-action-danger-bg-hover: #ffe4e6;
-  --cf-action-danger-border: #fecdd3;
-  --cf-action-danger-border-hover: #fda4af;
-  --cf-action-danger-focus: rgba(190, 18, 60, 0.24);
+  /* Delete/trash actions resolve through the single VST semantic owner. */
+  --cf-action-danger-text: var(--cf-vst-color-delete);
+  --cf-action-danger-text-hover: var(--cf-vst-color-delete);
+  --cf-action-danger-bg: var(--cf-vst-color-delete-soft);
+  --cf-action-danger-bg-hover: var(--cf-vst-color-delete-soft);
+  --cf-action-danger-border: var(--cf-vst-color-delete-border);
+  --cf-action-danger-border-hover: var(--cf-vst-color-delete);
+  --cf-action-danger-focus: var(--cf-vst-color-delete-border);
   --cf-action-neutral-text: #334155;
   --cf-action-neutral-bg: #ffffff;
   --cf-action-neutral-border: #d0d5dd;
