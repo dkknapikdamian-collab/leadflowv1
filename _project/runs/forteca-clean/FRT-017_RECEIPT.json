@@ -96,7 +96,7 @@
   "dead_controls": 0,
   "real_data_preserved": true,
   "tests_executed": [
-    "node --test tests/forteca-frt-017-lead-blocker.test.cjs (6/6 PASS before refresh-handoff assertion; rerun required after remediation)",
+    "node --test tests/forteca-frt-017-lead-blocker.test.cjs (6/6 PASS)",
     "node --test tests/forteca-frt-017-lead-blocker-runtime.test.cjs (4/4 PASS)",
     "npx.cmd tsc --noEmit (PASS)",
     "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS)",
