@@ -21,10 +21,10 @@ test('global task action opens direct shared modal instead of routing', () => {
 
 test('shared task create dialog owns task creation fields', () => {
   const dialog = read('src/components/TaskCreateDialog.tsx');
-  assert.match(dialog, /DialogTitle>Nowe zadanie/);
+  assert.match(dialog, /DialogTitle>Dodaj zadanie/);
   assert.match(dialog, /insertTaskToSupabase/);
+  assert.match(dialog, /FRT014_REMINDER_OPTIONS/);
   assert.match(dialog, /REMINDER_MODE_OPTIONS/);
-  assert.match(dialog, /REMINDER_OFFSET_OPTIONS/);
   assert.match(dialog, /reminderAt/);
 });
 
