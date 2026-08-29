@@ -3,8 +3,10 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-test('legacy clients relation panel guard retired in favor of stage79/stage81/stage83', () => {
+test('current clients page keeps the Forteca directory owner and no retired relation rail', () => {
   const root = path.resolve(__dirname, '..');
   const clients = fs.readFileSync(path.join(root, 'src/pages/Clients.tsx'), 'utf8');
-  assert.match(clients, /clients-top-value-records-card|TopValueRecordsCard|Najcenniejsi klienci/);
+  assert.match(clients, /data-forteca-frt-021-runtime="true"/);
+  assert.match(clients, /data-forteca-frt-021-table="true"/);
+  assert.doesNotMatch(clients, /clients-top-value-records-card|TopValueRecordsCard|Najcenniejsi klienci/);
 });
