@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "stage_id": "FRT-030",
+  "status": "PASS",
+  "project": {
+    "project_name": "CloseFlow",
+    "project_ref": "amrxiaetdocrywnnkoct",
+    "cli_identity_verified": true,
+    "linked_by_exact_project_ref": true,
+    "linked_project_ref_reverified": true,
+    "secrets_exposed": false
+  },
+  "backup": {
+    "project_ref": "amrxiaetdocrywnnkoct",
+    "backup_timestamp": "2026-08-29T12:20:17.715Z",
+    "schema_backup_path": "C:\\Users\\malim\\AppData\\Local\\Temp\\_db_backups\\closeflow\\20260829T122017715Z\\schema.sql",
+    "schema_backup_sha256": "79edb064fc0360ee5c4c6dc6a4fb44663644155efa6e3fccf762281732b28a79",
+    "schema_backup_bytes": 101165,
+    "data_backup_path": "C:\\Users\\malim\\AppData\\Local\\Temp\\_db_backups\\closeflow\\20260829T122017715Z\\data.sql",
+    "data_backup_sha256": "7024b00096519b1f680eed8c3d459911dbf9f0d6b78548f651fbdbd4dad09fd8",
+    "data_backup_bytes": 335164,
+    "backup_verified": true,
+    "backup_artifacts_are_separate_schema_and_data_files": true
+  },
+  "preflight_schema_proof": {
+    "address_column_count": 0,
+    "owner_id_column_count": 0,
+    "required_index_count": 0,
+    "clients_row_count": 23,
+    "target_exists": true,
+    "unrelated_schema_hash": "57e00c02f4bfd9a45346cbcb8148db82"
+  },
+  "migration": {
+    "path": "supabase/migrations/20260829100000_frt029_client_address_owner.sql",
+    "sha256": "15a7bf24266e4947b622a82d45150b3b5ccbf7d70b58e816e3527a3ccd4d636c",
+    "preview": {
+      "command": "npx.cmd supabase db push --linked --dry-run --skip-vault",
+      "result": "NOT_USED_FOR_APPLY",
+      "reason": "CLI preview detected older unrelated local migrations missing from the remote ledger; broad db push was unsafe for a single-stage change."
+    },
+    "safety_proof": {
+      "destructive_statements": 0,
+      "row_data_mutation": 0,
+      "unrelated_schema_mutation": 0,
+      "alter_clients_statements": 1,
+      "address_additions": 1,
+      "owner_id_additions": 1,
+      "required_index_additions": 1
+    },
+    "apply_timestamp": "2026-08-29T12:33:48.3099439Z",
+    "apply_channel": "Native PostgreSQL psql with PGSSLMODE=require and the exact migration file",
+    "apply_exit_code": 0,
+    "migration_history_repair": {
+      "performed": true,
+      "command_scope": "supabase migration repair --linked --status applied 20260829100000 --yes",
+      "only_migration_repaired": "20260829100000"
+    }
+  },
+  "postflight_schema_proof": {
+    "address_column_count": 1,
+    "owner_id_column_count": 1,
+    "required_index_count": 1,
+    "clients_row_count": 23,
+    "target_exists": true,
+    "unrelated_schema_hash": "57e00c02f4bfd9a45346cbcb8148db82",
+    "migration_list_contains_applied_target": true
+  },
+  "prohibited_operations": {
+    "db_reset_linked": false,
+    "seed_production": false,
+    "notes_or_tags_fallback": false,
+    "emergency_sql_patch": false,
+    "unrelated_table_rls_function_or_trigger_mutation": false
+  }
+}

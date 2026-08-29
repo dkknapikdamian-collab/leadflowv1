@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-030",
+  "reference_file": "docs/ui/reference/forteca-calm-light/030_client_edit_modal.webp",
+  "reference_sha256": "a7a16807a15a11e3cd29244bb75513f8f41b2c5d23fd65f304ac7d50ef7eefb7",
+  "target_route": "/clients/:clientId",
+  "target_state": "Edit Client modal",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_AFTER_PARENT_REVIEW",
+  "acceptance_basis": {
+    "directive_interpretation": "FRT-030 was accepted only after the exact remote schema dependency, real populated save/reload behavior, source contract, focused tests and live production evidence were revalidated.",
+    "root_cause": "The production public.clients schema lacked the address and owner_id fields required by the implemented canonical edit payload.",
+    "repair": "The exact additive FRT-029 migration was applied after CLI identity/ref verification and a separate schema/data backup; the real client edit path then persisted address and assigned owner across reload.",
+    "review_status": "Parent review completed against the contract, reference hash, source, migration safety proof, backup receipt, focused tests, Guardian output, live production browser result and remote state. No independent reviewer PASS is claimed.",
+    "guardian_interpretation": "Guardian smoke is AUDIT_ONLY/PARTIAL with zero writes and zero blockers. The limitation is recorded and does not hide a product failure."
+  },
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "No screenshot fixture, test name, date, owner or client row was inserted into the runtime or API payload.",
+      "Address and assigned owner use the canonical real client edit data contract and workspace-scoped mutation path.",
+      "The migration was applied as the smallest required additive schema change; no alternate notes/tags storage or emergency patch was used.",
+      "No fake success, automatic merge or production merge was introduced."
+    ]
+  },
+  "color_source_of_truth": {
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "action_owner": "src/styles/owners/closeflow-actions.css",
+    "dialog_owner": "src/styles/owners/closeflow-dialogs.css",
+    "icon_owner": "src/ui-system/icons/SemanticIcon.tsx and src/components/ui-system/ActionIcon.tsx",
+    "semantic_tone_adapters": {
+      "primary": "--cf-vst-color-primary",
+      "delete": "--cf-vst-color-delete",
+      "surface": "--cf-vst-surface-card-solid",
+      "border": "--cf-vst-input-border"
+    },
+    "stage_literal_color_values": 0,
+    "policy": "Every repeated semantic concern resolves through the shared VST owner; reference discrepancies do not create per-window color exceptions."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "src/components/ClientCreateDialog.tsx",
+    "src/server/_supabase-auth.ts",
+    "tests/forteca-frt-030-client-edit.test.cjs",
+    "tests/forteca-frt-030-supabase-auth-user-id.test.cjs",
+    "supabase/migrations/20260829100000_frt029_client_address_owner.sql"
+  ],
+  "visual_sot_owners_used": ["MODALS", "FORMS", "BUTTONS_ACTIONS", "ICONS", "SURFACES"],
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "node --test tests/forteca-frt-030-client-edit.test.cjs (6/6 PASS)",
+    "node --test tests/forteca-frt-030-supabase-auth-user-id.test.cjs (1/1 PASS)",
+    "node scripts/check-supabase-migrations-guard.cjs (PASS; two pre-existing legacy ordering warnings)",
+    "node scripts/check-stage226r10d2-duplicate-conflict-confirmation-gate-patcher-fix.cjs (PASS)",
+    "npx.cmd tsc --noEmit (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS)",
+    "npm.cmd run guardian -- --smoke from canonical ai-code-guardian repository (AUDIT_ONLY/PARTIAL; zero writes; zero blockers)",
+    "Live authenticated production browser proof: save/reload populated address and owner (PASS)"
+  ],
+  "tests_reused": [
+    "FRT-000 routing, reference manifest, Guardian boundary and Visual SOT owner registry",
+    "FRT-010 to FRT-029 client/lead relation, workspace scope, action, semantic icon and route evidence",
+    "FRT-030 route navigation smoke and unaffected semantic/color/icon/typography/layout baseline"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "target-wide Guardian scan",
+      "reason": "NOT_AVAILABLE: installed Guardian exposes partial repository-baseline smoke coverage; pass_claim=false."
+    },
+    {
+      "test": "destructive delete browser proof",
+      "reason": "NOT_REQUIRED_FOR_FRT-030_ACCEPTANCE: save/reload persistence and cancel/close were the required mutation boundary; destructive test data was preserved."
+    },
+    {
+      "test": "independent final reviewer PASS",
+      "reason": "PROCESS_BOUNDARY: bounded audit returned no independent final PASS; parent review is recorded without overstating coverage."
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS_WITH_KNOWN_WARNINGS",
+  "build_warnings": [
+    "Existing dynamic/static import overlap for src/lib/supabase-fallback.ts",
+    "Existing chunks larger than 500 kB after minification"
+  ],
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-030_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "fileWrites": 0,
+    "target_wide_scan": "NOT_AVAILABLE"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-030_BROWSER_PROOF.json",
+    "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+    "live_runtime": true,
+    "auth_required": true,
+    "route": "https://closeflowapp.vercel.app/clients/9ae75284-fdfb-4bdf-a7a7-b6bc5c181fc8",
+    "address_owner_save_reload": "PASS",
+    "cancel_close": "PASS",
+    "delete": "NOT_EXECUTED",
+    "screenshot_path": null
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "real_data_preserved": true
+  },
+  "database": {
+    "migration_receipt": "audit/evidence/FRT-030_MIGRATION_RECEIPT.json",
+    "project_ref": "amrxiaetdocrywnnkoct",
+    "address_column_verified": true,
+    "owner_id_column_verified": true,
+    "workspace_owner_index_verified": true,
+    "unrelated_schema_hash_unchanged": true,
+    "backup_verified": true
+  },
+  "implementation_commit_sha": "34fd882a3785d88d214706e7cdf4ef454b71e9a3",
+  "remote_head_verified": "6db675a400b07531088e0973d952c379d5418162",
+  "branch": "dev-rollout-freeze",
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "marketplace_binding": "BOUND",
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_skip_reason": "No callable preferred provider was available in the current host context.",
+    "subagents": [
+      {
+        "id": "01a04d77-445b-7722-b8a6-cf3b333e3c74",
+        "role": "bounded read-only FRT-030 migration audit",
+        "status": "COMPLETED_READ_ONLY; parent revalidated after migration"
+      }
+    ],
+    "write_owner": "Codex parent reviewed all returned artifacts and wrote the final stage evidence/state."
+  },
+  "next_action": "Activate FRT-031 as the only active stage and begin the real client-context New Case flow from its canonical contract.",
+  "created_at": "2026-08-29T12:33:48.3099439Z"
+}
