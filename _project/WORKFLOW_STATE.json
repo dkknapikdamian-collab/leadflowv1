@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 112,
+  "state_revision": 113,
   "last_accepted": {
     "id": "FRT-029",
     "status": "PASS",
@@ -21,7 +21,16 @@
   "last_accepted_commit": "4e7271e7",
   "next_stage": "FRT-030",
   "branch": "codex/forteca-ui-001-040-clean",
-  "remote_head": "4e7271e7",
+  "remote_head": "129c0b77f8f4a1ce48fac9a57dc4127ca4b6ba48",
+  "next_action": "Retry the same approved in-app browser proof after renderer/CDP dispatch recovers; verify populated FRT-030 edit fields, non-mutating cancel/close and screenshot, then close FRT-030 only with complete evidence.",
+  "last_progress": {
+    "stage_id": "FRT-030",
+    "status": "IMPLEMENTATION_COMMITTED_BROWSER_PROOF_PENDING",
+    "evidence": "_project/runs/forteca-clean/FRT-030_PROGRESS_RECEIPT.json; audit/evidence/FRT-030_BROWSER_PROOF.json; audit/evidence/FRT-030_GUARDIAN_AUDIT_SUMMARY.json",
+    "commit_sha": "129c0b77f8f4a1ce48fac9a57dc4127ca4b6ba48",
+    "browser_blocker": "In-app browser read-only DOM succeeds, but click/keypress dispatch and screenshot fail with CDP deadline/renderer errors before command dispatch.",
+    "created_at": "2026-08-29T05:51:16.4912099Z"
+  },
   "current_workflow": {
     "id": "FRT-030",
     "kind": "TECHNICAL_IMPLEMENTATION_STAGE",
@@ -30,11 +39,11 @@
     "base_sha": "4e7271e7",
     "base_branch": "codex/forteca-ui-001-040-clean",
     "target_branch": "codex/forteca-ui-001-040-clean",
-    "blocker": null,
+    "blocker": "IN_APP_BROWSER_PROOF_BLOCKED: approved browser navigation and DOM/log inspection succeed, but all input dispatch and screenshot capture fail with CDP deadline/renderer errors; no product mutation or alternate browser bypass authorized",
     "ssot_open_findings": 0,
     "active_stage_count": 1,
-    "terminal_audit": "FRT_029_ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_LIVE_BROWSER_RUNTIME_AND_CENTRAL_SEMANTIC_COLOR_POLICY_AND_PARENT_REVIEW",
-    "guardian_status": "REQUIRED_AT_FRT_030_CLOSEOUT",
+    "terminal_audit": "FRT_030_IMPLEMENTATION_COMMITTED_STATIC_VALIDATION_PASS_BROWSER_PROOF_PENDING",
+    "guardian_status": "PARTIAL_AUDIT_COMPLETE_BROWSER_PROOF_PENDING",
     "acceptance_boundary": "Codex is the acceptance authority under the owner directive; FRT-030 requires the real populated client-edit path, validation, cancel/close, update scope, focused tests, Guardian and browser evidence before acceptance"
   },
   "next_workflow": {
@@ -42,7 +51,7 @@
     "contract_path": "_project/contracts/forteca-clean/FRT-030_CLIENT_EDIT.md",
     "status": "LOCKED",
     "activation": "CODEX_AFTER_FRT_029_ACCEPTANCE",
-    "reason": "FRT-030 is now the only active stage after FRT-029 acceptance; one active reference only"
+    "reason": "FRT-030 remains the only active stage; implementation is pushed but browser proof is pending after approved in-app browser dispatch failure"
   },
   "forteca_program": {
     "program_id": "FORTECA_CALM_LIGHT_001_040",
@@ -482,6 +491,13 @@
     "forteca:FRT-029:visual-color-policy@canonical VST semantic tones; stage adapter resolves through --cf-vst-* tokens; reference discrepancies do not create per-window color exceptions",
     "forteca:FRT-029:browser-boundary@real /clients add-client runtime; open/source/owner/toggle/cancel/reset exercised; create and starter-case mutations not invoked",
     "forteca:FRT-029:review@parent-source-reference-runtime-review; independent browser-review timeout recorded; no independent PASS claim",
-    "forteca:FRT-029:root-cause@legacy inline client-add owner and high-specificity dark dialog field skin; repaired with one controlled dialog owner, stage-local VST variable bridge and real address/owner persistence"
+    "forteca:FRT-029:root-cause@legacy inline client-add owner and high-specificity dark dialog field skin; repaired with one controlled dialog owner, stage-local VST variable bridge and real address/owner persistence",
+    "forteca:FRT-030:implementation@129c0b77f8f4a1ce48fac9a57dc4127ca4b6ba48",
+    "forteca:FRT-030:guardian-summary@audit/evidence/FRT-030_GUARDIAN_AUDIT_SUMMARY.json",
+    "forteca:FRT-030:browser-proof@audit/evidence/FRT-030_BROWSER_PROOF.json:BLOCKED_BROWSER_TOOL",
+    "forteca:FRT-030:progress-receipt@_project/runs/forteca-clean/FRT-030_PROGRESS_RECEIPT.json",
+    "forteca:FRT-030:tests@static-5-focused-9-predecessor-4-legacy-conflict-tsc-build-semantic-color-pass",
+    "forteca:FRT-030:review@parent-source-reference-review; independent reviewer timed out; no independent PASS claim",
+    "forteca:FRT-030:root-cause@legacy inline ClientDetail contact editor did not provide the populated canonical edit modal; repaired with shared controlled edit owner, real update/delete wiring and scoped VST composition"
   ]
 }

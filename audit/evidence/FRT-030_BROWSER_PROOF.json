@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-030",
+  "reference_file": "docs/ui/reference/forteca-calm-light/030_client_edit_modal.webp",
+  "reference_sha256": "a7a16807a15a11e3cd29244bb75513f8f41b2c5d23fd65f304ac7d50ef7eefb7",
+  "entry_url": "http://localhost:3000/clients/dev-client-1?frt030=browser-proof-3",
+  "runtime_url": "http://localhost:3000/clients/dev-client-1?frt030=browser-proof-3",
+  "route": "/clients/:clientId",
+  "state": "Edit Client modal",
+  "live_runtime": true,
+  "auth_required": false,
+  "status": "BLOCKED_BROWSER_TOOL",
+  "implementation_commit": "129c0b77f8f4a1ce48fac9a57dc4127ca4b6ba48",
+  "remote_head_verified": "129c0b77f8f4a1ce48fac9a57dc4127ca4b6ba48",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "read_only_runtime_observation": {
+    "viewport": {"width": 1672, "height": 942},
+    "real_record_visible": {
+      "id": "dev-client-1",
+      "name": "Anna Kowalska",
+      "company": "Nova Home Studio",
+      "email": "anna@novahome.pl",
+      "phone": "+48 600 111 222",
+      "source": "instagram"
+    },
+    "edit_control": "One visible button named Edytuj was present and enabled.",
+    "dom_state": "The live detail page loaded with the real record and no FRT-030 modal root while the modal was closed.",
+    "runtime_logs": "Vite connected; React DevTools info only; no application error was observed."
+  },
+  "attempts": [
+    {"action": "Open fresh allowed in-app tab and navigate to runtime URL", "status": "PASS"},
+    {"action": "Read live DOM and visible controls", "status": "PASS", "result": "Real client detail and Edytuj control present"},
+    {"action": "playwright.getByRole(button, Edytuj).click", "status": "BLOCKED", "error": "Timed out running CDP command Runtime.evaluate; locator diagnostics still showed one visible enabled match"},
+    {"action": "dom_cua.click(node_id=18)", "status": "BLOCKED", "error": "CDP operation exceeded its deadline before command dispatch"},
+    {"action": "cua click at measured Edytuj coordinates", "status": "BLOCKED", "error": "CDP operation exceeded its deadline before command dispatch"},
+    {"action": "Reload tab and retry click", "status": "BLOCKED", "error": "Same Runtime.evaluate/CDP deadline failure"},
+    {"action": "Capture screenshot", "status": "BLOCKED", "error": "Unable to capture screenshot"}
+  ],
+  "interaction_proof": {
+    "open": "NOT_PROVEN",
+    "populate": "NOT_PROVEN",
+    "save_update": "NOT_PROVEN; no mutation submitted",
+    "cancel_close": "NOT_PROVEN",
+    "delete": "NOT_EXECUTED; destructive action intentionally not attempted"
+  },
+  "safety_proof": {
+    "real_record_not_fixture": true,
+    "no_unapproved_live_mutation": true,
+    "no_raw_cdp_or_dom_mutation_used": true,
+    "no_screenshot_fixture_injected": true,
+    "semantic_color_source_of_truth_preserved": true
+  },
+  "browser_boundary": "The approved in-app browser API was used for navigation and read-only DOM/log inspection. All documented input and screenshot attempts failed before dispatch/capture. No raw CDP, standalone Playwright or alternate browser was used to bypass the failure.",
+  "next_action": "Retry the same approved in-app browser proof after the renderer/CDP dispatch recovers; then exercise Edytuj -> populated fields -> non-mutating cancel/reopen and record screenshot before FRT-030 acceptance.",
+  "created_at": "2026-08-29T05:51:16.4912099Z"
+}
