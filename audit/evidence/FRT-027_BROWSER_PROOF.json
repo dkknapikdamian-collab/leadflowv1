@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-027",
+  "reference_file": "docs/ui/reference/forteca-calm-light/027_client_detail_no_active_case.webp",
+  "reference_sha256": "53a20e8b659d2fe67d696cc77793a168653c0771dbb1eb6acf21f7dacf60eff3",
+  "entry_url": "http://localhost:3000/clients/dev-client-3?frt027=browser-proof",
+  "runtime_url": "http://localhost:3000/clients/dev-client-3?frt027=browser-proof",
+  "route": "/clients/:clientId",
+  "state": "Forteca calm-light Client Detail — no active case",
+  "live_runtime": true,
+  "auth_required": false,
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "record_origin": "Existing workspace-scoped client, case relation, contact, note and activity sources; reference screenshot fixtures were not copied into runtime state.",
+    "relation_truth": "The no-active-case state is derived from activeCases.length === 0 for the real dev-client-3 record. Identity, company, contact links and empty notes/history remain source-derived.",
+    "visible_client": "Katarzyna Wrona / K&W Legal Support / +48 603 555 666 / kontakt@kwlegal.pl",
+    "visible_case_state": "No active case exists for the client in the current local runtime.",
+    "production_path": "The page keeps the existing workspace-scoped ClientDetail loader, openNewCase handler, client edit owner and navigation owners; no screenshot-only collection or fake relation was added."
+  },
+  "visible_structure": {
+    "requested_reference_viewport": {
+      "width": 1672,
+      "height": 941
+    },
+    "observed_browser_viewport": {
+      "width": 1672,
+      "height": 942,
+      "scroll_width": 1672,
+      "scroll_height": 942
+    },
+    "root_marker": "data-forteca-frt-027-root=\"true\"",
+    "root_count": 1,
+    "runtime_marker": "data-forteca-frt-027-runtime=\"true\"",
+    "no_active_case_marker": "data-forteca-frt-027-no-active-case=\"true\"",
+    "info_marker": "data-forteca-frt-027-info=\"true\"",
+    "cases_marker": "data-forteca-frt-027-cases=\"true\"",
+    "contact_marker": "data-forteca-frt-027-contact=\"true\"",
+    "notes_marker": "data-forteca-frt-027-notes=\"true\"",
+    "history_marker": "data-forteca-frt-027-history=\"true\"",
+    "notes_list_marker": "data-forteca-frt-027-notes-list=\"true\"",
+    "reference_copy_present": true,
+    "reference_copy": [
+      "Klienci",
+      "Katarzyna Wrona",
+      "Brak aktywnej sprawy",
+      "Informacje o kliencie",
+      "Aktywne sprawy",
+      "Brak aktywnych spraw",
+      "Informacje kontaktowe",
+      "Notatki o kliencie",
+      "Historia kontaktu",
+      "Notatki",
+      "Nowa sprawa",
+      "Utwórz nową sprawę",
+      "Edytuj"
+    ],
+    "body_overflow": false
+  },
+  "interaction_proof": {
+    "new_case_cta": {
+      "status": "PASS",
+      "observed": "The real Utwórz nową sprawę CTA opened the existing Dodaj sprawę dialog with the guarded Nazwa sprawy field; Anuluj closed it without creating a case."
+    },
+    "header_new_case": {
+      "status": "PRESENT_AND_BOUND",
+      "observed": "The header Nowa sprawa action remains bound to the existing openNewCase owner."
+    },
+    "edit_dialog": {
+      "status": "PASS",
+      "observed": "The real Edytuj action opened the runtime client edit overlay with populated client fields; Anuluj closed it without saving."
+    },
+    "post_interaction_state": {
+      "status": "PASS",
+      "observed": "The no-active-case root remained mounted once, real client data remained visible, no workspace mutation was submitted and no visible runtime error appeared in the final DOM pass."
+    }
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "client_values_are_source_derived": true,
+    "case_relation_is_source_derived": true,
+    "workspace_scope_preserved": true,
+    "existing_action_and_modal_owners_preserved": true,
+    "no_duplicate_detail_owner": true,
+    "no_fake_success": true,
+    "no_unapproved_live_mutation": true,
+    "semantic_color_source_of_truth_preserved": true
+  },
+  "console_errors": "NOT_CAPTURED_AS_NUMERIC_COUNTER; no visible runtime error was observed in the final DOM pass",
+  "console_warnings": "NOT_CAPTURED_AS_NUMERIC_COUNTER",
+  "screenshot_displayed_in_codex_browser": true,
+  "screenshot_path": null,
+  "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The browser reported a one-pixel inner-height rounding difference from the static capture.",
+      "The live local workspace renders real Katarzyna Wrona data and truthful empty notes/history rather than screenshot fixture content.",
+      "Authenticated populated proof was not required for FRT-027 because the current reference state is independently accepted from the real local runtime relation.",
+      "Edit and case creation were opened and cancelled; no mutating save or case submission was invoked."
+    ]
+  },
+  "implementation_commit": "4407d80fd4f99d12824f2dc4b6c50528e60f3831",
+  "remote_head_verified": "4407d80fd4f99d12824f2dc4b6c50528e60f3831",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "created_at": "2026-08-29T04:41:41+02:00"
+}
