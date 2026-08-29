@@ -525,6 +525,20 @@ function trimClientEditForm(form: ClientCreateFormState) {
   };
 }
 
+function getClientEditSaveErrorMessage(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error || '');
+
+  if (message === 'CLIENT_ADDRESS_FIELD_UNAVAILABLE') {
+    return 'Błąd zapisu klienta: produkcyjna baza nie ma jeszcze pola „Adres”. Zastosuj migrację FRT-029.';
+  }
+
+  if (message === 'CLIENT_OWNER_FIELD_UNAVAILABLE') {
+    return 'Błąd zapisu klienta: produkcyjna baza nie ma jeszcze pola „Przypisany opiekun”. Zastosuj migrację FRT-029.';
+  }
+
+  return `Błąd zapisu klienta: ${message || 'REQUEST_FAILED'}`;
+}
+
 export function ClientEditDialog({ open, onOpenChange, client, onUpdated, onDeleted }: ClientEditDialogProps) {
   const { workspace, profile, hasAccess } = useWorkspace();
   const [form, setForm] = useState<ClientCreateFormState>(() => buildClientEditForm(client));
@@ -612,7 +626,7 @@ export function ClientEditDialog({ open, onOpenChange, client, onUpdated, onDele
       onOpenChange(false);
       toast.success('Klient zaktualizowany');
     } catch (error: any) {
-      toast.error(`Błąd zapisu klienta: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(getClientEditSaveErrorMessage(error));
     } finally {
       setSaving(false);
     }

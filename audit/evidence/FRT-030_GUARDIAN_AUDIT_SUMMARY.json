@@ -16,11 +16,11 @@
   "repository": {
     "branch": "dev-rollout-freeze",
     "implementation_branch": "codex/forteca-ui-001-040-clean",
-    "implementation_commit": "d6f7253c1bf93416e652afdcf4447d5ba227a02b",
-    "promoted_head": "3458b32f9d485d51f0f33bb65bccd1a81b840edf"
+    "implementation_commit": "3c88ef0e4dc2b3709cd4366c83755a8fdc989864",
+    "promoted_head": "3c88ef0e4dc2b3709cd4366c83755a8fdc989864"
   },
   "stage_validation": {
-    "focused_tests": "6/6 PASS",
+    "focused_tests": "7/7 PASS",
     "predecessor_regression": "9/9 PASS",
     "legacy_conflict_guard_test": "4/4 PASS",
     "stage_conflict_guard": "PASS",
@@ -29,16 +29,16 @@
     "diff_check": "PASS",
     "semantic_color_scan": "PASS; FRT-030 CSS has zero raw color literals",
     "css_owners_scan": "FAIL_ON_PRE_EXISTING_BASELINE_FINDINGS; new FRT-030 metadata is present",
-    "browser_runtime": "PARTIAL_BROWSER_TOOL; browser-proof-8 Today responsive screenshot/DOM proof PASS, repaired FRT-030 modal order/open/cancel/screenshot PASS, populated phone/email confirmed in live screenshot and temporary React state observation, approved tel/email/address control value/fill readback remains inconsistent; local Vite /api/clients is SPA fallback rather than authenticated mutation backend",
+    "browser_runtime": "PARTIAL_LIVE_PRODUCTION; authenticated detail load, populated edit open, authorized real-record name update, reload consistency, cancel/close and five client-detail tab clicks PASS; populated address/owner save is BLOCKED_SCHEMA by CLIENT_ADDRESS_FIELD_UNAVAILABLE because the remote clients table lacks the FRT-029 migration",
     "today_responsive_layout": "PASS_TARGETED_REPAIR; live 1280x720 DOM measurement and screenshot show normal multi-line wrapping with document scrollWidth equal to clientWidth",
-    "independent_review": "READ_ONLY_SUBAGENT_AUDIT_COMPLETE; three bounded reviews confirmed source order/token reuse and the browser-proof blocker; no independent PASS claim"
+    "independent_review": "READ_ONLY_SUBAGENT_AUDIT_COMPLETE; bounded audit confirmed CI/Vercel/repository contain no configured Supabase migration apply channel; no independent PASS claim"
   },
   "known_baseline_findings": [
     "The installed Guardian entrypoint exposes partial repository-baseline smoke coverage and no target-wide scan.",
     "The CSS owner scan retains pre-existing SCOPED_GLOBAL_AUTHORITY, missing metadata, UNCLASSIFIED_IMPORTANT and SPECIFICITY_PATCH_IMPORTANT findings outside FRT-030's allowed write set.",
     "The production build retains the existing supabase-fallback dynamic/static import overlap and large-chunk warnings."
   ],
-  "interpretation": "Guardian smoke completed in AUDIT_ONLY mode with zero writes and zero returned blockers. Coverage is PARTIAL, so no full target-wide Guardian PASS is claimed.",
+  "interpretation": "Guardian smoke completed in AUDIT_ONLY mode with zero writes and zero returned blockers. Coverage is PARTIAL, so no full target-wide Guardian PASS is claimed; live runtime remains open only for the remote FRT-029 schema migration and final populated save proof.",
   "color_policy": {
     "status": "PASS",
     "semantic_primary_base": "--cf-vst-color-primary",
@@ -51,8 +51,8 @@
   "root_cause_review": {
     "status": "STATIC_REVIEW_COMPLETE_PARENT",
     "finding": "Client Detail used a legacy inline contact editor while the reference requires a populated canonical client edit modal.",
-    "repair": "FRT-030 adds a controlled edit variant beside the existing create owner, routes Client Detail edit actions to it, preserves workspace-scoped update/delete paths, and scopes calm-light composition through VST tokens."
+    "repair": "FRT-030 adds a controlled edit variant beside the existing create owner, routes Client Detail edit actions to it, preserves workspace-scoped update/delete paths, scopes calm-light composition through VST tokens, and preserves the canonical Supabase Auth user id for activity authorization."
   },
   "created_at": "2026-08-29T05:51:16.4912099Z",
-  "updated_at": "2026-08-29T09:29:59.6839543Z"
+  "updated_at": "2026-08-29T10:33:18.1401887Z"
 }

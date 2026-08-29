@@ -97,6 +97,9 @@ test('FRT-030 preserves semantic source options and safe delete semantics', () =
   const api = read(apiPath);
   const button = read(buttonPath);
   has(dialog, 'CLIENT_SOURCE_OPTIONS', 'canonical client-source options');
+  has(dialog, 'getClientEditSaveErrorMessage', 'human-readable edit save error mapping');
+  has(dialog, 'produkcyjna baza nie ma jeszcze pola „Adres”', 'address schema blocker copy');
+  has(dialog, 'produkcyjna baza nie ma jeszcze pola „Przypisany opiekun”', 'owner schema blocker copy');
   has(dialog, 'window.confirm(\'Zarchiwizować tego klienta?\')', 'delete confirmation');
   has(dialog, 'variant="destructive"', 'semantic destructive button');
   has(css, '[data-forteca-frt-030-root][data-closeflow-modal-visual-system="true"]', 'scoped FRT-030 style root');
