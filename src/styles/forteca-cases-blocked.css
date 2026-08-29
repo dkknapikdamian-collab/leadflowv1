@@ -1,0 +1,252 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/forteca-cases-blocked.css","concerns":[],"scope":"route-scoped","consumerRoots":["src/pages/Cases.tsx"],"role":"scoped-adapter","boundary":"route-component","whyNotGlobal":"Only the canonical blocked-case view uses this reference-specific composition.","whyNotDuplicate":"Shared CloseFlow tokens, controls, metric cards, status tones and action primitives remain the single visual source of truth; this adapter owns only blocked-view layout composition.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+
+#root .main-cases-html[data-cases-state="blocked"] {
+  gap: var(--cf-vst-space-lg);
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-kpi-grid .cf-operator-metric-tile.is-active {
+  border-color: var(--cf-vst-color-delete);
+  box-shadow: 0 0 0 1px var(--cf-vst-color-delete-border), var(--cf-vst-shadow-card);
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-kpi-grid .cf-operator-metric-tile.is-active .cf-operator-metric-icon {
+  border-color: var(--cf-vst-color-delete-border);
+  background: var(--cf-vst-color-delete-soft);
+  color: var(--cf-vst-color-delete);
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-toolbar {
+  grid-template-columns: minmax(250px, 1.55fr) repeat(3, minmax(150px, 1fr)) auto minmax(185px, 1fr);
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-toolbar [data-cf-cases-blocked-status-filter="true"] select:disabled {
+  border-color: var(--cf-vst-color-delete-border);
+  background: var(--cf-vst-color-delete-soft);
+  color: var(--cf-vst-color-delete-strong);
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-table {
+  min-width: 1380px;
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-row {
+  grid-template-columns: minmax(15rem, 1.2fr) minmax(12rem, 1fr) minmax(13rem, 1.1fr) minmax(8rem, .7fr) minmax(10rem, .85fr) minmax(12rem, 1fr) minmax(15rem, 1.25fr) minmax(10rem, .85fr) 2.75rem;
+  min-width: 1380px;
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-row-head {
+  min-height: 50px;
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-row-head .cf-cases-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cf-vst-space-2xs);
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-row-head .cf-cases-cell svg {
+  width: var(--cf-vst-icon-size-xs);
+  height: var(--cf-vst-icon-size-xs);
+  color: var(--cf-vst-text-faint);
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-row.cf-cases-data-row {
+  align-items: stretch;
+  min-height: 104px;
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-row .cf-cases-cell {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding-block: var(--cf-vst-space-md);
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-case-cell,
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-reason-cell,
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-date-cell,
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-movement-cell,
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-suggested-cell {
+  display: grid;
+  align-content: center;
+  gap: var(--cf-vst-space-2xs);
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-case-link {
+  display: grid;
+  gap: var(--cf-vst-space-2xs);
+  min-width: 0;
+  color: var(--cf-vst-text-strong);
+  text-decoration: none;
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-case-link:hover,
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-case-link:focus-visible {
+  color: var(--cf-vst-color-primary-strong);
+  outline: none;
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-case-link strong,
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-reason-cell strong,
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-priority-cell strong,
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-date-cell strong,
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-movement-cell strong,
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-suggested-cell strong {
+  min-width: 0;
+  color: inherit;
+  font-size: var(--cf-vst-font-size-body-sm);
+  font-weight: var(--cf-vst-font-weight-semibold);
+  line-height: var(--cf-vst-line-height-body);
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-case-link small,
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-reason-cell small,
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-date-cell small,
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-movement-cell small,
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-suggested-cell small {
+  color: var(--cf-vst-text-muted);
+  font-size: var(--cf-vst-font-size-meta);
+  line-height: var(--cf-vst-line-height-body);
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-reason-cell {
+  grid-template-columns: var(--cf-vst-icon-box-sm) minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--cf-vst-space-xs);
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-reason-cell > span:last-child {
+  display: grid;
+  min-width: 0;
+  gap: var(--cf-vst-space-2xs);
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-reason-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--cf-vst-icon-box-sm);
+  height: var(--cf-vst-icon-box-sm);
+  border: 1px solid var(--cf-vst-color-delete-border);
+  border-radius: var(--cf-vst-radius-panel);
+  background: var(--cf-vst-color-delete-soft);
+  color: var(--cf-vst-color-delete);
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-reason-icon svg {
+  width: var(--cf-vst-icon-size-xs);
+  height: var(--cf-vst-icon-size-xs);
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-priority-cell {
+  gap: var(--cf-vst-space-xs);
+  color: var(--cf-vst-text-main);
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-priority-dot {
+  width: var(--cf-vst-icon-size-xs);
+  height: var(--cf-vst-icon-size-xs);
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--cf-vst-color-event);
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-priority-dot[data-cf-priority-tone="red"] {
+  background: var(--cf-vst-color-delete);
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-priority-dot[data-cf-priority-tone="green"] {
+  background: var(--cf-vst-color-task);
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-actions-cell {
+  position: relative;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: var(--cf-vst-space-xs);
+  overflow: visible;
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-reminder-button,
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-open-link {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: var(--cf-vst-space-xs);
+  min-height: var(--cf-vst-button-height-sm);
+  max-width: 12rem;
+  padding: 0 var(--cf-vst-space-sm);
+  border: 1px solid var(--cf-vst-color-primary-border);
+  border-radius: var(--cf-vst-radius-button);
+  background: var(--cf-vst-color-primary-soft);
+  color: var(--cf-vst-color-primary-strong);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--cf-vst-font-size-meta);
+  font-weight: var(--cf-vst-font-weight-semibold);
+  line-height: var(--cf-vst-line-height-button);
+  text-align: center;
+  text-decoration: none;
+  white-space: normal;
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-reminder-button:hover,
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-reminder-button:focus-visible,
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-open-link:hover,
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-open-link:focus-visible {
+  border-color: var(--cf-vst-color-primary);
+  background: var(--cf-vst-color-primary);
+  color: var(--cf-vst-surface-card-solid);
+  outline: none;
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-reminder-button svg {
+  flex: 0 0 auto;
+  width: var(--cf-vst-icon-size-sm);
+  height: var(--cf-vst-icon-size-sm);
+}
+
+#root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-actions-cell .cf-cases-more-button {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 1240px) {
+  #root .main-cases-html[data-cases-state="blocked"] .cf-cases-toolbar {
+    grid-template-columns: minmax(220px, 1.55fr) repeat(2, minmax(150px, 1fr)) auto minmax(170px, 1fr);
+  }
+}
+
+@media (max-width: 1100px) {
+  #root .main-cases-html[data-cases-state="blocked"] .cf-cases-toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #root .main-cases-html[data-cases-state="blocked"] .cf-cases-toolbar .cf-cases-search {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  #root .main-cases-html[data-cases-state="blocked"] .cf-cases-toolbar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #root .main-cases-html[data-cases-state="blocked"] .cf-cases-toolbar .cf-cases-search {
+    grid-column: auto;
+  }
+
+  #root .main-cases-html[data-cases-state="blocked"] .cf-cases-blocked-actions-cell {
+    align-items: flex-start;
+  }
+}
