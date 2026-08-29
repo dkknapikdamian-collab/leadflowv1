@@ -1416,7 +1416,7 @@ function ClientDetail() {
   const { clientId } = useParams();
   const id = clientId; // CLIENT_DETAIL_CLIENT_ID_ROUTE_ALIAS_HOTFIX: legacy local references must resolve to route clientId
   const navigate = useNavigate();
-  const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
+  const { workspace, profile, hasAccess, loading: workspaceLoading } = useWorkspace();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [client, setClient] = useState<any>(null);
@@ -2995,6 +2995,8 @@ return (
           workspaceId={String(workspace?.id || '')}
           hasAccess={hasAccess}
           hasExistingCase={clientRelatedCasesStage231B0R8.length > 0}
+          ownerId={String(workspace?.ownerId || '') || undefined}
+          ownerName={String(profile?.fullName || '') || undefined}
         />
         {clientEditDialog}
         {contactEditing ? (
@@ -3168,6 +3170,8 @@ return (
           workspaceId={String(workspace?.id || '')}
           hasAccess={hasAccess}
           hasExistingCase={clientRelatedCasesStage231B0R8.length > 0}
+          ownerId={String(workspace?.ownerId || '') || undefined}
+          ownerName={String(profile?.fullName || '') || undefined}
         />
         {clientEditDialog}
         {contactEditing ? (
@@ -3348,6 +3352,8 @@ return (
         workspaceId={String(workspace?.id || '')}
         hasAccess={hasAccess}
         hasExistingCase={clientRelatedCasesStage231B0R8.length > 0}
+        ownerId={String(workspace?.ownerId || '') || undefined}
+        ownerName={String(profile?.fullName || '') || undefined}
       />
       {clientEditDialog}
       <main className="client-detail-vnext-page forteca-frt-026-page cf-page-canvas cf-page-canvas--full cf-html-view main-client-detail-html cf-client-detail-layout-stage231b0-r15-r2" data-forteca-frt-026-root="true" data-forteca-frt-026-runtime="true" data-stage231d0c-client-detail-workspace-baseline="true" data-client-detail-simplified-card-view="true" data-stage216m-r6-client-data-card-marker="true" data-stage216m-r6-r1-client-data-card-polish-marker="true" data-stage231b0-r15-r2-client-detail-shared-canvas="true" data-cf-page-canvas="full">

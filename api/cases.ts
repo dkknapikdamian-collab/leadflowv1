@@ -41,6 +41,7 @@ const CASE_LIST_SELECT_STAGE124 = [
   'created_at',
   'updated_at',
 ].join(',');
+const CASE_LIST_SELECT_STAGE031 = [CASE_LIST_SELECT_STAGE124, 'owner_id'].join(',');
 const CASE_DETAIL_SELECT_STAGE124 = '*';
 
 const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at', 'expected_revenue', 'paid_amount', 'remaining_amount', 'currency',
@@ -58,6 +59,71 @@ function asText(value: unknown) {
 function asNullableUuid(value: unknown) {
   const trimmed = asText(value);
   return trimmed && isUuid(trimmed) ? trimmed : null;
+}
+
+type CaseOwnerInput = { provided: boolean; value: string | null; error?: string };
+
+function hasOwn(value: Record<string, unknown>, key: string) {
+  return Object.prototype.hasOwnProperty.call(value, key);
+}
+
+function parseCaseOwnerInput(body: Record<string, unknown>): CaseOwnerInput {
+  const hasCamelCase = hasOwn(body, 'ownerId');
+  const hasSnakeCase = hasOwn(body, 'owner_id');
+  if (!hasCamelCase && !hasSnakeCase) return { provided: false, value: null };
+
+  const raw = hasCamelCase ? body.ownerId : body.owner_id;
+  if (raw === null || raw === undefined) return { provided: true, value: null };
+  if (typeof raw !== 'string' || !raw.trim() || !isUuid(raw.trim())) {
+    return { provided: true, value: null, error: 'CASE_OWNER_ID_INVALID' };
+  }
+  return { provided: true, value: raw.trim() };
+}
+
+async function findWorkspaceScopedCaseOwner(ownerId: string, workspaceId: string) {
+  const encodedOwnerId = encodeURIComponent(ownerId);
+  const encodedWorkspaceId = encodeURIComponent(workspaceId);
+  const queries = [
+    `workspace_members?select=user_id&workspace_id=eq.${encodedWorkspaceId}&user_id=eq.${encodedOwnerId}&limit=1`,
+    `profiles?select=user_id&workspace_id=eq.${encodedWorkspaceId}&user_id=eq.${encodedOwnerId}&limit=1`,
+    `profiles?select=auth_user_id&workspace_id=eq.${encodedWorkspaceId}&auth_user_id=eq.${encodedOwnerId}&limit=1`,
+    `profiles?select=auth_uid&workspace_id=eq.${encodedWorkspaceId}&auth_uid=eq.${encodedOwnerId}&limit=1`,
+    `profiles?select=firebase_uid&workspace_id=eq.${encodedWorkspaceId}&firebase_uid=eq.${encodedOwnerId}&limit=1`,
+    `workspaces?select=id&id=eq.${encodedWorkspaceId}&owner_id=eq.${encodedOwnerId}&limit=1`,
+    `workspaces?select=id&id=eq.${encodedWorkspaceId}&owner_user_id=eq.${encodedOwnerId}&limit=1`,
+    `workspaces?select=id&id=eq.${encodedWorkspaceId}&created_by_user_id=eq.${encodedOwnerId}&limit=1`,
+  ];
+  let successfulLookup = false;
+  for (const query of queries) {
+    try {
+      const result = await selectFirstAvailable([query]);
+      successfulLookup = true;
+      if (Array.isArray(result.data) && result.data.length > 0) return true;
+    } catch {
+      // Historical installs may not expose every identity column; try the next schema variant.
+    }
+  }
+  return successfulLookup ? false : null;
+}
+
+async function validateCaseOwnerInput(body: Record<string, unknown>, workspaceId: string, res: any) {
+  const ownerInput = parseCaseOwnerInput(body);
+  if (ownerInput.error) {
+    res.status(400).json({ error: ownerInput.error });
+    return null;
+  }
+  if (!ownerInput.value) return ownerInput;
+
+  const ownerIsInWorkspace = await findWorkspaceScopedCaseOwner(ownerInput.value, workspaceId);
+  if (ownerIsInWorkspace === null) {
+    res.status(503).json({ error: 'CASE_OWNER_SCOPE_UNAVAILABLE' });
+    return null;
+  }
+  if (!ownerIsInWorkspace) {
+    res.status(403).json({ error: 'CASE_OWNER_NOT_IN_WORKSPACE' });
+    return null;
+  }
+  return ownerInput;
 }
 
 function normalizeEnum(value: unknown, allowed: Set<string>, fallback: string) {
@@ -403,9 +469,10 @@ export default async function handler(req: any, res: any) {
       let rows: Record<string, unknown>[] = [];
       try {
         const caseSelect = requestedId ? CASE_DETAIL_SELECT_STAGE124 : CASE_LIST_SELECT_STAGE124;
+        const caseListSelect = requestedId ? caseSelect : CASE_LIST_SELECT_STAGE031;
         const result = await selectFirstAvailable([
-          withWorkspaceFilter(`cases?select=${caseSelect}&${caseFilters}order=updated_at.desc.nullslast&limit=${caseLimit}`, workspaceId),
-          withWorkspaceFilter(`cases?select=${caseSelect}&${caseFilters}order=created_at.desc.nullslast&limit=${caseLimit}`, workspaceId),
+          withWorkspaceFilter(`cases?select=${caseListSelect}&${caseFilters}order=updated_at.desc.nullslast&limit=${caseLimit}`, workspaceId),
+          withWorkspaceFilter(`cases?select=${requestedId ? caseSelect : CASE_LIST_SELECT_STAGE124}&${caseFilters}order=created_at.desc.nullslast&limit=${caseLimit}`, workspaceId),
         ]);
         rows = result.data as Record<string, unknown>[];
         if (!requestedId && !includeArchivedCasesForCascade) {
@@ -446,6 +513,8 @@ export default async function handler(req: any, res: any) {
       }
 
       const nowIso = new Date().toISOString();
+      const ownerInput = await validateCaseOwnerInput(body, finalWorkspaceId, res);
+      if (!ownerInput) return;
       const normalizedLeadId = asNullableUuid(body.leadId);
       const normalizedStatus = normalizeCaseStatus(body.status, 'in_progress');
       const linkedLeadRows = normalizedLeadId
@@ -516,6 +585,7 @@ export default async function handler(req: any, res: any) {
         created_at: nowIso,
         updated_at: nowIso,
       };
+      payload.owner_id = ownerInput.value;
 
       const result = await insertCaseWithSchemaFallback(payload);
       const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
@@ -554,6 +624,8 @@ export default async function handler(req: any, res: any) {
       await requireScopedRow('cases', String(body.id), workspaceId, 'CASE_NOT_FOUND');
 
       const nowIso = new Date().toISOString();
+      const ownerInput = await validateCaseOwnerInput(body, workspaceId, res);
+      if (!ownerInput) return;
       const normalizedLeadId = body.leadId !== undefined ? asNullableUuid(body.leadId) : undefined;
       const linkedLeadRows = normalizedLeadId
         ? await safeSelectRows(withWorkspaceFilter(`leads?select=*&id=eq.${encodeURIComponent(normalizedLeadId)}&limit=1`, workspaceId))
@@ -577,6 +649,7 @@ export default async function handler(req: any, res: any) {
       const payload: Record<string, unknown> = {
         updated_at: nowIso,
       };
+      if (ownerInput.provided) payload.owner_id = ownerInput.value;
 
       if (body.title !== undefined) payload.title = asText(body.title) || 'Sprawa bez tytułu';
       if (body.clientName !== undefined || ensuredClient) payload.client_name = asText(body.clientName || ensuredClient?.name || linkedLead?.name);

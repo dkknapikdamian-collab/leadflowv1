@@ -50,6 +50,9 @@ function normalizeCaseItem(row: any, forPortal = false) {
     approvedAt: row.approved_at || null,
     createdAt: row.created_at || null,
     updatedAt: row.updated_at || null,
+    payload: forPortal
+      ? {}
+      : (row.payload && typeof row.payload === 'object' && !Array.isArray(row.payload) ? row.payload : {}),
     portalSafe: forPortal || undefined,
   };
 }
@@ -179,6 +182,7 @@ export default async function handler(req: any, res: any) {
         response: sanitizeAccessResponse(itemType, body.response),
         file_url: null,
         file_name: null,
+        payload: body.payload && typeof body.payload === 'object' && !Array.isArray(body.payload) ? body.payload : {},
         created_at: now,
         updated_at: now,
       };

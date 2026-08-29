@@ -210,6 +210,7 @@ export type CaseDto = DataRecord & {
   workspaceId: string;
   clientId?: string;
   leadId?: string;
+  ownerId?: string;
   title: string;
   clientName: string;
   status: string;
@@ -365,6 +366,7 @@ export type CaseItemDto = DataRecord & {
   fileName: string | null;
   dueDate: string | null;
   approvedAt: string | null;
+  payload: Record<string, unknown>;
   createdAt: string | null;
   updatedAt: string | null;
 };
@@ -612,6 +614,7 @@ export function normalizeCaseContract(row: DataRecord): CaseDto {
     workspaceId: pickText(row, ['workspaceId', 'workspace_id'], ''),
     clientId: pickOptionalText(row, ['clientId', 'client_id']),
     leadId: pickOptionalText(row, ['leadId', 'lead_id']),
+    ownerId: pickOptionalText(row, ['ownerId', 'owner_id']),
     title: pickText(row, ['title', 'name', 'clientName', 'client_name'], 'Sprawa'),
     clientName: pickText(row, ['clientName', 'client_name', 'name'], ''),
     status: normalizeCaseStatus(row.status),
@@ -821,6 +824,7 @@ export function normalizeCaseItemContract(row: DataRecord): CaseItemDto {
     fileName: pickNullableText(row, ['fileName', 'file_name']),
     dueDate: toIsoDateTime(row.dueDate) || toIsoDateTime(row.due_date),
     approvedAt: toIsoDateTime(row.approvedAt) || toIsoDateTime(row.approved_at),
+    payload: pickPayload(row, ['payload']),
     createdAt: toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at),
     updatedAt: toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at),
   };
