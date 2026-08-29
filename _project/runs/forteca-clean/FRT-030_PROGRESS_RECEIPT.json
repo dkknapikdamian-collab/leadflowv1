@@ -9,8 +9,8 @@
   "result": "IN_PROGRESS",
   "stage_status": "IMPLEMENTATION_COMMITTED_AUTH_FIX_LIVE_MUTATION_PARTIAL_SCHEMA_PENDING",
   "acceptance_authority": "NOT_ACCEPTED",
-  "implementation_commit_sha": "3c88ef0e4dc2b3709cd4366c83755a8fdc989864",
-  "remote_head_verified": "3c88ef0e4dc2b3709cd4366c83755a8fdc989864",
+  "implementation_commit_sha": "34fd882a3785d88d214706e7cdf4ef454b71e9a3",
+  "remote_head_verified": "34fd882a3785d88d214706e7cdf4ef454b71e9a3",
   "branch": "dev-rollout-freeze",
   "evidence": {
     "guardian": "audit/evidence/FRT-030_GUARDIAN_AUDIT_SUMMARY.json",
@@ -33,5 +33,5 @@
   "zero_plaster_policy": "Applied: reference values are not runtime fixtures; update/delete remain workspace-scoped real mutations; repeated colors resolve through canonical VST tokens.",
   "next_action": "Apply supabase/migrations/20260829100000_frt029_client_address_owner.sql through an authorized Supabase SQL Editor/CLI migration channel, rerun populated address/owner save and reload proof; do not activate FRT-031 or accept FRT-030 before complete evidence.",
   "created_at": "2026-08-29T05:51:16.4912099Z",
-  "updated_at": "2026-08-29T10:33:18.1401887Z"
+  "updated_at": "2026-08-29T10:39:57.6512363Z"
 }

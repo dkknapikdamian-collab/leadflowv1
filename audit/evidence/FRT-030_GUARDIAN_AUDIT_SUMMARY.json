@@ -16,8 +16,8 @@
   "repository": {
     "branch": "dev-rollout-freeze",
     "implementation_branch": "codex/forteca-ui-001-040-clean",
-    "implementation_commit": "3c88ef0e4dc2b3709cd4366c83755a8fdc989864",
-    "promoted_head": "3c88ef0e4dc2b3709cd4366c83755a8fdc989864"
+    "implementation_commit": "34fd882a3785d88d214706e7cdf4ef454b71e9a3",
+    "promoted_head": "34fd882a3785d88d214706e7cdf4ef454b71e9a3"
   },
   "stage_validation": {
     "focused_tests": "7/7 PASS",
@@ -54,5 +54,5 @@
     "repair": "FRT-030 adds a controlled edit variant beside the existing create owner, routes Client Detail edit actions to it, preserves workspace-scoped update/delete paths, scopes calm-light composition through VST tokens, and preserves the canonical Supabase Auth user id for activity authorization."
   },
   "created_at": "2026-08-29T05:51:16.4912099Z",
-  "updated_at": "2026-08-29T10:33:18.1401887Z"
+  "updated_at": "2026-08-29T10:39:57.6512363Z"
 }
