@@ -218,6 +218,7 @@ export default function Layout({ children }: LayoutProps) {
       const main = document.querySelector('main[data-shell-main="true"]');
       const globalBar = document.querySelector('[data-shell-global-bar="true"]');
       const content = document.querySelector('main[data-shell-main="true"] > div.view.active[data-shell-content="true"]');
+      const isForteca028ClosedCases = Boolean(document.querySelector('[data-forteca-frt-028-root="true"]'));
 
       if (window.innerWidth <= 860) {
         setImportant(document.documentElement, {
@@ -332,7 +333,9 @@ export default function Layout({ children }: LayoutProps) {
         'overflow-y': 'auto',
         'overflow-x': 'hidden',
         'overscroll-behavior': 'contain',
-        'scrollbar-gutter': 'stable both-edges',
+        // FRT-028 owns the full-width detail canvas; the centered gutter would
+        // reserve two 15px rails and shift every reference-aligned surface.
+        'scrollbar-gutter': isForteca028ClosedCases ? 'auto' : 'stable both-edges',
         'padding-bottom': '240px'
       });
 
@@ -344,6 +347,17 @@ export default function Layout({ children }: LayoutProps) {
     const raf = window.requestAnimationFrame(applyCenterScrollContract);
     const t1 = window.setTimeout(applyCenterScrollContract, 0);
     const t2 = window.setTimeout(applyCenterScrollContract, 120);
+    let forteca028Observer: MutationObserver | null = null;
+    const isClientDetailPath = /^\/clients\/[^/]+$/.test(location.pathname);
+    const contentForFortecaObserver = document.querySelector<HTMLElement>('main[data-shell-main="true"] > div.view.active[data-shell-content="true"]');
+    if (isClientDetailPath && contentForFortecaObserver && !document.querySelector('[data-forteca-frt-028-root="true"]')) {
+      forteca028Observer = new MutationObserver(() => {
+        if (!document.querySelector('[data-forteca-frt-028-root="true"]')) return;
+        applyCenterScrollContract();
+        forteca028Observer?.disconnect();
+      });
+      forteca028Observer.observe(contentForFortecaObserver, { childList: true, subtree: true });
+    }
 
     window.addEventListener('resize', applyCenterScrollContract);
 
@@ -351,6 +365,7 @@ export default function Layout({ children }: LayoutProps) {
       window.cancelAnimationFrame(raf);
       window.clearTimeout(t1);
       window.clearTimeout(t2);
+      forteca028Observer?.disconnect();
       window.removeEventListener('resize', applyCenterScrollContract);
     };
   }, [location.pathname, mobileMenuOpen]);
