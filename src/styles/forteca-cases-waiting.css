@@ -1,0 +1,295 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/forteca-cases-waiting.css","concerns":["waiting-client-case-list-composition","responsive-table-geometry"],"scope":"route-scoped","consumerRoots":["src/pages/Cases.tsx"],"role":"scoped-adapter","boundary":"route-component","whyNotGlobal":"Only the canonical waiting-for-client case view uses this reference-specific composition.","whyNotDuplicate":"Shared CloseFlow tokens, controls, metric cards, status tones and action primitives remain the single visual source of truth.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+
+#root .main-cases-html[data-cases-state="waiting"] {
+  gap: var(--cf-vst-space-lg);
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--cf-vst-space-lg);
+  min-width: 0;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--cf-vst-surface-border);
+  scrollbar-width: thin;
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-tabs button {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--cf-vst-space-xs);
+  min-height: var(--cf-vst-button-height-md);
+  padding: 0 0 var(--cf-vst-space-sm);
+  border: 0;
+  background: transparent;
+  color: var(--cf-vst-text-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--cf-vst-font-size-body-sm);
+  font-weight: var(--cf-vst-font-weight-semibold);
+  white-space: nowrap;
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-tabs button::after {
+  position: absolute;
+  right: 0;
+  bottom: calc(var(--cf-vst-space-2xs) * -1);
+  left: 0;
+  height: 2px;
+  background: transparent;
+  content: "";
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-tabs button:hover,
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-tabs button:focus-visible,
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-tabs button.is-active {
+  color: var(--cf-vst-color-primary-strong);
+  outline: none;
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-tabs button.is-active::after {
+  background: var(--cf-vst-color-primary);
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-tabs button span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--cf-vst-icon-box-sm);
+  height: var(--cf-vst-icon-box-sm);
+  padding-inline: var(--cf-vst-space-2xs);
+  border-radius: var(--cf-vst-radius-pill);
+  background: var(--cf-vst-color-primary-soft);
+  color: var(--cf-vst-color-primary-strong);
+  font-size: var(--cf-vst-font-size-micro);
+  font-weight: var(--cf-vst-font-weight-bold);
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-kpi-grid {
+  gap: var(--cf-vst-space-md);
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-kpi-grid .cf-operator-metric-helper {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-kpi-grid [data-cf-operator-metric-tone="purple"] .cf-operator-metric-icon {
+  border-color: var(--cf-metric-tone-purple-icon, var(--cf-vst-color-primary-border));
+  background: var(--cf-metric-tone-purple-icon-bg, var(--cf-vst-color-primary-soft));
+  color: var(--cf-metric-tone-purple-icon, var(--cf-vst-color-primary));
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-kpi-grid [data-cf-operator-metric-tone="purple"] .cf-operator-metric-value {
+  color: var(--cf-metric-tone-purple-value, var(--cf-vst-text-strong));
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-toolbar {
+  grid-template-columns: minmax(260px, 1.8fr) minmax(170px, 0.9fr) minmax(160px, 0.9fr) auto auto;
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-toolbar > [data-cf-filter-control-variant] {
+  min-width: 0;
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-toolbar [data-cf-cases-waiting-status-filter="true"] select:disabled {
+  cursor: not-allowed;
+  opacity: var(--cf-vst-disabled-opacity);
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-save-view {
+  min-height: var(--cf-vst-input-height);
+  border-color: var(--cf-vst-color-primary-border);
+  color: var(--cf-vst-color-primary-strong);
+  white-space: nowrap;
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-save-view:hover,
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-save-view:focus-visible {
+  border-color: var(--cf-vst-color-primary);
+  background: var(--cf-vst-color-primary-soft);
+  outline: none;
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-table {
+  min-width: 1280px;
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-row {
+  grid-template-columns: minmax(13rem, 1.2fr) minmax(11rem, 1fr) minmax(9rem, 0.82fr) minmax(13rem, 1.15fr) minmax(9.5rem, 0.9fr) minmax(12rem, 1fr) minmax(13rem, 1.1fr) minmax(10rem, 0.9fr) minmax(15rem, 1.3fr);
+  min-width: 1280px;
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-row-head {
+  min-height: 50px;
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-row-head .cf-cases-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cf-vst-space-2xs);
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-row-head .cf-cases-cell svg {
+  width: var(--cf-vst-icon-size-xs);
+  height: var(--cf-vst-icon-size-xs);
+  color: var(--cf-vst-text-faint);
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-row.cf-cases-data-row {
+  align-items: stretch;
+  min-height: 90px;
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-row.cf-cases-data-row:hover {
+  background: var(--cf-vst-surface-soft);
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-row .cf-cases-cell {
+  min-width: 0;
+  padding-block: var(--cf-vst-space-md);
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-case-cell,
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-missing-cell,
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-date-cell,
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-reminder-cell {
+  display: grid;
+  align-content: center;
+  gap: var(--cf-vst-space-2xs);
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-case-link {
+  display: grid;
+  gap: var(--cf-vst-space-2xs);
+  min-width: 0;
+  color: var(--cf-vst-text-strong);
+  text-decoration: none;
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-case-link:hover,
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-case-link:focus-visible {
+  color: var(--cf-vst-color-primary-strong);
+  outline: none;
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-case-link strong,
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-missing-cell strong,
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-date-cell strong,
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-reminder-cell strong {
+  min-width: 0;
+  color: inherit;
+  font-size: var(--cf-vst-font-size-body-sm);
+  font-weight: var(--cf-vst-font-weight-semibold);
+  line-height: var(--cf-vst-line-height-body);
+  overflow-wrap: anywhere;
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-case-link small,
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-missing-cell small,
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-date-cell small,
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-reminder-cell small {
+  color: var(--cf-vst-text-muted);
+  font-size: var(--cf-vst-font-size-meta);
+  line-height: var(--cf-vst-line-height-body);
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-reminder-cell strong {
+  color: var(--cf-vst-text-main);
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-actions-cell {
+  justify-content: flex-start;
+  gap: var(--cf-vst-space-xs);
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-reminder-button,
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-open-link {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: var(--cf-vst-space-xs);
+  min-height: var(--cf-vst-button-height-sm);
+  max-width: 12rem;
+  padding: 0 var(--cf-vst-space-sm);
+  border: 1px solid var(--cf-vst-color-primary-border);
+  border-radius: var(--cf-vst-radius-button);
+  background: var(--cf-vst-color-primary-soft);
+  color: var(--cf-vst-color-primary-strong);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--cf-vst-font-size-meta);
+  font-weight: var(--cf-vst-font-weight-semibold);
+  line-height: var(--cf-vst-line-height-button);
+  text-align: center;
+  text-decoration: none;
+  white-space: normal;
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-reminder-button:hover,
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-reminder-button:focus-visible,
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-open-link:hover,
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-open-link:focus-visible {
+  border-color: var(--cf-vst-color-primary);
+  background: var(--cf-vst-color-primary);
+  color: var(--cf-vst-surface-card-solid);
+  outline: none;
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-reminder-button svg {
+  flex: 0 0 auto;
+  width: var(--cf-vst-icon-size-sm);
+  height: var(--cf-vst-icon-size-sm);
+}
+
+#root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-actions-cell .cf-cases-more-button {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 1240px) {
+  #root .main-cases-html[data-cases-state="waiting"] .cf-cases-toolbar {
+    grid-template-columns: minmax(220px, 1.5fr) repeat(2, minmax(150px, 1fr)) auto auto;
+  }
+}
+
+@media (max-width: 1100px) {
+  #root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-tabs {
+    gap: var(--cf-vst-space-md);
+  }
+
+  #root .main-cases-html[data-cases-state="waiting"] .cf-cases-toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #root .main-cases-html[data-cases-state="waiting"] .cf-cases-toolbar .cf-cases-search,
+  #root .main-cases-html[data-cases-state="waiting"] .cf-cases-toolbar .cf-cases-save-view {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  #root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-tabs {
+    gap: var(--cf-vst-space-sm);
+  }
+
+  #root .main-cases-html[data-cases-state="waiting"] .cf-cases-toolbar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #root .main-cases-html[data-cases-state="waiting"] .cf-cases-toolbar .cf-cases-search,
+  #root .main-cases-html[data-cases-state="waiting"] .cf-cases-toolbar .cf-cases-save-view {
+    grid-column: auto;
+  }
+
+  #root .main-cases-html[data-cases-state="waiting"] .cf-cases-waiting-actions-cell {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+}

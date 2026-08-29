@@ -14,7 +14,7 @@
 // STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ArrowUpDown, CalendarDays, ChevronDown, ChevronRight, Clock, Download, Filter, Folder, Loader2, LockKeyhole, MoreHorizontal, Plus, Rocket, Search } from 'lucide-react';
+import { ArrowUpDown, Bell, CalendarDays, ChevronDown, ChevronRight, Clock, Download, Filter, Folder, Loader2, LockKeyhole, MoreHorizontal, Plus, Rocket, Search, Send } from 'lucide-react';
 import { format } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
@@ -39,6 +39,7 @@ import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { getCaseOwnerRiskBadges, ownerRiskTone } from '../lib/owner-control/owner-risk-rules';
 import { readOwnerRiskSettings } from '../lib/owner-control/owner-risk-settings';
 import { getCaseStatusLabel, getCaseStatusTone } from '../lib/config/case-status';
+import { normalizeCaseStatus } from '../lib/domain-statuses';
 import { caseDetailPath } from '../lib/routes';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import {
@@ -54,6 +55,7 @@ import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-runtime.css';
 import '../styles/closeflow-record-list-source-truth.css';
 import '../styles/forteca-cases-all.css';
+import '../styles/forteca-cases-waiting.css';
 // LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css' is provided once by App.tsx.
 const CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES = 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES';
 const CLIENT_CASE_FORMS_STAGE23_HUMAN_COPY = 'Podaj nazwę klienta. Podaj tytuł sprawy. Wybierz klienta albo utwórz nowego. Nie udało się zapisać. Spróbuj ponownie. Rozpocznij obsługę.';
@@ -174,20 +176,23 @@ function caseNeedsAttention(caseRecord: CaseRecord) {
   return caseRecord.status === 'blocked' || caseRecord.status === 'waiting_on_client' || (caseRecord.completenessPercent || 0) < 35;
 }
 
-function toUpdatedDate(value: CaseRecord['updatedAt']) {
+function toUpdatedDate(value: unknown) {
   if (!value) return null;
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? null : value;
+  }
   if (typeof value === 'string') {
     const parsed = new Date(value);
     return Number.isNaN(parsed.getTime()) ? null : parsed;
   }
-  if (typeof value === 'object' && typeof value.toDate === 'function') {
-    return value.toDate();
+  if (typeof value === 'object' && value !== null && typeof (value as { toDate?: unknown }).toDate === 'function') {
+    return (value as { toDate: () => Date }).toDate();
   }
   return null;
 }
 
-function formatCaseDate(value: CaseRecord['updatedAt'] | CaseRecord['createdAt']) {
-  const date = toUpdatedDate(value as CaseRecord['updatedAt']);
+function formatCaseDate(value: unknown) {
+  const date = toUpdatedDate(value);
   if (!date) return 'Brak daty';
   return format(date, 'd MMM yyyy, HH:mm', { locale: pl });
 }
@@ -217,6 +222,84 @@ function getCaseOwnerLabel(record: CaseRecord, profile: any, workspace: any) {
     return String(profile?.fullName || profile?.email || 'Opiekun').trim();
   }
   return `Opiekun ${ownerId.slice(0, 8)}`;
+}
+
+function isWaitingForClientCase(record: Pick<CaseRecord, 'status'>) {
+  return normalizeCaseStatus(record.status) === 'waiting_on_client';
+}
+
+function readCaseField(record: CaseRecord, keys: string[]) {
+  const rawRecord = record as CaseRecord & Record<string, unknown>;
+  for (const key of keys) {
+    const value = rawRecord[key];
+    if (value === null || value === undefined) continue;
+    if (typeof value === 'string' && !value.trim()) continue;
+    return value;
+  }
+  return null;
+}
+
+function readCaseDate(record: CaseRecord, keys: string[]) {
+  return toUpdatedDate(readCaseField(record, keys) as CaseRecord['updatedAt']);
+}
+
+function getWaitingSince(record: CaseRecord) {
+  return readCaseDate(record, [
+    'waitingSince',
+    'waiting_since',
+    'clientWaitingSince',
+    'client_waiting_since',
+    'statusChangedAt',
+    'status_changed_at',
+    'updatedAt',
+    'createdAt',
+  ]);
+}
+
+function getLastReminderDate(record: CaseRecord) {
+  return readCaseDate(record, [
+    'lastReminderAt',
+    'last_reminder_at',
+    'lastClientReminderAt',
+    'last_client_reminder_at',
+    'remindedAt',
+    'reminded_at',
+  ]);
+}
+
+function formatWaitingAge(value: Date | null) {
+  if (!value) return 'Data nieznana';
+  const elapsedDays = Math.max(0, Math.floor((Date.now() - value.getTime()) / 86_400_000));
+  if (elapsedDays === 0) return 'od dziś';
+  if (elapsedDays === 1) return '1 dzień';
+  return `${elapsedDays} dni`;
+}
+
+function getWaitingMissingLabel(record: CaseRecord, lifecycle: ReturnType<typeof resolveCaseLifecycleV1>) {
+  const rawMissingItems = readCaseField(record, ['missingItems', 'missing_items', 'missingRequiredItems', 'missing_required_items']);
+  if (Array.isArray(rawMissingItems) && rawMissingItems.length > 0) {
+    return `${rawMissingItems.length} ${rawMissingItems.length === 1 ? 'element' : 'elementy'}`;
+  }
+
+  const rawMissingCount = readCaseField(record, ['missingCount', 'missing_count', 'missingRequiredCount', 'missing_required_count']);
+  if (typeof rawMissingCount === 'number' && Number.isFinite(rawMissingCount) && rawMissingCount > 0) {
+    return `${rawMissingCount} ${rawMissingCount === 1 ? 'element' : 'elementy'}`;
+  }
+
+  if (lifecycle.missingRequiredCount > 0) {
+    return `${lifecycle.missingRequiredCount} ${lifecycle.missingRequiredCount === 1 ? 'element' : 'elementy'}`;
+  }
+
+  return 'Brak braków';
+}
+
+function percentageLabel(value: number, total: number) {
+  if (!total) return '0%';
+  return `${Math.round((value / total) * 100)}%`;
+}
+
+function csvCell(value: unknown) {
+  return `"${String(value ?? '').replace(/"/g, '""')}"`;
 }
 
 function buildCaseActionMap(actions: any[]) {
@@ -416,6 +499,27 @@ export default function Cases() {
     [cases]
   );
 
+  const waitingCases = useMemo(
+    () => cases.filter((record) => isWaitingForClientCase(record)),
+    [cases],
+  );
+
+  const waitingMetrics = useMemo(() => {
+    const ages = waitingCases
+      .map((record) => getWaitingSince(record))
+      .filter((date): date is Date => Boolean(date))
+      .map((date) => Math.max(0, Math.floor((Date.now() - date.getTime()) / 86_400_000)));
+    const overdue = ages.filter((days) => days > 5).length;
+    const noReminder = waitingCases.filter((record) => !getLastReminderDate(record)).length;
+
+    return {
+      count: waitingCases.length,
+      averageDays: ages.length ? Math.round(ages.reduce((total, days) => total + days, 0) / ages.length) : 0,
+      overdue,
+      noReminder,
+    };
+  }, [waitingCases]);
+
   const renderClosedCaseBannerStage231B0R12 = (caseRecord: any) => {
     if (!isClosedCaseStatus(caseRecord?.status)) {
       return null;
@@ -441,7 +545,7 @@ export default function Cases() {
     return {
       open: activeCases.length,
       all: cases.length,
-      waiting: cases.filter((record) => String(record.status || '') === 'waiting_on_client').length,
+      waiting: cases.filter((record) => isWaitingForClientCase(record)).length,
       blocked: cases.filter((record) => String(record.status || '') === 'blocked' || lifecycleById.get(String(record.id || ''))?.bucket === 'blocked').length,
       approval: cases.filter((record) => lifecycleById.get(String(record.id || ''))?.bucket === 'waiting_approval').length,
       ready: cases.filter((record) => String(record.status || '') === 'ready_to_start' || lifecycleById.get(String(record.id || ''))?.bucket === 'ready_to_start').length,
@@ -553,7 +657,7 @@ export default function Cases() {
       );
 
       const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
-      const status = String(record.status || '').trim();
+      const status = normalizeCaseStatus(record.status);
       const nearestCaseAction = getNearestPlannedAction({
         recordType: 'case',
         recordId: String(record.id || ''),
@@ -563,7 +667,7 @@ export default function Cases() {
         caseView === 'open'
         || caseView === 'closed'
         || caseView === 'all'
-        || (caseView === 'waiting' && (status === 'waiting_on_client' || lifecycle.bucket === 'waiting_approval'))
+        || (caseView === 'waiting' && isWaitingForClientCase(record))
         || (caseView === 'blocked' && (status === 'blocked' || lifecycle.bucket === 'blocked'))
         || (caseView === 'approval' && lifecycle.bucket === 'waiting_approval')
         || (caseView === 'ready' && (status === 'ready_to_start' || lifecycle.bucket === 'ready_to_start'))
@@ -608,6 +712,7 @@ export default function Cases() {
   const casePageCount = Math.max(1, Math.ceil(sortedCases.length / casePageSize));
   const safeCasePage = Math.min(casePage, casePageCount);
   const visibleCases = sortedCases.slice((safeCasePage - 1) * casePageSize, safeCasePage * casePageSize);
+  const isWaitingView = caseView === 'waiting';
   const allVisibleCasesSelected = visibleCases.length > 0 && visibleCases.every((record) => selectedCaseIds.has(record.id));
   const casePageItems = useMemo(() => buildPaginationItems(safeCasePage, casePageCount), [casePageCount, safeCasePage]);
 
@@ -647,6 +752,62 @@ export default function Cases() {
     setSelectedCaseIds(new Set());
     setCaseViewStage231B0R9(view);
   };
+
+  const activateCaseTab = (view: CaseView, nextStatus: CaseStatusFilter = 'all') => {
+    resetCaseListFilters(view);
+    if (nextStatus !== 'all') setStatusFilter(nextStatus);
+  };
+
+  function handleExportWaitingCases() {
+    const headers = ['Sprawa', 'Klient', 'Status', 'Czego brakuje', 'Czekamy od', 'Ostatnie przypomnienie', 'Najbliższy ruch', 'Opiekun'];
+    const rows = sortedCases.map((record) => {
+      const rawClient = clientsById.get(String(record.clientId || ''));
+      const clientName = String(record.clientName || rawClient?.name || rawClient?.company || 'Brak nazwy klienta');
+      const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
+      const waitingSince = getWaitingSince(record);
+      const lastReminder = getLastReminderDate(record);
+      const nearestCaseAction = getNearestPlannedAction({
+        recordType: 'case',
+        recordId: String(record.id || ''),
+        items: [...(caseTasksByCaseId.get(String(record.id || '')) || []), ...(caseEventsByCaseId.get(String(record.id || '')) || [])],
+      });
+      return [
+        `${getCaseSubject(record)} (${getCaseReference(record)})`,
+        clientName,
+        getCaseStatusLabel(record.status),
+        getWaitingMissingLabel(record, lifecycle),
+        formatCaseDate(waitingSince || record.createdAt),
+        lastReminder ? formatCaseDate(lastReminder) : 'Brak przypomnienia',
+        nearestCaseAction ? `${nearestCaseAction.title} · ${formatCaseDate(nearestCaseAction.when)}` : 'Brak zaplanowanego ruchu',
+        getCaseOwnerLabel(record, profile, workspace),
+      ].map(csvCell).join(',');
+    });
+    const csv = [headers.map(csvCell).join(','), ...rows].join('\n');
+    const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = 'closeflow-sprawy-czekaja-na-klienta.csv';
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+    toast.success(`Wyeksportowano ${sortedCases.length} ${sortedCases.length === 1 ? 'sprawę' : 'spraw'}.`);
+  }
+
+  function handleSaveWaitingView() {
+    try {
+      window.localStorage.setItem('closeflow.cases.waiting-view.v1', JSON.stringify({
+        view: 'waiting',
+        search: searchQuery,
+        owner: ownerFilter,
+        savedAt: new Date().toISOString(),
+      }));
+      toast.success('Widok „Czekają na klienta” zapisany na tym urządzeniu.');
+    } catch {
+      toast.error('Nie udało się zapisać widoku na tym urządzeniu.');
+    }
+  }
 
   const toggleCaseView = (view: CaseView) => {
     if (caseView === view) {
@@ -753,7 +914,12 @@ export default function Cases() {
 
   return (
     <Layout>
-      <div className="cf-html-view main-cases-html" data-cases-real-view="true" data-stage16c-tasks-cases-repair="cases">
+      <div
+        className={`cf-html-view main-cases-html ${isWaitingView ? 'cf-cases-waiting-state' : ''}`}
+        data-cases-real-view="true"
+        data-cases-state={isWaitingView ? 'waiting' : caseView}
+        data-stage16c-tasks-cases-repair="cases"
+      >
         <CloseFlowPageHeaderV2
           pageKey="cases"
           title="Sprawy"
@@ -765,11 +931,14 @@ export default function Cases() {
                   type="button"
                   variant="outline"
                   className="cf-cases-import-button"
-                  onClick={() => toast.info('Import CSV wymaga przygotowania pliku i zostanie zapisany w kolejnym kroku.')}
-                  data-cf-cases-import="true"
+                  onClick={() => isWaitingView
+                    ? handleExportWaitingCases()
+                    : toast.info('Import CSV wymaga przygotowania pliku i zostanie zapisany w kolejnym kroku.')}
+                  data-cf-cases-import={isWaitingView ? undefined : 'true'}
+                  data-cf-cases-export={isWaitingView ? 'true' : undefined}
                 >
                   <Download aria-hidden="true" />
-                  Import CSV
+                  {isWaitingView ? 'Eksportuj' : 'Import CSV'}
                 </Button>
                 <Dialog open={isCreateCaseOpen} onOpenChange={(open) => {
                             setIsCreateCaseOpen(open);
@@ -946,6 +1115,57 @@ export default function Cases() {
           }
         />
 
+        {isWaitingView ? (
+          <nav className="cf-cases-waiting-tabs" aria-label="Widoki spraw" data-cf-cases-tabs="true">
+            <button type="button" onClick={() => activateCaseTab('all')}>Wszystkie</button>
+            <button type="button" onClick={() => activateCaseTab('open')}>Aktywne</button>
+            <button type="button" className="is-active" aria-current="page" onClick={() => activateCaseTab('waiting')}>
+              Czekają na klienta <span>{waitingMetrics.count}</span>
+            </button>
+            <button type="button" onClick={() => activateCaseTab('all', 'in_progress')}>W trakcie</button>
+            <button type="button" onClick={() => activateCaseTab('blocked')}>Zablokowane</button>
+            <button type="button" onClick={() => activateCaseTab('ready')}>Gotowe do startu</button>
+          </nav>
+        ) : null}
+
+        {isWaitingView ? (
+          <section className="cf-cases-kpi-grid cf-cases-waiting-kpi-grid" aria-label="Podsumowanie spraw czekających na klienta" data-cf-cases-kpi-grid="true" data-cf-cases-waiting-kpi="true">
+            <StatShortcutCard
+              label="CZEKAJĄ NA KLIENTA"
+              value={stats.waiting}
+              icon={Clock}
+              tone="purple"
+              helper={`${percentageLabel(waitingMetrics.count, stats.all)} wszystkich spraw`}
+              active
+              onClick={() => activateCaseTab('waiting')}
+              ariaLabel="Pokaż sprawy czekające na klienta"
+            />
+            <StatShortcutCard
+              label="ŚREDNI CZAS OCZEKIWANIA"
+              value={`${waitingMetrics.averageDays} dni`}
+              icon={Clock}
+              tone="amber"
+              helper={waitingMetrics.count ? 'średnia na podstawie dat oczekiwania' : 'brak dat oczekiwania'}
+              ariaLabel="Średni czas oczekiwania spraw"
+            />
+            <StatShortcutCard
+              label="PRZEKROCZONE 5 DNI"
+              value={waitingMetrics.overdue}
+              icon={CalendarDays}
+              tone="red"
+              helper={`${percentageLabel(waitingMetrics.overdue, waitingMetrics.count)} spraw`}
+              ariaLabel="Sprawy oczekujące ponad pięć dni"
+            />
+            <StatShortcutCard
+              label="BEZ PRZYPOMNIENIA"
+              value={waitingMetrics.noReminder}
+              icon={Bell}
+              tone="amber"
+              helper={`${percentageLabel(waitingMetrics.noReminder, waitingMetrics.count)} spraw`}
+              ariaLabel="Sprawy bez ostatniego przypomnienia"
+            />
+          </section>
+        ) : (
         <section className="cf-cases-kpi-grid" aria-label="Podsumowanie spraw" data-cf-cases-kpi-grid="true">
           <StatShortcutCard
             label="WSZYSTKIE"
@@ -997,6 +1217,7 @@ export default function Cases() {
             ariaLabel="Pokaż sprawy gotowe do startu"
           />
         </section>
+        )}
 
         <section className="cf-cases-table-card" data-cf-cases-list="true">
           <FilterToolbar
@@ -1006,7 +1227,7 @@ export default function Cases() {
             <label className="cf-cases-search">
               <Search aria-hidden="true" />
               <Input
-                placeholder="Szukaj sprawy, klienta, tematu, numeru..."
+                placeholder={isWaitingView ? 'Szukaj sprawy, klienta, opiekuna...' : 'Szukaj sprawy, klienta, tematu, numeru...'}
                 aria-label="Szukaj sprawy, klienta, tematu lub numeru"
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
@@ -1014,34 +1235,39 @@ export default function Cases() {
             </label>
             <FilterSelect
               label="Status"
-              value={statusFilter}
+              value={isWaitingView ? 'waiting_on_client' : statusFilter}
               onChange={(value) => setStatusFilter(value as CaseStatusFilter)}
+              disabled={isWaitingView}
               className="cf-cases-control"
               selectClassName="cf-cases-native-select"
-              dataAttrs={{ 'data-cf-cases-status-filter': true }}
-              options={[
-                { value: 'all', label: 'Wszystkie' },
-                { value: 'in_progress', label: 'W realizacji' },
-                { value: 'waiting_on_client', label: 'Czeka na klienta' },
-                { value: 'blocked', label: 'Zablokowane' },
-                { value: 'ready_to_start', label: 'Gotowe do startu' },
-                { value: 'closed', label: 'Zamknięte' },
-              ]}
+              dataAttrs={{ 'data-cf-cases-status-filter': true, 'data-cf-cases-waiting-status-filter': isWaitingView }}
+              options={isWaitingView
+                ? [{ value: 'waiting_on_client', label: 'Czekają na klienta' }]
+                : [
+                    { value: 'all', label: 'Wszystkie' },
+                    { value: 'in_progress', label: 'W realizacji' },
+                    { value: 'waiting_on_client', label: 'Czeka na klienta' },
+                    { value: 'blocked', label: 'Zablokowane' },
+                    { value: 'ready_to_start', label: 'Gotowe do startu' },
+                    { value: 'closed', label: 'Zamknięte' },
+                  ]}
             />
-            <FilterSelect
-              label="Kompletność"
-              value={completenessFilter}
-              onChange={(value) => setCompletenessFilter(value as CaseCompletenessFilter)}
-              className="cf-cases-control"
-              selectClassName="cf-cases-native-select"
-              dataAttrs={{ 'data-cf-cases-completeness-filter': true }}
-              options={[
-                { value: 'all', label: 'Wszystkie' },
-                { value: 'low', label: '0–34%' },
-                { value: 'medium', label: '35–74%' },
-                { value: 'high', label: '75–100%' },
-              ]}
-            />
+            {!isWaitingView ? (
+              <FilterSelect
+                label="Kompletność"
+                value={completenessFilter}
+                onChange={(value) => setCompletenessFilter(value as CaseCompletenessFilter)}
+                className="cf-cases-control"
+                selectClassName="cf-cases-native-select"
+                dataAttrs={{ 'data-cf-cases-completeness-filter': true }}
+                options={[
+                  { value: 'all', label: 'Wszystkie' },
+                  { value: 'low', label: '0–34%' },
+                  { value: 'medium', label: '35–74%' },
+                  { value: 'high', label: '75–100%' },
+                ]}
+              />
+            ) : null}
             <FilterSelect
               label="Opiekun"
               value={ownerFilter}
@@ -1064,20 +1290,26 @@ export default function Cases() {
               <Filter aria-hidden="true" />
               Więcej filtrów
             </button>
-            <SortSelect
-              label="Sortuj"
-              value={sortBy}
-              onChange={(value) => setSortBy(value as CaseSort)}
-              className="cf-cases-sort"
-              selectClassName="cf-cases-native-select"
-              dataAttrs={{ 'data-cf-cases-sort': true }}
-              options={[
-                { value: 'updated_desc', label: 'Ostatni ruch' },
-                { value: 'updated_asc', label: 'Najstarszy ruch' },
-                { value: 'completeness_desc', label: 'Największa kompletność' },
-                { value: 'completeness_asc', label: 'Najmniejsza kompletność' },
-              ]}
-            />
+            {!isWaitingView ? (
+              <SortSelect
+                label="Sortuj"
+                value={sortBy}
+                onChange={(value) => setSortBy(value as CaseSort)}
+                className="cf-cases-sort"
+                selectClassName="cf-cases-native-select"
+                dataAttrs={{ 'data-cf-cases-sort': true }}
+                options={[
+                  { value: 'updated_desc', label: 'Ostatni ruch' },
+                  { value: 'updated_asc', label: 'Najstarszy ruch' },
+                  { value: 'completeness_desc', label: 'Największa kompletność' },
+                  { value: 'completeness_asc', label: 'Najmniejsza kompletność' },
+                ]}
+              />
+            ) : (
+              <Button type="button" variant="outline" className="cf-cases-save-view" onClick={handleSaveWaitingView} data-cf-cases-save-view="true">
+                Zapisz widok
+              </Button>
+            )}
           </FilterToolbar>
 
           {showMoreFilters ? (
@@ -1117,21 +1349,35 @@ export default function Cases() {
 
           <div className="cf-cases-table-scroll">
             <div className="cf-cases-table" role="table" aria-label="Lista spraw" data-cf-cases-table="true">
-              <div className="cf-cases-row cf-cases-head" role="row">
-                <div className="cf-cases-cell cf-cases-check-cell" role="columnheader">
-                  <input type="checkbox" checked={allVisibleCasesSelected} onChange={toggleVisibleCaseSelection} aria-label="Zaznacz widoczne sprawy" />
+              {isWaitingView ? (
+                <div className="cf-cases-row cf-cases-head cf-cases-waiting-row-head" role="row">
+                  <div className="cf-cases-cell" role="columnheader">Sprawa <ArrowUpDown aria-hidden="true" /></div>
+                  <div className="cf-cases-cell" role="columnheader">Klient</div>
+                  <div className="cf-cases-cell" role="columnheader">Status</div>
+                  <div className="cf-cases-cell" role="columnheader">Czego brakuje</div>
+                  <div className="cf-cases-cell" role="columnheader">Czekamy od</div>
+                  <div className="cf-cases-cell" role="columnheader">Ostatnie przypomnienie</div>
+                  <div className="cf-cases-cell" role="columnheader">Najbliższy ruch</div>
+                  <div className="cf-cases-cell" role="columnheader">Opiekun</div>
+                  <div className="cf-cases-cell cf-cases-actions-cell" role="columnheader">Akcja</div>
                 </div>
-                <div className="cf-cases-cell" role="columnheader">Numer sprawy <ArrowUpDown aria-hidden="true" /></div>
-                <div className="cf-cases-cell" role="columnheader">Klient</div>
-                <div className="cf-cases-cell" role="columnheader">Temat</div>
-                <div className="cf-cases-cell" role="columnheader">Status</div>
-                <div className="cf-cases-cell" role="columnheader">Kompletność</div>
-                <div className="cf-cases-cell" role="columnheader">Braki</div>
-                <div className="cf-cases-cell" role="columnheader">Ostatni ruch</div>
-                <div className="cf-cases-cell" role="columnheader">Najbliższy ruch</div>
-                <div className="cf-cases-cell" role="columnheader">Opiekun</div>
-                <div className="cf-cases-cell cf-cases-actions-cell" role="columnheader" />
-              </div>
+              ) : (
+                <div className="cf-cases-row cf-cases-head" role="row">
+                  <div className="cf-cases-cell cf-cases-check-cell" role="columnheader">
+                    <input type="checkbox" checked={allVisibleCasesSelected} onChange={toggleVisibleCaseSelection} aria-label="Zaznacz widoczne sprawy" />
+                  </div>
+                  <div className="cf-cases-cell" role="columnheader">Numer sprawy <ArrowUpDown aria-hidden="true" /></div>
+                  <div className="cf-cases-cell" role="columnheader">Klient</div>
+                  <div className="cf-cases-cell" role="columnheader">Temat</div>
+                  <div className="cf-cases-cell" role="columnheader">Status</div>
+                  <div className="cf-cases-cell" role="columnheader">Kompletność</div>
+                  <div className="cf-cases-cell" role="columnheader">Braki</div>
+                  <div className="cf-cases-cell" role="columnheader">Ostatni ruch</div>
+                  <div className="cf-cases-cell" role="columnheader">Najbliższy ruch</div>
+                  <div className="cf-cases-cell" role="columnheader">Opiekun</div>
+                  <div className="cf-cases-cell cf-cases-actions-cell" role="columnheader" />
+                </div>
+              )}
 
               {loading ? (
                 <div className="cf-cases-empty-row" role="row">
@@ -1162,6 +1408,118 @@ export default function Cases() {
                 const ownerInitials = ownerLabel.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part.charAt(0)).join('').toUpperCase() || '—';
                 const ownerRiskBadges = isClosed ? [] : getCaseOwnerRiskBadges(record, { settings: ownerRiskSettings });
                 const updatedValue = record.updatedAt || record.createdAt;
+                const waitingSince = getWaitingSince(record);
+                const waitingSinceValue = waitingSince || toUpdatedDate(record.createdAt as CaseRecord['createdAt']);
+                const lastReminder = getLastReminderDate(record);
+                const waitingMissingLabel = getWaitingMissingLabel(record, lifecycle);
+                const clientEmail = String(record.clientEmail || rawClient?.email || '').trim();
+                const clientPhone = String(record.clientPhone || rawClient?.phone || '').trim();
+                const reminderHref = clientEmail
+                  ? `mailto:${clientEmail}?subject=${encodeURIComponent(`Przypomnienie: ${getCaseSubject(record)}`)}`
+                  : clientPhone
+                    ? `tel:${clientPhone.replace(/[^+\d]/g, '')}`
+                    : null;
+
+                if (isWaitingView) {
+                  return (
+                    <div className="cf-cases-row cf-cases-data-row cf-cases-waiting-row" role="row" key={record.id} data-case-id={record.id}>
+                      <div className="cf-cases-cell cf-cases-waiting-case-cell" role="cell">
+                        <Link to={caseDetailPath(record.id)} className="cf-cases-waiting-case-link" aria-label={`Otwórz sprawę ${record.title || record.id}`}>
+                          <strong>{getCaseSubject(record)}</strong>
+                          <small>{getCaseReference(record)}</small>
+                        </Link>
+                      </div>
+                      <div className="cf-cases-cell cf-cases-client-cell" role="cell">
+                        <span className="cf-cases-avatar" aria-hidden="true">{clientInitials}</span>
+                        <span className="cf-cases-client-copy">
+                          <Link to={caseDetailPath(record.id)} className="cf-cases-client-name" aria-label={`Otwórz sprawę ${record.title || record.id}`}>
+                            {clientName}
+                          </Link>
+                          <small>{clientCompany || 'Brak firmy'}</small>
+                        </span>
+                      </div>
+                      <div className="cf-cases-cell cf-cases-status-cell" role="cell">
+                        <span className="cf-cases-status-pill" data-cf-status-tone={statusTone}>{getCaseStatusLabel(record.status)}</span>
+                      </div>
+                      <div className="cf-cases-cell cf-cases-waiting-missing-cell" role="cell">
+                        <strong>{waitingMissingLabel}</strong>
+                        <small>{lifecycle.missingRequiredCount > 0 ? 'elementy wymagane do startu' : 'checklista bez zidentyfikowanych braków'}</small>
+                      </div>
+                      <div className="cf-cases-cell cf-cases-waiting-date-cell" role="cell">
+                        <strong>{formatCaseDate(waitingSinceValue)}</strong>
+                        <small>{formatWaitingAge(waitingSinceValue)}</small>
+                      </div>
+                      <div className="cf-cases-cell cf-cases-waiting-reminder-cell" role="cell">
+                        <strong>{lastReminder ? formatCaseDate(lastReminder) : '—'}</strong>
+                        <small>{lastReminder ? 'Wysłano przypomnienie' : 'Brak przypomnienia'}</small>
+                      </div>
+                      <div className="cf-cases-cell cf-cases-next-cell" role="cell">
+                        {nearestCaseAction ? (
+                          <>
+                            <CalendarDays aria-hidden="true" />
+                            <span><strong>{formatCaseDate(nearestCaseAction.when)}</strong><small>{nearestCaseAction.title}</small></span>
+                          </>
+                        ) : (
+                          <span className="cf-cases-next-empty"><strong>—</strong><small>Brak zaplanowanego ruchu</small></span>
+                        )}
+                      </div>
+                      <div className="cf-cases-cell cf-cases-owner-cell" role="cell">
+                        <span className="cf-cases-avatar cf-cases-owner-avatar" aria-hidden="true">{ownerInitials}</span>
+                        <span>{ownerLabel}</span>
+                      </div>
+                      <div className="cf-cases-cell cf-cases-actions-cell cf-cases-waiting-actions-cell" role="cell">
+                        {reminderHref ? (
+                          <a
+                            className="cf-cases-waiting-reminder-button"
+                            href={reminderHref}
+                            aria-label={`${clientEmail ? 'Wyślij przypomnienie' : 'Zadzwoń'} do ${clientName}`}
+                            title={clientEmail ? 'Otwórz wiadomość do klienta' : 'Zadzwoń do klienta'}
+                            data-cf-cases-waiting-action={clientEmail ? 'email' : 'phone'}
+                          >
+                            <Send aria-hidden="true" />
+                            {clientEmail ? 'Wyślij przypomnienie' : 'Zadzwoń'}
+                          </a>
+                        ) : (
+                          <Link to={caseDetailPath(record.id)} className="cf-cases-waiting-open-link" data-cf-cases-waiting-action="open">
+                            Otwórz sprawę
+                          </Link>
+                        )}
+                        <button
+                          type="button"
+                          className="cf-cases-more-button"
+                          aria-label={`Akcje dla sprawy ${record.title || 'Sprawa'}`}
+                          aria-expanded={openActionCaseId === record.id}
+                          onClick={() => setOpenActionCaseId((current) => current === record.id ? null : record.id)}
+                        >
+                          <MoreHorizontal aria-hidden="true" />
+                        </button>
+                        {openActionCaseId === record.id ? (
+                          <div className="cf-cases-action-menu" role="menu">
+                            <Link to={caseDetailPath(record.id)} role="menuitem" onClick={() => setOpenActionCaseId(null)}>
+                              Otwórz sprawę <ChevronRight aria-hidden="true" />
+                            </Link>
+                            <button
+                              type="button"
+                              role="menuitem"
+                              className="cf-cases-delete-menu-item"
+                              data-case-row-delete-action="true"
+                              aria-label="Usuń sprawę"
+                              title="Usuń sprawę"
+                              onClick={() => {
+                                setOpenActionCaseId(null);
+                                setCaseToDelete(record);
+                              }}
+                            >
+                              <DeleteActionIcon className={trashActionIconClass('h-4 w-4')} />
+                              Usuń sprawę
+                            </button>
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                  );
+                }
+
                 return (
                   <div className="cf-cases-row cf-cases-data-row" role="row" key={record.id} data-case-id={record.id}>
                     <div className="cf-cases-cell cf-cases-check-cell" role="cell">
