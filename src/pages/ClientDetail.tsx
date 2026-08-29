@@ -7,7 +7,7 @@
 // STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Activity, AlertTriangle, ArrowLeft, Building2, CheckCircle2, ChevronRight, Clock, Eye, Files, FileText, FolderOpen, Globe2, History, Loader2, Mail, Mic, MicOff, MoreHorizontal, Pencil, Phone, Pin, Plus, Save, StickyNote, WalletCards } from 'lucide-react';
+import { Activity, AlertTriangle, ArrowLeft, Building2, BriefcaseBusiness, CalendarDays, CheckCircle2, ChevronRight, Clock, Eye, Files, FileText, FolderOpen, Globe2, History, Link2, Loader2, Mail, MapPin, Mic, MicOff, MoreHorizontal, Pencil, Phone, Pin, Plus, Save, Settings2, StickyNote, Tag, UserRound, UsersRound, WalletCards } from 'lucide-react';
 import { EntityIcon } from '../components/ui-system';
 import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 import { CreateClientCaseDialog } from '../components/CreateClientCaseDialog';
@@ -30,6 +30,7 @@ import {
 } from '../lib/supabase-fallback';
 import { toast } from 'sonner';
 import '../styles/forteca-client-detail.css';
+import '../styles/forteca-client-no-active-case.css';
 const STAGE228R7_R5_CLIENTDETAIL_LAZY_EXPORT_HOTFIX = 'ClientDetail has both named and default exports for lazyPage runtime';
 void STAGE228R7_R5_CLIENTDETAIL_LAZY_EXPORT_HOTFIX;
 const CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1 = 'ClientDetail route param source is clientId; legacy id alias is local only';
@@ -1822,6 +1823,7 @@ function ClientDetail() {
     };
   }, [cases, client?.currency, clientFinanceSummary.remainingTotal, leads, payments]);
   const mainCase = activeCases[0] || null;
+  const forteca027NoActiveCase = activeCases.length === 0;
   const latestClosedCase = closedCases[0] || null;
   void latestClosedCase;
   const mainCaseCompleteness = mainCase ? getCaseCompleteness(mainCase) : 0;
@@ -2878,6 +2880,13 @@ return (
   const forteca026CreatedLabel = formatDate(client.createdAt) || 'Brak daty utworzenia';
   const forteca026SourceLabel = firstSourceLead?.source || client.source || 'Brak źródła';
   const forteca026LatestNote = clientVisibleNotesForRenderStage216L[0]?.content || 'Brak zapisanej notatki dla klienta.';
+  const forteca027Notes = clientVisibleNotesForRenderStage216L.slice(0, 3);
+  const forteca027ClientIdLabel = String(client.id || clientId || '').trim() || 'Brak ID klienta';
+  const forteca027ClientSinceLabel = formatDate(client.createdAt) || 'Brak daty utworzenia';
+  const forteca027IndustryLabel = String(client.industry || client.sector || 'Brak branży');
+  const forteca027PositionLabel = String(client.position || client.jobTitle || 'Brak stanowiska');
+  const forteca027EmployeesLabel = String(client.employeeCount || client.employees || client.companySize || 'Brak danych');
+  const forteca027LocationLabel = String(client.location || client.address || 'Brak lokalizacji');
 
   const clientRightRailActionsStage216M4 = dedupeClientRightRailActionsStage231H_R1D2_R12G([
 
@@ -2914,6 +2923,178 @@ return (
     .filter((entry) => !isDoneStatus(entry.status))
     .sort((left, right) => left.dateTime - right.dateTime)
     .slice(0, 5);
+
+  if (forteca027NoActiveCase) {
+    return (
+      <Layout>
+        <CreateClientCaseDialog
+          open={clientCaseCreateOpen}
+          onOpenChange={setClientCaseCreateOpen}
+          client={client}
+          workspaceId={String(workspace?.id || '')}
+          hasAccess={hasAccess}
+          hasExistingCase={clientRelatedCasesStage231B0R8.length > 0}
+        />
+        {contactEditing ? (
+          <div className="forteca-frt-027-edit-backdrop" role="presentation">
+            <section className="forteca-frt-027-edit-dialog" role="dialog" aria-modal="true" aria-labelledby="forteca-frt-027-edit-title">
+              <header>
+                <div>
+                  <span className="forteca-frt-027-edit-kicker">KARTOTEKA KLIENTA</span>
+                  <h2 id="forteca-frt-027-edit-title">Edytuj dane klienta</h2>
+                </div>
+                <button type="button" className="forteca-frt-027-edit-close" onClick={cancelClientPanelEdit} aria-label="Zamknij edycję">
+                  ×
+                </button>
+              </header>
+              <div className="forteca-frt-027-edit-fields">
+                <label>
+                  <span>Nazwa klienta</span>
+                  <Input value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} />
+                </label>
+                <label>
+                  <span>Firma</span>
+                  <Input value={form.company} onChange={(event) => setForm((current) => ({ ...current, company: event.target.value }))} placeholder="Brak firmy" />
+                </label>
+                <label>
+                  <span>E-mail</span>
+                  <Input type="email" value={form.email} onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))} />
+                </label>
+                <label>
+                  <span>Telefon</span>
+                  <Input value={form.phone} onChange={(event) => setForm((current) => ({ ...current, phone: event.target.value }))} />
+                </label>
+              </div>
+              <footer>
+                <Button type="button" variant="outline" onClick={cancelClientPanelEdit}>Anuluj</Button>
+                <Button type="button" onClick={() => void handleSave()} disabled={saving}>
+                  <Save className="h-4 w-4" />
+                  {saving ? 'Zapisywanie…' : 'Zapisz dane'}
+                </Button>
+              </footer>
+            </section>
+          </div>
+        ) : null}
+        <main
+          className="client-detail-vnext-page forteca-frt-027-page cf-page-canvas cf-page-canvas--full cf-html-view main-client-detail-html cf-client-detail-layout-stage231b0-r15-r2"
+          data-forteca-frt-027-root="true"
+          data-forteca-frt-027-runtime="true"
+          data-forteca-frt-027-no-active-case="true"
+          data-stage231d0c-client-detail-workspace-baseline="true"
+          data-stage231b0-r15-r2-client-detail-shared-canvas="true"
+          data-cf-page-canvas="full"
+        >
+          <header className="forteca-frt-027-header">
+            <div className="forteca-frt-027-header-copy">
+              <nav className="forteca-frt-027-breadcrumb" aria-label="Okruszki klienta">
+                <Link to="/clients">Klienci</Link>
+                <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+                <span>{forteca026ClientName}</span>
+              </nav>
+              <div className="forteca-frt-027-profile">
+                <span className="forteca-frt-027-avatar" aria-hidden="true">
+                  {forteca026ClientInitials}
+                  <i />
+                </span>
+                <div className="forteca-frt-027-profile-copy">
+                  <div className="forteca-frt-027-name-line">
+                    <h1>{forteca026ClientName}</h1>
+                    <span className="forteca-frt-027-status-badge">Brak aktywnej sprawy</span>
+                  </div>
+                  <p>Klient od {forteca027ClientSinceLabel} <span aria-hidden="true">|</span> ID klienta: {forteca027ClientIdLabel}</p>
+                </div>
+              </div>
+            </div>
+            <div className="forteca-frt-027-header-actions">
+              <Button type="button" variant="outline" className="forteca-frt-027-edit-button" onClick={handleClientPanelEditToggle} disabled={saving}>
+                <Pencil className="h-4 w-4" />
+                Edytuj
+              </Button>
+              <Button type="button" className="forteca-frt-027-new-case-button" onClick={openNewCase} disabled={!hasAccess}>
+                <Plus className="h-4 w-4" />
+                Nowa sprawa
+              </Button>
+            </div>
+          </header>
+
+          <section className="forteca-frt-027-top-grid" aria-label="Szczegóły klienta">
+            <article className="forteca-frt-027-card forteca-frt-027-info-card" data-forteca-frt-027-info="true">
+              <h2>Informacje o kliencie</h2>
+              <div className="forteca-frt-027-info-list">
+                <div className="forteca-frt-027-info-row"><span className="forteca-frt-027-info-icon"><UserRound className="h-4 w-4" /></span><small>Imię i nazwisko</small><strong>{forteca026ClientName}</strong></div>
+                <div className="forteca-frt-027-info-row"><span className="forteca-frt-027-info-icon"><BriefcaseBusiness className="h-4 w-4" /></span><small>Firma</small><strong>{client.company || 'Brak firmy'}</strong></div>
+                <div className="forteca-frt-027-info-row"><span className="forteca-frt-027-info-icon"><Settings2 className="h-4 w-4" /></span><small>Stanowisko</small><strong>{forteca027PositionLabel}</strong></div>
+                <div className="forteca-frt-027-info-row"><span className="forteca-frt-027-info-icon"><Tag className="h-4 w-4" /></span><small>Branża</small><strong>{forteca027IndustryLabel}</strong></div>
+                <div className="forteca-frt-027-info-row"><span className="forteca-frt-027-info-icon"><UsersRound className="h-4 w-4" /></span><small>Liczba pracowników</small><strong>{forteca027EmployeesLabel}</strong></div>
+                <div className="forteca-frt-027-info-row"><span className="forteca-frt-027-info-icon"><MapPin className="h-4 w-4" /></span><small>Lokalizacja</small><strong>{forteca027LocationLabel}</strong></div>
+                <div className="forteca-frt-027-info-row"><span className="forteca-frt-027-info-icon"><CalendarDays className="h-4 w-4" /></span><small>Klient od</small><strong>{forteca027ClientSinceLabel}</strong></div>
+                <div className="forteca-frt-027-info-row"><span className="forteca-frt-027-info-icon"><Link2 className="h-4 w-4" /></span><small>Źródło pozyskania</small><strong>{forteca026SourceLabel}</strong></div>
+              </div>
+            </article>
+
+            <article className="forteca-frt-027-card forteca-frt-027-cases-card" data-forteca-frt-027-cases="true">
+              <h2>Aktywne sprawy</h2>
+              <div className="forteca-frt-027-empty-state">
+                <span className="forteca-frt-027-empty-icon" aria-hidden="true"><FolderOpen className="h-10 w-10" /></span>
+                <h3>Brak aktywnych spraw</h3>
+                <p>{forteca026ClientName} nie ma obecnie żadnych aktywnych spraw.</p>
+                <Button type="button" className="forteca-frt-027-empty-cta" onClick={openNewCase} disabled={!hasAccess}>
+                  <Plus className="h-4 w-4" />
+                  Utwórz nową sprawę
+                </Button>
+              </div>
+            </article>
+
+            <div className="forteca-frt-027-right-stack">
+              <article className="forteca-frt-027-card forteca-frt-027-contact-card" data-forteca-frt-027-contact="true">
+                <h2>Informacje kontaktowe</h2>
+                <div className="forteca-frt-027-contact-list">
+                  <div className="forteca-frt-027-contact-row"><span className="forteca-frt-027-contact-icon"><Mail className="h-4 w-4" /></span><span>{client.email ? <a href={`mailto:${String(client.email)}`}>{String(client.email)}</a> : <strong>Brak e-maila</strong>}<small>Email służbowy</small></span></div>
+                  <div className="forteca-frt-027-contact-row"><span className="forteca-frt-027-contact-icon"><Phone className="h-4 w-4" /></span><span>{client.phone ? <a href={`tel:${String(client.phone)}`}>{String(client.phone)}</a> : <strong>Brak telefonu</strong>}<small>Telefon komórkowy</small></span></div>
+                  <div className="forteca-frt-027-contact-row"><span className="forteca-frt-027-contact-icon"><Globe2 className="h-4 w-4" /></span><span>{client.website ? <a href={String(client.website)} target="_blank" rel="noreferrer">{String(client.website)}</a> : <strong>Brak strony internetowej</strong>}<small>Strona internetowa</small></span></div>
+                  <div className="forteca-frt-027-contact-row"><span className="forteca-frt-027-contact-icon"><MapPin className="h-4 w-4" /></span><span><strong>{forteca027LocationLabel}</strong><small>Lokalizacja</small></span></div>
+                </div>
+              </article>
+              <article className="forteca-frt-027-card forteca-frt-027-notes-card" data-forteca-frt-027-notes="true">
+                <h2>Notatki o kliencie</h2>
+                {forteca027Notes[0] ? (
+                  <div className="forteca-frt-027-note-highlight"><strong>{String(forteca027Notes[0].content || 'Notatka klienta')}</strong><small>Dodano: {formatDate(getActivityTime(forteca027Notes[0])) || 'Brak daty'}</small></div>
+                ) : (
+                  <div className="forteca-frt-027-note-empty">Brak zapisanych notatek dla klienta.</div>
+                )}
+              </article>
+            </div>
+          </section>
+
+          <section className="forteca-frt-027-bottom-grid" aria-label="Historia i notatki klienta">
+            <article className="forteca-frt-027-card forteca-frt-027-history-card" data-forteca-frt-027-history="true">
+              <div className="forteca-frt-027-card-heading"><h2>Historia kontaktu</h2><Link to="/activity">Zobacz pełną historię kontaktu <ChevronRight className="h-4 w-4" /></Link></div>
+              <div className="forteca-frt-027-history-list">
+                {clientActivities.length ? clientActivities.slice(0, 5).map((activity: any, index: number) => (
+                  <Link key={`forteca-frt-027-history-${activity.id || index}`} to="/activity" className="forteca-frt-027-history-row">
+                    <span className="forteca-frt-027-history-icon"><Activity className="h-4 w-4" /></span>
+                    <span><strong>{activityLabel(activity)}</strong><small>{formatDateTime(getActivityTime(activity))}</small></span>
+                  </Link>
+                )) : <div className="forteca-frt-027-empty-inline">Brak historii kontaktu dla klienta.</div>}
+              </div>
+            </article>
+
+            <article className="forteca-frt-027-card forteca-frt-027-notes-list-card" data-forteca-frt-027-notes-list="true">
+              <div className="forteca-frt-027-card-heading"><h2>Notatki</h2><span className="forteca-frt-027-card-heading-muted">{forteca027Notes.length} zapisane</span></div>
+              <div className="forteca-frt-027-notes-list">
+                {forteca027Notes.length ? forteca027Notes.map((note: any, index: number) => (
+                  <div key={`forteca-frt-027-note-${note.id || index}`} className="forteca-frt-027-note-row">
+                    <span className="forteca-frt-027-note-icon"><FileText className="h-4 w-4" /></span>
+                    <span><strong>{String(note.content || 'Notatka klienta')}</strong><small>{formatDate(getActivityTime(note)) || 'Brak daty'}</small></span>
+                  </div>
+                )) : <div className="forteca-frt-027-empty-inline">Brak zapisanych notatek dla klienta.</div>}
+              </div>
+            </article>
+          </section>
+        </main>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
