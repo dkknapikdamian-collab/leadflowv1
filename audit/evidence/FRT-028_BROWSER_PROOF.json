@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-028",
+  "reference_file": "docs/ui/reference/forteca-calm-light/028_client_detail_closed_cases.webp",
+  "reference_sha256": "78679946b1ce5c57ed0532bf487746f9e3aa2600a3d83d302138f8e4b8716af7",
+  "entry_url": "http://localhost:3000/clients/dev-client-3?frt028=browser-proof",
+  "runtime_url": "http://localhost:3000/clients/dev-client-3?frt028=browser-proof",
+  "route": "/clients/:clientId",
+  "state": "Forteca calm-light Client Detail — closed cases",
+  "live_runtime": true,
+  "auth_required": false,
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "record_origin": "Existing workspace-scoped client, related-case collection, payment relation, contact and activity sources; reference screenshot fixtures were not copied into runtime state.",
+    "relation_truth": "The closed-case view derives its rows and summary from the existing closedCases relation. The current real dev-client-3 record has zero closed related cases, so the truthful empty state is rendered.",
+    "visible_client": "Katarzyna Wrona / K&W Legal Support / +48 603 555 666 / kontakt@kwlegal.pl",
+    "visible_case_state": "No closed related case exists for the client in the current local runtime.",
+    "production_path": "The page keeps the existing workspace-scoped ClientDetail loader, openNewCase handler, client edit owner, case restore/navigation owners and contact/history sources; no screenshot-only collection or fake relation was added."
+  },
+  "visible_structure": {
+    "requested_reference_viewport": {
+      "width": 1672,
+      "height": 941
+    },
+    "observed_browser_viewport": {
+      "width": 1672,
+      "height": 942,
+      "scroll_width": 1672,
+      "scroll_height": 942
+    },
+    "root_marker": "data-forteca-frt-028-root=\"true\"",
+    "root_count": 1,
+    "runtime_marker": "data-forteca-frt-028-runtime=\"true\"",
+    "real_closed_case_count": 0,
+    "reference_fixture_leak": false,
+    "geometry": {
+      "page": { "x": 256, "y": 0, "width": 1416 },
+      "hero": { "x": 280, "y": 82, "width": 1368, "height": 156 },
+      "tabs": { "x": 280, "y": 262, "width": 1368, "height": 56 },
+      "content": { "x": 280, "y": 340, "width": 1368, "height": 631.275 }
+    },
+    "body_overflow": false,
+    "content_scrollbar": "hidden_visual_rail_with_scroll_owner_preserved",
+    "reference_copy_present": true,
+    "reference_copy": [
+      "Klienci",
+      "Katarzyna Wrona",
+      "Sprawy zamknięte",
+      "Podsumowanie",
+      "Kontakty",
+      "Aktywność",
+      "Notatki",
+      "Pliki",
+      "Brak zamkniętych spraw",
+      "Dostosuj widok",
+      "Dodaj",
+      "Edytuj klienta"
+    ]
+  },
+  "interaction_proof": {
+    "customize_view": {
+      "status": "PRESENT_AND_BOUND",
+      "observed": "The real Dostosuj widok control is bound to the canonical view surface and was exercised without mutation."
+    },
+    "new_case": {
+      "status": "PASS",
+      "observed": "The real Dodaj control opened the existing Dodaj sprawę dialog with the runtime form; Anuluj closed it without creating a case."
+    },
+    "edit_dialog": {
+      "status": "PASS",
+      "observed": "The real Edytuj klienta control opened the populated runtime client edit dialog with aria-labelledby=forteca-frt-028-edit-title; Anuluj closed it without saving."
+    },
+    "client_menu": {
+      "status": "PASS",
+      "observed": "The overflow menu opened with the bound Edytuj klienta and Wróć do listy klientów actions and closed cleanly."
+    },
+    "post_interaction_state": {
+      "status": "PASS",
+      "observed": "One FRT-028 root remained mounted, real client data remained visible, no workspace mutation was submitted and no visible runtime error appeared in the final DOM pass."
+    }
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "client_values_are_source_derived": true,
+    "closed_case_relation_is_source_derived": true,
+    "finance_summary_is_source_derived": true,
+    "workspace_scope_preserved": true,
+    "existing_action_and_modal_owners_preserved": true,
+    "no_duplicate_detail_owner": true,
+    "no_fake_success": true,
+    "no_unapproved_live_mutation": true,
+    "semantic_color_source_of_truth_preserved": true,
+    "no_horizontal_overflow": true
+  },
+  "console_errors": "NOT_CAPTURED_AS_NUMERIC_COUNTER; no visible runtime error was observed in the final DOM pass",
+  "console_warnings": "NOT_CAPTURED_AS_NUMERIC_COUNTER",
+  "screenshot_displayed_in_codex_browser": true,
+  "screenshot_path": null,
+  "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The live local workspace renders real Katarzyna Wrona data and a truthful empty closed-case relation rather than screenshot fixture rows and totals.",
+      "The browser viewport reports a one-pixel capture-height difference from the static reference.",
+      "Edit and case creation were opened and cancelled; no mutating save, create or restore submission was invoked."
+    ]
+  },
+  "implementation_commit": "529e01f6944dc70c5a1a67b0e148c5e92aad7ba2",
+  "remote_head_verified": "529e01f6944dc70c5a1a67b0e148c5e92aad7ba2",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "created_at": "2026-08-29T03:40:51.8040417Z"
+}

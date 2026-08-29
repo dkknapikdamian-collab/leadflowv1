@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-028",
+  "reference_file": "docs/ui/reference/forteca-calm-light/028_client_detail_closed_cases.webp",
+  "reference_sha256": "78679946b1ce5c57ed0532bf487746f9e3aa2600a3d83d302138f8e4b8716af7",
+  "target_route": "/clients/:clientId",
+  "target_state": "Client Detail — closed cases",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_AFTER_PARENT_REVIEW",
+  "acceptance_basis": {
+    "directive_interpretation": "The approved Forteca branch is the sole implementation route. The parent independently checked repository identity, exact reference, source-of-truth ownership, focused tests, typecheck, build, Guardian output, live browser DOM, non-mutating interactions and the final runtime screenshot before acceptance.",
+    "root_cause": "The ClientDetail route did not expose a dedicated relation-derived closed-case composition, and the shell's initial stable gutter could reserve a 30px centered rail before the asynchronously mounted stage root existed.",
+    "repair": "FRT-028 adds a route-scoped closed-case Client Detail state using the real closedCases and payment relation, supported case/menu/edit actions, shared semantic tokens and a client-detail-only shell observer that releases the centered gutter after the stage root mounts.",
+    "review_status": "Parent review completed against the static reference, final source diff, real runtime DOM, interaction outcomes, semantic token usage, geometry, typecheck, production build, focused tests, Guardian output and live browser screenshot. Bounded CSS and implementation-safety subagents were requested but closed after bounded wait without an artifact; no independent final PASS is claimed.",
+    "guardian_interpretation": "Guardian smoke is AUDIT_ONLY/PARTIAL with zero writes and zero returned blockers. A full target-wide Guardian PASS is not claimed.",
+    "browser_boundary": "The real /clients/dev-client-3 detail route was exercised at the reference viewport. The empty relation state, Add Case dialog, Edit Client dialog and overflow menu were exercised; all mutating controls were cancelled or left unsubmitted.",
+    "authentication_boundary": "FRT-028 does not require authenticated populated runtime proof because the current local runtime truthfully establishes the closed-case empty relation. Authentication remains reserved for a reference state that cannot be independently accepted."
+  },
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Reference fixture names, dates, owners, cases and totals are never inserted into runtime state or API payloads.",
+      "Client identity, closed-case relation, finance values, contact values and history derive from existing workspace-scoped sources.",
+      "Existing edit, new-case, restore/navigation, activity and client navigation owners remain the behavior boundary; no parallel mutation flow was added.",
+      "Reference-image discrepancies never create per-window color exceptions. Repeated semantic icons resolve through shared VST families.",
+      "All trash/delete icons continue to resolve through the canonical --cf-vst-color-delete family.",
+      "No fake success, automatic merge, silent fallback, unapproved browser mutation or production merge was introduced."
+    ]
+  },
+  "color_source_of_truth": {
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "action_owner": "src/styles/owners/closeflow-actions.css",
+    "icon_owner": "src/ui-system/icons/SemanticIcon.tsx and src/components/ui-system/ActionIcon.tsx",
+    "stage_adapter": "src/styles/forteca-client-closed-cases.css",
+    "semantic_tone_adapters": {
+      "primary": "--cf-vst-color-primary",
+      "success": "--cf-vst-color-success",
+      "delete": "--cf-vst-color-delete"
+    },
+    "stage_literal_color_values": 0,
+    "policy": "Each semantic concern has one VST token owner across every window and repeated component instance. Reference drift does not create local palette copies."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "src/components/Layout.tsx",
+    "src/pages/ClientDetail.tsx",
+    "src/styles/forteca-client-closed-cases.css",
+    "tests/forteca-frt-028-client-closed-cases.test.cjs"
+  ],
+  "visual_sot_owners_used": [
+    "SURFACES",
+    "BUTTONS_ACTIONS",
+    "CARDS_TILES",
+    "RIGHT_RAIL",
+    "BADGES",
+    "RESPONSIVE_DENSITY"
+  ],
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "node --test tests/forteca-frt-028-client-closed-cases.test.cjs (7/7 PASS)",
+    "npx.cmd tsc --noEmit (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS)",
+    "git diff --check (PASS)",
+    "stage semantic-color scan (PASS; raw color literals 0)",
+    "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke (PARTIAL, zero writes, zero blockers)",
+    "Live Codex In-app Browser proof at the 1672x941 reference capture size of real /clients/dev-client-3 (PASS)",
+    "Parent comparison of docs/ui/reference/forteca-calm-light/028_client_detail_closed_cases.webp against live runtime screenshot, DOM and measured geometry (STRUCTURAL_PARITY_PASS)"
+  ],
+  "tests_reused": [
+    "FRT-000 routing, reference manifest, Guardian boundary and visual SOT owner registry",
+    "FRT-010 to FRT-019 client/lead relation, workspace scope, action and semantic icon evidence",
+    "FRT-020 Forteca shell, guarded action and browser harness baseline",
+    "FRT-021 to FRT-027 real Clients/Client Detail relation, action, finance, archive, no-active-case and browser evidence baseline"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "authenticated populated runtime proof",
+      "reason": "NOT_REQUIRED_FOR_FRT-028: the current closed-case empty relation is independently accepted from the real local runtime; authentication is requested only when the current reference cannot be independently accepted without it."
+    },
+    {
+      "test": "edit save, new-case submit and restore mutations",
+      "reason": "NOT_EXECUTED_BY_DESIGN: the browser proof opened and cancelled or closed the real controls; submitting would change workspace state and was outside the non-mutating evidence boundary."
+    },
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: the installed Guardian entrypoint exposes only partial repository-baseline smoke coverage; pass_claim=false."
+    },
+    {
+      "test": "independent final reviewer PASS",
+      "reason": "PROCESS_BOUNDARY: bounded subagents did not return review artifacts before the bounded wait expired; parent review is recorded without claiming an independent PASS."
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS_WITH_KNOWN_WARNINGS",
+  "build_warnings": [
+    "Existing dynamic/static import overlap for src/lib/supabase-fallback.ts",
+    "Existing chunks larger than 500 kB after minification"
+  ],
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-028_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "EXECUTED: PARTIAL / coverage PARTIAL / fileWrites 0 / blockers 0"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-028_BROWSER_PROOF.json",
+    "screenshot_path": null,
+    "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "http://localhost:3000/clients/dev-client-3?frt028=browser-proof",
+    "root_count": 1,
+    "real_closed_case_count": 0,
+    "new_case_dialog": "PASS; real Dodaj sprawę dialog opened and cancelled",
+    "edit_dialog": "PASS; real client edit overlay opened and cancelled",
+    "client_menu": "PASS; bound menu actions opened and closed",
+    "post_interaction_state": "PASS; root remained once and no mutation was submitted",
+    "console_errors": "NOT_CAPTURED_AS_NUMERIC_COUNTER; no visible runtime error was observed in the final DOM pass",
+    "screenshot_displayed_in_codex_browser": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The live local workspace renders real client data and a truthful empty closed-case relation rather than screenshot fixture rows and totals.",
+      "Mutating saves, case submission and restore were not invoked because this proof was intentionally non-mutating."
+    ]
+  },
+  "implementation_commit_sha": "529e01f6944dc70c5a1a67b0e148c5e92aad7ba2",
+  "remote_head_verified": "529e01f6944dc70c5a1a67b0e148c5e92aad7ba2",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "efficiency_planning": "APPLIED",
+    "marketplace_binding": "BOUND",
+    "primary_capabilities": [
+      "frontend-design-studio",
+      "ai-code-guardian",
+      "agent-efficiency-guardian"
+    ],
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_skip_reason": "Marketplace discovery exposed no available preferred provider. No OpenCode/Freebuff provider was callable in this host context.",
+    "subagents": [
+      {
+        "id": "01a04b82-c69b-79c1-97d9-b9e4627467b3",
+        "role": "bounded CSS visual review",
+        "status": "CLOSED_NO_ARTIFACT_AFTER_BOUNDED_WAIT"
+      },
+      {
+        "id": "01a04b82-c4b5-7390-8c74-521750772d27",
+        "role": "bounded implementation-safety review",
+        "status": "CLOSED_NO_ARTIFACT_AFTER_BOUNDED_WAIT"
+      }
+    ],
+    "write_owner": "Codex parent validated and wrote the final stage artifacts."
+  },
+  "created_at": "2026-08-29T03:40:51.8040417Z"
+}
