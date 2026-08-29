@@ -19,14 +19,15 @@ function expectNotIncludes(content, text) {
   assert.equal(content.includes(text), false, 'Unexpected text: ' + text);
 }
 
-test('Stage31 leads list is thin, numbered and has one-line meta', () => {
+test('Stage31 leads list is thin, numbered and keeps compact row metadata', () => {
   const leads = fs.readFileSync(leadsPath, 'utf8');
 
   expectIncludes(leads, 'STAGE31_LEADS_THIN_NUMBERED_LIST');
-  expectIncludes(leads, 'filteredLeads.map((lead, leadIndex) => {');
+  expectIncludes(leads, 'pagedLeads.map((lead, leadIndex) => {');
   expectIncludes(leads, 'data-stage31-lead-thin-row="true"');
-  expectIncludes(leads, 'data-stage31-lead-one-line-meta="true"');
   expectIncludes(leads, '{leadIndex + 1}');
+  expectIncludes(leads, 'data-ui-dictionary="LeadListCard"');
+  expectIncludes(leads, 'className="sub lead-table-contact"');
   expectIncludes(leads, 'buildLeadCompactMeta(lead, linkedCase, sourceLabel, leadValueLabel)');
 });
 
