@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 122,
+  "state_revision": 123,
   "last_accepted": {
     "id": "FRT-032",
     "status": "PASS",
@@ -21,7 +21,7 @@
   "last_accepted_commit": "e442932c4b6c85d359e4193a81c2ca8b4b3a5578",
   "next_stage": "FRT-033",
   "branch": "dev-rollout-freeze",
-  "remote_head": "e442932c4b6c85d359e4193a81c2ca8b4b3a5578",
+  "remote_head": "1baf93941caa9cb09f7ab659439c92b98cff0c89",
   "next_action": "Activate FRT-033 as the only active stage and reconcile the real /cases waiting-for-client state against its locked reference.",
   "last_progress": {
     "stage_id": "FRT-032",
