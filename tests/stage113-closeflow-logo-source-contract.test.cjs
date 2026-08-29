@@ -17,12 +17,12 @@ function rejectText(source, text) {
   assert.ok(!source.includes(text), 'Unexpected text: ' + text);
 }
 
-test('Stage113 CloseFlow logo source contract uses inline CF source of truth', () => {
+test('Stage113 shared logo source contract keeps route-aware inline source of truth', () => {
   const layout = read('src/components/Layout.tsx');
 
-  expectText(layout, 'className="brand-logo"');
+  expectText(layout, 'className={`brand-logo ${isFortecaShellRoute ? \'forteca-shell-logo\' : \'\'}`}');
   expectText(layout, 'CF');
-  expectText(layout, '<strong>CloseFlow</strong>');
+  expectText(layout, "<strong>{isFortecaShellRoute ? 'Forteca' : 'CloseFlow'}</strong>");
   expectText(layout, 'aria-label="CloseFlow - przejdź do Dziś"');
   expectText(layout, 'className="mobile-brand"');
 
