@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 114,
+  "state_revision": 115,
   "last_accepted": {
     "id": "FRT-029",
     "status": "PASS",
@@ -21,15 +21,16 @@
   "last_accepted_commit": "4e7271e7",
   "next_stage": "FRT-030",
   "branch": "codex/forteca-ui-001-040-clean",
-  "remote_head": "b856970326eb0823994be3f4a3e9e0409e79d3ca",
+  "remote_head": "d6f7253c1bf93416e652afdcf4447d5ba227a02b",
   "next_action": "Retry the same approved in-app browser proof after controlled-input readback recovers; verify populated FRT-030 edit fields, non-mutating cancel/close and screenshot, then close FRT-030 only with complete evidence.",
   "last_progress": {
     "stage_id": "FRT-030",
-    "status": "IMPLEMENTATION_COMMITTED_BROWSER_PROOF_PENDING",
+    "status": "IMPLEMENTATION_COMMITTED_LAYOUT_REPAIRED_BROWSER_PROOF_PENDING",
     "evidence": "_project/runs/forteca-clean/FRT-030_PROGRESS_RECEIPT.json; audit/evidence/FRT-030_BROWSER_PROOF.json; audit/evidence/FRT-030_GUARDIAN_AUDIT_SUMMARY.json",
-    "commit_sha": "b856970326eb0823994be3f4a3e9e0409e79d3ca",
-    "browser_blocker": "Approved in-app browser navigation, edit-modal open, screenshot capture and cancel/close now succeed; controlled input fill/value readback remains inconsistent despite populated rendered UI and React state, so authoritative populated-field proof is unavailable.",
-    "created_at": "2026-08-29T05:51:16.4912099Z"
+    "commit_sha": "d6f7253c1bf93416e652afdcf4447d5ba227a02b",
+    "browser_blocker": "Approved in-app browser navigation, repaired edit-modal open, screenshot capture and cancel/close now succeed; controlled input fill/value readback remains inconsistent despite populated rendered UI and React state, so authoritative populated-field proof is unavailable.",
+    "created_at": "2026-08-29T05:51:16.4912099Z",
+    "updated_at": "2026-08-29T08:58:14.0918130Z"
   },
   "current_workflow": {
     "id": "FRT-030",
@@ -42,7 +43,7 @@
     "blocker": "IN_APP_BROWSER_PROOF_BLOCKED: approved in-app browser navigation, edit-modal open, screenshot capture and cancel/close succeed, but controlled input fill/value readback is inconsistent while populated UI/React state is visible; no product mutation or alternate browser bypass authorized",
     "ssot_open_findings": 0,
     "active_stage_count": 1,
-    "terminal_audit": "FRT_030_IMPLEMENTATION_PUSHED_RESPONSIVE_REPAIR_BROWSER_CONTROL_READBACK_INCONSISTENT",
+    "terminal_audit": "FRT_030_LAYOUT_REPAIRED_IMPLEMENTATION_PUSHED_BROWSER_CONTROL_READBACK_INCONSISTENT",
     "guardian_status": "PARTIAL_AUDIT_COMPLETE_BROWSER_PROOF_PENDING",
     "acceptance_boundary": "Codex is the acceptance authority under the owner directive; FRT-030 requires the real populated client-edit path, validation, cancel/close, update scope, focused tests, Guardian and browser evidence before acceptance"
   },
@@ -51,7 +52,7 @@
     "contract_path": "_project/contracts/forteca-clean/FRT-030_CLIENT_EDIT.md",
     "status": "LOCKED",
     "activation": "CODEX_AFTER_FRT_029_ACCEPTANCE",
-    "reason": "FRT-030 remains the only active stage; implementation and the targeted Today responsive repair are pushed, but authoritative populated-field browser proof is pending after controlled-input API inconsistency"
+    "reason": "FRT-030 remains the only active stage; the repaired field order and targeted Today responsive repair are pushed, but authoritative populated-field browser proof is pending after controlled-input API inconsistency"
   },
   "forteca_program": {
     "program_id": "FORTECA_CALM_LIGHT_001_040",
@@ -494,12 +495,14 @@
     "forteca:FRT-029:root-cause@legacy inline client-add owner and high-specificity dark dialog field skin; repaired with one controlled dialog owner, stage-local VST variable bridge and real address/owner persistence",
     "forteca:FRT-030:implementation@129c0b77f8f4a1ce48fac9a57dc4127ca4b6ba48",
     "forteca:FRT-030:implementation@b856970326eb0823994be3f4a3e9e0409e79d3ca",
+    "forteca:FRT-030:implementation@d6f7253c1bf93416e652afdcf4447d5ba227a02b",
     "forteca:FRT-030:today-responsive-layout@audit/evidence/FRT-030_TODAY_RESPONSIVE_LAYOUT_PROOF.json",
     "forteca:FRT-030:guardian-summary@audit/evidence/FRT-030_GUARDIAN_AUDIT_SUMMARY.json",
     "forteca:FRT-030:browser-proof@audit/evidence/FRT-030_BROWSER_PROOF.json:BLOCKED_BROWSER_TOOL",
     "forteca:FRT-030:progress-receipt@_project/runs/forteca-clean/FRT-030_PROGRESS_RECEIPT.json",
-    "forteca:FRT-030:tests@static-5-focused-9-predecessor-4-legacy-conflict-tsc-build-semantic-color-pass",
-    "forteca:FRT-030:review@parent-source-reference-review; independent reviewer timed out; no independent PASS claim",
-    "forteca:FRT-030:root-cause@legacy inline ClientDetail contact editor did not provide the populated canonical edit modal; repaired with shared controlled edit owner, real update/delete wiring and scoped VST composition"
+    "forteca:FRT-030:tests@static-6-focused-9-predecessor-4-legacy-conflict-tsc-build-semantic-color-pass",
+    "forteca:FRT-030:review@parent-source-reference-review; three bounded read-only subagent audits confirmed source order/token reuse and the browser readback blocker; no independent PASS claim",
+    "forteca:FRT-030:visual-repair@reference field order source-before-notes-before-owner; source and owner half-width on desktop and full-width at <=640px",
+    "forteca:FRT-030:root-cause@legacy inline ClientDetail contact editor did not provide the populated canonical edit modal; repaired with shared controlled edit owner, real update/delete wiring and scoped VST composition while approved browser control readback remains inconsistent"
   ]
 }

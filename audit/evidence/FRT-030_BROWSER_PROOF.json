@@ -4,15 +4,15 @@
   "stage_id": "FRT-030",
   "reference_file": "docs/ui/reference/forteca-calm-light/030_client_edit_modal.webp",
   "reference_sha256": "a7a16807a15a11e3cd29244bb75513f8f41b2c5d23fd65f304ac7d50ef7eefb7",
-  "entry_url": "http://localhost:3000/clients/dev-client-1?frt030=browser-proof-5",
-  "runtime_url": "http://localhost:3000/clients/dev-client-1?frt030=browser-proof-5",
+  "entry_url": "http://localhost:3000/clients/dev-client-1?frt030=browser-proof-6",
+  "runtime_url": "http://localhost:3000/clients/dev-client-1?frt030=browser-proof-6",
   "route": "/clients/:clientId",
   "state": "Edit Client modal",
   "live_runtime": true,
   "auth_required": false,
   "status": "BLOCKED_BROWSER_TOOL",
-  "implementation_commit": "b856970326eb0823994be3f4a3e9e0409e79d3ca",
-  "remote_head_verified": "b856970326eb0823994be3f4a3e9e0409e79d3ca",
+  "implementation_commit": "d6f7253c1bf93416e652afdcf4447d5ba227a02b",
+  "remote_head_verified": "d6f7253c1bf93416e652afdcf4447d5ba227a02b",
   "branch": "codex/forteca-ui-001-040-clean",
   "read_only_runtime_observation": {
     "viewport": {"width": 1280, "height": 720, "devicePixelRatio": 1.25},
@@ -26,7 +26,8 @@
     },
     "edit_control": "One visible button named Edytuj was present and enabled.",
     "dom_state": "The live detail page loaded with the real record and no FRT-030 modal root while the modal was closed.",
-    "runtime_logs": "Vite connected; React DevTools info only; no application error was observed."
+    "runtime_logs": "Vite connected; React DevTools info only; no application error was observed.",
+    "visual_layout": "At 1280x720 the live edit modal renders the reference order: full-width identity, two-column phone/email, full-width address, half-width source, full-width notes, half-width owner, and the action footer with internal scrolling."
   },
   "attempts": [
     {"action": "Open fresh allowed in-app tab and navigate to runtime URL", "status": "PASS"},
@@ -41,7 +42,12 @@
     {"action": "Capture screenshot from the live edit dialog", "status": "PASS", "result": "Screenshot visibly showed the populated name, phone, email, source and notes fields."},
     {"action": "Observe React client/form state using a temporary diagnostic removed before closeout", "status": "PASS", "result": "Live client and form state contained phone +48 600 111 222 and email anna@novahome.pl; no diagnostic attribute remains in the product source or DOM."},
     {"action": "playwright.fill and controlled input value readback for phone/email", "status": "INCONCLUSIVE", "error": "fill reported success, but the approved browser value readback returned empty values despite the rendered screenshot and temporary React-state observation showing populated values; authoritative control-level proof remains unavailable."},
-    {"action": "Cancel edit dialog without mutation", "status": "PASS", "result": "The cancel control closed the dialog; dialogCount=0 and visibleDialogCount=0."}
+    {"action": "Cancel edit dialog without mutation", "status": "PASS", "result": "The cancel control closed the dialog; dialogCount=0 and visibleDialogCount=0."},
+    {"action": "Navigate to browser-proof-6 on the exact pushed implementation commit", "status": "PASS", "result": "Real Anna Kowalska detail loaded from the approved worktree; Edytuj was visible and enabled."},
+    {"action": "Open Edytuj through the approved in-app browser after the field-order repair", "status": "PASS", "result": "The live FRT-030 dialog opened with the repaired reference order and populated values rendered."},
+    {"action": "Capture screenshot from the repaired live edit dialog", "status": "PASS", "result": "Screenshot visibly showed populated name, phone and email, source, notes, plus source-before-notes-before-owner layout at 1280x720."},
+    {"action": "Retry approved visible-DOM and controlled-input value readback", "status": "INCONCLUSIVE", "error": "The approved visible-DOM/readback layer returned empty phone/email/address values while the same live screenshot rendered phone +48 600 111 222 and email anna@novahome.pl; no alternate browser or raw CDP bypass was used."},
+    {"action": "Cancel repaired edit dialog without mutation", "status": "PASS", "result": "The approved cancel control closed the dialog; no update or delete mutation was submitted."}
   ],
   "interaction_proof": {
     "open": "PASS",
@@ -57,7 +63,8 @@
     "no_screenshot_fixture_injected": true,
     "semantic_color_source_of_truth_preserved": true
   },
-  "browser_boundary": "The approved in-app browser API was used for navigation, live DOM inspection, modal open/cancel and screenshot capture. The browser's controlled-input fill/value readback is internally inconsistent, so populated-field proof remains incomplete. No raw CDP, standalone Playwright or alternate browser was used to bypass the boundary, and no product mutation was submitted.",
+  "browser_boundary": "The approved in-app browser API was used for navigation, live DOM inspection, modal open/cancel and screenshot capture on d6f7253c. The browser's controlled-input fill/value readback remains internally inconsistent despite the repaired layout and visibly populated live controls, so populated-field proof remains incomplete. No raw CDP, standalone Playwright or alternate browser was used to bypass the boundary, and no product mutation was submitted.",
   "next_action": "Retry the same approved in-app browser proof after controlled-input readback recovers; verify populated FRT-030 edit controls authoritatively and record the final screenshot before FRT-030 acceptance.",
-  "created_at": "2026-08-29T05:51:16.4912099Z"
+  "created_at": "2026-08-29T05:51:16.4912099Z",
+  "updated_at": "2026-08-29T08:58:14.0918130Z"
 }

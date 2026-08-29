@@ -4,7 +4,7 @@
   "stage_id": "FRT-030",
   "status": "PASS_TARGETED_REPAIR",
   "implementation_commit": "b856970326eb0823994be3f4a3e9e0409e79d3ca",
-  "remote_head_verified": "b856970326eb0823994be3f4a3e9e0409e79d3ca",
+  "remote_head_verified": "d6f7253c1bf93416e652afdcf4447d5ba227a02b",
   "branch": "codex/forteca-ui-001-040-clean",
   "runtime_url": "http://localhost:3000/?frt030=today-responsive-proof-1",
   "route": "/",
