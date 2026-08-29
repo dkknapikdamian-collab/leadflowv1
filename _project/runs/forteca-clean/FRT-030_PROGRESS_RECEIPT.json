@@ -10,7 +10,7 @@
   "stage_status": "IMPLEMENTATION_COMMITTED_LAYOUT_REPAIRED_BROWSER_PROOF_PENDING",
   "acceptance_authority": "NOT_ACCEPTED",
   "implementation_commit_sha": "d6f7253c1bf93416e652afdcf4447d5ba227a02b",
-  "remote_head_verified": "7b894dc0f597eef5bc9586c5444f689326821bb5",
+  "remote_head_verified": "ad604fe17eda330056bd95e99551c2d4c665b113",
   "branch": "codex/forteca-ui-001-040-clean",
   "evidence": {
     "guardian": "audit/evidence/FRT-030_GUARDIAN_AUDIT_SUMMARY.json",
@@ -24,13 +24,13 @@
     "production_build": "PASS_WITH_KNOWN_WARNINGS",
     "semantic_color_scan": "PASS",
     "guardian": "AUDIT_ONLY/PARTIAL; zero writes; zero returned blockers",
-    "browser": "PARTIAL_BROWSER_TOOL; Today targeted responsive proof PASS, repaired FRT-030 modal order/open/cancel/screenshot PASS, controlled input readback remains inconsistent; no stage PASS claim",
+    "browser": "PARTIAL_BROWSER_TOOL; browser-proof-8 Today targeted responsive proof PASS, repaired FRT-030 modal order/open/cancel/screenshot PASS, populated phone/email confirmed in live screenshot and temporary React state observation, approved tel/email/address control readback remains inconsistent; no stage PASS claim",
     "today_responsive_layout": "PASS_TARGETED_REPAIR; 1280x720 live DOM and screenshot, no horizontal overflow, 2/2 targeted guard",
     "independent_review": "READ_ONLY_SUBAGENT_AUDIT_COMPLETE; three bounded reviews confirmed source order/token reuse and the browser-proof blocker; no independent PASS claim"
   },
   "real_data_preserved": true,
   "zero_plaster_policy": "Applied: reference values are not runtime fixtures; update/delete remain workspace-scoped real mutations; repeated colors resolve through canonical VST tokens.",
-  "next_action": "Retry approved in-app browser controlled-input proof after renderer/API recovery; do not activate FRT-031 or accept FRT-030 before authoritative populated edit, cancel/close and screenshot proof.",
+  "next_action": "Obtain an authenticated or explicitly provisioned test backend in the approved in-app browser, then prove populated edit, save/update, reload consistency and cancel/close; do not activate FRT-031 or accept FRT-030 before complete evidence.",
   "created_at": "2026-08-29T05:51:16.4912099Z",
-  "updated_at": "2026-08-29T09:03:45.8737339Z"
+  "updated_at": "2026-08-29T09:29:59.6839543Z"
 }
