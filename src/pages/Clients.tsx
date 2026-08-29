@@ -9,11 +9,13 @@ import {
 } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
+  Archive,
   CalendarDays,
   CalendarClock,
   ClipboardCheck,
   CircleDollarSign,
   ChevronDown,
+  Clock3,
   CloudUpload,
   FilePlus2,
   Flag,
@@ -91,6 +93,7 @@ import '../styles/forteca-clients-all.css';
 import '../styles/forteca-clients-without-case.css';
 import '../styles/forteca-clients-needs-contact.css';
 import '../styles/forteca-clients-commission.css';
+import '../styles/forteca-clients-archived.css';
 import '../styles/closeflow-page-header-runtime.css';
 import '../styles/closeflow-record-list-source-truth.css';
 // LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css'; is provided once by App.tsx.
@@ -124,8 +127,10 @@ type Stage023ContactFilter = 'all' | 'last_7' | 'last_30' | 'older' | 'unknown';
 
 const FRT021_CLIENT_PAGE_SIZE = 7;
 const FRT024_COMMISSION_PAGE_SIZE = 8;
+const FRT025_ARCHIVED_PAGE_SIZE = 10;
 
 type Stage024CommissionStatusFilter = 'all' | CommissionStatus;
+type Stage025ArchiveDateFilter = 'all' | 'last_30' | 'last_90' | 'older';
 
 type Stage024CommissionRow = {
   client: ClientRecord;
@@ -134,6 +139,17 @@ type Stage024CommissionRow = {
   summary: ReturnType<typeof getCaseFinanceSummary>;
   commissionPayment: ReturnType<typeof normalizeFinancePayment> | null;
   payoutAt: string | null;
+};
+
+type Stage025ArchivedRow = {
+  client: ClientRecord;
+  archivedAt: string | null;
+  reason: string;
+  owner: string;
+  lastCase: Record<string, unknown> | undefined;
+  latestActivityAt: string | null;
+  canRestore: boolean;
+  inactiveOver90Days: boolean;
 };
 
 function getStage024RecordId(row: Record<string, unknown>, keys: string[]) {
@@ -210,6 +226,107 @@ function formatStage024Date(value: string | null) {
   const parsed = normalizeFinanceDate(value);
   if (!parsed) return '—';
   return parsed.toLocaleDateString('pl-PL', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+const STAGE025_ARCHIVE_REASON_KEYS = [
+  'archiveReason',
+  'archive_reason',
+  'archivedReason',
+  'archived_reason',
+];
+const STAGE025_ACTIVITY_DATE_KEYS = [
+  'lastContactAt',
+  'last_contact_at',
+  'lastActivityAt',
+  'last_activity_at',
+  'updatedAt',
+  'updated_at',
+  'createdAt',
+  'created_at',
+];
+const STAGE025_CASE_DATE_KEYS = [
+  'updatedAt',
+  'updated_at',
+  'lastActivityAt',
+  'last_activity_at',
+  'createdAt',
+  'created_at',
+];
+
+function getStage025ArchivedAt(client: ClientRecord) {
+  const value = getStage021DynamicValue(client, ['archivedAt', 'archived_at', 'archivedOn', 'archived_on']);
+  const normalized = String(value || '').trim();
+  return normalized || null;
+}
+
+function getStage025ArchiveReason(client: ClientRecord) {
+  return getStage021DynamicText(client, STAGE025_ARCHIVE_REASON_KEYS, 'Nie określono');
+}
+
+function getStage025Date(value: unknown) {
+  const parsed = new Date(String(value || '').trim());
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function formatStage025Date(value: string | null) {
+  const parsed = getStage025Date(value);
+  if (!parsed) return 'Brak daty';
+  return parsed.toLocaleDateString('pl-PL', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function getStage025LatestActivityAt(client: ClientRecord, relatedRecords: unknown[]) {
+  const candidates = [client, ...relatedRecords].filter((row): row is Record<string, unknown> => Boolean(row && typeof row === 'object'));
+  let latest: Date | null = null;
+  for (const row of candidates) {
+    for (const key of STAGE025_ACTIVITY_DATE_KEYS) {
+      const parsed = getStage025Date(row[key]);
+      if (!parsed || parsed.getTime() > Date.now()) continue;
+      if (!latest || parsed.getTime() > latest.getTime()) latest = parsed;
+    }
+  }
+  return latest ? latest.toISOString() : null;
+}
+
+function getStage025LatestCase(clientId: string, cases: Record<string, unknown>[]) {
+  return cases
+    .filter((caseRecord) => getStage35RelationClientId(caseRecord) === clientId)
+    .sort((left, right) => {
+      const leftDate = STAGE025_CASE_DATE_KEYS
+        .map((key) => getStage025Date(left[key]))
+        .find(Boolean)?.getTime() || 0;
+      const rightDate = STAGE025_CASE_DATE_KEYS
+        .map((key) => getStage025Date(right[key]))
+        .find(Boolean)?.getTime() || 0;
+      return rightDate - leftDate;
+    })[0];
+}
+
+function isStage025InactiveOver90Days(value: string | null, now = Date.now()) {
+  const parsed = getStage025Date(value);
+  if (!parsed) return false;
+  const age = now - parsed.getTime();
+  return age >= 90 * 24 * 60 * 60 * 1000;
+}
+
+function isStage025InMonth(value: string | null, month: Date) {
+  const parsed = getStage025Date(value);
+  return Boolean(parsed && parsed.getFullYear() === month.getFullYear() && parsed.getMonth() === month.getMonth());
+}
+
+function getStage025ArchiveDeltaLabel(currentCount: number, previousCount: number) {
+  if (previousCount <= 0) return 'Brak danych porównawczych';
+  const delta = Math.round(((currentCount - previousCount) / previousCount) * 100);
+  return `${delta >= 0 ? '↑' : '↓'} ${Math.abs(delta)}% vs poprzedni miesiąc`;
+}
+
+function isStage025ArchiveDateFilterMatch(value: string | null, filter: Stage025ArchiveDateFilter, now = Date.now()) {
+  if (filter === 'all') return true;
+  const parsed = getStage025Date(value);
+  if (!parsed) return false;
+  const age = now - parsed.getTime();
+  if (filter === 'last_30') return age >= 0 && age <= 30 * 24 * 60 * 60 * 1000;
+  if (filter === 'last_90') return age >= 0 && age <= 90 * 24 * 60 * 60 * 1000;
+  return age > 90 * 24 * 60 * 60 * 1000;
 }
 
 function getStage021DynamicValue(row: Record<string, unknown>, keys: string[]) {
@@ -530,6 +647,11 @@ export default function Clients() {
   const [stage024Page, setStage024Page] = useState(1);
   const [stage024ColumnsOpen, setStage024ColumnsOpen] = useState(false);
   const [stage024ExportOpen, setStage024ExportOpen] = useState(false);
+  const [stage025ArchiveReasonFilter, setStage025ArchiveReasonFilter] = useState('all');
+  const [stage025ArchiveDateFilter, setStage025ArchiveDateFilter] = useState<Stage025ArchiveDateFilter>('all');
+  const [stage025OwnerFilter, setStage025OwnerFilter] = useState('all');
+  const [stage025Page, setStage025Page] = useState(1);
+  const [stage025CustomizeOpen, setStage025CustomizeOpen] = useState(false);
   const [selectedClientIdsStage021, setSelectedClientIdsStage021] = useState<Set<string>>(new Set());
   const [openActionClientIdStage021, setOpenActionClientIdStage021] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -589,6 +711,15 @@ export default function Clients() {
 
   useEffect(() => {
     const query = new URLSearchParams(location.search);
+    if (query.get('frt025') === 'archived') {
+      setClientRelationFilterStage232C('archived');
+      setStatusFilterStage021('all');
+      setCadenceFilter('all');
+      setStage025ArchiveReasonFilter('all');
+      setStage025ArchiveDateFilter('all');
+      setStage025OwnerFilter('all');
+      setStage025Page(1);
+    }
     if (query.get('frt024') === 'active-commission') {
       setClientRelationFilterStage232C('active_commission');
       setStatusFilterStage021('all');
@@ -977,6 +1108,92 @@ export default function Clients() {
     if (stage024Page > stage024PageCount) setStage024Page(stage024PageCount);
   }, [stage024Page, stage024PageCount]);
 
+  const archivedRowsStage025 = useMemo<Stage025ArchivedRow[]>(() => {
+    const caseRows = cases as Record<string, unknown>[];
+    return clients
+      .map((client) => {
+        const archivedAt = getStage025ArchivedAt(client);
+        if (!archivedAt) return null;
+        const relatedRecords = relatedRecordsByClientIdStage232C.get(client.id) || [];
+        const latestActivityAt = getStage025LatestActivityAt(client, relatedRecords);
+        return {
+          client,
+          archivedAt,
+          reason: getStage025ArchiveReason(client),
+          owner: getStage021ClientOwner(client),
+          lastCase: getStage025LatestCase(client.id, caseRows),
+          latestActivityAt,
+          canRestore: true,
+          inactiveOver90Days: isStage025InactiveOver90Days(latestActivityAt),
+        };
+      })
+      .filter((row): row is Stage025ArchivedRow => Boolean(row))
+      .sort((left, right) => {
+        const leftDate = getStage025Date(left.archivedAt)?.getTime() || 0;
+        const rightDate = getStage025Date(right.archivedAt)?.getTime() || 0;
+        if (leftDate !== rightDate) return rightDate - leftDate;
+        return String(left.client.name || '').localeCompare(String(right.client.name || ''), 'pl');
+      });
+  }, [cases, clients, relatedRecordsByClientIdStage232C]);
+
+  const stage025ArchiveReasonOptions = useMemo(
+    () => Array.from(new Set(archivedRowsStage025.map((row) => row.reason))).sort((a, b) => a.localeCompare(b, 'pl')),
+    [archivedRowsStage025],
+  );
+
+  const stage025OwnerOptions = useMemo(
+    () => Array.from(new Set(archivedRowsStage025.map((row) => row.owner))).sort((a, b) => a.localeCompare(b, 'pl')),
+    [archivedRowsStage025],
+  );
+
+  const filteredArchivedRowsStage025 = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    return archivedRowsStage025.filter((row) => {
+      if (stage025ArchiveReasonFilter !== 'all' && row.reason !== stage025ArchiveReasonFilter) return false;
+      if (!isStage025ArchiveDateFilterMatch(row.archivedAt, stage025ArchiveDateFilter)) return false;
+      if (stage025OwnerFilter !== 'all' && row.owner !== stage025OwnerFilter) return false;
+      if (!query) return true;
+      const caseReference = getStage021CaseReference(row.lastCase);
+      const caseTitle = getStage021CaseTitle(row.lastCase);
+      return [
+        row.client.name,
+        row.client.company,
+        row.client.email,
+        row.reason,
+        row.owner,
+        caseReference,
+        caseTitle,
+      ].some((entry) => String(entry || '').toLowerCase().includes(query));
+    });
+  }, [archivedRowsStage025, search, stage025ArchiveDateFilter, stage025ArchiveReasonFilter, stage025OwnerFilter]);
+
+  const stage025PageCount = Math.max(1, Math.ceil(filteredArchivedRowsStage025.length / FRT025_ARCHIVED_PAGE_SIZE));
+  const safeStage025Page = Math.min(stage025Page, stage025PageCount);
+  const visibleArchivedRowsStage025 = filteredArchivedRowsStage025.slice(
+    (safeStage025Page - 1) * FRT025_ARCHIVED_PAGE_SIZE,
+    safeStage025Page * FRT025_ARCHIVED_PAGE_SIZE,
+  );
+  const stage025ArchivedThisMonth = useMemo(() => {
+    const now = new Date();
+    return archivedRowsStage025.filter((row) => isStage025InMonth(row.archivedAt, now)).length;
+  }, [archivedRowsStage025]);
+  const stage025ArchivedPreviousMonth = useMemo(() => {
+    const now = new Date();
+    const previousMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    return archivedRowsStage025.filter((row) => isStage025InMonth(row.archivedAt, previousMonth)).length;
+  }, [archivedRowsStage025]);
+  const stage025ArchiveDeltaLabel = getStage025ArchiveDeltaLabel(stage025ArchivedThisMonth, stage025ArchivedPreviousMonth);
+  const stage025RestorableCount = archivedRowsStage025.filter((row) => row.canRestore).length;
+  const stage025InactiveOver90Count = archivedRowsStage025.filter((row) => row.inactiveOver90Days).length;
+
+  useEffect(() => {
+    setStage025Page(1);
+  }, [search, stage025ArchiveDateFilter, stage025ArchiveReasonFilter, stage025OwnerFilter]);
+
+  useEffect(() => {
+    if (stage025Page > stage025PageCount) setStage025Page(stage025PageCount);
+  }, [stage025Page, stage025PageCount]);
+
   const clientOwnerOptionsStage021 = useMemo(
     () => Array.from(new Set(clients.map((client) => getStage021ClientOwner(client)))).sort((a, b) => a.localeCompare(b, 'pl')),
     [clients],
@@ -1298,6 +1515,14 @@ export default function Clients() {
     setFilterPanelOpenStage021(false);
   };
 
+  const resetArchivedFiltersStage025 = () => {
+    setSearch('');
+    setStage025ArchiveReasonFilter('all');
+    setStage025ArchiveDateFilter('all');
+    setStage025OwnerFilter('all');
+    setStage025Page(1);
+  };
+
   const exportActiveCommissionStage024 = (scope: 'all' | 'visible') => {
     const rows = scope === 'visible' ? visibleCommissionRowsStage024 : filteredCommissionRowsStage024;
     const escapeCsv = (value: unknown) => `"${String(value ?? '').replace(/"/g, '""')}"`;
@@ -1365,11 +1590,242 @@ export default function Clients() {
   );
   const isWithoutCaseStage022 = clientRelationFilterStage232C === 'without_case';
   const isActiveCommissionStage024 = new URLSearchParams(location.search).get('frt024') === 'active-commission';
+  const isArchivedStage025 = new URLSearchParams(location.search).get('frt025') === 'archived';
   const isNeedsContactStage023 = clientRelationFilterStage232C === 'needs_contact'
     || new URLSearchParams(location.search).get('frt023') === 'needs-contact';
   const pageItemsStage021: Array<number | 'ellipsis'> = clientPageCountStage021 <= 5
     ? Array.from({ length: clientPageCountStage021 }, (_, index) => index + 1)
     : [1, 2, 3, 'ellipsis', clientPageCountStage021];
+
+  const pageItemsStage025: Array<number | 'ellipsis'> = stage025PageCount <= 5
+    ? Array.from({ length: stage025PageCount }, (_, index) => index + 1)
+    : [1, 2, 3, 'ellipsis', stage025PageCount];
+
+  const renderArchivedStage025 = () => (
+    <>
+      <nav className="forteca-frt-025-tabs" aria-label="Widoki klientów" data-forteca-frt-025-tabs="true">
+        <button
+          type="button"
+          onClick={() => {
+            setClientRelationFilterStage232C('all');
+            setStatusFilterStage021('active');
+            navigate('/clients');
+          }}
+          data-forteca-frt-025-tab="active"
+        >
+          Aktywni
+        </button>
+        <button type="button" className="is-active" aria-current="page" data-forteca-frt-025-tab="archived">
+          Archiwalne
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setClientRelationFilterStage232C('all');
+            setStatusFilterStage021('all');
+            navigate('/clients');
+          }}
+          data-forteca-frt-025-tab="all"
+        >
+          Wszyscy
+        </button>
+      </nav>
+
+      <section className="forteca-frt-025-kpi-grid" aria-label="Podsumowanie klientów archiwalnych" data-forteca-frt-025-kpis="true">
+        <article className="forteca-frt-025-kpi" data-forteca-frt-025-tone="primary">
+          <span className="forteca-frt-025-kpi-icon" aria-hidden="true"><Archive /></span>
+          <span className="forteca-frt-025-kpi-copy">
+            <span className="forteca-frt-025-kpi-label">Klienci w archiwum</span>
+            <strong className="forteca-frt-025-kpi-value">{archivedRowsStage025.length}</strong>
+            <small className="forteca-frt-025-kpi-helper">Łącznie zarchiwizowanych</small>
+          </span>
+        </article>
+        <article className="forteca-frt-025-kpi" data-forteca-frt-025-tone="warning">
+          <span className="forteca-frt-025-kpi-icon" aria-hidden="true"><CalendarDays /></span>
+          <span className="forteca-frt-025-kpi-copy">
+            <span className="forteca-frt-025-kpi-label">Zarchiwizowani w tym miesiącu</span>
+            <strong className="forteca-frt-025-kpi-value">{stage025ArchivedThisMonth}</strong>
+            <small className="forteca-frt-025-kpi-helper" data-forteca-frt-025-tone={stage025ArchivedPreviousMonth > 0 ? (stage025ArchivedThisMonth >= stage025ArchivedPreviousMonth ? 'success' : 'danger') : 'neutral'}>{stage025ArchiveDeltaLabel}</small>
+          </span>
+        </article>
+        <article className="forteca-frt-025-kpi" data-forteca-frt-025-tone="success">
+          <span className="forteca-frt-025-kpi-icon" aria-hidden="true"><RotateCcw /></span>
+          <span className="forteca-frt-025-kpi-copy">
+            <span className="forteca-frt-025-kpi-label">Można przywrócić</span>
+            <strong className="forteca-frt-025-kpi-value">{stage025RestorableCount}</strong>
+            <small className="forteca-frt-025-kpi-helper">Bezpieczny restore bez utraty danych</small>
+          </span>
+        </article>
+        <article className="forteca-frt-025-kpi" data-forteca-frt-025-tone="danger">
+          <span className="forteca-frt-025-kpi-icon" aria-hidden="true"><Clock3 /></span>
+          <span className="forteca-frt-025-kpi-copy">
+            <span className="forteca-frt-025-kpi-label">Nieaktywni &gt; 90 dni</span>
+            <strong className="forteca-frt-025-kpi-value">{stage025InactiveOver90Count}</strong>
+            <small className="forteca-frt-025-kpi-helper">Do weryfikacji</small>
+          </span>
+        </article>
+      </section>
+
+      <section className="forteca-frt-025-content-grid" data-forteca-frt-025-content="true">
+        <section className="forteca-frt-025-list-column" aria-label="Lista klientów archiwalnych">
+          <div className="forteca-frt-025-toolbar-shell" aria-label="Narzędzia klientów archiwalnych" data-forteca-frt-025-toolbar="true">
+            <div className="forteca-frt-025-toolbar">
+              <label className="forteca-frt-025-search">
+                <Search aria-hidden="true" />
+                <input
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  placeholder="Szukaj klienta..."
+                  aria-label="Szukaj klienta"
+                />
+              </label>
+              <div className="forteca-frt-025-filters" data-forteca-frt-025-filters="true">
+                <label className="forteca-frt-025-filter">
+                  <span>Powód archiwizacji</span>
+                  <select value={stage025ArchiveReasonFilter} onChange={(event) => setStage025ArchiveReasonFilter(event.target.value)} aria-label="Powód archiwizacji">
+                    <option value="all">Wszystkie</option>
+                    {stage025ArchiveReasonOptions.map((reason) => <option value={reason} key={reason}>{reason}</option>)}
+                  </select>
+                  <ChevronDown aria-hidden="true" />
+                </label>
+                <label className="forteca-frt-025-filter">
+                  <span>Data archiwizacji</span>
+                  <select value={stage025ArchiveDateFilter} onChange={(event) => setStage025ArchiveDateFilter(event.target.value as Stage025ArchiveDateFilter)} aria-label="Data archiwizacji">
+                    <option value="all">Wszystkie</option>
+                    <option value="last_30">Ostatnie 30 dni</option>
+                    <option value="last_90">Ostatnie 90 dni</option>
+                    <option value="older">Ponad 90 dni</option>
+                  </select>
+                  <ChevronDown aria-hidden="true" />
+                </label>
+                <label className="forteca-frt-025-filter">
+                  <span>Opiekun</span>
+                  <select value={stage025OwnerFilter} onChange={(event) => setStage025OwnerFilter(event.target.value)} aria-label="Opiekun">
+                    <option value="all">Wszyscy</option>
+                    {stage025OwnerOptions.map((owner) => <option value={owner} key={owner}>{owner}</option>)}
+                  </select>
+                  <ChevronDown aria-hidden="true" />
+                </label>
+                <button type="button" className="forteca-frt-025-clear-button" onClick={resetArchivedFiltersStage025} data-forteca-frt-025-clear="true">Wyczyść filtry</button>
+              </div>
+            </div>
+            {stage025CustomizeOpen ? (
+              <div className="forteca-frt-025-customize-panel" role="region" aria-label="Widoczne kolumny" data-forteca-frt-025-customize-panel="true">
+                <strong>Widoczne kolumny</strong>
+                <span>Klient · Data archiwizacji · Ostatnia sprawa · Powód · Opiekun · Akcja</span>
+              </div>
+            ) : null}
+          </div>
+
+          <section className="forteca-frt-025-table-card" aria-label="Archiwalni klienci" data-forteca-frt-025-table="true">
+            <div className="forteca-frt-025-table-scroll">
+              <div className="forteca-frt-025-table" role="table">
+                <div className="forteca-frt-025-table-row forteca-frt-025-table-head" role="row">
+                  <div className="forteca-frt-025-cell" role="columnheader">Klient</div>
+                  <div className="forteca-frt-025-cell" role="columnheader">Data archiwizacji <span aria-hidden="true">↓</span></div>
+                  <div className="forteca-frt-025-cell" role="columnheader">Ostatnia sprawa</div>
+                  <div className="forteca-frt-025-cell" role="columnheader">Powód</div>
+                  <div className="forteca-frt-025-cell" role="columnheader">Opiekun</div>
+                  <div className="forteca-frt-025-cell forteca-frt-025-action-cell" role="columnheader">Akcja</div>
+                </div>
+                {loading ? (
+                  <div className="forteca-frt-025-empty" role="row"><Loader2 className="animate-spin" aria-label="Ładowanie klientów archiwalnych" /> Ładowanie klientów</div>
+                ) : visibleArchivedRowsStage025.length === 0 ? (
+                  <div className="forteca-frt-025-empty" role="row">
+                    <Archive aria-hidden="true" />
+                    <strong>Brak zarchiwizowanych klientów</strong>
+                    <p>Gdy klient zostanie przeniesiony do archiwum, pojawi się tutaj z pełną historią i opcją bezpiecznego przywrócenia.</p>
+                  </div>
+                ) : visibleArchivedRowsStage025.map((row, index) => {
+                  const client = row.client;
+                  const caseId = row.lastCase ? getStage024RecordId(row.lastCase, ['id', 'caseId', 'case_id']) : '';
+                  const initials = String(client.name || 'K')
+                    .split(/\s+/)
+                    .filter(Boolean)
+                    .slice(0, 2)
+                    .map((part) => part.charAt(0))
+                    .join('')
+                    .toUpperCase();
+                  return (
+                    <div className="forteca-frt-025-table-row forteca-frt-025-data-row" role="row" key={client.id} data-forteca-frt-025-row="true" data-client-id={client.id}>
+                      <div className="forteca-frt-025-cell forteca-frt-025-client-cell" role="cell">
+                        <span className="forteca-frt-025-avatar" data-forteca-frt-025-tone={['primary', 'success', 'warning', 'danger'][index % 4]} aria-hidden="true">{initials || 'K'}</span>
+                        <span className="forteca-frt-025-client-copy">
+                          <Link to={'/clients/' + client.id}>{client.name || 'Klient'}</Link>
+                          <small>{client.company || getStage021RelationType(client)}</small>
+                        </span>
+                      </div>
+                      <div className="forteca-frt-025-cell forteca-frt-025-date-cell" role="cell">{formatStage025Date(row.archivedAt)}</div>
+                      <div className="forteca-frt-025-cell forteca-frt-025-case-cell" role="cell">
+                        {row.lastCase ? (
+                          <span className="forteca-frt-025-case-copy">
+                            {caseId ? <Link to={'/cases/' + caseId}>{getStage021CaseReference(row.lastCase)}</Link> : <strong>{getStage021CaseReference(row.lastCase)}</strong>}
+                            <small>{getStage021CaseTitle(row.lastCase)}</small>
+                          </span>
+                        ) : <span className="forteca-frt-025-muted">Brak sprawy</span>}
+                      </div>
+                      <div className="forteca-frt-025-cell forteca-frt-025-reason-cell" role="cell">{row.reason}</div>
+                      <div className="forteca-frt-025-cell forteca-frt-025-owner-cell" role="cell">
+                        <span className="forteca-frt-025-owner-avatar" aria-hidden="true">{row.owner.slice(0, 2).toUpperCase()}</span>
+                        <span>{row.owner}</span>
+                      </div>
+                      <div className="forteca-frt-025-cell forteca-frt-025-action-cell" role="cell">
+                        <button type="button" className="forteca-frt-025-restore-button" onClick={(event) => handleRestoreClient(event, client)}>
+                          <RotateCcw aria-hidden="true" />
+                          Przywróć
+                        </button>
+                        <div className="forteca-frt-025-action-menu-wrap">
+                          <button
+                            type="button"
+                            className="forteca-frt-025-more-button"
+                            aria-label={'Akcje dla klienta ' + (client.name || 'Klient')}
+                            aria-expanded={openActionClientIdStage021 === client.id}
+                            onClick={() => setOpenActionClientIdStage021((current) => current === client.id ? null : client.id)}
+                          >
+                            <MoreHorizontal aria-hidden="true" />
+                          </button>
+                          {openActionClientIdStage021 === client.id ? (
+                            <div className="forteca-frt-025-action-menu" role="menu">
+                              <Link to={'/clients/' + client.id} role="menuitem" onClick={() => setOpenActionClientIdStage021(null)}>Otwórz klienta</Link>
+                              <button type="button" role="menuitem" onClick={(event) => { setOpenActionClientIdStage021(null); handleRestoreClient(event, client); }}>Przywróć klienta</button>
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            <footer className="forteca-frt-025-table-footer">
+              <span className="forteca-frt-025-result-count">
+                Wyświetlanie {filteredArchivedRowsStage025.length === 0 ? 0 : (safeStage025Page - 1) * FRT025_ARCHIVED_PAGE_SIZE + 1}–{Math.min(safeStage025Page * FRT025_ARCHIVED_PAGE_SIZE, filteredArchivedRowsStage025.length)} z {filteredArchivedRowsStage025.length}
+              </span>
+              <nav className="forteca-frt-025-pagination" aria-label="Paginacja klientów archiwalnych">
+                <button type="button" className="forteca-frt-025-pagination-button" disabled={safeStage025Page <= 1} onClick={() => setStage025Page((page) => Math.max(1, page - 1))}>‹</button>
+                {pageItemsStage025.map((item) => item === 'ellipsis'
+                  ? <span key="ellipsis" className="forteca-frt-025-page-ellipsis">…</span>
+                  : <button type="button" key={item} className={safeStage025Page === item ? 'forteca-frt-025-pagination-button is-active' : 'forteca-frt-025-pagination-button'} aria-current={safeStage025Page === item ? 'page' : undefined} onClick={() => setStage025Page(item)}>{item}</button>)}
+                <button type="button" className="forteca-frt-025-pagination-button" disabled={safeStage025Page >= stage025PageCount} onClick={() => setStage025Page((page) => Math.min(stage025PageCount, page + 1))}>›</button>
+                <span className="forteca-frt-025-page-size">10 / strona</span>
+              </nav>
+            </footer>
+          </section>
+        </section>
+
+        <aside className="forteca-frt-025-guide" aria-label="Informacje o klientach archiwalnych" data-forteca-frt-025-guide="true">
+          <div className="forteca-frt-025-guide-icon" aria-hidden="true"><Archive /></div>
+          <h2>Klienci archiwalni</h2>
+          <p>Archiwum pomaga zachować porządek na aktywnej liście bez utraty historii relacji z klientem.</p>
+          <div className="forteca-frt-025-guide-info">
+            <ClipboardCheck aria-hidden="true" />
+            <p><strong>Archiwizacja nie usuwa danych.</strong> Wszystkie informacje, sprawy i historia pozostają bezpieczne.</p>
+          </div>
+          <button type="button" className="forteca-frt-025-guide-link" onClick={() => toast.info('Archiwizacja ukrywa klienta z aktywnej listy, ale nie usuwa jego danych.')}>Dowiedz się więcej <span aria-hidden="true">→</span></button>
+        </aside>
+      </section>
+    </>
+  );
 
   const renderActiveCommissionStage024 = () => {
     const pageItems: Array<number | 'ellipsis'> = stage024PageCount <= 5
@@ -2054,13 +2510,15 @@ export default function Clients() {
 
   return (
     <Layout>
-      <div className={isActiveCommissionStage024
-        ? 'forteca-frt-021-page forteca-frt-021-clients-view forteca-frt-024-page'
+      <div className={isArchivedStage025
+        ? 'forteca-frt-021-page forteca-frt-021-clients-view forteca-frt-025-page'
+        : isActiveCommissionStage024
+          ? 'forteca-frt-021-page forteca-frt-021-clients-view forteca-frt-024-page'
         : isNeedsContactStage023
           ? 'forteca-frt-021-page forteca-frt-021-clients-view forteca-frt-023-page'
           : isWithoutCaseStage022
             ? 'forteca-frt-021-page forteca-frt-021-clients-view forteca-frt-022-page'
-            : 'forteca-frt-021-page forteca-frt-021-clients-view'} data-forteca-frt-021-runtime="true" data-forteca-frt-022-runtime={isWithoutCaseStage022 ? 'true' : undefined} data-forteca-frt-023-runtime={isNeedsContactStage023 ? 'true' : undefined} data-forteca-frt-024-runtime={isActiveCommissionStage024 ? 'true' : undefined} data-forteca-frt-024-root={isActiveCommissionStage024 ? 'true' : undefined}>
+            : 'forteca-frt-021-page forteca-frt-021-clients-view'} data-forteca-frt-021-runtime="true" data-forteca-frt-022-runtime={isWithoutCaseStage022 ? 'true' : undefined} data-forteca-frt-023-runtime={isNeedsContactStage023 ? 'true' : undefined} data-forteca-frt-024-runtime={isActiveCommissionStage024 ? 'true' : undefined} data-forteca-frt-024-root={isActiveCommissionStage024 ? 'true' : undefined} data-forteca-frt-025-runtime={isArchivedStage025 ? 'true' : undefined} data-forteca-frt-025-root={isArchivedStage025 ? 'true' : undefined}>
         <ConfirmDialog
           open={Boolean(clientArchiveConfirm)}
           onOpenChange={(open) => {
@@ -2088,14 +2546,14 @@ export default function Clients() {
           onCancel={() => { setClientConflictOpen(false); setIsCreateOpen(true); }}
         />
 
-        <header className={isActiveCommissionStage024 ? 'forteca-frt-024-header' : 'forteca-frt-021-header forteca-frt-021-page-header'} data-forteca-frt-021-header="true">
-          <div className={isActiveCommissionStage024 ? 'forteca-frt-024-header-copy' : undefined}>
-            <h1 className={isActiveCommissionStage024 ? 'forteca-frt-024-title' : undefined}>Klienci</h1>
+        <header className={isArchivedStage025 ? 'forteca-frt-025-header' : isActiveCommissionStage024 ? 'forteca-frt-024-header' : 'forteca-frt-021-header forteca-frt-021-page-header'} data-forteca-frt-021-header="true">
+          <div className={isArchivedStage025 ? 'forteca-frt-025-header-copy' : isActiveCommissionStage024 ? 'forteca-frt-024-header-copy' : undefined}>
+            <h1 className={isArchivedStage025 ? 'forteca-frt-025-title' : isActiveCommissionStage024 ? 'forteca-frt-024-title' : undefined}>Klienci</h1>
             {isActiveCommissionStage024
               ? <p className="forteca-frt-024-subtitle">Zarządzaj klientami i monitoruj aktywną prowizję.</p>
-              : !isWithoutCaseStage022 && !isNeedsContactStage023 ? <p>Zarządzaj relacjami i prowadź klientów od kontaktu do sprawy.</p> : null}
+              : !isArchivedStage025 && !isWithoutCaseStage022 && !isNeedsContactStage023 ? <p>Zarządzaj relacjami i prowadź klientów od kontaktu do sprawy.</p> : null}
           </div>
-          <div className={isActiveCommissionStage024 ? 'forteca-frt-024-header-actions' : 'forteca-frt-021-header-actions forteca-frt-021-page-actions'}>
+          <div className={isArchivedStage025 ? 'forteca-frt-025-header-actions' : isActiveCommissionStage024 ? 'forteca-frt-024-header-actions' : 'forteca-frt-021-header-actions forteca-frt-021-page-actions'}>
             {isActiveCommissionStage024 ? (
               <>
                 <Button
@@ -2128,6 +2586,18 @@ export default function Clients() {
                   ) : null}
                 </div>
               </>
+            ) : isArchivedStage025 ? (
+              <Button
+                type="button"
+                variant="outline"
+                className="forteca-frt-025-customize-button"
+                onClick={() => setStage025CustomizeOpen((current) => !current)}
+                aria-expanded={stage025CustomizeOpen}
+                data-forteca-frt-025-customize="true"
+              >
+                <Settings aria-hidden="true" />
+                Dostosuj widok
+              </Button>
             ) : isNeedsContactStage023 ? (
               <Button
                 type="button"
@@ -2155,7 +2625,7 @@ export default function Clients() {
             <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
               {!isActiveCommissionStage024 ? (
                 <DialogTrigger asChild>
-                  <Button type="button" className="forteca-frt-021-button forteca-frt-021-button-primary forteca-frt-021-add-button" disabled={!workspace?.id}>
+                  <Button type="button" className={isArchivedStage025 ? 'forteca-frt-025-add-button' : 'forteca-frt-021-button forteca-frt-021-button-primary forteca-frt-021-add-button'} disabled={!workspace?.id} data-forteca-frt-025-add={isArchivedStage025 ? 'true' : undefined}>
                     <Plus aria-hidden="true" />
                     Dodaj klienta
                     <ChevronDown aria-hidden="true" />
@@ -2239,7 +2709,7 @@ export default function Clients() {
           </div>
         </header>
 
-        {isActiveCommissionStage024 ? renderActiveCommissionStage024() : isNeedsContactStage023 ? renderNeedsContactStage023() : isWithoutCaseStage022 ? renderWithoutCaseStage022() : <>
+        {isArchivedStage025 ? renderArchivedStage025() : isActiveCommissionStage024 ? renderActiveCommissionStage024() : isNeedsContactStage023 ? renderNeedsContactStage023() : isWithoutCaseStage022 ? renderWithoutCaseStage022() : <>
         <section className="forteca-frt-021-kpi-grid" aria-label="Podsumowanie klientów">
           <button
             type="button"
