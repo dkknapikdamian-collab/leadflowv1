@@ -11,6 +11,7 @@ import { Activity, AlertTriangle, ArrowLeft, Building2, BriefcaseBusiness, Calen
 import { EntityIcon } from '../components/ui-system';
 import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 import { CreateClientCaseDialog } from '../components/CreateClientCaseDialog';
+import { ClientEditDialog } from '../components/ClientCreateDialog';
 import { actionButtonClass } from '../components/entity-actions';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';
@@ -23,6 +24,7 @@ import {
   fetchEventsFromSupabase,
   fetchLeadsFromSupabase,
   fetchTasksFromSupabase,
+  deleteClientFromSupabase,
   updateClientInSupabase,
   updateLeadInSupabase,
   updateTaskInSupabase,
@@ -1578,6 +1580,7 @@ function ClientDetail() {
   const [forteca026CaseMenuOpenId, setForteca026CaseMenuOpenId] = useState<string | null>(null);
   const [forteca028MenuOpenId, setForteca028MenuOpenId] = useState<string | null>(null);
   const [forteca028ExpandedCaseId, setForteca028ExpandedCaseId] = useState<string | null>(null);
+  const [clientEditOpen, setClientEditOpen] = useState(false);
   const clientNoteRecognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const clientNoteVoiceDirtyRef = useRef(false);
 
@@ -2027,13 +2030,25 @@ function ClientDetail() {
     }
   };
 
-  const handleClientPanelEditToggle = async () => {
-    if (contactEditing) {
-      await handleSave();
-      return;
-    }
-    resetClientContactForm();
-    setContactEditing(true);
+  const openClientEditDialog = () => {
+    setContactEditing(false);
+    setClientEditOpen(true);
+  };
+
+  const handleClientPanelEditToggle = () => {
+    openClientEditDialog();
+  };
+
+  const handleClientUpdated = async () => {
+    await reload();
+  };
+
+  const handleClientDeleted = async () => {
+    if (!clientId) throw new Error('CLIENT_ID_REQUIRED');
+    if (!hasAccess) throw new Error('TRIAL_EXPIRED');
+    await deleteClientFromSupabase(clientId);
+    setClientEditOpen(false);
+    navigate('/clients');
   };
 
   const cancelClientPanelEdit = () => {
@@ -2924,6 +2939,16 @@ return (
   const forteca028QueryRequested = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('frt028') === 'browser-proof';
   const forteca028ShouldRender = closedCases.length > 0 || forteca028QueryRequested;
 
+  const clientEditDialog = (
+    <ClientEditDialog
+      open={clientEditOpen}
+      onOpenChange={setClientEditOpen}
+      client={client}
+      onUpdated={handleClientUpdated}
+      onDeleted={handleClientDeleted}
+    />
+  );
+
   const clientRightRailActionsStage216M4 = dedupeClientRightRailActionsStage231H_R1D2_R12G([
 
     ...clientTasks.map((task: any) => {
@@ -2971,6 +2996,7 @@ return (
           hasAccess={hasAccess}
           hasExistingCase={clientRelatedCasesStage231B0R8.length > 0}
         />
+        {clientEditDialog}
         {contactEditing ? (
           <div className="forteca-frt-027-edit-backdrop" role="presentation">
             <section className="forteca-frt-027-edit-dialog" role="dialog" aria-modal="true" aria-labelledby="forteca-frt-027-edit-title">
@@ -3143,6 +3169,7 @@ return (
           hasAccess={hasAccess}
           hasExistingCase={clientRelatedCasesStage231B0R8.length > 0}
         />
+        {clientEditDialog}
         {contactEditing ? (
           <div className="forteca-frt-028-edit-backdrop" role="presentation">
             <section className="forteca-frt-028-edit-dialog" role="dialog" aria-modal="true" aria-labelledby="forteca-frt-028-edit-title">
@@ -3322,6 +3349,7 @@ return (
         hasAccess={hasAccess}
         hasExistingCase={clientRelatedCasesStage231B0R8.length > 0}
       />
+      {clientEditDialog}
       <main className="client-detail-vnext-page forteca-frt-026-page cf-page-canvas cf-page-canvas--full cf-html-view main-client-detail-html cf-client-detail-layout-stage231b0-r15-r2" data-forteca-frt-026-root="true" data-forteca-frt-026-runtime="true" data-stage231d0c-client-detail-workspace-baseline="true" data-client-detail-simplified-card-view="true" data-stage216m-r6-client-data-card-marker="true" data-stage216m-r6-r1-client-data-card-polish-marker="true" data-stage231b0-r15-r2-client-detail-shared-canvas="true" data-cf-page-canvas="full">
         <header className="client-detail-header">
           <div className="client-detail-header-copy">

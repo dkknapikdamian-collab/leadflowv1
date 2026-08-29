@@ -1,4 +1,4 @@
-import { type FormEvent, useMemo, useState } from 'react';
+import { type FormEvent, useEffect, useMemo, useState } from 'react';
 import { MapPin, Mail, Phone, UserRound, type LucideIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -29,6 +29,7 @@ import { Input } from './ui/input';
 import { TextareaField } from './ui/textarea-field';
 import { modalFooterClass } from './entity-actions';
 import '../styles/forteca-client-add.css';
+import '../styles/forteca-client-edit.css';
 
 const STAGE228R5R6_ACTIVE_CLIENT_CREATE_DIALOG_FINANCE_REDIRECT = 'active ClientCreateDialog creates empty starter case and opens CaseDetail finance modal';
 const CLOSEFLOW_CZ2_013_CLIENT_CREATE_FORM_VARIANTS = 'ClientCreateDialog scoped migration uses FormField/TextareaField source of truth';
@@ -54,6 +55,19 @@ type ClientCreateDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onCreated?: () => void | Promise<void>;
+};
+
+export type ClientEditRecord = {
+  id?: string;
+  [key: string]: unknown;
+};
+
+export type ClientEditDialogProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  client: ClientEditRecord | null;
+  onUpdated?: () => void | Promise<void>;
+  onDeleted?: () => void | Promise<void>;
 };
 
 function buildDefaultClientCreateForm(): ClientCreateFormState {
@@ -481,5 +495,284 @@ export default function ClientCreateDialog({ open, onOpenChange, onCreated }: Cl
         }}
       />
     </>
+  );
+}
+
+function buildClientEditForm(client: ClientEditRecord | null): ClientCreateFormState {
+  return {
+    ...buildDefaultClientCreateForm(),
+    name: String(client?.name || ''),
+    phone: String(client?.phone || ''),
+    email: String(client?.email || ''),
+    address: String(client?.address || ''),
+    company: String(client?.company || ''),
+    sourcePrimary: String(client?.sourcePrimary || client?.source_primary || client?.source || ''),
+    ownerId: String(client?.ownerId || client?.owner_id || ''),
+    notes: String(client?.notes || client?.note || ''),
+  };
+}
+
+function trimClientEditForm(form: ClientCreateFormState) {
+  return {
+    name: form.name.trim(),
+    phone: form.phone.trim(),
+    email: form.email.trim(),
+    address: form.address.trim(),
+    company: form.company.trim(),
+    sourcePrimary: form.sourcePrimary.trim(),
+    ownerId: form.ownerId.trim(),
+    notes: form.notes.trim(),
+  };
+}
+
+export function ClientEditDialog({ open, onOpenChange, client, onUpdated, onDeleted }: ClientEditDialogProps) {
+  const { workspace, profile, hasAccess } = useWorkspace();
+  const [form, setForm] = useState<ClientCreateFormState>(() => buildClientEditForm(client));
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (open) setForm(buildClientEditForm(client));
+  }, [client, open]);
+
+  const ownerOptions = useMemo(() => {
+    const options = [
+      {
+        value: String(workspace?.ownerId || '').trim(),
+        label: 'Właściciel workspace',
+      },
+      {
+        value: String(profile?.id || '').trim(),
+        label: String(profile?.fullName || profile?.email || 'Mój profil').trim(),
+      },
+    ].filter((option) => option.value);
+
+    const selectedOwnerId = String(form.ownerId || '').trim();
+    if (selectedOwnerId && !options.some((option) => option.value === selectedOwnerId)) {
+      options.push({
+        value: selectedOwnerId,
+        label: String(client?.ownerName || client?.owner || selectedOwnerId).trim(),
+      });
+    }
+
+    return Array.from(new Map(options.map((option) => [option.value, option])).values());
+  }, [client, form.ownerId, profile?.email, profile?.fullName, profile?.id, workspace?.ownerId]);
+
+  const sourceOptions = useMemo(() => {
+    const options: Array<{ value: string; label: string; description: string }> = [...CLIENT_SOURCE_OPTIONS];
+    const selectedSource = String(form.sourcePrimary || '').trim();
+    if (selectedSource && !options.some((option) => option.value === selectedSource)) {
+      options.push({
+        value: selectedSource,
+        label: String(client?.sourceLabel || client?.source || selectedSource).trim(),
+        description: 'Źródło zachowane z bieżącego rekordu klienta.',
+      });
+    }
+    return options;
+  }, [client, form.sourcePrimary]);
+
+  const updateForm = (patch: Partial<ClientCreateFormState>) => {
+    setForm((current) => ({ ...current, ...patch }));
+  };
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    const clientId = String(client?.id || '').trim();
+
+    if (!clientId) {
+      toast.error('Nie znaleziono ID klienta.');
+      return;
+    }
+    if (!hasAccess) {
+      toast.error('Twój trial wygasł.');
+      return;
+    }
+
+    const prepared = trimClientEditForm(form);
+    if (!prepared.name) {
+      toast.error('Podaj nazwę klienta.');
+      return;
+    }
+
+    let didUpdate = false;
+    try {
+      setSaving(true);
+      await updateClientInSupabase({
+        id: clientId,
+        name: prepared.name,
+        company: prepared.company,
+        email: prepared.email,
+        phone: prepared.phone,
+        address: prepared.address,
+        sourcePrimary: prepared.sourcePrimary || undefined,
+        ownerId: prepared.ownerId || null,
+        notes: prepared.notes,
+        workspaceId: String(workspace?.id || '').trim() || undefined,
+      });
+      didUpdate = true;
+      onOpenChange(false);
+      toast.success('Klient zaktualizowany');
+    } catch (error: any) {
+      toast.error(`Błąd zapisu klienta: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setSaving(false);
+    }
+
+    if (didUpdate) await onUpdated?.();
+  };
+
+  const handleDelete = async () => {
+    const clientId = String(client?.id || '').trim();
+    if (!clientId) {
+      toast.error('Nie znaleziono ID klienta.');
+      return;
+    }
+    if (!hasAccess) {
+      toast.error('Twój trial wygasł.');
+      return;
+    }
+    if (!onDeleted) {
+      toast.error('Usuwanie klienta nie jest dostępne w tym widoku.');
+      return;
+    }
+    if (typeof window !== 'undefined' && !window.confirm('Zarchiwizować tego klienta?')) return;
+
+    try {
+      setSaving(true);
+      await onDeleted();
+      onOpenChange(false);
+      toast.success('Klient zarchiwizowany');
+    } catch (error: any) {
+      toast.error(`Nie udało się zarchiwizować klienta: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent
+        className="forteca-frt-030-client-edit-dialog"
+        data-forteca-frt-030-root="true"
+        data-forteca-frt-030-runtime="true"
+        aria-describedby="client-edit-frt-030-description"
+      >
+        <DialogHeader className="forteca-frt-030-dialog-header">
+          <DialogTitle>Edytuj klienta</DialogTitle>
+          <DialogDescription id="client-edit-frt-030-description" className="forteca-frt-030-dialog-description">
+            Zmień dane klienta i zapisz aktualizację w bieżącym workspace.
+          </DialogDescription>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="forteca-frt-030-client-edit-form" data-forteca-frt-030-form="true">
+          <div className="forteca-frt-030-form-fields" data-forteca-frt-030-fields="true">
+            <FormField label="Imię i nazwisko / nazwa firmy" required htmlFor="forteca-frt-030-client-name" dataAttrs={{ 'data-forteca-frt-030-field': 'name' }}>
+              <Input
+                id="forteca-frt-030-client-name"
+                className="forteca-frt-030-input"
+                value={form.name}
+                onChange={(event) => updateForm({ name: event.target.value })}
+                autoComplete="name"
+                required
+              />
+            </FormField>
+
+            <div className="forteca-frt-030-form-row">
+              <FormField label="Telefon" htmlFor="forteca-frt-030-client-phone" dataAttrs={{ 'data-forteca-frt-030-field': 'phone' }}>
+                <div className="forteca-frt-030-input-shell">
+                  <Phone aria-hidden="true" className="forteca-frt-030-input-icon" />
+                  <Input
+                    id="forteca-frt-030-client-phone"
+                    className="forteca-frt-030-input"
+                    value={form.phone}
+                    onChange={(event) => updateForm({ phone: event.target.value })}
+                    autoComplete="tel"
+                  />
+                </div>
+              </FormField>
+              <FormField label="E-mail" htmlFor="forteca-frt-030-client-email" dataAttrs={{ 'data-forteca-frt-030-field': 'email' }}>
+                <div className="forteca-frt-030-input-shell">
+                  <Mail aria-hidden="true" className="forteca-frt-030-input-icon" />
+                  <Input
+                    id="forteca-frt-030-client-email"
+                    type="email"
+                    className="forteca-frt-030-input"
+                    value={form.email}
+                    onChange={(event) => updateForm({ email: event.target.value })}
+                    autoComplete="email"
+                  />
+                </div>
+              </FormField>
+            </div>
+
+            <FormField label="Adres" htmlFor="forteca-frt-030-client-address" dataAttrs={{ 'data-forteca-frt-030-field': 'address' }}>
+              <div className="forteca-frt-030-input-shell">
+                <MapPin aria-hidden="true" className="forteca-frt-030-input-icon" />
+                <Input
+                  id="forteca-frt-030-client-address"
+                  className="forteca-frt-030-input"
+                  value={form.address}
+                  onChange={(event) => updateForm({ address: event.target.value })}
+                  autoComplete="street-address"
+                />
+              </div>
+            </FormField>
+
+            <div className="forteca-frt-030-form-row">
+              <FormField label="Źródło klienta" htmlFor="forteca-frt-030-client-source" dataAttrs={{ 'data-forteca-frt-030-field': 'source' }}>
+                <div className="forteca-frt-030-select-shell">
+                  <select
+                    id="forteca-frt-030-client-source"
+                    className="forteca-frt-030-select"
+                    value={form.sourcePrimary}
+                    onChange={(event) => updateForm({ sourcePrimary: event.target.value })}
+                  >
+                    <option value="">Wybierz źródło</option>
+                    {sourceOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                  </select>
+                </div>
+              </FormField>
+
+              <FormField label="Przypisany opiekun" htmlFor="forteca-frt-030-client-owner" dataAttrs={{ 'data-forteca-frt-030-field': 'owner' }}>
+                <div className="forteca-frt-030-select-shell">
+                  <UserRound aria-hidden="true" className="forteca-frt-030-input-icon" />
+                  <select
+                    id="forteca-frt-030-client-owner"
+                    className="forteca-frt-030-select forteca-frt-030-select--with-icon"
+                    value={form.ownerId}
+                    onChange={(event) => updateForm({ ownerId: event.target.value })}
+                  >
+                    <option value="">Wybierz opiekuna</option>
+                    {ownerOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                  </select>
+                </div>
+              </FormField>
+            </div>
+
+            <TextareaField
+              label="Notatka"
+              value={form.notes}
+              onChange={(event) => updateForm({ notes: event.target.value })}
+              placeholder="Dodatkowe informacje o kliencie..."
+              rows={3}
+              className="forteca-frt-030-field-wide"
+              textareaClassName="forteca-frt-030-textarea"
+              dataAttrs={{ 'data-forteca-frt-030-field': 'notes' }}
+            />
+          </div>
+
+          <DialogFooter className="forteca-frt-030-dialog-footer">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={saving} data-forteca-frt-030-action="cancel">
+              Anuluj
+            </Button>
+            <Button type="button" variant="destructive" className="forteca-frt-030-delete-button" onClick={() => void handleDelete()} disabled={saving} data-forteca-frt-030-action="delete">
+              Usuń klienta
+            </Button>
+            <Button type="submit" disabled={saving || !client?.id} data-forteca-frt-030-action="submit">
+              {saving ? 'Zapisywanie...' : 'Zapisz zmiany'}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
