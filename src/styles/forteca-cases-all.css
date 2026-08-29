@@ -33,13 +33,13 @@
 /* FRT-032 reference composition: the list starts on the page canvas, not in
  * the shared rounded hero-card treatment used by other CloseFlow routes. */
 #root .main-cases-html > .cf-page-header-v2 {
-  min-height: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-  isolation: auto;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  isolation: auto !important;
 }
 
 #root .main-cases-html .cf-page-header-v2__copy {
