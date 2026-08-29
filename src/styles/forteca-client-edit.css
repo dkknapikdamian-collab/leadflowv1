@@ -119,6 +119,10 @@
   gap: var(--cf-vst-space-xs) !important;
 }
 
+[data-forteca-frt-030-root][data-closeflow-modal-visual-system="true"] .forteca-frt-030-form-fields .forteca-frt-030-field-half {
+  width: calc((100% - var(--cf-vst-space-lg)) / 2);
+}
+
 [data-forteca-frt-030-root][data-closeflow-modal-visual-system="true"] .forteca-frt-030-form-fields label,
 [data-forteca-frt-030-root][data-closeflow-modal-visual-system="true"] .forteca-frt-030-form-fields .lead-form-field label {
   color: var(--cf-vst-label-color) !important;
@@ -308,6 +312,10 @@
 
   [data-forteca-frt-030-root][data-closeflow-modal-visual-system="true"] .forteca-frt-030-form-row {
     grid-template-columns: 1fr;
+  }
+
+  [data-forteca-frt-030-root][data-closeflow-modal-visual-system="true"] .forteca-frt-030-form-fields .forteca-frt-030-field-half {
+    width: 100%;
   }
 
   [data-forteca-frt-030-root][data-closeflow-modal-visual-system="true"] .forteca-frt-030-dialog-footer {

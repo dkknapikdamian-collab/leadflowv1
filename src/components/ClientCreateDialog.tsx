@@ -717,36 +717,19 @@ export function ClientEditDialog({ open, onOpenChange, client, onUpdated, onDele
               </div>
             </FormField>
 
-            <div className="forteca-frt-030-form-row">
-              <FormField label="Źródło klienta" htmlFor="forteca-frt-030-client-source" dataAttrs={{ 'data-forteca-frt-030-field': 'source' }}>
-                <div className="forteca-frt-030-select-shell">
-                  <select
-                    id="forteca-frt-030-client-source"
-                    className="forteca-frt-030-select"
-                    value={form.sourcePrimary}
-                    onChange={(event) => updateForm({ sourcePrimary: event.target.value })}
-                  >
-                    <option value="">Wybierz źródło</option>
-                    {sourceOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-                  </select>
-                </div>
-              </FormField>
-
-              <FormField label="Przypisany opiekun" htmlFor="forteca-frt-030-client-owner" dataAttrs={{ 'data-forteca-frt-030-field': 'owner' }}>
-                <div className="forteca-frt-030-select-shell">
-                  <UserRound aria-hidden="true" className="forteca-frt-030-input-icon" />
-                  <select
-                    id="forteca-frt-030-client-owner"
-                    className="forteca-frt-030-select forteca-frt-030-select--with-icon"
-                    value={form.ownerId}
-                    onChange={(event) => updateForm({ ownerId: event.target.value })}
-                  >
-                    <option value="">Wybierz opiekuna</option>
-                    {ownerOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-                  </select>
-                </div>
-              </FormField>
-            </div>
+            <FormField className="forteca-frt-030-field-half" label="Źródło klienta" htmlFor="forteca-frt-030-client-source" dataAttrs={{ 'data-forteca-frt-030-field': 'source' }}>
+              <div className="forteca-frt-030-select-shell">
+                <select
+                  id="forteca-frt-030-client-source"
+                  className="forteca-frt-030-select"
+                  value={form.sourcePrimary}
+                  onChange={(event) => updateForm({ sourcePrimary: event.target.value })}
+                >
+                  <option value="">Wybierz źródło</option>
+                  {sourceOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                </select>
+              </div>
+            </FormField>
 
             <TextareaField
               label="Notatka"
@@ -758,6 +741,21 @@ export function ClientEditDialog({ open, onOpenChange, client, onUpdated, onDele
               textareaClassName="forteca-frt-030-textarea"
               dataAttrs={{ 'data-forteca-frt-030-field': 'notes' }}
             />
+
+            <FormField className="forteca-frt-030-field-half" label="Przypisany opiekun" htmlFor="forteca-frt-030-client-owner" dataAttrs={{ 'data-forteca-frt-030-field': 'owner' }}>
+              <div className="forteca-frt-030-select-shell">
+                <UserRound aria-hidden="true" className="forteca-frt-030-input-icon" />
+                <select
+                  id="forteca-frt-030-client-owner"
+                  className="forteca-frt-030-select forteca-frt-030-select--with-icon"
+                  value={form.ownerId}
+                  onChange={(event) => updateForm({ ownerId: event.target.value })}
+                >
+                  <option value="">Wybierz opiekuna</option>
+                  {ownerOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                </select>
+              </div>
+            </FormField>
           </div>
 
           <DialogFooter className="forteca-frt-030-dialog-footer">

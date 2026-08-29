@@ -35,6 +35,9 @@ test('FRT-030 pins the exact edit contract and reference chain', () => {
 test('FRT-030 exposes one populated, controlled edit dialog with the reference controls', () => {
   const dialog = read(dialogPath);
   const detail = read(detailPath);
+  const editStart = dialog.indexOf('export type ClientEditDialogProps');
+  const editDialog = dialog.slice(editStart);
+  assert.ok(editStart >= 0, 'FRT-030 edit contract type must be present');
   for (const snippet of [
     'export type ClientEditDialogProps',
     'export function ClientEditDialog(',
@@ -57,8 +60,8 @@ test('FRT-030 exposes one populated, controlled edit dialog with the reference c
     'Usuń klienta',
     'data-forteca-frt-030-action="submit"',
     'Zapisz zmiany',
-  ]) has(dialog, snippet, 'FRT-030 dialog contract');
-  for (const icon of ['Phone', 'Mail', 'MapPin', 'UserRound']) has(dialog, '<' + icon, 'FRT-030 semantic icon');
+  ]) has(editDialog, snippet, 'FRT-030 dialog contract');
+  for (const icon of ['Phone', 'Mail', 'MapPin', 'UserRound']) has(editDialog, '<' + icon, 'FRT-030 semantic icon');
   has(detail, "import { ClientEditDialog } from '../components/ClientCreateDialog';", 'ClientDetail edit owner');
   has(detail, '<ClientEditDialog', 'ClientDetail edit dialog mount');
   has(detail, 'open={clientEditOpen}', 'ClientDetail edit dialog state');
@@ -67,17 +70,20 @@ test('FRT-030 exposes one populated, controlled edit dialog with the reference c
 test('FRT-030 populates from the current record and writes the full real client payload', () => {
   const dialog = read(dialogPath);
   const detail = read(detailPath);
+  const editStart = dialog.indexOf('export type ClientEditDialogProps');
+  const editDialog = dialog.slice(editStart);
+  assert.ok(editStart >= 0, 'FRT-030 edit contract type must be present');
   for (const field of ['name', 'phone', 'email', 'address', 'company', 'sourcePrimary', 'ownerId', 'notes']) {
-    assert.match(dialog, new RegExp(field + ':\\s*String\\(client\\?\\.'), 'field must be populated from client: ' + field);
+    assert.match(editDialog, new RegExp(field + ':\\s*String\\(client\\?\\.'), 'field must be populated from client: ' + field);
   }
   for (const field of ['name', 'phone', 'email', 'address', 'sourcePrimary', 'ownerId', 'notes']) {
-    assert.match(dialog, new RegExp('value=\\{form\\.' + field + '\\}'), 'field must remain controlled: ' + field);
+    assert.match(editDialog, new RegExp('value=\\{form\\.' + field + '\\}'), 'field must remain controlled: ' + field);
   }
   for (const field of ['name', 'company', 'email', 'phone', 'address', 'sourcePrimary', 'ownerId', 'notes']) {
-    assert.match(dialog, new RegExp(field + ':\\s*prepared\\.' + field), 'field must reach update payload: ' + field);
+    assert.match(editDialog, new RegExp(field + ':\\s*prepared\\.' + field), 'field must reach update payload: ' + field);
   }
-  has(dialog, 'await updateClientInSupabase({', 'real update mutation');
-  has(dialog, 'await onUpdated?.();', 'detail refresh callback');
+  has(editDialog, 'await updateClientInSupabase({', 'real update mutation');
+  has(editDialog, 'await onUpdated?.();', 'detail refresh callback');
   has(detail, 'await deleteClientFromSupabase(clientId);', 'real soft-delete owner');
   has(detail, "navigate('/clients');", 'post-delete navigation');
   assert.doesNotMatch(dialog, /Anna Nowak|anna\.nowak@example\.com|ul\. Kwiatowa 15\/7|Damian Knapik/);
@@ -104,6 +110,24 @@ test('FRT-030 preserves semantic source options and safe delete semantics', () =
   assert.doesNotMatch(dialog, /#[0-9a-f]{3,8}\b/i);
   assert.doesNotMatch(css, /#[0-9a-f]{3,8}\b/i);
   assert.doesNotMatch(css, /\b(?:rgba?|hsla?)\(/i);
+});
+
+test('FRT-030 keeps the reference edit-field order and responsive half-width selects', () => {
+  const dialog = read(dialogPath);
+  const editStart = dialog.indexOf('export function ClientEditDialog');
+  const sourceStart = dialog.indexOf('label="Źródło klienta"', editStart);
+  const notesStart = dialog.indexOf('label="Notatka"', editStart);
+  const ownerStart = dialog.indexOf('label="Przypisany opiekun"', editStart);
+
+  assert.ok(sourceStart >= 0 && notesStart >= 0 && ownerStart >= 0, 'reference edit fields must be present');
+  assert.ok(sourceStart < notesStart && notesStart < ownerStart, 'source -> notes -> owner matches the reference');
+  const editSection = dialog.slice(editStart);
+  assert.match(editSection, /FormField className="forteca-frt-030-field-half" label="Źródło klienta"/);
+  assert.match(editSection, /FormField className="forteca-frt-030-field-half" label="Przypisany opiekun"/);
+  const contactRowStart = editSection.indexOf('<div className="forteca-frt-030-form-row">');
+  const contactRowEnd = editSection.indexOf('\n            </div>\n\n            <FormField label="Adres"', contactRowStart);
+  assert.ok(contactRowStart >= 0 && contactRowEnd > contactRowStart, 'contact fields must remain in their two-column row');
+  assert.doesNotMatch(editSection.slice(contactRowStart, contactRowEnd), /Źródło klienta|Przypisany opiekun/);
 });
 
 test('FRT-030 keeps the old add dialog intact and scopes edit CSS to the new consumer', () => {
