@@ -10,6 +10,8 @@ import {
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   CalendarDays,
+  CalendarClock,
+  ClipboardCheck,
   CircleDollarSign,
   ChevronDown,
   CloudUpload,
@@ -25,6 +27,8 @@ import {
   Plus,
   RotateCcw,
   Search,
+  Settings,
+  X,
   UserRound,
   UserRoundCheck,
   UsersRound,
@@ -67,6 +71,7 @@ import {
   buildContactCadenceGrid,
   buildContactCadenceBuckets,
   type ContactCadenceBucketKey,
+  type ContactCadenceRow,
 } from '../lib/owner-control/contact-cadence-grid';
 import {
   dateInputToNoonIso,
@@ -81,6 +86,7 @@ import '../styles/clients-next-action-layout.css';
 
 import '../styles/forteca-clients-all.css';
 import '../styles/forteca-clients-without-case.css';
+import '../styles/forteca-clients-needs-contact.css';
 import '../styles/closeflow-page-header-runtime.css';
 import '../styles/closeflow-record-list-source-truth.css';
 // LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css'; is provided once by App.tsx.
@@ -101,12 +107,16 @@ type ClientRelationFilterStage232C =
   | 'with_case'
   | 'without_case'
   | 'needs_contact'
+  | 'overdue_payment'
+  | 'inactive'
   | 'active_commission'
   | 'archived';
 
 type ClientStatusFilterStage021 = 'all' | 'active' | 'in_service' | 'new' | 'archived';
 type Stage022ContactFilter = 'all' | 'last_7' | 'last_30' | 'older';
 type Stage022ViewMode = 'table' | 'compact';
+type Stage023ReasonFilter = 'all' | 'no_contact' | 'no_next_step' | 'high_priority';
+type Stage023ContactFilter = 'all' | 'last_7' | 'last_30' | 'older' | 'unknown';
 
 const FRT021_CLIENT_PAGE_SIZE = 7;
 
@@ -196,6 +206,60 @@ function isStage022ContactFilterMatch(client: ClientRecord, filter: Stage022Cont
   const parsed = new Date(String(lastContact || ''));
   if (Number.isNaN(parsed.getTime())) return true;
   return Date.now() - parsed.getTime() > 30 * 24 * 60 * 60 * 1000;
+}
+
+function getStage023AttentionMeta(row: ContactCadenceRow | undefined) {
+  if (row?.bucketKey === 'silent_7' || row?.bucketKey === 'silent_14_plus') {
+    return { label: 'Wysoki priorytet', tone: 'danger' as const };
+  }
+  if (row?.bucketKey === 'unknown' || row?.bucketKey === 'silent_3' || row?.bucketKey === 'silent_5') {
+    return { label: 'Średni priorytet', tone: 'warning' as const };
+  }
+  return { label: 'Do kontaktu', tone: 'neutral' as const };
+}
+
+function getStage023AttentionReason(row: ContactCadenceRow | undefined) {
+  if (!row) return 'Wymaga kontaktu';
+  if (row.rescueReason) return row.rescueReason;
+  if (row.bucketKey === 'unknown') return 'Brak daty kontaktu';
+  if (typeof row.contactSilentDays === 'number') {
+    return `${row.contactSilentDays} ${row.contactSilentDays === 1 ? 'dzień' : 'dni'} bez kontaktu`;
+  }
+  return 'Wymaga kontaktu';
+}
+
+function isStage023ContactFilterMatch(row: ContactCadenceRow | undefined, filter: Stage023ContactFilter) {
+  if (filter === 'all') return true;
+  if (filter === 'unknown') return !row?.lastContactAt;
+  if (!row?.lastContactAt) return false;
+  if (filter === 'last_7') return isStage022WithinDays(row.lastContactAt, 7);
+  if (filter === 'last_30') return isStage022WithinDays(row.lastContactAt, 30);
+  const parsed = new Date(row.lastContactAt);
+  return !Number.isNaN(parsed.getTime()) && Date.now() - parsed.getTime() > 30 * 24 * 60 * 60 * 1000;
+}
+
+function isStage023ReasonFilterMatch(
+  row: ContactCadenceRow | undefined,
+  nearestAction: string | undefined,
+  filter: Stage023ReasonFilter,
+) {
+  if (filter === 'all') return true;
+  if (filter === 'no_contact') return !row?.lastContactAt;
+  if (filter === 'no_next_step') return !nearestAction || nearestAction === 'Brak zaplanowanej akcji';
+  return getStage023AttentionMeta(row).tone === 'danger';
+}
+
+const STAGE023_PAYMENT_DUE_KEYS = ['dueAt', 'due_at', 'dueDate', 'due_date', 'scheduledAt', 'scheduled_at'];
+const STAGE023_PAYMENT_STATUS_KEYS = ['status', 'state', 'paymentStatus', 'payment_status'];
+const STAGE023_PAYMENT_SETTLED_KEYS = ['paidAt', 'paid_at', 'settledAt', 'settled_at', 'completedAt', 'completed_at'];
+
+function isStage023OverduePayment(row: Record<string, unknown>, now = Date.now()) {
+  const status = getStage021DynamicText(row, STAGE023_PAYMENT_STATUS_KEYS).toLowerCase();
+  if (['paid', 'settled', 'completed', 'cancelled', 'canceled', 'refunded'].includes(status)) return false;
+  if (getStage021DynamicValue(row, STAGE023_PAYMENT_SETTLED_KEYS)) return false;
+  const dueAt = getStage021DynamicValue(row, STAGE023_PAYMENT_DUE_KEYS);
+  const parsed = new Date(String(dueAt || ''));
+  return !Number.isNaN(parsed.getTime()) && parsed.getTime() < now;
 }
 
 function getStage022CreatedAtValue(client: ClientRecord) {
@@ -361,6 +425,8 @@ export default function Clients() {
   const [cadenceFilter, setCadenceFilter] = useState<ContactCadenceBucketKey | 'all'>('all');
   const [stage022ContactFilter, setStage022ContactFilter] = useState<Stage022ContactFilter>('all');
   const [stage022ViewMode, setStage022ViewMode] = useState<Stage022ViewMode>('table');
+  const [stage023ReasonFilter, setStage023ReasonFilter] = useState<Stage023ReasonFilter>('all');
+  const [stage023ContactFilter, setStage023ContactFilter] = useState<Stage023ContactFilter>('all');
   const [statusFilterStage021, setStatusFilterStage021] = useState<ClientStatusFilterStage021>('all');
   const [ownerFilterStage021, setOwnerFilterStage021] = useState('all');
   const [tagFilterStage021, setTagFilterStage021] = useState('all');
@@ -429,6 +495,14 @@ export default function Clients() {
     if (query.get('frt022') === 'without-case') {
       setClientRelationFilterStage232C('without_case');
       setStatusFilterStage021('all');
+    }
+    if (query.get('frt023') === 'needs-contact') {
+      setClientRelationFilterStage232C('needs_contact');
+      setStatusFilterStage021('all');
+      setCadenceFilter('all');
+      setStage022ContactFilter('all');
+      setStage023ReasonFilter('all');
+      setStage023ContactFilter('all');
     }
   }, [location.search]);
 
@@ -499,6 +573,14 @@ export default function Clients() {
   );
 
   const contactCadenceBuckets = useMemo(() => buildContactCadenceBuckets(workspace), [workspace]);
+
+  const contactCadenceRowByClientIdStage023 = useMemo(() => {
+    const map = new Map<string, ContactCadenceRow>();
+    for (const bucketRows of Object.values(contactCadenceGrid.buckets)) {
+      for (const row of bucketRows) map.set(row.entityId, row);
+    }
+    return map;
+  }, [contactCadenceGrid]);
 
   const countersByClientId = useMemo(() => {
     const map = new Map<string, { leads: number; cases: number; payments: number }>();
@@ -667,6 +749,29 @@ export default function Clients() {
     return ids;
   }, [contactCadenceGrid]);
 
+  const overduePaymentClientIdsStage023 = useMemo(() => {
+    const ids = new Set<string>();
+    for (const payment of payments as Record<string, unknown>[]) {
+      if (!isStage023OverduePayment(payment)) continue;
+      const clientId = getStage35RelationClientId(payment);
+      if (clientId) ids.add(clientId);
+    }
+    return ids;
+  }, [payments]);
+
+  const inactiveClientIdsStage023 = useMemo(() => {
+    const ids = new Set<string>();
+    for (const client of clients) {
+      if (client.archivedAt) continue;
+      const cadenceRow = contactCadenceRowByClientIdStage023.get(client.id);
+      const nearestAction = nearestActionByClientId.get(client.id);
+      const hasNextAction = Boolean(nearestAction && nearestAction !== 'Brak zaplanowanej akcji');
+      const hasStaleContact = cadenceRow?.bucketKey === 'silent_14_plus' || cadenceRow?.bucketKey === 'unknown';
+      if (!hasNextAction && hasStaleContact) ids.add(client.id);
+    }
+    return ids;
+  }, [clients, contactCadenceRowByClientIdStage023, nearestActionByClientId]);
+
   const activeCommissionValueStage232C = useMemo(
     () => clients
       .filter((client) => !client.archivedAt)
@@ -704,6 +809,12 @@ export default function Clients() {
         if (clientRelationFilterStage232C === 'needs_contact') {
           if (!needsContactClientIdsStage232C.has(String(client.id || ''))) return false;
         }
+        if (clientRelationFilterStage232C === 'overdue_payment') {
+          if (!overduePaymentClientIdsStage023.has(String(client.id || ''))) return false;
+        }
+        if (clientRelationFilterStage232C === 'inactive') {
+          if (!inactiveClientIdsStage023.has(String(client.id || ''))) return false;
+        }
         if (clientRelationFilterStage232C === 'active_commission') {
           if ((clientFinanceByClientId.get(client.id)?.activeCommission || 0) <= 0) return false;
         }
@@ -720,6 +831,12 @@ export default function Clients() {
       })
       .filter((client) => {
         if (clientRelationFilterStage232C === 'without_case' && !isStage022ContactFilterMatch(client, stage022ContactFilter)) return false;
+        if (clientRelationFilterStage232C === 'needs_contact') {
+          const cadenceRow = contactCadenceRowByClientIdStage023.get(client.id);
+          const nearestAction = nearestActionByClientId.get(client.id);
+          if (!isStage023ReasonFilterMatch(cadenceRow, nearestAction, stage023ReasonFilter)) return false;
+          if (!isStage023ContactFilterMatch(cadenceRow, stage023ContactFilter)) return false;
+        }
         const matchesCadence = clientRelationFilterStage232C === 'archived' || !activeCadenceIds || activeCadenceIds.has(String(client.id || ''));
         if (!matchesCadence) return false;
         if (!query) return true;
@@ -738,7 +855,7 @@ export default function Clients() {
         ].some((entry) => String(entry || '').toLowerCase().includes(query));
       })
       .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'pl'));
-  }, [cadenceFilter, cases, clientFinanceByClientId, clientRelationFilterStage232C, clients, contactCadenceGrid, countersByClientId, needsContactClientIdsStage232C, ownerFilterStage021, relationTypeFilterStage021, search, stage022ContactFilter, statusFilterStage021, tagFilterStage021]);
+  }, [cadenceFilter, cases, clientFinanceByClientId, clientRelationFilterStage232C, clients, contactCadenceGrid, contactCadenceRowByClientIdStage023, countersByClientId, inactiveClientIdsStage023, needsContactClientIdsStage232C, nearestActionByClientId, overduePaymentClientIdsStage023, ownerFilterStage021, relationTypeFilterStage021, search, stage022ContactFilter, stage023ContactFilter, stage023ReasonFilter, statusFilterStage021, tagFilterStage021]);
 
   const clientPageCountStage021 = Math.max(1, Math.ceil(filtered.length / FRT021_CLIENT_PAGE_SIZE));
   const safeClientPageStage021 = Math.min(clientPageStage021, clientPageCountStage021);
@@ -751,7 +868,7 @@ export default function Clients() {
 
   useEffect(() => {
     setClientPageStage021(1);
-  }, [cadenceFilter, clientRelationFilterStage232C, ownerFilterStage021, relationTypeFilterStage021, search, stage022ContactFilter, statusFilterStage021, tagFilterStage021]);
+  }, [cadenceFilter, clientRelationFilterStage232C, ownerFilterStage021, relationTypeFilterStage021, search, stage022ContactFilter, stage023ContactFilter, stage023ReasonFilter, statusFilterStage021, tagFilterStage021]);
 
   useEffect(() => {
     if (clientPageStage021 > clientPageCountStage021) setClientPageStage021(clientPageCountStage021);
@@ -977,6 +1094,8 @@ export default function Clients() {
     setRelationTypeFilterStage021('all');
     setCadenceFilter('all');
     setStage022ContactFilter('all');
+    setStage023ReasonFilter('all');
+    setStage023ContactFilter('all');
     applyClientRelationFilterStage232C('all');
     setFilterPanelOpenStage021(false);
   };
@@ -1019,9 +1138,204 @@ export default function Clients() {
     [withoutCaseClientsStage022],
   );
   const isWithoutCaseStage022 = clientRelationFilterStage232C === 'without_case';
+  const isNeedsContactStage023 = clientRelationFilterStage232C === 'needs_contact'
+    || new URLSearchParams(location.search).get('frt023') === 'needs-contact';
   const pageItemsStage021: Array<number | 'ellipsis'> = clientPageCountStage021 <= 5
     ? Array.from({ length: clientPageCountStage021 }, (_, index) => index + 1)
     : [1, 2, 3, 'ellipsis', clientPageCountStage021];
+
+  const renderNeedsContactStage023 = () => (
+    <>
+      <nav className="forteca-frt-023-tabs" aria-label="Widoki klientów" data-forteca-frt-023-tabs="true">
+        <button
+          type="button"
+          className={clientRelationFilterStage232C === 'all' && statusFilterStage021 === 'all' ? 'is-active' : ''}
+          aria-current={clientRelationFilterStage232C === 'all' && statusFilterStage021 === 'all' ? 'page' : undefined}
+          onClick={() => { applyClientRelationFilterStage232C('all'); setStatusFilterStage021('all'); }}
+          data-forteca-frt-023-tab="all"
+        >
+          Wszyscy klienci <span>{allLiveClientsStage021.length}</span>
+        </button>
+        <button
+          type="button"
+          className={clientRelationFilterStage232C === 'all' && statusFilterStage021 === 'active' ? 'is-active' : ''}
+          aria-current={clientRelationFilterStage232C === 'all' && statusFilterStage021 === 'active' ? 'page' : undefined}
+          onClick={() => { applyClientRelationFilterStage232C('all'); setStatusFilterStage021('active'); }}
+          data-forteca-frt-023-tab="active"
+        >
+          Aktywni <span>{activeClientsStage021.length}</span>
+        </button>
+        <button
+          type="button"
+          className={clientRelationFilterStage232C === 'needs_contact' ? 'is-active' : ''}
+          aria-current={clientRelationFilterStage232C === 'needs_contact' ? 'page' : undefined}
+          onClick={() => { applyClientRelationFilterStage232C('needs_contact'); setStatusFilterStage021('all'); }}
+          data-forteca-frt-023-tab="needs-contact"
+        >
+          Wymaga kontaktu <span className="forteca-frt-023-tab-badge">{needsContactClientIdsStage232C.size}</span>
+        </button>
+        <button
+          type="button"
+          className={clientRelationFilterStage232C === 'overdue_payment' ? 'is-active' : ''}
+          aria-current={clientRelationFilterStage232C === 'overdue_payment' ? 'page' : undefined}
+          onClick={() => { applyClientRelationFilterStage232C('overdue_payment'); setStatusFilterStage021('all'); }}
+          data-forteca-frt-023-tab="overdue-payment"
+        >
+          Z opóźnionymi płatnościami <span>{overduePaymentClientIdsStage023.size}</span>
+        </button>
+        <button
+          type="button"
+          className={clientRelationFilterStage232C === 'inactive' ? 'is-active' : ''}
+          aria-current={clientRelationFilterStage232C === 'inactive' ? 'page' : undefined}
+          onClick={() => { applyClientRelationFilterStage232C('inactive'); setStatusFilterStage021('all'); }}
+          data-forteca-frt-023-tab="inactive"
+        >
+          Bez aktywności <span>{inactiveClientIdsStage023.size}</span>
+        </button>
+      </nav>
+
+      <section className="forteca-frt-023-toolbar-shell" data-forteca-frt-023-toolbar-shell="true">
+        <div className="forteca-frt-023-toolbar" data-forteca-frt-023-toolbar="true">
+          <label className="forteca-frt-023-search">
+            <Search aria-hidden="true" />
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Szukaj klienta, firmy, e-maila lub telefonu..."
+              aria-label="Szukaj klienta, firmy, e-maila lub telefonu"
+              data-forteca-frt-023-search="true"
+            />
+          </label>
+          <label className="forteca-frt-023-control">
+            <span>Powód:</span>
+            <select value={stage023ReasonFilter} onChange={(event) => setStage023ReasonFilter(event.target.value as Stage023ReasonFilter)} aria-label="Powód">
+              <option value="all">Wszystkie</option>
+              <option value="no_contact">Brak daty kontaktu</option>
+              <option value="no_next_step">Brak następnego kroku</option>
+              <option value="high_priority">Wysoki priorytet</option>
+            </select>
+          </label>
+          <label className="forteca-frt-023-control">
+            <span>Opiekun:</span>
+            <select value={ownerFilterStage021} onChange={(event) => setOwnerFilterStage021(event.target.value)} aria-label="Opiekun">
+              <option value="all">Wszyscy</option>
+              {clientOwnerOptionsStage021.map((owner) => <option value={owner} key={owner}>{owner}</option>)}
+            </select>
+          </label>
+          <label className="forteca-frt-023-control">
+            <span>Ostatni kontakt:</span>
+            <select value={stage023ContactFilter} onChange={(event) => setStage023ContactFilter(event.target.value as Stage023ContactFilter)} aria-label="Ostatni kontakt">
+              <option value="all">Dowolny</option>
+              <option value="last_7">Ostatnie 7 dni</option>
+              <option value="last_30">Ostatnie 30 dni</option>
+              <option value="older">Ponad 30 dni</option>
+              <option value="unknown">Brak daty</option>
+            </select>
+          </label>
+          <button type="button" className="forteca-frt-023-clear-button" onClick={resetClientFiltersStage021} aria-label="Wyczyść filtry" data-forteca-frt-023-clear="true">
+            <X aria-hidden="true" />
+            Wyczyść filtry
+          </button>
+        </div>
+        {filterPanelOpenStage021 ? (
+          <div className="forteca-frt-023-customize-panel" data-forteca-frt-023-customize-panel="true">
+            <label className="forteca-frt-023-control">
+              <span>Tag:</span>
+              <select value={tagFilterStage021} onChange={(event) => setTagFilterStage021(event.target.value)} aria-label="Tag">
+                <option value="all">Wszystkie</option>
+                {clientTagOptionsStage021.map((tag) => <option value={tag} key={tag}>{tag}</option>)}
+              </select>
+            </label>
+            <label className="forteca-frt-023-control">
+              <span>Typ relacji:</span>
+              <select value={relationTypeFilterStage021} onChange={(event) => setRelationTypeFilterStage021(event.target.value)} aria-label="Typ relacji">
+                <option value="all">Wszystkie</option>
+                <option value="Firma">Firma</option>
+                <option value="Osoba">Osoba</option>
+              </select>
+            </label>
+          </div>
+        ) : null}
+      </section>
+
+      <section className="forteca-frt-023-table-card" data-forteca-frt-023-table-card="true">
+        <div className="forteca-frt-023-table" role="table" aria-label="Klienci wymagający kontaktu" data-forteca-frt-023-table="true">
+          <div className="forteca-frt-023-table-row forteca-frt-023-table-head" role="row">
+            <div className="forteca-frt-023-cell" role="columnheader">Klient</div>
+            <div className="forteca-frt-023-cell" role="columnheader">Powód</div>
+            <div className="forteca-frt-023-cell" role="columnheader">Ostatni kontakt <span aria-hidden="true">⌄</span></div>
+            <div className="forteca-frt-023-cell" role="columnheader">Najbliższy ruch</div>
+            <div className="forteca-frt-023-cell" role="columnheader">Opiekun</div>
+            <div className="forteca-frt-023-cell forteca-frt-023-action-cell" role="columnheader">Akcja</div>
+          </div>
+          {loading ? (
+            <div className="forteca-frt-023-empty" role="row"><Loader2 className="animate-spin" aria-label="Ładowanie klientów" /> Ładowanie klientów</div>
+          ) : visibleClientsStage021.length === 0 ? (
+            <div className="forteca-frt-023-empty" role="row">Brak klientów wymagających kontaktu do wyświetlenia.</div>
+          ) : visibleClientsStage021.map((client, index) => {
+            const counters = countersByClientId.get(client.id) || { leads: 0, cases: 0, payments: 0 };
+            const cadenceRow = contactCadenceRowByClientIdStage023.get(client.id);
+            const attention = getStage023AttentionMeta(cadenceRow);
+            const contact = getStage021ContactDate(cadenceRow?.lastContactAt);
+            const nearestActionLabel = nearestActionByClientId.get(client.id) || 'Brak zaplanowanej akcji';
+            const nearestActionParts = nearestActionLabel.split(' · ');
+            const hasNextAction = nearestActionLabel !== 'Brak zaplanowanej akcji';
+            const NextActionIcon = /telefon|zadzwoń|call/i.test(nearestActionLabel)
+              ? PhoneCall
+              : /spotkan|termin|meeting/i.test(nearestActionLabel)
+                ? CalendarClock
+                : ClipboardCheck;
+            const initials = String(client.name || 'K')
+              .split(/\s+/)
+              .filter(Boolean)
+              .slice(0, 2)
+              .map((part) => part.charAt(0))
+              .join('')
+              .toUpperCase();
+            const phoneHref = client.phone ? `tel:${String(client.phone).replace(/[^\d+]/g, '')}` : '';
+            const emailHref = client.email ? `mailto:${String(client.email)}` : '';
+            const actionLabel = phoneHref ? 'Zadzwoń' : emailHref ? 'Napisz' : hasNextAction ? 'Otwórz klienta' : 'Ustaw ruch';
+            return (
+              <div className="forteca-frt-023-table-row" role="row" key={client.id} data-forteca-frt-023-row="true" data-forteca-frt-023-tone={attention.tone} data-client-id={client.id}>
+                <div className="forteca-frt-023-cell forteca-frt-023-client-cell" role="cell">
+                  <span className="forteca-frt-023-avatar" data-forteca-frt-023-tone={['primary', 'task', 'payment', 'event'][index % 4]} aria-hidden="true">{initials || 'K'}</span>
+                  <span className="forteca-frt-023-client-copy"><Link to={'/clients/' + client.id}>{client.name || 'Klient'}</Link><small>{client.company || getStage021RelationType(client)}</small></span>
+                </div>
+                <div className="forteca-frt-023-cell forteca-frt-023-reason-cell" role="cell">
+                  <span className="forteca-frt-023-reason-copy"><strong>{getStage023AttentionReason(cadenceRow)}</strong></span>
+                  <span className="forteca-frt-023-priority" data-forteca-frt-023-priority={attention.tone}>{attention.label}</span>
+                </div>
+                <div className="forteca-frt-023-cell forteca-frt-023-contact-cell" role="cell"><strong>{contact.date}</strong>{contact.time ? <small>{contact.time}</small> : <small>{cadenceRow?.bucketKey === 'unknown' ? 'Brak potwierdzonej daty' : 'Data kontaktu'}</small>}</div>
+                <div className="forteca-frt-023-cell forteca-frt-023-next-cell" role="cell">
+                  <NextActionIcon aria-hidden="true" />
+                  <span><strong>{nearestActionParts[0]}</strong>{nearestActionParts.length > 1 ? <small>{nearestActionParts.slice(1).join(' · ')}</small> : <small>{hasNextAction ? 'Zaplanowane w aktywności' : 'Wymaga zaplanowania'}</small>}</span>
+                </div>
+                <div className="forteca-frt-023-cell forteca-frt-023-owner-cell" role="cell"><span className="forteca-frt-023-owner-avatar" aria-hidden="true">{getStage021ClientOwner(client).slice(0, 2).toUpperCase()}</span><span>{getStage021ClientOwner(client)}</span></div>
+                <div className="forteca-frt-023-cell forteca-frt-023-action-cell" role="cell">
+                  {phoneHref ? <a className="forteca-frt-023-row-action" href={phoneHref}>{actionLabel}</a> : emailHref ? <a className="forteca-frt-023-row-action" href={emailHref}>{actionLabel}</a> : <Link className="forteca-frt-023-row-action" to={'/clients/' + client.id}>{actionLabel}</Link>}
+                  <button type="button" className="forteca-frt-023-more-button" aria-label={'Akcje dla klienta ' + (client.name || 'Klient')} aria-expanded={openActionClientIdStage021 === client.id} onClick={() => setOpenActionClientIdStage021((current) => current === client.id ? null : client.id)}><MoreHorizontal aria-hidden="true" /></button>
+                  {openActionClientIdStage021 === client.id ? (
+                    <div className="forteca-frt-023-action-menu" role="menu">
+                      <Link to={'/clients/' + client.id} role="menuitem" onClick={() => setOpenActionClientIdStage021(null)}>Otwórz klienta</Link>
+                      <button type="button" role="menuitem" onClick={(event) => { setOpenActionClientIdStage021(null); handleArchiveClient(event, client, counters); }}>Przenieś do kosza</button>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <footer className="forteca-frt-023-table-footer">
+          <span>Wyświetlanie {filtered.length === 0 ? 0 : (safeClientPageStage021 - 1) * FRT021_CLIENT_PAGE_SIZE + 1}–{Math.min(safeClientPageStage021 * FRT021_CLIENT_PAGE_SIZE, filtered.length)} z {filtered.length} wyników</span>
+          <nav aria-label="Paginacja klientów">
+            <button type="button" className="forteca-frt-023-pagination-button" disabled={safeClientPageStage021 <= 1} onClick={() => setClientPageStage021((page) => Math.max(1, page - 1))}>‹ <span>Poprzednia</span></button>
+            {pageItemsStage021.map((item) => item === 'ellipsis' ? <span key="ellipsis" className="forteca-frt-023-page-ellipsis">…</span> : <button type="button" key={item} className={safeClientPageStage021 === item ? 'forteca-frt-023-pagination-button is-active' : 'forteca-frt-023-pagination-button'} aria-current={safeClientPageStage021 === item ? 'page' : undefined} onClick={() => setClientPageStage021(item)}>{item}</button>)}
+            <button type="button" className="forteca-frt-023-pagination-button" disabled={safeClientPageStage021 >= clientPageCountStage021} onClick={() => setClientPageStage021((page) => Math.min(clientPageCountStage021, page + 1))}><span>Następna</span> ›</button>
+          </nav>
+        </footer>
+      </section>
+    </>
+  );
 
   const renderWithoutCaseStage022 = () => (
     <>
@@ -1241,7 +1555,11 @@ export default function Clients() {
 
   return (
     <Layout>
-      <div className={isWithoutCaseStage022 ? 'forteca-frt-021-page forteca-frt-021-clients-view forteca-frt-022-page' : 'forteca-frt-021-page forteca-frt-021-clients-view'} data-forteca-frt-021-runtime="true" data-forteca-frt-022-runtime={isWithoutCaseStage022 ? 'true' : undefined}>
+      <div className={isNeedsContactStage023
+        ? 'forteca-frt-021-page forteca-frt-021-clients-view forteca-frt-023-page'
+        : isWithoutCaseStage022
+          ? 'forteca-frt-021-page forteca-frt-021-clients-view forteca-frt-022-page'
+          : 'forteca-frt-021-page forteca-frt-021-clients-view'} data-forteca-frt-021-runtime="true" data-forteca-frt-022-runtime={isWithoutCaseStage022 ? 'true' : undefined} data-forteca-frt-023-runtime={isNeedsContactStage023 ? 'true' : undefined}>
         <ConfirmDialog
           open={Boolean(clientArchiveConfirm)}
           onOpenChange={(open) => {
@@ -1272,19 +1590,33 @@ export default function Clients() {
         <header className="forteca-frt-021-header forteca-frt-021-page-header" data-forteca-frt-021-header="true">
           <div>
             <h1>Klienci</h1>
-            {!isWithoutCaseStage022 ? <p>Zarządzaj relacjami i prowadź klientów od kontaktu do sprawy.</p> : null}
+            {!isWithoutCaseStage022 && !isNeedsContactStage023 ? <p>Zarządzaj relacjami i prowadź klientów od kontaktu do sprawy.</p> : null}
           </div>
           <div className="forteca-frt-021-header-actions forteca-frt-021-page-actions">
-            <Button
-              type="button"
-              variant="outline"
-              className="forteca-frt-021-button forteca-frt-021-button-secondary forteca-frt-021-import-button"
-              onClick={() => toast.info('Import CSV wymaga przygotowania pliku i zostanie zapisany w kolejnym kroku.')}
-              data-forteca-frt-021-import="true"
-            >
-              <CloudUpload aria-hidden="true" />
-              Import CSV
-            </Button>
+            {isNeedsContactStage023 ? (
+              <Button
+                type="button"
+                variant="outline"
+                className="forteca-frt-021-button forteca-frt-021-button-secondary forteca-frt-023-customize-button"
+                onClick={() => setFilterPanelOpenStage021((current) => !current)}
+                aria-expanded={filterPanelOpenStage021}
+                data-forteca-frt-023-customize="true"
+              >
+                <Settings aria-hidden="true" />
+                Dostosuj widok
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                variant="outline"
+                className="forteca-frt-021-button forteca-frt-021-button-secondary forteca-frt-021-import-button"
+                onClick={() => toast.info('Import CSV wymaga przygotowania pliku i zostanie zapisany w kolejnym kroku.')}
+                data-forteca-frt-021-import="true"
+              >
+                <CloudUpload aria-hidden="true" />
+                Import CSV
+              </Button>
+            )}
             <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
               <DialogTrigger asChild>
                 <Button type="button" className="forteca-frt-021-button forteca-frt-021-button-primary forteca-frt-021-add-button" disabled={!workspace?.id}>
@@ -1370,7 +1702,7 @@ export default function Clients() {
           </div>
         </header>
 
-        {isWithoutCaseStage022 ? renderWithoutCaseStage022() : <>
+        {isNeedsContactStage023 ? renderNeedsContactStage023() : isWithoutCaseStage022 ? renderWithoutCaseStage022() : <>
         <section className="forteca-frt-021-kpi-grid" aria-label="Podsumowanie klientów">
           <button
             type="button"
