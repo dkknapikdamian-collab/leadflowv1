@@ -21,7 +21,7 @@
   "last_accepted_commit": "7be42e6413e4633e9fe0b9aa532312a80e36bf1e",
   "next_stage": "FRT-032",
   "branch": "dev-rollout-freeze",
-  "remote_head": "758ac5c609c1aae7affdfc82679baa1e2064753a",
+  "remote_head": "955bcd789edeb5eed0c971aa840d3ac5b6560c04",
   "next_action": "Begin FRT-032: inspect and reconcile the canonical all-cases list, filters and row actions against the corrected reference using real workspace data without activating another stage.",
   "last_progress": {
     "stage_id": "FRT-031",
