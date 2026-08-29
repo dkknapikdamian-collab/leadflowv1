@@ -9,6 +9,7 @@ const repositoryRoot = path.resolve(__dirname, '..');
 const readSource = (relativePath) => fs.readFileSync(path.join(repositoryRoot, relativePath), 'utf8');
 const casesSource = readSource('api/cases.ts');
 const caseItemsSource = readSource('api/case-items.ts');
+const ownerMigrationSource = readSource('supabase/migrations/20260829160000_frt031_case_owner.sql');
 
 function sourceSlice(source, start, end) {
   const startIndex = source.indexOf(start);
@@ -49,4 +50,13 @@ test('FRT-031 case-items API stores and normalizes only safe object payloads', (
   assert.match(basePayload, /typeof\s+[^\n;]*payload[^\n;]*===\s*['"]object['"]/, 'stored payload must be object-only');
   assert.match(basePayload, /Array\.isArray\s*\(/, 'stored payload must reject arrays');
   assert.match(basePayload, /\{\}/, 'stored payload must fall back to an empty object');
+});
+
+test('FRT-031 owner migration is additive and scoped to cases', () => {
+  assert.match(ownerMigrationSource, /begin;\s*/i, 'migration must be transactional');
+  assert.match(ownerMigrationSource, /alter\s+table\s+if\s+exists\s+public\.cases/i, 'migration must target public.cases');
+  assert.match(ownerMigrationSource, /add\s+column\s+if\s+not\s+exists\s+owner_id\s+uuid/i, 'migration must add nullable owner_id idempotently');
+  assert.match(ownerMigrationSource, /create\s+index\s+if\s+not\s+exists\s+closeflow_cases_owner_id_idx/i, 'migration must add the owner lookup index idempotently');
+  assert.doesNotMatch(ownerMigrationSource, /\b(insert|update|delete|truncate|drop|alter\s+table\s+public\.(?!cases\b)|create\s+(function|trigger|policy))\b/i, 'migration must not mutate rows, other tables, RLS, functions or triggers');
+  assert.match(ownerMigrationSource, /commit;\s*$/i, 'migration must commit explicitly');
 });

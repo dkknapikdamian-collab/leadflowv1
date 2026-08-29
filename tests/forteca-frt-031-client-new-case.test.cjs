@@ -101,7 +101,7 @@ test('FRT-031 modal exposes one rooted, ordered control surface', () => {
   has(dialogRender, 'Utwórz sprawę powiązaną z wybranym klientem.');
 
   const visibleControls = [
-    '<CaseField id="create-client-case-client" label="Klient" required',
+    '<CaseField id="create-client-case-client" label="Klient" labelFor={null}',
     '<CaseField id="create-client-case-title" label="Nazwa sprawy" required>',
     '<CaseField id="create-client-case-type" label="Typ sprawy" required>',
     '<CaseField id="create-client-case-category" label="Kategoria usługi" required>',
@@ -142,6 +142,7 @@ test('FRT-031 modal exposes one rooted, ordered control surface', () => {
 
 test('FRT-031 validates before mutation and preserves cancel/navigation semantics', () => {
   assert.match(submitHandler, /event\.preventDefault\(\)/);
+  has(submitHandler, 'if (submitInFlightRef.current) return;');
   for (const validationGuard of [
     '!hasAccess',
     '!workspaceId || !clientId',
@@ -176,6 +177,7 @@ test('FRT-031 validates before mutation and preserves cancel/navigation semantic
   has(submitHandler, "toast.success('Sprawa utworzona.')");
   has(submitHandler, 'onOpenChange(false);');
   has(submitHandler, "navigate('/cases/' + encodeURIComponent(createdCaseId) + '?finance=1&source=client-detail');");
+  has(submitHandler, 'submitInFlightRef.current = false;');
 });
 
 test('FRT-031 reaches the real client-scoped createCaseInSupabase path', () => {
@@ -193,6 +195,17 @@ test('FRT-031 reaches the real client-scoped createCaseInSupabase path', () => {
     'contractValue: contractValue as number',
     "currency: 'PLN'",
     'startedAt: startDateIso',
+    'plannedAt: plannedDateIso',
+    'ownerId: selectedOwnerId || null',
+    'caseType: draft.caseType',
+    'category: draft.category',
+    'priority: draft.priority',
+    'source: draft.source',
+    'note: draft.note',
+    'createChecklist: draft.createChecklist',
+    'checklistTemplateId: selectedChecklistTemplate?.id',
+    'checklistTemplateName: selectedChecklistTemplate?.name',
+    'checklistItems: selectedChecklistTemplate?.items',
   ]) {
     has(submitHandler, payloadField);
   }
@@ -209,6 +222,7 @@ test('FRT-031 reaches the real client-scoped createCaseInSupabase path', () => {
     "currency: input.currency || 'PLN'",
     'primaryForClient: input.primaryForClient',
     'workspaceId: input.workspaceId',
+    'ownerId: input.ownerId',
   ]) {
     has(createCaseSource, persistedField);
   }

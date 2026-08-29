@@ -1,4 +1,4 @@
-import { type FormEvent, type ReactNode, useEffect, useState } from 'react';
+import { type FormEvent, type ReactNode, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -223,6 +223,7 @@ export function CreateClientCaseDialog({
   const preferredOwnerName = ownerName?.trim() || readClientOwnerName(client);
   const [draft, setDraft] = useState<CaseCreateDraft>(() => createDefaultDraft(client, preferredOwnerName));
   const [saving, setSaving] = useState(false);
+  const submitInFlightRef = useRef(false);
   const [validationMessage, setValidationMessage] = useState('');
   const [checklistTemplates, setChecklistTemplates] = useState<ChecklistTemplateOption[]>([]);
   const [checklistTemplatesLoading, setChecklistTemplatesLoading] = useState(false);
@@ -285,6 +286,7 @@ export function CreateClientCaseDialog({
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (submitInFlightRef.current) return;
 
     const preparedTitle = draft.title.trim();
     const contractValue = parseMoneyValue(draft.value);
@@ -313,6 +315,7 @@ export function CreateClientCaseDialog({
     }
 
     try {
+      submitInFlightRef.current = true;
       setSaving(true);
       const { createdCaseId } = await createStarterCaseForClient({
         title: preparedTitle,
@@ -351,6 +354,7 @@ export function CreateClientCaseDialog({
       setValidationMessage(`Nie udało się utworzyć sprawy: ${message}`);
       toast.error(`Nie udało się utworzyć sprawy: ${message}`);
     } finally {
+      submitInFlightRef.current = false;
       setSaving(false);
     }
   };
@@ -378,7 +382,7 @@ export function CreateClientCaseDialog({
             ) : null}
 
             <div className="forteca-frt-031-form-grid">
-              <CaseField id="create-client-case-client" label="Klient" required labelFor={null}>
+            <CaseField id="create-client-case-client" label="Klient" labelFor={null}>
                 <div
                   className="forteca-frt-031-control forteca-frt-031-client-control"
                   role="status"
