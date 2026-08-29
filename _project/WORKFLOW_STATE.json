@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 121,
+  "state_revision": 122,
   "last_accepted": {
-    "id": "FRT-031",
+    "id": "FRT-032",
     "status": "PASS",
-    "commit_sha": "7be42e6413e4633e9fe0b9aa532312a80e36bf1e",
-    "evidence": "_project/runs/forteca-clean/FRT-031_RECEIPT.json; audit/evidence/FRT-031_MIGRATION_RECEIPT.json; audit/evidence/FRT-031_BROWSER_PROOF.json; audit/evidence/FRT-031_GUARDIAN_AUDIT_SUMMARY.json; parent source/reference/live runtime review; exact additive cases.owner_id migration applied after separate schema and data backup; real client-linked case creation, checklist relation, client linkage and save/reload persistence PASS; CaseDetail route-scoped canonical style owner repaired after root-cause review; focused tests, typecheck, build, CSS/SOT guards and browser proof PASS; Guardian raw outcome PARTIAL with zero blockers; Vercel deploy-hook failure recorded while live Git-integrated bundle was independently verified; no independent reviewer PASS claim"
+    "commit_sha": "e442932c4b6c85d359e4193a81c2ca8b4b3a5578",
+    "evidence": "_project/runs/forteca-clean/FRT-032_RECEIPT.json; audit/evidence/FRT-032_BROWSER_PROOF.json; audit/evidence/FRT-032_GUARDIAN_AUDIT_SUMMARY.json; parent source/reference/live runtime review; real workspace all-cases list, dynamic metrics, search/filter/action proof and responsive reference reconciliation PASS; focused tests, typecheck, build, CSS/SOT guards and browser proof PASS; Guardian raw outcome PARTIAL with zero blockers; Vercel deploy-hook failure recorded while live Git-integrated bundle was independently verified; no independent reviewer PASS claim"
   },
   "previous_accepted": {
     "id": "LF-UI-SOT-007",
@@ -14,46 +14,46 @@
     "commit_sha": "8316a19da0905433f73d20d49c86cf374dca29b0",
     "evidence": "LF-UI-SOT-007 accepted and closed by owner decision at the exact accepted runtime/evidence anchor 8316a19da0905433f73d20d49c86cf374dca29b0; visual SSOT terminal counters are zero, ONE_OWNER_PER_VISUAL_CONCERN=PASS, SSOT negative tests=23/23, TSC/lint/build/diff-check=PASS, Guardian final=PASS, authenticated desktop/mobile browser proof=PASS, and Vercel production version API is exact on dev-rollout-freeze; control-plane closeout does not change product runtime"
   },
-  "current_stage": "FRT-032",
-  "current_contract_path": "_project/contracts/forteca-clean/FRT-032_CASES_ALL.md",
+  "current_stage": "FRT-033",
+  "current_contract_path": "_project/contracts/forteca-clean/FRT-033_CASES_WAITING_CLIENT.md",
   "current_status": "ACTIVE",
-  "last_accepted_stage": "FRT-031",
-  "last_accepted_commit": "7be42e6413e4633e9fe0b9aa532312a80e36bf1e",
-  "next_stage": "FRT-032",
+  "last_accepted_stage": "FRT-032",
+  "last_accepted_commit": "e442932c4b6c85d359e4193a81c2ca8b4b3a5578",
+  "next_stage": "FRT-033",
   "branch": "dev-rollout-freeze",
-  "remote_head": "955bcd789edeb5eed0c971aa840d3ac5b6560c04",
-  "next_action": "Begin FRT-032: inspect and reconcile the canonical all-cases list, filters and row actions against the corrected reference using real workspace data without activating another stage.",
+  "remote_head": "e442932c4b6c85d359e4193a81c2ca8b4b3a5578",
+  "next_action": "Activate FRT-033 as the only active stage and reconcile the real /cases waiting-for-client state against its locked reference.",
   "last_progress": {
-    "stage_id": "FRT-031",
+    "stage_id": "FRT-032",
     "status": "PASS_ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
-    "evidence": "_project/runs/forteca-clean/FRT-031_RECEIPT.json; audit/evidence/FRT-031_MIGRATION_RECEIPT.json; audit/evidence/FRT-031_BROWSER_PROOF.json; audit/evidence/FRT-031_GUARDIAN_AUDIT_SUMMARY.json",
-    "commit_sha": "7be42e6413e4633e9fe0b9aa532312a80e36bf1e",
+    "evidence": "_project/runs/forteca-clean/FRT-032_RECEIPT.json; audit/evidence/FRT-032_BROWSER_PROOF.json; audit/evidence/FRT-032_GUARDIAN_AUDIT_SUMMARY.json",
+    "commit_sha": "e442932c4b6c85d359e4193a81c2ca8b4b3a5578",
     "blocker": null,
-    "next_stage": "FRT-032",
-    "created_at": "2026-08-29T05:51:16.4912099Z",
-    "updated_at": "2026-08-29T16:12:00.0000000Z"
+    "next_stage": "FRT-033",
+    "created_at": "2026-08-29T18:44:11.4216676Z",
+    "updated_at": "2026-08-29T18:44:11.4216676Z"
   },
   "current_workflow": {
-    "id": "FRT-032",
+    "id": "FRT-033",
     "kind": "TECHNICAL_IMPLEMENTATION_STAGE",
-    "contract_path": "_project/contracts/forteca-clean/FRT-032_CASES_ALL.md",
+    "contract_path": "_project/contracts/forteca-clean/FRT-033_CASES_WAITING_CLIENT.md",
     "status": "ACTIVE",
-    "base_sha": "7be42e6413e4633e9fe0b9aa532312a80e36bf1e",
+    "base_sha": "e442932c4b6c85d359e4193a81c2ca8b4b3a5578",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "dev-rollout-freeze",
     "blocker": null,
     "ssot_open_findings": 0,
     "active_stage_count": 1,
-    "terminal_audit": "FRT_031_ACCEPTED_REAL_CASE_CREATE_SAVE_RELOAD_AND_CASEDETAIL_STYLE_OWNER_FRT_032_ACTIVE",
-    "guardian_status": "INHERITED_FRT_031_PARTIAL_AUDIT_NO_BLOCKER",
-    "acceptance_boundary": "FRT-032 requires a real all-cases state, reference-aligned filters/search/row actions, focused tests, Guardian and browser evidence before acceptance"
+    "terminal_audit": "FRT_032_ACCEPTED_REAL_ALL_CASES_SEARCH_FILTER_ACTION_BROWSER_AND_PRODUCTION_PROOF_FRT_033_ACTIVE",
+    "guardian_status": "INHERITED_FRT_032_PARTIAL_AUDIT_NO_BLOCKER",
+    "acceptance_boundary": "FRT-033 requires a real waiting-for-client state, reference-aligned filters/search/row actions, focused tests, Guardian and browser evidence before acceptance"
   },
   "next_workflow": {
-    "id": "FRT-033",
-    "contract_path": "_project/contracts/forteca-clean/FRT-033_CASES_WAITING_CLIENT.md",
+    "id": "FRT-034",
+    "contract_path": "_project/contracts/forteca-clean/FRT-034_CASES_BLOCKED.md",
     "status": "LOCKED",
-    "activation": "CODEX_AFTER_FRT_032_ACCEPTANCE",
-    "reason": "FRT-032 is the only active stage; FRT-033 remains locked until the all-cases list and action surface is independently accepted."
+    "activation": "CODEX_AFTER_FRT_033_ACCEPTANCE",
+    "reason": "FRT-033 is the only active stage; FRT-034 remains locked until the waiting-for-client list and action surface is independently accepted."
   },
   "forteca_program": {
     "program_id": "FORTECA_CALM_LIGHT_001_040",
@@ -94,9 +94,10 @@
     "stage_029_status": "PASS",
     "stage_030_status": "PASS",
     "stage_031_status": "PASS",
-    "active_stage": "FRT-032",
-    "future_stages": "FRT-032..FRT-041 LOCKED",
-    "accepted_receipts": ["FRT-000", "FRT-001", "FRT-002", "FRT-003", "FRT-004", "FRT-005", "FRT-006", "FRT-007", "FRT-008", "FRT-009", "FRT-010", "FRT-011", "FRT-012", "FRT-013", "FRT-014", "FRT-015", "FRT-016", "FRT-017", "FRT-018", "FRT-019", "FRT-020", "FRT-021", "FRT-022", "FRT-023", "FRT-024", "FRT-025", "FRT-026", "FRT-027", "FRT-028", "FRT-029", "FRT-030", "FRT-031"],
+    "stage_032_status": "PASS",
+    "active_stage": "FRT-033",
+    "future_stages": "FRT-033..FRT-041 LOCKED",
+    "accepted_receipts": ["FRT-000", "FRT-001", "FRT-002", "FRT-003", "FRT-004", "FRT-005", "FRT-006", "FRT-007", "FRT-008", "FRT-009", "FRT-010", "FRT-011", "FRT-012", "FRT-013", "FRT-014", "FRT-015", "FRT-016", "FRT-017", "FRT-018", "FRT-019", "FRT-020", "FRT-021", "FRT-022", "FRT-023", "FRT-024", "FRT-025", "FRT-026", "FRT-027", "FRT-028", "FRT-029", "FRT-030", "FRT-031", "FRT-032"],
     "auth_required_for_frt_000": false,
     "future_receipts_precreated": false
   },
@@ -513,6 +514,14 @@
     "forteca:FRT-031:browser-proof@audit/evidence/FRT-031_BROWSER_PROOF.json",
     "forteca:FRT-031:guardian-summary@audit/evidence/FRT-031_GUARDIAN_AUDIT_SUMMARY.json",
     "forteca:FRT-031:receipt@_project/runs/forteca-clean/FRT-031_RECEIPT.json",
-    "forteca:FRT-031:case-detail-style-root-cause@7be42e6413e4633e9fe0b9aa532312a80e36bf1e"
+    "forteca:FRT-031:case-detail-style-root-cause@7be42e6413e4633e9fe0b9aa532312a80e36bf1e",
+    "forteca:FRT-032:implementation@e442932c4b6c85d359e4193a81c2ca8b4b3a5578",
+    "forteca:FRT-032:browser-proof@audit/evidence/FRT-032_BROWSER_PROOF.json",
+    "forteca:FRT-032:guardian-summary@audit/evidence/FRT-032_GUARDIAN_AUDIT_SUMMARY.json",
+    "forteca:FRT-032:receipt@_project/runs/forteca-clean/FRT-032_RECEIPT.json",
+    "forteca:FRT-032:tests@focused-static-5-of-5-milestone-28-of-28-tsc-build-css-sot-lint-diff-check-browser-pass-with-guardian-partial",
+    "forteca:FRT-032:review@parent-source-reference-live-runtime-review; no independent reviewer PASS claim",
+    "forteca:FRT-032:visual-color-policy@canonical shared VST semantic tokens and delete/icon owners preserved; reference discrepancies do not create per-window color exceptions",
+    "forteca:FRT-032:root-cause@legacy cases shell/header/nav geometry and responsive compression; repaired through route-scoped page-shell/Layout/Cases owners with no data or schema mutation"
   ]
 }

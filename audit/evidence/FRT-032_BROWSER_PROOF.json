@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-032",
+  "reference_file": "docs/ui/reference/forteca-calm-light/032_cases_all.webp",
+  "reference_sha256": "7ef598cebad8d06aa73a091f946a5ec8c87f7401f387b177695b1d8708905f6a",
+  "entry_url": "https://closeflowapp.vercel.app/cases?view=all",
+  "route": "/cases",
+  "state": "Cases — Wszystkie",
+  "live_runtime": true,
+  "auth_required": true,
+  "data_source": {
+    "mode": "real_authenticated_production_runtime",
+    "workspace_scope_preserved": true,
+    "visible_case_count": 7,
+    "record_origin": "The list was loaded from the authenticated workspace API. No screenshot fixture, hardcoded reference row or synthetic count was injected.",
+    "authentication_boundary": "The user supplied the authenticated session. No credentials, cookies or tokens were read or exported."
+  },
+  "visible_structure": {
+    "observed_browser_viewport": {
+      "width": 946,
+      "height": 698,
+      "device_pixel_ratio": 1.25
+    },
+    "sidebar_width_px": 256,
+    "page_header": {
+      "title": "Sprawy",
+      "description": "Zarządzaj realizacją i kompletnością materiałów klientów.",
+      "reference_aligned_flat_header": true,
+      "legacy_kicker_hidden": true,
+      "legacy_hero_card_removed": true
+    },
+    "header_actions": ["Import CSV", "Dodaj sprawę", "Więcej opcji dodawania sprawy"],
+    "kpi_shortcuts": [
+      {"label": "Wszystkie", "value_source": "dynamic visible case statistics", "value": 7},
+      {"label": "Czekają na klienta", "value_source": "dynamic visible case statistics", "value": 0},
+      {"label": "Zablokowane", "value_source": "dynamic visible case statistics", "value": 0},
+      {"label": "Gotowe do startu", "value_source": "dynamic visible case statistics", "value": 0}
+    ],
+    "toolbar": ["Szukaj sprawy, klienta, tematu lub numeru", "Status", "Kompletność", "Opiekun", "Więcej filtrów", "Sortuj"],
+    "table_headers": ["Numer sprawy", "Klient", "Temat", "Status", "Kompletność", "Braki", "Ostatni ruch", "Najbliższy ruch", "Opiekun"],
+    "row_navigation": true,
+    "row_actions": ["Otwórz sprawę", "Usuń sprawę"],
+    "pagination": "1–7 z 7 spraw",
+    "secondary_priority_rail": false,
+    "shell_navigation": ["Dziś", "Leady", "Klienci", "Sprawy", "Aktywność", "Zadania", "Kalendarz", "Szablony", "Odpowiedzi", "Inbox szkiców", "Powiadomienia", "Rozliczenia", "Zgłoszenia", "Admin AI", "Ustawienia"]
+  },
+  "interaction_proof": {
+    "initial_all_cases": {"status": "PASS", "observed": "The real production route rendered 7 workspace case rows and the all-cases shortcut was pressed."},
+    "search": {"status": "PASS", "observed": "Searching for Alfred Panek reduced the real list to 3 matching rows; clearing through the visible textbox restored all 7 rows."},
+    "more_filters": {"status": "PASS", "observed": "The expanded surface exposed Klient, Blokery, Tylko bez zaplanowanego ruchu and Wyczyść filtry; it was closed without mutation."},
+    "row_action_menu": {"status": "PASS", "observed": "The first real row action menu exposed Otwórz sprawę and Usuń sprawę; neither action was invoked, so no database mutation occurred."},
+    "row_navigation_links": {"status": "PASS", "observed": "Rendered case rows contain real /cases/:caseId links."}
+  },
+  "responsive_visual_proof": {
+    "observed_viewport_check": "PASS",
+    "horizontal_overflow": false,
+    "content_width_px": 628,
+    "main_shell_width_px": 690.4,
+    "single_letter_wrapping": false,
+    "evidence": "Fresh DOM snapshot contained normal row titles and table cells; neutral screenshot at the observed viewport showed the reference-aligned header, 2x2 responsive KPI grid and filter card without horizontal clipping.",
+    "literal_pixel_identity_claim": false,
+    "limitation": "The proof covers the supplied production viewport and the route's responsive CSS rules; it does not claim literal pixel identity at every viewport."
+  },
+  "visual_comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "parent_review": "Parent compared the locked 032 reference, current source owners, fresh production DOM and displayed screenshot before acceptance."
+  },
+  "safety_proof": {
+    "no_database_writes": true,
+    "no_hardcoded_reference_fixtures": true,
+    "no_fake_success": true,
+    "no_raw_cdp_or_dom_mutation": true,
+    "semantic_color_source_of_truth_preserved": true,
+    "no_secret_exposure": true
+  },
+  "production_propagation": {
+    "source_commit": "e442932c4b6c85d359e4193a81c2ca8b4b3a5578",
+    "remote_branch": "dev-rollout-freeze",
+    "deployment_host": "closedockapp-342k6ym1y-dkknapikdamian-7019s-projects.vercel.app",
+    "deployment_state": "READY",
+    "deployment_target": "production",
+    "github_commit_sha": "e442932c4b6c85d359e4193a81c2ca8b4b3a5578",
+    "github_commit_message": "fix(FRT-032): align cases sidebar footer",
+    "github_commit_ref": "dev-rollout-freeze",
+    "github_vercel_workflow_run": "33262449067",
+    "workflow_conclusion": "failure_at_deploy_hook_missing_or_invalid_secret",
+    "workflow_pass_claim": false,
+    "live_bundle_verification": "PASS_AFTER_GIT_INTEGRATION_PROPAGATION",
+    "note": "The failed deploy-hook workflow is recorded transparently; the READY Git-integrated production deployment and live browser evidence independently verify the bundle."
+  },
+  "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "created_at": "2026-08-29T18:44:11.4216676Z"
+}

@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-032",
+  "reference_file": "docs/ui/reference/forteca-calm-light/032_cases_all.webp",
+  "reference_sha256": "7ef598cebad8d06aa73a091f946a5ec8c87f7401f387b177695b1d8708905f6a",
+  "target_route": "/cases",
+  "target_state": "Cases — Wszystkie",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_AFTER_PARENT_REVIEW",
+  "acceptance_basis": {
+    "contract": "FRT-032_CASES_ALL.md",
+    "visual_review": "Parent compared the locked 032 reference, real production DOM and displayed screenshot. The Forteca shell, flat page header, actions, dynamic KPI shortcuts, toolbar, table, row actions and responsive density are aligned to the corrected mapping.",
+    "behavior_review": "Real authenticated production all-cases data rendered 7 rows; search returned 3 real matches and restored 7; more filters and row action menus exposed their controls; real row links were present. No mutating row action was invoked.",
+    "test_review": "Focused FRT-032 static contract/data/control/action test passed 5/5; typecheck, milestone test suite, build, CSS/SOT guards, lint and diff checks passed with only known build warnings.",
+    "production_review": "The exact implementation SHA is present on dev-rollout-freeze and the Git-integrated Vercel production deployment is READY; the failed deploy-hook workflow is recorded and not claimed as PASS.",
+    "review_status": "Parent review completed. No independent reviewer PASS is claimed."
+  },
+  "root_cause_repairs": [
+    {
+      "finding": "The all-cases route inherited the legacy CloseFlow shell geometry and visual wrappers, including an oversized sidebar/header treatment and stale navigation composition.",
+      "repair": "Added a route-scoped Forteca cases shell using the shared sidebar token, corrected nav order, Forteca user-card/footer treatment, and removed the route's legacy desktop logout presentation without changing other routes."
+    },
+    {
+      "finding": "The page header still received high-specificity legacy card/kicker rules and the responsive filter/KPI layout could compress at the observed viewport.",
+      "repair": "Applied the cases-only reference reset and responsive grid rules in the canonical page-shell and FRT-032 style owners; the live viewport now shows the flat header, readable 2x2 KPI grid and unclipped filter surface."
+    }
+  ],
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Counts, rows, labels, filters and links remain derived from real workspace case data and runtime state.",
+      "No screenshot fixture, reference row, fake success path or hardcoded reference count was introduced.",
+      "No database write was needed for this read/filter/menu proof.",
+      "Semantic colors, icons and actions continue to resolve through shared Visual SOT owners; no stage-specific repeated color literals were added.",
+      "No unrelated route, table, RLS, function, trigger or production merge was performed."
+    ]
+  },
+  "color_source_of_truth": {
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "page_shell_owner": "src/styles/owners/closeflow-page-shell.css",
+    "cases_owner": "src/styles/forteca-cases-all.css",
+    "action_owner": "src/styles/owners/closeflow-actions.css",
+    "icon_owner": "src/ui-system/icons/SemanticIcon.tsx and src/components/ui-system/ActionIcon.tsx",
+    "stage_literal_color_values": 0,
+    "policy": "Repeated semantic concerns resolve through shared VST owners; reference discrepancies do not create per-window color exceptions."
+  },
+  "implementation": {
+    "code_changed": true,
+    "files_changed": [
+      "src/components/Layout.tsx",
+      "src/pages/Cases.tsx",
+      "src/styles/forteca-cases-all.css",
+      "src/styles/owners/closeflow-page-shell.css",
+      "tests/forteca-frt-032-cases-all.test.cjs"
+    ],
+    "implementation_commit_sha": "e442932c4b6c85d359e4193a81c2ca8b4b3a5578",
+    "migration_limit": "No database migration or unrelated schema mutation was performed."
+  },
+  "tests_executed": [
+    "node --test tests/forteca-frt-032-cases-all.test.cjs (5/5 PASS)",
+    "npm.cmd run test:forteca-current (28/28 PASS)",
+    "npx.cmd tsc --noEmit --pretty false (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS: dynamic/static import overlap and large chunks)",
+    "node scripts/check-visual-stage07-cases.cjs (PASS)",
+    "node scripts/check-closeflow-no-unclassified-css-imports.cjs (PASS)",
+    "node scripts/run-lint-cross-platform.cjs (PASS)",
+    "npm.cmd run check:closeflow-ui-skill-pack && npm.cmd run check:closeflow-ui-premap-contract (PASS)",
+    "git diff --check (PASS; existing line-ending warnings only)",
+    "canonical Guardian smoke (AUDIT_ONLY/PARTIAL; zero writes; zero blockers)",
+    "authenticated production browser: real all-cases load/search/clear/more-filters/row-action-menu/link proof (PASS)"
+  ],
+  "reused_evidence": [
+    "FRT-000 routing, reference manifest, Guardian boundary and Visual SOT owner registry",
+    "FRT-021 Forteca shell and shared semantic token evidence",
+    "FRT-029..FRT-031 real workspace scope, client/case relation and shared action/icon/color evidence"
+  ],
+  "limitations_and_follow_up": [
+    "The native cases schema does not expose every metadata field shown in the reference; the list derives available topic/owner/status/completeness labels from the existing runtime contract rather than inventing new schema.",
+    "The reference is a visual mapping, not a source for hardcoded records or counts; live workspace data may legitimately differ from sample rows.",
+    "The failed Vercel deploy-hook workflow 33262449067 is recorded; live Git-integrated production bundle verification passed after propagation."
+  ],
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-032_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "fileWrites": 0
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-032_BROWSER_PROOF.json",
+    "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+    "live_runtime": true,
+    "auth_required": true,
+    "route": "https://closeflowapp.vercel.app/cases?view=all",
+    "real_case_count": 7,
+    "search_filter_restore": "PASS (3 matching, restored 7)",
+    "more_filters": "PASS",
+    "row_action_menu": "PASS; no mutation invoked",
+    "screenshot_path": null
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "marketplace_binding": "BOUND",
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_skip_reason": "No callable preferred provider was available in the current host context; the bounded local Codex subagent audit was used and parent-revalidated.",
+    "subagents": [
+      {"id": "01a04e8a-231c-73f1-9ea1-0b629c0fa7fd", "role": "bounded FRT-032 static contract/data/control/action guard", "status": "COMPLETED; parent ran the resulting 5/5 test and independently verified runtime"}
+    ],
+    "write_owner": "Codex parent reviewed all returned artifacts and wrote the final stage evidence/state."
+  },
+  "remote_head_verified_at_implementation_push": "e442932c4b6c85d359e4193a81c2ca8b4b3a5578",
+  "branch": "dev-rollout-freeze",
+  "next_action": "Activate FRT-033 as the only active stage and reconcile the real /cases waiting-for-client state against its locked reference.",
+  "created_at": "2026-08-29T18:44:11.4216676Z"
+}
