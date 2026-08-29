@@ -428,7 +428,8 @@ export default function Layout({ children }: LayoutProps) {
 
   const isLeadDetailRoute = /^\/leads\/[^/]+$/.test(location.pathname);
   const isFortecaClientsRoute = location.pathname === '/clients';
-  const isFortecaShellRoute = isLeadDetailRoute || isFortecaClientsRoute;
+  const isClientDetailRoute = /^\/clients\/[^/]+$/.test(location.pathname);
+  const isFortecaShellRoute = isLeadDetailRoute || isFortecaClientsRoute || isClientDetailRoute;
   const navGroups = useMemo<NavGroup[]>(() => ([
     {
       caption: 'Start pracy',
@@ -478,11 +479,11 @@ export default function Layout({ children }: LayoutProps) {
         ],
       }];
     }
-    if (isFortecaClientsRoute) {
+    if (isFortecaClientsRoute || isClientDetailRoute) {
       return [{ caption: '', items: navGroups.flatMap((group) => group.items) }];
     }
     return navGroups;
-  }, [isFortecaClientsRoute, isLeadDetailRoute, navGroups]);
+  }, [isClientDetailRoute, isFortecaClientsRoute, isLeadDetailRoute, navGroups]);
   const navItems = useMemo(() => navGroupsForShell.flatMap((group) => group.items), [navGroupsForShell]);
   const mobileNavItems = useMemo(
     () => [
@@ -500,7 +501,6 @@ export default function Layout({ children }: LayoutProps) {
   const isTodayRoute = location.pathname === '/';
   const isLeadsRoute = location.pathname === '/leads';
   const isClientsRoute = location.pathname === '/clients';
-  const isClientDetailRoute = /^\/clients\/[^/]+$/.test(location.pathname);
   const isCasesRoute = location.pathname === '/cases';
   const isCaseDetailRoute = /^\/(?:case|cases)\/[^/]+$/.test(location.pathname);
   const currentSection = isTodayRoute ? 'today' : isLeadsRoute ? 'leads' : isLeadDetailRoute ? 'lead-detail' : isClientsRoute ? 'clients' : isClientDetailRoute ? 'client-detail' : isCasesRoute ? 'cases' : isCaseDetailRoute ? 'case-detail' : currentTitle.toLowerCase();
@@ -582,7 +582,7 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div
-      className={`app closeflow-visual-semantic01 cf-html-shell ${isLeadDetailRoute ? 'cf-route-lead-detail' : ''} ${isFortecaClientsRoute ? 'cf-route-clients' : ''}`}
+      className={`app closeflow-visual-semantic01 cf-html-shell ${isLeadDetailRoute ? 'cf-route-lead-detail' : ''} ${isFortecaClientsRoute || isClientDetailRoute ? 'cf-route-clients' : ''} ${isClientDetailRoute ? 'cf-route-client-detail' : ''}`}
       data-visual-stage="01-shell-sidebar"
       data-sidebar-pointer-router="true"
       onPointerDownCapture={handleSidebarPointerRouter}
