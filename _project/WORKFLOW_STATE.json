@@ -21,7 +21,7 @@
   "last_accepted_commit": "34fd882a3785d88d214706e7cdf4ef454b71e9a3",
   "next_stage": "FRT-031",
   "branch": "dev-rollout-freeze",
-  "remote_head": "6db675a400b07531088e0973d952c379d5418162",
+  "remote_head": "8accaccaa9b1720ef38324a2b93d6360b003a2d2",
   "next_action": "Begin FRT-031: inspect the canonical case-create contract and real client-context mutation path, then implement and verify the reference-aligned New Case flow without activating another stage.",
   "last_progress": {
     "stage_id": "FRT-030",
@@ -38,7 +38,7 @@
     "kind": "TECHNICAL_IMPLEMENTATION_STAGE",
     "contract_path": "_project/contracts/forteca-clean/FRT-031_CLIENT_NEW_CASE.md",
     "status": "ACTIVE",
-    "base_sha": "6db675a400b07531088e0973d952c379d5418162",
+    "base_sha": "8accaccaa9b1720ef38324a2b93d6360b003a2d2",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "dev-rollout-freeze",
     "blocker": null,
