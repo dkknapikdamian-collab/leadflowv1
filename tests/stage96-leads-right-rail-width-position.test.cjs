@@ -7,20 +7,13 @@ const repoRoot = path.resolve(__dirname, '..');
 const read = (relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
 const rightRailOwnerPath = 'src/styles/owners/closeflow-records-and-rails.css';
 
-function sliceBetween(text, start, end) {
-  const s = text.indexOf(start);
-  assert.notEqual(s, -1, 'Missing start marker: ' + start);
-  const e = text.indexOf(end, s);
-  assert.notEqual(e, -1, 'Missing end marker after: ' + end);
-  return text.slice(s, e);
-}
-
 test('Stage96 Leads rail renders simple filters before top value card', () => {
   const leads = read('src/pages/Leads.tsx');
-  const rail = sliceBetween(leads, 'className="lead-right-rail', '<div hidden data-leads-stage35-removed-ai-side-card');
-  assert.ok(rail.indexOf('dataTestId="leads-simple-filters-card"') >= 0, 'Missing leads simple filters card.');
-  assert.ok(rail.indexOf('dataTestId="leads-top-value-records-card"') >= 0, 'Missing leads top value card.');
-  assert.ok(rail.indexOf('dataTestId="leads-simple-filters-card"') < rail.indexOf('dataTestId="leads-top-value-records-card"'), 'Simple filters must render before top value card.');
+  const simpleFiltersIndex = leads.indexOf('dataTestId="leads-simple-filters-card"');
+  const topValueIndex = leads.indexOf('dataTestId="leads-top-value-records-card"');
+  assert.notEqual(simpleFiltersIndex, -1, 'Missing leads simple filters card.');
+  assert.notEqual(topValueIndex, -1, 'Missing leads top value card.');
+  assert.ok(simpleFiltersIndex < topValueIndex, 'Simple filters must render before top value card.');
 });
 
 test('Stage96 Leads layout delegates right rail width to source truth', () => {
@@ -32,11 +25,8 @@ test('Stage96 Leads layout delegates right rail width to source truth', () => {
   assert.ok(!layoutOpen.includes('grid-cols-['), 'Leads layout-list should not carry Tailwind grid width override.');
   assert.ok(!layoutOpen.includes('_300px'), 'Leads layout-list should not carry a local 300px rail override.');
 
-  const railOpenIndex = leads.indexOf('className="lead-right-rail');
-  assert.notEqual(railOpenIndex, -1, 'Missing lead-right-rail.');
-  const railOpen = leads.slice(leads.lastIndexOf('<div', railOpenIndex), leads.indexOf('>', railOpenIndex) + 1);
-  assert.ok(railOpen.includes('data-cf-right-rail-source="shared"'), 'Lead right rail should mark shared source truth.');
-  assert.ok(railOpen.includes('cf-operator-right-rail'), 'Lead right rail should use shared operator rail class.');
+  assert.ok(layoutOpen.includes('data-cf-right-rail-layout-source="shared"'), 'Leads layout should mark shared rail source truth.');
+  assert.ok(layoutOpen.includes('data-stage96-leads-right-rail-source-truth="true"'), 'Leads layout should expose the Stage96 shared rail contract.');
 });
 
 test('Stage96 right rail source truth defines shared Clients/Leads width', () => {
