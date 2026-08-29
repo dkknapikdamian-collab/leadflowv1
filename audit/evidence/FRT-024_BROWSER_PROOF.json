@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-024",
+  "reference_file": "docs/ui/reference/forteca-calm-light/024_clients_active_commission.webp",
+  "reference_sha256": "787fd0e5308afd089024865b578a969047341959ab9d927d0a050df69d597392",
+  "entry_url": "http://localhost:3000/clients?frt024=active-commission&refresh=24-browser-proof",
+  "runtime_url": "http://localhost:3000/clients?frt024=active-commission&refresh=24-browser-proof",
+  "route": "/clients",
+  "state": "Forteca calm-light Clients — active commission",
+  "live_runtime": true,
+  "auth_required": false,
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "record_origin": "Existing workspace-scoped clients, active cases and payment rows; reference screenshot fixtures were not copied into runtime state.",
+    "relation_truth": "The active-commission rows and KPI values derive from the existing client-case relation, getClientCasesFinanceSummary/getCaseFinanceSummary and normalized payment records. The current local preview has no positive canonical commission amount, so the empty state and zero KPIs are truthful.",
+    "visible_rows": 0,
+    "visible_summary": ["Łączna aktywna prowizja 0 PLN", "0 aktywnych klientów", "Do wypłaty w 7 dni 0 PLN", "Średnia prowizja na klienta 0 PLN"],
+    "production_path": "The page uses the existing workspace-scoped Clients data loading, case-finance source, finance normalizers and existing client navigation/action owners; no screenshot-only collection, fake row or fake finance total was added."
+  },
+  "visible_structure": {
+    "requested_reference_viewport": {"width": 1672, "height": 941},
+    "observed_browser_viewport": {"width": 1672, "height": 942, "scroll_width": 1672, "scroll_height": 942},
+    "root_marker": "data-forteca-frt-024-root=\"true\"",
+    "root_count": 1,
+    "shell_marker": ".cf-html-shell.cf-route-clients",
+    "tabs_marker": "data-forteca-frt-024-tabs=\"true\"",
+    "kpis_marker": "data-forteca-frt-024-kpis=\"true\"",
+    "toolbar_marker": "data-forteca-frt-024-toolbar=\"true\"",
+    "table_marker": "data-forteca-frt-024-table=\"true\"",
+    "active_tab": "Aktywna prowizja",
+    "row_count": 0,
+    "empty_state": "Brak aktywnych prowizji",
+    "geometry": {
+      "page": {"x": 283.2, "y": 25, "width": 1357.6, "height": 932.2875},
+      "tabs": {"x": 283.2, "y": 104.8875, "width": 1357.6, "height": 34.8},
+      "kpis": {"x": 283.2, "y": 161.6875, "width": 1357.6, "height": 132},
+      "toolbar": {"x": 283.2, "y": 313.6875, "width": 1357.6, "height": 57.6},
+      "table_card": {"x": 283.2, "y": 383.2875, "width": 1357.6, "height": 574}
+    },
+    "reference_copy_present": true,
+    "reference_copy": [
+      "Klienci",
+      "Zarządzaj klientami i monitoruj aktywną prowizję.",
+      "Dostosuj widok",
+      "Eksportuj",
+      "Lista klientów",
+      "Aktywna prowizja",
+      "Historia prowizji",
+      "Segmenty klientów",
+      "Łączna aktywna prowizja",
+      "Liczba klientów",
+      "Do wypłaty w 7 dni",
+      "Średnia prowizja na klienta",
+      "Szukaj klienta, sprawy lub opiekuna...",
+      "Filtry",
+      "Kolumny",
+      "Klient",
+      "Wartość prowizji",
+      "Sprawa",
+      "Status",
+      "Etap rozliczenia",
+      "Termin wypłaty",
+      "Opiekun"
+    ],
+    "body_overflow": false
+  },
+  "interaction_proof": {
+    "tabs": {
+      "status": "PASS",
+      "observed": "The active commission tab remained selected and rendered the live active-commission state. Future reference tabs remain visible and do not claim unimplemented future states."
+    },
+    "status_filter": {
+      "status": "PASS",
+      "observed": "The real Status prowizji control opened with Wszystkie, Oczekiwana, Należna, Częściowo zapłacona, Zapłacona and Zaległa; selecting Oczekiwana retained the truthful empty result and Wyczyść filtry restored the default."
+    },
+    "owner_filter": {
+      "status": "PASS",
+      "observed": "The real Opiekun control exposed Wszyscy and Nieprzypisany without changing workspace records."
+    },
+    "customize_columns": {
+      "status": "PASS",
+      "observed": "Dostosuj widok and Kolumny opened the real visible-column panel with aria-expanded=true and closed cleanly."
+    },
+    "export_menu": {
+      "status": "PASS",
+      "observed": "Eksportuj opened the real menu with Eksportuj bieżący widok and Eksportuj wszystkie wyniki; no download or external mutation was invoked."
+    },
+    "post_interaction_state": {
+      "status": "PASS",
+      "observed": "Menus and filters were closed, Aktywna prowizja remained active, the empty state remained visible, document overflow stayed false and no fresh console errors or warnings were recorded."
+    }
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "finance_values_are_source_derived": true,
+    "workspace_scope_preserved": true,
+    "existing_client_actions_preserved": true,
+    "no_duplicate_list_owner": true,
+    "no_fake_success": true,
+    "no_unapproved_live_mutation": true,
+    "semantic_color_source_of_truth_preserved": true
+  },
+  "console_errors": 0,
+  "console_warnings": 0,
+  "screenshot_displayed_in_codex_browser": true,
+  "screenshot_path": null,
+  "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The browser reported a one-pixel inner-height rounding difference from the 1672x941 static capture.",
+      "The live local workspace has no positive canonical commission amount, so row values and KPI totals intentionally render as a truthful empty state instead of screenshot fixture data.",
+      "Destructive archive/create actions and export downloads were not invoked during browser proof; existing production handlers remain wired in the live source."
+    ]
+  },
+  "implementation_commit": "02a16a9bf036a39c92542d56e9c9b0cd0fd659ca",
+  "remote_head_verified": "02a16a9bf036a39c92542d56e9c9b0cd0fd659ca",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "created_at": "2026-08-29T02:46:15.0817806+02:00"
+}
