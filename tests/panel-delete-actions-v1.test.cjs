@@ -39,7 +39,7 @@ test('Panel trash actions keep cards navigable through Link wrappers', () => {
   const clients = read('src/pages/Clients.tsx');
   const leads = read('src/pages/Leads.tsx');
 
-  assert.match(clients, /<Link\s+to=\{`\/clients\/\$\{client\.id\}`\}\s+className="block"/);
+  assert.match(clients, /<Link\s+to=\{'\/clients\/'\s*\+\s*client\.id\}\s+className="forteca-frt-021-client-name"/);
   assert.match(clients, /event\.preventDefault\(\)/);
   assert.match(clients, /event\.stopPropagation\(\)/);
   assert.match(leads, /<Link[\s\S]{0,360}to=\{`\/leads\//);
@@ -48,13 +48,14 @@ test('Panel trash actions keep cards navigable through Link wrappers', () => {
   assert.match(leads, /event\.stopPropagation\(\)/);
 });
 
-test('Clients and leads expose trash view toggles', () => {
+test('Clients and leads expose archive/trash view toggles', () => {
   const clients = read('src/pages/Clients.tsx');
   const leads = read('src/pages/Leads.tsx');
 
-  assert.match(clients, /showArchived/);
-  assert.match(clients, /Kosz klient\u00F3w jest pusty/);
+  assert.match(clients, /data-forteca-frt-025-tabs="true"/);
+  assert.match(clients, /data-forteca-frt-025-table="true"/);
   assert.match(clients, /Przywr\u00F3\u0107 klienta/);
+  assert.match(clients, /archivedAt: null/);
   assert.match(leads, /showTrash/);
   assert.match(leads, /Kosz lead\u00F3w jest pusty/);
   assert.match(leads, /Przywr\u00F3\u0107 leada/);
