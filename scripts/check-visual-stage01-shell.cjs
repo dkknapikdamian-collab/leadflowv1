@@ -34,7 +34,7 @@ const badPatterns = [
 ];
 
 expect('src/components/Layout.tsx', 'VISUAL_STAGE_01_SHELL_SIDEBAR', 'Stage01 shell trace marker');
-expect('src/components/Layout.tsx', 'className="app closeflow-visual-semantic01 cf-html-shell"', 'current root shell classes');
+expect('src/components/Layout.tsx', 'className={`app closeflow-visual-semantic01 cf-html-shell', 'current root shell classes');
 expect('src/components/Layout.tsx', 'data-visual-stage="01-shell-sidebar"', 'Stage01 data attribute');
 expect('src/components/Layout.tsx', "caption: 'Start pracy'", 'Start pracy group');
 expect('src/components/Layout.tsx', "caption: 'Czas i obowiązki'", 'Czas i obowiązki group');

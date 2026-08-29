@@ -2383,7 +2383,7 @@ export default function Clients() {
           ? 'forteca-frt-021-page forteca-frt-021-clients-view forteca-frt-023-page'
           : isWithoutCaseStage022
             ? 'forteca-frt-021-page forteca-frt-021-clients-view forteca-frt-022-page'
-            : 'forteca-frt-021-page forteca-frt-021-clients-view'} data-forteca-frt-021-runtime="true" data-forteca-frt-022-runtime={isWithoutCaseStage022 ? 'true' : undefined} data-forteca-frt-023-runtime={isNeedsContactStage023 ? 'true' : undefined} data-forteca-frt-024-runtime={isActiveCommissionStage024 ? 'true' : undefined} data-forteca-frt-024-root={isActiveCommissionStage024 ? 'true' : undefined} data-forteca-frt-025-runtime={isArchivedStage025 ? 'true' : undefined} data-forteca-frt-025-root={isArchivedStage025 ? 'true' : undefined}>
+        : 'forteca-frt-021-page forteca-frt-021-clients-view'} data-clients-real-view="true" data-forteca-frt-021-runtime="true" data-forteca-frt-022-runtime={isWithoutCaseStage022 ? 'true' : undefined} data-forteca-frt-023-runtime={isNeedsContactStage023 ? 'true' : undefined} data-forteca-frt-024-runtime={isActiveCommissionStage024 ? 'true' : undefined} data-forteca-frt-024-root={isActiveCommissionStage024 ? 'true' : undefined} data-forteca-frt-025-runtime={isArchivedStage025 ? 'true' : undefined} data-forteca-frt-025-root={isArchivedStage025 ? 'true' : undefined}>
         <ConfirmDialog
           open={Boolean(clientArchiveConfirm)}
           onOpenChange={(open) => {

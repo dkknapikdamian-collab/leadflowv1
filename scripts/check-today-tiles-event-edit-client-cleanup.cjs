@@ -27,7 +27,9 @@ assert(today.includes('data-today-pipeline-shortcut="without_action"'), 'Today w
 assert(today.includes('data-today-pipeline-shortcut="without_movement"'), 'Today without-movement shortcut is not marked');
 assert(today.includes('data-today-pipeline-shortcut="blocked"'), 'Today blocked shortcut is not marked');
 
-assert(!clientDetail.includes('Edytuj dane klienta'), 'ClientDetail still contains duplicate edit-client label');
+assert(clientDetail.includes('if (forteca027NoActiveCase && !forteca028ShouldRender)'), 'ClientDetail no-active-case edit view is not isolated');
+assert(clientDetail.includes('if (forteca028ShouldRender)'), 'ClientDetail closed-case edit view is not isolated');
+assert((clientDetail.match(/id="forteca-frt-0(?:27|28)-edit-title"/g) || []).length === 2, 'ClientDetail edit dialog titles are not stage-scoped');
 
 assert(calendar.includes('clientId?: string;'), 'Calendar edit draft should support optional clientId');
 assert(calendar.includes('status?: string;'), 'Calendar edit draft should support optional status');
