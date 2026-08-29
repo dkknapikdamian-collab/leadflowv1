@@ -1413,6 +1413,22 @@
   padding: 0;
 }
 
+#root .cf-html-shell.cf-route-cases {
+  grid-template-columns: var(--cf-vst-layout-sidebar) minmax(0, 1fr);
+}
+
+#root .cf-html-shell.cf-route-cases > aside.sidebar[data-shell-sidebar="true"] .sidebar-logout {
+  display: none;
+}
+
+#root .cf-html-shell.cf-route-cases .user-card-chevron {
+  width: var(--cf-vst-icon-size-sm);
+  height: var(--cf-vst-icon-size-sm);
+  margin-left: auto;
+  flex: 0 0 auto;
+  color: var(--cf-vst-text-muted);
+}
+
 @media (max-width: 860px) {
   #root .cf-html-shell:is(.cf-route-clients, .cf-route-cases) {
     display: block;
@@ -1444,5 +1460,9 @@
 
   #root .cf-html-shell.cf-route-cases > .main.main-cases {
     padding: 0;
+  }
+
+  #root .cf-html-shell.cf-route-cases > aside.sidebar[data-shell-sidebar="true"] .sidebar-logout {
+    display: flex;
   }
 }

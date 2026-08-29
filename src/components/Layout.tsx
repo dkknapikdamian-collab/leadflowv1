@@ -13,6 +13,7 @@ import { AlertTriangle,
   Calendar,
   CheckCircle2,
   CheckSquare,
+  ChevronDown,
   ChevronRight,
   CreditCard,
   FolderKanban,
@@ -196,14 +197,35 @@ function TrialCard({
     </div>
   );
 }
-function UserCard({ userInitial, name, email }: { userInitial: string; name: string; email?: string | null }) {
+function UserCard({
+  userInitial,
+  name,
+  email,
+  variant = 'default',
+}: {
+  userInitial: string;
+  name: string;
+  email?: string | null;
+  variant?: 'default' | 'forteca';
+}) {
+  const fortecaInitials = name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0))
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+  const displayInitial = variant === 'forteca' ? (fortecaInitials || userInitial) : userInitial;
+
   return (
-    <div className="user-card" data-shell-user-card="true">
-      <div className="user-avatar">{userInitial}</div>
+    <div className={`user-card user-card-${variant}`} data-shell-user-card="true" data-shell-user-card-variant={variant}>
+      <div className="user-avatar">{displayInitial}</div>
       <div className="min-w-0">
         <strong className="truncate">{name}</strong>
-        <span className="truncate">{email}</span>
+        <span className="truncate">{variant === 'forteca' ? 'Administrator' : email}</span>
       </div>
+      {variant === 'forteca' ? <ChevronDown className="user-card-chevron" aria-hidden="true" /> : null}
     </div>
   );
 }
@@ -665,7 +687,7 @@ export default function Layout({ children }: LayoutProps) {
                           sidebarLabel={access?.sidebarLabel}
             />
           ) : null}
-          <UserCard userInitial={userInitial} name={userName} email={userEmail} />
+          <UserCard userInitial={userInitial} name={userName} email={userEmail} variant={isFortecaCasesRoute ? 'forteca' : 'default'} />
           <button type="button" className="sidebar-logout" onClick={() => void handleSignOut()}>
             <LogOut className="h-4 w-4" />
             <span>Wyloguj się</span>
@@ -701,7 +723,7 @@ export default function Layout({ children }: LayoutProps) {
             </div>
 
             <div className="mobile-user-wrap">
-              <UserCard userInitial={userInitial} name={userName} email={userEmail} />
+              <UserCard userInitial={userInitial} name={userName} email={userEmail} variant={isFortecaCasesRoute ? 'forteca' : 'default'} />
             </div>
 
             <nav className="mobile-drawer-nav" aria-label="Menu mobilne CloseFlow">
