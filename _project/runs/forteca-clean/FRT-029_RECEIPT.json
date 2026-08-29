@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-029",
+  "reference_file": "docs/ui/reference/forteca-calm-light/029_client_add_modal.webp",
+  "reference_sha256": "0e7166de7f41ed86cc8916fa37172f7be9af66460efec25d34a106846c80f061",
+  "target_route": "/clients",
+  "target_state": "Add Client modal",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_AFTER_PARENT_REVIEW",
+  "acceptance_basis": {
+    "directive_interpretation": "The approved Forteca branch is the sole implementation route. The parent independently compared the exact reference with the live /clients DOM and screenshot, checked source-of-truth ownership, focused tests, typecheck, build, Guardian output, non-mutating interactions and remote commit state before acceptance.",
+    "root_cause": "The existing /clients inline dialog was a separate legacy owner with different copy, fields, behavior and dark global field variables; the real client mutation also lacked address/owner persistence in the data contract.",
+    "repair": "FRT-029 establishes one controlled ClientCreateDialog owner for /clients and global quick-add, adds the reference-shaped fields and validation, preserves duplicate confirmation and real optional case follow-up, scopes the calm-light adapter to canonical VST tokens, and persists address/owner through the workspace-scoped API and additive migration.",
+    "review_status": "Parent review completed against the static reference, source diff, real runtime DOM, interaction outcomes, semantic token usage, measured geometry, typecheck, production build, focused tests, Guardian output and live browser screenshot. The bounded browser review subagent timed out and no independent final PASS is claimed.",
+    "guardian_interpretation": "Guardian smoke is AUDIT_ONLY/PARTIAL with zero writes and zero returned blockers. The CSS owner scan retains pre-existing broad baseline findings, so a full target-wide Guardian PASS is not claimed.",
+    "browser_boundary": "The real local /clients route was exercised at the reference viewport. Add/open, source and owner controls, create-case toggle, cancel and reset were exercised; no create or case mutation was submitted.",
+    "authentication_boundary": "FRT-029 did not require authenticated populated runtime proof: the visual state and the non-mutating behavior are independently verifiable in the local runtime. Authentication remains reserved for a reference state that cannot be independently accepted."
+  },
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Reference fixture names, dates, owners and client records are never inserted into the live create flow or API payload.",
+      "Form values are controlled state and are sent through the existing workspace-scoped client mutation.",
+      "Duplicate preflight, restore/show conflict actions, access gate, list refresh and optional starter-case navigation remain on their existing real owners.",
+      "Reference drift does not create local palette copies. The stage adapter resolves through canonical --cf-vst-* tokens.",
+      "No fake success, silent schema drop for meaningful address/owner data, unapproved browser mutation, automatic merge or production merge was introduced."
+    ]
+  },
+  "color_source_of_truth": {
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "action_owner": "src/styles/owners/closeflow-actions.css",
+    "dialog_owner": "src/styles/owners/closeflow-dialogs.css",
+    "icon_owner": "src/ui-system/icons/SemanticIcon.tsx and src/components/ui-system/ActionIcon.tsx",
+    "stage_adapter": "src/styles/forteca-client-add.css",
+    "semantic_tone_adapters": {
+      "primary": "--cf-vst-color-primary",
+      "delete": "--cf-vst-color-delete",
+      "surface": "--cf-vst-surface-card-solid",
+      "border": "--cf-vst-input-border"
+    },
+    "stage_literal_color_values": 0,
+    "policy": "Each semantic concern has one VST token owner across every window and repeated component instance. Reference drift does not create per-window color exceptions."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "api/clients.ts",
+    "scripts/check-stage226r10d2-duplicate-conflict-confirmation-gate-patcher-fix.cjs",
+    "src/components/ClientCreateDialog.tsx",
+    "src/lib/data-contract.ts",
+    "src/lib/supabase-fallback.ts",
+    "src/pages/Clients.tsx",
+    "src/styles/forteca-client-add.css",
+    "supabase/migrations/20260829100000_frt029_client_address_owner.sql",
+    "tests/forteca-frt-029-client-add.test.cjs",
+    "tests/stage226r10d2-duplicate-conflict-confirmation-gate-patcher-fix.test.cjs"
+  ],
+  "visual_sot_owners_used": ["MODALS", "FORMS", "BUTTONS_ACTIONS", "ICONS", "SURFACES"],
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "node --test tests/forteca-frt-029-client-add.test.cjs (9/9 PASS)",
+    "node --test tests/stage226r10d2-duplicate-conflict-confirmation-gate-patcher-fix.test.cjs (4/4 PASS)",
+    "node scripts/check-stage226r10d2-duplicate-conflict-confirmation-gate-patcher-fix.cjs (PASS)",
+    "npx.cmd tsc --noEmit (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS)",
+    "git diff --cached --check (PASS)",
+    "node scripts/check-closeflow-ui-ssot.cjs colors (PASS; raw stage color literals 0)",
+    "node scripts/check-closeflow-ui-ssot.cjs css-owners (FAIL_ON_PRE_EXISTING_BASELINE_FINDINGS)",
+    "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke (PARTIAL; zero writes, zero blockers)",
+    "Live Codex In-app Browser proof at 1672x941 reference capture size of real /clients (PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW)",
+    "Parent comparison of docs/ui/reference/forteca-calm-light/029_client_add_modal.webp against live runtime screenshot, DOM and measured geometry (STRUCTURAL_PARITY_PASS)"
+  ],
+  "tests_reused": [
+    "FRT-000 routing, reference manifest, Guardian boundary and Visual SOT owner registry",
+    "FRT-010 to FRT-019 client/lead relation, workspace scope, action and semantic icon evidence",
+    "FRT-020 Forteca shell, guarded action and browser harness baseline",
+    "FRT-021 to FRT-028 real Clients/Client Detail relation, action, state and browser evidence baseline"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "authenticated populated runtime proof",
+      "reason": "NOT_REQUIRED_FOR_FRT-029: the reference-shaped modal, live DOM geometry and non-mutating behavior are independently accepted in the local runtime; authentication is requested only when the current reference cannot be independently accepted."
+    },
+    {
+      "test": "client create, duplicate override and optional starter-case submission",
+      "reason": "NOT_EXECUTED_BY_DESIGN: submitting would mutate workspace state; source tests cover the real mutation wiring and browser proof opens, toggles, cancels and resets the real form without saving."
+    },
+    {
+      "test": "target-wide Guardian scan",
+      "reason": "NOT_AVAILABLE: installed Guardian exposes only partial repository-baseline smoke coverage; pass_claim=false."
+    },
+    {
+      "test": "independent final reviewer PASS",
+      "reason": "PROCESS_BOUNDARY: bounded browser review timed out; parent review is recorded without claiming an independent PASS."
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS_WITH_KNOWN_WARNINGS",
+  "build_warnings": [
+    "Existing dynamic/static import overlap for src/lib/supabase-fallback.ts",
+    "Existing chunks larger than 500 kB after minification"
+  ],
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-029_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "EXECUTED: PARTIAL / coverage PARTIAL / fileWrites 0 / blockers 0"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-029_BROWSER_PROOF.json",
+    "screenshot_path": null,
+    "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "http://localhost:3000/clients?frt029=browser-proof",
+    "root_count": 1,
+    "create_case_toggle": "PASS; off -> conditional field visible -> off",
+    "cancel_reset": "PASS; temporary non-submitted value cleared on reopen",
+    "post_interaction_state": "PASS; no mutation submitted",
+    "console_errors": "NOT_CAPTURED_AS_NUMERIC_COUNTER; no visible runtime error was observed in the final DOM pass",
+    "screenshot_displayed_in_codex_browser": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The live runtime preserves existing local preview rows behind the modal and does not inject reference records.",
+      "Mutating submit and authenticated backend proof were not invoked because they are outside the non-mutating local proof boundary."
+    ]
+  },
+  "implementation_commit_sha": "4e7271e7",
+  "remote_head_verified": "4e7271e7",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "efficiency_planning": "APPLIED",
+    "marketplace_binding": "BOUND",
+    "primary_capabilities": ["frontend-design-studio", "ai-code-guardian", "agent-efficiency-guardian"],
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_skip_reason": "Marketplace discovery exposed no available preferred provider. No OpenCode/Freebuff provider was callable in this host context.",
+    "subagents": [
+      { "id": "01a04b9f-2fc1-76c2-ba2b-a15f628a8162", "role": "bounded visual/runtime review", "status": "COMPLETED_WITH_RUNTIME_PROOF_NOT_CHECKED_AFTER_BROWSER_TIMEOUT" },
+      { "id": "01a04b9f-37f9-7271-8bd5-6feff68915c5", "role": "bounded stage contract/test review", "status": "COMPLETED_ARTIFACT_REVIEWED_BY_PARENT" },
+      { "id": "01a04ba4-cf16-79c3-91ea-f1c44af79954", "role": "bounded API/data contract review", "status": "COMPLETED_ARTIFACT_REVIEWED_BY_PARENT" }
+    ],
+    "write_owner": "Codex parent reviewed all returned artifacts and wrote the final stage evidence/state."
+  },
+  "created_at": "2026-08-29T04:49:32.1119319Z"
+}

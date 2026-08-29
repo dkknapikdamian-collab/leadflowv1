@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-029",
+  "mode": "AUDIT_ONLY",
+  "command": "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+  "raw_outcome": "PARTIAL",
+  "coverageOutcome": "PARTIAL",
+  "pass_claim": false,
+  "fileWrites": 0,
+  "selectedCapabilities": ["repository-baseline"],
+  "selectedSkills": ["ai-code-guardian", "architecture-integrity"],
+  "receiptIds": ["guardian-plugin-smoke-coverage", "guardian-plugin-smoke-result"],
+  "blockers": 0,
+  "target_wide_scan": "NOT_AVAILABLE",
+  "repository": {
+    "branch": "codex/forteca-ui-001-040-clean",
+    "implementation_commit": "4e7271e7"
+  },
+  "stage_validation": {
+    "focused_tests": "9/9 PASS",
+    "legacy_conflict_guard_test": "4/4 PASS",
+    "stage_conflict_guard": "PASS",
+    "typescript": "PASS",
+    "production_build": "PASS_WITH_KNOWN_WARNINGS",
+    "diff_check": "PASS",
+    "semantic_color_scan": "PASS; raw stage color literals 0",
+    "css_owners_scan": "FAIL_ON_PRE_EXISTING_BASELINE_FINDINGS; new FRT-029 metadata is present",
+    "browser_runtime": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+    "browser_console_errors": "NOT_CAPTURED_AS_NUMERIC_COUNTER; no visible runtime error observed",
+    "independent_review": "PARENT_REVIEW_COMPLETE; Feynman bounded browser review returned NOT_CHECKED after timeout, so no independent final PASS is claimed"
+  },
+  "known_baseline_findings": [
+    "The installed Guardian entrypoint exposes partial repository-baseline smoke coverage and no target-wide scan.",
+    "The CSS owner scan still reports the pre-existing SCOPED_GLOBAL_AUTHORITY concern for src/styles/closeflow-record-list-source-truth.css.",
+    "The CSS owner scan still reports missing metadata for pre-existing Forteca client styles: closed-cases, detail, no-active-case, all, archived, commission and needs-contact/without-case adapters.",
+    "The CSS owner scan reports UNCLASSIFIED_IMPORTANT=145 and SPECIFICITY_PATCH_IMPORTANT=1399 across the existing style surface; resolving that broad baseline is outside FRT-029's allowed write set.",
+    "The production build reports the existing supabase-fallback dynamic/static import overlap and existing chunks larger than 500 kB after minification."
+  ],
+  "interpretation": "Guardian smoke completed in AUDIT_ONLY mode with zero writes and zero returned blockers. Coverage remains PARTIAL, therefore no full target-wide Guardian PASS is claimed.",
+  "color_policy": {
+    "status": "PASS",
+    "semantic_primary_base": "--cf-vst-color-primary",
+    "semantic_delete_base": "--cf-vst-color-delete",
+    "semantic_surface_base": "--cf-vst-surface-card-solid",
+    "stage_literal_color_values": 0,
+    "stage_adapter": "src/styles/forteca-client-add.css",
+    "rule": "Reference-image discrepancies do not create per-window color exceptions. Repeated semantic controls resolve through the shared VST family, and delete/trash controls remain on the canonical delete family."
+  },
+  "root_cause_repair": {
+    "status": "PASS",
+    "finding": "Legacy global dialog field skin overrode the calm-light client-add fields.",
+    "repair": "A dialog-root variable bridge and stage-scoped geometry/field/footer adapter resolve all values through the registered Visual SOT without raw color literals."
+  },
+  "created_at": "2026-08-29T04:49:32.1119319Z"
+}

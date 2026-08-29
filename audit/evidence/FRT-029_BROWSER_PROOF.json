@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-029",
+  "reference_file": "docs/ui/reference/forteca-calm-light/029_client_add_modal.webp",
+  "reference_sha256": "0e7166de7f41ed86cc8916fa37172f7be9af66460efec25d34a106846c80f061",
+  "entry_url": "http://localhost:3000/clients?frt029=browser-proof",
+  "runtime_url": "http://localhost:3000/clients?frt029=browser-proof",
+  "route": "/clients",
+  "state": "Forteca calm-light — Add Client modal",
+  "live_runtime": true,
+  "auth_required": false,
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "record_origin": "The modal is mounted by the live Clients route and submits through the existing workspace-scoped client API/mutation owner. Background rows are the existing local preview runtime records; no reference screenshot fixture was copied into the route or payload.",
+    "visible_runtime_records": "Existing workspace-scoped local preview client rows remained behind the scrim; the modal itself contains empty controlled inputs and source-derived owner/source options.",
+    "production_path": "ClientCreateDialog preserves the real duplicate preflight, workspace access gate, client mutation, optional starter-case mutation and Clients list refresh/navigation owners."
+  },
+  "visible_structure": {
+    "requested_reference_viewport": {
+      "width": 1672,
+      "height": 941
+    },
+    "observed_browser_viewport": {
+      "width": 1672,
+      "height": 942,
+      "scroll_width": 1672,
+      "scroll_height": 942
+    },
+    "root_marker": "data-forteca-frt-029-root=\"true\"",
+    "root_count": 1,
+    "runtime_marker": "data-forteca-frt-029-runtime=\"true\"",
+    "reference_fixture_leak": false,
+    "known_fixture_scan": "ACME Logistics/ACME/John Doe/Jane Doe absent from live DOM",
+    "geometry": {
+      "modal": { "x": 572, "y": 81.8, "width": 528, "height": 778 },
+      "title": { "x": 602.8, "y": 112.6, "width": 466.4, "height": 21.24 },
+      "name_input": { "x": 602.8, "y": 184.84, "width": 466.4, "height": 40 },
+      "phone_input": { "x": 602.8, "y": 268.84, "width": 466.4, "height": 40 },
+      "email_input": { "x": 602.8, "y": 352.84, "width": 466.4, "height": 40 },
+      "address_input": { "x": 602.8, "y": 436.84, "width": 466.4, "height": 40 },
+      "source_select": { "x": 602.8, "y": 520.84, "width": 225.2, "height": 40 },
+      "owner_select": { "x": 844, "y": 520.84, "width": 225.2, "height": 40 },
+      "notes_textarea": { "x": 602.8, "y": 600.84, "width": 466.4, "height": 85 },
+      "footer": { "x": 572.8, "y": 762.99, "width": 526.4, "height": 54.8 },
+      "cancel_button": { "x": 602.8, "y": 779.79, "width": 78, "height": 38 },
+      "submit_button": { "x": 949.2, "y": 779.79, "width": 120, "height": 38 }
+    },
+    "computed_visuals": {
+      "overlay_background": "rgba(15,23,42,0.34)",
+      "modal_background": "rgb(255,255,255)",
+      "field_background": "rgb(255,255,255)",
+      "field_border": "rgb(226,232,240)",
+      "field_text": "rgb(51,65,85)",
+      "title_text": "rgb(15,23,42)",
+      "submit_background": "rgb(37,99,235)",
+      "submit_text": "rgb(255,255,255)"
+    },
+    "body_overflow": false,
+    "source_options": ["Wybierz źródło", "Kartoteka klienta", "Lead", "Sprawa", "Ręcznie", "Import", "Nieznane"],
+    "owner_options": ["Wybierz opiekuna", "Dev Local"]
+  },
+  "interaction_proof": {
+    "open": {
+      "status": "PASS",
+      "observed": "The real Dodaj klienta control opened exactly one controlled FRT-029 dialog on the live /clients route."
+    },
+    "create_case_toggle": {
+      "status": "PASS",
+      "observed": "The toggle started unchecked, displayed the conditional Nazwa sprawy field when enabled, and hid it again when disabled."
+    },
+    "cancel_reset": {
+      "status": "PASS",
+      "observed": "A temporary non-submitted value was entered, Anuluj closed the dialog, and reopening returned empty name/phone fields with the toggle unchecked; no mutation was submitted."
+    },
+    "source_and_owner_controls": {
+      "status": "PRESENT_AND_BOUND",
+      "observed": "Source and owner selects expose the controlled options from CLIENT_SOURCE_OPTIONS and the workspace/profile context; owner is required before the real create path."
+    },
+    "post_interaction_state": {
+      "status": "PASS",
+      "observed": "The modal closed cleanly after proof, the route remained /clients, one root was mounted when open, and no unapproved workspace mutation was invoked."
+    }
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "controlled_form_values_are_source_derived": true,
+    "workspace_scope_preserved": true,
+    "duplicate_preflight_preserved": true,
+    "real_client_mutation_preserved": true,
+    "real_optional_case_follow_up_preserved": true,
+    "list_refresh_callback_preserved": true,
+    "semantic_color_source_of_truth_preserved": true,
+    "stage_raw_color_literals": 0,
+    "no_fake_success": true,
+    "no_unapproved_live_mutation": true,
+    "no_horizontal_overflow": true
+  },
+  "console_errors": "NOT_CAPTURED_AS_NUMERIC_COUNTER; no visible runtime error was observed in the final DOM pass",
+  "console_warnings": "NOT_CAPTURED_AS_NUMERIC_COUNTER",
+  "screenshot_displayed_in_codex_browser": true,
+  "screenshot_path": null,
+  "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The live local runtime keeps its existing workspace preview rows behind the scrim; no static reference record was injected.",
+      "The browser viewport capture height is one pixel taller than the 941px reference image.",
+      "Client creation and optional case creation were not submitted because the browser proof is intentionally non-mutating; the real submit path is covered by source tests and remains wired."
+    ]
+  },
+  "root_cause_repair": {
+    "status": "PASS",
+    "finding": "Legacy global dialog field selectors applied dark modal variables with higher specificity to the new client-add dialog, producing dark fields despite the calm-light reference.",
+    "repair": "The FRT-029 root now bridges legacy modal variables to canonical --cf-vst-* tokens and scopes the reference geometry, scrim, field skin and footer layout to the client-add consumer."
+  },
+  "implementation_commit": "4e7271e7",
+  "remote_head_verified": "4e7271e7",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "created_at": "2026-08-29T04:49:32.1119319Z"
+}
