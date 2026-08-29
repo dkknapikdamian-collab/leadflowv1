@@ -112,7 +112,7 @@ function DraftField({
   label: string;
   required?: boolean;
   icon: ReactNode;
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }) {
   return (
@@ -175,7 +175,7 @@ function PreviewBlock({
   tone: 'case' | 'primary' | 'template' | 'client' | 'task' | 'event';
   title: string;
   description: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   const iconNode = icon === 'link'
     ? <SemanticIcon role="link" tone="task" size="sm" />
