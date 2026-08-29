@@ -15,7 +15,7 @@
   "target_wide_scan": "NOT_AVAILABLE",
   "repository": {
     "branch": "codex/forteca-ui-001-040-clean",
-    "implementation_commit": "129c0b77f8f4a1ce48fac9a57dc4127ca4b6ba48"
+    "implementation_commit": "b856970326eb0823994be3f4a3e9e0409e79d3ca"
   },
   "stage_validation": {
     "focused_tests": "5/5 PASS",
@@ -27,7 +27,8 @@
     "diff_check": "PASS",
     "semantic_color_scan": "PASS; FRT-030 CSS has zero raw color literals",
     "css_owners_scan": "FAIL_ON_PRE_EXISTING_BASELINE_FINDINGS; new FRT-030 metadata is present",
-    "browser_runtime": "BLOCKED_BROWSER_TOOL; read-only DOM loaded but input dispatch and screenshot timed out",
+    "browser_runtime": "PARTIAL_BROWSER_TOOL; Today responsive screenshot/DOM proof PASS, FRT-030 modal open/cancel/screenshot PASS, controlled input value/fill readback remains inconsistent",
+    "today_responsive_layout": "PASS_TARGETED_REPAIR; live 1280x720 DOM measurement and screenshot show normal multi-line wrapping with document scrollWidth equal to clientWidth",
     "independent_review": "NOT_AVAILABLE; bounded static reviewer timed out and was shut down; no independent PASS claim"
   },
   "known_baseline_findings": [

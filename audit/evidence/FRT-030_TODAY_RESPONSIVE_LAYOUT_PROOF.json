@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_TODAY_RESPONSIVE_LAYOUT_PROOF",
+  "stage_id": "FRT-030",
+  "status": "PASS_TARGETED_REPAIR",
+  "implementation_commit": "b856970326eb0823994be3f4a3e9e0409e79d3ca",
+  "remote_head_verified": "b856970326eb0823994be3f4a3e9e0409e79d3ca",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "runtime_url": "http://localhost:3000/?frt030=today-responsive-proof-1",
+  "route": "/",
+  "state": "Today populated tasks, events and priority rail",
+  "live_runtime": true,
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "devicePixelRatio": 1.25
+  },
+  "root_cause": "The shared work-item card grid reserved an auto-sized action track, which collapsed the content track to zero width at the observed card size; legacy inline title behavior then wrapped text one character per line.",
+  "repair": "The shared card now uses a minmax(0, 1fr) content track, puts actions in a separate wrapping row, and uses normal word wrapping. The priority rail uses semantic composition classes backed by the shared VST typography and color tokens.",
+  "observations": {
+    "work_item_cards": [
+      {
+        "kind": "task",
+        "title": "Sprawdzić komplet dokumentów od klienta",
+        "cardWidth": 257.2,
+        "mainWidth": 181.6,
+        "titleWidth": 181.6,
+        "titleHeight": 37.8,
+        "titleLines": 2,
+        "overflowWrap": "break-word",
+        "wordBreak": "normal"
+      },
+      {
+        "kind": "event",
+        "title": "Call kickoff - Nova Home Studio",
+        "cardWidth": 257.2,
+        "mainWidth": 181.6,
+        "titleWidth": 181.6,
+        "titleHeight": 37.8,
+        "titleLines": 2,
+        "overflowWrap": "break-word",
+        "wordBreak": "normal"
+      },
+      {
+        "kind": "task",
+        "title": "Follow-up po ofercie (wiadomość + telefon)",
+        "cardWidth": 199.6,
+        "mainWidth": 132,
+        "titleWidth": 132,
+        "titleHeight": 75.6,
+        "titleLines": 4,
+        "overflowWrap": "break-word",
+        "wordBreak": "normal"
+      }
+    ],
+    "priority_rail": {
+      "width": 320,
+      "height": 462.1,
+      "actionWidth": 222.4,
+      "actionHeight": 34.8,
+      "whiteSpace": "normal",
+      "overflowWrap": "break-word",
+      "wordBreak": "normal"
+    }
+  },
+  "overflow": {
+    "documentClientWidth": 1280,
+    "documentScrollWidth": 1280,
+    "status": "PASS"
+  },
+  "static_guard": {
+    "command": "npm.cmd run test:forteca-frt-030-today-responsive-text-layout",
+    "result": "2/2 PASS"
+  },
+  "screenshot": "PASS; approved in-app browser screenshot emitted from the live runtime; no fixture or injected screenshot was used",
+  "browser_boundary": "This targeted repair proof is non-mutating. It used the approved in-app browser for runtime DOM measurement and screenshot capture; no raw CDP, standalone browser or DOM mutation was used.",
+  "created_at": "2026-08-29T07:45:19.480Z"
+}

@@ -4,18 +4,18 @@
   "stage_id": "FRT-030",
   "reference_file": "docs/ui/reference/forteca-calm-light/030_client_edit_modal.webp",
   "reference_sha256": "a7a16807a15a11e3cd29244bb75513f8f41b2c5d23fd65f304ac7d50ef7eefb7",
-  "entry_url": "http://localhost:3000/clients/dev-client-1?frt030=browser-proof-3",
-  "runtime_url": "http://localhost:3000/clients/dev-client-1?frt030=browser-proof-3",
+  "entry_url": "http://localhost:3000/clients/dev-client-1?frt030=browser-proof-5",
+  "runtime_url": "http://localhost:3000/clients/dev-client-1?frt030=browser-proof-5",
   "route": "/clients/:clientId",
   "state": "Edit Client modal",
   "live_runtime": true,
   "auth_required": false,
   "status": "BLOCKED_BROWSER_TOOL",
-  "implementation_commit": "129c0b77f8f4a1ce48fac9a57dc4127ca4b6ba48",
-  "remote_head_verified": "129c0b77f8f4a1ce48fac9a57dc4127ca4b6ba48",
+  "implementation_commit": "b856970326eb0823994be3f4a3e9e0409e79d3ca",
+  "remote_head_verified": "b856970326eb0823994be3f4a3e9e0409e79d3ca",
   "branch": "codex/forteca-ui-001-040-clean",
   "read_only_runtime_observation": {
-    "viewport": {"width": 1672, "height": 942},
+    "viewport": {"width": 1280, "height": 720, "devicePixelRatio": 1.25},
     "real_record_visible": {
       "id": "dev-client-1",
       "name": "Anna Kowalska",
@@ -35,13 +35,19 @@
     {"action": "dom_cua.click(node_id=18)", "status": "BLOCKED", "error": "CDP operation exceeded its deadline before command dispatch"},
     {"action": "cua click at measured Edytuj coordinates", "status": "BLOCKED", "error": "CDP operation exceeded its deadline before command dispatch"},
     {"action": "Reload tab and retry click", "status": "BLOCKED", "error": "Same Runtime.evaluate/CDP deadline failure"},
-    {"action": "Capture screenshot", "status": "BLOCKED", "error": "Unable to capture screenshot"}
+    {"action": "Capture screenshot", "status": "BLOCKED", "error": "Unable to capture screenshot"},
+    {"action": "Navigate to browser-proof-5 and read live client runtime", "status": "PASS", "result": "Real Anna Kowalska detail loaded; Edytuj control was visible and enabled."},
+    {"action": "Open Edytuj through approved in-app browser", "status": "PASS", "result": "Client edit dialog became visible with populated values rendered in the live UI."},
+    {"action": "Capture screenshot from the live edit dialog", "status": "PASS", "result": "Screenshot visibly showed the populated name, phone, email, source and notes fields."},
+    {"action": "Observe React client/form state using a temporary diagnostic removed before closeout", "status": "PASS", "result": "Live client and form state contained phone +48 600 111 222 and email anna@novahome.pl; no diagnostic attribute remains in the product source or DOM."},
+    {"action": "playwright.fill and controlled input value readback for phone/email", "status": "INCONCLUSIVE", "error": "fill reported success, but the approved browser value readback returned empty values despite the rendered screenshot and temporary React-state observation showing populated values; authoritative control-level proof remains unavailable."},
+    {"action": "Cancel edit dialog without mutation", "status": "PASS", "result": "The cancel control closed the dialog; dialogCount=0 and visibleDialogCount=0."}
   ],
   "interaction_proof": {
-    "open": "NOT_PROVEN",
-    "populate": "NOT_PROVEN",
-    "save_update": "NOT_PROVEN; no mutation submitted",
-    "cancel_close": "NOT_PROVEN",
+    "open": "PASS",
+    "populate": "INCONCLUSIVE_BROWSER_CONTROL_READBACK; populated values visible in live screenshot and React state, but controlled input API readback is inconsistent",
+    "save_update": "NOT_EXECUTED; no mutation submitted",
+    "cancel_close": "PASS",
     "delete": "NOT_EXECUTED; destructive action intentionally not attempted"
   },
   "safety_proof": {
@@ -51,7 +57,7 @@
     "no_screenshot_fixture_injected": true,
     "semantic_color_source_of_truth_preserved": true
   },
-  "browser_boundary": "The approved in-app browser API was used for navigation and read-only DOM/log inspection. All documented input and screenshot attempts failed before dispatch/capture. No raw CDP, standalone Playwright or alternate browser was used to bypass the failure.",
-  "next_action": "Retry the same approved in-app browser proof after the renderer/CDP dispatch recovers; then exercise Edytuj -> populated fields -> non-mutating cancel/reopen and record screenshot before FRT-030 acceptance.",
+  "browser_boundary": "The approved in-app browser API was used for navigation, live DOM inspection, modal open/cancel and screenshot capture. The browser's controlled-input fill/value readback is internally inconsistent, so populated-field proof remains incomplete. No raw CDP, standalone Playwright or alternate browser was used to bypass the boundary, and no product mutation was submitted.",
+  "next_action": "Retry the same approved in-app browser proof after controlled-input readback recovers; verify populated FRT-030 edit controls authoritatively and record the final screenshot before FRT-030 acceptance.",
   "created_at": "2026-08-29T05:51:16.4912099Z"
 }

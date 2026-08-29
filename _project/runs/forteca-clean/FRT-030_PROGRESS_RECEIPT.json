@@ -9,8 +9,8 @@
   "result": "IN_PROGRESS",
   "stage_status": "IMPLEMENTATION_COMMITTED_BROWSER_PROOF_PENDING",
   "acceptance_authority": "NOT_ACCEPTED",
-  "implementation_commit_sha": "129c0b77f8f4a1ce48fac9a57dc4127ca4b6ba48",
-  "remote_head_verified": "129c0b77f8f4a1ce48fac9a57dc4127ca4b6ba48",
+  "implementation_commit_sha": "b856970326eb0823994be3f4a3e9e0409e79d3ca",
+  "remote_head_verified": "b856970326eb0823994be3f4a3e9e0409e79d3ca",
   "branch": "codex/forteca-ui-001-040-clean",
   "evidence": {
     "guardian": "audit/evidence/FRT-030_GUARDIAN_AUDIT_SUMMARY.json",
@@ -24,11 +24,12 @@
     "production_build": "PASS_WITH_KNOWN_WARNINGS",
     "semantic_color_scan": "PASS",
     "guardian": "AUDIT_ONLY/PARTIAL; zero writes; zero returned blockers",
-    "browser": "BLOCKED_BROWSER_TOOL; no PASS claim",
+    "browser": "PARTIAL_BROWSER_TOOL; Today targeted responsive proof PASS, FRT-030 modal open/cancel/screenshot PASS, controlled input readback remains inconsistent; no stage PASS claim",
+    "today_responsive_layout": "PASS_TARGETED_REPAIR; 1280x720 live DOM and screenshot, no horizontal overflow, 2/2 targeted guard",
     "independent_review": "NOT_AVAILABLE; reviewer timeout; no PASS claim"
   },
   "real_data_preserved": true,
   "zero_plaster_policy": "Applied: reference values are not runtime fixtures; update/delete remain workspace-scoped real mutations; repeated colors resolve through canonical VST tokens.",
-  "next_action": "Retry approved in-app browser interaction/capture after CDP renderer recovery; do not activate FRT-031 or accept FRT-030 before actual populated edit, cancel/close and screenshot proof.",
+  "next_action": "Retry approved in-app browser controlled-input proof after renderer/API recovery; do not activate FRT-031 or accept FRT-030 before authoritative populated edit, cancel/close and screenshot proof.",
   "created_at": "2026-08-29T05:51:16.4912099Z"
 }
