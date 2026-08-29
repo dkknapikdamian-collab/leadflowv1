@@ -36,6 +36,7 @@ export type OwnerControlItem = {
   sourceBadge?: 'Lead' | 'Sprawa' | 'Klient';
   isMissingItem?: boolean;
   isBlockingMissingItem?: boolean;
+  blockedSince?: string | null;
   gapCloseKind?: 'note_without_followup';
 };
 

@@ -27,7 +27,7 @@ test('blocked view uses the canonical blocked predicate and real blocker source'
   assert.match(source, /function isBlockedCase\(record/);
   assert.match(source, /normalizeCaseStatus\(record\.status\)/);
   assert.match(source, /status === ['"]blocked['"]/);
-  assert.match(source, /status !== ['"]waiting_on_client['"]/);
+  assert.match(source, /if \(status === ['"]waiting_on_client['"]\) return false/);
   assert.match(source, /buildMissingOwnerControlItems\(\{ tasks: caseTasks \}\)/);
   assert.match(source, /caseBlockerItemsByCaseId/);
   assert.match(source, /caseView === ['"]blocked['"] && isBlockedCase\(record/);
@@ -47,7 +47,7 @@ test('blocked view exposes real filters, columns, navigation and safe actions', 
     'Opiekun',
     'Najdłużej zablokowane',
     'Eksportuj',
-    'Wyślij przypomnienie',
+    'Otwórz wiadomość',
     'Otwórz sprawę',
   ]) {
     assert.match(source, new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `missing ${label}`);
@@ -61,6 +61,33 @@ test('blocked view exposes real filters, columns, navigation and safe actions', 
   assert.match(source, /tel:\$\{clientPhone\.replace/);
   assert.match(source, /id: id \|\| undefined/);
   assert.doesNotMatch(source, /href=["']#["']/);
+  assert.match(source, /getBlockedSince\(record, blockerItems\)/);
+  assert.match(source, /if \(leftBlockedDate && !rightBlockedDate\) return -1/);
+  assert.match(source, /if \(!leftBlockedDate && rightBlockedDate\) return 1/);
+  assert.match(source, /Promise\.allSettled\(/);
+  assert.match(source, /caseTaskFeedError/);
+  assert.match(source, /data-cf-cases-task-feed-state="error"/);
+});
+
+test('blocked and waiting views stay disjoint and task-feed failures stay visible', () => {
+  assert.match(source, /if \(status === ['"]waiting_on_client['"]\) return false/);
+  assert.match(source, /setCaseTaskFeedError\(taskResult\.status === ['"]rejected['"]/);
+  assert.match(source, /Odśwież źródło/);
+  assert.doesNotMatch(source, /getBlockedSince\(record\)\s*\|\|\s*toUpdatedDate\(record\.createdAt/);
+  assert.doesNotMatch(source, /\['blockedSince',\s*['"]blocked_since['"],\s*['"]statusChangedAt['"],\s*['"]status_changed_at['"],\s*['"]updatedAt['"],\s*['"]createdAt['"]\]/);
+});
+
+test('canonical blocker projection recognizes safe missing-item variants and truthful blocker dates', () => {
+  const blockerSource = read('src/lib/owner-control/owner-control-missing-blockers.ts');
+  const baselineSource = read('src/lib/owner-control/owner-control-baseline.ts');
+  assert.match(blockerSource, /missing_kind/);
+  assert.match(blockerSource, /blocks_progress/);
+  assert.match(blockerSource, /priority/);
+  assert.match(blockerSource, /payload|metadata|data/);
+  assert.match(blockerSource, /blockedSince/);
+  assert.match(baselineSource, /blockedSince\?: string \| null/);
+  assert.match(blockerSource, /status === ['"]blocking_missing_item['"]/);
+  assert.doesNotMatch(blockerSource, /readString\(source\.record, \[['"]createdAt['"],\s*['"]created_at['"],\s*['"]updatedAt['"],\s*['"]updated_at['"]\]\)/);
 });
 
 test('blocked view CSS is route-scoped, responsive and token-only', () => {

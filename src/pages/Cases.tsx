@@ -238,10 +238,11 @@ function isWaitingForClientCase(record: Pick<CaseRecord, 'status'>) {
 
 function isBlockedCase(record: Pick<CaseRecord, 'status'>, lifecycle?: { bucket?: string }, hasActiveBlocker = false) {
   const status = normalizeCaseStatus(record.status);
+  if (status === 'waiting_on_client') return false;
   return status === 'blocked'
     || status === 'on_hold'
     || hasActiveBlocker
-    || (lifecycle?.bucket === 'blocked' && status !== 'waiting_on_client');
+    || lifecycle?.bucket === 'blocked';
 }
 
 function readCaseField(record: CaseRecord, keys: string[]) {
@@ -272,15 +273,19 @@ function getWaitingSince(record: CaseRecord) {
   ]);
 }
 
-function getBlockedSince(record: CaseRecord) {
-  return readCaseDate(record, [
-    'blockedSince',
-    'blocked_since',
-    'statusChangedAt',
-    'status_changed_at',
-    'updatedAt',
-    'createdAt',
-  ]);
+function getBlockedSince(record: CaseRecord, blockerItems: Array<{ blockedSince?: string | null }> = []) {
+  const status = normalizeCaseStatus(record.status);
+  const statusTransitionDate = status === 'blocked' || status === 'on_hold'
+    ? readCaseDate(record, ['statusChangedAt', 'status_changed_at'])
+    : null;
+  const caseDate = readCaseDate(record, ['blockedSince', 'blocked_since', 'blockedAt', 'blocked_at']) || statusTransitionDate;
+  if (caseDate) return caseDate;
+
+  const blockerDates = blockerItems
+    .map((item) => toUpdatedDate(item.blockedSince))
+    .filter((date): date is Date => Boolean(date))
+    .sort((left, right) => left.getTime() - right.getTime());
+  return blockerDates[0] || null;
 }
 
 function getBlockedReason(record: CaseRecord, lifecycle: ReturnType<typeof resolveCaseLifecycleV1>, blockerItems: Array<{ title?: string; reason?: string }> = []) {
@@ -469,6 +474,7 @@ export default function Cases() {
   const [clientCandidates, setClientCandidates] = useState<any[]>([]);
   const [caseTasks, setCaseTasks] = useState<any[]>([]);
   const [caseEvents, setCaseEvents] = useState<any[]>([]);
+  const [caseTaskFeedError, setCaseTaskFeedError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [caseView, setCaseView] = useState<CaseView>('all');
@@ -499,18 +505,21 @@ export default function Cases() {
   });
 
   const refreshCases = async () => {
-    const [caseRows, leadRows, clientRows, taskRows, eventRows] = await Promise.all([
+    const results = await Promise.allSettled([
       fetchCasesFromSupabase(),
       fetchLeadsFromSupabase().catch(() => []),
       fetchClientsFromSupabase().catch(() => []),
-      fetchTasksFromSupabase().catch(() => []),
+      fetchTasksFromSupabase(),
       fetchEventsFromSupabase().catch(() => []),
     ]);
-    setCases(caseRows as CaseRecord[]);
-    setLeadCandidates(leadRows as any[]);
-    setClientCandidates(clientRows as any[]);
-    setCaseTasks(taskRows as any[]);
-    setCaseEvents(eventRows as any[]);
+    const [caseResult, leadResult, clientResult, taskResult, eventResult] = results;
+    if (caseResult.status === 'rejected') throw caseResult.reason;
+    setCases(caseResult.value as CaseRecord[]);
+    setLeadCandidates(leadResult.status === 'fulfilled' ? leadResult.value as any[] : []);
+    setClientCandidates(clientResult.status === 'fulfilled' ? clientResult.value as any[] : []);
+    setCaseTasks(taskResult.status === 'fulfilled' ? taskResult.value as any[] : []);
+    setCaseTaskFeedError(taskResult.status === 'rejected' ? 'Nie udało się odczytać źródła blockerów. Lista może być niepełna.' : null);
+    setCaseEvents(eventResult.status === 'fulfilled' ? eventResult.value as any[] : []);
   };
 
   useEffect(() => {
@@ -524,26 +533,29 @@ export default function Cases() {
       setClientCandidates([]);
       setCaseTasks([]);
       setCaseEvents([]);
+      setCaseTaskFeedError(null);
       setLoading(false);
       return () => {
         isMounted = false;
       };
     }
 
-    Promise.all([
+    Promise.allSettled([
       fetchCasesFromSupabase(),
       fetchLeadsFromSupabase().catch(() => []),
       fetchClientsFromSupabase().catch(() => []),
-      fetchTasksFromSupabase().catch(() => []),
+      fetchTasksFromSupabase(),
       fetchEventsFromSupabase().catch(() => []),
     ])
-      .then(([caseRows, leadRows, clientRows, taskRows, eventRows]) => {
+      .then(([caseResult, leadResult, clientResult, taskResult, eventResult]) => {
         if (!isMounted) return;
-        setCases(caseRows as CaseRecord[]);
-        setLeadCandidates(leadRows as any[]);
-    setClientCandidates(clientRows as any[]);
-    setCaseTasks(taskRows as any[]);
-        setCaseEvents(eventRows as any[]);
+        if (caseResult.status === 'rejected') throw caseResult.reason;
+        setCases(caseResult.value as CaseRecord[]);
+        setLeadCandidates(leadResult.status === 'fulfilled' ? leadResult.value as any[] : []);
+        setClientCandidates(clientResult.status === 'fulfilled' ? clientResult.value as any[] : []);
+        setCaseTasks(taskResult.status === 'fulfilled' ? taskResult.value as any[] : []);
+        setCaseTaskFeedError(taskResult.status === 'rejected' ? 'Nie udało się odczytać źródła blockerów. Lista może być niepełna.' : null);
+        setCaseEvents(eventResult.status === 'fulfilled' ? eventResult.value as any[] : []);
         setLoading(false);
       })
       .catch((error: any) => {
@@ -551,8 +563,9 @@ export default function Cases() {
         toast.error(`Błąd cases API: ${error.message}`);
         setCases([]);
         setLeadCandidates([]);
-      setClientCandidates([]);
-      setCaseTasks([]);
+        setClientCandidates([]);
+        setCaseTasks([]);
+        setCaseTaskFeedError('Nie udało się odczytać danych spraw. Lista może być niepełna.');
         setCaseEvents([]);
         setLoading(false);
       });
@@ -565,7 +578,7 @@ export default function Cases() {
   const caseTasksByCaseId = useMemo(() => buildCaseActionMap(caseTasks), [caseTasks]);
   const caseEventsByCaseId = useMemo(() => buildCaseActionMap(caseEvents), [caseEvents]);
   const caseBlockerItemsByCaseId = useMemo(() => {
-    const map = new Map<string, Array<{ title?: string; reason?: string; suggestedAction?: string; priority?: number; isBlockingMissingItem?: boolean }>>();
+    const map = new Map<string, Array<{ title?: string; reason?: string; suggestedAction?: string; priority?: number; blockedSince?: string | null; isBlockingMissingItem?: boolean }>>();
     for (const item of buildMissingOwnerControlItems({ tasks: caseTasks })) {
       if (item.sourceEntityType !== 'case' || !item.sourceEntityId || !item.isBlockingMissingItem) continue;
       const current = map.get(item.sourceEntityId) || [];
@@ -800,13 +813,23 @@ export default function Cases() {
         const rightPercent = Number(right.completenessPercent || 0);
         return sortBy === 'completeness_asc' ? leftPercent - rightPercent : rightPercent - leftPercent;
       }
-      const leftDate = (sortBy === 'blocked_age_desc' ? getBlockedSince(left) : toUpdatedDate(left.updatedAt || left.createdAt))?.getTime() ?? 0;
-      const rightDate = (sortBy === 'blocked_age_desc' ? getBlockedSince(right) : toUpdatedDate(right.updatedAt || right.createdAt))?.getTime() ?? 0;
-      if (sortBy === 'blocked_age_desc') return leftDate - rightDate;
+      const leftBlockedDate = sortBy === 'blocked_age_desc'
+        ? getBlockedSince(left, caseBlockerItemsByCaseId.get(String(left.id || '')))
+        : null;
+      const rightBlockedDate = sortBy === 'blocked_age_desc'
+        ? getBlockedSince(right, caseBlockerItemsByCaseId.get(String(right.id || '')))
+        : null;
+      const leftDate = (sortBy === 'blocked_age_desc' ? leftBlockedDate : toUpdatedDate(left.updatedAt || left.createdAt))?.getTime() ?? 0;
+      const rightDate = (sortBy === 'blocked_age_desc' ? rightBlockedDate : toUpdatedDate(right.updatedAt || right.createdAt))?.getTime() ?? 0;
+      if (sortBy === 'blocked_age_desc') {
+        if (leftBlockedDate && !rightBlockedDate) return -1;
+        if (!leftBlockedDate && rightBlockedDate) return 1;
+        return leftDate - rightDate;
+      }
       return sortBy === 'updated_asc' ? leftDate - rightDate : rightDate - leftDate;
     });
     return sorted;
-  }, [filteredCases, sortBy]);
+  }, [caseBlockerItemsByCaseId, filteredCases, sortBy]);
 
   const casePageCount = Math.max(1, Math.ceil(sortedCases.length / casePageSize));
   const safeCasePage = Math.min(casePage, casePageCount);
@@ -915,7 +938,7 @@ export default function Cases() {
         clientName,
         getBlockedReason(record, lifecycle, blockerItems),
         getCasePriority(record, blockerItems),
-        formatCaseDate(getBlockedSince(record) || record.createdAt),
+        formatCaseDate(getBlockedSince(record, blockerItems)),
         formatCaseDate(record.updatedAt || record.createdAt),
         getBlockedSuggestedAction(record, lifecycle, blockerItems),
         getCaseOwnerLabel(record, profile, workspace),
@@ -1517,6 +1540,14 @@ export default function Cases() {
             </div>
           ) : null}
 
+          {isBlockedView && caseTaskFeedError ? (
+            <div className="cf-cases-blocked-feed-warning" role="alert" data-cf-cases-task-feed-state="error">
+              <strong>Źródło blockerów jest chwilowo niedostępne.</strong>
+              <span>{caseTaskFeedError}</span>
+              <button type="button" onClick={() => { void refreshCases(); }}>Odśwież źródło</button>
+            </div>
+          ) : null}
+
           <div className="cf-cases-table-scroll">
             <div className="cf-cases-table" role="table" aria-label="Lista spraw" data-cf-cases-table="true">
               {isBlockedView ? (
@@ -1605,7 +1636,7 @@ export default function Cases() {
                 const blockedReason = getBlockedReason(record, lifecycle, blockerItems);
                 const blockedPriority = getCasePriority(record, blockerItems);
                 const blockedSuggestedAction = getBlockedSuggestedAction(record, lifecycle, blockerItems);
-                const blockedSince = getBlockedSince(record) || toUpdatedDate(record.createdAt as CaseRecord['createdAt']);
+                const blockedSince = getBlockedSince(record, blockerItems);
 
                 if (isBlockedView) {
                   return (
@@ -1657,12 +1688,12 @@ export default function Cases() {
                           <a
                             className="cf-cases-blocked-reminder-button"
                             href={reminderHref}
-                            aria-label={`${clientEmail ? 'Wyślij przypomnienie' : 'Zadzwoń'} do ${clientName}`}
+                            aria-label={`${clientEmail ? 'Otwórz wiadomość' : 'Zadzwoń'} do ${clientName}`}
                             title={clientEmail ? 'Otwórz wiadomość do klienta' : 'Zadzwoń do klienta'}
                             data-cf-cases-blocked-action={clientEmail ? 'email' : 'phone'}
                           >
                             <Send aria-hidden="true" />
-                            {clientEmail ? 'Wyślij przypomnienie' : 'Zadzwoń'}
+                            {clientEmail ? 'Otwórz wiadomość' : 'Zadzwoń'}
                           </a>
                         ) : null}
                         <Link to={caseDetailPath(record.id)} className="cf-cases-blocked-open-link" data-cf-cases-blocked-action="open">
@@ -1756,12 +1787,12 @@ export default function Cases() {
                           <a
                             className="cf-cases-waiting-reminder-button"
                             href={reminderHref}
-                            aria-label={`${clientEmail ? 'Wyślij przypomnienie' : 'Zadzwoń'} do ${clientName}`}
+                            aria-label={`${clientEmail ? 'Otwórz wiadomość' : 'Zadzwoń'} do ${clientName}`}
                             title={clientEmail ? 'Otwórz wiadomość do klienta' : 'Zadzwoń do klienta'}
                             data-cf-cases-waiting-action={clientEmail ? 'email' : 'phone'}
                           >
                             <Send aria-hidden="true" />
-                            {clientEmail ? 'Wyślij przypomnienie' : 'Zadzwoń'}
+                            {clientEmail ? 'Otwórz wiadomość' : 'Zadzwoń'}
                           </a>
                         ) : (
                           <Link to={caseDetailPath(record.id)} className="cf-cases-waiting-open-link" data-cf-cases-waiting-action="open">
