@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-033",
+  "reference_file": "docs/ui/reference/forteca-calm-light/033_cases_waiting_for_client.webp",
+  "reference_sha256": "f0d6fa2f7bfe608f70fd5267e299f4a3ebca351c63e3afbe053c34ffc342ddaa",
+  "target_route": "/cases",
+  "target_state": "Cases — Czekają na klienta",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_AFTER_PARENT_REVIEW",
+  "acceptance_basis": {
+    "contract": "FRT-033_CASES_WAITING_CLIENT.md",
+    "visual_review": "Parent compared the locked 033 reference, real production DOM and fresh screenshot review. The Forteca cases shell, waiting tab, four KPI cards, toolbar, nine-column waiting table, row detail and truthful contact action are structurally aligned to the corrected waiting-for-client mapping.",
+    "behavior_review": "Authenticated production rendered one real waiting_on_client case. Search, clearing, save-view confirmation, export confirmation, row navigation, truthful tel action and reload persistence were verified. The row's values were derived from the real workspace record, not from the screenshot.",
+    "test_review": "Focused FRT-033 and FRT-032 static tests passed 9/9; current Forteca milestone suite passed 28/28; typecheck, build, cases visual guard, CSS/SOT import guard and cross-platform lint passed with only known build warnings.",
+    "production_review": "Implementation SHA a99132d is present on dev-rollout-freeze and the Git-integrated Vercel production deployment is READY; live authenticated browser proof loaded the waiting route from the production alias.",
+    "review_status": "Parent review completed. No independent reviewer PASS is claimed."
+  },
+  "root_cause_repairs": [
+    {
+      "finding": "The /cases runtime did not expose the corrected waiting-for-client composition as a first-class view; the legacy list mixed status scope, toolbar controls and row columns.",
+      "repair": "Added an explicit waiting view driven by normalizeCaseStatus(record.status) === waiting_on_client, with a disabled canonical status filter, real waiting metrics, reference-aligned tabs, toolbar, nine-column list and route-specific row action surface."
+    },
+    {
+      "finding": "Waiting rows lacked a safe, data-dependent contact/next-step presentation and the surrounding table could collapse into unreadable text at the observed viewport.",
+      "repair": "Derived missing/waiting/reminder/next-step values from available case data, exposed tel/mailto/detail actions only when their real source exists, and added route-scoped responsive grid/wrapping rules with internal table scrolling."
+    }
+  ],
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Waiting counts, metrics, rows, labels, links and actions remain derived from real workspace case/client data and canonical status helpers.",
+      "No screenshot fixture, reference row, hardcoded reference count or fake waiting success path was introduced.",
+      "The only production test-data mutation was an explicitly authorized visible-form creation of one test case; no raw database/API mutation or destructive action was used.",
+      "Semantic colors and icons resolve through shared Visual SOT owners and --cf-vst-* tokens; no stage-specific repeated color literals were added.",
+      "No unrelated route, table, RLS, function, trigger or production merge was performed."
+    ]
+  },
+  "color_source_of_truth": {
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "page_shell_owner": "src/styles/owners/closeflow-page-shell.css",
+    "cases_owner": "src/styles/forteca-cases-waiting.css",
+    "action_owner": "src/styles/owners/closeflow-actions.css",
+    "icon_owner": "src/ui-system/icons/SemanticIcon.tsx and src/components/ui-system/ActionIcon.tsx",
+    "stage_literal_color_values": 0,
+    "policy": "Repeated semantic concerns resolve through shared VST owners; reference discrepancies do not create per-window color exceptions."
+  },
+  "implementation": {
+    "code_changed": true,
+    "files_changed": [
+      "src/pages/Cases.tsx",
+      "src/styles/forteca-cases-waiting.css",
+      "tests/forteca-frt-033-cases-waiting.test.cjs"
+    ],
+    "implementation_commit_sha": "a99132d04a17cda68ac72b04f45fe0d2f0f9a2b2",
+    "migration_limit": "No database migration or unrelated schema mutation was performed."
+  },
+  "tests_executed": [
+    "node --test tests/forteca-frt-032-cases-all.test.cjs tests/forteca-frt-033-cases-waiting.test.cjs (9/9 PASS)",
+    "npm.cmd run test:forteca-current (28/28 PASS)",
+    "npx.cmd tsc --noEmit --pretty false (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS: dynamic/static import overlap and large chunks)",
+    "node scripts/check-visual-stage07-cases.cjs (PASS)",
+    "node scripts/check-closeflow-no-unclassified-css-imports.cjs (PASS)",
+    "node scripts/run-lint-cross-platform.cjs (PASS)",
+    "canonical Guardian smoke (AUDIT_ONLY/PARTIAL; zero writes; zero blockers)",
+    "authenticated production browser: waiting filter/search/clear/save/export/row navigation/contact/reload proof (PASS)"
+  ],
+  "reused_evidence": [
+    "FRT-000 routing, reference manifest, Guardian boundary and Visual SOT owner registry",
+    "FRT-021 Forteca shell and shared semantic token evidence",
+    "FRT-029..FRT-032 real workspace scope, case status, relation and shared action/icon/color evidence"
+  ],
+  "limitations_and_follow_up": [
+    "The native case schema does not expose every metadata field shown in the reference; the waiting list derives available missing/reminder/next-step labels from the existing runtime contract rather than inventing new schema.",
+    "The reference is a visual mapping, not a source for hardcoded records or counts; live workspace data legitimately differs from sample rows.",
+    "An adjacent authenticated create-flow probe using the existing Alfred Panek client displayed a success toast but the new title was absent after refresh. Alfred was visible as active in /clients; the cause was not isolated, so this case is not used as FRT-033 acceptance evidence and is recorded for follow-up rather than falsely marked fixed."
+  ],
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-033_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "fileWrites": 0
+  },
+  "marketplace_startup": {
+    "receipt_id": "startup-fcf1e129aaab95fbd6f6a7a3600c605d1b2187e04656062c160a8e246044dade",
+    "startup_status": "PASS",
+    "startup_binding_status": "BOUND",
+    "mutation_gate": "SUBSTANTIVE_MUTATION_ALLOWED",
+    "substantiveMutationAuthorizedAfterStartup": true,
+    "primary_specialist": "frontend-design-studio",
+    "supporting_owners": ["ai-code-guardian", "agent-efficiency-guardian"],
+    "marketplace_source_sha": "6e89037049612227777d95dbdf777117790961d0"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-033_BROWSER_PROOF.json",
+    "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+    "live_runtime": true,
+    "auth_required": true,
+    "route": "https://closeflowapp.vercel.app/cases?view=waiting&forteca=a99132d0&refresh=frt033-closeout",
+    "real_waiting_case_count": 1,
+    "search_save_export_reload": "PASS",
+    "real_contact_action": "PASS; tel action rendered from real client phone; not invoked",
+    "screenshot_path": null
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "marketplace_binding": "BOUND",
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_skip_reason": "No callable preferred OpenCode/Freebuff provider was available in the current host context; two bounded read-only Codex audits were attempted, but no verified artifact was used for acceptance.",
+    "subagents": [
+      {"id": "01a04f26-124d-7e92-bee5-3b3e585cea9f", "role": "read-only adjacent create-flow root-cause audit", "status": "NO_VERIFIED_ARTIFACT_USED"},
+      {"id": "01a04f26-1508-71b1-b932-eca32fd87633", "role": "read-only FRT-034 contract/reference preparation", "status": "NO_VERIFIED_ARTIFACT_USED"}
+    ],
+    "write_owner": "Codex parent reviewed source, reference, tests and live runtime and wrote the final stage evidence/state."
+  },
+  "remote_head_verified_at_implementation_push": "a99132d04a17cda68ac72b04f45fe0d2f0f9a2b2",
+  "branch": "dev-rollout-freeze",
+  "next_action": "Activate FRT-034 as the only active stage and reconcile the real /cases blocked state against its locked reference.",
+  "created_at": "2026-08-29T20:13:07.2732674Z"
+}

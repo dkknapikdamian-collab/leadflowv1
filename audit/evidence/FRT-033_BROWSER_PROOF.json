@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-033",
+  "reference_file": "docs/ui/reference/forteca-calm-light/033_cases_waiting_for_client.webp",
+  "reference_sha256": "f0d6fa2f7bfe608f70fd5267e299f4a3ebca351c63e3afbe053c34ffc342ddaa",
+  "entry_url": "https://closeflowapp.vercel.app/cases?view=waiting&forteca=a99132d0&refresh=frt033-closeout",
+  "route": "/cases",
+  "state": "Cases — Czekają na klienta",
+  "live_runtime": true,
+  "auth_required": true,
+  "data_source": {
+    "mode": "real_authenticated_production_runtime",
+    "workspace_scope_preserved": true,
+    "visible_waiting_case_count": 1,
+    "visible_total_case_count_before_waiting_filter": 8,
+    "record_origin": "The waiting row was loaded from the authenticated workspace API after one explicitly authorized test case was created through the visible production form. No screenshot fixture, hardcoded reference row or synthetic count was injected.",
+    "test_record": "FRT-033 waiting browser repro 3 / Dorota Kołodziej / da5583e1-613c-4686-8fac-f885cf90ba55",
+    "authentication_boundary": "The user supplied the authenticated session. No credentials, cookies or tokens were read or exported."
+  },
+  "visible_structure": {
+    "observed_browser_viewport": {
+      "width": 1280,
+      "height": 720,
+      "device_pixel_ratio": 1
+    },
+    "sidebar_width_px": 256,
+    "page_header": {
+      "title": "Sprawy",
+      "description": "Zarządzaj realizacją i kompletnością materiałów klientów.",
+      "actions": ["Eksportuj", "Dodaj sprawę", "Więcej opcji dodawania sprawy"],
+      "reference_aligned_flat_header": true
+    },
+    "tabs": ["Wszystkie", "Aktywne", "Czekają na klienta 1", "W trakcie", "Zablokowane", "Gotowe do startu"],
+    "active_tab": "Czekają na klienta 1",
+    "kpi_cards": [
+      {"label": "CZEKAJĄ NA KLIENTA", "value": 1, "value_source": "canonical waiting_on_client records"},
+      {"label": "ŚREDNI CZAS OCZEKIWANIA", "value": "0 dni", "value_source": "waitingSince/createdAt-derived runtime date"},
+      {"label": "PRZEKROCZONE 5 DNI", "value": 0, "value_source": "canonical waiting age calculation"},
+      {"label": "BEZ PRZYPOMNIENIA", "value": 1, "value_source": "last reminder runtime field"}
+    ],
+    "toolbar": {
+      "visible_placeholder": "Szukaj sprawy, klienta, opiekuna...",
+      "status": "Czekają na klienta",
+      "status_control_disabled": true,
+      "owner": "Wszyscy",
+      "other_controls": ["Więcej filtrów", "Zapisz widok"]
+    },
+    "table_headers": ["Sprawa", "Klient", "Status", "Czego brakuje", "Czekamy od", "Ostatnie przypomnienie", "Najbliższy ruch", "Opiekun", "Akcja"],
+    "row": {
+      "title": "FRT-033 waiting browser repro 3",
+      "client": "Dorota Kołodziej",
+      "status": "Czeka na klienta",
+      "missing": "Brak braków",
+      "waiting_since": "29 sie 2026, 21:57 / od dziś",
+      "last_reminder": "— / Brak przypomnienia",
+      "next_step": "— / Brak zaplanowanego ruchu",
+      "owner": "Nie przypisano",
+      "real_case_link": "/cases/da5583e1-613c-4686-8fac-f885cf90ba55",
+      "real_contact_action": "tel:669453645"
+    },
+    "pagination": "1–1 z 1 spraw",
+    "screenshot_path": null
+  },
+  "interaction_proof": {
+    "waiting_filter": {"status": "PASS", "observed": "The waiting tab was pressed and the active state exposed one real waiting_on_client row."},
+    "search": {"status": "PASS", "observed": "Searching the visible title retained the real row and 1–1 z 1 spraw; clearing restored the waiting list."},
+    "save_view": {"status": "PASS", "observed": "Visible toast confirmed: Widok „Czekają na klienta” zapisany na tym urządzeniu."},
+    "export": {"status": "PASS", "observed": "Visible toast confirmed: Wyeksportowano 1 sprawę."},
+    "row_navigation": {"status": "PASS", "observed": "The title and client links point to the real case detail route."},
+    "row_contact_action": {"status": "PASS", "observed": "The row exposes a truthful telephone action because the real client phone is present; no contact was initiated."},
+    "reload_persistence": {"status": "PASS", "observed": "After reload the waiting tab count, row title, canonical status and real contact action remained present."}
+  },
+  "responsive_visual_proof": {
+    "observed_viewport_check": "PASS",
+    "horizontal_overflow": false,
+    "main_shell": {"x": 256, "width": 1024, "overflow_x": "hidden", "scroll_width": 1024},
+    "table_surface": {"x": 300, "width": 1280, "scroll_width": 1768, "internal_horizontal_scroll": true},
+    "visible_overflow": false,
+    "single_letter_wrapping": false,
+    "evidence": "Fresh in-app DOM snapshot and screenshot review showed the reference-aligned Forteca shell, readable KPI/toolbar surface, nine waiting-list columns and an internal table scroll area instead of page-level overflow.",
+    "literal_pixel_identity_claim": false,
+    "limitation": "The proof covers the supplied production viewport and responsive route rules; it does not claim literal pixel identity at every viewport."
+  },
+  "visual_comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "parent_review": "Parent compared the locked 033 reference, current Cases.tsx/CSS owners, fresh authenticated production DOM and screenshot review before acceptance."
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "authorized_ui_test_data_write": true,
+    "raw_database_or_api_mutation_by_agent": false,
+    "destructive_mutation": false,
+    "no_fake_waiting_fixture": true,
+    "semantic_color_source_of_truth_preserved": true,
+    "no_secret_exposure": true
+  },
+  "production_propagation": {
+    "source_commit": "a99132d04a17cda68ac72b04f45fe0d2f0f9a2b2",
+    "remote_branch": "dev-rollout-freeze",
+    "deployment_host": "closedockapp-i6736rffk-dkknapikdamian-7019s-projects.vercel.app",
+    "deployment_alias": "https://closeflowapp.vercel.app/",
+    "deployment_state": "READY",
+    "deployment_target": "production",
+    "github_commit_sha": "a99132d04a17cda68ac72b04f45fe0d2f0f9a2b2",
+    "github_commit_message": "feat(FRT-033): implement waiting client cases view",
+    "github_commit_ref": "dev-rollout-freeze",
+    "live_bundle_verification": "PASS_AFTER_GIT_INTEGRATION_PROPAGATION",
+    "workflow_pass_claim": false,
+    "note": "The live Git-integrated READY production deployment and authenticated browser proof verify the implementation. No GitHub deploy-hook PASS is claimed."
+  },
+  "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "created_at": "2026-08-29T20:13:07.2732674Z"
+}
