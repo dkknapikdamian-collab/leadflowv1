@@ -43,6 +43,8 @@ export const DATA_CONTRACT_FIELD_MAP = {
     company: ['company', 'companyName', 'company_name'],
     email: ['email'],
     phone: ['phone'],
+    address: ['address'],
+    ownerId: ['ownerId', 'owner_id'],
     notes: ['notes', 'note'],
     tags: ['tags'],
     sourcePrimary: ['sourcePrimary', 'source_primary', 'source'],
@@ -190,6 +192,8 @@ export type ClientDto = DataRecord & {
   company: string;
   email: string;
   phone: string;
+  address: string;
+  ownerId: string | null;
   notes: string;
   tags: string[];
   sourcePrimary: string;
@@ -580,6 +584,8 @@ export function normalizeClientContract(row: DataRecord): ClientDto {
     company: pickText(row, ['company', 'companyName', 'company_name'], ''),
     email: pickText(row, ['email'], ''),
     phone: pickText(row, ['phone'], ''),
+    address: pickText(row, ['address'], ''),
+    ownerId: pickNullableText(row, ['ownerId', 'owner_id']),
     notes: pickText(row, ['notes', 'note'], ''),
     tags: pickStringArray(row, ['tags']),
     sourcePrimary: pickText(row, ['sourcePrimary', 'source_primary', 'source'], 'other'),

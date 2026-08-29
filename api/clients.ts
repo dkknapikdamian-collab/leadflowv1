@@ -6,7 +6,7 @@ import { normalizeClientContract } from '../src/lib/data-contract.js';
 import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 
-const OPTIONAL_CLIENT_COLUMNS = new Set(['notes', 'tags', 'source_primary', 'last_activity_at', 'last_contact_at', 'archived_at', 'primary_case_id']);
+const OPTIONAL_CLIENT_COLUMNS = new Set(['notes', 'tags', 'source_primary', 'last_activity_at', 'last_contact_at', 'archived_at', 'primary_case_id', 'address', 'owner_id']);
 
 const CLOSEFLOW_A2_ALLOW_DUPLICATE_API_OVERRIDE = 'allowDuplicate is the API duplicate override flag';
 const STAGE223R3_LAST_CONTACT_API = 'client API accepts optional lastContactAt and last_contact_at for intake silence truth';
@@ -32,6 +32,7 @@ const CLIENT_LIST_SELECT_STAGE124 = [
 ].join(',');
 const CLIENT_DETAIL_SELECT_STAGE124 = '*';
 const CLIENT_LIST_SELECT_STAGE223R3_LAST_CONTACT = [CLIENT_LIST_SELECT_STAGE124, 'last_contact_at'].join(',');
+const CLIENT_LIST_SELECT_STAGE029 = [CLIENT_LIST_SELECT_STAGE223R3_LAST_CONTACT, 'address', 'owner_id'].join(',');
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -40,6 +41,83 @@ function asText(value: unknown) {
 function asNullableUuid(value: unknown) {
   const normalized = asText(value);
   return normalized && isUuid(normalized) ? normalized : null;
+}
+
+type ClientOwnerInput = { provided: boolean; value: string | null; error?: string };
+
+function hasOwn(value: Record<string, unknown>, key: string) {
+  return Object.prototype.hasOwnProperty.call(value, key);
+}
+
+function parseClientOwnerInput(body: Record<string, unknown>): ClientOwnerInput {
+  const hasCamelCase = hasOwn(body, 'ownerId');
+  const hasSnakeCase = hasOwn(body, 'owner_id');
+  if (!hasCamelCase && !hasSnakeCase) return { provided: false, value: null };
+
+  // Camel-case is the application contract; snake-case remains an explicit API alias.
+  const raw = hasCamelCase ? body.ownerId : body.owner_id;
+  if (raw === null || raw === undefined) return { provided: true, value: null };
+  if (typeof raw !== 'string') return { provided: true, value: null, error: 'CLIENT_OWNER_ID_INVALID' };
+
+  const normalized = raw.trim();
+  if (!normalized) return { provided: true, value: null };
+  if (!isUuid(normalized)) return { provided: true, value: null, error: 'CLIENT_OWNER_ID_INVALID' };
+  return { provided: true, value: normalized };
+}
+
+async function findWorkspaceScopedOwner(ownerId: string, workspaceId: string) {
+  const encodedOwnerId = encodeURIComponent(ownerId);
+  const encodedWorkspaceId = encodeURIComponent(workspaceId);
+  const queries = [
+    `workspace_members?select=user_id&workspace_id=eq.${encodedWorkspaceId}&user_id=eq.${encodedOwnerId}&limit=1`,
+    `profiles?select=user_id&workspace_id=eq.${encodedWorkspaceId}&user_id=eq.${encodedOwnerId}&limit=1`,
+    `profiles?select=auth_user_id&workspace_id=eq.${encodedWorkspaceId}&auth_user_id=eq.${encodedOwnerId}&limit=1`,
+    `profiles?select=auth_uid&workspace_id=eq.${encodedWorkspaceId}&auth_uid=eq.${encodedOwnerId}&limit=1`,
+    `profiles?select=firebase_uid&workspace_id=eq.${encodedWorkspaceId}&firebase_uid=eq.${encodedOwnerId}&limit=1`,
+    `workspaces?select=id&id=eq.${encodedWorkspaceId}&owner_id=eq.${encodedOwnerId}&limit=1`,
+    `workspaces?select=id&id=eq.${encodedWorkspaceId}&owner_user_id=eq.${encodedOwnerId}&limit=1`,
+    `workspaces?select=id&id=eq.${encodedWorkspaceId}&created_by_user_id=eq.${encodedOwnerId}&limit=1`,
+  ];
+  let successfulLookup = false;
+  let lastSchemaError: unknown = null;
+
+  for (const query of queries) {
+    try {
+      const result = await selectFirstAvailable([query]);
+      successfulLookup = true;
+      if (Array.isArray(result.data) && result.data.length > 0) return true;
+    } catch (error) {
+      // Historical installs may not expose every identity column; try the next schema variant.
+      lastSchemaError = error;
+    }
+  }
+
+  if (!successfulLookup) {
+    // Keep the failure distinguishable from a valid lookup with no matching owner.
+    void lastSchemaError;
+    return null;
+  }
+  return false;
+}
+
+async function validateClientOwnerInput(body: Record<string, unknown>, workspaceId: string, res: any) {
+  const ownerInput = parseClientOwnerInput(body);
+  if (ownerInput.error) {
+    res.status(400).json({ error: ownerInput.error });
+    return null;
+  }
+  if (!ownerInput.value) return ownerInput;
+
+  const ownerIsInWorkspace = await findWorkspaceScopedOwner(ownerInput.value, workspaceId);
+  if (ownerIsInWorkspace === null) {
+    res.status(503).json({ error: 'CLIENT_OWNER_SCOPE_UNAVAILABLE' });
+    return null;
+  }
+  if (!ownerIsInWorkspace) {
+    res.status(403).json({ error: 'CLIENT_OWNER_NOT_IN_WORKSPACE' });
+    return null;
+  }
+  return ownerInput;
 }
 
 function asPrimaryCaseId(value: unknown) {
@@ -83,14 +161,24 @@ function omitMissingColumn(payload: Record<string, unknown>, column: string) {
   return next;
 }
 
+function hasMeaningfulFRT029Value(payload: Record<string, unknown>, column: string) {
+  const value = payload[column];
+  return (column === 'owner_id' || column === 'address') && typeof value === 'string' && value.trim().length > 0;
+}
+
+function throwMissingFRT029Column(column: string): never {
+  throw new Error(column === 'owner_id' ? 'CLIENT_OWNER_FIELD_UNAVAILABLE' : 'CLIENT_ADDRESS_FIELD_UNAVAILABLE');
+}
+
 async function insertWithSchemaFallback(payload: Record<string, unknown>) {
   let current = { ...payload };
-  for (let index = 0; index < 8; index += 1) {
+  for (let index = 0; index <= OPTIONAL_CLIENT_COLUMNS.size; index += 1) {
     try {
       return await insertWithVariants(['clients'], [current]);
     } catch (error) {
       const missingColumn = extractMissingColumn(error);
       if (!missingColumn || !OPTIONAL_CLIENT_COLUMNS.has(missingColumn) || !(missingColumn in current)) throw error;
+      if (hasMeaningfulFRT029Value(current, missingColumn)) throwMissingFRT029Column(missingColumn);
       current = omitMissingColumn(current, missingColumn);
     }
   }
@@ -99,12 +187,13 @@ async function insertWithSchemaFallback(payload: Record<string, unknown>) {
 
 async function updateWithSchemaFallback(id: string, workspaceId: string, payload: Record<string, unknown>) {
   let current = { ...payload };
-  for (let index = 0; index < 8; index += 1) {
+  for (let index = 0; index <= OPTIONAL_CLIENT_COLUMNS.size; index += 1) {
     try {
       return await updateByIdScoped('clients', id, workspaceId, current);
     } catch (error) {
       const missingColumn = extractMissingColumn(error);
       if (!missingColumn || !OPTIONAL_CLIENT_COLUMNS.has(missingColumn) || !(missingColumn in current)) throw error;
+      if (hasMeaningfulFRT029Value(current, missingColumn)) throwMissingFRT029Column(missingColumn);
       current = omitMissingColumn(current, missingColumn);
     }
   }
@@ -123,7 +212,7 @@ export default async function handler(req: any, res: any) {
       const requestedId = asText(req.query?.id);
       const includeArchivedClientsForCascade = ['1', 'true', 'yes'].includes(asText(req.query?.includeArchived).toLowerCase());
       const activeClientArchiveFilterForCascade = !requestedId && !includeArchivedClientsForCascade ? 'archived_at=is.null&' : '';
-      const clientSelect = requestedId ? CLIENT_DETAIL_SELECT_STAGE124 : CLIENT_LIST_SELECT_STAGE223R3_LAST_CONTACT;
+      const clientSelect = requestedId ? CLIENT_DETAIL_SELECT_STAGE124 : CLIENT_LIST_SELECT_STAGE029;
       const fallbackClientSelect = requestedId ? CLIENT_DETAIL_SELECT_STAGE124 : CLIENT_LIST_SELECT_STAGE124;
       const base = withWorkspaceFilter(`clients?select=${clientSelect}&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}${activeClientArchiveFilterForCascade}order=updated_at.desc.nullslast&limit=${requestedId ? 1 : 300}`, workspaceId);
       const fallback = withWorkspaceFilter(`clients?select=${fallbackClientSelect}&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}${activeClientArchiveFilterForCascade}order=created_at.desc.nullslast&limit=${requestedId ? 1 : 300}`, workspaceId);
@@ -162,6 +251,8 @@ export default async function handler(req: any, res: any) {
     if (req.method === 'POST') {
       const finalWorkspaceId = workspaceId;
       if (!finalWorkspaceId) throw new Error('SUPABASE_WORKSPACE_ID_MISSING');
+      const ownerInput = await validateClientOwnerInput(body, finalWorkspaceId, res);
+      if (!ownerInput) return;
       const nowIso = new Date().toISOString();
       const payload = {
         workspace_id: finalWorkspaceId,
@@ -169,6 +260,8 @@ export default async function handler(req: any, res: any) {
         company: asText(body.company) || null,
         email: asText(body.email).toLowerCase() || null,
         phone: asText(body.phone) || null,
+        address: asText(body.address) || null,
+        owner_id: ownerInput.value,
         notes: asText(body.notes) || null,
         tags: asStringArray(body.tags),
         source_primary: asText(body.sourcePrimary || body.source) || 'other',
@@ -192,11 +285,15 @@ export default async function handler(req: any, res: any) {
         return;
       }
       await requireScopedRow('clients', id, workspaceId, 'CLIENT_NOT_FOUND');
+      const ownerInput = await validateClientOwnerInput(body, workspaceId, res);
+      if (!ownerInput) return;
       const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
       if (body.name !== undefined) payload.name = asText(body.name) || 'Klient';
       if (body.company !== undefined) payload.company = asText(body.company) || null;
       if (body.email !== undefined) payload.email = asText(body.email).toLowerCase() || null;
       if (body.phone !== undefined) payload.phone = asText(body.phone) || null;
+      if (hasOwn(body, 'address')) payload.address = asText(body.address) || null;
+      if (ownerInput.provided) payload.owner_id = ownerInput.value;
       if (body.notes !== undefined) payload.notes = asText(body.notes) || null;
       if (body.tags !== undefined) payload.tags = asStringArray(body.tags);
       if (body.sourcePrimary !== undefined) payload.source_primary = asText(body.sourcePrimary) || 'other';
@@ -234,7 +331,12 @@ export default async function handler(req: any, res: any) {
     }
 
     const message = error?.message || 'CLIENT_API_FAILED';
-    res.status(message === 'CLIENT_NOT_FOUND' ? 404 : 500).json({ error: message });
+    const status = message === 'CLIENT_NOT_FOUND'
+      ? 404
+      : ['CLIENT_ADDRESS_FIELD_UNAVAILABLE', 'CLIENT_OWNER_FIELD_UNAVAILABLE'].includes(message)
+        ? 503
+        : 500;
+    res.status(status).json({ error: message });
   }
 }
 

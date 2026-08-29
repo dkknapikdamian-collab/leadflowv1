@@ -16,7 +16,8 @@ type CaseTemplateItemInput = {
   order?: number;
 };
 type LeadInsertInput = { name: string; email?: string; phone?: string; company?: string; source?: string; dealValue?: number; lastContactAt?: string | null; partialPayments?: Array<{ id: string; amount: number; paidAt?: string; createdAt: string }>; nextActionAt?: string; ownerId?: string; workspaceId?: string; allowDuplicate?: boolean };
-type ClientUpsertInput = { id?: string; name?: string; company?: string; email?: string; phone?: string; lastContactAt?: string | null; notes?: string; tags?: string[]; sourcePrimary?: string; lastActivityAt?: string | null; archivedAt?: string | null; primaryCaseId?: string | null; workspaceId?: string; allowDuplicate?: boolean; forceDuplicate?: boolean };
+type ClientUpsertInput = { id?: string; name?: string; company?: string; email?: string; phone?: string; address?: string | null; ownerId?: string | null; owner_id?: string | null; lastContactAt?: string | null; notes?: string; tags?: string[]; sourcePrimary?: string; lastActivityAt?: string | null; archivedAt?: string | null; primaryCaseId?: string | null; workspaceId?: string; allowDuplicate?: boolean; forceDuplicate?: boolean };
+export type ClientCreateInput = Omit<ClientUpsertInput, 'id'> & { name: string };
 type ServiceProfileUpsertInput = { id?: string; name?: string; description?: string; startRule?: string; winRule?: string; billingModel?: string; caseCreationMode?: string; isDefault?: boolean; isArchived?: boolean; workspaceId?: string };
 type PaymentUpsertInput = { id?: string; clientId?: string | null; leadId?: string | null; caseId?: string | null; type?: string; status?: string; amount?: number; currency?: string; paidAt?: string | null; dueAt?: string | null; note?: string; workspaceId?: string };
 type CaseCostUpsertInput = { id?: string; caseId?: string | null; clientId?: string | null; kind?: string; status?: string; amount?: number; reimbursable?: boolean; reimbursableAmount?: number; reimbursedAmount?: number; currency?: string; incurredAt?: string | null; reimbursedAt?: string | null; note?: string; workspaceId?: string };
@@ -439,6 +440,36 @@ function normalizeDuplicateWriteOverride<T extends Record<string, unknown>>(inpu
   return next as T & { allowDuplicate: boolean };
 }
 
+const CLIENT_UPSERT_KEYS = [
+  'id',
+  'name',
+  'company',
+  'email',
+  'phone',
+  'address',
+  'ownerId',
+  'owner_id',
+  'lastContactAt',
+  'notes',
+  'tags',
+  'sourcePrimary',
+  'lastActivityAt',
+  'archivedAt',
+  'primaryCaseId',
+  'workspaceId',
+  'allowDuplicate',
+  'forceDuplicate',
+] as const;
+
+function sanitizeClientUpsertInput(input: ClientUpsertInput) {
+  const source = input as unknown as Record<string, unknown>;
+  const next: Record<string, unknown> = {};
+  for (const key of CLIENT_UPSERT_KEYS) {
+    if (Object.prototype.hasOwnProperty.call(source, key)) next[key] = source[key];
+  }
+  return next;
+}
+
 export function isSupabaseConfigured() { return Boolean(getSupabaseConfig()); }
 export function isLocalDevPreviewEnabled() { return shouldUseDevNoAuthMocks(); }
 export async function findEntityConflictsInSupabase(input: EntityConflictCheckInput) { return callApi<{ ok: boolean; candidates: EntityConflictCandidate[]; conflicts?: EntityConflictCandidate[] }>('/api/system?kind=entity-conflicts', { method: 'POST', body: JSON.stringify(input) }); }
@@ -488,8 +519,12 @@ export async function fetchClientByIdFromSupabase(id: string) {
   if (isDevPreviewDetailId(id)) throw new Error(`DEV_PREVIEW_CLIENT_NOT_FOUND:${id}`);
   return callApi<Record<string, unknown>>(`/api/clients?id=${encodeURIComponent(id)}`).then((row) => normalizeClientContract(row));
 }
-export async function createClientInSupabase(input: ClientUpsertInput) { return callApi<SupabaseInsertResult>('/api/clients', { method: 'POST', body: JSON.stringify(normalizeDuplicateWriteOverride(input as unknown as Record<string, unknown>)) }); }
-export async function updateClientInSupabase(input: ClientUpsertInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/clients', { method: 'PATCH', body: JSON.stringify(input) }); }
+export async function createClientInSupabase(input: ClientCreateInput) { return callApi<SupabaseInsertResult>('/api/clients', { method: 'POST', body: JSON.stringify(normalizeDuplicateWriteOverride(sanitizeClientUpsertInput(input))) }); }
+export async function updateClientInSupabase(input: ClientUpsertInput & { id: string }) {
+  const payload = sanitizeClientUpsertInput(input);
+  delete payload.forceDuplicate;
+  return callApi<SupabaseInsertResult>('/api/clients', { method: 'PATCH', body: JSON.stringify(payload) });
+}
 export async function updateClientPrimaryCaseInSupabase(input: { id: string; primaryCaseId: string | null }) { return updateClientInSupabase(input); }
 export async function deleteClientFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/clients?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
 export async function fetchServiceProfilesFromSupabase(params?: { includeArchived?: boolean }) {

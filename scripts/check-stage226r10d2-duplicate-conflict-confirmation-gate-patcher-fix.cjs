@@ -6,18 +6,20 @@ function forbidText(text, token, label) { if (text.includes(token)) fail(label +
 
 const leads = read('src/pages/Leads.tsx');
 const clients = read('src/pages/Clients.tsx');
+const clientCreateDialog = read('src/components/ClientCreateDialog.tsx');
+const clientConflictOwner = clients + '\n' + clientCreateDialog;
 const pkg = JSON.parse(read('package.json'));
 
 forbidText(leads, ".catch(() => ({ candidates: [] }))", 'Leads conflict preflight must not fail open');
-forbidText(clients, ".catch(() => ({ candidates: [] }))", 'Clients conflict preflight must not fail open');
+forbidText(clientConflictOwner, ".catch(() => ({ candidates: [] }))", 'Clients conflict preflight must not fail open');
 requireText(leads, 'Zapis leada zatrzymany', 'Leads fail-closed duplicate check');
-requireText(clients, 'Zapis klienta zatrzymany', 'Clients fail-closed duplicate check');
+requireText(clientConflictOwner, 'Zapis klienta zatrzymany', 'Clients fail-closed duplicate check');
 requireText(leads, 'Zapis leada wymaga potwierdzenia', 'Leads duplicate confirmation notification');
-requireText(clients, 'Zapis klienta wymaga potwierdzenia', 'Clients duplicate confirmation notification');
+requireText(clientConflictOwner, 'Zapis klienta wymaga potwierdzenia', 'Clients duplicate confirmation notification');
 requireText(leads, 'setLeadConflictOpen(true)', 'Leads conflict dialog open');
-requireText(clients, 'setClientConflictOpen(true)', 'Clients conflict dialog open');
+requireText(clientConflictOwner, 'setConflictOpen(true)', 'Clients conflict dialog open');
 requireText(leads, 'handleCreateLeadAnyway', 'Leads explicit add anyway path');
-requireText(clients, 'handleCreateClientAnyway', 'Clients explicit add anyway path');
+requireText(clientConflictOwner, 'handleCreateAnyway', 'Clients explicit add anyway path');
 requireText(leads, 'candidate.entityType === \'client\' ? { ...candidate, canRestore: false } : candidate', 'Lead client candidate non-restorable map');
 
 const scripts = pkg.scripts || {};

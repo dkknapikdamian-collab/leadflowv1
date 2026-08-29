@@ -4,6 +4,8 @@ const fs = require('node:fs');
 function read(path) { return fs.readFileSync(path, 'utf8'); }
 const leads = read('src/pages/Leads.tsx');
 const clients = read('src/pages/Clients.tsx');
+const clientCreateDialog = read('src/components/ClientCreateDialog.tsx');
+const clientConflictOwner = clients + '\n' + clientCreateDialog;
 const pkg = JSON.parse(read('package.json'));
 
 test('lead conflict preflight fails closed instead of silently allowing duplicate writes', () => {
@@ -13,16 +15,16 @@ test('lead conflict preflight fails closed instead of silently allowing duplicat
 });
 
 test('client conflict preflight fails closed instead of silently allowing duplicate writes', () => {
-  assert.equal(clients.includes(".catch(() => ({ candidates: [] }))"), false);
-  assert.equal(clients.includes('Zapis klienta zatrzymany'), true);
-  assert.equal(clients.includes('return;'), true);
+  assert.equal(clientConflictOwner.includes(".catch(() => ({ candidates: [] }))"), false);
+  assert.equal(clientConflictOwner.includes('Zapis klienta zatrzymany'), true);
+  assert.equal(clientConflictOwner.includes('return;'), true);
 });
 
 test('detected conflicts require visible confirmation before add anyway', () => {
   assert.equal(leads.includes('Zapis leada wymaga potwierdzenia'), true);
-  assert.equal(clients.includes('Zapis klienta wymaga potwierdzenia'), true);
+  assert.equal(clientConflictOwner.includes('Zapis klienta wymaga potwierdzenia'), true);
   assert.equal(leads.includes('handleCreateLeadAnyway'), true);
-  assert.equal(clients.includes('handleCreateClientAnyway'), true);
+  assert.equal(clientConflictOwner.includes('handleCreateAnyway'), true);
 });
 
 test('package wires R10D2 guard and test', () => {

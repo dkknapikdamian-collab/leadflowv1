@@ -1,6 +1,5 @@
 // CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
 import {
-  type FormEvent,
   type MouseEvent,
   useCallback,
   useEffect,
@@ -39,26 +38,15 @@ import { DeleteActionIcon } from '../components/ui-system/ActionIcon';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
-import { EntityConflictDialog, type EntityConflictCandidate } from '../components/EntityConflictDialog';
+import ClientCreateDialog from '../components/ClientCreateDialog';
 import { ConfirmDialog } from '../components/confirm-dialog';
-import { actionIconClass, modalFooterClass } from '../components/entity-actions';
+import { actionIconClass } from '../components/entity-actions';
 import { Button } from '../components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import {
-  createClientInSupabase,
-  createCaseInSupabase,
-  findEntityConflictsInSupabase,
   fetchCasesFromSupabase,
   fetchClientsFromSupabase,
   fetchEventsFromSupabase,
@@ -66,7 +54,6 @@ import {
   fetchPaymentsFromSupabase,
   fetchTasksFromSupabase,
   updateClientInSupabase,
-  updateLeadInSupabase,
 } from '../lib/supabase-fallback';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import {
@@ -75,12 +62,6 @@ import {
   type ContactCadenceBucketKey,
   type ContactCadenceRow,
 } from '../lib/owner-control/contact-cadence-grid';
-import {
-  dateInputToNoonIso,
-  getDefaultLastContactDateInput,
-  getLastContactDateInputError,
-  getTodayDateInputValue,
-} from '../lib/owner-control/last-contact-intake';
 import { isActiveClientCase } from '../lib/client-cases';
 import { getCaseFinanceSummary, getClientCasesFinanceSummary } from '../lib/finance/case-finance-source';
 import { normalizeFinanceDate, normalizeFinancePayment } from '../lib/finance/finance-normalize';
@@ -655,7 +636,6 @@ export default function Clients() {
   const [selectedClientIdsStage021, setSelectedClientIdsStage021] = useState<Set<string>>(new Set());
   const [openActionClientIdStage021, setOpenActionClientIdStage021] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [createPending, setCreatePending] = useState(false);
   const [archivePendingId, setArchivePendingId] = useState<string | null>(null);
   const [clientArchiveConfirm, setClientArchiveConfirm] = useState<{
     mode: 'archive' | 'restore';
@@ -663,10 +643,6 @@ export default function Clients() {
     title: string;
     description: string;
   } | null>(null);
-  const [clientConflictOpen, setClientConflictOpen] = useState(false);
-  const [clientConflictCandidates, setClientConflictCandidates] = useState<EntityConflictCandidate[]>([]);
-  const [clientConflictPendingInput, setClientConflictPendingInput] = useState<any | null>(null);
-  const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '', lastContactAt: getDefaultLastContactDateInput(), notes: '', createCase: true, caseTitle: '' });
 
   const applyClientRelationFilterStage232C = useCallback((filter: ClientRelationFilterStage232C) => {
     setClientRelationFilterStage232C(filter);
@@ -1305,117 +1281,6 @@ export default function Clients() {
       else visibleClientsStage021.forEach((client) => next.add(client.id));
       return next;
     });
-  };
-
-  const resetNewClientForm = () => { setNewClient({ name: '', company: '', email: '', phone: '', lastContactAt: getDefaultLastContactDateInput(), notes: '', createCase: true, caseTitle: '' }); };
-
-  const createClientFromPreparedInput = async (preparedClient: any, options?: { forceDuplicate?: boolean }) => {
-    // CLOSEFLOW_A2_CLIENT_FORCE_DUPLICATE_TO_ALLOW_DUPLICATE_API_MAP
-    const shouldCreateCase = Boolean(preparedClient.createCase || String(preparedClient.caseTitle || '').trim());
-    const clientPayload = {
-      name: preparedClient.name,
-      company: preparedClient.company,
-      email: preparedClient.email,
-      phone: preparedClient.phone,
-      lastContactAt: dateInputToNoonIso(preparedClient.lastContactAt),
-      notes: preparedClient.notes,
-      allowDuplicate: Boolean(options?.forceDuplicate),
-      workspaceId: requireWorkspaceId(workspace),
-    };
-
-    const createdClient = await createClientInSupabase(clientPayload);
-    const createdClientId = String((createdClient as any)?.id || '').trim();
-    let createdCaseId = '';
-
-    if (shouldCreateCase && createdClientId) {
-      const caseTitle = String(preparedClient.caseTitle || '').trim() || 'Sprawa: ' + String(preparedClient.name || 'Klient').trim();
-      const currency = 'PLN';
-
-      const createdCase = await createCaseInSupabase({
-        title: caseTitle,
-        clientId: createdClientId,
-        clientName: preparedClient.name,
-        clientEmail: preparedClient.email,
-        clientPhone: preparedClient.phone,
-        status: 'in_progress',
-        contractValue: 0,
-        expectedRevenue: 0,
-        caseValue: 0,
-        currency,
-        paidAmount: 0,
-        remainingAmount: 0,
-        commissionMode: 'not_set',
-        commissionBase: 'contract_value',
-        commissionRate: 0,
-        commissionAmount: 0,
-        commissionStatus: 'not_set',
-        primaryForClient: true,
-        replacePrimaryCase: true,
-        workspaceId: requireWorkspaceId(workspace),
-      } as any);
-      createdCaseId = String((createdCase as any)?.id || (createdCase as any)?.caseId || (createdCase as any)?.case_id || '').trim();
-    }
-
-    toast.success(shouldCreateCase ? 'Klient i sprawa dodane. Uzupełnij finanse sprawy.' : 'Klient dodany');
-    setIsCreateOpen(false);
-    resetNewClientForm();
-    if (createdCaseId) {
-      navigate('/cases/' + encodeURIComponent(createdCaseId) + '?finance=1&source=client-create');
-      return;
-    }
-    await reload();
-  };
-
-  const restoreClientConflictCandidate = async (candidate: EntityConflictCandidate) => {
-    if (!candidate.canRestore) { toast.info('Ten rekord ma historię. Najpierw go otwórz i zdecyduj, co zrobić.'); return; }
-    try {
-      setCreatePending(true);
-      if (candidate.entityType === 'client') { await updateClientInSupabase({ id: candidate.id, archivedAt: null }); toast.success('Klient przywrócony'); }
-      else { await updateLeadInSupabase({ id: candidate.id, status: 'new', leadVisibility: 'active', salesOutcome: 'open', closedAt: null }); toast.success('Lead przywrócony'); }
-      setClientConflictOpen(false);
-      await reload();
-    } catch (error: any) { toast.error('Nie udało się przywrócić rekordu: ' + (error?.message || 'REQUEST_FAILED')); }
-    finally { setCreatePending(false); }
-  };
-
-  const handleCreateClient = async (event: FormEvent) => {
-    event.preventDefault();
-    if (!hasAccess) { toast.error('Twój trial wygasł.'); return; }
-    if (!newClient.name.trim()) { toast.error('Podaj nazwę klienta.'); return; }
-    if (!workspace?.id) { toast.error('Kontekst workspace nie jest jeszcze gotowy.'); return; }
-    const lastContactError = getLastContactDateInputError(newClient.lastContactAt);
-    if (lastContactError) { toast.error(lastContactError); return; }
-    const workspaceId = requireWorkspaceId(workspace);
-    if (!workspaceId) { toast.error('Kontekst workspace nie jest jeszcze gotowy.'); return; }
-    const preparedClient = { ...newClient, name: newClient.name.trim(), company: newClient.company.trim(), email: newClient.email.trim(), phone: newClient.phone.trim(), lastContactAt: newClient.lastContactAt, notes: newClient.notes.trim(), caseTitle: newClient.caseTitle.trim() };
-    try {
-      setCreatePending(true);
-      let conflicts: any;
-      try {
-        conflicts = await findEntityConflictsInSupabase({ targetType: 'client', name: preparedClient.name, email: preparedClient.email, phone: preparedClient.phone, company: preparedClient.company, workspaceId });
-      } catch (error: any) {
-        toast.error('Nie udało się sprawdzić duplikatów. Zapis klienta zatrzymany, żeby nie dodać konfliktu po cichu.');
-        return;
-      }
-      const candidates = Array.isArray(conflicts.candidates) ? conflicts.candidates as EntityConflictCandidate[] : [];
-      if (candidates.length) {
-        toast.info('Znaleziono podobny rekord. Zapis klienta wymaga potwierdzenia albo kliknięcia „Dodaj mimo to”.');
-        setClientConflictCandidates(candidates);
-        setClientConflictPendingInput(preparedClient);
-        setIsCreateOpen(false);
-        setClientConflictOpen(true);
-        return;
-      }
-      await createClientFromPreparedInput(preparedClient);
-    } catch (error: any) { toast.error('Nie udało się zapisać. Spróbuj ponownie.'); }
-    finally { setCreatePending(false); }
-  };
-
-  const handleCreateClientAnyway = async () => {
-    if (!clientConflictPendingInput || createPending) return;
-    try { setCreatePending(true); await createClientFromPreparedInput(clientConflictPendingInput, { forceDuplicate: true }); setClientConflictOpen(false); setClientConflictPendingInput(null); setClientConflictCandidates([]); }
-    catch (error: any) { toast.error('Nie udało się zapisać. Spróbuj ponownie.'); }
-    finally { setCreatePending(false); }
   };
 
   const handleArchiveClient = async (
@@ -2532,20 +2397,6 @@ export default function Clients() {
           pending={Boolean(archivePendingId)}
           onConfirm={confirmClientArchiveAction}
         />
-        <EntityConflictDialog
-          open={clientConflictOpen}
-          onOpenChange={setClientConflictOpen}
-          candidates={clientConflictCandidates}
-          title="Możliwy duplikat"
-          description="Znaleziono podobny rekord po e-mailu, telefonie, nazwie albo firmie. Sprawdź go przed zapisem albo świadomie dodaj mimo to."
-          createAnywayLabel="Dodaj mimo to"
-          busy={createPending}
-          onShow={(candidate) => window.location.assign(candidate.url || (candidate.entityType === 'lead' ? '/leads/' + candidate.id : '/clients/' + candidate.id))}
-          onRestore={restoreClientConflictCandidate}
-          onCreateAnyway={handleCreateClientAnyway}
-          onCancel={() => { setClientConflictOpen(false); setIsCreateOpen(true); }}
-        />
-
         <header className={isArchivedStage025 ? 'forteca-frt-025-header' : isActiveCommissionStage024 ? 'forteca-frt-024-header' : 'forteca-frt-021-header forteca-frt-021-page-header'} data-forteca-frt-021-header="true">
           <div className={isArchivedStage025 ? 'forteca-frt-025-header-copy' : isActiveCommissionStage024 ? 'forteca-frt-024-header-copy' : undefined}>
             <h1 className={isArchivedStage025 ? 'forteca-frt-025-title' : isActiveCommissionStage024 ? 'forteca-frt-024-title' : undefined}>Klienci</h1>
@@ -2622,90 +2473,24 @@ export default function Clients() {
                 Import CSV
               </Button>
             )}
-            <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-              {!isActiveCommissionStage024 ? (
-                <DialogTrigger asChild>
-                  <Button type="button" className={isArchivedStage025 ? 'forteca-frt-025-add-button' : 'forteca-frt-021-button forteca-frt-021-button-primary forteca-frt-021-add-button'} disabled={!workspace?.id} data-forteca-frt-025-add={isArchivedStage025 ? 'true' : undefined}>
-                    <Plus aria-hidden="true" />
-                    Dodaj klienta
-                    <ChevronDown aria-hidden="true" />
-                  </Button>
-                </DialogTrigger>
-              ) : null}
-              <DialogContent className="client-case-form-content client-form-stage23-content" data-client-form-stage23="true">
-                <DialogHeader className="client-case-form-header">
-                  <span className="client-case-form-kicker">KLIENT</span>
-                  <DialogTitle>Nowy klient</DialogTitle>
-                  <p>Dodaj najważniejsze dane kontaktowe. Resztę można uzupełnić później.</p>
-                </DialogHeader>
-                <form onSubmit={handleCreateClient} className="client-case-form" data-client-form-fields="contact">
-                  <div className="client-case-form-grid">
-                    <div className="client-case-form-field client-case-form-field-wide">
-                      <Label htmlFor="forteca-frt-021-client-name">Imię / nazwa</Label>
-                      <Input
-                        id="forteca-frt-021-client-name"
-                        value={newClient.name}
-                        onChange={(event) => setNewClient((prev) => ({ ...prev, name: event.target.value }))}
-                        placeholder="Np. Jan Kowalski albo Firma ABC"
-                        required
-                      />
-                    </div>
-                    <div className="client-case-form-field">
-                      <Label htmlFor="forteca-frt-021-client-phone">Telefon</Label>
-                      <Input
-                        id="forteca-frt-021-client-phone"
-                        value={newClient.phone}
-                        onChange={(event) => setNewClient((prev) => ({ ...prev, phone: event.target.value }))}
-                        placeholder="np. 516 000 000"
-                      />
-                    </div>
-                    <div className="client-case-form-field">
-                      <Label htmlFor="forteca-frt-021-client-email">E-mail</Label>
-                      <Input
-                        id="forteca-frt-021-client-email"
-                        type="email"
-                        value={newClient.email}
-                        onChange={(event) => setNewClient((prev) => ({ ...prev, email: event.target.value }))}
-                        placeholder="kontakt@email.pl"
-                      />
-                    </div>
-                    <div className="client-case-form-field">
-                      <Label htmlFor="forteca-frt-021-client-company">Firma</Label>
-                      <Input
-                        id="forteca-frt-021-client-company"
-                        value={newClient.company}
-                        onChange={(event) => setNewClient((prev) => ({ ...prev, company: event.target.value }))}
-                        placeholder="Opcjonalnie"
-                      />
-                    </div>
-                    <div className="client-case-form-field">
-                      <Label htmlFor="forteca-frt-021-client-last-contact">Ostatni kontakt</Label>
-                      <Input
-                        id="forteca-frt-021-client-last-contact"
-                        type="date"
-                        value={newClient.lastContactAt}
-                        max={getTodayDateInputValue()}
-                        onChange={(event) => setNewClient((prev) => ({ ...prev, lastContactAt: event.target.value }))}
-                      />
-                    </div>
-                    <div className="client-case-form-field client-case-form-field-wide">
-                      <Label htmlFor="forteca-frt-021-client-notes">Notatka</Label>
-                      <textarea
-                        id="forteca-frt-021-client-notes"
-                        className="client-case-form-textarea"
-                        value={newClient.notes}
-                        onChange={(event) => setNewClient((prev) => ({ ...prev, notes: event.target.value }))}
-                        placeholder="Krótki kontekst relacji albo ważna informacja."
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter className={modalFooterClass('client-case-form-footer')}>
-                    <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)}>Anuluj</Button>
-                    <Button type="submit" disabled={createPending}>{createPending ? 'Zapisywanie...' : 'Zapisz klienta'}</Button>
-                  </DialogFooter>
-                </form>
-              </DialogContent>
-            </Dialog>
+            {!isActiveCommissionStage024 ? (
+              <Button
+                type="button"
+                className={isArchivedStage025 ? 'forteca-frt-025-add-button' : 'forteca-frt-021-button forteca-frt-021-button-primary forteca-frt-021-add-button'}
+                disabled={!workspace?.id}
+                data-forteca-frt-025-add={isArchivedStage025 ? 'true' : undefined}
+                onClick={() => setIsCreateOpen(true)}
+              >
+                <Plus aria-hidden="true" />
+                Dodaj klienta
+                <ChevronDown aria-hidden="true" />
+              </Button>
+            ) : null}
+            <ClientCreateDialog
+              open={isCreateOpen}
+              onOpenChange={setIsCreateOpen}
+              onCreated={reload}
+            />
           </div>
         </header>
 
