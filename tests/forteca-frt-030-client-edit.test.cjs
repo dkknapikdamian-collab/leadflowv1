@@ -5,7 +5,7 @@ const path = require('node:path');
 const test = require('node:test');
 
 const root = path.resolve(__dirname, '..');
-const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
+const read = (file) => fs.readFileSync(path.join(root, file), 'utf8').replace(/\r\n/g, '\n');
 const exists = (file) => fs.existsSync(path.join(root, file));
 const sha256 = (file) => crypto.createHash('sha256').update(fs.readFileSync(path.join(root, file))).digest('hex');
 const has = (source, snippet, label) => assert.ok(source.includes(snippet), (label || 'source') + ' must include: ' + snippet);

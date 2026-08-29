@@ -174,7 +174,10 @@ export async function requireSupabaseRequestContext(req: any): Promise<SupabaseR
   const userMetadata = (user.user_metadata && typeof user.user_metadata === 'object' ? user.user_metadata : {}) as Record<string, unknown>;
 
   const context: SupabaseRequestContext = {
-    userId: asText(user.user_id || user.sub),
+    // Supabase's /auth/v1/user response uses `id` for the authenticated UUID.
+    // Keep the legacy claim aliases for compatible JWT/proxy responses, but do
+    // not drop the verified actor when the canonical response only has `id`.
+    userId: asText(user.user_id || user.id || user.sub),
     email: asText(user.email) || null,
     fullName: stringFromMetadata(userMetadata, ['full_name', 'name', 'display_name']),
     workspaceId: stringFromMetadata(appMetadata, ['workspace_id', 'workspaceId']),
