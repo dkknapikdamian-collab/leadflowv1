@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 120,
+  "state_revision": 121,
   "last_accepted": {
-    "id": "FRT-030",
+    "id": "FRT-031",
     "status": "PASS",
-    "commit_sha": "34fd882a3785d88d214706e7cdf4ef454b71e9a3",
-    "evidence": "_project/runs/forteca-clean/FRT-030_RECEIPT.json; audit/evidence/FRT-030_MIGRATION_RECEIPT.json; audit/evidence/FRT-030_BROWSER_PROOF.json; audit/evidence/FRT-030_GUARDIAN_AUDIT_SUMMARY.json; parent source/reference/live runtime review; exact additive FRT-029 migration applied after separate schema and data backup; real populated address/owner save and reload persistence PASS; focused tests, typecheck, build checkpoint and migration guard PASS; Guardian raw outcome PARTIAL with zero blockers; no independent reviewer PASS claim"
+    "commit_sha": "7be42e6413e4633e9fe0b9aa532312a80e36bf1e",
+    "evidence": "_project/runs/forteca-clean/FRT-031_RECEIPT.json; audit/evidence/FRT-031_MIGRATION_RECEIPT.json; audit/evidence/FRT-031_BROWSER_PROOF.json; audit/evidence/FRT-031_GUARDIAN_AUDIT_SUMMARY.json; parent source/reference/live runtime review; exact additive cases.owner_id migration applied after separate schema and data backup; real client-linked case creation, checklist relation, client linkage and save/reload persistence PASS; CaseDetail route-scoped canonical style owner repaired after root-cause review; focused tests, typecheck, build, CSS/SOT guards and browser proof PASS; Guardian raw outcome PARTIAL with zero blockers; Vercel deploy-hook failure recorded while live Git-integrated bundle was independently verified; no independent reviewer PASS claim"
   },
   "previous_accepted": {
     "id": "LF-UI-SOT-007",
@@ -14,46 +14,46 @@
     "commit_sha": "8316a19da0905433f73d20d49c86cf374dca29b0",
     "evidence": "LF-UI-SOT-007 accepted and closed by owner decision at the exact accepted runtime/evidence anchor 8316a19da0905433f73d20d49c86cf374dca29b0; visual SSOT terminal counters are zero, ONE_OWNER_PER_VISUAL_CONCERN=PASS, SSOT negative tests=23/23, TSC/lint/build/diff-check=PASS, Guardian final=PASS, authenticated desktop/mobile browser proof=PASS, and Vercel production version API is exact on dev-rollout-freeze; control-plane closeout does not change product runtime"
   },
-  "current_stage": "FRT-031",
-  "current_contract_path": "_project/contracts/forteca-clean/FRT-031_CLIENT_NEW_CASE.md",
+  "current_stage": "FRT-032",
+  "current_contract_path": "_project/contracts/forteca-clean/FRT-032_CASES_ALL.md",
   "current_status": "ACTIVE",
-  "last_accepted_stage": "FRT-030",
-  "last_accepted_commit": "34fd882a3785d88d214706e7cdf4ef454b71e9a3",
-  "next_stage": "FRT-031",
+  "last_accepted_stage": "FRT-031",
+  "last_accepted_commit": "7be42e6413e4633e9fe0b9aa532312a80e36bf1e",
+  "next_stage": "FRT-032",
   "branch": "dev-rollout-freeze",
-  "remote_head": "8accaccaa9b1720ef38324a2b93d6360b003a2d2",
-  "next_action": "Begin FRT-031: inspect the canonical case-create contract and real client-context mutation path, then implement and verify the reference-aligned New Case flow without activating another stage.",
+  "remote_head": "7be42e6413e4633e9fe0b9aa532312a80e36bf1e",
+  "next_action": "Begin FRT-032: inspect and reconcile the canonical all-cases list, filters and row actions against the corrected reference using real workspace data without activating another stage.",
   "last_progress": {
-    "stage_id": "FRT-030",
+    "stage_id": "FRT-031",
     "status": "PASS_ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
-    "evidence": "_project/runs/forteca-clean/FRT-030_RECEIPT.json; audit/evidence/FRT-030_MIGRATION_RECEIPT.json; audit/evidence/FRT-030_BROWSER_PROOF.json; audit/evidence/FRT-030_GUARDIAN_AUDIT_SUMMARY.json",
-    "commit_sha": "34fd882a3785d88d214706e7cdf4ef454b71e9a3",
+    "evidence": "_project/runs/forteca-clean/FRT-031_RECEIPT.json; audit/evidence/FRT-031_MIGRATION_RECEIPT.json; audit/evidence/FRT-031_BROWSER_PROOF.json; audit/evidence/FRT-031_GUARDIAN_AUDIT_SUMMARY.json",
+    "commit_sha": "7be42e6413e4633e9fe0b9aa532312a80e36bf1e",
     "blocker": null,
-    "next_stage": "FRT-031",
+    "next_stage": "FRT-032",
     "created_at": "2026-08-29T05:51:16.4912099Z",
-    "updated_at": "2026-08-29T12:40:00.0000000Z"
+    "updated_at": "2026-08-29T16:12:00.0000000Z"
   },
   "current_workflow": {
-    "id": "FRT-031",
+    "id": "FRT-032",
     "kind": "TECHNICAL_IMPLEMENTATION_STAGE",
-    "contract_path": "_project/contracts/forteca-clean/FRT-031_CLIENT_NEW_CASE.md",
+    "contract_path": "_project/contracts/forteca-clean/FRT-032_CASES_ALL.md",
     "status": "ACTIVE",
-    "base_sha": "8accaccaa9b1720ef38324a2b93d6360b003a2d2",
+    "base_sha": "7be42e6413e4633e9fe0b9aa532312a80e36bf1e",
     "base_branch": "dev-rollout-freeze",
     "target_branch": "dev-rollout-freeze",
     "blocker": null,
     "ssot_open_findings": 0,
     "active_stage_count": 1,
-    "terminal_audit": "FRT_030_ACCEPTED_EXACT_MIGRATION_AND_POPULATED_SAVE_RELOAD_PASS_FRT_031_ACTIVE",
-    "guardian_status": "INHERITED_FRT_030_PARTIAL_AUDIT_NO_BLOCKER",
-    "acceptance_boundary": "FRT-031 requires a real client-linked case creation path, validation, cancel/close, scope and idempotency proof, focused tests, Guardian and browser evidence before acceptance"
+    "terminal_audit": "FRT_031_ACCEPTED_REAL_CASE_CREATE_SAVE_RELOAD_AND_CASEDETAIL_STYLE_OWNER_FRT_032_ACTIVE",
+    "guardian_status": "INHERITED_FRT_031_PARTIAL_AUDIT_NO_BLOCKER",
+    "acceptance_boundary": "FRT-032 requires a real all-cases state, reference-aligned filters/search/row actions, focused tests, Guardian and browser evidence before acceptance"
   },
   "next_workflow": {
-    "id": "FRT-032",
-    "contract_path": "_project/contracts/forteca-clean/FRT-032_CASES_ALL.md",
+    "id": "FRT-033",
+    "contract_path": "_project/contracts/forteca-clean/FRT-033_CASES_WAITING_CLIENT.md",
     "status": "LOCKED",
-    "activation": "CODEX_AFTER_FRT_031_ACCEPTANCE",
-    "reason": "FRT-031 is the only active stage; FRT-032 remains locked until the client-context New Case flow is independently accepted."
+    "activation": "CODEX_AFTER_FRT_032_ACCEPTANCE",
+    "reason": "FRT-032 is the only active stage; FRT-033 remains locked until the all-cases list and action surface is independently accepted."
   },
   "forteca_program": {
     "program_id": "FORTECA_CALM_LIGHT_001_040",
@@ -93,9 +93,10 @@
     "stage_028_status": "PASS",
     "stage_029_status": "PASS",
     "stage_030_status": "PASS",
-    "active_stage": "FRT-031",
-    "future_stages": "FRT-031..FRT-041 LOCKED",
-    "accepted_receipts": ["FRT-000", "FRT-001", "FRT-002", "FRT-003", "FRT-004", "FRT-005", "FRT-006", "FRT-007", "FRT-008", "FRT-009", "FRT-010", "FRT-011", "FRT-012", "FRT-013", "FRT-014", "FRT-015", "FRT-016", "FRT-017", "FRT-018", "FRT-019", "FRT-020", "FRT-021", "FRT-022", "FRT-023", "FRT-024", "FRT-025", "FRT-026", "FRT-027", "FRT-028", "FRT-029", "FRT-030"],
+    "stage_031_status": "PASS",
+    "active_stage": "FRT-032",
+    "future_stages": "FRT-032..FRT-041 LOCKED",
+    "accepted_receipts": ["FRT-000", "FRT-001", "FRT-002", "FRT-003", "FRT-004", "FRT-005", "FRT-006", "FRT-007", "FRT-008", "FRT-009", "FRT-010", "FRT-011", "FRT-012", "FRT-013", "FRT-014", "FRT-015", "FRT-016", "FRT-017", "FRT-018", "FRT-019", "FRT-020", "FRT-021", "FRT-022", "FRT-023", "FRT-024", "FRT-025", "FRT-026", "FRT-027", "FRT-028", "FRT-029", "FRT-030", "FRT-031"],
     "auth_required_for_frt_000": false,
     "future_receipts_precreated": false
   },
@@ -506,6 +507,12 @@
     "forteca:FRT-030:review@parent-source-reference-live-runtime-review; no independent reviewer PASS claim",
     "forteca:FRT-030:visual-color-policy@canonical shared VST semantic tokens and delete/icon owners preserved; structural reference parity reviewed; no one-off color override",
     "forteca:FRT-030:root-cause@remote public.clients lacked FRT-029 address/owner_id fields; exact additive migration repaired schema and real persistence boundary",
-    "forteca:FRT-031:activation@CODEX_AFTER_FRT-030_ACCEPTANCE:only active stage:contract=_project/contracts/forteca-clean/FRT-031_CLIENT_NEW_CASE.md"
+    "forteca:FRT-031:activation@CODEX_AFTER_FRT-030_ACCEPTANCE:only active stage:contract=_project/contracts/forteca-clean/FRT-031_CLIENT_NEW_CASE.md",
+    "forteca:FRT-031:implementation@7be42e6413e4633e9fe0b9aa532312a80e36bf1e",
+    "forteca:FRT-031:migration@audit/evidence/FRT-031_MIGRATION_RECEIPT.json",
+    "forteca:FRT-031:browser-proof@audit/evidence/FRT-031_BROWSER_PROOF.json",
+    "forteca:FRT-031:guardian-summary@audit/evidence/FRT-031_GUARDIAN_AUDIT_SUMMARY.json",
+    "forteca:FRT-031:receipt@_project/runs/forteca-clean/FRT-031_RECEIPT.json",
+    "forteca:FRT-031:case-detail-style-root-cause@7be42e6413e4633e9fe0b9aa532312a80e36bf1e"
   ]
 }

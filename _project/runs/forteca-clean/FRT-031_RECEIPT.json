@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-031",
+  "reference_file": "docs/ui/reference/forteca-calm-light/031_client_new_case_modal.webp",
+  "reference_sha256": "7ef598cebad8d06aa73a091f946a5ec8c87f7401f387b177695b1d8708905f6a",
+  "target_route": "/clients/:clientId",
+  "target_state": "New Case for this Client",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_AFTER_PARENT_REVIEW",
+  "acceptance_basis": {
+    "contract": "FRT-031_CLIENT_NEW_CASE.md",
+    "visual_review": "Parent compared the locked reference, live DOM and displayed production modal screenshot; real client context, ordered fields, shared controls and required-marker semantics are present.",
+    "behavior_review": "Real authenticated production create, client relation, owner relation, checklist creation, navigation, fresh reload persistence and cancel/close were verified.",
+    "schema_review": "Initial PGRST204 owner_id failure was traced to the missing remote public.cases.owner_id column; the exact additive migration was backed up, previewed, applied, verified and ledger-repaired only for its own version.",
+    "review_status": "Parent review completed. No independent reviewer PASS is claimed."
+  },
+  "root_cause_repairs": [
+    {
+      "finding": "Production public.cases lacked owner_id while the real FRT-031 payload required it.",
+      "repair": "Applied supabase/migrations/20260829160000_frt031_case_owner.sql only; verified column/index and preserved row counts/unrelated schema."
+    },
+    {
+      "finding": "CaseDetail active route had lost the base rules when its old monolithic styles were removed during SOT cleanup.",
+      "repair": "Added the route-scoped canonical owner src/styles/owners/closeflow-case-detail.css, imported once through closeflow-visual-source-truth.css, and corrected stale registry/guard references. Live computed-style proof showed non-default page/header/card/grid/rail rules."
+    }
+  ],
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "No screenshot fixture, hardcoded test record or fake success path was introduced.",
+      "Client relation, workspace scope, owner scope, case creation and checklist creation use the real runtime/API path.",
+      "The database change is the smallest additive target-only migration; no notes/tags fallback or emergency SQL patch was used.",
+      "Semantic colors/icons/actions continue to resolve through Visual SOT owners; no screen-specific repeated color literals were added.",
+      "No automatic merge to production was performed."
+    ]
+  },
+  "color_source_of_truth": {
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "action_owner": "src/styles/owners/closeflow-actions.css",
+    "dialog_owner": "src/styles/owners/closeflow-dialogs.css",
+    "case_create_owner": "src/styles/forteca-client-case-create.css",
+    "case_detail_owner": "src/styles/owners/closeflow-case-detail.css",
+    "icon_owner": "src/ui-system/icons/SemanticIcon.tsx and src/components/ui-system/ActionIcon.tsx",
+    "stage_literal_color_values": 0,
+    "policy": "Every repeated semantic concern resolves through the shared VST owner; reference discrepancies do not create per-window color exceptions."
+  },
+  "database": {
+    "migration_receipt": "audit/evidence/FRT-031_MIGRATION_RECEIPT.json",
+    "project_ref": "amrxiaetdocrywnnkoct",
+    "backup_verified": true,
+    "schema_backup_sha256": "C905580C161CD4A3865C029C8E07A95C71B1108C20C5C96A688EAF8134E9631F",
+    "data_backup_sha256": "BB18AECDA07517660035B1033DA3FE7EC0CF5E7F3E6D8B47E72FEE403CBE4D20",
+    "migration_sha256": "7A168AAB6EBD1AC1B865E95170CC2D08B76968F8C77403EC0C11F955B287A0C2",
+    "destructive_statements": 0,
+    "row_data_mutation": 0,
+    "unrelated_schema_mutation": 0,
+    "cases_owner_id_verified": true,
+    "cases_owner_index_verified": true,
+    "unrelated_schema_unchanged": true
+  },
+  "implementation": {
+    "code_changed": true,
+    "files_changed": [
+      "src/components/CreateClientCaseDialog.tsx",
+      "src/lib/cases/create-client-case.ts",
+      "src/lib/data-contract.ts",
+      "src/lib/supabase-fallback.ts",
+      "src/pages/ClientDetail.tsx",
+      "api/cases.ts",
+      "api/case-items.ts",
+      "src/styles/forteca-client-case-create.css",
+      "src/styles/owners/closeflow-case-detail.css",
+      "src/styles/closeflow-visual-source-truth.css",
+      "src/lib/source-of-truth/visual-repository.ts",
+      "scripts/check-closeflow-case-history-visual-source-truth.cjs",
+      "scripts/check-closeflow-no-unclassified-css-imports.cjs",
+      "supabase/migrations/20260829160000_frt031_case_owner.sql"
+    ],
+    "migration_limit": "No other table/RLS/function/trigger was changed."
+  },
+  "tests_executed": [
+    "npm.cmd run test:forteca-current (28/28 PASS: FRT-029, FRT-030, Today responsive and FRT-031)",
+    "npx.cmd tsc --noEmit --pretty false (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS)",
+    "node scripts/check-closeflow-case-history-visual-source-truth.cjs (PASS)",
+    "node scripts/check-closeflow-no-unclassified-css-imports.cjs (PASS)",
+    "node scripts/run-lint-cross-platform.cjs (PASS; final repository hygiene 2/2)",
+    "npm.cmd run check:closeflow-ui-skill-pack && npm.cmd run check:closeflow-ui-premap-contract (PASS)",
+    "git diff --check (PASS; existing CRLF warnings only)",
+    "canonical Guardian smoke (AUDIT_ONLY/PARTIAL; zero writes; zero blockers)",
+    "authenticated production browser: real case create/save/navigation/reload persistence/cancel (PASS)"
+  ],
+  "reused_evidence": [
+    "FRT-000 routing, reference manifest, Guardian boundary and Visual SOT owner registry",
+    "FRT-010..FRT-030 client/lead relation, workspace scope, actions, semantic icon/color and route evidence",
+    "FRT-030 migration backup and populated client edit save/reload evidence"
+  ],
+  "limitations_and_follow_up": [
+    "The native cases table still lacks first-class type/category/priority/source/note/planned fields; FRT-031 stores those values in the existing activities.payload contract. This works for the current flow but weakens queryability and reporting.",
+    "Case creation currently performs case, checklist items and activity writes sequentially; the client in-flight guard reduces duplicate submits but does not provide server-side transaction/idempotency. Recommend a future native structured metadata/transaction boundary before scaling this flow.",
+    "The failed Vercel deploy-hook workflow 33262449067 is recorded; live Git-integrated production bundle verification passed after propagation."
+  ],
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-031_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "fileWrites": 0
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-031_BROWSER_PROOF.json",
+    "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+    "live_runtime": true,
+    "auth_required": true,
+    "route": "https://closeflowapp.vercel.app/clients/9ae75284-fdfb-4bdf-a7a7-b6bc5c181fc8",
+    "real_case_create": "PASS",
+    "save_reload_persistence": "PASS",
+    "cancel_close": "PASS",
+    "screenshot_path": null
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "marketplace_binding": "BOUND",
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_skip_reason": "No callable preferred provider was available in the current host context.",
+    "subagents": [
+      {"id": "01a04e43-3471-78f2-8c5f-e50e8803a211", "role": "bounded FRT-031 stale runtime audit", "status": "COMPLETED_READ_ONLY; parent revalidated"},
+      {"id": "01a04e54-8abb-7560-83c4-f32b541e6625", "role": "bounded CaseDetail CSS root-cause audit", "status": "COMPLETED_READ_ONLY; parent implemented and validated repair"}
+    ],
+    "write_owner": "Codex parent reviewed all returned artifacts and wrote the final stage evidence/state."
+  },
+  "implementation_commit_sha": "7be42e6413e4633e9fe0b9aa532312a80e36bf1e",
+  "remote_head_verified_at_implementation_push": "7be42e6413e4633e9fe0b9aa532312a80e36bf1e",
+  "branch": "dev-rollout-freeze",
+  "next_action": "Activate FRT-032 as the only active stage and reconcile the real /cases all-cases list against its corrected reference.",
+  "created_at": "2026-08-29T16:51:44.9589923Z"
+}

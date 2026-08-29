@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-031",
+  "reference_file": "docs/ui/reference/forteca-calm-light/031_client_new_case_modal.webp",
+  "reference_sha256": "7ef598cebad8d06aa73a091f946a5ec8c87f7401f387b177695b1d8708905f6a",
+  "entry_url": "https://closeflowapp.vercel.app/clients/9ae75284-fdfb-4bdf-a7a7-b6bc5c181fc8",
+  "route": "/clients/:clientId",
+  "state": "New Case for this Client",
+  "live_runtime": true,
+  "auth_required": true,
+  "data_source": {
+    "mode": "real_authenticated_production_runtime",
+    "record_origin": "Existing workspace-scoped production test client; no fixture row or screenshot data was injected.",
+    "client_id": "9ae75284-fdfb-4bdf-a7a7-b6bc5c181fc8",
+    "created_case_id": "9b48e2ad-0150-418e-a2b0-a1af705af835",
+    "created_case_title": "FRT-031 browser proof retry 2026-08-29T16:00:38.601Z",
+    "authentication_boundary": "The user supplied the authenticated session. No credentials, cookies or tokens were read or exported."
+  },
+  "visible_structure": {
+    "observed_browser_viewport": {"width": 1280, "height": 720, "device_pixel_ratio": 1.25},
+    "field_order": "client; case name; type; service category; priority; value; start date; planned date; owner; source; note; checklist; footer",
+    "client_label_required_marker": false,
+    "required_labels": ["Nazwa sprawy", "Typ sprawy", "Kategoria usługi", "Priorytet", "Wartość (PLN)", "Termin startu", "Opiekun"],
+    "optional_labels": ["Klient", "Planowany termin", "Źródło sprawy", "Notatka startowa"],
+    "one_controlled_modal": true,
+    "real_client_context": true,
+    "real_checklist_template": true
+  },
+  "interaction_proof": {
+    "open_populated": {"status": "PASS", "observed": "Nowa sprawa opened from the real client detail route and populated Alfred Panek, real owner Damian Knapik and a real checklist template."},
+    "modal_reference_reconciliation": {"status": "PASS", "observed": "Live screenshot and DOM show the reference field order, shared calm-light controls and the corrected required-marker treatment: Klient has no asterisk."},
+    "save": {"status": "PASS", "observed": "The form created a real client-linked case after the exact cases.owner_id migration."},
+    "navigation": {"status": "PASS", "observed": "The app navigated to /cases/9b48e2ad-0150-418e-a2b0-a1af705af835 after creation."},
+    "reload_persistence": {"status": "PASS", "observed": "A fresh production route load showed the created title, Alfred Panek relation, 12 500 PLN value and checklist tab."},
+    "cancel_close": {"status": "PASS", "observed": "Anuluj closed the modal and the exact client route remained active without another mutation."}
+  },
+  "relationship_proof": {
+    "path": "C:\\Users\\malim\\AppData\\Local\\Temp\\_db_backups\\closeflow\\20260829154915873Z\\case-relation-proof.txt",
+    "case_client_relation": true,
+    "case_owner_relation": true,
+    "checklist_item_count": 2,
+    "creation_activity_count": 1
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "workspace_scope_preserved": true,
+    "real_case_mutation_verified": true,
+    "real_data_preserved": true,
+    "semantic_color_source_of_truth_preserved": true,
+    "no_fake_success": true,
+    "no_raw_cdp_or_dom_mutation": true,
+    "no_secret_exposure": true
+  },
+  "visual_comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": ["The proof covers the supplied production viewport and responsive CSS rules; it does not claim literal pixel identity at every viewport.", "CaseDetail reference-specific reconciliation remains in FRT-038..FRT-040; FRT-031 only records the necessary live style-owner repair."]
+  },
+  "screenshot": {
+    "modal_screenshot_displayed_in_codex_browser": true,
+    "case_detail_screenshot_displayed_in_codex_browser": true,
+    "screenshot_path": null
+  },
+  "production_propagation": {
+    "source_commit": "7be42e6413e4633e9fe0b9aa532312a80e36bf1e",
+    "remote_branch": "dev-rollout-freeze",
+    "github_vercel_workflow_run": "33262449067",
+    "workflow_conclusion": "failure_at_deploy_hook_missing_or_invalid_secret",
+    "workflow_pass_claim": false,
+    "live_bundle_verification": "PASS_AFTER_GIT_INTEGRATION_PROPAGATION",
+    "note": "The failed deploy-hook workflow is recorded transparently; live production DOM/computed-style evidence independently verified the updated bundle."
+  },
+  "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "created_at": "2026-08-29T16:51:44.9589923Z"
+}

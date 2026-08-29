@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_DATABASE_MIGRATION_RECEIPT",
+  "stage_id": "FRT-031",
+  "project_ref": "amrxiaetdocrywnnkoct",
+  "backup_timestamp": "2026-08-29T15:49:15.873Z",
+  "schema_backup_path": "C:\\Users\\malim\\AppData\\Local\\Temp\\_db_backups\\closeflow\\20260829T154915873Z\\FRT-031-db-20260829T154915873Z-schema.sql",
+  "schema_backup_sha256": "C905580C161CD4A3865C029C8E07A95C71B1108C20C5C96A688EAF8134E9631F",
+  "data_backup_path": "C:\\Users\\malim\\AppData\\Local\\Temp\\_db_backups\\closeflow\\20260829T154915873Z\\FRT-031-db-20260829T154915873Z-data.sql",
+  "data_backup_sha256": "BB18AECDA07517660035B1033DA3FE7EC0CF5E7F3E6D8B47E72FEE403CBE4D20",
+  "backup_verified": true,
+  "backup_method": {
+    "canonical_cli_attempt": "supabase db dump --linked (schema and data artifacts requested)",
+    "canonical_cli_result": "BLOCKED_BY_MISSING_DOCKER_DESKTOP",
+    "fallback": "native PostgreSQL pg_dump schema-only and data-only artifacts",
+    "fallback_tools": "PostgreSQL 17.11 pg_dump/pg_restore/psql",
+    "secret_handling": "No credentials, connection strings or tokens are recorded in this receipt."
+  },
+  "identity": {
+    "cli_authorization": "SUPABASE_CLI_AUTHORIZATION_COMPLETED=YES",
+    "linked_project_ref": "amrxiaetdocrywnnkoct",
+    "project_name": "CloseFlow",
+    "ref_verified_before_write": true,
+    "ref_source": "Supabase CLI linked project ref and project listing"
+  },
+  "preflight": {
+    "read_only_schema_proof_path": "C:\\Users\\malim\\AppData\\Local\\Temp\\_db_backups\\closeflow\\20260829T154915873Z\\read-only-schema-proof.txt",
+    "cases_owner_id_present": false,
+    "cases_owner_index_present": false,
+    "case_count": 15,
+    "client_count": 23,
+    "required_existing_columns_verified": ["activities.payload", "case_items.description", "case_items.is_required", "case_items.payload", "case_items.sort_order"],
+    "migration_20260829100000_present": true
+  },
+  "preview": {
+    "path": "C:\\Users\\malim\\AppData\\Local\\Temp\\_db_backups\\closeflow\\20260829154915873Z\\frt031-db-push-dry-run.txt",
+    "command": "npx supabase@latest db push --linked --dry-run --skip-vault",
+    "result": "BROAD_LEDGER_PREVIEW_BLOCKED_NO_APPLY",
+    "reason": "LegacyDbPushMissingRemoteError for unrelated historical migrations; no database write occurred.",
+    "destructive_statements": 0,
+    "row_data_mutation": 0,
+    "unrelated_schema_mutation": 0
+  },
+  "migration": {
+    "path": "supabase/migrations/20260829160000_frt031_case_owner.sql",
+    "sha256": "7A168AAB6EBD1AC1B865E95170CC2D08B76968F8C77403EC0C11F955B287A0C2",
+    "scope": "public.cases.owner_id plus closeflow_cases_owner_id_idx only",
+    "statements": ["add nullable public.cases.owner_id uuid if absent", "create closeflow_cases_owner_id_idx if absent", "comment on target column"],
+    "destructive_statements": 0,
+    "row_data_mutation": 0,
+    "other_table_mutation": 0,
+    "rls_function_trigger_mutation": 0,
+    "apply_log": "C:\\Users\\malim\\AppData\\Local\\Temp\\_db_backups\\closeflow\\20260829154915873Z\\frt031-apply.log",
+    "apply_result": "PASS_NATIVE_PSQL",
+    "migration_ledger_repair": "Only 20260829160000 was repaired to applied; unrelated pending migrations were not applied."
+  },
+  "postflight": {
+    "schema_proof_path": "C:\\Users\\malim\\AppData\\Local\\Temp\\_db_backups\\closeflow\\20260829154915873Z\\postflight-schema-proof.txt",
+    "postflight_schema_dump_path": "C:\\Users\\malim\\AppData\\Local\\Temp\\_db_backups\\closeflow\\20260829154915873Z\\FRT-031-postflight-schema.sql",
+    "postflight_schema_sha256": "527FB5209ED37C65996F1B73184CDA3C845F8E5B51F00BF97D6FE3FF848352F9",
+    "cases_owner_id": "uuid nullable",
+    "owner_index": "closeflow_cases_owner_id_idx present",
+    "case_count": 15,
+    "client_count": 23,
+    "unrelated_schema_unchanged": true,
+    "relation_proof_path": "C:\\Users\\malim\\AppData\\Local\\Temp\\_db_backups\\closeflow\\20260829154915873Z\\case-relation-proof.txt",
+    "created_case_relation_verified": true
+  },
+  "status": "PASS_WITH_EXACT_SCOPED_ADDITIVE_MIGRATION",
+  "created_at": "2026-08-29T16:51:44.9589923Z"
+}

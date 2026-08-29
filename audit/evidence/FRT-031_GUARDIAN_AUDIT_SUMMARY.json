@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-031",
+  "canonical_repository": "C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian",
+  "routing": "PLUGIN_FIRST_REPOSITORY_FALLBACK",
+  "command": "npm.cmd run guardian -- --smoke",
+  "mode": "AUDIT_ONLY",
+  "fileWrites": 0,
+  "selectedCapabilities": ["repository-baseline"],
+  "selectedSkills": ["ai-code-guardian", "architecture-integrity"],
+  "coverageOutcome": "PARTIAL",
+  "blockers": 0,
+  "pass_claim": false,
+  "interpretation": "Canonical Guardian smoke completed without writes or blockers but exposes partial repository-baseline coverage; no full target-wide Guardian PASS is claimed.",
+  "receiptIds": ["guardian-plugin-smoke-coverage", "guardian-plugin-smoke-result"],
+  "created_at": "2026-08-29T16:51:44.9589923Z"
+}
