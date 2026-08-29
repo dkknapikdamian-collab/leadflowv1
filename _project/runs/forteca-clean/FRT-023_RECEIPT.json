@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-023",
+  "reference_file": "docs/ui/reference/forteca-calm-light/023_clients_need_contact.webp",
+  "reference_sha256": "6d96c387c48b19d9d5e8756532db385f46a21ec1230bd831dab55b81d574b0c1",
+  "target_route": "/clients",
+  "target_state": "Clients — requires contact",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_AFTER_PARENT_REVIEW",
+  "acceptance_basis": {
+    "directive_interpretation": "The approved Forteca branch is the sole implementation route. The parent independently checked repository identity, exact reference, source-of-truth ownership, focused tests, typecheck, build, Guardian output, live browser DOM, non-mutating interactions and screenshot before closeout.",
+    "root_cause": "The existing Clients route did not expose a dedicated reference-aligned needs-contact state with canonical attention semantics, reason/contact filters and complete real actions.",
+    "repair": "FRT-023 adds a live needs-contact Clients state using the existing workspace-scoped clients, contact cadence grid, activity next actions and action handlers, with reference-aligned tabs, toolbar, full-width table, pagination and semantic attention badges.",
+    "review_status": "Parent review completed against the static reference, final source diff, real runtime DOM, interaction outcomes, semantic token usage and browser screenshot. No independent reviewer PASS is claimed because two bounded subagent attempts returned no artifacts before closeout.",
+    "guardian_interpretation": "Guardian smoke is AUDIT_ONLY/PARTIAL with zero writes and zero returned blockers. A full target-wide Guardian PASS is not claimed.",
+    "browser_boundary": "The real /clients route was exercised with tab switching, reason filter, search, reset, customize panel, action menu and phone links. Destructive archive and create mutations were intentionally not invoked; existing production handlers remain wired."
+  },
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Reference fixture clients, dates, owners and totals are never inserted into runtime state or API payloads.",
+      "The needs-contact list and attention badges derive from the canonical contact cadence grid and live activity/client records.",
+      "Existing client navigation, phone/mail links and archive handler remain the mutation/action owners; no parallel client flow was added.",
+      "Reference-image discrepancies never create per-window color exceptions. Repeated semantic icons resolve through shared VST families.",
+      "All trash/delete icons continue to resolve through the canonical --cf-vst-color-delete family.",
+      "No fake success, automatic merge, silent fallback, unapproved browser mutation or production merge was introduced."
+    ]
+  },
+  "color_source_of_truth": {
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "action_owner": "src/styles/owners/closeflow-actions.css",
+    "icon_owner": "src/ui-system/icons/SemanticIcon.tsx and src/components/ui-system/ActionIcon.tsx",
+    "stage_adapter": "src/styles/forteca-clients-needs-contact.css",
+    "semantic_tone_adapters": {
+      "primary": "--cf-vst-color-primary",
+      "task": "--cf-vst-color-task",
+      "event": "--cf-vst-color-event",
+      "payment": "--cf-vst-color-payment",
+      "delete": "--cf-vst-color-delete"
+    },
+    "stage_literal_color_values": 0,
+    "policy": "Each semantic concern has one VST token owner across every window and repeated component instance. Reference drift does not create local palette copies."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "src/pages/Clients.tsx",
+    "src/styles/forteca-clients-needs-contact.css",
+    "tests/forteca-frt-023-clients-needs-contact.test.cjs"
+  ],
+  "visual_sot_owners_used": ["PAGE_SHELL", "SEARCH", "LIST_ROWS", "BADGES", "SURFACES", "BUTTONS_ACTIONS", "RESPONSIVE_DENSITY"],
+  "visible_controls_inventory": [
+    "Dostosuj widok",
+    "Dodaj klienta",
+    "needs-contact tabs",
+    "search",
+    "Powód",
+    "Opiekun",
+    "Ostatni kontakt",
+    "Wyczyść filtry",
+    "Tag/Typ relacji customize panel",
+    "row navigation",
+    "phone links",
+    "row action menu",
+    "pagination"
+  ],
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "node --test tests/forteca-frt-023-clients-needs-contact.test.cjs (4/4 PASS)",
+    "npx.cmd tsc --noEmit (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS)",
+    "git diff --check -- stage files (PASS)",
+    "stage CSS/TSX/test raw color scan (NO_RAW_COLOR_LITERALS)",
+    "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke (PARTIAL, zero writes, zero blockers)",
+    "Live Codex In-app Browser proof at the 1672x941 reference capture size of real /clients needs-contact rows, tabs, reason filter, search, reset, customize panel, row menu, phone links and no fresh console errors (PASS)",
+    "Parent comparison of docs/ui/reference/forteca-calm-light/023_clients_need_contact.webp against live runtime screenshot (STRUCTURAL_PARITY_PASS)"
+  ],
+  "tests_reused": [
+    "FRT-000 routing, reference manifest, Guardian boundary and visual SOT owner registry",
+    "FRT-010 to FRT-019 client/lead relation, workspace scope, semantic icon and list evidence",
+    "FRT-020 Forteca shell, guarded action and browser harness baseline",
+    "FRT-021 Clients all-state runtime and shared shell/action ownership",
+    "FRT-022 relation-filtered Clients runtime and browser evidence baseline"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "live create-client and archive mutations",
+      "reason": "NOT_EXECUTED_BY_DESIGN: the controls create or mutate real workspace records; browser proof exercised mounts/navigation/menu without unapproved mutation."
+    },
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: installed Guardian entrypoint exposes only partial repository-baseline smoke coverage; pass_claim=false."
+    },
+    {
+      "test": "independent final reviewer PASS",
+      "reason": "PROCESS_BOUNDARY: bounded Codex subagent attempts for CSS and focused tests returned no artifacts before closeout; parent review completed and no independent PASS is claimed."
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS_WITH_KNOWN_WARNINGS",
+  "build_warnings": [
+    "Existing dynamic/static import overlap for src/lib/supabase-fallback.ts",
+    "Existing chunks larger than 500 kB after minification"
+  ],
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-023_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "EXECUTED: PARTIAL / coverage PARTIAL / fileWrites 0"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-023_BROWSER_PROOF.json",
+    "screenshot_path": null,
+    "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "http://localhost:3000/clients?frt023=needs-contact&refresh=23-search-check",
+    "visible_rows": 3,
+    "search_result_rows": 1,
+    "reason_filter": "PASS",
+    "customize_panel": "PASS",
+    "row_actions": "PASS; not mutated",
+    "console_errors": 0,
+    "console_warnings": 0,
+    "screenshot_displayed_in_codex_browser": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The browser reported a one-pixel inner-height rounding difference from the static capture.",
+      "Underlying client data is real workspace data and differs from reference fixture values.",
+      "Live destructive mutations were not invoked because they would change real workspace records."
+    ]
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "efficiency_planning": "APPLIED",
+    "marketplace_binding": "BOUND",
+    "startup_receipt": "startup-0c83ac1a8ba4ea0a53f29e3cad5b26198266780b0bbb1346db0bd148c466ddf8",
+    "primary_capabilities": ["frontend-design-studio", "ai-code-guardian", "agent-efficiency-guardian"],
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_skip_reason": "Marketplace discovery exposed no available preferred provider. No OpenCode/Freebuff provider was callable in this host context.",
+    "subagents": [
+      {"id": "01a04ab9-e469-7831-b91a-7d0c5b0de851", "role": "bounded CSS visual review", "status": "CLOSED_NO_ARTIFACT_AFTER_BOUNDED_WAIT"},
+      {"id": "01a04ab9-ddaf-76f2-b0d6-6c047348a91a", "role": "bounded focused-test review", "status": "CLOSED_NO_ARTIFACT_AFTER_BOUNDED_WAIT"}
+    ],
+    "write_owner": "Codex parent validated and wrote the final stage artifacts."
+  },
+  "implementation_commit_sha": "2df5c85c49803d7a3b0a0fb81e449dd14fdddb98",
+  "remote_head_verified": "2df5c85c49803d7a3b0a0fb81e449dd14fdddb98",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "created_at": "2026-08-29T02:06:03.3781192+02:00"
+}

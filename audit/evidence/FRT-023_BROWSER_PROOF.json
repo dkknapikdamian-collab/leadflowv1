@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-023",
+  "reference_file": "docs/ui/reference/forteca-calm-light/023_clients_need_contact.webp",
+  "reference_sha256": "6d96c387c48b19d9d5e8756532db385f46a21ec1230bd831dab55b81d574b0c1",
+  "entry_url": "http://localhost:3000/clients?frt023=needs-contact&refresh=23-proof",
+  "runtime_url": "http://localhost:3000/clients?frt023=needs-contact&refresh=23-search-check",
+  "route": "/clients",
+  "state": "Forteca calm-light Clients — requires contact",
+  "live_runtime": true,
+  "auth_required": false,
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "record_origin": "Existing workspace-scoped clients, contact cadence rows, activity next actions and existing client action owners; reference screenshot fixtures were not copied into runtime state.",
+    "relation_truth": "The needs-contact view is derived from the canonical contact cadence grid and live workspace client records. The runtime currently exposes three needs-contact clients, two active clients, and no overdue-payment or inactive matches.",
+    "visible_clients": ["Anna Kowalska", "Katarzyna Wrona", "Michał Zieliński"],
+    "visible_client_links": ["/clients/dev-client-1", "/clients/dev-client-3", "/clients/dev-client-2"],
+    "production_path": "The page uses fetchClientsFromSupabase(), the existing workspace-scoped client/contact/activity relations and existing client action handlers; no screenshot-only collection, fake row or fake action was added."
+  },
+  "visible_structure": {
+    "requested_reference_viewport": {"width": 1672, "height": 941},
+    "observed_browser_viewport": {"width": 1672, "height": 942, "scroll_width": 1672, "scroll_height": 942},
+    "root_marker": "data-forteca-frt-023-runtime=\"true\"",
+    "root_count": 1,
+    "shell_marker": ".cf-html-shell.cf-route-clients",
+    "tabs_marker": "data-forteca-frt-023-tabs=\"true\"",
+    "toolbar_marker": "data-forteca-frt-023-toolbar=\"true\"",
+    "table_marker": "data-forteca-frt-023-table=\"true\"",
+    "active_tab": "Wymaga kontaktu 3",
+    "row_count": 3,
+    "counts": [
+      "Wszyscy klienci 3",
+      "Aktywni 2",
+      "Wymaga kontaktu 3",
+      "Z opóźnionymi płatnościami 0",
+      "Bez aktywności 0"
+    ],
+    "geometry": {
+      "page": {"x": 283.2, "y": 25, "width": 1357.6, "height": 882.8},
+      "header": {"x": 283.2, "y": 25, "width": 1357.6, "height": 38},
+      "tabs": {"x": 283.2, "y": 85, "width": 1357.6, "height": 32.8},
+      "toolbar": {"x": 283.2, "y": 137.8, "width": 1357.6, "height": 40},
+      "table_card": {"x": 283.2, "y": 201.8, "width": 1357.6, "height": 706},
+      "table_head": {"x": 284, "y": 202.6, "width": 1356, "height": 42},
+      "rows": [
+        {"x": 284, "y": 244.6, "width": 1356, "height": 60.8},
+        {"x": 284, "y": 305.4, "width": 1356, "height": 60.8},
+        {"x": 284, "y": 366.1, "width": 1356, "height": 60.8}
+      ],
+      "footer": {"x": 284, "y": 835, "width": 1356, "height": 72}
+    },
+    "search_placeholder": "Szukaj klienta, firmy, e-maila lub telefonu...",
+    "filter_values_at_closeout": {"search": "", "reason": "all", "owner": "all", "last_contact": "all"},
+    "body_overflow": false,
+    "reference_copy_present": true,
+    "reference_copy": [
+      "Klienci",
+      "Dostosuj widok",
+      "Dodaj klienta",
+      "Wszyscy klienci",
+      "Aktywni",
+      "Wymaga kontaktu",
+      "Z opóźnionymi płatnościami",
+      "Bez aktywności",
+      "Powód:",
+      "Opiekun:",
+      "Ostatni kontakt:",
+      "Wyczyść filtry",
+      "Klient",
+      "Powód",
+      "Ostatni kontakt",
+      "Najbliższy ruch",
+      "Opiekun",
+      "Akcja"
+    ]
+  },
+  "interaction_proof": {
+    "tabs": {
+      "status": "PASS",
+      "observed": "The real all-clients tab selected aria-current=page and rendered three live rows; the needs-contact tab restored the needs-contact state and retained its live count."
+    },
+    "reason_filter": {
+      "status": "PASS",
+      "observed": "The real Powód select changed to no_contact and retained three matching live rows."
+    },
+    "search": {
+      "status": "PASS",
+      "observed": "Entering Katarzyna narrowed the real list to Katarzyna Wrona; the clear-filters action returned the live needs-contact list to three rows."
+    },
+    "customize_view": {
+      "status": "PASS",
+      "observed": "The Dostosuj widok control opened its real Tag/Typ relacji panel with aria-expanded=true and closed cleanly."
+    },
+    "row_actions": {
+      "status": "PASS",
+      "observed": "The live row action menu opened with Otwórz klienta and Przenieś do kosza; three real tel: links were present and no mutation was invoked."
+    },
+    "post_interaction_state": {
+      "status": "PASS",
+      "observed": "Filter panel, search and row menu were closed; the needs-contact tab remained active, three real rows remained visible and document overflow stayed false."
+    }
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "contact_cadence_is_data_derived": true,
+    "workspace_scope_preserved": true,
+    "existing_client_actions_preserved": true,
+    "no_duplicate_list_owner": true,
+    "no_fake_success": true,
+    "no_unapproved_live_mutation": true,
+    "semantic_color_source_of_truth_preserved": true
+  },
+  "console_errors": 0,
+  "console_warnings": 0,
+  "screenshot_displayed_in_codex_browser": true,
+  "screenshot_path": null,
+  "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The browser reported a one-pixel inner-height rounding difference from the 1672x941 static capture.",
+      "The live list uses real workspace data, so counts, owners and row population intentionally differ from screenshot fixture values.",
+      "Destructive archive and create mutations were not invoked during browser proof; existing handlers and action-menu wiring remain wired in the live source."
+    ]
+  },
+  "implementation_commit": "2df5c85c49803d7a3b0a0fb81e449dd14fdddb98",
+  "remote_head_verified": "2df5c85c49803d7a3b0a0fb81e449dd14fdddb98",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "created_at": "2026-08-29T02:06:03.3781192+02:00"
+}
