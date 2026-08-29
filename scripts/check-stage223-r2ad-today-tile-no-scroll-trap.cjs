@@ -129,7 +129,7 @@ if (!tileButtonPattern.test(source)) {
   fail('top metric tile button must expand/collapse in place with preventDefault/stopPropagation/blur');
 }
 
-assertIncludes('TODAY_SECTION_KEYS.filter((entry) => entry !== tile.key)', 'top tile click should uncollapse only selected section');
-assertIncludes('setActiveTodaySection(active ? null : tile.key)', 'top tile click should update active state without scroll');
+assertIncludes('TODAY_SECTION_KEYS.filter((entry) => entry !== sectionTileKey)', 'top tile click should uncollapse only selected section');
+assertIncludes('setActiveTodaySection(active ? null : sectionTileKey)', 'top tile click should update active state without scroll');
 
 console.log('STAGE223_R2AD_TODAY_TILE_NO_SCROLL_TRAP: OK');

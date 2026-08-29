@@ -46,10 +46,10 @@ for (const needle of requiredContent) {
 
 const requiredCss = [
   '.task-form-vnext-content',
-  'background: rgba(255, 255, 255, 0.96) !important',
-  'border: 1px solid #e4e7ec !important',
-  'border-radius: 28px !important',
-  'content: none !important',
+  'background: rgba(255, 255, 255, 0.96)',
+  'border: 1px solid #e4e7ec',
+  'border-radius: 28px',
+  'content: none',
   '.task-form-section',
   '.task-form-footer',
 ];
