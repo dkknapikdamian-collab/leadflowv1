@@ -21,7 +21,7 @@
   "last_accepted_commit": "731b21001a90cfaf91bafefef3622690771dbd08",
   "next_stage": "FRT-035",
   "branch": "dev-rollout-freeze",
-  "remote_head": "731b21001a90cfaf91bafefef3622690771dbd08",
+  "remote_head": "ee0d14c58429e471ec7c63b4c905b05e0eb5f87a",
   "next_action": "Activate FRT-035 as the only active stage and reconcile the real /cases ready-to-start state against its locked reference.",
   "last_progress": {
     "stage_id": "FRT-034",
