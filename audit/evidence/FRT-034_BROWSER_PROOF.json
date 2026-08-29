@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-034",
+  "reference_file": "docs/ui/reference/forteca-calm-light/034_cases_blocked.webp",
+  "reference_sha256": "641296f025bd471258d91e1941021d8477a05b21e247a0d76cabb5c94484b538",
+  "entry_url": "https://closeflowapp.vercel.app/cases?view=blocked&forteca=731b2100&refresh=frt034-root-cause-proof-final",
+  "route": "/cases",
+  "state": "Cases — Zablokowane",
+  "live_runtime": true,
+  "auth_required": true,
+  "data_source": {
+    "mode": "real_authenticated_production_runtime",
+    "workspace_scope_preserved": true,
+    "visible_total_case_count": 9,
+    "visible_waiting_case_count": 1,
+    "visible_blocked_case_count": 2,
+    "record_origin": "Both blocked rows were loaded from the authenticated workspace, including one explicitly authorized test case created through the visible production form. No screenshot fixture, hardcoded reference row or synthetic count was injected.",
+    "test_record": "FRT-034 blocked browser proof / Dorota Kołodziej / 1dfffa42-ba9c-4437-9538-1481cefcc9a6",
+    "authentication_boundary": "The user supplied the authenticated session. No credentials, cookies or tokens were read or exported."
+  },
+  "visible_structure": {
+    "observed_browser_viewport": {
+      "width": 1280,
+      "height": 720,
+      "device_pixel_ratio": 1
+    },
+    "sidebar_width_px": 256,
+    "page_header": {
+      "title": "Sprawy",
+      "description": "Zarządzaj realizacją i kompletnością materiałów klientów.",
+      "actions": ["Eksportuj", "Dodaj sprawę", "Więcej opcji dodawania sprawy"],
+      "reference_aligned_flat_header": true
+    },
+    "kpi_cards": [
+      {"label": "WSZYSTKIE", "value": 9, "value_source": "canonical workspace case records"},
+      {"label": "CZEKAJĄ NA KLIENTA", "value": 1, "value_source": "canonical waiting_on_client records"},
+      {"label": "ZABLOKOWANE", "value": 2, "value_source": "canonical blocked status or active blocker predicate"},
+      {"label": "GOTOWE DO STARTU", "value": 0, "value_source": "canonical ready-to-start records"}
+    ],
+    "toolbar": {
+      "visible_placeholder": "Szukaj sprawy, klienta lub ID...",
+      "status": "Zablokowane",
+      "status_control_disabled": true,
+      "client": "Wszyscy klienci",
+      "blocker": "Wszystkie blokady",
+      "sort": "Najdłużej zablokowane",
+      "other_controls": ["Więcej filtrów"]
+    },
+    "table_headers": ["Sprawa", "Klient", "Bloker", "Priorytet", "ZABLOKOWANE OD", "OSTATNI RUCH", "SUGEROWANA AKCJA", "Opiekun", "Akcja"],
+    "rows": [
+      {
+        "title": "Podział Działki",
+        "case_id": "d36792b1-af81-4805-b6c9-28c228ae2a41",
+        "case_short_id": "SP-D36792B1",
+        "client": "Dorota Kołodziej",
+        "client_company": "Brak firmy",
+        "blocker": "3 aktywne blokery",
+        "status": "3 aktywne blokady",
+        "priority": "Wysoki",
+        "blocked_since": "18 cze 2026, 15:24",
+        "last_move": "13 cze 2026, 11:04",
+        "real_case_link": "/cases/d36792b1-af81-4805-b6c9-28c228ae2a41",
+        "real_contact_action": "tel:669453645"
+      },
+      {
+        "title": "FRT-034 blocked browser proof",
+        "case_id": "1dfffa42-ba9c-4437-9538-1481cefcc9a6",
+        "case_short_id": "SP-1DFFFA42",
+        "client": "Dorota Kołodziej",
+        "client_company": "Brak firmy",
+        "blocker": "Blokada statusu",
+        "status": "Zablokowana",
+        "priority": "Nie ustawiono",
+        "blocked_since": "Brak daty",
+        "last_move": "29 sie 2026, 22:43",
+        "suggested_action": "Poproś klienta o brakujące elementy i ustaw przypomnienie",
+        "owner": "Nie przypisano",
+        "real_case_link": "/cases/1dfffa42-ba9c-4437-9538-1481cefcc9a6",
+        "real_contact_action": "tel:669453645"
+      }
+    ],
+    "pagination": "1–2 z 2 spraw"
+  },
+  "interaction_proof": {
+    "blocked_filter": {"status": "PASS", "observed": "The blocked state rendered two real blocked rows and the disabled status control remained selected as Zablokowane."},
+    "client_and_blocker_filters": {"status": "PASS", "observed": "Visible controls expose real client options and blocker options derived from runtime data."},
+    "sort": {"status": "PASS", "observed": "Najdłużej zablokowane is selected and the list uses the blocked-age ordering path."},
+    "row_navigation": {"status": "PASS", "observed": "Otwórz sprawę navigated to the real case detail route /cases/1dfffa42-ba9c-4437-9538-1481cefcc9a6 and the blocked list was restored afterward."},
+    "row_contact_action": {"status": "PASS", "observed": "The row exposes a truthful telephone action because the real client phone is present; no contact was initiated."},
+    "reload_persistence": {"status": "PASS", "observed": "After production navigation/reload the blocked state, both real rows, canonical labels and contact action remained present once workspace data finished loading."},
+    "waiting_disjointness": {"status": "PASS", "observed": "The waiting view rendered the separate real FRT-033 waiting row and did not render the FRT-034 blocked row; the blocked view was restored afterward."}
+  },
+  "responsive_visual_proof": {
+    "observed_viewport_check": "PASS",
+    "toolbar_client_width_px": 936,
+    "toolbar_scroll_width_px": 936,
+    "toolbar_horizontal_overflow": false,
+    "main_shell_width_px": 994,
+    "table_surface_client_width_px": 1380,
+    "table_surface_scroll_width_px": 1656,
+    "table_internal_horizontal_scroll": true,
+    "page_level_horizontal_overflow": false,
+    "single_letter_wrapping": false,
+    "row_text_word_break": "normal",
+    "row_text_overflow_wrap": "normal",
+    "evidence": "Fresh in-app DOM geometry and screenshot review showed a reference-aligned Forteca shell, readable two-column toolbar at 1280 px, an internal table scroll surface for the nine-column contract, and normal text wrapping instead of page-level overflow or one-letter columns.",
+    "literal_pixel_identity_claim": false,
+    "limitation": "The proof covers the supplied production viewport and responsive route rules; it does not claim literal pixel identity at every viewport."
+  },
+  "visual_comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "parent_review": "Parent compared the locked 034 reference, current Cases.tsx/CSS owners, fresh authenticated production DOM and screenshot review before acceptance."
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "authorized_ui_test_data_write": true,
+    "raw_database_or_api_mutation_by_agent": false,
+    "destructive_mutation": false,
+    "no_fake_blocked_fixture": true,
+    "semantic_color_source_of_truth_preserved": true,
+    "no_secret_exposure": true,
+    "no_unrelated_schema_or_backend_mutation": true
+  },
+  "production_propagation": {
+    "source_commit": "731b21001a90cfaf91bafefef3622690771dbd08",
+    "feature_commit": "202132985049689ce9a05407715bd5d33d2613d6",
+    "remote_branch": "dev-rollout-freeze",
+    "remote_head_verified": true,
+    "deployment_host": "closedockapp-56x4wzzko-dkknapikdamian-7019s-projects.vercel.app",
+    "deployment_alias": "https://closeflowapp.vercel.app/",
+    "deployment_state": "READY",
+    "deployment_target": "production",
+    "github_commit_sha": "731b21001a90cfaf91bafefef3622690771dbd08",
+    "github_commit_message": "fix(FRT-034): restore canonical blocked-case truth",
+    "github_commit_ref": "dev-rollout-freeze",
+    "live_bundle_verification": "PASS_AFTER_GIT_INTEGRATION_PROPAGATION",
+    "workflow_pass_claim": false,
+    "note": "The live Git-integrated READY production deployment and authenticated browser proof verify the implementation. No GitHub deploy-hook PASS is claimed."
+  },
+  "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "created_at": "2026-08-29T21:44:25.8977727Z"
+}

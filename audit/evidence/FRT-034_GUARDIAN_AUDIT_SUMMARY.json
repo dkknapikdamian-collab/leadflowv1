@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "evidence_type": "AI_CODE_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-034",
+  "command": "npm.cmd run guardian -- --smoke",
+  "guardian_source": "C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian",
+  "mode": "AUDIT_ONLY",
+  "auditOnly": true,
+  "fileWrites": 0,
+  "selectedCapabilities": ["repository-baseline"],
+  "selectedSkills": ["ai-code-guardian", "architecture-integrity"],
+  "coverageOutcome": "PARTIAL",
+  "raw_outcome": "PARTIAL",
+  "zero_blockers": true,
+  "blockers": 0,
+  "pass_claim": false,
+  "interpretation": "Canonical Guardian smoke completed in audit-only mode with partial coverage, no writes and no blockers. Parent source/reference/runtime review and targeted repository/browser evidence remain the acceptance basis; this is not represented as a full Guardian PASS.",
+  "created_at": "2026-08-29T20:54:10.303Z"
+}

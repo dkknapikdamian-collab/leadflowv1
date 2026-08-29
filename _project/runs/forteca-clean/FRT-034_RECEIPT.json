@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-034",
+  "reference_file": "docs/ui/reference/forteca-calm-light/034_cases_blocked.webp",
+  "reference_sha256": "641296f025bd471258d91e1941021d8477a05b21e247a0d76cabb5c94484b538",
+  "target_route": "/cases",
+  "target_state": "Cases — Zablokowane",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_AFTER_PARENT_REVIEW",
+  "acceptance_basis": {
+    "contract": "FRT-034_CASES_BLOCKED.md",
+    "visual_review": "Parent compared the locked 034 reference, real production DOM and fresh screenshot review. The Forteca cases shell, blocked KPI/filter state, four dynamic metrics, responsive toolbar, blocked-case table, real row data and action-safe controls are structurally aligned to the corrected blocked-case mapping.",
+    "behavior_review": "Authenticated production rendered two real blocked cases. The blocked filter, client/blocker controls, blocked-age sort, detail navigation, truthful telephone action and reload persistence were verified. Values and counts came from real workspace records and canonical blocker/status helpers, not from the screenshot.",
+    "test_review": "Focused FRT-032/FRT-033/FRT-034 tests passed 15/15; current Forteca milestone suite passed 28/28; TypeScript, build and diff-check passed. Semantic-color, semantic-icon and typography SOT guards passed. The CSS-owner guard retains known historical baseline failures outside this stage and FRT-034 introduces no new listed concern.",
+    "production_review": "Implementation SHA 731b2100 is present on dev-rollout-freeze and the Git-integrated Vercel production deployment closedockapp-56x4wzzko-dkknapikdamian-7019s-projects.vercel.app is READY with the production alias closeflowapp.vercel.app; live authenticated browser proof loaded the corrected blocked route.",
+    "review_status": "Parent review completed. Independent reviewer did not return a completed artifact before closeout; no independent reviewer PASS is claimed."
+  },
+  "root_cause_repairs": [
+    {
+      "finding": "The /cases runtime had no first-class blocked-case composition tied to one canonical blocked predicate; blocker truth, metrics, filters and row actions could diverge.",
+      "repair": "Added a blocked view driven by explicit blocked/on_hold status or active canonical owner-control blocker data, with shared dynamic metrics, disabled canonical status selection, real client/blocker options, blocked-age ordering and real row navigation/actions. Waiting-on-client remains excluded unless an explicit blocked/on_hold status is present."
+    },
+    {
+      "finding": "The shared owner-control consumer could miss blocker variants nested under payload/data/metadata, treat a high priority as a blocker without missing-item context, or let a false blocking flag be overridden by inference.",
+      "repair": "Expanded the existing owner-control helper to inspect the canonical nested record views, recognize explicit missing/blocking markers, honor explicit false values, require missing context for priority-only inference, and preserve closed-status exclusion. No second blocker source was introduced."
+    },
+    {
+      "finding": "Blocked timestamps could fall back to generic updated/created dates, making the ZABLOKOWANE OD column appear precise when no blocker timestamp existed; feed failure could also look like an empty healthy state.",
+      "repair": "Blocked age now uses only explicit blocked/status-change or canonical blocker creation timestamps, unknown dates sort last, and task-feed failures use Promise.allSettled with a visible blocked-only warning and retry action while preserving case data."
+    },
+    {
+      "finding": "Blocked rows lacked a reference-shaped blocker/age/priority/action surface and the narrow production viewport could clip toolbar labels.",
+      "repair": "Derived blocker reason, blocked date, priority and suggested action from existing case/task data with safe fallbacks, exposed contact actions only when a real phone/email exists, preserved the detail action, and added a route-scoped two-column toolbar breakpoint at 1400 px so 1280 px remains readable while the wide table keeps intentional internal scrolling."
+    }
+  ],
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Blocked counts, metrics, rows, labels, links and actions remain derived from real workspace case/client/task data and canonical status/blocker helpers.",
+      "No screenshot fixture, reference row, hardcoded reference count or fake blocker resolver was introduced.",
+      "The only production test-data mutation was an explicitly authorized visible-form creation of one test case; no raw database/API mutation or destructive action was used.",
+      "Semantic colors and icons resolve through shared Visual SOT owners and --cf-vst-* tokens; no stage-specific repeated color literals were added.",
+      "No unrelated route, table, RLS, function, trigger or production merge was performed."
+    ]
+  },
+  "color_source_of_truth": {
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "page_shell_owner": "src/styles/owners/closeflow-page-shell.css",
+    "cases_owner": "src/styles/forteca-cases-blocked.css",
+    "action_owner": "src/styles/owners/closeflow-actions.css",
+    "icon_owner": "src/ui-system/icons/SemanticIcon.tsx and src/components/ui-system/ActionIcon.tsx",
+    "stage_literal_color_values": 0,
+    "policy": "Repeated semantic concerns resolve through shared VST owners; reference discrepancies do not create per-window color exceptions."
+  },
+  "implementation": {
+    "code_changed": true,
+    "files_changed": [
+      "src/pages/Cases.tsx",
+      "src/lib/owner-control/owner-control-baseline.ts",
+      "src/lib/owner-control/owner-control-missing-blockers.ts",
+      "src/styles/forteca-cases-blocked.css",
+      "tests/forteca-frt-034-cases-blocked.test.cjs"
+    ],
+    "feature_commit_sha": "202132985049689ce9a05407715bd5d33d2613d6",
+    "final_implementation_commit_sha": "731b21001a90cfaf91bafefef3622690771dbd08",
+    "migration_limit": "No database migration or unrelated schema mutation was performed."
+  },
+  "tests_executed": [
+    "node --test tests/forteca-frt-032-cases-all.test.cjs tests/forteca-frt-033-cases-waiting.test.cjs tests/forteca-frt-034-cases-blocked.test.cjs (15/15 PASS)",
+    "npm.cmd run test:forteca-current (28/28 PASS)",
+    "npx.cmd tsc --noEmit --pretty false (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS: dynamic/static import overlap and large chunks)",
+    "npm.cmd run guard:ui:ssot-semantic-colors (PASS)",
+    "npm.cmd run guard:ui:ssot-icons (PASS)",
+    "npm.cmd run guard:ui:ssot-typography (PASS)",
+    "git diff --check (PASS)",
+    "canonical Guardian smoke (AUDIT_ONLY/PARTIAL; zero writes; zero blockers)",
+    "authenticated production browser: blocked filter/client-blocker controls/sort/navigation/contact/reload/responsive geometry proof (PASS)"
+  ],
+  "reused_evidence": [
+    "FRT-000 routing, reference manifest, Guardian boundary and Visual SOT owner registry",
+    "FRT-021 Forteca shell and shared semantic token evidence",
+    "FRT-029..FRT-033 real workspace scope, relation, case status, shared action/icon/color and cases route evidence"
+  ],
+  "limitations_and_follow_up": [
+    "The native case schema does not expose every metadata field shown in the reference; the blocked list derives available blocker, age, priority and suggested-action labels from the existing runtime contract rather than inventing new schema.",
+    "The reference is a visual mapping, not a source for hardcoded records or counts; live workspace data legitimately differs from sample rows.",
+    "The real Dorota test record has a phone but no email, so the safe contact action is Zadzwoń rather than an invented email reminder. No contact was initiated.",
+    "The repository CSS-owner guard continues to report pre-existing historical baseline findings (including unclassified/specificity counts) outside the FRT-034 allowed write set; the new FRT-034 stylesheet has no listed concern mismatch."
+  ],
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-034_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "fileWrites": 0
+  },
+  "marketplace_startup": {
+    "receipt_id": "startup-824a0c4af2f20ba2d153f71522cd330cc9254c59ff9e174281c759a79fa3ffae",
+    "startup_status": "PASS",
+    "startup_binding_status": "BOUND",
+    "mutation_gate": "SUBSTANTIVE_MUTATION_ALLOWED",
+    "substantiveMutationAuthorizedAfterStartup": true,
+    "primary_specialist": "frontend-design-studio",
+    "supporting_owners": ["ai-code-guardian", "agent-efficiency-guardian"],
+    "marketplace_source_sha": "6e89037049612227777d95dbdf777117790961d0"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-034_BROWSER_PROOF.json",
+    "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+    "live_runtime": true,
+    "auth_required": true,
+    "route": "https://closeflowapp.vercel.app/cases?view=blocked&forteca=731b2100&refresh=frt034-root-cause-proof-final",
+    "real_blocked_case_count": 2,
+    "blocked_filter_sort_navigation_reload": "PASS",
+    "real_contact_action": "PASS; tel action rendered from real client phone; not invoked",
+    "toolbar_overflow_at_1280": "PASS; scrollWidth 936 equals clientWidth 936",
+    "screenshot_path": null
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "marketplace_binding": "BOUND",
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_skip_reason": "No callable preferred OpenCode/Freebuff provider was available in the current host context; bounded Codex review was used as an optional sidecar, but no unverified artifact was used for acceptance.",
+    "subagents": [
+      {"id": "01a04f3f-cdf1-78b0-a73b-149501c94f1e", "role": "independent read-only FRT-034 implementation/reference review", "status": "NO_COMPLETED_ARTIFACT_BEFORE_CLOSEOUT; NO_PASS_CLAIM"}
+    ],
+    "write_owner": "Codex parent reviewed source, reference, tests and live runtime and wrote the final stage evidence/state."
+  },
+  "remote_head_verified_at_implementation_push": "731b21001a90cfaf91bafefef3622690771dbd08",
+  "branch": "dev-rollout-freeze",
+  "next_action": "Activate FRT-035 as the only active stage and reconcile the real /cases ready-to-start state against its locked reference.",
+  "created_at": "2026-08-29T21:44:25.8977727Z"
+}
