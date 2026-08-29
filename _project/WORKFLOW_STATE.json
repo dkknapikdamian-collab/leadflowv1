@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 117,
+  "state_revision": 118,
   "last_accepted": {
     "id": "FRT-029",
     "status": "PASS",
@@ -20,9 +20,9 @@
   "last_accepted_stage": "FRT-029",
   "last_accepted_commit": "4e7271e7",
   "next_stage": "FRT-030",
-  "branch": "codex/forteca-ui-001-040-clean",
-  "remote_head": "ad604fe17eda330056bd95e99551c2d4c665b113",
-  "next_action": "Obtain an authenticated or explicitly provisioned test backend in the approved in-app browser, then prove populated edit, save/update, reload consistency and cancel/close; accept FRT-030 and activate FRT-031 only with complete evidence.",
+  "branch": "dev-rollout-freeze",
+  "remote_head": "3458b32f9d485d51f0f33bb65bccd1a81b840edf",
+  "next_action": "Open the deployed dev-rollout-freeze runtime with owner authentication, then prove populated edit, save/update, reload consistency and cancel/close; accept FRT-030 and activate FRT-031 only with complete evidence.",
   "last_progress": {
     "stage_id": "FRT-030",
     "status": "IMPLEMENTATION_COMMITTED_LAYOUT_REPAIRED_BROWSER_PROOF8_TOOL_BOUNDARY_PENDING",
@@ -38,8 +38,8 @@
     "contract_path": "_project/contracts/forteca-clean/FRT-030_CLIENT_EDIT.md",
     "status": "ACTIVE",
     "base_sha": "4e7271e7",
-    "base_branch": "codex/forteca-ui-001-040-clean",
-    "target_branch": "codex/forteca-ui-001-040-clean",
+    "base_branch": "dev-rollout-freeze",
+    "target_branch": "dev-rollout-freeze",
     "blocker": "IN_APP_BROWSER_PROOF_BLOCKED: browser-proof-8 confirms populated UI and temporary React-state presence for phone/email, but approved tel/email/address control fill/value readback remains inconsistent; local Vite /api/clients is SPA fallback rather than an authenticated mutation backend, so no save/reload proof or alternate browser bypass is authorized",
     "ssot_open_findings": 0,
     "active_stage_count": 1,
@@ -100,8 +100,9 @@
   "routing_notes": {
     "old_workflow": "LF-UI-SOT-007 ACCEPTED_AND_CLOSED",
     "stale_override_branch": "codex/closeflow-v1-e2e-roadmap",
-    "approved_branch": "codex/forteca-ui-001-040-clean",
-    "routing_mismatch_action": "record only; old LF workflow and old branch were not reconciled",
+    "approved_branch": "dev-rollout-freeze",
+    "implementation_source_branch": "codex/forteca-ui-001-040-clean",
+    "routing_mismatch_action": "Forteca implementation commits were fast-forwarded from the clean implementation branch to dev-rollout-freeze; old LF workflow and old branch were not reconciled",
     "owner_directive_acceptance_authority": "CODEX"
   },
   "source_evidence": [
@@ -505,6 +506,7 @@
     "forteca:FRT-030:review@parent-source-reference-review; three bounded read-only subagent audits confirmed source order/token reuse and the browser readback blocker; no independent PASS claim",
     "forteca:FRT-030:visual-repair@reference field order source-before-notes-before-owner; source and owner half-width on desktop and full-width at <=640px",
     "forteca:FRT-030:root-cause@legacy inline ClientDetail contact editor did not provide the populated canonical edit modal; repaired with shared controlled edit owner, real update/delete wiring and scoped VST composition while approved browser control readback remains inconsistent",
-    "forteca:FRT-030:mutation-boundary@local Vite /api/clients resolves to SPA fallback source; authenticated or explicitly provisioned test backend is required before save/reload acceptance"
+    "forteca:FRT-030:mutation-boundary@local Vite /api/clients resolves to SPA fallback source; authenticated or explicitly provisioned test backend is required before save/reload acceptance",
+    "forteca:routing@dev-rollout-freeze now contains the Forteca implementation fast-forward through 3458b32f; future stage work and authenticated browser proof target this branch"
   ]
 }

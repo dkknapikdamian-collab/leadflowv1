@@ -14,8 +14,10 @@
   "blockers": 0,
   "target_wide_scan": "NOT_AVAILABLE",
   "repository": {
-    "branch": "codex/forteca-ui-001-040-clean",
-    "implementation_commit": "d6f7253c1bf93416e652afdcf4447d5ba227a02b"
+    "branch": "dev-rollout-freeze",
+    "implementation_branch": "codex/forteca-ui-001-040-clean",
+    "implementation_commit": "d6f7253c1bf93416e652afdcf4447d5ba227a02b",
+    "promoted_head": "3458b32f9d485d51f0f33bb65bccd1a81b840edf"
   },
   "stage_validation": {
     "focused_tests": "6/6 PASS",

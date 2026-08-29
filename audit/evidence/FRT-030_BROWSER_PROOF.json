@@ -14,6 +14,8 @@
   "implementation_commit": "d6f7253c1bf93416e652afdcf4447d5ba227a02b",
   "remote_head_verified": "ad604fe17eda330056bd95e99551c2d4c665b113",
   "branch": "codex/forteca-ui-001-040-clean",
+  "promoted_to_branch": "dev-rollout-freeze",
+  "promoted_head": "3458b32f9d485d51f0f33bb65bccd1a81b840edf",
   "read_only_runtime_observation": {
     "viewport": {"width": 1280, "height": 720, "devicePixelRatio": 1.25},
     "real_record_visible": {
