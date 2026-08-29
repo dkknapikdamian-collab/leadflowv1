@@ -1,7 +1,7 @@
 /* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"runtime:src/styles/work-item-card.css","concerns":[],"scope":"component","consumerRoots":["src/components/work-item-card.tsx"],"role":"scoped-adapter","boundary":"component","whyNotGlobal":"This stylesheet is limited to the declared consumer graph and does not define shared semantic primitives.","whyNotDuplicate":"No semantic concern is claimed; component/route consumers remain the authority.","activePatchLayer":false,"historicalImplementationHooks":[]} */
 .cf-work-item-card {
   display: grid;
-  grid-template-columns: 38px minmax(0, 1fr) auto;
+  grid-template-columns: 38px minmax(0, 1fr);
   gap: 12px;
   align-items: center;
   border: 1px solid #e4e7ec;
@@ -12,7 +12,7 @@
 }
 
 .cf-work-item-card[data-work-item-compact='true'] {
-  grid-template-columns: 34px minmax(0, 1fr) auto;
+  grid-template-columns: 34px minmax(0, 1fr);
   padding: 10px;
 }
 
@@ -28,6 +28,7 @@
 
 .cf-work-item-card-main {
   min-width: 0;
+  width: 100%;
 }
 
 .cf-work-item-card-topline {
@@ -62,14 +63,15 @@
 }
 
 .cf-work-item-card-title {
-  display: inline-block;
+  display: block;
   max-width: 100%;
   color: #101828;
   font-size: 14px;
   font-weight: 850;
   line-height: 1.35;
   text-align: left;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .cf-work-item-card-title:hover {
@@ -97,6 +99,9 @@
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 8px;
+  grid-column: 1 / -1;
+  min-width: 0;
+  width: 100%;
 }
 .cf-work-item-card-shift {
   min-width: 42px;

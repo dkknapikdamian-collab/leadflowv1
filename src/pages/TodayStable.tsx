@@ -2287,10 +2287,10 @@ function TodayStable() {
   const priorityRail = (
     <aside className="cf-today-priority-rail" data-cf-today-priority-rail="true">
       <div className="cf-today-priority-rail-head">
-        <div>
+        <div className="cf-today-priority-rail-copy">
           <p className="cf-today-priority-rail-kicker">PRIORYTETY</p>
-          <h2>Najważniejsze ruchy dziś</h2>
-           <p>{priorityRows.length} priorytetowe działania</p>
+          <h2 className="cf-today-priority-rail-title">Najważniejsze ruchy dziś</h2>
+          <p className="cf-today-priority-rail-subtitle">{priorityRows.length} priorytetowe działania</p>
         </div>
         <span className="cf-today-priority-rail-icon" aria-hidden="true"><Target className="h-5 w-5" /></span>
       </div>
@@ -2301,10 +2301,10 @@ function TodayStable() {
             <span className="cf-today-priority-copy">
               <span className="cf-today-priority-item-topline">
                 <span className={'cf-today-status-pill cf-today-status-pill--' + semanticBadgeTone(item.statusLabel)}>{item.statusLabel}</span>
-                {item.nextMoveAt ? <span>{formatDateTime(item.nextMoveAt)}</span> : null}
+                {item.nextMoveAt ? <span className="cf-today-priority-item-date">{formatDateTime(item.nextMoveAt)}</span> : null}
               </span>
-              <strong>{item.title}</strong>
-              <span>{item.suggestedAction || item.reason}</span>
+              <strong className="cf-today-priority-item-title">{item.title}</strong>
+              <span className="cf-today-priority-item-action">{item.suggestedAction || item.reason}</span>
             </span>
             <ArrowRight className="h-4 w-4 shrink-0 text-slate-400" aria-hidden="true" />
           </Link>

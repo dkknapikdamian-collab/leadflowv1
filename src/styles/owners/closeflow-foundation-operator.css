@@ -694,6 +694,7 @@
 
 .cf-today-main--forteca .cf-today-ready-row-copy,
 .cf-today-main--forteca .cf-today-priority-copy {
+  flex: 1 1 auto;
   flex-direction: column;
   gap: 4px;
 }
@@ -729,18 +730,27 @@
   gap: 5px;
 }
 
+.cf-today-main--forteca .cf-today-priority-rail-subtitle {
+  min-width: 0;
+  margin: 0;
+  color: var(--cf-vst-text-muted);
+  font-size: var(--cf-vst-font-size-label);
+  font-weight: var(--cf-vst-font-weight-regular);
+  line-height: var(--cf-vst-line-height-body);
+}
+
 .cf-today-main--forteca .cf-today-priority-rail-kicker {
   margin: 0;
-  color: #94a3b8;
-  font-size: 10px;
-  font-weight: 800;
+  color: var(--cf-vst-text-faint);
+  font-size: var(--cf-vst-font-size-micro);
+  font-weight: var(--cf-vst-font-weight-bold);
   letter-spacing: 0.12em;
-  line-height: 1.2;
+  line-height: var(--cf-vst-line-height-button);
 }
 
 .cf-today-main--forteca .cf-today-priority-rail-icon {
-  background: #eff6ff;
-  color: #2563eb;
+  background: var(--cf-vst-color-primary-soft);
+  color: var(--cf-vst-color-primary);
 }
 
 .cf-today-main--forteca .cf-today-priority-list {
@@ -750,7 +760,7 @@
 
 .cf-today-main--forteca .cf-today-priority-item {
   padding: 12px 0;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--cf-vst-color-status-soft);
 }
 
 .cf-today-main--forteca .cf-today-priority-number {
@@ -760,10 +770,10 @@
   flex: 0 0 24px;
   place-items: center;
   border-radius: 8px;
-  background: #f8fafc;
-  color: #64748b;
-  font-size: 11px;
-  font-weight: 800;
+  background: var(--cf-vst-surface-soft);
+  color: var(--cf-vst-text-muted);
+  font-size: var(--cf-vst-font-size-meta);
+  font-weight: var(--cf-vst-font-weight-bold);
 }
 
 .cf-today-main--forteca .cf-today-priority-item-topline {
@@ -771,28 +781,43 @@
   gap: 6px;
 }
 
-.cf-today-main--forteca .cf-today-priority-item-title {
+.cf-today-main--forteca .cf-today-priority-item-date {
+  min-width: 0;
+  flex: 0 1 auto;
   overflow: hidden;
-  color: #334155;
-  font-size: 13px;
-  font-weight: 750;
-  line-height: 1.35;
+  color: var(--cf-vst-text-faint);
+  font-size: var(--cf-vst-font-size-meta);
+  font-weight: var(--cf-vst-font-weight-regular);
+  line-height: var(--cf-vst-line-height-body);
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.cf-today-main--forteca .cf-today-priority-item-title {
+  display: block;
+  min-width: 0;
+  color: var(--cf-vst-text-main);
+  font-size: var(--cf-vst-font-size-body-sm);
+  font-weight: var(--cf-vst-font-weight-semibold);
+  line-height: var(--cf-vst-line-height-title);
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .cf-today-main--forteca .cf-today-priority-item-action,
 .cf-today-main--forteca .cf-today-priority-item-reason {
-  overflow: hidden;
-  color: #64748b;
-  font-size: 12px;
-  line-height: 1.4;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: block;
+  min-width: 0;
+  color: var(--cf-vst-text-muted);
+  font-size: var(--cf-vst-font-size-label);
+  font-weight: var(--cf-vst-font-weight-regular);
+  line-height: var(--cf-vst-line-height-body);
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .cf-today-main--forteca .cf-today-priority-item-reason {
-  color: #94a3b8;
+  color: var(--cf-vst-text-faint);
 }
 
 .cf-today-main--forteca .cf-today-priority-rail-link {
@@ -800,14 +825,14 @@
   align-items: center;
   gap: 6px;
   margin-top: 12px;
-  color: #2563eb;
-  font-size: 13px;
-  font-weight: 750;
+  color: var(--cf-vst-color-primary);
+  font-size: var(--cf-vst-font-size-body-sm);
+  font-weight: var(--cf-vst-font-weight-semibold);
   text-decoration: none;
 }
 
 .cf-today-main--forteca .cf-today-priority-rail-link:hover {
-  color: #1d4ed8;
+  color: var(--cf-vst-color-primary-strong);
 }
 
 @media (max-width: 1180px) {
