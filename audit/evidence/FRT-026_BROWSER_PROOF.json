@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-026",
+  "reference_file": "docs/ui/reference/forteca-calm-light/026_client_detail.webp",
+  "reference_sha256": "287dcc2f7b3222e149dd7ec179e9777943dd3547d5a236b18eefabf45f1f2f7d",
+  "entry_url": "http://localhost:3000/clients/dev-client-1?frt026=client-detail&refresh=26-shell-spacing-3",
+  "runtime_url": "http://localhost:3000/clients/dev-client-1?frt026=client-detail&refresh=26-shell-spacing-3",
+  "route": "/clients/:clientId",
+  "state": "Forteca calm-light Client Detail",
+  "live_runtime": true,
+  "auth_required": false,
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "record_origin": "Existing workspace-scoped client, lead, case, finance, note and activity records; reference screenshot fixtures were not copied into runtime state.",
+    "relation_truth": "The visible client identity, relationship label, client type, created date, source, case relation, finance summary, notes and activity history derive from the existing ClientDetail owners and connected records.",
+    "visible_client": "Anna Kowalska / Nova Home Studio / +48 600 111 222 / anna@novahome.pl",
+    "visible_case": "Wdrożenie strony sprzedażowej + automatyzacja formularzy i follow-up",
+    "production_path": "The page keeps the existing workspace-scoped ClientDetail loader and edit, create-case, note, activity, finance and case-action owners; no screenshot-only collection or fake success path was added."
+  },
+  "visible_structure": {
+    "requested_reference_viewport": {
+      "width": 1672,
+      "height": 941
+    },
+    "observed_browser_viewport": {
+      "width": 1672,
+      "height": 942,
+      "scroll_width": 1672,
+      "scroll_height": 942
+    },
+    "root_marker": "data-forteca-frt-026-root=\"true\"",
+    "root_count": 1,
+    "shell_marker": ".cf-html-shell.cf-route-clients.cf-route-client-detail",
+    "visual_stage_marker": "data-visual-stage-client-detail=\"06-client-detail\"",
+    "hero_marker": "data-forteca-frt-026-hero=\"true\"",
+    "case_summary_marker": "data-forteca-frt-026-case-summary=\"true\"",
+    "tabs_marker": "data-forteca-frt-026-tabs=\"true\"",
+    "lower_grid_marker": "data-forteca-frt-026-lower-grid=\"true\"",
+    "active_cases_marker": "data-forteca-frt-026-active-cases=\"true\"",
+    "notes_marker": "data-forteca-frt-026-notes=\"true\"",
+    "history_marker": "data-forteca-frt-026-contact-history=\"true\"",
+    "reference_copy_present": true,
+    "reference_copy": [
+      "Powrót",
+      "Szczegół klienta",
+      "Edytuj",
+      "Nowa sprawa",
+      "Aktywne sprawy",
+      "Notatki",
+      "Historia kontaktu",
+      "Płatności",
+      "Dokumenty",
+      "Otwórz sprawę"
+    ],
+    "body_overflow": false
+  },
+  "interaction_proof": {
+    "case_action_menu": {
+      "status": "PASS",
+      "observed": "The real case overflow control opened the Akcje sprawy menu containing Edytuj sprawę and Usuń sprawę, then the menu was dismissed without mutation."
+    },
+    "edit_dialog": {
+      "status": "PASS",
+      "observed": "The existing Edytuj action opened the real client edit overlay with populated fields; Anuluj closed it without saving."
+    },
+    "new_case_dialog": {
+      "status": "PASS",
+      "observed": "The real Nowa sprawa action opened Dodaj sprawę with its guarded form; Anuluj closed it without creating a case."
+    },
+    "note_dialog": {
+      "status": "PASS",
+      "observed": "The real Dodaj notatkę action opened the existing note dialog; Anuluj closed it without persisting a note."
+    },
+    "post_interaction_state": {
+      "status": "PASS",
+      "observed": "The Client Detail root remained mounted once, the Forteca shell and lower cards remained visible, no workspace mutation was submitted and no visible runtime error appeared in the final DOM pass."
+    }
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "client_values_are_source_derived": true,
+    "workspace_scope_preserved": true,
+    "existing_action_and_modal_owners_preserved": true,
+    "no_duplicate_detail_owner": true,
+    "no_fake_success": true,
+    "no_unapproved_live_mutation": true,
+    "semantic_color_source_of_truth_preserved": true
+  },
+  "console_errors": "NOT_CAPTURED_AS_NUMERIC_COUNTER; no visible runtime error was observed in the final DOM pass",
+  "console_warnings": "NOT_CAPTURED_AS_NUMERIC_COUNTER",
+  "screenshot_displayed_in_codex_browser": true,
+  "screenshot_path": null,
+  "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The browser reported a one-pixel inner-height rounding difference from the 1672x941 static capture.",
+      "The local workspace renders real generated client data and truthful empty notes/history where applicable rather than screenshot fixture content.",
+      "Edit, case creation, note save and destructive actions were not submitted because the browser proof was intentionally non-mutating."
+    ]
+  },
+  "implementation_commit": "0f7c7b6d618c413f21828f98fa930ae64b5cad9a",
+  "remote_head_verified": "0f7c7b6d618c413f21828f98fa930ae64b5cad9a",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "created_at": "2026-08-29T04:09:35+02:00"
+}
