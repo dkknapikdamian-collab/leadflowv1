@@ -105,10 +105,9 @@ import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import { getEventMainDate, getTaskMainDate } from '../lib/scheduling';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
-// LF-UI-SOT-007 shared-source contract: import '../styles/visual-stage13-case-detail-vnext.css' is provided once by App.tsx.
+// LF-UI-SOT-007 shared-source contract: canonical CaseDetail shell styles are imported by closeflow-visual-source-truth.css via App.tsx.
 import '../styles/closeflow-case-history-visual-source-truth.css';
-// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css' is provided once by App.tsx.
-// LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-case-detail-stage217-operation-workspace.css' is provided once by App.tsx.
+// The route keeps only its narrow history, tab and shell adapters here; shared geometry is owned by the canonical entry boundary.
 import '../styles/closeflow-case-detail-tabs.css';
 import '../styles/closeflow-case-detail-shell-rail.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';

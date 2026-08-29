@@ -1,0 +1,973 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"semantic:case-detail","concerns":["CASE_DETAIL_LAYOUT","CASE_DETAIL_SURFACES"],"scope":"route-scoped","consumerRoots":["src/pages/CaseDetail.tsx"],"role":"scoped-adapter","boundary":"route-component","whyNotGlobal":"CaseDetail composition, work rows and its right rail are route-specific; shared color, surface, action and typography values are consumed from the registered token owners.","whyNotDuplicate":"This is the single canonical owner for active CaseDetail shell/card geometry after the retired monolithic stylesheet was removed.","activePatchLayer":false,"historicalImplementationHooks":["Replaces the retired visual-stage13-case-detail-vnext.css and closeflow-case-detail-stage217-operation-workspace.css runtime coverage."]} */
+
+/*
+ * CaseDetail is rendered by the real route and is intentionally kept separate
+ * from the shared primitives. All values below resolve through the global VST
+ * tokens so repeated semantic colors remain identical across routes.
+ */
+#root .case-detail-vnext-page {
+  --cf-case-detail-surface: var(--cf-vst-surface-card-solid);
+  --cf-case-detail-surface-soft: var(--cf-vst-surface-soft);
+  --cf-case-detail-border: var(--cf-vst-surface-border);
+  --cf-case-detail-border-strong: var(--cf-vst-surface-border-strong);
+  --cf-case-detail-text: var(--cf-vst-text-strong);
+  --cf-case-detail-body: var(--cf-vst-text-main);
+  --cf-case-detail-muted: var(--cf-vst-text-muted);
+  --cf-case-detail-primary: var(--cf-vst-color-primary);
+  --cf-case-detail-primary-strong: var(--cf-vst-color-primary-strong);
+  --cf-case-detail-primary-soft: var(--cf-vst-color-primary-soft);
+  --cf-case-detail-primary-border: var(--cf-vst-color-primary-border);
+  --cf-case-detail-success: var(--cf-vst-color-success);
+  --cf-case-detail-success-soft: var(--cf-vst-color-success-soft);
+  --cf-case-detail-warning: var(--cf-vst-color-warning);
+  --cf-case-detail-warning-soft: var(--cf-vst-color-warning-soft);
+  --cf-case-detail-danger: var(--cf-vst-color-danger);
+  --cf-case-detail-danger-soft: var(--cf-vst-color-danger-soft);
+
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--cf-vst-layout-page-max);
+  min-height: 100%;
+  margin-inline: auto;
+  padding: var(--cf-vst-space-2xl) clamp(var(--cf-vst-space-lg), 3vw, var(--cf-vst-space-3xl)) 42px;
+  overflow-wrap: break-word;
+  background: var(--cf-vst-surface-canvas);
+  color: var(--cf-case-detail-body);
+}
+
+#root .case-detail-vnext-page *,
+#root .case-detail-vnext-page *::before,
+#root .case-detail-vnext-page *::after {
+  box-sizing: border-box;
+}
+
+#root .case-detail-vnext-page :is(h1, h2, h3, p, dl, dd, dt) {
+  overflow-wrap: anywhere;
+}
+
+#root .case-detail-vnext-page .case-detail-header,
+#root .case-detail-vnext-page .case-detail-shell {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+}
+
+#root .case-detail-vnext-page .case-detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--cf-vst-layout-gap-lg);
+  min-width: 0;
+  margin-bottom: var(--cf-vst-layout-gap);
+  padding: var(--cf-vst-panel-padding-lg);
+  border: 1px solid var(--cf-case-detail-border);
+  border-radius: var(--cf-vst-radius-panel);
+  background: linear-gradient(135deg, var(--cf-case-detail-surface), var(--cf-case-detail-surface-soft));
+  box-shadow: var(--cf-vst-shadow-card);
+}
+
+#root .case-detail-vnext-page .case-detail-header-copy {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--cf-vst-space-sm);
+}
+
+#root .case-detail-vnext-page .case-detail-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cf-vst-space-xs);
+  min-height: var(--cf-vst-button-height-md);
+  border: 1px solid var(--cf-case-detail-border);
+  border-radius: var(--cf-vst-radius-button);
+  background: var(--cf-case-detail-surface);
+  color: var(--cf-case-detail-muted);
+  padding: var(--cf-vst-space-sm) var(--cf-vst-button-padding-x-md);
+  font: inherit;
+  font-size: var(--cf-vst-font-size-body-sm);
+  font-weight: var(--cf-vst-font-weight-bold);
+  line-height: var(--cf-vst-line-height-button);
+  cursor: pointer;
+  box-shadow: var(--cf-vst-shadow-card);
+}
+
+#root .case-detail-vnext-page .case-detail-back-button:hover {
+  border-color: var(--cf-case-detail-primary-border);
+  color: var(--cf-case-detail-primary-strong);
+}
+
+#root .case-detail-vnext-page .case-detail-kicker {
+  margin: var(--cf-vst-space-2xs) 0 0;
+  color: var(--cf-case-detail-primary-strong);
+  font-size: var(--cf-vst-font-size-meta);
+  font-weight: var(--cf-vst-font-weight-heavy);
+  letter-spacing: 0.08em;
+  line-height: var(--cf-vst-line-height-button);
+  text-transform: uppercase;
+}
+
+#root .case-detail-vnext-page .case-detail-header-composed-title {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--cf-vst-space-xs);
+  margin: 0;
+  color: var(--cf-case-detail-text);
+  font-size: clamp(22px, 2.2vw, var(--cf-vst-font-size-page-title));
+  font-weight: var(--cf-vst-font-weight-heavy);
+  letter-spacing: var(--cf-vst-letter-spacing-tight);
+  line-height: var(--cf-vst-line-height-title);
+}
+
+#root .case-detail-vnext-page .case-detail-header-client-name,
+#root .case-detail-vnext-page .case-detail-header-case-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+#root .case-detail-vnext-page .case-detail-header-separator {
+  color: var(--cf-case-detail-muted);
+  font-weight: var(--cf-vst-font-weight-regular);
+}
+
+#root .case-detail-vnext-page .case-detail-header-actions-stage231b0 {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--cf-vst-space-sm);
+  margin-left: auto;
+}
+
+#root .case-detail-vnext-page .case-detail-header-actions-stage231b0 .cf-vst-button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+#root .case-detail-vnext-page .case-detail-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, var(--cf-vst-layout-right-rail));
+  align-items: start;
+  gap: var(--cf-vst-layout-gap-lg);
+}
+
+#root .case-detail-vnext-page .case-detail-main-column,
+#root .case-detail-vnext-page .case-detail-right-rail {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: var(--cf-vst-layout-gap);
+}
+
+#root .case-detail-vnext-page .case-detail-right-rail {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+#root .case-detail-vnext-page .case-detail-right-rail::before,
+#root .case-detail-vnext-page .case-detail-right-rail::after {
+  display: none;
+  content: none;
+}
+
+/* Tabs are a full-width card in the service column, not an inline default Radix strip. */
+#root .case-detail-vnext-page .case-detail-stage228r10d-tabs-card {
+  display: block;
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+  padding: var(--cf-vst-space-sm);
+  border: 1px solid var(--cf-case-detail-border);
+  border-radius: var(--cf-vst-radius-card);
+  background: var(--cf-case-detail-surface);
+  box-shadow: var(--cf-vst-shadow-card);
+}
+
+#root .case-detail-vnext-page .case-detail-stage220a10-tabs-wrap {
+  display: block;
+  width: 100%;
+  margin: 0;
+}
+
+#root .case-detail-vnext-page .case-detail-tabs {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--cf-vst-button-height-lg);
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--cf-vst-space-2xs);
+  padding: var(--cf-vst-space-2xs);
+  border: 0;
+  border-radius: var(--cf-vst-radius-button);
+  background: var(--cf-case-detail-surface-soft);
+  color: var(--cf-case-detail-muted);
+}
+
+#root .case-detail-vnext-page .case-detail-tabs > [data-stage220a11-case-tab-trigger] {
+  display: inline-flex;
+  min-width: 0;
+  min-height: var(--cf-vst-button-height-md);
+  flex: 0 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: var(--cf-vst-space-xs);
+  border: 1px solid transparent;
+  border-radius: var(--cf-vst-radius-button);
+  background: transparent;
+  color: var(--cf-case-detail-muted);
+  padding: var(--cf-vst-space-sm) var(--cf-vst-button-padding-x-md);
+  font: inherit;
+  font-size: var(--cf-vst-font-size-body-sm);
+  font-weight: var(--cf-vst-font-weight-semibold);
+  line-height: var(--cf-vst-line-height-button);
+  cursor: pointer;
+  box-shadow: none;
+}
+
+#root .case-detail-vnext-page .case-detail-tabs > [data-stage220a11-case-tab-trigger]:hover,
+#root .case-detail-vnext-page .case-detail-tabs > [data-stage220a11-case-tab-trigger][data-state="active"],
+#root .case-detail-vnext-page .case-detail-tabs > [data-stage220a11-case-tab-trigger].case-detail-tab-active {
+  border-color: var(--cf-case-detail-primary-border);
+  background: var(--cf-case-detail-primary-soft);
+  color: var(--cf-case-detail-primary-strong);
+}
+
+#root .case-detail-vnext-page .case-detail-stage220a10-tab-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+#root .case-detail-vnext-page .case-detail-stage220a10-tab-icon svg {
+  width: var(--cf-vst-icon-size-sm);
+  height: var(--cf-vst-icon-size-sm);
+  stroke: currentColor;
+}
+
+#root .case-detail-vnext-page .case-detail-stage220a10-tab-label,
+#root .case-detail-vnext-page .case-detail-stage220a10-tab-count {
+  min-width: 0;
+  line-height: var(--cf-vst-line-height-button);
+}
+
+#root .case-detail-vnext-page .case-detail-stage220a10-tab-count {
+  display: inline-flex;
+  min-width: 22px;
+  min-height: 22px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--cf-case-detail-border);
+  border-radius: var(--cf-vst-radius-pill);
+  background: var(--cf-case-detail-surface);
+  color: var(--cf-case-detail-muted);
+  padding-inline: var(--cf-vst-space-xs);
+  font-size: var(--cf-vst-font-size-meta);
+  font-weight: var(--cf-vst-font-weight-bold);
+}
+
+/* Shared route card surface. It intentionally wins over utility defaults only inside CaseDetail. */
+#root .case-detail-vnext-page :is(.case-detail-section-card, .case-detail-right-card, .case-detail-loading-card, .case-detail-empty-card) {
+  min-width: 0;
+  border: 1px solid var(--cf-case-detail-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  background: var(--cf-case-detail-surface) !important;
+  background-image: none !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+  color: var(--cf-case-detail-text) !important;
+}
+
+#root .case-detail-vnext-page :is(.case-detail-section-card, .case-detail-right-card) {
+  padding: var(--cf-vst-panel-padding);
+}
+
+#root .case-detail-vnext-page .case-detail-section-head {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--cf-vst-space-lg);
+  margin-bottom: var(--cf-vst-space-lg);
+}
+
+#root .case-detail-vnext-page .case-detail-section-head > div:first-child {
+  min-width: 0;
+}
+
+#root .case-detail-vnext-page .case-detail-section-head h2,
+#root .case-detail-vnext-page .case-detail-section-head h3 {
+  margin: 0;
+  color: var(--cf-case-detail-text);
+  font-size: var(--cf-vst-font-size-section-title);
+  font-weight: var(--cf-vst-font-weight-heavy);
+  letter-spacing: -0.03em;
+  line-height: var(--cf-vst-line-height-title);
+}
+
+#root .case-detail-vnext-page .case-detail-section-head p {
+  max-width: 680px;
+  margin: var(--cf-vst-space-2xs) 0 0;
+  color: var(--cf-case-detail-muted);
+  font-size: var(--cf-vst-font-size-body-sm);
+  line-height: var(--cf-vst-line-height-body);
+}
+
+#root .case-detail-vnext-page .case-detail-eyebrow {
+  margin: 0 0 var(--cf-vst-space-2xs);
+  color: var(--cf-case-detail-primary-strong);
+  font-size: var(--cf-vst-font-size-meta);
+  font-weight: var(--cf-vst-font-weight-heavy);
+  letter-spacing: 0.08em;
+  line-height: var(--cf-vst-line-height-button);
+  text-transform: uppercase;
+}
+
+/* FRT-038 service workspace structure is already real; this owner restores its intended geometry. */
+#root .case-detail-vnext-page .case-service-workspace-grid {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1.7fr) minmax(260px, 0.9fr);
+  align-items: start;
+  gap: var(--cf-vst-layout-gap);
+}
+
+#root .case-detail-vnext-page .case-service-left-column {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: var(--cf-vst-layout-gap);
+}
+
+#root .case-detail-vnext-page :is(.case-service-actions-panel, .case-service-notes-panel) {
+  min-width: 0;
+  align-self: start;
+  margin: 0;
+}
+
+#root .case-detail-vnext-page .stage217-case-operation-workspace,
+#root .case-detail-vnext-page .stage217-case-notes-panel {
+  height: auto;
+  overflow: hidden;
+}
+
+#root .case-detail-vnext-page .stage217-case-operation-head {
+  align-items: flex-start;
+}
+
+#root .case-detail-vnext-page .stage217-case-service-actions,
+#root .case-detail-vnext-page .stage219-case-notes-actions {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--cf-vst-space-xs);
+}
+
+#root .case-detail-vnext-page .stage217-case-service-actions .cf-vst-button,
+#root .case-detail-vnext-page .stage219-case-notes-actions .cf-vst-button {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+#root .case-detail-vnext-page .stage220a8-case-actions-preview {
+  min-width: 0;
+  margin-top: var(--cf-vst-space-lg);
+  padding-top: var(--cf-vst-space-lg);
+  border-top: 1px solid var(--cf-case-detail-border);
+}
+
+#root .case-detail-vnext-page .stage220a8-case-actions-preview-head,
+#root .case-detail-vnext-page .stage220a8-case-actions-group-trigger {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cf-vst-space-md);
+}
+
+#root .case-detail-vnext-page .stage220a8-case-actions-preview-head {
+  margin-bottom: var(--cf-vst-space-md);
+}
+
+#root .case-detail-vnext-page .stage220a8-case-actions-preview-head > div:first-child,
+#root .case-detail-vnext-page .stage220a8-case-actions-group-trigger > span:first-child {
+  min-width: 0;
+}
+
+#root .case-detail-vnext-page .stage220a8-case-actions-preview-label {
+  display: block;
+  margin-bottom: var(--cf-vst-space-2xs);
+  color: var(--cf-case-detail-primary-strong);
+  font-size: var(--cf-vst-font-size-meta);
+  font-weight: var(--cf-vst-font-weight-heavy);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+#root .case-detail-vnext-page .stage220a8-case-actions-preview h3 {
+  margin: 0;
+  color: var(--cf-case-detail-text);
+  font-size: var(--cf-vst-font-size-body);
+  font-weight: var(--cf-vst-font-weight-bold);
+  line-height: var(--cf-vst-line-height-body);
+}
+
+#root .case-detail-vnext-page .stage220a8-case-actions-head-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--cf-vst-space-sm);
+}
+
+#root .case-detail-vnext-page .stage220a8-case-actions-preview-count,
+#root .case-detail-vnext-page .stage220a8-show-all-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--cf-vst-button-height-sm);
+  border: 1px solid var(--cf-case-detail-border);
+  border-radius: var(--cf-vst-radius-pill);
+  background: var(--cf-case-detail-surface-soft);
+  color: var(--cf-case-detail-muted);
+  padding: var(--cf-vst-space-2xs) var(--cf-vst-button-padding-x-sm);
+  font: inherit;
+  font-size: var(--cf-vst-font-size-meta);
+  font-weight: var(--cf-vst-font-weight-bold);
+  line-height: var(--cf-vst-line-height-button);
+}
+
+#root .case-detail-vnext-page .stage220a8-show-all-button {
+  cursor: pointer;
+}
+
+#root .case-detail-vnext-page .stage220a8-show-all-button:hover {
+  border-color: var(--cf-case-detail-primary-border);
+  background: var(--cf-case-detail-primary-soft);
+  color: var(--cf-case-detail-primary-strong);
+}
+
+#root .case-detail-vnext-page .stage220a8-case-actions-group {
+  min-width: 0;
+  margin-top: var(--cf-vst-space-sm);
+  border: 1px solid var(--cf-case-detail-border);
+  border-radius: var(--cf-vst-radius-button);
+  background: var(--cf-case-detail-surface-soft);
+  overflow: hidden;
+}
+
+#root .case-detail-vnext-page .stage220a8-case-actions-group-trigger {
+  width: 100%;
+  min-height: var(--cf-vst-button-height-md);
+  border: 0;
+  background: transparent;
+  color: var(--cf-case-detail-body);
+  padding: var(--cf-vst-space-sm) var(--cf-vst-space-md);
+  font: inherit;
+  font-size: var(--cf-vst-font-size-body-sm);
+  font-weight: var(--cf-vst-font-weight-bold);
+  text-align: left;
+  cursor: pointer;
+}
+
+#root .case-detail-vnext-page .stage220a8-case-actions-group-trigger:hover,
+#root .case-detail-vnext-page .stage220a8-case-actions-group--open .stage220a8-case-actions-group-trigger {
+  background: var(--cf-case-detail-primary-soft);
+  color: var(--cf-case-detail-primary-strong);
+}
+
+#root .case-detail-vnext-page .stage220a8-case-actions-group-trigger strong {
+  display: inline-flex;
+  min-width: 24px;
+  min-height: 24px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--cf-vst-radius-pill);
+  background: var(--cf-case-detail-surface);
+  color: var(--cf-case-detail-muted);
+  font-size: var(--cf-vst-font-size-meta);
+}
+
+#root .case-detail-vnext-page :is(.case-detail-work-list, .case-detail-checklist-list, .case-detail-stage220a10-history-list, .stage217-case-notes-list) {
+  display: grid;
+  min-width: 0;
+  gap: var(--cf-vst-space-sm);
+}
+
+#root .case-detail-vnext-page .stage220a8-case-actions-group .case-detail-work-list {
+  padding: 0 var(--cf-vst-space-sm) var(--cf-vst-space-sm);
+}
+
+/* Work rows use flexible columns so long Polish labels never collapse into one character per line. */
+#root .case-detail-vnext-page .case-detail-work-row {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: var(--cf-vst-icon-box-md) minmax(0, 1fr) minmax(74px, auto) auto auto;
+  grid-template-areas: "icon main date status actions";
+  align-items: center;
+  gap: var(--cf-vst-space-md);
+  padding: var(--cf-vst-space-md);
+  border: 1px solid var(--cf-case-detail-border);
+  border-radius: var(--cf-vst-radius-button);
+  background: var(--cf-case-detail-surface);
+  color: var(--cf-case-detail-text);
+}
+
+#root .case-detail-vnext-page .case-detail-work-icon {
+  display: grid;
+  width: var(--cf-vst-icon-box-md);
+  height: var(--cf-vst-icon-box-md);
+  grid-area: icon;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: var(--cf-vst-radius-button);
+  background: var(--cf-case-detail-primary-soft);
+  color: var(--cf-case-detail-primary);
+}
+
+#root .case-detail-vnext-page .case-detail-work-icon svg {
+  width: var(--cf-vst-icon-size-sm);
+  height: var(--cf-vst-icon-size-sm);
+  stroke: currentColor;
+}
+
+#root .case-detail-vnext-page .case-detail-work-main {
+  min-width: 0;
+  grid-area: main;
+}
+
+#root .case-detail-vnext-page .case-detail-kind-pill,
+#root .case-detail-vnext-page .case-detail-pill {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  align-items: center;
+  min-height: 24px;
+  border: 1px solid var(--cf-case-detail-primary-border);
+  border-radius: var(--cf-vst-radius-pill);
+  background: var(--cf-case-detail-primary-soft);
+  color: var(--cf-case-detail-primary-strong);
+  padding: var(--cf-vst-space-2xs) var(--cf-vst-space-sm);
+  font-size: var(--cf-vst-font-size-meta);
+  font-weight: var(--cf-vst-font-weight-bold);
+  line-height: var(--cf-vst-line-height-button);
+}
+
+#root .case-detail-vnext-page .case-detail-work-main h3,
+#root .case-detail-vnext-page .case-detail-checklist-row h3,
+#root .case-detail-vnext-page .case-detail-history-row h3 {
+  margin: var(--cf-vst-space-2xs) 0 0;
+  color: var(--cf-case-detail-text);
+  font-size: var(--cf-vst-font-size-body);
+  font-weight: var(--cf-vst-font-weight-bold);
+  line-height: var(--cf-vst-line-height-title);
+}
+
+#root .case-detail-vnext-page .case-detail-work-main p,
+#root .case-detail-vnext-page .case-detail-checklist-row p,
+#root .case-detail-vnext-page .case-detail-history-row p,
+#root .case-detail-vnext-page .case-detail-muted-hint {
+  margin: var(--cf-vst-space-2xs) 0 0;
+  color: var(--cf-case-detail-muted);
+  font-size: var(--cf-vst-font-size-body-sm);
+  line-height: var(--cf-vst-line-height-body);
+}
+
+#root .case-detail-vnext-page .case-detail-work-date {
+  min-width: 0;
+  grid-area: date;
+}
+
+#root .case-detail-vnext-page .case-detail-work-date small {
+  display: block;
+  color: var(--cf-case-detail-muted);
+  font-size: var(--cf-vst-font-size-meta);
+  font-weight: var(--cf-vst-font-weight-semibold);
+}
+
+#root .case-detail-vnext-page .case-detail-work-date strong {
+  display: block;
+  margin-top: var(--cf-vst-space-2xs);
+  color: var(--cf-case-detail-text);
+  font-size: var(--cf-vst-font-size-meta);
+  line-height: var(--cf-vst-line-height-body);
+  white-space: nowrap;
+}
+
+#root .case-detail-vnext-page .case-detail-work-row > .case-detail-pill {
+  grid-area: status;
+  white-space: nowrap;
+}
+
+#root .case-detail-vnext-page .case-detail-row-actions {
+  display: flex;
+  min-width: 0;
+  grid-area: actions;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--cf-vst-space-2xs);
+}
+
+#root .case-detail-vnext-page .case-detail-row-actions button:not(.cf-vst-button),
+#root .case-detail-vnext-page .case-detail-row-actions .case-detail-row-action-trash {
+  display: inline-flex;
+  min-height: var(--cf-vst-button-height-sm);
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--cf-case-detail-border);
+  border-radius: var(--cf-vst-radius-pill);
+  background: var(--cf-case-detail-surface);
+  color: var(--cf-case-detail-body);
+  padding: var(--cf-vst-space-2xs) var(--cf-vst-button-padding-x-sm);
+  font: inherit;
+  font-size: var(--cf-vst-font-size-meta);
+  font-weight: var(--cf-vst-font-weight-bold);
+  line-height: var(--cf-vst-line-height-button);
+  cursor: pointer;
+}
+
+#root .case-detail-vnext-page .case-detail-row-actions button:not(.cf-vst-button):hover {
+  border-color: var(--cf-case-detail-primary-border);
+  background: var(--cf-case-detail-primary-soft);
+  color: var(--cf-case-detail-primary-strong);
+}
+
+#root .case-detail-vnext-page .case-detail-row-actions .case-detail-row-action-trash,
+#root .case-detail-vnext-page .case-detail-row-actions .case-detail-row-action-trash:hover {
+  border-color: var(--cf-vst-color-delete-border);
+  background: var(--cf-vst-color-delete-soft);
+  color: var(--cf-vst-color-delete-strong);
+}
+
+#root .case-detail-vnext-page .case-detail-pill-green {
+  border-color: var(--cf-vst-color-task-border);
+  background: var(--cf-vst-color-task-soft);
+  color: var(--cf-vst-color-task);
+}
+
+#root .case-detail-vnext-page .case-detail-pill-blue {
+  border-color: var(--cf-vst-color-primary-border);
+  background: var(--cf-vst-color-primary-soft);
+  color: var(--cf-vst-color-primary-strong);
+}
+
+#root .case-detail-vnext-page .case-detail-pill-red {
+  border-color: var(--cf-vst-color-delete-border);
+  background: var(--cf-vst-color-delete-soft);
+  color: var(--cf-vst-color-delete-strong);
+}
+
+#root .case-detail-vnext-page .case-detail-pill-amber {
+  border-color: var(--cf-vst-color-event-border);
+  background: var(--cf-vst-color-event-soft);
+  color: var(--cf-vst-color-event);
+}
+
+#root .case-detail-vnext-page .case-detail-pill-muted {
+  border-color: var(--cf-case-detail-border);
+  background: var(--cf-case-detail-surface-soft);
+  color: var(--cf-case-detail-muted);
+}
+
+#root .case-detail-vnext-page .stage217-case-note-row {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: var(--cf-vst-icon-box-sm) minmax(0, 1fr);
+  gap: var(--cf-vst-space-md);
+  padding: var(--cf-vst-space-md);
+  border: 1px solid var(--cf-vst-color-payment-border);
+  border-radius: var(--cf-vst-radius-button);
+  background: var(--cf-case-detail-surface);
+}
+
+#root .case-detail-vnext-page .stage217-case-note-row__icon {
+  display: inline-flex;
+  width: var(--cf-vst-icon-box-sm);
+  height: var(--cf-vst-icon-box-sm);
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--cf-vst-radius-button);
+  background: var(--cf-vst-color-payment-soft);
+  color: var(--cf-vst-color-payment);
+}
+
+#root .case-detail-vnext-page .stage217-case-note-row time {
+  display: block;
+  margin-bottom: var(--cf-vst-space-2xs);
+  color: var(--cf-case-detail-muted);
+  font-size: var(--cf-vst-font-size-meta);
+  font-weight: var(--cf-vst-font-weight-semibold);
+}
+
+#root .case-detail-vnext-page .stage217-case-note-row p {
+  margin: 0;
+  color: var(--cf-case-detail-body);
+  font-size: var(--cf-vst-font-size-body-sm);
+  line-height: var(--cf-vst-line-height-body);
+  white-space: pre-wrap;
+}
+
+#root .case-detail-vnext-page .case-detail-checklist-row {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--cf-vst-space-md);
+  padding: var(--cf-vst-space-md);
+  border: 1px solid var(--cf-case-detail-border);
+  border-radius: var(--cf-vst-radius-button);
+  background: var(--cf-case-detail-surface);
+}
+
+#root .case-detail-vnext-page .case-detail-checklist-row > div:first-child {
+  min-width: 0;
+}
+
+#root .case-detail-vnext-page .case-detail-checklist-row .case-detail-row-actions {
+  grid-area: auto;
+}
+
+#root .case-detail-vnext-page .case-detail-history-row {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: var(--cf-vst-icon-box-md) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--cf-vst-space-md);
+  padding: var(--cf-vst-space-md);
+  border: 1px solid var(--cf-case-detail-border);
+  border-left: 3px solid var(--cf-case-detail-primary);
+  border-radius: var(--cf-vst-radius-button);
+  background: var(--cf-case-detail-surface);
+}
+
+#root .case-detail-vnext-page .case-detail-history-icon {
+  display: grid;
+  width: var(--cf-vst-icon-box-md);
+  height: var(--cf-vst-icon-box-md);
+  place-items: center;
+  border: 1px solid var(--cf-case-detail-primary-border);
+  border-radius: var(--cf-vst-radius-button);
+  background: var(--cf-case-detail-primary-soft);
+  color: var(--cf-case-detail-primary);
+}
+
+#root .case-detail-vnext-page .case-detail-stage220a10-history-main {
+  min-width: 0;
+}
+
+#root .case-detail-vnext-page .case-detail-history-title-row {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--cf-vst-space-md);
+}
+
+#root .case-detail-vnext-page .case-detail-history-title-row strong {
+  min-width: 0;
+  color: var(--cf-case-detail-text);
+  font-size: var(--cf-vst-font-size-body);
+  font-weight: var(--cf-vst-font-weight-bold);
+}
+
+#root .case-detail-vnext-page .case-detail-history-title-row small {
+  flex: 0 0 auto;
+  color: var(--cf-case-detail-muted);
+  font-size: var(--cf-vst-font-size-meta);
+}
+
+#root .case-detail-vnext-page .case-detail-light-empty {
+  border: 1px dashed var(--cf-case-detail-border-strong);
+  border-radius: var(--cf-vst-radius-button);
+  background: var(--cf-case-detail-surface-soft);
+  color: var(--cf-case-detail-muted);
+  padding: var(--cf-vst-space-lg);
+  font-size: var(--cf-vst-font-size-body-sm);
+  line-height: var(--cf-vst-line-height-body);
+}
+
+/* Finance and shared quick actions remain their own semantic owners; this only composes them in the rail. */
+#root .case-detail-vnext-page .case-detail-right-card.cf-finance-scope-card {
+  padding: var(--cf-vst-panel-padding) !important;
+}
+
+#root .case-detail-vnext-page .case-quick-actions-rail {
+  min-width: 0;
+  margin-top: var(--cf-vst-space-lg);
+}
+
+#root .case-detail-vnext-page .cf-shared-quick-actions-bar {
+  border-color: var(--cf-case-detail-border);
+  border-radius: var(--cf-vst-radius-card);
+  background: var(--cf-case-detail-surface);
+  box-shadow: none;
+  color: var(--cf-case-detail-text);
+}
+
+#root .case-detail-vnext-page .cf-shared-quick-actions-bar__header strong,
+#root .case-detail-vnext-page .cf-shared-quick-actions-bar__button {
+  color: var(--cf-case-detail-body);
+}
+
+#root .case-detail-vnext-page .cf-shared-quick-actions-bar__button {
+  border-color: var(--cf-case-detail-border);
+  background: var(--cf-case-detail-surface);
+}
+
+#root .case-detail-vnext-page .cf-shared-quick-actions-bar__button:hover:not(:disabled) {
+  border-color: var(--cf-case-detail-primary-border);
+  background: var(--cf-case-detail-primary-soft);
+  color: var(--cf-case-detail-primary-strong);
+}
+
+#root .case-detail-vnext-page .cf-finance-scope-card__metrics {
+  min-width: 0;
+}
+
+#root .case-detail-vnext-page .cf-finance-scope-card__metrics dt {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+#root .case-detail-vnext-page .case-detail-loading-card,
+#root .case-detail-vnext-page .case-detail-empty-card {
+  width: min(620px, 100%);
+  margin: 80px auto;
+  padding: var(--cf-vst-panel-padding-lg);
+}
+
+#root .case-detail-vnext-page .case-detail-empty-card h1 {
+  margin: 0;
+  color: var(--cf-case-detail-text);
+  font-size: var(--cf-vst-font-size-page-title);
+}
+
+#root .case-detail-vnext-page .case-detail-empty-card p,
+#root .case-detail-vnext-page .case-detail-loading-card span {
+  margin: 0;
+  color: var(--cf-case-detail-muted);
+  font-size: var(--cf-vst-font-size-body);
+  line-height: var(--cf-vst-line-height-body);
+}
+
+@media (max-width: 1180px) {
+  #root .case-detail-vnext-page .case-detail-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #root .case-detail-vnext-page .case-detail-right-rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #root .case-detail-vnext-page .case-service-workspace-grid {
+    grid-template-columns: minmax(0, 1.45fr) minmax(250px, 0.9fr);
+  }
+}
+
+@media (max-width: 900px) {
+  #root .case-detail-vnext-page .case-detail-header {
+    flex-direction: column;
+    gap: var(--cf-vst-space-lg);
+  }
+
+  #root .case-detail-vnext-page .case-detail-header-actions-stage231b0 {
+    width: 100%;
+    justify-content: flex-start;
+    margin-left: 0;
+  }
+
+  #root .case-detail-vnext-page .case-service-workspace-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #root .case-detail-vnext-page .case-detail-right-rail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #root .case-detail-vnext-page .case-detail-work-row {
+    grid-template-columns: var(--cf-vst-icon-box-md) minmax(0, 1fr) auto;
+    grid-template-areas:
+      "icon main status"
+      "icon date actions";
+    align-items: start;
+  }
+
+  #root .case-detail-vnext-page .case-detail-row-actions {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 760px) {
+  #root .case-detail-vnext-page {
+    padding: var(--cf-vst-space-lg) var(--cf-vst-space-md) 28px;
+  }
+
+  #root .case-detail-vnext-page .case-detail-header {
+    padding: var(--cf-vst-panel-padding);
+  }
+
+  #root .case-detail-vnext-page .case-detail-header-actions-stage231b0,
+  #root .case-detail-vnext-page .stage217-case-service-actions,
+  #root .case-detail-vnext-page .stage219-case-notes-actions,
+  #root .case-detail-vnext-page .case-detail-section-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  #root .case-detail-vnext-page .case-detail-header-actions-stage231b0 .cf-vst-button,
+  #root .case-detail-vnext-page .stage217-case-service-actions .cf-vst-button,
+  #root .case-detail-vnext-page .stage219-case-notes-actions .cf-vst-button {
+    width: 100%;
+  }
+
+  #root .case-detail-vnext-page .case-detail-tabs {
+    overflow-x: auto;
+  }
+
+  #root .case-detail-vnext-page .case-detail-tabs > [data-stage220a11-case-tab-trigger] {
+    flex: 0 0 auto;
+  }
+
+  #root .case-detail-vnext-page .case-detail-work-row {
+    grid-template-columns: var(--cf-vst-icon-box-md) minmax(0, 1fr);
+    grid-template-areas:
+      "icon main"
+      "icon date"
+      "icon status"
+      "icon actions";
+  }
+
+  #root .case-detail-vnext-page .case-detail-work-row > .case-detail-pill,
+  #root .case-detail-vnext-page .case-detail-row-actions {
+    justify-self: start;
+  }
+
+  #root .case-detail-vnext-page .case-detail-checklist-row {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  #root .case-detail-vnext-page .case-detail-checklist-row .case-detail-row-actions {
+    justify-content: flex-start;
+  }
+
+  #root .case-detail-vnext-page .case-detail-history-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #root .case-detail-vnext-page .case-detail-history-icon {
+    display: none;
+  }
+
+  #root .case-detail-vnext-page .case-detail-history-title-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--cf-vst-space-2xs);
+  }
+}

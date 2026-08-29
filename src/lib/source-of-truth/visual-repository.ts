@@ -179,9 +179,9 @@ export const recordListVisualContract: VisualContract = {
 export const detailViewVisualContract: VisualContract = {
   ...baseContract,
   area: 'Detail views and right rails',
-  sourceFiles: ['src/pages/LeadDetail.tsx', 'src/pages/ClientDetail.tsx', 'src/pages/CaseDetail.tsx', 'src/styles/visual-stage14-lead-detail-vnext.css', 'src/styles/visual-stage12-client-detail-vnext.css', 'src/styles/visual-stage13-case-detail-vnext.css', 'src/styles/closeflow-detail-view-source-truth-stage219.css', 'src/styles/closeflow-right-rail-source-truth.css', 'src/styles/closeflow-case-detail-focus.css', 'src/styles/closeflow-case-history-visual-source-truth.css', 'src/styles/closeflow-case-detail-shell-rail.css'],
+  sourceFiles: ['src/pages/LeadDetail.tsx', 'src/pages/ClientDetail.tsx', 'src/pages/CaseDetail.tsx', 'src/styles/closeflow-case-detail-focus.css', 'src/styles/owners/closeflow-case-detail.css', 'src/styles/closeflow-case-history-visual-source-truth.css', 'src/styles/closeflow-case-detail-shell-rail.css', 'src/styles/closeflow-case-detail-tabs.css'],
   activePrimitives: ['src/components/entity-actions.tsx', 'src/components/ui-system/ActionIcon.tsx'],
-  cssSources: ['src/styles/closeflow-detail-view-source-truth-stage219.css', 'src/styles/closeflow-right-rail-source-truth.css', 'src/styles/visual-stage13-case-detail-vnext.css'],
+  cssSources: ['src/styles/closeflow-visual-source-truth.css', 'src/styles/owners/closeflow-case-detail.css', 'src/styles/closeflow-case-history-visual-source-truth.css', 'src/styles/closeflow-case-detail-tabs.css', 'src/styles/closeflow-case-detail-shell-rail.css'],
   tokenSources: ['src/styles/owners/closeflow-foundation.css'],
   tailwindSources: ['LeadDetail', 'ClientDetail', 'CaseDetail'],
   consumers: ['LeadDetail', 'ClientDetail', 'CaseDetail', 'right rail', 'service workspace', 'finance rail', 'quick actions', 'history panels', 'notes/checklists areas'],

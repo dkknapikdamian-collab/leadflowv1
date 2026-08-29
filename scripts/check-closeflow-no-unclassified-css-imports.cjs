@@ -12,6 +12,8 @@ const allowedCssRoots = [
   'src/styles/',
   'src/index.css',
   'src/App.css',
+  // Public legal pages intentionally colocate their isolated stylesheet with the page module.
+  'src/pages/legal-public-pages.css',
 ];
 
 function walk(dir, out = []) {
