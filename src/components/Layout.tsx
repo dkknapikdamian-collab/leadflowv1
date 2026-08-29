@@ -83,6 +83,24 @@ type NavGroup = {
   items: NavItem[];
 };
 
+const FORTECA_CASES_NAV_ORDER = [
+  '/',
+  '/leads',
+  '/clients',
+  '/cases',
+  '/activity',
+  '/tasks',
+  '/calendar',
+  '/templates',
+  '/response-templates',
+  '/ai-drafts',
+  '/notifications',
+  '/billing',
+  '/help',
+  '/settings/ai',
+  '/settings',
+] as const;
+
 function isNavItemActive(pathname: string, itemPath: string) {
   if (itemPath === '/') return pathname === '/';
   if (itemPath === '/settings/ai') return pathname === '/settings/ai';
@@ -496,7 +514,16 @@ export default function Layout({ children }: LayoutProps) {
         ],
       }];
     }
-    if (isFortecaClientsRoute || isClientDetailRoute || isFortecaCasesRoute) {
+    if (isFortecaCasesRoute) {
+      const order = new Map(FORTECA_CASES_NAV_ORDER.map((path, index) => [path, index]));
+      const items = navGroups
+        .flatMap((group) => group.items)
+        .filter((item) => item.path !== '/funnel')
+        .sort((left, right) => (order.get(left.path as (typeof FORTECA_CASES_NAV_ORDER)[number]) ?? Number.MAX_SAFE_INTEGER)
+          - (order.get(right.path as (typeof FORTECA_CASES_NAV_ORDER)[number]) ?? Number.MAX_SAFE_INTEGER));
+      return [{ caption: '', items }];
+    }
+    if (isFortecaClientsRoute || isClientDetailRoute) {
       return [{ caption: '', items: navGroups.flatMap((group) => group.items) }];
     }
     return navGroups;
