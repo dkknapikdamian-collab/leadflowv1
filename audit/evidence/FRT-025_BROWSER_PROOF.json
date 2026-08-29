@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-025",
+  "reference_file": "docs/ui/reference/forteca-calm-light/025_clients_archived.webp",
+  "reference_sha256": "89a5896d8837d7a0a5d9458e54bf15a53776ddc3fdd69e286f1241f8c438374f",
+  "entry_url": "http://localhost:3000/clients?frt025=archived&refresh=25-browser-proof",
+  "runtime_url": "http://localhost:3000/clients?frt025=archived&refresh=25-browser-proof",
+  "route": "/clients",
+  "state": "Forteca calm-light Clients — archived",
+  "live_runtime": true,
+  "auth_required": false,
+  "data_source": {
+    "mode": "real_local_runtime_dev_preview",
+    "record_origin": "Existing workspace-scoped Clients records, archive metadata and related case/activity records; reference screenshot fixtures were not copied into runtime state.",
+    "relation_truth": "Archived rows, archive reasons, dates, latest case/activity and KPI values derive from the existing Clients data and connected domain records. The current local preview has no canonical archived client rows, so zero KPIs and the truthful empty state are preserved.",
+    "visible_rows": 0,
+    "visible_summary": [
+      "Klienci w archiwum 0",
+      "Zarchiwizowani w tym miesiącu 0",
+      "Można przywrócić 0",
+      "Nieaktywni > 90 dni 0"
+    ],
+    "production_path": "The page keeps the existing workspace-scoped Clients loader, archive/restore handler, shared ConfirmDialog and client navigation/action owners; no screenshot-only collection, fake archive row, fake KPI or irreversible delete action was added."
+  },
+  "visible_structure": {
+    "requested_reference_viewport": {
+      "width": 1672,
+      "height": 941
+    },
+    "observed_browser_viewport": {
+      "width": 1672,
+      "height": 942,
+      "scroll_width": 1672,
+      "scroll_height": 942
+    },
+    "root_marker": "data-forteca-frt-025-root=\"true\"",
+    "root_count": 1,
+    "shell_marker": ".cf-html-shell.cf-route-clients",
+    "tabs_marker": "data-forteca-frt-025-tabs=\"true\"",
+    "kpis_marker": "data-forteca-frt-025-kpis=\"true\"",
+    "toolbar_marker": "data-forteca-frt-025-toolbar=\"true\"",
+    "table_marker": "data-forteca-frt-025-table=\"true\"",
+    "guide_marker": "data-forteca-frt-025-guide=\"true\"",
+    "active_tab": "Archiwalne",
+    "row_count": 0,
+    "empty_state": "Brak zarchiwizowanych klientów",
+    "geometry": {
+      "page": {
+        "x": 283.2,
+        "y": 25,
+        "width": 1357.6,
+        "height": 905.4
+      },
+      "tabs": {
+        "x": 283.2,
+        "y": 85,
+        "width": 1357.6,
+        "height": 35.8
+      },
+      "kpis": {
+        "x": 283.2,
+        "y": 142.8,
+        "width": 1357.6,
+        "height": 132
+      },
+      "toolbar": {
+        "x": 283.2,
+        "y": 286.8,
+        "width": 1053.6,
+        "height": 57.6
+      },
+      "table_card": {
+        "x": 283.2,
+        "y": 356.4,
+        "width": 1053.6,
+        "height": 574
+      },
+      "guide": {
+        "x": 1348.8,
+        "y": 286.8,
+        "width": 292,
+        "height": 285.3
+      }
+    },
+    "reference_copy_present": true,
+    "reference_copy": [
+      "Klienci",
+      "Dostosuj widok",
+      "Dodaj klienta",
+      "Aktywni",
+      "Archiwalne",
+      "Wszyscy",
+      "Klienci w archiwum",
+      "Zarchiwizowani w tym miesiącu",
+      "Można przywrócić",
+      "Nieaktywni > 90 dni",
+      "Szukaj klienta...",
+      "Powód archiwizacji",
+      "Data archiwizacji",
+      "Opiekun",
+      "Wyczyść filtry",
+      "Klienci archiwalni",
+      "Archiwizacja nie usuwa danych."
+    ],
+    "body_overflow": false
+  },
+  "interaction_proof": {
+    "tabs": {
+      "status": "PASS",
+      "observed": "Archiwalne remained selected and the real archived state rendered with active tab semantics."
+    },
+    "customize_view": {
+      "status": "PASS",
+      "observed": "Dostosuj widok opened the live Widoczne kolumny panel with aria-expanded=true and closed cleanly."
+    },
+    "archive_date_filter": {
+      "status": "PASS",
+      "observed": "Data archiwizacji opened with Wszystkie, Ostatnie 30 dni, Ostatnie 90 dni and Ponad 90 dni; selecting Ostatnie 30 dni retained the truthful zero result."
+    },
+    "clear_filters": {
+      "status": "PASS",
+      "observed": "Wyczyść filtry restored the all/default selections and page 1 without mutating workspace records."
+    },
+    "restore_boundary": {
+      "status": "PASS",
+      "observed": "No restore confirmation was opened because the real local workspace has zero archived rows. The existing handleRestoreClient path and shared ConfirmDialog remain wired for a real row; no mutation was invoked."
+    },
+    "post_interaction_state": {
+      "status": "PASS",
+      "observed": "Menus and filters were closed, Archiwalne remained active, the empty state remained visible, document overflow stayed false and no fresh console errors or warnings were recorded."
+    }
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "archive_values_are_source_derived": true,
+    "workspace_scope_preserved": true,
+    "existing_restore_and_confirm_owners_preserved": true,
+    "no_duplicate_list_owner": true,
+    "no_fake_success": true,
+    "no_unapproved_live_mutation": true,
+    "semantic_color_source_of_truth_preserved": true
+  },
+  "console_errors": 0,
+  "console_warnings": 0,
+  "screenshot_displayed_in_codex_browser": true,
+  "screenshot_path": null,
+  "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The browser reported a one-pixel inner-height rounding difference from the 1672x941 static capture.",
+      "The live local workspace has no canonical archived client rows, so row values and KPI totals intentionally render a truthful empty state instead of screenshot fixture data.",
+      "Restore confirmation and destructive archive/delete paths were not invoked because there was no real row and live mutations were outside the non-mutating browser proof boundary."
+    ]
+  },
+  "implementation_commit": "fd17480986f62b665e4e65b8780a08d924310361",
+  "remote_head_verified": "fd17480986f62b665e4e65b8780a08d924310361",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "created_at": "2026-08-29T03:01:00+02:00"
+}

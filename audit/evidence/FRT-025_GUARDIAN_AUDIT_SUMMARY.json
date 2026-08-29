@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-025",
+  "mode": "AUDIT_ONLY",
+  "command": "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+  "raw_outcome": "PARTIAL",
+  "coverageOutcome": "PARTIAL",
+  "pass_claim": false,
+  "fileWrites": 0,
+  "selectedCapabilities": [
+    "repository-baseline"
+  ],
+  "selectedSkills": [
+    "ai-code-guardian",
+    "architecture-integrity"
+  ],
+  "receiptIds": [
+    "guardian-plugin-smoke-coverage",
+    "guardian-plugin-smoke-result"
+  ],
+  "blockers": 0,
+  "target_wide_scan": "NOT_AVAILABLE",
+  "repository": {
+    "branch": "codex/forteca-ui-001-040-clean",
+    "implementation_commit": "fd17480986f62b665e4e65b8780a08d924310361"
+  },
+  "stage_validation": {
+    "focused_tests": "7/7 PASS",
+    "typescript": "PASS",
+    "production_build": "PASS_WITH_KNOWN_WARNINGS",
+    "diff_check": "PASS",
+    "raw_stage_color_literals": 0,
+    "browser_runtime": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+    "browser_console_errors": 0,
+    "browser_console_warnings": 0,
+    "independent_review": "PARENT_REVIEW_COMPLETE; INDEPENDENT_PASS_NOT_CLAIMED_AFTER_BOUNDED_SUBAGENT_ATTEMPTS"
+  },
+  "known_baseline_findings": [
+    "The installed Guardian entrypoint exposes partial repository-baseline coverage and no target-wide scan.",
+    "Existing global shell adapter ownership mismatch and existing direct icon-registry import remain outside FRT-025's allowed write set.",
+    "Existing Today no-scroll-trap baseline finding remains outside FRT-025's allowed write set.",
+    "The production build reports the existing supabase-fallback dynamic/static import overlap and existing chunks larger than 500 kB."
+  ],
+  "interpretation": "Guardian smoke completed with zero writes and no returned blocker. Coverage remains PARTIAL, so no full target-wide Guardian PASS is claimed.",
+  "color_policy": {
+    "status": "PASS",
+    "semantic_primary_base": "--cf-vst-color-primary",
+    "semantic_task_base": "--cf-vst-color-task",
+    "semantic_event_base": "--cf-vst-color-event",
+    "semantic_payment_base": "--cf-vst-color-payment",
+    "semantic_delete_base": "--cf-vst-color-delete",
+    "stage_literal_color_values": 0,
+    "stage_adapter": "src/styles/forteca-clients-archived.css",
+    "rule": "Reference-image discrepancies never create per-window color exceptions. Repeated semantic icons use their shared VST family, and all trash/delete icons use the shared delete family."
+  },
+  "created_at": "2026-08-29T03:01:00+02:00"
+}

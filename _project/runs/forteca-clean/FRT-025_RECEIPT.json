@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-025",
+  "reference_file": "docs/ui/reference/forteca-calm-light/025_clients_archived.webp",
+  "reference_sha256": "89a5896d8837d7a0a5d9458e54bf15a53776ddc3fdd69e286f1241f8c438374f",
+  "target_route": "/clients",
+  "target_state": "Clients — archived",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_AFTER_PARENT_REVIEW",
+  "acceptance_basis": {
+    "directive_interpretation": "The approved Forteca branch is the sole implementation route. The parent independently checked repository identity, exact reference, source-of-truth ownership, focused tests, typecheck, build, Guardian output, live browser DOM, non-mutating interactions and screenshot before closeout.",
+    "root_cause": "The Clients route had no dedicated archived state that reconciled archive metadata, restore ownership, confirmation safety, filters, KPI derivation and the reference hierarchy.",
+    "repair": "FRT-025 adds a live archived Clients state using existing workspace-scoped client archive metadata, related case/activity records and the existing restore/ConfirmDialog owners, with reference-aligned tabs, KPI cards, filters, table, guide panel, pagination and semantic VST tokens.",
+    "review_status": "Parent review completed against the static reference, final source diff, real runtime DOM, interaction outcomes, semantic token usage and browser screenshot. One bounded CSS sidecar returned no artifact; the focused-test sidecar returned the reviewed test file. No independent reviewer PASS is claimed.",
+    "guardian_interpretation": "Guardian smoke is AUDIT_ONLY/PARTIAL with zero writes and zero returned blockers. A full target-wide Guardian PASS is not claimed.",
+    "browser_boundary": "The real /clients archived route was exercised at the reference viewport with active-tab rendering, customization panel, archive-date filter, clear filters, empty-state and no-overflow checks. The local preview has no canonical archived rows, so restore confirmation was not invoked and no live mutation was made."
+  },
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Reference fixture clients, dates, owners and totals are never inserted into runtime state or API payloads.",
+      "Archived rows and KPI values derive from canonical client archive metadata and connected workspace records.",
+      "Existing restore and confirmation owners remain the mutation boundary; no parallel archive flow or irreversible delete action was added.",
+      "Reference-image discrepancies never create per-window color exceptions. Repeated semantic icons resolve through shared VST families.",
+      "All trash/delete icons continue to resolve through the canonical --cf-vst-color-delete family.",
+      "No fake success, automatic merge, silent fallback, unapproved browser mutation or production merge was introduced."
+    ]
+  },
+  "color_source_of_truth": {
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "action_owner": "src/styles/owners/closeflow-actions.css",
+    "icon_owner": "src/ui-system/icons/SemanticIcon.tsx and src/components/ui-system/ActionIcon.tsx",
+    "stage_adapter": "src/styles/forteca-clients-archived.css",
+    "semantic_tone_adapters": {
+      "primary": "--cf-vst-color-primary",
+      "task": "--cf-vst-color-task",
+      "event": "--cf-vst-color-event",
+      "payment": "--cf-vst-color-payment",
+      "delete": "--cf-vst-color-delete"
+    },
+    "stage_literal_color_values": 0,
+    "policy": "Each semantic concern has one VST token owner across every window and repeated component instance. Reference drift does not create local palette copies."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "src/pages/Clients.tsx",
+    "src/styles/forteca-clients-archived.css",
+    "tests/forteca-frt-025-clients-archived.test.cjs"
+  ],
+  "visual_sot_owners_used": [
+    "PAGE_SHELL",
+    "RIGHT_RAIL",
+    "CARDS_TILES",
+    "SEARCH",
+    "LIST_ROWS",
+    "BADGES",
+    "SURFACES",
+    "MODALS",
+    "BUTTONS_ACTIONS",
+    "RESPONSIVE_DENSITY"
+  ],
+  "visible_controls_inventory": [
+    "Dostosuj widok",
+    "Dodaj klienta",
+    "Clients archive tabs",
+    "search",
+    "Powód archiwizacji",
+    "Data archiwizacji",
+    "Opiekun",
+    "Wyczyść filtry",
+    "Widoczne kolumny",
+    "row navigation",
+    "Przywróć",
+    "row action menu",
+    "pagination",
+    "Dowiedz się więcej"
+  ],
+  "dead_controls": 0,
+  "real_data_preserved": true,
+  "tests_executed": [
+    "node --test tests/forteca-frt-025-clients-archived.test.cjs (7/7 PASS)",
+    ".\\node_modules\\.bin\\tsc.cmd --noEmit (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS)",
+    "git diff --check -- stage files (PASS)",
+    "stage CSS/TSX/test raw color scan (NO_RAW_COLOR_LITERALS)",
+    "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke (PARTIAL, zero writes, zero blockers)",
+    "Live Codex In-app Browser proof at the 1672x941 reference capture size of the real /clients archived state, filters, customization panel and no fresh console errors (PASS)",
+    "Parent comparison of docs/ui/reference/forteca-calm-light/025_clients_archived.webp against live runtime screenshot (STRUCTURAL_PARITY_PASS)"
+  ],
+  "tests_reused": [
+    "FRT-000 routing, reference manifest, Guardian boundary and visual SOT owner registry",
+    "FRT-010 to FRT-019 client/lead relation, workspace scope, archive/action and semantic icon evidence",
+    "FRT-020 Forteca shell, guarded action and browser harness baseline",
+    "FRT-021 Clients all-state runtime and shared client action ownership",
+    "FRT-022 to FRT-024 relation-filtered Clients states, finance/list ownership and browser evidence baseline"
+  ],
+  "tests_skipped_with_reason": [
+    {
+      "test": "live restore/archive mutation and export/download",
+      "reason": "NOT_EXECUTED_BY_DESIGN: the current local workspace has no archived row and live archive/restore or download actions would change or create workspace state."
+    },
+    {
+      "test": "target-wide AICG Guardian scan",
+      "reason": "NOT_AVAILABLE: installed Guardian entrypoint exposes only partial repository-baseline smoke coverage; pass_claim=false."
+    },
+    {
+      "test": "independent final reviewer PASS",
+      "reason": "PROCESS_BOUNDARY: bounded CSS subagent returned no artifact before closeout; focused-test artifact was reviewed by the parent, so no independent PASS is claimed."
+    }
+  ],
+  "typecheck": "PASS",
+  "lint": "NOT_RUN",
+  "build": "PASS_WITH_KNOWN_WARNINGS",
+  "build_warnings": [
+    "Existing dynamic/static import overlap for src/lib/supabase-fallback.ts",
+    "Existing chunks larger than 500 kB after minification"
+  ],
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-025_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "current_target_scan": "NOT_AVAILABLE",
+    "plugin_smoke": "EXECUTED: PARTIAL / coverage PARTIAL / fileWrites 0"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-025_BROWSER_PROOF.json",
+    "screenshot_path": null,
+    "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+    "live_runtime": true,
+    "auth_required": false,
+    "route": "http://localhost:3000/clients?frt025=archived&refresh=25-browser-proof",
+    "visible_rows": 0,
+    "customize_view": "PASS",
+    "archive_date_filter": "PASS",
+    "clear_filters": "PASS",
+    "restore_boundary": "PASS; no row available, no mutation invoked",
+    "console_errors": 0,
+    "console_warnings": 0,
+    "screenshot_displayed_in_codex_browser": true
+  },
+  "comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "literal_pixel_identity_claim": false,
+    "limitations": [
+      "The browser reported a one-pixel inner-height rounding difference from the static capture.",
+      "Underlying local archive data has zero canonical archived rows and therefore renders the truthful empty state instead of reference fixture rows/totals.",
+      "Live restore/archive mutations and downloads were not invoked because they would change or create workspace state."
+    ]
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "efficiency_planning": "APPLIED",
+    "marketplace_binding": "BOUND",
+    "startup_receipt": "startup-0c83ac1a8ba4ea0a53f29e3cad5b26198266780b0bbb1346db0bd148c466ddf8",
+    "primary_capabilities": [
+      "frontend-design-studio",
+      "ai-code-guardian",
+      "agent-efficiency-guardian"
+    ],
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_skip_reason": "Marketplace discovery exposed no available preferred provider. No OpenCode/Freebuff provider was callable in this host context.",
+    "subagents": [
+      {
+        "id": "01a04aff-8f39-7e32-b6eb-86992920e759",
+        "role": "bounded CSS visual implementation",
+        "status": "CLOSED_NO_ARTIFACT_AFTER_BOUNDED_WAIT"
+      },
+      {
+        "id": "01a04aff-920a-7ff0-9676-7d88deba562d",
+        "role": "bounded focused-test implementation",
+        "status": "COMPLETED_ARTIFACT_REVIEWED_BY_PARENT"
+      }
+    ],
+    "write_owner": "Codex parent validated and wrote the final stage artifacts."
+  },
+  "implementation_commit_sha": "fd17480986f62b665e4e65b8780a08d924310361",
+  "remote_head_verified": "fd17480986f62b665e4e65b8780a08d924310361",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "created_at": "2026-08-29T03:01:00+02:00"
+}
