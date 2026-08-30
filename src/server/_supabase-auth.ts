@@ -174,7 +174,9 @@ export async function requireSupabaseRequestContext(req: any): Promise<SupabaseR
   const userMetadata = (user.user_metadata && typeof user.user_metadata === 'object' ? user.user_metadata : {}) as Record<string, unknown>;
 
   const context: SupabaseRequestContext = {
-    userId: asText(user.user_id || user.sub),
+    // Supabase's /auth/v1/user response uses `id`; keep the legacy JWT aliases
+    // for compatibility with callers/tests that provide user_id or sub.
+    userId: asText(user.id || user.user_id || user.sub),
     email: asText(user.email) || null,
     fullName: stringFromMetadata(userMetadata, ['full_name', 'name', 'display_name']),
     workspaceId: stringFromMetadata(appMetadata, ['workspace_id', 'workspaceId']),
