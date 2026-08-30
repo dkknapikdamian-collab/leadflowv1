@@ -1,6 +1,6 @@
 # FRT-031 — CLIENT NEW CASE
 
-CONTRACT_STATUS: ACTIVE
+CONTRACT_STATUS: LOCKED
 STAGE_ID: FRT-031
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/031_client_new_case_modal.webp
 TARGET_ROUTE: /clients/:clientId
