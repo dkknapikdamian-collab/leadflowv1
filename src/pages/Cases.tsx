@@ -38,7 +38,8 @@ import { transitionCaseLifecycleStatusV1 } from '../lib/case-lifecycle-actions';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { getCaseOwnerRiskBadges, ownerRiskTone } from '../lib/owner-control/owner-risk-rules';
 import { readOwnerRiskSettings } from '../lib/owner-control/owner-risk-settings';
-import { getCaseStatusLabel, getCaseStatusTone } from '../lib/config/case-status';
+import { CASE_STATUS_OPTIONS, getCaseStatusLabel, getCaseStatusTone } from '../lib/config/case-status';
+import { readCreatedCaseId } from '../lib/cases/read-created-case-id';
 import { getOwnerRiskLabel } from '../lib/config/funnel-stages';
 import { caseDetailPath } from '../lib/routes';
 import { requireWorkspaceId } from '../lib/workspace-context';
@@ -95,6 +96,13 @@ type ClientOption = {
   source: 'case' | 'lead' | 'client';
 };
 
+const CASE_CREATE_STATUS_VALUES = new Set([
+  'in_progress',
+  'waiting_on_client',
+  'blocked',
+  'ready_to_start',
+]);
+
 type CaseView =
   | 'open'
   | 'closed'
@@ -122,39 +130,91 @@ function normalizeClientText(value: unknown) {
 }
 
 function buildClientOptions(cases: CaseRecord[], leads: any[], clients: any[] = []) {
-  const map = new Map<string, ClientOption>();
+  const options: ClientOption[] = [];
+  const byDetails = new Map<string, ClientOption>();
+  const byId = new Map<string, ClientOption>();
+  const sourcePriority: Record<ClientOption['source'], number> = { case: 1, lead: 2, client: 3 };
 
-  const push = (rawName: unknown, rawEmail: unknown, rawPhone: unknown, source: 'case' | 'lead' | 'client') => {
+  const push = (
+    rawId: unknown,
+    rawName: unknown,
+    rawEmail: unknown,
+    rawPhone: unknown,
+    source: ClientOption['source'],
+  ) => {
+    const id = normalizeClientText(rawId);
     const name = normalizeClientText(rawName);
     const email = normalizeClientText(rawEmail);
     const phone = normalizeClientText(rawPhone);
     if (!name && !email && !phone) return;
 
-    const key = `${name.toLowerCase()}|${email.toLowerCase()}|${phone}`;
-    if (map.has(key)) return;
+    const detailsKey = `${name.toLowerCase()}|${email.toLowerCase()}|${phone}`;
+    const existingById = id ? byId.get(id) : undefined;
+    const existingByDetails = byDetails.get(detailsKey);
+    const existing = existingById || (
+      existingByDetails && (!id || !existingByDetails.id || existingByDetails.id === id)
+        ? existingByDetails
+        : undefined
+    );
 
-    map.set(key, {
-      key,
+    if (existing) {
+      if (id && !existing.id) {
+        existing.id = id;
+        existing.key = `id:${id}`;
+      }
+      if (name && (!existing.name || existing.name === 'Klient')) existing.name = name;
+      if (email && !existing.email) existing.email = email;
+      if (phone && !existing.phone) existing.phone = phone;
+      if (sourcePriority[source] > sourcePriority[existing.source]) existing.source = source;
+      if (id) byId.set(id, existing);
+      byDetails.set(detailsKey, existing);
+      return;
+    }
+
+    const option: ClientOption = {
+      key: id ? `id:${id}` : `details:${detailsKey}`,
+      id: id || undefined,
       name: name || email || phone || 'Klient',
       email,
       phone,
       source,
-    });
+    };
+    options.push(option);
+    byDetails.set(detailsKey, option);
+    if (id) byId.set(id, option);
   };
 
   for (const record of cases) {
-    push(record.clientName, record.clientEmail, record.clientPhone, 'case');
+    push(record.clientId, record.clientName, record.clientEmail, record.clientPhone, 'case');
   }
 
   for (const lead of leads) {
-    push(lead?.name || lead?.company, lead?.email, lead?.phone, 'lead');
+    push(lead?.clientId || lead?.client_id, lead?.name || lead?.company, lead?.email, lead?.phone, 'lead');
   }
 
   for (const client of clients) {
-    push(client?.name || client?.company, client?.email, client?.phone, 'client');
+    push(client?.id, client?.name || client?.company, client?.email, client?.phone, 'client');
   }
 
-  return [...map.values()].sort((left, right) => left.name.localeCompare(right.name, 'pl', { sensitivity: 'base' }));
+  return options.sort((left, right) => left.name.localeCompare(right.name, 'pl', { sensitivity: 'base' }));
+}
+
+function getCreateCaseErrorMessage(error: unknown) {
+  const rawMessage = error && typeof error === 'object' && 'message' in error
+    ? String((error as { message?: unknown }).message || '')
+    : String(error || '');
+  const message = rawMessage.toLowerCase();
+
+  if (message.includes('client_not_found') || message.includes('nie znaleziono klienta')) {
+    return 'Nie znaleziono wybranego klienta. Wybierz go ponownie.';
+  }
+  if (message.includes('auth_workspace_required') || message.includes('workspace')) {
+    return 'Sesja workspace wygasła. Odśwież stronę i spróbuj ponownie.';
+  }
+  if (message.includes('case_id_missing_after_create')) {
+    return 'Sprawa została zapisana, ale system nie zwrócił jej identyfikatora. Odśwież listę i sprawdź zapis.';
+  }
+  return 'Nie udało się utworzyć sprawy. Spróbuj ponownie.';
 }
 
 function caseNeedsAttention(caseRecord: CaseRecord, lifecycleCompletenessPercent = caseRecord.completenessPercent || 0, lifecycleBucket?: string) {
@@ -553,6 +613,7 @@ export default function Cases() {
 
   async function handleCreateCase(e: FormEvent) {
     e.preventDefault();
+    if (createCasePending) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
@@ -561,7 +622,7 @@ export default function Cases() {
 
     try {
       setCreateCasePending(true);
-      await createCaseInSupabase({
+      const createdCase = await createCaseInSupabase({
         title: newCase.title.trim(),
         clientId: newCase.clientId || null,
         clientName: newCase.clientName.trim(),
@@ -572,8 +633,18 @@ export default function Cases() {
         portalReady: false,
         workspaceId,
       });
-      await refreshCases();
-      toast.success('Sprawa utworzona');
+      const createdCaseId = readCreatedCaseId(createdCase);
+      if (!createdCaseId) throw new Error('CASE_ID_MISSING_AFTER_CREATE');
+
+      let refreshFailed = false;
+      try {
+        await refreshCases();
+      } catch (refreshError) {
+        refreshFailed = true;
+        console.error('Case created but list refresh failed', refreshError);
+      }
+
+      toast.success(refreshFailed ? 'Sprawa utworzona. Odśwież listę, aby ją zobaczyć.' : 'Sprawa utworzona');
       setIsCreateCaseOpen(false);
       setShowCreateClientFields(false);
       setNewCase({
@@ -585,7 +656,7 @@ export default function Cases() {
         status: 'in_progress',
       });
     } catch (error: any) {
-      toast.error('Nie udało się zapisać. Spróbuj ponownie.');
+      toast.error(getCreateCaseErrorMessage(error));
     } finally {
       setCreateCasePending(false);
     }
@@ -615,6 +686,7 @@ export default function Cases() {
                             <EntityIcon entity="ai" className="h-4 w-4" /> Zapytaj AI
                           </Button>
                           <Dialog open={isCreateCaseOpen} onOpenChange={(open) => {
+                            if (createCasePending) return;
                             setIsCreateCaseOpen(open);
                             if (!open) {
                               setShowCreateClientFields(false);
@@ -625,11 +697,11 @@ export default function Cases() {
                                 <Plus className="h-4 w-4" /> Nowa sprawa
                               </Button>
                             </DialogTrigger>
-                            <DialogContent className="client-case-form-content case-form-stage23-content" data-case-form-stage23="true" data-client-case-form-visual-rebuild={CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES}>
+                            <DialogContent className="client-case-form-content case-form-stage23-content" data-case-add-modal="true" data-case-form-stage23="true" data-client-case-form-visual-rebuild={CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES}>
                               <DialogHeader className="client-case-form-header">
                                 <span className="client-case-form-kicker">SPRAWA</span>
                                 <DialogTitle>Nowa sprawa</DialogTitle>
-                                <p>Utwórz krótką sprawę operacyjną. Klient z kontekstu zostanie przypięty automatycznie.</p>
+                                <p>Utwórz sprawę i przypisz ją do istniejącego lub nowego klienta.</p>
                               </DialogHeader>
 
                               <form onSubmit={handleCreateCase} className="client-case-form" data-case-form-fields="case">
@@ -641,8 +713,9 @@ export default function Cases() {
 
                                   <div className="client-case-form-grid">
                                     <div className="client-case-form-field client-case-form-field-wide">
-                                      <Label>Tytuł sprawy</Label>
+                                      <Label htmlFor="case-create-title">Tytuł sprawy</Label>
                                       <Input
+                                        id="case-create-title"
                                         value={newCase.title}
                                         onChange={(event) => setNewCase((prev) => ({ ...prev, title: event.target.value }))}
                                         placeholder="np. Wdrożenie klienta X"
@@ -650,7 +723,7 @@ export default function Cases() {
                                     </div>
 
                                     <div className="client-case-form-field client-case-form-field-wide">
-                                      <Label>Klient</Label>
+                                      <Label htmlFor={newCase.clientId ? undefined : 'case-create-client'}>Klient</Label>
                                       {newCase.clientId ? (
                                         <div className="client-case-form-locked-client" data-case-form-client-prefilled="true">
                                           <strong>{newCase.clientName || 'Klient z kontekstu'}</strong>
@@ -666,6 +739,7 @@ export default function Cases() {
                                         <>
                                           <div className="client-case-form-client-row">
                                             <Input
+                                              id="case-create-client"
                                               value={newCase.clientName}
                                               onChange={(event) => setNewCase((prev) => ({ ...prev, clientName: event.target.value, clientId: '' }))}
                                               placeholder="Wpisz klienta, a system podpowie z klientów, leadów i spraw"
@@ -676,6 +750,7 @@ export default function Cases() {
                                               size="icon"
                                               onClick={() => setShowCreateClientFields((prev) => !prev)}
                                               title="Dodaj nowego klienta"
+                                              aria-label="Dodaj nowego klienta"
                                             >
                                               <Plus className="h-4 w-4" />
                                             </Button>
@@ -713,16 +788,18 @@ export default function Cases() {
                                         <p>Nowy klient dla tej sprawy</p>
                                         <div className="client-case-form-grid">
                                           <div className="client-case-form-field">
-                                            <Label>E-mail klienta</Label>
+                                            <Label htmlFor="case-create-email">E-mail klienta</Label>
                                             <Input
+                                              id="case-create-email"
                                               value={newCase.clientEmail}
                                               onChange={(event) => setNewCase((prev) => ({ ...prev, clientEmail: event.target.value }))}
                                               placeholder="np. klient@firma.pl"
                                             />
                                           </div>
                                           <div className="client-case-form-field">
-                                            <Label>Telefon klienta</Label>
+                                            <Label htmlFor="case-create-phone">Telefon klienta</Label>
                                             <Input
+                                              id="case-create-phone"
                                               value={newCase.clientPhone}
                                               onChange={(event) => setNewCase((prev) => ({ ...prev, clientPhone: event.target.value }))}
                                               placeholder="np. 500 000 000"
@@ -733,35 +810,39 @@ export default function Cases() {
                                     ) : null}
 
                                     <div className="client-case-form-field">
-                                      <Label>Status</Label>
+                                      <Label htmlFor="case-create-status">Status</Label>
                                       <select
+                                        id="case-create-status"
                                         className="client-case-form-select"
                                         value={newCase.status}
                                         onChange={(event) => setNewCase((prev) => ({ ...prev, status: event.target.value }))}
                                       >
-                                        <option value="in_progress">W realizacji</option>
-                                        <option value="waiting_on_client">Czeka na klienta</option>
-                                        <option value="blocked">Zablokowana</option>
-                                        <option value="ready_to_start">Gotowa do startu</option>
+                                        {CASE_STATUS_OPTIONS
+                                          .filter((option) => CASE_CREATE_STATUS_VALUES.has(option.value))
+                                          .map((option) => (
+                                            <option key={option.value} value={option.value}>{option.label}</option>
+                                          ))}
                                       </select>
                                     </div>
 
                                     <div className="client-case-form-field">
-                                      <Label>Powiązany lead</Label>
-                                      <Input value="Jeśli tworzysz sprawę z leada, użyj flow Rozpocznij obsługę w LeadDetail." disabled />
+                                      <Label htmlFor="case-create-lead">Powiązany lead</Label>
+                                      <Input id="case-create-lead" value="Jeśli tworzysz sprawę z leada, użyj flow Rozpocznij obsługę w LeadDetail." disabled />
                                     </div>
 
                                     <div className="client-case-form-field client-case-form-field-wide">
-                                      <Label>Opis</Label>
+                                      <Label htmlFor="case-create-description">Opis</Label>
                                       <div className="client-case-form-disabled-note">
+                                        <span id="case-create-description">
                                         Opis sprawy nie jest zapisywany w obecnym modelu danych. Ten etap nie udaje pola, którego backend nie obsługuje.
+                                        </span>
                                       </div>
                                     </div>
                                   </div>
                                 </section>
 
                                 <DialogFooter className={modalFooterClass('client-case-form-footer')}>
-                                  <Button type="button" variant="outline" onClick={() => setIsCreateCaseOpen(false)}>
+                                  <Button type="button" variant="outline" onClick={() => setIsCreateCaseOpen(false)} disabled={createCasePending}>
                                     Anuluj
                                   </Button>
                                   <Button type="submit" disabled={createCasePending || !workspaceReady}>

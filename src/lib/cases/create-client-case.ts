@@ -1,4 +1,7 @@
 import { createCaseInSupabase } from '../supabase-fallback';
+import { readCreatedCaseId } from './read-created-case-id';
+
+export { readCreatedCaseId } from './read-created-case-id';
 
 export type CreateStarterCaseForClientInput = {
   title: string;
@@ -9,20 +12,6 @@ export type CreateStarterCaseForClientInput = {
   workspaceId: string;
   primaryForClient: boolean;
 };
-
-export function readCreatedCaseId(result: unknown) {
-  const row = (result || {}) as Record<string, any>;
-  return String(
-    row.id
-    || row.caseId
-    || row.case_id
-    || row.case?.id
-    || row.data?.id
-    || row.data?.case?.id
-    || row.row?.id
-    || ''
-  ).trim();
-}
 
 export async function createStarterCaseForClient(input: CreateStarterCaseForClientInput) {
   const createdCase = await createCaseInSupabase({
