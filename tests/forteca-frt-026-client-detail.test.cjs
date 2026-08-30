@@ -108,6 +108,27 @@ test('FRT-026 keeps client detail data owned by real client-scoped sources', () 
   has(detail, '{forteca026LatestNote}', 'real activity render binding');
 });
 
+test('FRT-026 keeps optional relation failures from hiding the primary client', () => {
+  const reloadStart = detail.indexOf('const reload = useCallback(async () => {');
+  const reloadEnd = detail.indexOf('\n  useEffect(() => {', reloadStart);
+  assert.ok(reloadStart >= 0, 'ClientDetail reload owner is missing');
+  assert.ok(reloadEnd > reloadStart, 'ClientDetail reload boundary is missing');
+  const reloadSource = detail.slice(reloadStart, reloadEnd);
+
+  has(reloadSource, 'fetchClientByIdFromSupabase(clientId),', 'primary client read');
+  for (const relatedRead of [
+    'fetchLeadsFromSupabase({ clientId }).catch(() => [])',
+    'fetchCasesFromSupabase({ clientId }).catch(() => [])',
+    'fetchPaymentsFromSupabase({ clientId }).catch(() => [])',
+    'fetchTasksFromSupabase().catch(() => [])',
+    'fetchEventsFromSupabase().catch(() => [])',
+    "fetchActivitiesFromSupabase({ clientId: String(id || ''), limit: 120 }).catch(() => [])",
+  ]) {
+    has(reloadSource, relatedRead, 'best-effort related read');
+  }
+  assert.doesNotMatch(reloadSource, /fetchClientByIdFromSupabase\(clientId\)\.catch\(/, 'primary client read must remain required');
+});
+
 test('FRT-026 keeps the new visual surface attached to the existing client-scoped data and actions', () => {
   has(detail, 'data-forteca-frt-026-case-summary="true"', 'FRT-026 case summary binding');
   has(detail, 'mainCase ? getCaseTitle(mainCase)', 'FRT-026 case summary data binding');

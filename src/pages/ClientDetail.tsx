@@ -1594,12 +1594,12 @@ function ClientDetail() {
     try {
       const [clientRow, leadRows, caseRows, paymentRows, taskRows, eventRows, activityRows] = await Promise.all([
         fetchClientByIdFromSupabase(clientId),
-        fetchLeadsFromSupabase({ clientId }),
-        fetchCasesFromSupabase({ clientId }),
-        fetchPaymentsFromSupabase({ clientId }),
-        fetchTasksFromSupabase(),
-        fetchEventsFromSupabase(),
-        fetchActivitiesFromSupabase({ clientId: String(id || ''), limit: 120 }),
+        fetchLeadsFromSupabase({ clientId }).catch(() => []),
+        fetchCasesFromSupabase({ clientId }).catch(() => []),
+        fetchPaymentsFromSupabase({ clientId }).catch(() => []),
+        fetchTasksFromSupabase().catch(() => []),
+        fetchEventsFromSupabase().catch(() => []),
+        fetchActivitiesFromSupabase({ clientId: String(id || ''), limit: 120 }).catch(() => []),
       ]);
 
       setClient(clientRow);
