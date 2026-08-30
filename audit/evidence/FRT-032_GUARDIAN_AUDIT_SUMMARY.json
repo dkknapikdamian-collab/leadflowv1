@@ -1,0 +1,65 @@
+{
+  "schema_version": 2,
+  "evidence_type": "FORTECA_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-032",
+  "mode": "AUDIT_ONLY",
+  "plugin_first": {
+    "command": "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+    "mode": "AUDIT_ONLY",
+    "fileWrites": 0,
+    "selectedCapabilities": ["repository-baseline"],
+    "selectedSkills": ["ai-code-guardian", "architecture-integrity"],
+    "coverageOutcome": "PARTIAL",
+    "receiptIds": ["guardian-plugin-smoke-coverage", "guardian-plugin-smoke-result"],
+    "blockers": 0
+  },
+  "repository_fallback": {
+    "status": "PARTIAL_WITH_ZERO_SCOPED_BLOCKERS",
+    "checks": {
+      "forteca-frt-032-cases-all.test": "PASS 4/4",
+      "forteca-frt-030-client-edit.test + forteca-frt-031-client-new-case.test": "PASS 11/11",
+      "guard:routes:canonical": "PASS",
+      "guard:ui:ssot-icons": "PASS",
+      "guard:ui:ssot-semantic-colors": "PASS",
+      "guard:ui:ssot-typography": "PASS",
+      "check:closeflow-client-case-urgent-regressions": "PASS",
+      "typescript": "PASS",
+      "production_build": "REUSED_PASS_FROM_EXACT_RUNTIME_COMMIT_WITH_KNOWN_WARNINGS",
+      "git_diff_check": "PASS",
+      "guard:ui:patch-layers": "FAIL_ON_PRE_EXISTING_BASELINE_FINDINGS"
+    },
+    "scope_findings": [
+      "waiting_on_client currently overlaps the blocked lifecycle bucket; this is explicitly registered for the FRT-033/FRT-034 semantic repair and is outside the FRT-032 all-cases source/navigation scope."
+    ],
+    "out_of_scope_baseline_findings": [
+      "guard:ui:patch-layers retains the pre-existing Clients local action clone and stage-only class count, plus direct lucide imports in ClientCreateDialog and icon registry; the FRT-032 test/evidence/control-plane diff adds none of these.",
+      "Production build retains existing supabase-fallback dynamic/static import overlap and chunks larger than 500 kB."
+    ]
+  },
+  "repository": {
+    "branch": "codex/forteca-ui-001-040-clean",
+    "implementation_commits": [
+      "d24c7ad02c449d3ce0c84eb5a1cf71cc2f026e09"
+    ],
+    "remote_head": "d24c7ad02c449d3ce0c84eb5a1cf71cc2f026e09"
+  },
+  "stage_validation": {
+    "focused_tests": "PASS FRT-032 4/4; combined preceding FRT-030/FRT-031 11/11",
+    "typescript": "PASS",
+    "production_build": "PASS at the exact current runtime commit with known non-blocking warnings",
+    "diff_check": "PASS",
+    "browser_runtime": "PASS authenticated production all-cases list/search/shortcut/row-navigation/action-owner proof",
+    "independent_review": "PARENT_SOURCE_REFERENCE_RUNTIME_REVIEW; no separate reviewer PASS claim"
+  },
+  "interpretation": "Guardian plugin smoke and scoped fallback checks completed. Coverage is PARTIAL because the installed plugin is audit-only; no scoped blocker was found. The waiting-versus-blocked overlap is a known next-stage domain finding, not a blocker to the FRT-032 all-cases acceptance boundary.",
+  "color_policy": {
+    "status": "PASS",
+    "semantic_primary_base": "--cf-vst-color-primary",
+    "semantic_delete_base": "--cf-vst-color-delete",
+    "semantic_surface_base": "--cf-vst-surface-card-solid",
+    "stage_literal_color_values": 0,
+    "rule": "Repeated semantic controls resolve through the shared VST family; reference drift does not create per-window color exceptions."
+  },
+  "created_at": "2026-08-30",
+  "updated_at": "2026-08-30"
+}

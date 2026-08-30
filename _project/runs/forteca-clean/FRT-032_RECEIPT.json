@@ -1,0 +1,47 @@
+{
+  "schema_version": 2,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-032",
+  "reference_file": "docs/ui/reference/forteca-calm-light/032_cases_all.webp",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_PARENT",
+  "acceptance_basis": {
+    "directive_interpretation": "Owner directive makes Codex the acceptance authority for this technical stage; current runtime, code, tests and browser evidence are authoritative.",
+    "root_cause": "FRT-032 required an evidence-backed acceptance of the existing Cases list owner, real workspace source, all-cases view, search, shortcuts, row navigation and action ownership. During verification, the lifecycle overlap between waiting_on_client and blocked was isolated as a subsequent FRT-033/FRT-034 domain repair.",
+    "repair": "The all-cases contract and focused test now assert the real Cases owner and the API workspace-scope boundary through withWorkspaceFilter; authenticated production proof covers all-cases selection, search, waiting shortcut, row navigation and visible row actions. No screenshot-only list owner or fixture data was introduced.",
+    "review_status": "Parent reviewed contract, source, reference chain, focused tests, inherited typecheck/build/Guardian evidence and authenticated production list/search/navigation proof."
+  },
+  "code_changed": false,
+  "files_changed": [
+    "tests/forteca-frt-032-cases-all.test.cjs",
+    "audit/evidence/FRT-032_BROWSER_PROOF.json",
+    "audit/evidence/FRT-032_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/WORKFLOW_STATE.json",
+    "_project/contracts/forteca-clean/FRT-032_CASES_ALL.md",
+    "_project/contracts/forteca-clean/FRT-033_CASES_WAITING_CLIENT.md",
+    "_project/runs/forteca-clean/FRT-032_RECEIPT.json"
+  ],
+  "verification": {
+    "focused_tests": "PASS FRT-032 4/4; combined preceding FRT-030/FRT-031 11/11",
+    "typecheck": "PASS at the exact current runtime commit",
+    "build": "PASS at the exact current runtime commit with known non-blocking warnings",
+    "guards": "Route/icon/semantic color/typography/urgent regression PASS; Guardian partial with zero scoped blockers; patch-layer baseline findings classified",
+    "browser_proof": "PASS production synthetic all-cases list/search/shortcut/row-navigation/action-owner proof",
+    "remote_head": "d24c7ad02c449d3ce0c84eb5a1cf71cc2f026e09"
+  },
+  "browser_proof": "audit/evidence/FRT-032_BROWSER_PROOF.json",
+  "guardian": "audit/evidence/FRT-032_GUARDIAN_AUDIT_SUMMARY.json",
+  "implementation_commits": [
+    "d24c7ad02c449d3ce0c84eb5a1cf71cc2f026e09"
+  ],
+  "remote_branch_sha_verified": true,
+  "next_stage": "FRT-033",
+  "rollback": "Revert the FRT-032 evidence/control-plane commit; no product runtime code was changed by FRT-032.",
+  "task_economy": {
+    "marketplace_router_startup": "USED",
+    "efficiency_planning": "APPLIED",
+    "optional_delegation": "SKIPPED",
+    "delegation_skip_reason": "Authenticated production browser proof required the existing local session and one write owner."
+  }
+}

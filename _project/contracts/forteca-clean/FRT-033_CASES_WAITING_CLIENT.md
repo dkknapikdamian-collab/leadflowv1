@@ -1,6 +1,6 @@
 # FRT-033 — CASES WAITING CLIENT
 
-CONTRACT_STATUS: LOCKED
+CONTRACT_STATUS: ACTIVE
 STAGE_ID: FRT-033
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/033_cases_waiting_for_client.webp
 TARGET_ROUTE: /cases
@@ -17,4 +17,3 @@ ACCEPTANCE_CRITERIA: Waiting state derives from real status and all controls wor
 TEST_PLAN: Status/filter/action tests; browser proof; typecheck if TS changes; reuse status evidence only with matching source/config.
 PREDECESSOR: FRT-032
 SUCCESSOR: FRT-034
-

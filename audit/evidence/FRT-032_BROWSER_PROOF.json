@@ -1,0 +1,83 @@
+{
+  "schema_version": 2,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-032",
+  "reference_file": "docs/ui/reference/forteca-calm-light/032_cases_all.webp",
+  "entry_url": "https://closeflowapp.vercel.app/cases?frt032=autonomous-proof",
+  "runtime_url": "https://closeflowapp.vercel.app",
+  "route": "/cases",
+  "state": "Cases — Wszystkie; real workspace list, search, view shortcuts and row navigation",
+  "live_runtime": true,
+  "authenticated_session_reused": true,
+  "status": "PASS",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "implementation_commits": [
+    "d24c7ad02c449d3ce0c84eb5a1cf71cc2f026e09"
+  ],
+  "current_runtime_commit": "d24c7ad02c449d3ce0c84eb5a1cf71cc2f026e09",
+  "remote_head_verified": "d24c7ad02c449d3ce0c84eb5a1cf71cc2f026e09",
+  "runtime_deployments": {
+    "preview": {
+      "id": "dpl_6oCoX8Ltv94jJ22m3asqaRQGtqu4",
+      "url": "https://closedockapp-jbi6bzdd0-dkknapikdamian-7019s-projects.vercel.app",
+      "status": "READY",
+      "runtime_code_commit": "d24c7ad02c449d3ce0c84eb5a1cf71cc2f026e09"
+    },
+    "production": {
+      "id": "dpl_6CCKAAEBtZMsqaNMwPN3afqeK1jN",
+      "alias": "https://closeflowapp.vercel.app",
+      "status": "READY",
+      "runtime_code_commit": "d24c7ad02c449d3ce0c84eb5a1cf71cc2f026e09"
+    }
+  },
+  "synthetic_fixture": {
+    "case_record_id": "bf6172be-db8f-4128-8895-fd3acd4a9f05",
+    "created_for_verification_only": true,
+    "cleanup": "RETAINED_FOR_FRT_033_FILTER_PROOF"
+  },
+  "interaction_proof": {
+    "all_cases_view": {
+      "status": "PASS",
+      "result": "Opened the real /cases route and selected the visible Wszystkie sprawy shortcut; the workspace case row remained rendered in the all-cases view."
+    },
+    "search": {
+      "status": "PASS",
+      "result": "Filled the visible search control with a synthetic case title; the matching real workspace row remained visible with its title and client context."
+    },
+    "waiting_shortcut": {
+      "status": "PASS",
+      "result": "Selected the visible Czeka na klienta shortcut; the retained synthetic waiting case remained rendered and the URL resolved to /cases?view=waiting."
+    },
+    "row_navigation": {
+      "status": "PASS",
+      "result": "Opened the visible case row; the real case detail route rendered the case and its client context."
+    },
+    "row_actions": {
+      "status": "PASS",
+      "result": "The row exposed the existing open and delete action owners; delete was not invoked during this list/navigation proof."
+    }
+  },
+  "known_cross_stage_finding": {
+    "status": "REGISTERED_FOR_FRT_033_AND_FRT_034",
+    "finding": "The current lifecycle resolver classifies waiting_on_client as blocked, so the waiting and blocked counters/views overlap until the lifecycle bucket split is repaired in the next stages.",
+    "interpretation": "This does not invalidate the FRT-032 all-cases source, search, navigation or action-owner proof; FRT-033 owns waiting-on-client semantics and FRT-034 owns blocked semantics."
+  },
+  "safety_proof": {
+    "synthetic_data_only": true,
+    "no_secrets_or_personal_data_recorded": true,
+    "no_fixture_injection": true,
+    "real_workspace_scoped_read": true,
+    "cleanup_verified": false,
+    "retention_reason": "The synthetic waiting case is required for the immediately following waiting-filter proof.",
+    "no_raw_browser_storage_or_cookies_read": true,
+    "sql_migration_performed": false,
+    "workspace_scope_preserved": true
+  },
+  "browser_diagnostic_boundary": {
+    "status": "DOCUMENTED",
+    "finding": "The approved in-app browser was used for visible DOM and action verification; no standalone browser, raw CDP or session extraction was used.",
+    "interpretation": "List, search, shortcut, row navigation and action-owner outcomes were verified through the live UI and persisted route; no screenshot fixture was injected."
+  },
+  "verified_at": "2026-08-30",
+  "next_action": "Repair waiting_on_client versus blocked lifecycle semantics in FRT-033, then accept FRT-033 and continue to FRT-034."
+}

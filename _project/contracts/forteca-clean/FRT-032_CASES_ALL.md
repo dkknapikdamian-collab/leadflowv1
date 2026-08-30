@@ -17,4 +17,3 @@ ACCEPTANCE_CRITERIA: Correct all-cases state is real and action-complete; no dup
 TEST_PLAN: Cases list/filter/action tests; typecheck; build checkpoint; browser proof; reuse matching record-list evidence.
 PREDECESSOR: FRT-031
 SUCCESSOR: FRT-033
-
