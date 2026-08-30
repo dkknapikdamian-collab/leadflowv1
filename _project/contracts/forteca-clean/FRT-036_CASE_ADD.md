@@ -1,12 +1,12 @@
 # FRT-036 — CASE ADD
 
-CONTRACT_STATUS: ACTIVE
+CONTRACT_STATUS: LOCKED
 STAGE_ID: FRT-036
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/036_case_add_modal.webp
 TARGET_ROUTE: /cases
 TARGET_STATE: Add Case modal
 MISSION: Reconcile the generic case creation modal with the real case mutation, validation and list refresh.
-CURRENT_RUNTIME_OWNERS: src/components/CreateClientCaseDialog.tsx generic case variant; case create source; canonical Dialog/FormField/FormFooter.
+CURRENT_RUNTIME_OWNERS: src/pages/Cases.tsx generic case-add dialog; case create source; canonical Dialog/FormField/FormFooter.
 VISUAL_SOT_OWNERS: MODALS; FORMS; BUTTONS_ACTIONS; ICONS; SURFACES.
 VISIBLE_CONTROL_INVENTORY: Case fields; client relation if applicable; validation; Create; Cancel; close; error/loading states.
 BEHAVIOR_TO_PRESERVE: Case creation, client relation, workspace scope, validation and list refresh.

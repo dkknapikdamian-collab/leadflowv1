@@ -1,58 +1,58 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 123,
+  "state_revision": 124,
   "last_accepted": {
+    "id": "FRT-036",
+    "status": "PASS",
+    "commit_sha": "3b281e8bf93662560c47779aef870fccff931c03",
+    "evidence": "_project/runs/forteca-clean/FRT-036_RECEIPT.json; audit/evidence/FRT-036_BROWSER_PROOF.json; audit/evidence/FRT-036_GUARDIAN_AUDIT_SUMMARY.json; Codex parent acceptance after contract/source/reference review, focused case-add tests, typecheck/build/Guardian proof and authenticated production create/relation/refresh/cleanup evidence; preview deployment READY with separate login session documented; independent reviewer PASS is not claimed"
+  },
+  "previous_accepted": {
     "id": "FRT-035",
     "status": "PASS",
     "commit_sha": "089c3275032f0b6e9d7bda21a085ce5d413f93a7",
     "evidence": "_project/runs/forteca-clean/FRT-035_RECEIPT.json; audit/evidence/FRT-035_BROWSER_PROOF.json; audit/evidence/FRT-035_GUARDIAN_AUDIT_SUMMARY.json; Codex parent acceptance after contract/source/reference review, focused readiness/start-action tests, typecheck/build/Guardian proof and authenticated production ready-to-start transition and cleanup evidence; preview deployment READY with separate login session documented; independent reviewer PASS is not claimed"
   },
-  "previous_accepted": {
-    "id": "FRT-034",
-    "status": "PASS",
-    "commit_sha": "6b4821902a9e3934baef32cf6416c599e87ff822",
-    "evidence": "_project/runs/forteca-clean/FRT-034_RECEIPT.json; audit/evidence/FRT-034_BROWSER_PROOF.json; audit/evidence/FRT-034_GUARDIAN_AUDIT_SUMMARY.json"
-  },
-  "current_stage": "FRT-036",
-  "current_contract_path": "_project/contracts/forteca-clean/FRT-036_CASE_ADD.md",
+  "current_stage": "FRT-037",
+  "current_contract_path": "_project/contracts/forteca-clean/FRT-037_CASE_EDIT.md",
   "current_status": "ACTIVE",
-  "last_accepted_stage": "FRT-035",
-  "last_accepted_commit": "089c3275032f0b6e9d7bda21a085ce5d413f93a7",
-  "next_stage": "FRT-037",
+  "last_accepted_stage": "FRT-036",
+  "last_accepted_commit": "3b281e8bf93662560c47779aef870fccff931c03",
+  "next_stage": "FRT-038",
   "branch": "codex/forteca-ui-001-040-clean",
-  "remote_head": "089c3275032f0b6e9d7bda21a085ce5d413f93a7",
-  "next_action": "Implement and prove FRT-036: Case Add modal with the real case creation, validation, relation and refresh path; then accept FRT-036 and activate FRT-037.",
+  "remote_head": "3b281e8bf93662560c47779aef870fccff931c03",
+  "next_action": "Implement and prove FRT-037: populated Case Edit modal with the real update mutation, validation, cancel/close behavior and detail refresh; then accept FRT-037 and activate FRT-038.",
   "last_progress": {
-    "stage_id": "FRT-035",
-    "status": "PASS_ACCEPTED_PRODUCTION_READY_START_VERIFIED",
-    "evidence": "_project/runs/forteca-clean/FRT-035_RECEIPT.json; audit/evidence/FRT-035_BROWSER_PROOF.json; audit/evidence/FRT-035_GUARDIAN_AUDIT_SUMMARY.json",
-    "commit_sha": "089c3275032f0b6e9d7bda21a085ce5d413f93a7",
-    "browser_blocker": "NONE; authenticated production ready counter/filter, resolver-backed row semantics, real start transition, W realizacji status, toast, cleanup, retained waiting state and CloseFlow/CF shell were verified. Preview deployment is READY; its separate login session is documented and no unauthenticated mutation proof is claimed.",
-    "created_at": "2026-08-30T20:26:53+02:00",
+    "stage_id": "FRT-036",
+    "status": "PASS_ACCEPTED_CASE_ADD_PRODUCTION_VERIFIED",
+    "evidence": "_project/runs/forteca-clean/FRT-036_RECEIPT.json; audit/evidence/FRT-036_BROWSER_PROOF.json; audit/evidence/FRT-036_GUARDIAN_AUDIT_SUMMARY.json",
+    "commit_sha": "3b281e8bf93662560c47779aef870fccff931c03",
+    "browser_blocker": "NONE; authenticated production Case Add modal, Polish user-facing copy, validation, existing-client relation, real create mutation, list refresh, cleanup and retained waiting fixture were verified. Preview deployment is READY; its separate login session is documented and no unauthenticated mutation proof is claimed.",
+    "created_at": "2026-08-30T21:18:23+02:00",
     "updated_at": "2026-08-30"
   },
   "current_workflow": {
-    "id": "FRT-036",
+    "id": "FRT-037",
     "kind": "TECHNICAL_IMPLEMENTATION_STAGE",
-    "contract_path": "_project/contracts/forteca-clean/FRT-036_CASE_ADD.md",
+    "contract_path": "_project/contracts/forteca-clean/FRT-037_CASE_EDIT.md",
     "status": "ACTIVE",
-    "base_sha": "089c3275032f0b6e9d7bda21a085ce5d413f93a7",
+    "base_sha": "3b281e8bf93662560c47779aef870fccff931c03",
     "base_branch": "codex/forteca-ui-001-040-clean",
     "target_branch": "codex/forteca-ui-001-040-clean",
     "blocker": null,
     "ssot_open_findings": 0,
     "active_stage_count": 1,
-    "terminal_audit": "FRT_030_PASS_ACCEPTED_BROWSER_CRUD_PRODUCTION_VERIFIED; FRT_031_PASS_ACCEPTED_RELATION_CREATE_NAVIGATION_VERIFIED; FRT_032_PASS_ACCEPTED_CASES_ALL_LIST_SEARCH_FILTER_NAVIGATION_VERIFIED; FRT_033_PASS_ACCEPTED_WAITING_BLOCKED_SEPARATION_VERIFIED; FRT_034_PASS_ACCEPTED_BLOCKER_LIFECYCLE_SQL_SAFE_RESOLUTION_VERIFIED; FRT_035_PASS_ACCEPTED_READY_START_LIFECYCLE_VERIFIED; FRT_036_ACTIVE",
+    "terminal_audit": "FRT_030_PASS_ACCEPTED_BROWSER_CRUD_PRODUCTION_VERIFIED; FRT_031_PASS_ACCEPTED_RELATION_CREATE_NAVIGATION_VERIFIED; FRT_032_PASS_ACCEPTED_CASES_ALL_LIST_SEARCH_FILTER_NAVIGATION_VERIFIED; FRT_033_PASS_ACCEPTED_WAITING_BLOCKED_SEPARATION_VERIFIED; FRT_034_PASS_ACCEPTED_BLOCKER_LIFECYCLE_SQL_SAFE_RESOLUTION_VERIFIED; FRT_035_PASS_ACCEPTED_READY_START_LIFECYCLE_VERIFIED; FRT_036_PASS_ACCEPTED_CASE_ADD_PRODUCTION_VERIFIED; FRT_037_ACTIVE",
     "guardian_status": "INHERITED_PLUGIN_AUDIT_AND_REPO_BASELINE_ZERO_SCOPED_BLOCKERS",
-    "acceptance_boundary": "Codex is the acceptance authority under the owner directive; FRT-036 requires the real case creation path, relation and validation behavior, focused tests, Guardian, browser/runtime evidence and receipt before acceptance"
+    "acceptance_boundary": "Codex is the acceptance authority under the owner directive; FRT-037 requires the populated case edit path, real update mutation, validation, cancel/close behavior, focused tests, Guardian, browser/runtime evidence and receipt before acceptance"
   },
   "next_workflow": {
-    "id": "FRT-037",
-    "contract_path": "_project/contracts/forteca-clean/FRT-037_CASE_EDIT.md",
+    "id": "FRT-038",
+    "contract_path": "_project/contracts/forteca-clean/FRT-038_CASE_SERVICE.md",
     "status": "LOCKED",
-    "activation": "CODEX_AFTER_FRT_036_ACCEPTANCE",
-    "reason": "FRT-036 is the only active stage; FRT-037 remains locked until case creation, validation, relation and refresh evidence are accepted."
+    "activation": "CODEX_AFTER_FRT_037_ACCEPTANCE",
+    "reason": "FRT-037 is the only active stage; FRT-038 remains locked until populated case editing, update, validation, cancel/close and refresh evidence are accepted."
   },
   "forteca_program": {
     "program_id": "FORTECA_CALM_LIGHT_001_040",
@@ -97,9 +97,10 @@
     "stage_033_status": "PASS",
     "stage_034_status": "PASS",
     "stage_035_status": "PASS",
-    "active_stage": "FRT-036",
-    "future_stages": "FRT-036 ACTIVE; FRT-037..FRT-041 LOCKED",
-    "accepted_receipts": ["FRT-000", "FRT-001", "FRT-002", "FRT-003", "FRT-004", "FRT-005", "FRT-006", "FRT-007", "FRT-008", "FRT-009", "FRT-010", "FRT-011", "FRT-012", "FRT-013", "FRT-014", "FRT-015", "FRT-016", "FRT-017", "FRT-018", "FRT-019", "FRT-020", "FRT-021", "FRT-022", "FRT-023", "FRT-024", "FRT-025", "FRT-026", "FRT-027", "FRT-028", "FRT-029", "FRT-030", "FRT-031", "FRT-032", "FRT-033", "FRT-034", "FRT-035"],
+    "stage_036_status": "PASS",
+    "active_stage": "FRT-037",
+    "future_stages": "FRT-037 ACTIVE; FRT-038..FRT-041 LOCKED",
+    "accepted_receipts": ["FRT-000", "FRT-001", "FRT-002", "FRT-003", "FRT-004", "FRT-005", "FRT-006", "FRT-007", "FRT-008", "FRT-009", "FRT-010", "FRT-011", "FRT-012", "FRT-013", "FRT-014", "FRT-015", "FRT-016", "FRT-017", "FRT-018", "FRT-019", "FRT-020", "FRT-021", "FRT-022", "FRT-023", "FRT-024", "FRT-025", "FRT-026", "FRT-027", "FRT-028", "FRT-029", "FRT-030", "FRT-031", "FRT-032", "FRT-033", "FRT-034", "FRT-035", "FRT-036"],
     "auth_required_for_frt_000": false,
     "future_receipts_precreated": false
   },
@@ -544,6 +545,13 @@
     "forteca:FRT-035:receipt@_project/runs/forteca-clean/FRT-035_RECEIPT.json:PASS:CODEX_PARENT acceptance authority",
     "forteca:FRT-035:tests@focused-23/23-tsc-build-route-icon-color-typography-brand-source-of-truth-urgent-regression-pass",
     "forteca:FRT-035:root-cause@ready list lacked a real start affordance, persisted completeness fallback and a shared lifecycle transition owner; repaired with one resolver and one transition helper",
-    "forteca:FRT-035:ssot@case row remains authoritative; resolver owns visible readiness; activity is audit trail only; no second runtime state store introduced"
+    "forteca:FRT-035:ssot@case row remains authoritative; resolver owns visible readiness; activity is audit trail only; no second runtime state store introduced",
+    "forteca:FRT-036:implementation@3b281e8bf93662560c47779aef870fccff931c03",
+    "forteca:FRT-036:browser-proof@audit/evidence/FRT-036_BROWSER_PROOF.json:PASS:authenticated production case-add validation/relation/create/refresh/cleanup with retained waiting fixture",
+    "forteca:FRT-036:guardian-summary@audit/evidence/FRT-036_GUARDIAN_AUDIT_SUMMARY.json:plugin-first partial with zero scoped blockers; baseline findings unchanged",
+    "forteca:FRT-036:receipt@_project/runs/forteca-clean/FRT-036_RECEIPT.json:PASS:CODEX_PARENT acceptance authority",
+    "forteca:FRT-036:tests@focused-25/25-tsc-build-diff-check-route-icon-color-typography-brand-source-of-truth-urgent-regression-pass",
+    "forteca:FRT-036:root-cause@generic case-add modal lacked canonical relation-safe create/refresh handling and exposed technical mutation errors; repaired with shared id extraction, real scoped mutation, safe Polish copy and one canonical modal owner",
+    "forteca:FRT-036:ssot@Cases.tsx owns generic case-add orchestration; create-client-case.ts owns the mutation; read-created-case-id.ts owns response id extraction; closeflow-dialogs.css remains the sole modal visual owner; tests and deployment are evidence only"
   ]
 }

@@ -1,0 +1,64 @@
+{
+  "schema_version": 2,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-036",
+  "reference_file": "docs/ui/reference/forteca-calm-light/036_case_add_modal.webp",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_PARENT",
+  "acceptance_basis": {
+    "directive_interpretation": "The owner directive makes Codex the acceptance authority for this technical stage; runtime, current code, tests and deployment evidence are authoritative, while lower-authority stale control-plane findings are recorded and reconciled.",
+    "root_cause": "The existing generic Cases add modal had a relation gap because suggestions did not preserve client IDs, and it lacked a bounded response/refresh/error contract. Its visual composition was not explicit under the registered calm-light modal/form owner.",
+    "repair": "The existing Cases form now preserves client relation IDs, validates through the real /api/cases path, checks the created response, reports safe Polish errors, handles refresh failure explicitly and composes the canonical dialog owner with existing VST tokens. Unsupported screenshot-only fields were left truthful.",
+    "review_status": "Parent reviewed the active contract, source/reference chain, one-source-of-truth boundary, focused tests, typecheck/build, Guardian smoke, exact preview/production deployments and authenticated production create/relation/refresh/cleanup proof. Independent reviewer PASS is not claimed."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "src/lib/cases/create-client-case.ts",
+    "src/lib/cases/read-created-case-id.ts",
+    "src/pages/Cases.tsx",
+    "src/styles/owners/closeflow-dialogs.css",
+    "tests/client-case-forms-visual-rebuild.test.cjs",
+    "tests/forteca-frt-036-case-add.test.cjs",
+    "audit/evidence/FRT-036_BROWSER_PROOF.json",
+    "audit/evidence/FRT-036_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/WORKFLOW_STATE.json",
+    "_project/contracts/forteca-clean/FRT-036_CASE_ADD.md",
+    "_project/runs/forteca-clean/FRT-036_RECEIPT.json"
+  ],
+  "verification": {
+    "focused_tests": "PASS 25/25: FRT-036 plus FRT-031 through FRT-035 lifecycle and visual regressions",
+    "typecheck": "PASS",
+    "build": "PASS locally and on Vercel with known non-blocking dynamic/static import, large chunk and npm allow-scripts warnings",
+    "guards": "Route/icon/semantic color/typography/component-clone/branding/relation/urgent regression PASS; Guardian partial with zero scoped blockers; CSS-owner and patch-layer baseline failures documented",
+    "browser_proof": "PASS authenticated production modal/copy, empty validation, existing-client relation, real create mutation, refreshed list, status and cleanup; preview READY with separate login boundary documented",
+    "remote_head": "3b281e8bf93662560c47779aef870fccff931c03"
+  },
+  "browser_proof": "audit/evidence/FRT-036_BROWSER_PROOF.json",
+  "guardian": "audit/evidence/FRT-036_GUARDIAN_AUDIT_SUMMARY.json",
+  "implementation_commits": [
+    "3b281e8bf93662560c47779aef870fccff931c03"
+  ],
+  "runtime_deployments": {
+    "preview": "dpl_8gojVcRo4asASxRRLNNfDbK5aqem",
+    "production": "dpl_997zDMUnjab5diQmrcAZRNYHu7bV",
+    "production_alias": "https://closeflowapp.vercel.app"
+  },
+  "remote_branch_sha_verified": true,
+  "next_stage": "FRT-037",
+  "rollback": "Revert 3b281e8bf93662560c47779aef870fccff931c03; the stage is isolated to the existing Cases add form, client option relation mapping, shared response-id helper, canonical dialog-owner composition and focused evidence.",
+  "source_of_truth": {
+    "runtime_state_owner": "Supabase-backed case row returned by /api/cases",
+    "create_mutation_owner": "src/lib/supabase-fallback.ts and api/cases.ts",
+    "status_option_owner": "src/lib/config/case-status.ts",
+    "visual_owner": "src/styles/owners/closeflow-dialogs.css",
+    "evidence_is_documentation_only": true,
+    "duplicate_runtime_state_store_introduced": false
+  },
+  "task_economy": {
+    "marketplace_router_startup": "USED",
+    "efficiency_planning": "APPLIED",
+    "optional_delegation": "SKIPPED",
+    "delegation_skip_reason": "Authenticated production proof required the existing local session and one write owner."
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "schema_version": 2,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-036",
+  "reference_file": "docs/ui/reference/forteca-calm-light/036_case_add_modal.webp",
+  "entry_url": "https://closeflowapp.vercel.app/cases?frt036=verify",
+  "preview_entry_url": "https://closedockapp-1rmlzezd2-dkknapikdamian-7019s-projects.vercel.app/cases?frt036=preview",
+  "runtime_url": "https://closeflowapp.vercel.app",
+  "route": "/cases",
+  "state": "Cases — Nowa sprawa with the real case mutation, client relation and refresh path",
+  "live_runtime": true,
+  "authenticated_session_reused": true,
+  "status": "PASS",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "implementation_commits": [
+    "3b281e8bf93662560c47779aef870fccff931c03"
+  ],
+  "current_runtime_commit": "3b281e8bf93662560c47779aef870fccff931c03",
+  "remote_head_verified": "3b281e8bf93662560c47779aef870fccff931c03",
+  "runtime_deployments": {
+    "preview": {
+      "id": "dpl_8gojVcRo4asASxRRLNNfDbK5aqem",
+      "url": "https://closedockapp-1rmlzezd2-dkknapikdamian-7019s-projects.vercel.app",
+      "status": "READY",
+      "target": null,
+      "runtime_code_commit": "3b281e8bf93662560c47779aef870fccff931c03"
+    },
+    "production": {
+      "id": "dpl_997zDMUnjab5diQmrcAZRNYHu7bV",
+      "url": "https://closedockapp-fjz5zgtep-dkknapikdamian-7019s-projects.vercel.app",
+      "alias": "https://closeflowapp.vercel.app",
+      "status": "READY",
+      "target": "production",
+      "runtime_code_commit": "3b281e8bf93662560c47779aef870fccff931c03"
+    }
+  },
+  "interaction_proof": {
+    "modal_and_brand": {
+      "status": "PASS",
+      "result": "Authenticated production opened the existing Nowa sprawa dialog. The visible dialog uses Polish product copy and CloseFlow/CF shell branding; no Forteca or Vercel host text appeared in the dialog."
+    },
+    "validation": {
+      "status": "PASS",
+      "result": "Submitting the empty form kept the modal open and displayed the user-facing message Podaj tytuł sprawy."
+    },
+    "client_relation": {
+      "status": "PASS",
+      "result": "Selecting the existing FRT032 client switched the form to the locked client state and showed Sprawa będzie przypięta do tego klienta."
+    },
+    "create_and_refresh": {
+      "status": "PASS",
+      "result": "The real form created FRT036 Add 1788110000000 through the deployed case mutation. The list refreshed to two open cases and rendered the new row with client FRT032 Client 1788104506938 and status W realizacji."
+    },
+    "cleanup": {
+      "status": "PASS",
+      "result": "The synthetic FRT036 case was deleted through the existing confirmation flow. The list returned to one open case, retaining only the FRT032 waiting regression fixture."
+    },
+    "preview_boundary": {
+      "status": "DOCUMENTED",
+      "result": "The fresh preview deployment loaded and redirected to the public login because the authenticated in-app browser session is scoped to closeflowapp.vercel.app. Preview readiness is verified; authenticated preview mutation proof is not claimed."
+    }
+  },
+  "source_of_truth": {
+    "case_mutation_owner": "src/lib/supabase-fallback.ts -> /api/cases",
+    "case_relation_owner": "api/cases.ts ensureClientForCase plus explicit clientId",
+    "status_owner": "src/lib/config/case-status.ts",
+    "modal_form_owner": "src/pages/Cases.tsx",
+    "modal_visual_owner": "src/styles/owners/closeflow-dialogs.css",
+    "activity_and_evidence_are_not_runtime_state": true,
+    "duplicate_runtime_state_store_introduced": false
+  },
+  "safety_proof": {
+    "synthetic_data_only": true,
+    "no_secrets_or_personal_data_recorded": true,
+    "real_workspace_scoped_read_and_write": true,
+    "cleanup_verified": true,
+    "retained_fixture": "bf6172be-db8f-4128-8895-fd3acd4a9f05",
+    "no_raw_browser_storage_or_cookies_read": true
+  },
+  "verified_at": "2026-08-30T21:14:18+02:00",
+  "next_action": "Accept FRT-036 and activate FRT-037 Case Edit."
+}

@@ -1,0 +1,64 @@
+{
+  "schema_version": 2,
+  "evidence_type": "FORTECA_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-036",
+  "mode": "AUDIT_ONLY",
+  "plugin_first": {
+    "command": "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+    "mode": "AUDIT_ONLY",
+    "fileWrites": 0,
+    "selectedCapabilities": [
+      "repository-baseline"
+    ],
+    "selectedSkills": [
+      "ai-code-guardian",
+      "architecture-integrity"
+    ],
+    "coverageOutcome": "PARTIAL",
+    "receiptIds": [
+      "guardian-plugin-smoke-coverage",
+      "guardian-plugin-smoke-result"
+    ],
+    "blockers": 0
+  },
+  "repository_fallback": {
+    "status": "PARTIAL_WITH_ZERO_SCOPED_BLOCKERS",
+    "checks": {
+      "focused_stage_package": "PASS 25/25: FRT-036 plus FRT-031 through FRT-035 regressions",
+      "typescript": "PASS",
+      "production_build": "PASS_WITH_KNOWN_WARNINGS",
+      "vercel_preview_deployment": "READY",
+      "vercel_production_deployment": "READY",
+      "guard:routes:canonical": "PASS",
+      "guard:ui:ssot-icons": "PASS",
+      "guard:ui:ssot-semantic-colors": "PASS",
+      "guard:ui:ssot-typography": "PASS",
+      "guard:ui:component-clones": "PASS",
+      "check:closeflow-client-case-urgent-regressions": "PASS",
+      "check:a18-branding-docs": "PASS",
+      "check:stage232c-clients-relation-tile-source-of-truth": "PASS",
+      "diff_check": "PASS"
+    },
+    "scope_findings": [],
+    "out_of_scope_baseline_findings": [
+      "guard:ui:ssot-css-owners remains red with the identical pre-existing baseline: the same concern mismatch, nine existing missing forteca-* owner metadata entries, UNCLASSIFIED_IMPORTANT=343 and SPECIFICITY_PATCH_IMPORTANT=1399. FRT-036 added only 233 important declarations inside the already registered canonical owner boundary.",
+      "guard:ui:patch-layers remains red on four existing findings in Clients.tsx, ClientCreateDialog.tsx and icon-registry.ts; FRT-036 did not change those runtime files.",
+      "check:cf-runtime-00-source-truth remains red only because unrelated pre-existing generated documentation and dist-test-today-sections.cjs are dirty."
+    ]
+  },
+  "repository": {
+    "branch": "codex/forteca-ui-001-040-clean",
+    "implementation_commits": [
+      "3b281e8bf93662560c47779aef870fccff931c03"
+    ],
+    "remote_head": "3b281e8bf93662560c47779aef870fccff931c03"
+  },
+  "root_cause_and_repair": {
+    "root_cause": "The generic Cases add modal already used the real case mutation, but client suggestions discarded client identifiers and the modal had no explicit response-id, refresh-failure or technical-error boundary. The visual rules were not composed in the registered calm-light modal/form owner.",
+    "repair": "Client options now preserve explicit IDs, the existing form validates and submits through /api/cases with a shared response-id reader and bounded Polish errors, refresh remains part of the same flow, and the modal composes the canonical closeflow-dialogs.css owner with VST tokens. Unsupported screenshot-only fields were not faked into the data model.",
+    "source_of_truth": "The existing Cases form and /api/cases mutation remain the only create path; case-status.ts remains the only status-option source; closeflow-dialogs.css remains the only modal/form visual owner."
+  },
+  "interpretation": "Guardian plugin smoke and scoped repository checks completed with zero FRT-036 scoped blockers. The CSS-owner and patch-layer failures were measured against the clean FRT-035 HEAD and are pre-existing baseline findings, not accepted as a stage PASS.",
+  "created_at": "2026-08-30",
+  "updated_at": "2026-08-30"
+}

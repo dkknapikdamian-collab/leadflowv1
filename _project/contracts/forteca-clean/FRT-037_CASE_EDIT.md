@@ -1,6 +1,6 @@
 # FRT-037 — CASE EDIT
 
-CONTRACT_STATUS: LOCKED
+CONTRACT_STATUS: ACTIVE
 STAGE_ID: FRT-037
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/037_case_edit_modal.webp
 TARGET_ROUTE: /cases/:caseId
@@ -17,4 +17,3 @@ ACCEPTANCE_CRITERIA: Case updates through the real mutation; controls work; test
 TEST_PLAN: Populate/edit/save/cancel/error tests; browser proof; typecheck if TS changes; build if shared case edit runtime changes.
 PREDECESSOR: FRT-036
 SUCCESSOR: FRT-038
-
