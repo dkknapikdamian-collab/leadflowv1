@@ -1,0 +1,65 @@
+{
+  "schema_version": 2,
+  "evidence_type": "FORTECA_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-037",
+  "mode": "AUDIT_ONLY",
+  "plugin_first": {
+    "command": "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+    "mode": "AUDIT_ONLY",
+    "fileWrites": 0,
+    "selectedCapabilities": [
+      "repository-baseline"
+    ],
+    "selectedSkills": [
+      "ai-code-guardian",
+      "architecture-integrity"
+    ],
+    "coverageOutcome": "PARTIAL",
+    "receiptIds": [
+      "guardian-plugin-smoke-coverage",
+      "guardian-plugin-smoke-result"
+    ],
+    "blockers": 0
+  },
+  "repository_fallback": {
+    "status": "PARTIAL_WITH_ZERO_SCOPED_BLOCKERS",
+    "checks": {
+      "focused_stage_package": "PASS 3/3: FRT-037 populated edit, real update, value synchronization, validation/error and owner checks",
+      "predecessor_regressions": "PASS 8/8: FRT-036, FRT-037 and visual form regression tests",
+      "typescript": "PASS",
+      "production_build": "PASS_WITH_KNOWN_WARNINGS",
+      "vercel_preview_deployment": "READY",
+      "vercel_production_deployment": "READY",
+      "guard:routes:canonical": "PASS",
+      "guard:ui:ssot-icons": "PASS",
+      "guard:ui:ssot-semantic-colors": "PASS",
+      "guard:ui:ssot-typography": "PASS",
+      "guard:ui:component-clones": "PASS",
+      "check:a18-branding-docs": "PASS",
+      "check:stage232c-clients-relation-tile-source-of-truth": "PASS",
+      "diff_check": "PASS"
+    },
+    "scope_findings": [],
+    "out_of_scope_baseline_findings": [
+      "guard:ui:ssot-css-owners remains partial on the existing global-shell concern mismatch, nine existing forteca-* owner metadata gaps, UNCLASSIFIED_IMPORTANT=343 and SPECIFICITY_PATCH_IMPORTANT=1399; FRT-037 visual rules are inside the registered closeflow-dialogs.css owner and introduced no new parallel owner.",
+      "guard:ui:patch-layers remains partial on the same four existing findings: Clients.tsx local NextActionIcon, ClientCreateDialog.tsx direct lucide import and icon-registry.ts direct lucide import/stage usage; FRT-037 did not change those runtime files.",
+      "check:cf-runtime-00-source-truth remains partial only because unrelated pre-existing generated documentation and dist-test-today-sections.cjs are dirty; they are outside the FRT-037 allowed write set."
+    ]
+  },
+  "repository": {
+    "branch": "codex/forteca-ui-001-040-clean",
+    "implementation_commits": [
+      "b4d8f3efb6cf78de1ca2b3dd69ec0b4f7e5144be",
+      "9a41a51b2c446cc1d7e329460724de11b85677fb"
+    ],
+    "remote_head": "9a41a51b2c446cc1d7e329460724de11b85677fb"
+  },
+  "root_cause_and_repair": {
+    "root_cause": "The edit UI used the real update path, but the API preserved a stale remaining_amount compatibility cache when contract value changed. CaseDetail's finance consumer then displayed the stale derived value after refresh, especially when the new value was zero.",
+    "repair": "The shared /api/cases PATCH boundary now synchronizes contract_value, expected_revenue and remaining_amount for value changes, gives an explicit remaining amount precedence, and keeps the UI as a transient form over the persisted case row.",
+    "source_of_truth": "The Supabase-backed case row and /api/cases mutation remain the only runtime state and update path; CaseDetail only edits and reloads that row; activity, tests and evidence are not alternate stores."
+  },
+  "interpretation": "Guardian plugin smoke and scoped repository checks completed with zero FRT-037 scoped blockers. Partial coverage is retained honestly for the known repository baseline and unrelated dirty generated artifacts; it does not represent a source-of-truth conflict or an FRT-037 acceptance blocker.",
+  "created_at": "2026-08-30",
+  "updated_at": "2026-08-30"
+}

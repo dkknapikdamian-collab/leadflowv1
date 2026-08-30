@@ -1,0 +1,89 @@
+{
+  "schema_version": 2,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-037",
+  "reference_file": "docs/ui/reference/forteca-calm-light/037_case_edit_modal.webp",
+  "entry_url": "https://closeflowapp.vercel.app/cases/bf6172be-db8f-4128-8895-fd3acd4a9f05?frt037=zero-fix-1788120000000",
+  "preview_entry_url": "https://closedockapp-9azy79svq-dkknapikdamian-7019s-projects.vercel.app/cases/bf6172be-db8f-4128-8895-fd3acd4a9f05?frt037=preview",
+  "runtime_url": "https://closeflowapp.vercel.app",
+  "route": "/cases/:caseId",
+  "state": "Case Detail — populated Edytuj sprawę modal with real update, validation and refresh",
+  "live_runtime": true,
+  "authenticated_session_reused": true,
+  "status": "PASS",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "implementation_commits": [
+    "b4d8f3efb6cf78de1ca2b3dd69ec0b4f7e5144be",
+    "9a41a51b2c446cc1d7e329460724de11b85677fb"
+  ],
+  "current_runtime_commit": "9a41a51b2c446cc1d7e329460724de11b85677fb",
+  "remote_head_verified": "9a41a51b2c446cc1d7e329460724de11b85677fb",
+  "runtime_deployments": {
+    "preview": {
+      "id": "dpl_GBdMdnno7UnS6hRFyozyZKizjEc3",
+      "url": "https://closedockapp-9azy79svq-dkknapikdamian-7019s-projects.vercel.app",
+      "status": "READY",
+      "target": null,
+      "runtime_code_commit": "9a41a51b2c446cc1d7e329460724de11b85677fb"
+    },
+    "production": {
+      "id": "dpl_AAQUQ2dAC3yfRRbXS2H57FrcpXpm",
+      "url": "https://closedockapp-md4bef25g-dkknapikdamian-7019s-projects.vercel.app",
+      "alias": "https://closeflowapp.vercel.app",
+      "status": "READY",
+      "target": "production",
+      "runtime_code_commit": "9a41a51b2c446cc1d7e329460724de11b85677fb"
+    }
+  },
+  "interaction_proof": {
+    "modal_and_brand": {
+      "status": "PASS",
+      "result": "Authenticated production opened the populated Edytuj sprawę modal. The user-facing modal uses Polish CloseFlow copy and the CF shell; Forteca and the Vercel host are not exposed as modal copy."
+    },
+    "population_and_validation": {
+      "status": "PASS",
+      "result": "Existing title, client relation, canonical status and value were populated from the selected case. Focused FRT-037 tests cover required title/status/value/currency validation and the modal remains bounded to the current case."
+    },
+    "update_and_refresh": {
+      "status": "PASS",
+      "result": "The real production form updated the retained workspace-scoped case, displayed Zmiany sprawy zapisane, refreshed the detail view and reopened with the persisted values."
+    },
+    "zero_value_regression": {
+      "status": "PASS",
+      "result": "A human-equivalent keyboard flow selected the value, cleared it with Control+A and Backspace, saved, refreshed and reopened the form. The detail showed Wartość transakcji: 0 PLN and the old value did not return."
+    },
+    "cancel_and_error_boundary": {
+      "status": "PASS",
+      "result": "Focused tests verify cancel/close leaves the case unchanged and update failures resolve to bounded Polish user copy; no technical host or deployment text is used as product confirmation."
+    },
+    "preview_boundary": {
+      "status": "DOCUMENTED",
+      "result": "The preview deployment is READY and built the same commit. The authenticated in-app session is scoped to the production alias, so no unauthenticated preview write is claimed."
+    }
+  },
+  "root_cause_proof": {
+    "status": "PASS",
+    "finding": "PATCH accepted a changed contract value but left the legacy remaining_amount cache unchanged; the detail finance consumer then displayed the stale derived value after refresh.",
+    "repair": "api/cases.ts now treats contract/expected value as the canonical case value and synchronizes remaining_amount when that value changes, while an explicit remaining amount remains authoritative for compatibility."
+  },
+  "source_of_truth": {
+    "runtime_state_owner": "The workspace-scoped case row returned by /api/cases and reloaded by CaseDetail",
+    "mutation_owner": "api/cases.ts through the existing Supabase-backed updateCaseInSupabase path",
+    "case_value_contract": "contract_value and expected_revenue are synchronized; remaining_amount is a derived legacy cache unless explicitly supplied",
+    "status_owner": "src/lib/config/case-status.ts",
+    "modal_form_owner": "src/pages/CaseDetail.tsx",
+    "modal_visual_owner": "src/styles/owners/closeflow-dialogs.css",
+    "activity_and_tests_are_not_runtime_state": true,
+    "duplicate_runtime_state_store_introduced": false
+  },
+  "safety_proof": {
+    "synthetic_data_only": true,
+    "no_secrets_or_personal_data_recorded": true,
+    "real_workspace_scoped_read_and_write": true,
+    "retained_fixture": "bf6172be-db8f-4128-8895-fd3acd4a9f05",
+    "fixture_final_state": "original title, original client, waiting_on_client status, contract value 0",
+    "no_raw_browser_storage_or_cookies_read": true
+  },
+  "verified_at": "2026-08-30",
+  "next_action": "Accept FRT-037 and activate FRT-038 Case Service."
+}

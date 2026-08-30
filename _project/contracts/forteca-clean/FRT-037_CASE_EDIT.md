@@ -1,6 +1,6 @@
 # FRT-037 — CASE EDIT
 
-CONTRACT_STATUS: ACTIVE
+CONTRACT_STATUS: LOCKED
 STAGE_ID: FRT-037
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/037_case_edit_modal.webp
 TARGET_ROUTE: /cases/:caseId

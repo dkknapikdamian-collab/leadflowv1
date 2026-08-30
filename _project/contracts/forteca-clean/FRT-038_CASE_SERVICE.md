@@ -1,6 +1,6 @@
 # FRT-038 — CASE SERVICE
 
-CONTRACT_STATUS: LOCKED
+CONTRACT_STATUS: ACTIVE
 STAGE_ID: FRT-038
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/038_case_detail_service.webp
 TARGET_ROUTE: /cases/:caseId
@@ -17,4 +17,3 @@ ACCEPTANCE_CRITERIA: Obsługa route/tab is real, responsive and action-complete;
 TEST_PLAN: Case Detail route/tab/action/regression tests; typecheck; build checkpoint; browser proof; reuse only matching shared-owner evidence.
 PREDECESSOR: FRT-037
 SUCCESSOR: FRT-039
-

@@ -1,0 +1,71 @@
+{
+  "schema_version": 2,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-037",
+  "reference_file": "docs/ui/reference/forteca-calm-light/037_case_edit_modal.webp",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_PARENT",
+  "acceptance_basis": {
+    "directive_interpretation": "The owner directive makes Codex the acceptance authority for this technical stage; runtime, current code, tests and deployment evidence are authoritative, while lower-authority stale control-plane findings are recorded and reconciled.",
+    "root_cause": "The Case Edit path did not keep the legacy remaining_amount cache aligned when the canonical case value changed, so a refreshed detail could resurrect a stale amount, most visibly for zero.",
+    "repair": "The existing CaseDetail edit modal now populates and updates through the real scoped mutation with canonical status/client options, bounded Polish errors and refresh. api/cases.ts synchronizes the derived legacy remaining amount with contract/expected value changes while preserving explicit remaining values.",
+    "review_status": "Parent reviewed the active contract, reference/source chain, one-source-of-truth boundary, focused tests, typecheck/build, Guardian smoke, exact preview/production deployments and authenticated production update/refresh/zero-value proof. Independent reviewer PASS is not claimed."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "api/cases.ts",
+    "src/lib/cases/case-error-copy.ts",
+    "src/pages/Cases.tsx",
+    "src/pages/CaseDetail.tsx",
+    "src/styles/owners/closeflow-dialogs.css",
+    "tests/forteca-frt-037-case-edit.test.cjs",
+    "package.json",
+    "audit/evidence/FRT-037_BROWSER_PROOF.json",
+    "audit/evidence/FRT-037_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/WORKFLOW_STATE.json",
+    "_project/contracts/forteca-clean/FRT-037_CASE_EDIT.md",
+    "_project/contracts/forteca-clean/FRT-038_CASE_SERVICE.md",
+    "_project/runs/forteca-clean/FRT-037_RECEIPT.json"
+  ],
+  "verification": {
+    "focused_tests": "PASS 3/3: FRT-037 edit contract, real update/value synchronization and owner checks",
+    "regressions": "PASS 8/8: FRT-036/FRT-037 and shared visual form regressions",
+    "typecheck": "PASS",
+    "build": "PASS locally from the actual worktree and on Vercel with known non-blocking dynamic/static import, large chunk and npm allow-scripts warnings",
+    "guards": "Route/icon/semantic color/typography/component-clone/branding/relation guards PASS; Guardian partial with zero scoped blockers; CSS-owner and patch-layer findings are pre-existing baseline; unrelated dirty generated artifacts remain outside scope",
+    "browser_proof": "PASS authenticated production populated edit, safe Polish modal copy, real update, keyboard clear to zero, refresh, reopen and fixture-state proof; preview READY with separate login boundary documented",
+    "remote_head": "9a41a51b2c446cc1d7e329460724de11b85677fb"
+  },
+  "browser_proof": "audit/evidence/FRT-037_BROWSER_PROOF.json",
+  "guardian": "audit/evidence/FRT-037_GUARDIAN_AUDIT_SUMMARY.json",
+  "implementation_commits": [
+    "b4d8f3efb6cf78de1ca2b3dd69ec0b4f7e5144be",
+    "9a41a51b2c446cc1d7e329460724de11b85677fb"
+  ],
+  "runtime_deployments": {
+    "preview": "dpl_GBdMdnno7UnS6hRFyozyZKizjEc3",
+    "production": "dpl_AAQUQ2dAC3yfRRbXS2H57FrcpXpm",
+    "production_alias": "https://closeflowapp.vercel.app"
+  },
+  "remote_branch_sha_verified": true,
+  "next_stage": "FRT-038",
+  "rollback": "Revert 9a41a51b2c446cc1d7e329460724de11b85677fb and b4d8f3efb6cf78de1ca2b3dd69ec0b4f7e5144be; the stage is isolated to CaseDetail edit orchestration, the shared case mutation value contract, canonical modal/form styling and focused evidence.",
+  "source_of_truth": {
+    "runtime_state_owner": "Supabase-backed case row returned by /api/cases",
+    "update_mutation_owner": "api/cases.ts through the existing updateCaseInSupabase path",
+    "form_orchestration_owner": "src/pages/CaseDetail.tsx",
+    "status_option_owner": "src/lib/config/case-status.ts",
+    "error_copy_owner": "src/lib/cases/case-error-copy.ts",
+    "visual_owner": "src/styles/owners/closeflow-dialogs.css",
+    "derived_value_policy": "remaining_amount is synchronized from the canonical value unless explicitly supplied; it is not an independent case state store",
+    "evidence_is_documentation_only": true,
+    "duplicate_runtime_state_store_introduced": false
+  },
+  "task_economy": {
+    "marketplace_router_startup": "USED",
+    "efficiency_planning": "APPLIED",
+    "optional_delegation": "SKIPPED",
+    "delegation_skip_reason": "Authenticated production proof required the existing local session and one write owner."
+  }
+}
