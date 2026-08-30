@@ -111,7 +111,7 @@
   min-height: 0;
   padding-right: var(--cf-vst-space-2xs);
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: hidden !important;
   scrollbar-color: var(--cf-vst-surface-border-strong) transparent;
   scrollbar-width: thin;
 }
