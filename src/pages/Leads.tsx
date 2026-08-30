@@ -1661,7 +1661,7 @@ export default function Leads() {
                                         id="forteca-frt-011-lead-summary"
                                         value={newLead.summary}
                                         onChange={(event) => setNewLead((current) => ({ ...current, summary: event.target.value }))}
-                                        placeholder="np. Wdrożenie CRM w ACME Logistics"
+                                        placeholder="np. Wdrożenie systemu"
                                       />
                                     </div>
 
@@ -1673,7 +1673,7 @@ export default function Leads() {
                                           id="forteca-frt-011-lead-company"
                                           value={newLead.company}
                                           onChange={(event) => setNewLead((current) => ({ ...current, company: event.target.value }))}
-                                          placeholder="np. ACME Logistics"
+                                          placeholder="np. Firma klienta"
                                         />
                                       </div>
                                     </div>
@@ -1686,7 +1686,7 @@ export default function Leads() {
                                           id="forteca-frt-011-lead-name"
                                           value={newLead.name}
                                           onChange={(event) => setNewLead((current) => ({ ...current, name: event.target.value }))}
-                                          placeholder="np. Jan Kowalski"
+                                          placeholder="np. Jan Nowak"
                                         />
                                       </div>
                                     </div>

@@ -401,7 +401,7 @@ export default function LeadStartServiceDialog({
 
               <DraftField label="Właściciel sprawy" required className="forteca-frt-020-start-case__field--owner" icon={<EntityIcon entity="client" size="sm" />}>
                 <span className="forteca-frt-020-start-case__owner-control">
-                  <span className="forteca-frt-020-start-case__avatar forteca-frt-020-start-case__avatar--initials" data-forteca-frt-020-avatar="initials" aria-hidden="true">{initialsFor(draft.owner || 'Damian Knapik')}</span>
+                  <span className="forteca-frt-020-start-case__avatar forteca-frt-020-start-case__avatar--initials" data-forteca-frt-020-avatar="initials" aria-hidden="true">{initialsFor(draft.owner || 'Operator')}</span>
                   <select
                     className="forteca-frt-020-start-case__input forteca-frt-020-start-case__select forteca-frt-020-start-case__owner-select"
                     value={draft.owner}
@@ -416,7 +416,7 @@ export default function LeadStartServiceDialog({
                     aria-required="true"
                     data-forteca-frt-020-field="owner"
                   >
-                    <option>Damian Knapik</option>
+                    <option>Operator</option>
                     <option>Dev Local</option>
                   </select>
                   <SemanticIcon role="navigation" size="xs" className="forteca-frt-020-start-case__select-icon" />
@@ -509,7 +509,7 @@ export default function LeadStartServiceDialog({
                   <PreviewRow label="Nazwa sprawy" value={draft.title || 'Nowa sprawa'} />
                   <PreviewRow label="Typ usługi" value={draft.serviceType || 'Wdrożenie systemu'} />
                   <PreviewRow label="Wartość" value={`${formatMoney(draft.value)} ${draft.currency || 'PLN'}`} />
-                  <PreviewRow label="Właściciel" value={draft.owner || 'Damian Knapik'} />
+                  <PreviewRow label="Właściciel" value={draft.owner || 'Operator'} />
                   <PreviewRow label="Termin startu" value={formatDate(draft.startDate)} />
                 </PreviewBlock>
 
