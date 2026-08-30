@@ -191,9 +191,9 @@
   margin: 0 !important;
 }
 
-[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-control,
-[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-control[data-cf-vst-input="true"],
-[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-control[data-cf-vst-input="textarea"] {
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"].forteca-frt-036-case-add .forteca-frt-036-control,
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"].forteca-frt-036-case-add .forteca-frt-036-control[data-cf-vst-input="true"],
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"].forteca-frt-036-case-add .forteca-frt-036-control[data-cf-vst-input="textarea"] {
   box-sizing: border-box;
   width: 100% !important;
   min-width: 0;
