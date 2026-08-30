@@ -28,6 +28,7 @@
         "test:forteca-frt-037-case-edit": "node --test tests/forteca-frt-037-case-edit.test.cjs",
         "test:forteca-frt-038-case-service": "node --test tests/forteca-frt-038-case-service.test.cjs",
         "test:forteca-frt-039-case-checklists": "node --test tests/forteca-frt-039-case-checklists.test.cjs",
+        "test:forteca-frt-040-case-history": "node --test tests/forteca-frt-040-case-history.test.cjs",
         "check:closeflow-client-case-urgent-regressions": "node scripts/check-closeflow-client-case-urgent-regressions.cjs",
         "check:stage124-supabase-egress-contract": "node scripts/check-stage124-supabase-egress-contract.cjs",
         "check:calendar:stage114-mojibake": "node scripts/check-stage114-calendar-mojibake.cjs",

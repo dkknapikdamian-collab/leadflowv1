@@ -452,12 +452,26 @@ type CaseActivity = {
   createdAt?: any;
 };
 
+type CaseHistoryActorTypeStage040 = 'operator' | 'client' | 'system';
+type CaseHistorySourceTypeStage040 = 'activity' | 'task' | 'event' | 'payment' | 'case-item';
+type CaseHistoryFilterStateStage040 = {
+  dateRange: 'all' | '7d' | '30d';
+  kind: 'all' | CaseHistoryItem['kind'];
+  actor: 'all' | CaseHistoryActorTypeStage040;
+};
+
 type CaseHistoryItem = {
   id: string;
   kind: 'note' | 'task' | 'event' | 'payment' | 'status' | 'case';
   title: string;
   body: string;
   occurredAt: string | null;
+  actorType?: CaseHistoryActorTypeStage040;
+  sourceType?: CaseHistorySourceTypeStage040;
+  sourceId?: string | null;
+  eventType?: string;
+  relatedRecordType?: 'task' | 'event' | 'payment' | 'case-item' | null;
+  relatedRecordId?: string | null;
 };
 
 
@@ -993,13 +1007,15 @@ function isCaseActivitySourceForWorkRow(source: WorkItem['source']) {
 function getStatusClass(status?: string) {
   return getStatusPillClass(status, 'case-detail');
 }
+/* STAGE68P_CASE_HISTORY_PACKAGE_FINAL */
+/* STAGE66_CASE_HISTORY_PASSIVE_COPY */
 function getActivityText(activity: CaseActivity) {
   const title = activity.payload?.title || activity.payload?.itemTitle || 'element';
 
   if (activity.eventType === 'missing_item_created') return `${activity.payload?.blocksProgress ? 'Blokada' : 'Brak'}: ${title}`;
   if (activity.eventType === 'missing_item_resolved') return `Uzupełniono brak: ${title}`;
   if (activity.eventType === 'missing_item_deleted') return `Usunięto brak: ${title}`;
-  if (activity.eventType === 'item_added') return `Dodano element sprawy: ${title}`;
+  if (activity.eventType === 'item_added') return `Dodano brak: ${title}`;
   if (activity.eventType === 'status_changed') return `Zmieniono status „${title}” na: ${getItemStatusLabel(activity.payload?.status)}`;
   if (activity.eventType === 'file_uploaded') return `Dodano plik: ${title}`;
   if (activity.eventType === 'decision_made') return `Dodano decyzję: ${title}`;
@@ -1066,46 +1082,140 @@ function pushCaseHistoryItemStage14D(target: CaseHistoryItem[], item: CaseHistor
   if (!item.body || isGenericCaseHistoryTextStage14D(item.body)) return;
   target.push(item);
 }
+
+function normalizeCaseHistoryActorTypeStage040(value: unknown): CaseHistoryActorTypeStage040 {
+  const normalized = String(value || '').trim().toLowerCase();
+  if (normalized === 'operator' || normalized === 'agent' || normalized === 'employee' || normalized === 'admin' || normalized === 'staff') return 'operator';
+  if (normalized === 'client' || normalized === 'customer' || normalized === 'user') return 'client';
+  return 'system';
+}
+
+function getCaseHistoryActorLabelStage040(value: unknown) {
+  const actorType = normalizeCaseHistoryActorTypeStage040(value);
+  if (actorType === 'operator') return 'Operator';
+  if (actorType === 'client') return 'Klient';
+  return 'System';
+}
+
+function getCaseHistoryRelatedRecordStage040(eventType: string, payload: Record<string, any>) {
+  const normalized = String(eventType || '').trim().toLowerCase();
+  const taskId = String(payload.taskId || payload.task_id || '').trim();
+  const eventId = String(payload.eventId || payload.event_id || '').trim();
+  const paymentId = String(payload.paymentId || payload.payment_id || '').trim();
+  const itemId = String(payload.itemId || payload.item_id || '').trim();
+  if (taskId || normalized.includes('task')) return { type: 'task' as const, id: taskId || null };
+  if (eventId || normalized.includes('event') || normalized.includes('meeting')) return { type: 'event' as const, id: eventId || null };
+  if (paymentId || normalized.includes('payment') || normalized.includes('billing')) return { type: 'payment' as const, id: paymentId || null };
+  if (itemId || normalized.includes('item') || normalized.includes('file') || normalized.includes('decision')) return { type: 'case-item' as const, id: itemId || null };
+  return { type: null, id: null };
+}
+
+function getCaseHistorySourceLabelStage040(sourceType: CaseHistorySourceTypeStage040 | undefined) {
+  if (sourceType === 'task') return 'Zadanie';
+  if (sourceType === 'event') return 'Kalendarz';
+  if (sourceType === 'payment') return 'Rozliczenia';
+  if (sourceType === 'case-item') return 'Sprawa';
+  return 'Aktywność';
+}
+
+function formatCaseHistoryDurationStage040(startValue: unknown, endValue: unknown, itemCount: number) {
+  const start = toDate(startValue);
+  const end = toDate(endValue);
+  if (!start || !end || itemCount === 0) return 'Brak danych';
+  const days = Math.max(0, Math.round((end.getTime() - start.getTime()) / (24 * 60 * 60 * 1000)));
+  if (days === 0) return '< 1 dzień';
+  if (days === 1) return '1 dzień';
+  if (days < 5) return `${days} dni`;
+  return `${days} dni`;
+}
+
 function getCaseActivityHistoryItemStage14D(activity: CaseActivity): CaseHistoryItem | null {
   const payload = getCaseHistoryPayloadStage14D(activity);
   const eventType = String(activity.eventType || payload.eventType || payload.type || '').trim();
   const lowerType = eventType.toLowerCase();
-  const body = pickCaseHistoryBodyStage14D(payload.note, payload.content, payload.body, payload.message, payload.description, payload.summary, payload.itemTitle, payload.title, getActivityText(activity));
+  const actionName = pickCaseHistoryActionNameStage220A17(payload);
+  const detailBody = pickCaseHistoryBodyStage14D(payload.note, payload.content, payload.body, payload.message, payload.description, payload.summary);
+  const activityText = getActivityText({ ...activity, eventType } as CaseActivity);
+  const generatedBody = pickCaseHistoryBodyStage14D(activityText);
   const occurredAt = getCaseHistoryDateStage14D((activity as any).happenedAt, (activity as any).updatedAt, activity.createdAt, payload.happenedAt, payload.updatedAt, payload.createdAt);
-  const id = String(activity.id || eventType || occurredAt || Math.random());
+  const id = String(activity.id || eventType || occurredAt || 'activity');
+  const actorType = normalizeCaseHistoryActorTypeStage040(activity.actorType);
+  const related = getCaseHistoryRelatedRecordStage040(eventType, payload);
+  const base = {
+    id: 'activity-' + id,
+    occurredAt,
+    actorType,
+    sourceType: 'activity' as const,
+    sourceId: String(activity.id || '').trim() || null,
+    eventType,
+    relatedRecordType: related.type,
+    relatedRecordId: related.id,
+  };
 
   if (lowerType.includes('task')) {
     const status = String(payload.status || payload.nextStatus || payload.toStatus || '').toLowerCase();
-    const actionName = pickCaseHistoryActionNameStage220A17(payload, body);
+    const taskName = actionName || 'Nazwa zadania niedostępna';
     const isDone = lowerType.includes('done') || lowerType.includes('completed') || status.includes('done') || status.includes('completed');
-    const safeBody = actionName || (isDone ? 'Nazwa zadania niedostępna' : body);
-    return safeBody ? { id: 'activity-' + id, kind: 'task', title: isDone ? 'Zadanie wykonane' : 'Zadanie', body: safeBody, occurredAt } : null;
+    const title = lowerType.includes('deleted') ? 'Usunięto zadanie' : lowerType.includes('rescheduled') ? 'Przełożono zadanie' : lowerType.includes('status') ? 'Zmieniono status zadania' : lowerType.includes('updated') ? 'Zaktualizowano zadanie' : lowerType.includes('added') ? 'Dodano zadanie' : isDone ? 'Zadanie wykonane' : 'Zadanie';
+    const body = generatedBody || detailBody || (isDone ? taskName : `Zapisano zadanie: ${taskName}`);
+    return body ? { ...base, kind: 'task', title, body } : null;
   }
 
   if (lowerType.includes('event') || lowerType.includes('meeting')) {
-    return body ? { id: 'activity-' + id, kind: 'event', title: 'Wydarzenie', body, occurredAt } : null;
+    const eventName = actionName || 'Nazwa wydarzenia niedostępna';
+    const title = lowerType.includes('deleted') ? 'Usunięto wydarzenie' : lowerType.includes('rescheduled') ? 'Przełożono wydarzenie' : lowerType.includes('status') ? 'Zmieniono status wydarzenia' : lowerType.includes('updated') ? 'Zaktualizowano wydarzenie' : lowerType.includes('added') ? 'Dodano wydarzenie' : 'Wydarzenie';
+    const body = generatedBody || detailBody || `Zapisano wydarzenie: ${eventName}`;
+    return body ? { ...base, kind: 'event', title, body } : null;
   }
 
   if (lowerType.includes('payment') || lowerType.includes('billing')) {
-    return body ? { id: 'activity-' + id, kind: 'payment', title: 'Wpłata', body, occurredAt } : null;
+    const amount = Number(payload.amount);
+    const amountLabel = Number.isFinite(amount) ? formatMoney(amount, payload.currency) : '';
+    const paymentDetail = [amountLabel, detailBody, billingStatusLabel(payload.status)].filter(Boolean).join(' · ');
+    const title = lowerType.includes('deleted') ? 'Usunięto wpłatę' : lowerType.includes('updated') ? 'Skorygowano wpłatę' : lowerType.includes('added') ? 'Dodano wpłatę' : 'Wpłata';
+    const body = paymentDetail || generatedBody || actionName || 'Zapisano wpłatę';
+    return body ? { ...base, kind: 'payment', title, body } : null;
   }
 
   if (lowerType.includes('note') || lowerType === 'operator_note') {
-    return body ? {
-      id: 'activity-' + id,
+    return (detailBody || generatedBody || actionName) ? {
+      ...base,
       kind: 'note',
-      title: 'Notatka',
+      title: asCaseHistoryTextStage14D(payload.title) || 'Notatka',
       body: STAGE217_CASE_NOTE_HISTORY_SUMMARY,
-      occurredAt,
     } : null;
   }
 
-  if (lowerType.includes('status') || lowerType.includes('lifecycle')) {
-    const statusBody = pickCaseHistoryBodyStage14D(payload.statusLabel, payload.nextStatusLabel, payload.toStatusLabel, body);
-    return statusBody ? { id: 'activity-' + id, kind: 'status', title: 'Zmiana statusu', body: statusBody, occurredAt } : null;
+  if (lowerType.includes('missing_item')) {
+    const missingName = actionName || 'Element sprawy';
+    const title = lowerType.includes('resolved') ? 'Uzupełniono brak' : lowerType.includes('deleted') ? 'Usunięto brak' : payload.blocksProgress ? 'Dodano blokadę' : 'Dodano brak';
+    const body = generatedBody || detailBody || `${title}: ${missingName}`;
+    return body ? { ...base, kind: 'case', title, body } : null;
   }
 
-  return body ? { id: 'activity-' + id, kind: 'case', title: 'Ruch w sprawie', body, occurredAt } : null;
+  if (lowerType === 'item_added' || lowerType === 'item_deleted' || lowerType === 'file_uploaded' || lowerType === 'decision_made') {
+    const itemName = actionName || 'Element sprawy';
+    const title = lowerType === 'item_added' ? 'Dodano brak' : lowerType === 'item_deleted' ? 'Usunięto element sprawy' : lowerType === 'file_uploaded' ? 'Dodano plik' : 'Zaakceptowano element sprawy';
+    const body = generatedBody || detailBody || `${title}: ${itemName}`;
+    return body ? { ...base, kind: 'case', title, body } : null;
+  }
+
+  if (lowerType.includes('status') || lowerType.includes('lifecycle')) {
+    const statusBody = pickCaseHistoryBodyStage14D(payload.statusLabel, payload.nextStatusLabel, payload.toStatusLabel, generatedBody, detailBody);
+    const title = lowerType.includes('completed') ? 'Zamknięto sprawę' : lowerType.includes('reopened') ? 'Przywrócono sprawę' : lowerType.includes('started') ? 'Rozpoczęto sprawę' : 'Zmieniono status';
+    return statusBody ? { ...base, kind: 'status', title, body: statusBody } : null;
+  }
+
+  if (lowerType === 'case_created' || lowerType === 'case_updated') {
+    const caseName = actionName || 'sprawę';
+    const title = lowerType === 'case_created' ? 'Utworzono sprawę' : 'Zaktualizowano sprawę';
+    const body = lowerType === 'case_created' ? `Utworzono sprawę „${caseName}”.` : `Zaktualizowano dane sprawy „${caseName}”.`;
+    return { ...base, kind: 'case', title, body };
+  }
+
+  const fallbackName = actionName || detailBody || generatedBody;
+  if (!fallbackName) return null;
+  return { ...base, kind: 'case', title: 'Aktywność sprawy', body: detailBody || generatedBody || `Zapisano aktywność: ${fallbackName}` };
 }
 
 /* CLOSEFLOW_CASE_DETAIL_HISTORY_SORT_REPAIR_2026_05_12
@@ -1135,7 +1245,19 @@ function getCaseNoteHistoryItemStage217(activity: CaseActivity): CaseHistoryItem
     payload.createdAt,
   );
   const id = String(activity.id || occurredAt || body);
-  return body ? { id: 'note-' + id, kind: 'note', title: 'Notatka', body, occurredAt } : null;
+  return body ? {
+    id: 'note-' + id,
+    kind: 'note',
+    title: 'Notatka',
+    body,
+    occurredAt,
+    actorType: normalizeCaseHistoryActorTypeStage040(activity.actorType),
+    sourceType: 'activity',
+    sourceId: String(activity.id || '').trim() || null,
+    eventType: String(activity.eventType || '').trim(),
+    relatedRecordType: null,
+    relatedRecordId: null,
+  } : null;
 }
 function sortCaseHistoryItemsStage14D(items: CaseHistoryItem[]) {
   return [...(Array.isArray(items) ? items : [])].sort((left, right) => {
@@ -1167,6 +1289,11 @@ function buildCaseHistoryItemsStage14D(input: {
       title,
       body,
       occurredAt: getCaseHistoryDateStage14D((task as any).completedAt, (task as any).updatedAt, getTaskMainDate(task), task.reminderAt, task.scheduledAt, task.date),
+      actorType: 'system',
+      sourceType: 'task',
+      sourceId: String(task.id || '').trim() || null,
+      relatedRecordType: 'task',
+      relatedRecordId: String(task.id || '').trim() || null,
     });
   }
   for (const event of input.events || []) {
@@ -1177,6 +1304,11 @@ function buildCaseHistoryItemsStage14D(input: {
       title: 'Wydarzenie',
       body,
       occurredAt: getCaseHistoryDateStage14D((event as any).updatedAt, getEventMainDate(event), event.startAt, event.reminderAt),
+      actorType: 'system',
+      sourceType: 'event',
+      sourceId: String(event.id || '').trim() || null,
+      relatedRecordType: 'event',
+      relatedRecordId: String(event.id || '').trim() || null,
     });
   }
   for (const payment of input.payments || []) {
@@ -1190,6 +1322,11 @@ function buildCaseHistoryItemsStage14D(input: {
       title: 'Wpłata',
       body,
       occurredAt: getCaseHistoryDateStage14D(payment.paidAt, payment.createdAt, payment.dueAt),
+      actorType: 'system',
+      sourceType: 'payment',
+      sourceId: String(payment.id || '').trim() || null,
+      relatedRecordType: 'payment',
+      relatedRecordId: String(payment.id || '').trim() || null,
     });
   }
   for (const item of input.caseItems || []) {
@@ -1201,6 +1338,11 @@ function buildCaseHistoryItemsStage14D(input: {
       title: status && status !== 'Brak' ? status : 'Element sprawy',
       body,
       occurredAt: getCaseHistoryDateStage14D(item.approvedAt, item.createdAt, item.dueDate),
+      actorType: 'system',
+      sourceType: 'case-item',
+      sourceId: String(item.id || '').trim() || null,
+      relatedRecordType: 'case-item',
+      relatedRecordId: String(item.id || '').trim() || null,
     });
   }
   return sortCaseHistoryItemsStage14D(history);
@@ -2043,6 +2185,8 @@ export default function CaseDetail() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [caseActionsLoadError, setCaseActionsLoadError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<CaseDetailTab>('service');
+  /* FRT-040: transient view filters; caseHistoryItems remains the only history read model. */
+  const [caseHistoryFilterStage040, setCaseHistoryFilterStage040] = useState<CaseHistoryFilterStateStage040>({ dateRange: 'all', kind: 'all', actor: 'all' });
   const [caseActionOpenGroup, setCaseActionOpenGroup] = useState<CaseActionAccordionGroup>('next');
   const [isCaseActionsAllOpen, setIsCaseActionsAllOpen] = useState(false);
   const [isCaseAllNotesOpenStage231D0D, setIsCaseAllNotesOpenStage231D0D] = useState(false);
@@ -3962,6 +4106,38 @@ async function handleConfirmDeleteCaseRecord() {
 
     return Array.from(unique.values()).slice(0, 50);
   }, [activities, tasks, events, casePayments, items]);
+  const caseHistoryStatsStage040 = useMemo(() => {
+    const actorCounts: Record<CaseHistoryActorTypeStage040, number> = { operator: 0, client: 0, system: 0 };
+    const datedItems = caseHistoryItems
+      .map((item) => ({ item, date: toDate(item.occurredAt) }))
+      .filter((entry): entry is { item: CaseHistoryItem; date: Date } => Boolean(entry.date));
+    for (const item of caseHistoryItems) {
+      actorCounts[normalizeCaseHistoryActorTypeStage040(item.actorType)] += 1;
+    }
+    const oldest = datedItems.reduce<Date | null>((current, entry) => !current || entry.date < current ? entry.date : current, null);
+    const newest = datedItems.reduce<Date | null>((current, entry) => !current || entry.date > current ? entry.date : current, null);
+    return {
+      total: caseHistoryItems.length,
+      actorCounts,
+      durationLabel: formatCaseHistoryDurationStage040(caseData?.createdAt || oldest, newest || caseData?.updatedAt, caseHistoryItems.length),
+      lastItem: caseHistoryItems[0] || null,
+    };
+  }, [caseData?.createdAt, caseData?.updatedAt, caseHistoryItems]);
+  const filteredCaseHistoryItemsStage040 = useMemo(() => {
+    const cutoff = caseHistoryFilterStage040.dateRange === 'all'
+      ? null
+      : Date.now() - (caseHistoryFilterStage040.dateRange === '7d' ? 7 : 30) * 24 * 60 * 60 * 1000;
+    return caseHistoryItems.filter((item) => {
+      if (caseHistoryFilterStage040.kind !== 'all' && item.kind !== caseHistoryFilterStage040.kind) return false;
+      if (caseHistoryFilterStage040.actor !== 'all' && normalizeCaseHistoryActorTypeStage040(item.actorType) !== caseHistoryFilterStage040.actor) return false;
+      if (cutoff !== null) {
+        const occurredAt = toDate(item.occurredAt);
+        if (!occurredAt || occurredAt.getTime() < cutoff) return false;
+      }
+      return true;
+    });
+  }, [caseHistoryFilterStage040, caseHistoryItems]);
+  const hasCaseHistoryFiltersStage040 = caseHistoryFilterStage040.dateRange !== 'all' || caseHistoryFilterStage040.kind !== 'all' || caseHistoryFilterStage040.actor !== 'all';
   const caseNoteItems = useMemo<CaseHistoryItem[]>(() => {
     return sortCaseHistoryItemsStage14D(
       activities
@@ -4609,29 +4785,169 @@ async function handleConfirmDeleteCaseRecord() {
             ) : null}
 
             {activeTab === 'history' ? (
-              <section className="case-detail-section-card case-detail-stage220a10-tab-panel case-detail-stage220a10-history-panel" data-stage220a10-tab-panel="history" data-stage220a11-tab-content="history" data-stage220a11-unified-history-tab="true">
-                <div className="case-detail-section-head case-detail-stage220a10-panel-head case-detail-stage220a12-history-head" data-stage220a12-history-heading-only="true">
+              <section className="case-detail-section-card case-detail-stage220a10-tab-panel case-detail-stage220a10-history-panel case-history-workspace" data-stage220a10-tab-panel="history" data-stage220a11-tab-content="history" data-stage220a11-unified-history-tab="true" data-case-history-workspace="true">
+                <div className="case-detail-section-head case-detail-stage220a10-panel-head case-detail-stage220a12-history-head case-history-workspace-head" data-stage220a12-history-heading-only="true">
                   <div>
+                    <p className="case-detail-eyebrow">Oś czasu sprawy</p>
                     <h2>Historia sprawy</h2>
+                    <p className="case-history-workspace-intro">Chronologiczny zapis działań z bieżącej sprawy, aktywności i powiązanych rekordów.</p>
                   </div>
+                  <span className="case-history-total-badge" data-case-history-total="true">{caseHistoryStatsStage040.total} {caseHistoryStatsStage040.total === 1 ? 'aktywność' : 'aktywności'}</span>
                 </div>
-                <div className="case-detail-stage220a10-history-list" data-stage220a10-history-list="true">
-                  {caseHistoryItems.length === 0 ? (
-                    <div className="case-detail-light-empty">Brak historii sprawy.</div>
-                  ) : (
-                    caseHistoryItems.slice(0, 40).map((item) => (
-                      <article className="case-detail-history-row" key={'stage220a10-history-' + item.id} data-history-kind={item.kind} data-cf-vst-kind={getCaseHistoryVstKindStage220A17(item.kind)} data-stage220a17-history-kind-row={item.kind}>
-                        <span className="case-detail-history-icon cf-vst-icon" aria-label={getCaseHistoryKindLabelStage220A17(item.kind)}><CaseHistoryKindIconStage220A17 kind={item.kind} /></span>
-                        <div className="case-detail-stage220a10-history-main">
-                          <div className="case-detail-history-title-row">
-                            <strong>{item.title}</strong>
-                            <small>{formatDateTime(item.occurredAt, 'Bez daty')}</small>
-                          </div>
-                          <p title={item.body}>{item.body}</p>
+
+                <div className="case-history-summary-grid" data-case-history-summary="true">
+                  <article className="case-history-summary-card" data-case-history-summary-card="duration">
+                    <span className="case-history-summary-label">Czas trwania historii</span>
+                    <strong>{caseHistoryStatsStage040.durationLabel}</strong>
+                    <small>na podstawie zapisanych zdarzeń</small>
+                  </article>
+                  <article className="case-history-summary-card" data-case-history-summary-card="activities">
+                    <span className="case-history-summary-label">Liczba aktywności</span>
+                    <strong>{caseHistoryStatsStage040.total}</strong>
+                    <small>z jednego źródła historii sprawy</small>
+                  </article>
+                  <article className="case-history-summary-card" data-case-history-summary-card="operator">
+                    <span className="case-history-summary-label">Operator</span>
+                    <strong>{caseHistoryStatsStage040.actorCounts.operator}</strong>
+                    <small>zapisów operatora</small>
+                  </article>
+                  <article className="case-history-summary-card" data-case-history-summary-card="client">
+                    <span className="case-history-summary-label">Klient</span>
+                    <strong>{caseHistoryStatsStage040.actorCounts.client}</strong>
+                    <small>zapisów klienta</small>
+                  </article>
+                </div>
+
+                <div className="case-history-toolbar" data-case-history-filters="true" aria-label="Filtry historii">
+                  <label className="case-history-filter-field" htmlFor="case-history-date-range">
+                    <span>Zakres dat</span>
+                    <select
+                      id="case-history-date-range"
+                      value={caseHistoryFilterStage040.dateRange}
+                      onChange={(event) => setCaseHistoryFilterStage040((current) => ({ ...current, dateRange: event.target.value as CaseHistoryFilterStateStage040['dateRange'] }))}
+                      data-case-history-filter="date-range"
+                    >
+                      <option value="all">Wszystkie</option>
+                      <option value="7d">Ostatnie 7 dni</option>
+                      <option value="30d">Ostatnie 30 dni</option>
+                    </select>
+                  </label>
+                  <label className="case-history-filter-field" htmlFor="case-history-kind">
+                    <span>Typ aktywności</span>
+                    <select
+                      id="case-history-kind"
+                      value={caseHistoryFilterStage040.kind}
+                      onChange={(event) => setCaseHistoryFilterStage040((current) => ({ ...current, kind: event.target.value as CaseHistoryFilterStateStage040['kind'] }))}
+                      data-case-history-filter="kind"
+                    >
+                      <option value="all">Wszystkie aktywności</option>
+                      <option value="note">Notatki</option>
+                      <option value="task">Zadania</option>
+                      <option value="event">Wydarzenia</option>
+                      <option value="payment">Wpłaty</option>
+                      <option value="status">Statusy</option>
+                      <option value="case">Elementy sprawy</option>
+                    </select>
+                  </label>
+                  <fieldset className="case-history-actor-filter" data-case-history-filter="actor">
+                    <legend>Autor</legend>
+                    {([
+                      ['all', 'Wszyscy'],
+                      ['operator', 'Operator'],
+                      ['client', 'Klient'],
+                      ['system', 'System'],
+                    ] as const).map(([value, label]) => (
+                      <button
+                        type="button"
+                        key={value}
+                        className={caseHistoryFilterStage040.actor === value ? 'case-history-actor-button is-active' : 'case-history-actor-button'}
+                        aria-pressed={caseHistoryFilterStage040.actor === value}
+                        onClick={() => setCaseHistoryFilterStage040((current) => ({ ...current, actor: value }))}
+                        data-case-history-actor-option={value}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </fieldset>
+                  <Button type="button" variant="ghost" size="sm" onClick={() => setCaseHistoryFilterStage040({ dateRange: 'all', kind: 'all', actor: 'all' })} disabled={!hasCaseHistoryFiltersStage040} data-case-history-clear-filters="true">
+                    <X className="h-4 w-4" />
+                    Wyczyść filtry
+                  </Button>
+                </div>
+
+                <div className="case-history-content-grid" data-case-history-content="true">
+                  <div className="case-history-timeline-panel">
+                    <div className="case-history-list-heading">
+                      <div>
+                        <p className="case-detail-eyebrow">Zdarzenia</p>
+                        <h3>Oś czasu aktywności</h3>
+                      </div>
+                      <span data-case-history-visible-count="true">{filteredCaseHistoryItemsStage040.length} z {caseHistoryStatsStage040.total}</span>
+                    </div>
+                    <div className="case-detail-stage220a10-history-list case-history-timeline" data-stage220a10-history-list="true" data-case-history-list="true">
+                      {filteredCaseHistoryItemsStage040.length === 0 ? (
+                        <div className="case-detail-light-empty case-history-empty" data-case-history-empty="true">
+                          {caseHistoryItems.length === 0 ? 'Brak historii sprawy.' : 'Brak aktywności dla wybranych filtrów.'}
                         </div>
-                      </article>
-                    ))
-                  )}
+                      ) : (
+                        filteredCaseHistoryItemsStage040.slice(0, 40).map((item) => {
+                          const actorType = normalizeCaseHistoryActorTypeStage040(item.actorType);
+                          return (
+                            <article id={`case-history-${item.id}`} className="case-detail-history-row case-history-timeline-row" key={'stage220a10-history-' + item.id} data-history-kind={item.kind} data-cf-vst-kind={getCaseHistoryVstKindStage220A17(item.kind)} data-stage220a17-history-kind-row={item.kind} data-case-history-row="true" data-case-history-actor={actorType}>
+                              <div className="case-history-row-marker" aria-hidden="true">
+                                <span className="case-detail-history-icon cf-vst-icon" aria-label={getCaseHistoryKindLabelStage220A17(item.kind)}><CaseHistoryKindIconStage220A17 kind={item.kind} /></span>
+                              </div>
+                              <div className="case-detail-stage220a10-history-main case-history-row-content">
+                                <div className="case-history-row-head">
+                                  <div className="case-history-row-title">
+                                    <span className="case-history-kind-pill" data-case-history-kind-label={item.kind}>{getCaseHistoryKindLabelStage220A17(item.kind)}</span>
+                                    <strong>{item.title}</strong>
+                                  </div>
+                                  <time dateTime={item.occurredAt || undefined}>{formatDateTime(item.occurredAt, 'Bez daty')}</time>
+                                </div>
+                                <p title={item.body}>{item.body}</p>
+                                <div className="case-history-row-meta">
+                                  <span data-case-history-row-actor="true">{getCaseHistoryActorLabelStage040(item.actorType)}</span>
+                                  <span data-case-history-row-source="true">{getCaseHistorySourceLabelStage040(item.sourceType)}</span>
+                                  {item.relatedRecordType ? <span data-case-history-row-related="true">Powiązane: {getCaseHistorySourceLabelStage040(item.relatedRecordType === 'case-item' ? 'case-item' : item.relatedRecordType)}</span> : null}
+                                </div>
+                              </div>
+                            </article>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+
+                  <aside className="case-history-stats-rail" data-case-history-stats-rail="true" aria-label="Szybkie statystyki historii">
+                    <div className="case-history-rail-heading">
+                      <div>
+                        <p className="case-detail-eyebrow">Podsumowanie</p>
+                        <h3>Szybkie statystyki</h3>
+                      </div>
+                        <History className="case-history-rail-icon" aria-hidden="true" />
+                    </div>
+                    <dl className="case-history-stat-list">
+                      <div><dt>Czas trwania</dt><dd>{caseHistoryStatsStage040.durationLabel}</dd></div>
+                      <div><dt>Aktywności</dt><dd>{caseHistoryStatsStage040.total}</dd></div>
+                      <div><dt>Operator</dt><dd>{caseHistoryStatsStage040.actorCounts.operator}</dd></div>
+                      <div><dt>Klient</dt><dd>{caseHistoryStatsStage040.actorCounts.client}</dd></div>
+                      <div><dt>System</dt><dd>{caseHistoryStatsStage040.actorCounts.system}</dd></div>
+                    </dl>
+                    <div className="case-history-last-event" data-case-history-last-event="true">
+                      <p className="case-detail-eyebrow">Ostatnie wydarzenie</p>
+                      {caseHistoryStatsStage040.lastItem ? (
+                        <>
+                          <strong>{caseHistoryStatsStage040.lastItem.title}</strong>
+                          <p>{caseHistoryStatsStage040.lastItem.body}</p>
+                          <small>{formatDateTime(caseHistoryStatsStage040.lastItem.occurredAt, 'Bez daty')}</small>
+                          <a href={`#case-history-${caseHistoryStatsStage040.lastItem.id}`} data-case-history-last-event-link="true">Pokaż na osi czasu <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></a>
+                        </>
+                      ) : (
+                        <p>Brak zapisanego wydarzenia.</p>
+                      )}
+                    </div>
+                  </aside>
                 </div>
               </section>
             ) : null}
