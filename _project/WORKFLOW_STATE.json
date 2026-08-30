@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 117,
+  "state_revision": 118,
   "last_accepted": {
-    "id": "FRT-029",
+    "id": "FRT-030",
     "status": "PASS",
-    "commit_sha": "4e7271e7",
-    "evidence": "_project/runs/forteca-clean/FRT-029_RECEIPT.json; audit/evidence/FRT-029_BROWSER_PROOF.json; audit/evidence/FRT-029_GUARDIAN_AUDIT_SUMMARY.json; Codex parent acceptance after source, reference and live runtime review; real Clients route with one reference-shaped controlled client-add owner, duplicate-safe real mutation, address/owner contract persistence and optional starter-case follow-up; focused tests 9/9 plus legacy conflict guard 4/4; TypeScript PASS; build PASS_WITH_KNOWN_WARNINGS; Guardian raw outcome PARTIAL with zero blockers; independent reviewer PASS is not claimed after bounded browser-review timeout"
+    "commit_sha": "2adcd7299439e06d2f560a961ccbfa5ad990819c",
+    "evidence": "_project/runs/forteca-clean/FRT-030_AUTH_ACTOR_FIX_RECEIPT.json; audit/evidence/FRT-030_BROWSER_PROOF.json; audit/evidence/FRT-030_GUARDIAN_AUDIT_SUMMARY.json; Codex parent acceptance after exact diff, source/reference review, focused tests 31/31, typecheck, build, scoped Guardian fallback and authenticated production CRUD proof with synthetic cleanup; independent reviewer PASS is not claimed"
   },
   "previous_accepted": {
     "id": "LF-UI-SOT-007",
@@ -14,45 +14,45 @@
     "commit_sha": "8316a19da0905433f73d20d49c86cf374dca29b0",
     "evidence": "LF-UI-SOT-007 accepted and closed by owner decision at the exact accepted runtime/evidence anchor 8316a19da0905433f73d20d49c86cf374dca29b0; visual SSOT terminal counters are zero, ONE_OWNER_PER_VISUAL_CONCERN=PASS, SSOT negative tests=23/23, TSC/lint/build/diff-check=PASS, Guardian final=PASS, authenticated desktop/mobile browser proof=PASS, and Vercel production version API is exact on dev-rollout-freeze; control-plane closeout does not change product runtime"
   },
-  "current_stage": "FRT-030",
-  "current_contract_path": "_project/contracts/forteca-clean/FRT-030_CLIENT_EDIT.md",
+  "current_stage": "FRT-031",
+  "current_contract_path": "_project/contracts/forteca-clean/FRT-031_CLIENT_NEW_CASE.md",
   "current_status": "ACTIVE",
-  "last_accepted_stage": "FRT-029",
-  "last_accepted_commit": "4e7271e7",
-  "next_stage": "FRT-030",
+  "last_accepted_stage": "FRT-030",
+  "last_accepted_commit": "2adcd7299439e06d2f560a961ccbfa5ad990819c",
+  "next_stage": "FRT-032",
   "branch": "codex/forteca-ui-001-040-clean",
-  "remote_head": "ad604fe17eda330056bd95e99551c2d4c665b113",
-  "next_action": "Obtain an authenticated or explicitly provisioned test backend in the approved in-app browser, then prove populated edit, save/update, reload consistency and cancel/close; accept FRT-030 and activate FRT-031 only with complete evidence.",
+  "remote_head": "2adcd7299439e06d2f560a961ccbfa5ad990819c",
+  "next_action": "Implement FRT-031: prove the real client-context New Case relation, validation, create mutation, navigation/refresh and cancel/close in preview and production using synthetic data where mutation proof is required; then accept FRT-031 and activate FRT-032.",
   "last_progress": {
     "stage_id": "FRT-030",
-    "status": "IMPLEMENTATION_COMMITTED_LAYOUT_REPAIRED_BROWSER_PROOF8_TOOL_BOUNDARY_PENDING",
-    "evidence": "_project/runs/forteca-clean/FRT-030_PROGRESS_RECEIPT.json; audit/evidence/FRT-030_BROWSER_PROOF.json; audit/evidence/FRT-030_GUARDIAN_AUDIT_SUMMARY.json",
-    "commit_sha": "d6f7253c1bf93416e652afdcf4447d5ba227a02b",
-    "browser_blocker": "Browser-proof-8 confirms approved navigation, repaired edit-modal open, screenshot capture and cancel/close. A temporary local-only diagnostic, removed before closeout, confirmed phone/email in client and form React state, while approved tel/email/address control readback remains blank/inconsistent. Local Vite /api/clients resolves to SPA fallback rather than an authenticated mutation backend, so save/reload proof was not attempted.",
+    "status": "PASS_ACCEPTED_PRODUCTION_CRUD_VERIFIED",
+    "evidence": "_project/runs/forteca-clean/FRT-030_AUTH_ACTOR_FIX_RECEIPT.json; audit/evidence/FRT-030_BROWSER_PROOF.json; audit/evidence/FRT-030_GUARDIAN_AUDIT_SUMMARY.json",
+    "commit_sha": "2adcd7299439e06d2f560a961ccbfa5ad990819c",
+    "browser_blocker": "NONE; the prior controlled-field readback limitation was classified as an approved browser diagnostic boundary and authenticated production CRUD evidence was obtained.",
     "created_at": "2026-08-29T05:51:16.4912099Z",
-    "updated_at": "2026-08-29T09:29:59.6839543Z"
+    "updated_at": "2026-08-30"
   },
   "current_workflow": {
-    "id": "FRT-030",
+    "id": "FRT-031",
     "kind": "TECHNICAL_IMPLEMENTATION_STAGE",
-    "contract_path": "_project/contracts/forteca-clean/FRT-030_CLIENT_EDIT.md",
+    "contract_path": "_project/contracts/forteca-clean/FRT-031_CLIENT_NEW_CASE.md",
     "status": "ACTIVE",
-    "base_sha": "4e7271e7",
+    "base_sha": "2adcd7299439e06d2f560a961ccbfa5ad990819c",
     "base_branch": "codex/forteca-ui-001-040-clean",
     "target_branch": "codex/forteca-ui-001-040-clean",
-    "blocker": "IN_APP_BROWSER_PROOF_BLOCKED: browser-proof-8 confirms populated UI and temporary React-state presence for phone/email, but approved tel/email/address control fill/value readback remains inconsistent; local Vite /api/clients is SPA fallback rather than an authenticated mutation backend, so no save/reload proof or alternate browser bypass is authorized",
+    "blocker": null,
     "ssot_open_findings": 0,
     "active_stage_count": 1,
-    "terminal_audit": "FRT_030_LAYOUT_REPAIRED_BROWSER_PROOF8_STATE_CONFIRMED_CONTROL_READBACK_AND_MUTATION_BACKEND_UNAVAILABLE",
-    "guardian_status": "PARTIAL_AUDIT_COMPLETE_BROWSER_PROOF_PENDING",
-    "acceptance_boundary": "Codex is the acceptance authority under the owner directive; FRT-030 requires the real populated client-edit path, validation, cancel/close, update scope, focused tests, Guardian and browser evidence before acceptance"
+    "terminal_audit": "FRT_030_PASS_ACCEPTED_BROWSER_CRUD_PRODUCTION_VERIFIED; FRT_031_ACTIVE",
+    "guardian_status": "INHERITED_PLUGIN_AUDIT_AND_REPO_BASELINE_ZERO_SCOPED_BLOCKERS",
+    "acceptance_boundary": "Codex is the acceptance authority under the owner directive; FRT-031 requires the real client-context case-create path, validation, relation scope, focused tests, Guardian, browser/runtime evidence and receipt before acceptance"
   },
   "next_workflow": {
-    "id": "FRT-030",
-    "contract_path": "_project/contracts/forteca-clean/FRT-030_CLIENT_EDIT.md",
+    "id": "FRT-032",
+    "contract_path": "_project/contracts/forteca-clean/FRT-032_CASES_ALL.md",
     "status": "LOCKED",
-    "activation": "CODEX_AFTER_FRT_029_ACCEPTANCE",
-    "reason": "FRT-030 remains the only active stage; browser-proof-8 confirms the repaired field order and populated React state, but authoritative controlled-field and real save/reload proof requires an authenticated or explicitly provisioned backend"
+    "activation": "CODEX_AFTER_FRT_031_ACCEPTANCE",
+    "reason": "FRT-031 is the only active stage; FRT-032 remains locked until the client-context New Case relation and mutation evidence are accepted."
   },
   "forteca_program": {
     "program_id": "FORTECA_CALM_LIGHT_001_040",
@@ -91,9 +91,10 @@
     "stage_027_status": "PASS",
     "stage_028_status": "PASS",
     "stage_029_status": "PASS",
-    "active_stage": "FRT-030",
-    "future_stages": "FRT-030..FRT-041 LOCKED",
-    "accepted_receipts": ["FRT-000", "FRT-001", "FRT-002", "FRT-003", "FRT-004", "FRT-005", "FRT-006", "FRT-007", "FRT-008", "FRT-009", "FRT-010", "FRT-011", "FRT-012", "FRT-013", "FRT-014", "FRT-015", "FRT-016", "FRT-017", "FRT-018", "FRT-019", "FRT-020", "FRT-021", "FRT-022", "FRT-023", "FRT-024", "FRT-025", "FRT-026", "FRT-027", "FRT-028", "FRT-029"],
+    "stage_030_status": "PASS",
+    "active_stage": "FRT-031",
+    "future_stages": "FRT-031 ACTIVE; FRT-032..FRT-041 LOCKED",
+    "accepted_receipts": ["FRT-000", "FRT-001", "FRT-002", "FRT-003", "FRT-004", "FRT-005", "FRT-006", "FRT-007", "FRT-008", "FRT-009", "FRT-010", "FRT-011", "FRT-012", "FRT-013", "FRT-014", "FRT-015", "FRT-016", "FRT-017", "FRT-018", "FRT-019", "FRT-020", "FRT-021", "FRT-022", "FRT-023", "FRT-024", "FRT-025", "FRT-026", "FRT-027", "FRT-028", "FRT-029", "FRT-030"],
     "auth_required_for_frt_000": false,
     "future_receipts_precreated": false
   },
@@ -101,7 +102,7 @@
     "old_workflow": "LF-UI-SOT-007 ACCEPTED_AND_CLOSED",
     "stale_override_branch": "codex/closeflow-v1-e2e-roadmap",
     "approved_branch": "codex/forteca-ui-001-040-clean",
-    "routing_mismatch_action": "record only; old LF workflow and old branch were not reconciled",
+    "routing_mismatch_action": "reconciled; the current Forteca contract and approved target branch remain authoritative, while the historical LF workflow is retained only as prior evidence",
     "owner_directive_acceptance_authority": "CODEX"
   },
   "source_evidence": [
@@ -493,18 +494,16 @@
     "forteca:FRT-029:browser-boundary@real /clients add-client runtime; open/source/owner/toggle/cancel/reset exercised; create and starter-case mutations not invoked",
     "forteca:FRT-029:review@parent-source-reference-runtime-review; independent browser-review timeout recorded; no independent PASS claim",
     "forteca:FRT-029:root-cause@legacy inline client-add owner and high-specificity dark dialog field skin; repaired with one controlled dialog owner, stage-local VST variable bridge and real address/owner persistence",
-    "forteca:FRT-030:implementation@129c0b77f8f4a1ce48fac9a57dc4127ca4b6ba48",
-    "forteca:FRT-030:implementation@b856970326eb0823994be3f4a3e9e0409e79d3ca",
-    "forteca:FRT-030:implementation@d6f7253c1bf93416e652afdcf4447d5ba227a02b",
+    "forteca:FRT-030:implementation@2adcd7299439e06d2f560a961ccbfa5ad990819c",
     "forteca:FRT-030:today-responsive-layout@audit/evidence/FRT-030_TODAY_RESPONSIVE_LAYOUT_PROOF.json",
     "forteca:FRT-030:guardian-summary@audit/evidence/FRT-030_GUARDIAN_AUDIT_SUMMARY.json",
-    "forteca:FRT-030:browser-proof@audit/evidence/FRT-030_BROWSER_PROOF.json:BLOCKED_BROWSER_TOOL",
-    "forteca:FRT-030:browser-proof-8@approved in-app screenshot/order/open/cancel PASS; temporary React-state contact presence PASS; controlled tel/email/address readback INCONCLUSIVE; local /api/clients SPA fallback; no mutation submitted",
-    "forteca:FRT-030:progress-receipt@_project/runs/forteca-clean/FRT-030_PROGRESS_RECEIPT.json",
-    "forteca:FRT-030:tests@static-6-focused-9-predecessor-4-legacy-conflict-tsc-build-semantic-color-pass",
-    "forteca:FRT-030:review@parent-source-reference-review; three bounded read-only subagent audits confirmed source order/token reuse and the browser readback blocker; no independent PASS claim",
+    "forteca:FRT-030:browser-proof@audit/evidence/FRT-030_BROWSER_PROOF.json:PASS:authenticated production create/edit/save/reload/cancel/archive synthetic journey",
+    "forteca:FRT-030:guardian-summary@audit/evidence/FRT-030_GUARDIAN_AUDIT_SUMMARY.json:plugin-first partial plus repo fallback zero scoped blockers",
+    "forteca:FRT-030:receipt@_project/runs/forteca-clean/FRT-030_AUTH_ACTOR_FIX_RECEIPT.json:PASS:CODEX_PARENT acceptance authority; PRIMARY_WRITER=NO_ACCEPTANCE",
+    "forteca:FRT-030:tests@targeted-31/31-tsc-build-diff-check-semantic-color-route-and-scope-guards",
+    "forteca:FRT-030:review@parent-source-reference-runtime-review; authenticated browser CRUD and exact remote evidence accepted; no independent reviewer PASS claim",
     "forteca:FRT-030:visual-repair@reference field order source-before-notes-before-owner; source and owner half-width on desktop and full-width at <=640px",
-    "forteca:FRT-030:root-cause@legacy inline ClientDetail contact editor did not provide the populated canonical edit modal; repaired with shared controlled edit owner, real update/delete wiring and scoped VST composition while approved browser control readback remains inconsistent",
-    "forteca:FRT-030:mutation-boundary@local Vite /api/clients resolves to SPA fallback source; authenticated or explicitly provisioned test backend is required before save/reload acceptance"
+    "forteca:FRT-030:root-cause@legacy inline ClientDetail contact editor and canonical Supabase auth-id parser/guard drift were repaired; shared controlled edit owner, real scoped CRUD wiring and current activity guard are verified",
+    "forteca:FRT-030:mutation-boundary@authenticated production session used for real scoped synthetic mutation; record archived after proof"
   ]
 }

@@ -1,42 +1,65 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "evidence_type": "FORTECA_GUARDIAN_AUDIT_SUMMARY",
   "stage_id": "FRT-030",
   "mode": "AUDIT_ONLY",
-  "command": "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
-  "raw_outcome": "PARTIAL",
-  "coverageOutcome": "PARTIAL",
-  "pass_claim": false,
-  "fileWrites": 0,
-  "selectedCapabilities": ["repository-baseline"],
-  "selectedSkills": ["ai-code-guardian", "architecture-integrity"],
-  "receiptIds": ["guardian-plugin-smoke-coverage", "guardian-plugin-smoke-result"],
-  "blockers": 0,
-  "target_wide_scan": "NOT_AVAILABLE",
+  "plugin_first": {
+    "command": "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+    "mode": "AUDIT_ONLY",
+    "fileWrites": 0,
+    "selectedCapabilities": ["repository-baseline"],
+    "selectedSkills": ["ai-code-guardian", "architecture-integrity"],
+    "coverageOutcome": "PARTIAL",
+    "receiptIds": ["guardian-plugin-smoke-coverage", "guardian-plugin-smoke-result"],
+    "blockers": 0
+  },
+  "repository_fallback": {
+    "status": "PARTIAL_WITH_ZERO_SCOPED_BLOCKERS",
+    "checks": {
+      "check:a22-supabase-auth-rls-workspace": "PASS",
+      "check:a26-activities-ai-drafts-supabase": "PASS",
+      "guard:routes:canonical": "PASS",
+      "guard:ui:ssot-icons": "PASS",
+      "guard:ui:ssot-semantic-colors": "PASS",
+      "guard:ui:ssot-typography": "PASS",
+      "test:lf-ui-sot-007-ssot-guards": "PASS 23/23",
+      "check:stage124-supabase-egress-contract": "PASS",
+      "check:closeflow-client-case-urgent-regressions": "PASS",
+      "verify:security:server-only-secrets": "PASS",
+      "verify:architecture:supabase-first": "PASS",
+      "verify:auth:supabase-stage01": "PASS",
+      "verify:migrations:supabase": "PASS_WITH_LEGACY_ORDER_WARNINGS",
+      "check:p0-supabase-rls-schema-confirmation": "PASS",
+      "check:p0-auth-bootstrap-race": "PASS",
+      "check:p0-today-loader-supabase-api": "PASS"
+    },
+    "scope_findings": [],
+    "out_of_scope_baseline_findings": [
+      "guard:ui:patch-layers reports pre-existing Clients local action/class debt and direct lucide imports in the legacy client form/icon registry; no new FRT-030 patch-layer violation was introduced.",
+      "check:p0-api-workspace-scope expects stale literal markers in api/cases and billing handlers although current code uses the canonical request-scope helpers; it is not an FRT-030 runtime regression.",
+      "check:p0-plan-access-gating expects an older 21-day trial and exact source markers; current plan source and Login UI intentionally define a 14-day trial, so changing it would be an owner-only business decision.",
+      "The production build retains existing dynamic/static import and large-chunk warnings."
+    ]
+  },
   "repository": {
     "branch": "codex/forteca-ui-001-040-clean",
-    "implementation_commit": "d6f7253c1bf93416e652afdcf4447d5ba227a02b"
+    "implementation_commit": "2adcd7299439e06d2f560a961ccbfa5ad990819c"
   },
   "stage_validation": {
-    "focused_tests": "6/6 PASS",
-    "predecessor_regression": "9/9 PASS",
-    "legacy_conflict_guard_test": "4/4 PASS",
-    "stage_conflict_guard": "PASS",
+    "focused_tests": "PASS 31/31",
     "typescript": "PASS",
-    "production_build": "PASS_WITH_KNOWN_WARNINGS; verified before implementation commit with identical source tree",
+    "production_build": "PASS locally and on Vercel with known non-blocking warnings",
     "diff_check": "PASS",
     "semantic_color_scan": "PASS; FRT-030 CSS has zero raw color literals",
-    "css_owners_scan": "FAIL_ON_PRE_EXISTING_BASELINE_FINDINGS; new FRT-030 metadata is present",
-    "browser_runtime": "PARTIAL_BROWSER_TOOL; browser-proof-8 Today responsive screenshot/DOM proof PASS, repaired FRT-030 modal order/open/cancel/screenshot PASS, populated phone/email confirmed in live screenshot and temporary React state observation, approved tel/email/address control value/fill readback remains inconsistent; local Vite /api/clients is SPA fallback rather than authenticated mutation backend",
-    "today_responsive_layout": "PASS_TARGETED_REPAIR; live 1280x720 DOM measurement and screenshot show normal multi-line wrapping with document scrollWidth equal to clientWidth",
-    "independent_review": "READ_ONLY_SUBAGENT_AUDIT_COMPLETE; three bounded reviews confirmed source order/token reuse and the browser-proof blocker; no independent PASS claim"
+    "browser_runtime": "PASS; authenticated production create/edit/save/reload/cancel/archive journey verified with synthetic data",
+    "independent_review": "PARENT_SOURCE_REFERENCE_RUNTIME_REVIEW; no separate reviewer PASS claim"
   },
   "known_baseline_findings": [
-    "The installed Guardian entrypoint exposes partial repository-baseline smoke coverage and no target-wide scan.",
-    "The CSS owner scan retains pre-existing SCOPED_GLOBAL_AUTHORITY, missing metadata, UNCLASSIFIED_IMPORTANT and SPECIFICITY_PATCH_IMPORTANT findings outside FRT-030's allowed write set.",
-    "The production build retains the existing supabase-fallback dynamic/static import overlap and large-chunk warnings."
+    "Installed Guardian plugin exposes partial repository-baseline smoke coverage and no target-wide scan.",
+    "CSS owner and patch-layer scans retain pre-existing findings outside FRT-030's allowed write set.",
+    "Two P0 guards contain stale literal expectations; current source uses the newer canonical helpers or an owner-controlled 14-day trial policy."
   ],
-  "interpretation": "Guardian smoke completed in AUDIT_ONLY mode with zero writes and zero returned blockers. Coverage is PARTIAL, so no full target-wide Guardian PASS is claimed.",
+  "interpretation": "Guardian plugin smoke and repo fallback completed. Coverage is PARTIAL because the installed plugin is audit-only; the scoped FRT-030 checks have no blocker, while unrelated baseline/stale-guard findings remain explicitly classified and do not prevent the active stage from continuing.",
   "color_policy": {
     "status": "PASS",
     "semantic_primary_base": "--cf-vst-color-primary",
@@ -46,11 +69,6 @@
     "stage_adapter": "src/styles/forteca-client-edit.css",
     "rule": "Repeated semantic controls resolve through the shared VST family; reference drift does not create per-window color exceptions."
   },
-  "root_cause_review": {
-    "status": "STATIC_REVIEW_COMPLETE_PARENT",
-    "finding": "Client Detail used a legacy inline contact editor while the reference requires a populated canonical client edit modal.",
-    "repair": "FRT-030 adds a controlled edit variant beside the existing create owner, routes Client Detail edit actions to it, preserves workspace-scoped update/delete paths, and scopes calm-light composition through VST tokens."
-  },
-  "created_at": "2026-08-29T05:51:16.4912099Z",
-  "updated_at": "2026-08-29T09:29:59.6839543Z"
+  "created_at": "2026-08-30",
+  "updated_at": "2026-08-30"
 }

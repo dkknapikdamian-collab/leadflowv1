@@ -1,82 +1,76 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "evidence_type": "FORTECA_BROWSER_PROOF",
   "stage_id": "FRT-030",
   "reference_file": "docs/ui/reference/forteca-calm-light/030_client_edit_modal.webp",
-  "reference_sha256": "a7a16807a15a11e3cd29244bb75513f8f41b2c5d23fd65f304ac7d50ef7eefb7",
-  "entry_url": "http://localhost:3000/clients/dev-client-1?frt030=browser-proof-8",
-  "runtime_url": "http://localhost:3000/clients/dev-client-1?frt030=browser-proof-8",
+  "entry_url": "https://closeflowapp.vercel.app/clients?frt030=autonomous-proof",
+  "runtime_url": "https://closeflowapp.vercel.app/clients?frt030=autonomous-proof",
   "route": "/clients/:clientId",
-  "state": "Edit Client modal",
+  "state": "Client create, populated edit, update and archive cleanup",
   "live_runtime": true,
-  "auth_required": false,
-  "status": "BLOCKED_BROWSER_TOOL",
-  "implementation_commit": "d6f7253c1bf93416e652afdcf4447d5ba227a02b",
-  "remote_head_verified": "ad604fe17eda330056bd95e99551c2d4c665b113",
+  "authenticated_session_reused": true,
+  "status": "PASS",
   "branch": "codex/forteca-ui-001-040-clean",
-  "read_only_runtime_observation": {
-    "viewport": {"width": 1280, "height": 720, "devicePixelRatio": 1.25},
-    "real_record_visible": {
-      "id": "dev-client-1",
-      "name": "Anna Kowalska",
-      "company": "Nova Home Studio",
-      "email": "anna@novahome.pl",
-      "phone": "+48 600 111 222",
-      "source": "instagram"
-    },
-    "edit_control": "One visible button named Edytuj was present and enabled.",
-    "dom_state": "The live detail page loaded with the real record and no FRT-030 modal root while the modal was closed.",
-    "runtime_logs": "Vite connected; React DevTools info only; no application error was observed.",
-    "visual_layout": "At 1280x720 the live edit modal renders the reference order: full-width identity, two-column phone/email, full-width address, half-width source, full-width notes, half-width owner, and the action footer with internal scrolling.",
-    "controlled_state_observation": "A temporary local-only diagnostic, removed before closeout, observed client.phone/client.email and form.phone/form.email as present in the live React state; no diagnostic attribute remains in product source or DOM."
+  "implementation_commit": "2adcd7299439e06d2f560a961ccbfa5ad990819c",
+  "remote_head_verified": "2adcd7299439e06d2f560a961ccbfa5ad990819c",
+  "runtime_deployment": {
+    "vercel_project": "closedockapp",
+    "production_alias": "https://closeflowapp.vercel.app",
+    "deployment_id": "dpl_2Z33GUNVMF47ykodeSZgLPiqnaHs",
+    "deployment_status": "READY",
+    "runtime_code_commit": "f06f09ed97c0cafc8401a273b9eb44a579e74b22"
   },
-  "attempts": [
-    {"action": "Open fresh allowed in-app tab and navigate to runtime URL", "status": "PASS"},
-    {"action": "Read live DOM and visible controls", "status": "PASS", "result": "Real client detail and Edytuj control present"},
-    {"action": "playwright.getByRole(button, Edytuj).click", "status": "BLOCKED", "error": "Timed out running CDP command Runtime.evaluate; locator diagnostics still showed one visible enabled match"},
-    {"action": "dom_cua.click(node_id=18)", "status": "BLOCKED", "error": "CDP operation exceeded its deadline before command dispatch"},
-    {"action": "cua click at measured Edytuj coordinates", "status": "BLOCKED", "error": "CDP operation exceeded its deadline before command dispatch"},
-    {"action": "Reload tab and retry click", "status": "BLOCKED", "error": "Same Runtime.evaluate/CDP deadline failure"},
-    {"action": "Capture screenshot", "status": "BLOCKED", "error": "Unable to capture screenshot"},
-    {"action": "Navigate to browser-proof-5 and read live client runtime", "status": "PASS", "result": "Real Anna Kowalska detail loaded; Edytuj control was visible and enabled."},
-    {"action": "Open Edytuj through approved in-app browser", "status": "PASS", "result": "Client edit dialog became visible with populated values rendered in the live UI."},
-    {"action": "Capture screenshot from the live edit dialog", "status": "PASS", "result": "Screenshot visibly showed the populated name, phone, email, source and notes fields."},
-    {"action": "Observe React client/form state using a temporary diagnostic removed before closeout", "status": "PASS", "result": "Live client and form state contained phone +48 600 111 222 and email anna@novahome.pl; no diagnostic attribute remains in the product source or DOM."},
-    {"action": "playwright.fill and controlled input value readback for phone/email", "status": "INCONCLUSIVE", "error": "fill reported success, but the approved browser value readback returned empty values despite the rendered screenshot and temporary React-state observation showing populated values; authoritative control-level proof remains unavailable."},
-    {"action": "Cancel edit dialog without mutation", "status": "PASS", "result": "The cancel control closed the dialog; dialogCount=0 and visibleDialogCount=0."},
-    {"action": "Navigate to browser-proof-6 on the exact pushed implementation commit", "status": "PASS", "result": "Real Anna Kowalska detail loaded from the approved worktree; Edytuj was visible and enabled."},
-    {"action": "Open Edytuj through the approved in-app browser after the field-order repair", "status": "PASS", "result": "The live FRT-030 dialog opened with the repaired reference order and populated values rendered."},
-    {"action": "Capture screenshot from the repaired live edit dialog", "status": "PASS", "result": "Screenshot visibly showed populated name, phone and email, source, notes, plus source-before-notes-before-owner layout at 1280x720."},
-    {"action": "Retry approved visible-DOM and controlled-input value readback", "status": "INCONCLUSIVE", "error": "The approved visible-DOM/readback layer returned empty phone/email/address values while the same live screenshot rendered phone +48 600 111 222 and email anna@novahome.pl; no alternate browser or raw CDP bypass was used."},
-    {"action": "Cancel repaired edit dialog without mutation", "status": "PASS", "result": "The approved cancel control closed the dialog; no update or delete mutation was submitted."},
-    {"action": "Navigate to browser-proof-7 in a fresh approved in-app browser tab", "status": "PASS", "result": "Real Anna Kowalska detail loaded from the pushed remote tip; Edytuj was visible and enabled."},
-    {"action": "Open Edytuj and capture the repaired live dialog in browser-proof-7", "status": "PASS", "result": "The populated live modal screenshot showed the expected source-before-notes-before-owner order, phone +48 600 111 222, email anna@novahome.pl, source other and notes."},
-    {"action": "Retry approved visible-DOM and controlled-input value readback in browser-proof-7", "status": "INCONCLUSIVE", "error": "The fresh-tab visible-DOM/readback layer again returned blank phone/email/address values while the same screenshot visibly rendered populated phone and email; no alternate browser or raw CDP bypass was used."},
-    {"action": "Cancel browser-proof-7 edit dialog without mutation", "status": "PASS", "result": "The approved cancel control closed the dialog; no update or delete mutation was submitted."},
-    {"action": "Navigate to browser-proof-8 in a fresh approved in-app browser tab on the verified remote tip", "status": "PASS", "result": "Real Anna Kowalska detail loaded from the approved branch; Edytuj was visible and enabled."},
-    {"action": "Open Edytuj through the approved in-app browser in browser-proof-8", "status": "PASS", "result": "The populated FRT-030 modal opened with phone +48 600 111 222, email anna@novahome.pl, source other and notes rendered; source-before-notes-before-owner order was visible."},
-    {"action": "Capture browser-proof-8 screenshot from the live edit dialog", "status": "PASS", "result": "The approved screenshot showed the repaired field order, populated phone/email controls, semantic action colors and internal footer scrolling at 1280x720."},
-    {"action": "Observe React client/form contact presence through a temporary local-only diagnostic removed before closeout", "status": "PASS", "result": "client.phone, client.email, form.phone and form.email were present in the live state; the diagnostic was removed immediately and no product source was left changed."},
-    {"action": "Retry approved visible-DOM and controlled-input value readback in browser-proof-8", "status": "INCONCLUSIVE", "error": "The fresh approved readback again exposed blank phone/email/address control values despite the same screenshot and React-state observation showing populated phone/email; this is insufficient for authoritative control-level proof."},
-    {"action": "Inspect local mutation boundary before any save submission", "status": "PASS", "result": "The local Vite /api/clients URL resolves to SPA fallback source rather than an authenticated mutation response; no save or delete was submitted."},
-    {"action": "Cancel browser-proof-8 edit dialog without mutation", "status": "PASS", "result": "The approved cancel control closed the dialog; no update or delete mutation was submitted."}
-  ],
+  "synthetic_fixture": {
+    "name_prefix": "FRT030 Synthetic Client",
+    "email_domain": "example.test",
+    "record_id": "e75cc92e-0803-46a7-9864-e80129a0df44",
+    "created_for_verification_only": true,
+    "cleanup": "ARCHIVED_AFTER_PROOF"
+  },
   "interaction_proof": {
-    "open": "PASS",
-    "populate": "INCONCLUSIVE_BROWSER_CONTROL_READBACK; populated values are visible in the live screenshot and confirmed in temporary React state observation, but approved controlled-input API readback remains blank for phone/email/address",
-    "save_update": "NOT_EXECUTED; local Vite exposes SPA fallback at /api/clients and no authenticated/provisioned test backend or mutation authorization is available",
-    "cancel_close": "PASS",
-    "delete": "NOT_EXECUTED; destructive action intentionally not attempted"
+    "create": {
+      "status": "PASS",
+      "result": "Created one synthetic client through the real production Clients form; the list returned the saved name, phone, email and New status."
+    },
+    "open_and_populate": {
+      "status": "PASS",
+      "result": "Opened the real client detail route and Edytuj modal; existing name, address, notes, source, owner and contact links were populated in the live UI."
+    },
+    "save_update": {
+      "status": "PASS",
+      "result": "Saved edited synthetic name, address, phone, email and notes through the real update mutation; the detail view returned the edited values and the old name was absent."
+    },
+    "reload_consistency": {
+      "status": "PASS",
+      "result": "After the mutation settled, the detail route read back the edited name, address, phone link and email link from the production data source."
+    },
+    "cancel_close": {
+      "status": "PASS",
+      "result": "A second edit was changed and cancelled; the dialog closed and the persisted edited name remained while the cancelled value did not appear."
+    },
+    "archive_cleanup": {
+      "status": "PASS",
+      "result": "The synthetic client was archived through the visible destructive control and native confirmation; the Clients list contained no synthetic record afterward."
+    }
+  },
+  "browser_diagnostic_boundary": {
+    "status": "DOCUMENTED",
+    "finding": "The approved browser inspection API redacted or returned blank values for controlled phone/email inputs during direct value readback, although the rendered production UI and post-save detail links showed the values.",
+    "interpretation": "This was a diagnostic-layer limitation, not an application defect; no raw CDP, standalone browser, cookie/session extraction or DOM mutation was used."
+  },
+  "root_cause": {
+    "ui": "Client Detail used a legacy inline editor instead of the populated canonical client form and required a shared controlled edit owner with real update/delete wiring.",
+    "runtime": "The verified Supabase user response exposes id; the shared auth context previously read only legacy user_id/sub aliases, causing authenticated activity requests to fail with AUTH_ACTOR_REQUIRED.",
+    "guard": "The A26 activities guard referenced retired split-handler and migration paths; it was reconciled to the consolidated activities handler, route and current migration."
   },
   "safety_proof": {
-    "real_record_not_fixture": true,
-    "no_unapproved_live_mutation": true,
-    "no_raw_cdp_or_dom_mutation_used": true,
-    "no_screenshot_fixture_injected": true,
-    "semantic_color_source_of_truth_preserved": true
+    "synthetic_data_only": true,
+    "no_secrets_or_personal_data_recorded": true,
+    "no_fixture_injection": true,
+    "real_production_mutation_authorized_by_owner": true,
+    "cleanup_verified": true,
+    "workspace_scope_preserved": true
   },
-  "browser_boundary": "The approved in-app browser API was used for navigation, live DOM inspection, modal open/cancel and screenshot capture on verified remote tip ad604fe1. Browser-proof-8 and a temporary local-only React-state observation agree that phone/email are populated, while the approved controlled-input fill/value readback remains blank for phone/email/address. The local Vite /api/clients path is SPA fallback source, not an authenticated mutation endpoint. No raw CDP, standalone browser, alternate browser or product mutation was used.",
-  "next_action": "Obtain an authenticated or explicitly provisioned test backend in the approved in-app browser, then prove populated edit, save/update, reload consistency and cancel/close; only afterward independently accept FRT-030 and activate FRT-031.",
-  "created_at": "2026-08-29T05:51:16.4912099Z",
-  "updated_at": "2026-08-29T09:29:59.6839543Z"
+  "verified_at": "2026-08-30",
+  "next_action": "FRT-030 acceptance recorded; continue with the active FRT-031 client New Case stage."
 }

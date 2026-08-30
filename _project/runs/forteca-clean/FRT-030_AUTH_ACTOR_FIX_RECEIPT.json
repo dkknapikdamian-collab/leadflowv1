@@ -1,57 +1,61 @@
 {
-  "schema_version": 1,
-  "recorded_at": "2026-08-30T14:36:00Z",
+  "schema_version": 2,
+  "recorded_at": "2026-08-30",
   "workflow": {
     "stage": "FRT-030",
-    "receipt_role": "EVIDENCE_ONLY_NOT_WORKFLOW_SOT",
-    "acceptance_status": "IMPLEMENTED_NOT_ACCEPTED",
-    "acceptance_note": "Production runtime defect was repaired and verified; canonical workflow acceptance remains owner-controlled and no successor stage was activated."
+    "receipt_role": "EVIDENCE_AND_ACCEPTANCE_RECEIPT; WORKFLOW_STATE remains the workflow SOT",
+    "acceptance_status": "PASS",
+    "acceptance_authority": "CODEX_PARENT",
+    "primary_writer": "NO_ACCEPTANCE",
+    "successor_activated": "FRT-031",
+    "acceptance_basis": "Exact scoped diff, reference/source review, targeted tests, Guardian plugin plus repo fallback evidence, authenticated production browser CRUD proof, cleanup verification and remote branch verification completed."
   },
   "implementation": {
     "branch": "codex/forteca-ui-001-040-clean",
-    "commit_sha": "f06f09ed97c0cafc8401a273b9eb44a579e74b22",
+    "commit_sha": "2adcd7299439e06d2f560a961ccbfa5ad990819c",
     "remote_branch_sha_verified": true,
-    "rollback": "git revert f06f09ed97c0cafc8401a273b9eb44a579e74b22"
+    "rollback": "git revert 2adcd7299439e06d2f560a961ccbfa5ad990819c"
   },
   "root_cause": {
-    "evidence": "Authenticated production activity requests returned AUTH_ACTOR_REQUIRED while the client and workspace reads remained available.",
-    "cause": "The verified Supabase /auth/v1/user response exposes the canonical account identifier as id, but the shared request context only read legacy user_id/sub aliases.",
-    "risk": "Operator activity reads and writes that require a verified actor could fail or hide activity data despite a valid authenticated session."
+    "ui": "Client Detail used a legacy inline contact editor instead of the populated canonical client edit form; the repair added one controlled edit owner, populated fields and real update/delete wiring.",
+    "auth": "The canonical Supabase /auth/v1/user response uses id, but shared request context accepted only legacy user_id/sub aliases, so authenticated activity calls returned AUTH_ACTOR_REQUIRED.",
+    "guard": "The A26 guard had drifted from the consolidated activities handler, canonical /api/activities route and current migration name; its source expectations were reconciled."
   },
   "changed_paths": [
-    {
-      "path": "src/server/_supabase-auth.ts",
-      "change": "The verified request context accepts the canonical Supabase user id while preserving legacy aliases."
-    },
-    {
-      "path": "tests/forteca-frt-030-supabase-auth-context-runtime.test.ts",
-      "change": "Runtime regression coverage uses the canonical Supabase /auth/v1/user response shape."
-    },
-    {
-      "path": "scripts/check-a26-activities-ai-drafts-supabase.cjs",
-      "change": "The A26 guard follows the consolidated activities handler, route, scoped delete contract and actual migration filename."
-    }
+    { "path": "src/components/ClientCreateDialog.tsx", "change": "Shared controlled create/edit form owner and real client mutation boundary." },
+    { "path": "src/pages/ClientDetail.tsx", "change": "Client detail uses the populated edit dialog and preserves scoped update/delete callbacks." },
+    { "path": "src/styles/forteca-client-edit.css", "change": "Reference-aligned edit modal order, responsive layout and VST semantic tokens." },
+    { "path": "src/lib/supabase-fallback.ts", "change": "Scoped GET reads use no-store semantics to prevent stale client data during CRUD verification." },
+    { "path": "api/clients.ts", "change": "Scoped client reads send explicit private no-store response headers." },
+    { "path": "src/server/_supabase-auth.ts", "change": "Verified request context accepts the canonical Supabase user id while preserving legacy aliases." },
+    { "path": "tests/forteca-frt-030-supabase-auth-context-runtime.test.ts", "change": "Regression coverage for the canonical /auth/v1/user response shape." },
+    { "path": "scripts/check-a26-activities-ai-drafts-supabase.cjs", "change": "Guard follows the consolidated activities route, scoped delete source and current migration." },
+    { "path": "audit/evidence/FRT-030_BROWSER_PROOF.json", "change": "Final authenticated production CRUD proof with synthetic cleanup and browser diagnostic boundary." },
+    { "path": "audit/evidence/FRT-030_GUARDIAN_AUDIT_SUMMARY.json", "change": "Current plugin-first and repo-fallback results with stale baseline findings classified." }
   ],
   "verification": {
     "targeted_tests": "PASS 31/31 including canonical auth context, FRT-015 activity privacy, FRT-026 detail, FRT-029 client add, FRT-030 client edit and HTTP cache regressions",
     "typecheck": "PASS (npx.cmd tsc --noEmit)",
     "production_build": "PASS locally and on Vercel; existing chunk-size/dynamic-import and npm allow-scripts warnings remain non-blocking",
-    "guards": "PASS A22 Supabase Auth/RLS/workspace guard; PASS A26 activities/AI drafts Supabase guard",
-    "diff_check": "PASS; only existing line-ending warnings on untouched generated files and the changed guard/source were reported",
-    "remote_head_verified": true
+    "guards": "Scoped FRT-030/A22/A26, route, semantic icon/color/typography, Stage124, urgent regression, server-secret and Supabase architecture/auth guards PASS; installed Guardian coverage PARTIAL with zero scoped blockers",
+    "diff_check": "PASS",
+    "remote_head_verified": true,
+    "remote_head": "2adcd7299439e06d2f560a961ccbfa5ad990819c"
   },
   "browser_proof": {
+    "evidence": "audit/evidence/FRT-030_BROWSER_PROOF.json",
     "provider": "in-app browser",
     "production_origin": "https://closeflowapp.vercel.app",
     "authenticated_session_reused": true,
     "synthetic_data_only": true,
     "journey": [
-      "opened the production activity screen",
-      "verified no login, not-found or activity API error state",
-      "opened the production clients screen",
-      "verified no login/not-found state and the archived synthetic client stayed absent"
+      "created one synthetic client through production Clients form",
+      "opened detail and populated Edit Client modal",
+      "saved edited name/address/phone/email/notes and read them back",
+      "reopened and cancelled a temporary edit without mutation",
+      "archived the synthetic client and verified it was absent from the list"
     ],
-    "result": "PASS after the final production deployment"
+    "result": "PASS"
   },
   "vercel": {
     "project": "closedockapp",
@@ -61,18 +65,18 @@
     "production_status": "READY",
     "production_commit_sha": "f06f09ed97c0cafc8401a273b9eb44a579e74b22",
     "production_alias": "https://closeflowapp.vercel.app",
-    "runtime_activity_401_after_final_deploy": "NONE_FOUND",
-    "runtime_errors_after_final_deploy": "NONE_FOUND"
+    "runtime_activity_actor_error_after_deploy": "NONE_FOUND"
   },
   "data_and_security": {
     "sql_migration_performed": false,
-    "database_mutations": "Only the authorized synthetic production client test record was created, edited and archived; no schema mutation was needed.",
-    "secrets_or_personal_data_recorded": false
+    "database_mutations": "Only the authorized synthetic production client was created, edited and archived; no schema change was needed.",
+    "secrets_or_personal_data_recorded": false,
+    "scope": "Workspace-scoped production session and real mutation path; no raw credentials or browser storage were read."
   },
   "task_economy": {
     "marketplace_router_startup": "USED",
     "efficiency_planning": "APPLIED",
     "optional_delegation": "SKIPPED",
-    "delegation_skip_reason": "Authenticated production verification required the existing local browser session and a single write owner; no available delegated provider could safely reproduce that state."
+    "delegation_skip_reason": "Authenticated production verification required the existing local browser session and one write owner; no available delegated provider could safely reproduce that session."
   }
 }

@@ -1,6 +1,6 @@
 # FRT-030 — CLIENT EDIT
 
-CONTRACT_STATUS: LOCKED
+CONTRACT_STATUS: ACTIVE
 STAGE_ID: FRT-030
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/030_client_edit_modal.webp
 TARGET_ROUTE: /clients/:clientId
@@ -17,4 +17,3 @@ ACCEPTANCE_CRITERIA: Client updates through the real mutation and remains consis
 TEST_PLAN: Populate/edit/save/cancel/error tests; browser proof; typecheck if TS changes; reuse matching form evidence.
 PREDECESSOR: FRT-029
 SUCCESSOR: FRT-031
-
