@@ -40,6 +40,7 @@ import { getCaseOwnerRiskBadges, ownerRiskTone } from '../lib/owner-control/owne
 import { readOwnerRiskSettings } from '../lib/owner-control/owner-risk-settings';
 import { CASE_STATUS_OPTIONS, getCaseStatusLabel, getCaseStatusTone } from '../lib/config/case-status';
 import { readCreatedCaseId } from '../lib/cases/read-created-case-id';
+import { getCaseMutationErrorMessage } from '../lib/cases/case-error-copy';
 import { getOwnerRiskLabel } from '../lib/config/funnel-stages';
 import { caseDetailPath } from '../lib/routes';
 import { requireWorkspaceId } from '../lib/workspace-context';
@@ -200,21 +201,7 @@ function buildClientOptions(cases: CaseRecord[], leads: any[], clients: any[] = 
 }
 
 function getCreateCaseErrorMessage(error: unknown) {
-  const rawMessage = error && typeof error === 'object' && 'message' in error
-    ? String((error as { message?: unknown }).message || '')
-    : String(error || '');
-  const message = rawMessage.toLowerCase();
-
-  if (message.includes('client_not_found') || message.includes('nie znaleziono klienta')) {
-    return 'Nie znaleziono wybranego klienta. Wybierz go ponownie.';
-  }
-  if (message.includes('auth_workspace_required') || message.includes('workspace')) {
-    return 'Sesja workspace wygasła. Odśwież stronę i spróbuj ponownie.';
-  }
-  if (message.includes('case_id_missing_after_create')) {
-    return 'Sprawa została zapisana, ale system nie zwrócił jej identyfikatora. Odśwież listę i sprawdź zapis.';
-  }
-  return 'Nie udało się utworzyć sprawy. Spróbuj ponownie.';
+  return getCaseMutationErrorMessage(error, 'create');
 }
 
 function caseNeedsAttention(caseRecord: CaseRecord, lifecycleCompletenessPercent = caseRecord.completenessPercent || 0, lifecycleBucket?: string) {

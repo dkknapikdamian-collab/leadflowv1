@@ -15,7 +15,8 @@ import {
   useEffect,
   useMemo,
   useRef,
-  useState } from 'react';
+  useState,
+  type FormEvent } from 'react';
 import { Link,
   useNavigate,
   useParams } from 'react-router-dom';
@@ -33,6 +34,7 @@ import { AlertCircle,
   Loader2,
   MessageSquare,
   Paperclip,
+  Pencil,
   Plus,
   Send,
   StickyNote,
@@ -75,6 +77,7 @@ import {
   fetchActivitiesFromSupabase,
   fetchCaseByIdFromSupabase,
   fetchCaseItemsFromSupabase,
+  fetchClientsFromSupabase,
   fetchEventsFromSupabase,
   fetchPaymentsFromSupabase,
   fetchTasksFromSupabase,
@@ -101,6 +104,7 @@ import {
   deleteCaseCostFromSupabase,
 } from '../lib/supabase-fallback';
 import { deleteCaseWithRelations, isClosedCaseStatus } from '../lib/cases';
+import { getCaseMutationErrorMessage } from '../lib/cases/case-error-copy';
 import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import { transitionCaseLifecycleStatusV1 } from '../lib/case-lifecycle-actions';
 import { getEventMainDate, getTaskMainDate } from '../lib/scheduling';
@@ -114,6 +118,7 @@ import '../styles/closeflow-case-detail-tabs.css';
 import '../styles/closeflow-case-detail-shell-rail.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 import {
+  CASE_STATUS_OPTIONS,
   getCaseItemStatusLabel as getConfiguredCaseItemStatusLabel,
   getCaseStatusHint as getConfiguredCaseStatusHint,
   getCaseStatusLabel as getConfiguredCaseStatusLabel,
@@ -349,6 +354,22 @@ type CaseRecord = {
   updatedAt?: any;
   createdAt?: any;
   lastActivityAt?: string | null;
+};
+
+type CaseEditFormState = {
+  title: string;
+  clientId: string;
+  status: string;
+  contractValue: string;
+  currency: string;
+};
+
+type CaseEditClientOption = {
+  id: string;
+  name: string;
+  company: string;
+  email: string;
+  phone: string;
 };
 
 type CaseItem = {
@@ -739,6 +760,25 @@ function fin11MoneyInput(value: unknown) {
 function fin11Currency(value: unknown) {
   const normalized = String(value || '').trim().toUpperCase();
   return /^[A-Z]{3}$/.test(normalized) ? normalized : 'PLN';
+}
+
+function buildCaseEditFormState(caseRecord: CaseRecord | null): CaseEditFormState {
+  const status = String(caseRecord?.status || 'in_progress').trim();
+  return {
+    title: String(caseRecord?.title || '').trim(),
+    clientId: String(caseRecord?.clientId || '').trim(),
+    status: CASE_STATUS_OPTIONS.some((option) => option.value === status) ? status : 'in_progress',
+    contractValue: fin11MoneyInput(caseRecord?.contractValue ?? caseRecord?.expectedRevenue),
+    currency: fin11Currency(caseRecord?.currency),
+  };
+}
+
+function getCaseEditClientLabel(option: CaseEditClientOption) {
+  return [option.name, option.company].filter(Boolean).join(' — ') || 'Klient bez nazwy';
+}
+
+function getCaseEditClientMeta(option: CaseEditClientOption) {
+  return [option.email, option.phone].filter(Boolean).join(' • ');
 }
 
 function fin11DateTimeLocal(value: unknown) {
@@ -1631,6 +1671,15 @@ export default function CaseDetail() {
   const [caseCostCorrectionSubmittingStage231H_R1C, setCaseCostCorrectionSubmittingStage231H_R1C] = useState(false);
   const [caseCostDeleteTargetStage231H_R1C, setCaseCostDeleteTargetStage231H_R1C] = useState<CaseCostRecord | null>(null);
   const [caseCostDeleteSubmittingStage231H_R1C, setCaseCostDeleteSubmittingStage231H_R1C] = useState(false);
+
+  /* FRT-037_CASE_EDIT_STATE */
+  const [isCaseEditOpen, setIsCaseEditOpen] = useState(false);
+  const [caseEditForm, setCaseEditForm] = useState<CaseEditFormState>(() => buildCaseEditFormState(null));
+  const [caseEditClients, setCaseEditClients] = useState<CaseEditClientOption[]>([]);
+  const [caseEditClientsLoading, setCaseEditClientsLoading] = useState(false);
+  const [caseEditClientsError, setCaseEditClientsError] = useState<string | null>(null);
+  const [caseEditSaving, setCaseEditSaving] = useState(false);
+  const [caseEditError, setCaseEditError] = useState<string | null>(null);
 
   /* FIN-11_CASE_RIGHT_FINANCE_STATE_AND_HANDLERS */
   const [isFinanceEditOpen, setIsFinanceEditOpen] = useState(false);
@@ -2892,6 +2941,159 @@ export default function CaseDetail() {
     await insertActivityToSupabase({ caseId, actorType: 'operator', eventType, payload }).catch(() => null);
   };
 
+  async function openCaseEditModal() {
+    if (!caseData?.id || !guardCaseDetailWriteAccess('edytować sprawy')) return;
+
+    const currentCase = caseData;
+    const currentClientId = String(currentCase.clientId || '').trim();
+    setCaseEditForm(buildCaseEditFormState(currentCase));
+    setCaseEditError(null);
+    setCaseEditClientsError(null);
+    setIsCaseEditOpen(true);
+    setCaseEditClientsLoading(true);
+
+    try {
+      const rows = await fetchClientsFromSupabase();
+      const normalized = (Array.isArray(rows) ? rows : [])
+        .map((row) => {
+          const client = row as Record<string, unknown>;
+          return {
+            id: String(client.id || '').trim(),
+            name: String(client.name || '').trim(),
+            company: String(client.company || '').trim(),
+            email: String(client.email || '').trim(),
+            phone: String(client.phone || '').trim(),
+          } satisfies CaseEditClientOption;
+        })
+        .filter((client) => client.id);
+
+      if (currentClientId && !normalized.some((client) => client.id === currentClientId)) {
+        normalized.unshift({
+          id: currentClientId,
+          name: String(currentCase.clientName || '').trim() || 'Aktualny klient',
+          company: '',
+          email: String(currentCase.clientEmail || '').trim(),
+          phone: String(currentCase.clientPhone || '').trim(),
+        });
+      }
+
+      setCaseEditClients(normalized.sort((left, right) => getCaseEditClientLabel(left).localeCompare(getCaseEditClientLabel(right), 'pl', { sensitivity: 'base' })));
+    } catch {
+      setCaseEditClientsError('Nie udało się wczytać listy klientów. Odśwież stronę i spróbuj ponownie.');
+      setCaseEditClients(currentClientId ? [{
+        id: currentClientId,
+        name: String(currentCase.clientName || '').trim() || 'Aktualny klient',
+        company: '',
+        email: String(currentCase.clientEmail || '').trim(),
+        phone: String(currentCase.clientPhone || '').trim(),
+      }] : []);
+    } finally {
+      setCaseEditClientsLoading(false);
+    }
+  }
+
+  async function handleSaveCaseEdit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (caseEditSaving || !caseData?.id || !guardCaseDetailWriteAccess('edytować sprawy')) return;
+
+    const title = caseEditForm.title.trim();
+    if (!title) {
+      setCaseEditError('Podaj nazwę sprawy.');
+      return;
+    }
+
+    const status = caseEditForm.status.trim();
+    if (!CASE_STATUS_OPTIONS.some((option) => option.value === status)) {
+      setCaseEditError('Wybierz prawidłowy status sprawy.');
+      return;
+    }
+
+    const normalizedValue = caseEditForm.contractValue.trim().replace(/\s+/g, '').replace(',', '.');
+    if (normalizedValue && !/^\d+(\.\d{1,2})?$/.test(normalizedValue)) {
+      setCaseEditError('Wartość sprawy musi być liczbą dodatnią lub zerem.');
+      return;
+    }
+    const contractValue = normalizedValue ? Number(normalizedValue) : 0;
+    if (!Number.isFinite(contractValue) || contractValue < 0) {
+      setCaseEditError('Wartość sprawy musi być liczbą dodatnią lub zerem.');
+      return;
+    }
+
+    const currency = caseEditForm.currency.trim().toUpperCase() || 'PLN';
+    if (!/^[A-Z]{3}$/.test(currency)) {
+      setCaseEditError('Waluta musi mieć trzy litery, na przykład PLN.');
+      return;
+    }
+
+    const currentCase = caseData;
+    const previousClientId = String(currentCase.clientId || '').trim();
+    const nextClientId = caseEditForm.clientId.trim();
+    const clientChanged = previousClientId !== nextClientId;
+    const selectedClient = caseEditClients.find((client) => client.id === nextClientId);
+    if (clientChanged && nextClientId && !selectedClient) {
+      setCaseEditError('Wybierz klienta z listy.');
+      return;
+    }
+
+    const previousValue = fin11Amount(currentCase.contractValue ?? currentCase.expectedRevenue);
+    const previousCurrency = fin11Currency(currentCase.currency);
+    const changedFields = [
+      ...(String(currentCase.title || '').trim() !== title ? ['title'] : []),
+      ...(String(currentCase.status || '').trim() !== status ? ['status'] : []),
+      ...(previousValue !== contractValue ? ['contractValue'] : []),
+      ...(previousCurrency !== currency ? ['currency'] : []),
+      ...(clientChanged ? ['clientId'] : []),
+    ];
+    const payload: Parameters<typeof updateCaseInSupabase>[0] = {
+      id: currentCase.id,
+      title,
+      status,
+      contractValue,
+      expectedRevenue: contractValue,
+      currency,
+    };
+
+    if (clientChanged) {
+      payload.clientId = nextClientId || null;
+      payload.clientName = nextClientId ? (selectedClient?.name || selectedClient?.company || '') : '';
+      payload.clientEmail = nextClientId ? (selectedClient?.email || '') : '';
+      payload.clientPhone = nextClientId ? (selectedClient?.phone || '') : '';
+    }
+
+    setCaseEditSaving(true);
+    setCaseEditError(null);
+    try {
+      const updatedCase = await updateCaseInSupabase(payload);
+      const normalizedUpdatedCase = normalizeRecord<CaseRecord>(updatedCase);
+      setCaseData((current) => current ? ({ ...current, ...payload, ...(normalizedUpdatedCase || {}) } as CaseRecord) : current);
+      await recordActivity('case_updated', {
+        title,
+        status,
+        clientId: nextClientId || null,
+        contractValue,
+        currency,
+        changedFields,
+        source: 'FRT-037_CASE_EDIT',
+      });
+
+      let refreshFailed = false;
+      try {
+        await refreshCaseData();
+      } catch {
+        refreshFailed = true;
+      }
+
+      setIsCaseEditOpen(false);
+      toast.success(refreshFailed ? 'Zmiany sprawy zapisane. Odśwież stronę, aby pobrać pełne dane.' : 'Zmiany sprawy zapisane');
+    } catch (error) {
+      const message = getCaseMutationErrorMessage(error, 'update');
+      setCaseEditError(message);
+      toast.error(message);
+    } finally {
+      setCaseEditSaving(false);
+    }
+  }
+
 
   function openCaseNoteEditStage231H_R1D2_R6(activity: CaseActivity) {
     const noteId = getCaseNoteIdStage231H_R1D2_R6(activity);
@@ -3751,6 +3953,19 @@ async function handleConfirmDeleteCaseRecord() {
           </div>
 
           <div className="case-detail-header-actions-stage231b0" data-stage231b0-case-close-archive-finance-truth-actions="true" data-stage231b0-r7-case-archive-restore-navigation="true" data-stage231b0-r8-case-header-actions-right="true">
+            <Button
+              type="button"
+              variant="outline"
+              className="cf-vst-button cf-case-detail-edit-action-frt037"
+              data-case-detail-edit-action="true"
+              aria-label="Edytuj sprawę"
+              title="Edytuj sprawę"
+              disabled={!hasAccess || caseEditSaving}
+              onClick={() => { void openCaseEditModal(); }}
+            >
+              {caseEditSaving ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Pencil className="h-4 w-4" aria-hidden="true" />}
+              Edytuj sprawę
+            </Button>
             {isCaseClosedStage231B0R7 ? (
               <Button
                 type="button"
@@ -4235,6 +4450,129 @@ async function handleConfirmDeleteCaseRecord() {
         </div>
         <CaseItemDialog open={isAddItemOpen} onOpenChange={setIsAddItemOpen} value={newItem} onChange={setNewItem} onSubmit={handleAddItem} />
       </main>
+
+      <Dialog
+        open={isCaseEditOpen}
+        onOpenChange={(open) => {
+          if (caseEditSaving) return;
+          setIsCaseEditOpen(open);
+          if (!open) setCaseEditError(null);
+        }}
+      >
+        <DialogContent
+          className="client-case-form-content case-edit-form-content max-w-2xl"
+          data-case-edit-modal="true"
+          aria-describedby={undefined}
+        >
+          <DialogHeader className="client-case-form-header case-edit-form-header">
+            <span className="client-case-form-kicker">SPRAWA</span>
+            <DialogTitle>Edytuj sprawę</DialogTitle>
+            <DialogDescription>Zmień dane zapisane w sprawie. Zadania, checklisty i historia pozostają w swoich sekcjach.</DialogDescription>
+          </DialogHeader>
+
+          <form className="client-case-form case-edit-form" onSubmit={handleSaveCaseEdit} data-case-edit-form="true">
+            <section className="client-case-form-section">
+              <div className="client-case-form-section-head">
+                <h3>Dane sprawy</h3>
+                <p>Zmiany zapisują się w bieżącej sprawie przez istniejącą mutację.</p>
+              </div>
+
+              <div className="client-case-form-grid case-edit-form-grid">
+                <div className="client-case-form-field client-case-form-field-wide">
+                  <Label htmlFor="case-edit-title">Nazwa sprawy</Label>
+                  <Input
+                    id="case-edit-title"
+                    value={caseEditForm.title}
+                    onChange={(event) => setCaseEditForm((current) => ({ ...current, title: event.target.value }))}
+                    disabled={caseEditSaving}
+                    autoFocus
+                    required
+                  />
+                </div>
+
+                <div className="client-case-form-field client-case-form-field-wide">
+                  <Label htmlFor="case-edit-client">Klient</Label>
+                  <select
+                    id="case-edit-client"
+                    className="client-case-form-select"
+                    value={caseEditForm.clientId}
+                    disabled={caseEditClientsLoading || caseEditSaving}
+                    onChange={(event) => setCaseEditForm((current) => ({ ...current, clientId: event.target.value }))}
+                  >
+                    <option value="">Bez przypisanego klienta</option>
+                    {caseEditClients.map((client) => (
+                      <option key={client.id} value={client.id}>
+                        {getCaseEditClientLabel(client)}
+                      </option>
+                    ))}
+                  </select>
+                  {caseEditClientsLoading ? <p className="client-case-form-hint">Ładowanie klientów...</p> : null}
+                  {caseEditClientsError ? <p className="case-edit-form-error" role="alert">{caseEditClientsError}</p> : null}
+                  {!caseEditClientsLoading && !caseEditClientsError ? <p className="client-case-form-hint">Lista obejmuje aktywnych klientów. Możesz też odłączyć klienta od sprawy.</p> : null}
+                  {caseEditForm.clientId ? (() => {
+                    const selectedClient = caseEditClients.find((client) => client.id === caseEditForm.clientId);
+                    const meta = selectedClient ? getCaseEditClientMeta(selectedClient) : '';
+                    return meta ? <p className="client-case-form-hint">{meta}</p> : null;
+                  })() : null}
+                </div>
+
+                <div className="client-case-form-field">
+                  <Label htmlFor="case-edit-status">Status operacyjny</Label>
+                  <select
+                    id="case-edit-status"
+                    className="client-case-form-select"
+                    value={caseEditForm.status}
+                    disabled={caseEditSaving}
+                    onChange={(event) => setCaseEditForm((current) => ({ ...current, status: event.target.value }))}
+                  >
+                    {CASE_STATUS_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="client-case-form-field">
+                  <Label htmlFor="case-edit-value">Wartość ({caseEditForm.currency || 'PLN'})</Label>
+                  <Input
+                    id="case-edit-value"
+                    value={caseEditForm.contractValue}
+                    onChange={(event) => setCaseEditForm((current) => ({ ...current, contractValue: event.target.value }))}
+                    inputMode="decimal"
+                    placeholder="np. 69000"
+                    disabled={caseEditSaving}
+                  />
+                </div>
+
+                <div className="client-case-form-field">
+                  <Label htmlFor="case-edit-currency">Waluta</Label>
+                  <Input
+                    id="case-edit-currency"
+                    value={caseEditForm.currency}
+                    onChange={(event) => setCaseEditForm((current) => ({ ...current, currency: event.target.value.toUpperCase() }))}
+                    maxLength={3}
+                    autoComplete="off"
+                    disabled={caseEditSaving}
+                  />
+                </div>
+
+                <div className="client-case-form-field client-case-form-field-wide case-edit-form-disabled-note" data-case-edit-unsupported-fields="true">
+                  <strong>Zakres sprawy</strong>
+                  <span>Termin, opiekun, notatki i szablon checklisty są zarządzane w odpowiednich sekcjach sprawy. Nie pokazuję pól, których bieżący model danych nie zapisuje.</span>
+                </div>
+              </div>
+            </section>
+
+            {caseEditError ? <p className="case-edit-form-error" role="alert" data-case-edit-error="true">{caseEditError}</p> : null}
+
+            <DialogFooter className={modalFooterClass('client-case-form-footer case-edit-form-footer')}>
+              <Button type="button" variant="outline" onClick={() => setIsCaseEditOpen(false)} disabled={caseEditSaving}>Anuluj</Button>
+              <Button type="submit" disabled={caseEditSaving || !hasAccess || !caseEditForm.title.trim()}>
+                {caseEditSaving ? 'Zapisywanie...' : 'Zapisz zmiany'}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
 
 
 

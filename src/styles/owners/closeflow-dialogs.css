@@ -6478,3 +6478,300 @@ body:has([data-forteca-frt-016-lead-event="true"]) .cf-vst-overlay {
     width: 100% !important;
   }
 }
+
+/* FRT-037: the populated Case Edit modal stays under the canonical modal/form
+   owner and writes only fields supported by the current cases contract. */
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] {
+  display: grid !important;
+  gap: var(--cf-vst-space-lg) !important;
+  width: min(100%, var(--cf-vst-modal-width-md)) !important;
+  max-width: var(--cf-vst-modal-width-md) !important;
+  max-height: calc(100dvh - var(--cf-vst-space-2xl)) !important;
+  min-width: 0 !important;
+  overflow-y: auto !important;
+  padding: var(--cf-vst-modal-padding) !important;
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-panel) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+  color: var(--cf-vst-text-strong) !important;
+  font-family: var(--cf-vst-font-family-app) !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"]::before,
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"]::after {
+  display: none !important;
+  content: none !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-header {
+  display: grid !important;
+  align-items: start !important;
+  gap: var(--cf-vst-modal-header-gap) !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 var(--cf-vst-icon-box-lg) var(--cf-vst-space-lg) 0 !important;
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: 0 !important;
+  color: var(--cf-vst-text-strong) !important;
+  text-align: left !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-kicker {
+  display: none !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] [data-radix-dialog-title],
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .cf-vst-dialog-title {
+  min-width: 0 !important;
+  margin: 0 !important;
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+  font-family: var(--cf-vst-font-family-app) !important;
+  font-size: var(--cf-vst-font-size-section-title) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-title) !important;
+  letter-spacing: var(--cf-vst-letter-spacing-tight) !important;
+  white-space: normal !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-header > [data-radix-dialog-description],
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-header > p {
+  margin: 0 !important;
+  color: var(--cf-vst-text-muted) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+  white-space: normal !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form,
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-section {
+  display: grid !important;
+  gap: var(--cf-vst-space-lg) !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 0 !important;
+  color: var(--cf-vst-text-main) !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-section-head {
+  display: none !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: var(--cf-vst-space-lg) var(--cf-vst-space-md) !important;
+  min-width: 0 !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-field {
+  display: grid !important;
+  align-content: start !important;
+  gap: var(--cf-vst-space-xs) !important;
+  min-width: 0 !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-field-wide {
+  grid-column: 1 / -1 !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-field > label {
+  min-width: 0 !important;
+  margin: 0 !important;
+  color: var(--cf-vst-label-color) !important;
+  -webkit-text-fill-color: var(--cf-vst-label-color) !important;
+  font-family: var(--cf-vst-font-family-app) !important;
+  font-size: var(--cf-vst-font-size-label) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+  letter-spacing: var(--cf-vst-letter-spacing-label) !important;
+  white-space: normal !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select) {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  min-height: var(--cf-vst-input-height) !important;
+  padding: 0 var(--cf-vst-space-md) !important;
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-input-border) !important;
+  border-radius: var(--cf-vst-input-radius) !important;
+  box-shadow: none !important;
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+  caret-color: var(--cf-vst-color-primary) !important;
+  font-family: var(--cf-vst-font-family-app) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form input::placeholder {
+  color: var(--cf-vst-placeholder-color) !important;
+  -webkit-text-fill-color: var(--cf-vst-placeholder-color) !important;
+  opacity: 1 !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form :is(input, select):focus {
+  border-color: var(--cf-vst-input-focus-border) !important;
+  outline: 0 !important;
+  box-shadow: var(--cf-vst-input-focus-ring) !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form :is(input, select):disabled {
+  background: var(--cf-vst-surface-soft) !important;
+  color: var(--cf-vst-text-muted) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted) !important;
+  opacity: var(--cf-vst-disabled-opacity) !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-hint {
+  display: block !important;
+  margin: var(--cf-vst-space-xs) 0 0 !important;
+  color: var(--cf-vst-text-muted) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+  white-space: normal !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .case-edit-form-disabled-note {
+  display: grid !important;
+  gap: var(--cf-vst-space-xs) !important;
+  min-width: 0 !important;
+  padding: var(--cf-vst-space-md) !important;
+  background: var(--cf-vst-surface-soft) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  color: var(--cf-vst-text-main) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+  white-space: normal !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .case-edit-form-disabled-note strong {
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .case-edit-form-disabled-note span {
+  color: var(--cf-vst-text-muted) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted) !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .case-edit-form-error {
+  margin: 0 !important;
+  color: var(--cf-vst-color-danger) !important;
+  -webkit-text-fill-color: var(--cf-vst-color-danger) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+  white-space: normal !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: var(--cf-vst-modal-footer-gap) !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: var(--cf-vst-space-lg) 0 0 !important;
+  background: var(--cf-vst-surface-card-solid) !important;
+  border-top: 1px solid var(--cf-vst-surface-border) !important;
+  color: var(--cf-vst-text-main) !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-footer > [data-cf-vst-button] {
+  min-height: var(--cf-vst-button-height-md) !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-footer > [data-cf-vst-button-kind="outline"] {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border-color: var(--cf-vst-surface-border) !important;
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+  box-shadow: none !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-footer > [data-cf-vst-button-kind="outline"]:hover {
+  background: var(--cf-vst-surface-soft) !important;
+  border-color: var(--cf-vst-input-focus-border) !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-footer > .cf-vst-button-primary {
+  background: var(--cf-vst-color-primary) !important;
+  border-color: var(--cf-vst-color-primary) !important;
+  color: var(--cf-vst-surface-card-solid) !important;
+  -webkit-text-fill-color: var(--cf-vst-surface-card-solid) !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-footer > .cf-vst-button-primary:hover {
+  background: var(--cf-vst-color-primary-strong) !important;
+  border-color: var(--cf-vst-color-primary-strong) !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .cf-vst-dialog-close {
+  top: var(--cf-vst-space-lg) !important;
+  right: var(--cf-vst-space-lg) !important;
+  width: var(--cf-vst-icon-box-md) !important;
+  height: var(--cf-vst-icon-box-md) !important;
+  padding: var(--cf-vst-space-2xs) !important;
+  background: var(--cf-vst-surface-soft) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  color: var(--cf-vst-text-muted) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted) !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+}
+
+[data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .cf-vst-dialog-close:hover {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border-color: var(--cf-vst-input-focus-border) !important;
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+}
+
+@media (max-width: 640px) {
+  [data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] {
+    width: calc(100vw - var(--cf-vst-space-lg)) !important;
+    max-width: calc(100vw - var(--cf-vst-space-lg)) !important;
+    max-height: calc(100dvh - var(--cf-vst-space-lg)) !important;
+    padding: var(--cf-vst-space-lg) !important;
+  }
+
+  [data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  [data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-footer {
+    position: static !important;
+    align-items: stretch !important;
+    justify-content: stretch !important;
+    flex-direction: column-reverse !important;
+  }
+
+  [data-closeflow-modal-visual-system="true"].client-case-form-content[data-case-edit-modal="true"] .client-case-form-footer > [data-cf-vst-button] {
+    width: 100% !important;
+  }
+}

@@ -6,14 +6,15 @@ const { test } = require('node:test');
 const root = path.resolve(__dirname, '..');
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 
-test('FRT-036 is the active Case Add contract with one real source path', () => {
+test('FRT-036 remains the accepted Case Add contract with one real source path', () => {
   const workflow = JSON.parse(read('_project/WORKFLOW_STATE.json'));
   const contract = read('_project/contracts/forteca-clean/FRT-036_CASE_ADD.md');
   const cases = read('src/pages/Cases.tsx');
   const api = read('api/cases.ts');
 
-  assert.equal(workflow.current_stage, 'FRT-036');
-  assert.equal(workflow.current_status, 'ACTIVE');
+  assert.equal(workflow.last_accepted?.id, 'FRT-036');
+  assert.equal(workflow.last_accepted?.status, 'PASS');
+  assert.equal(workflow.forteca_program?.stage_036_status, 'PASS');
   assert.match(contract, /^STAGE_ID: FRT-036$/m);
   assert.match(contract, /^TARGET_ROUTE: \/cases$/m);
   assert.match(contract, /^TARGET_STATE: Add Case modal$/m);
