@@ -1,0 +1,75 @@
+{
+  "schema_version": 2,
+  "evidence_type": "FORTECA_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-035",
+  "mode": "AUDIT_ONLY",
+  "plugin_first": {
+    "command": "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+    "mode": "AUDIT_ONLY",
+    "fileWrites": 0,
+    "selectedCapabilities": [
+      "repository-baseline"
+    ],
+    "selectedSkills": [
+      "ai-code-guardian",
+      "architecture-integrity"
+    ],
+    "coverageOutcome": "PARTIAL",
+    "receiptIds": [
+      "guardian-plugin-smoke-coverage",
+      "guardian-plugin-smoke-result"
+    ],
+    "blockers": 0
+  },
+  "repository_fallback": {
+    "status": "PARTIAL_WITH_ZERO_SCOPED_BLOCKERS",
+    "checks": {
+      "focused_stage_package": "PASS 23/23",
+      "typescript": "PASS",
+      "production_build": "PASS_WITH_KNOWN_WARNINGS",
+      "vercel_preview_deployment": "READY",
+      "vercel_production_deployment": "READY",
+      "guard:routes:canonical": "PASS",
+      "guard:ui:ssot-icons": "PASS",
+      "guard:ui:ssot-semantic-colors": "PASS",
+      "guard:ui:ssot-typography": "PASS",
+      "check:closeflow-client-case-urgent-regressions": "PASS",
+      "check:a18-branding-docs": "PASS",
+      "check:stage232c-clients-relation-tile-source-of-truth": "PASS",
+      "diff_check": "PASS"
+    },
+    "scope_findings": [],
+    "out_of_scope_baseline_findings": [
+      "Production build retains the existing supabase-fallback dynamic/static import overlap, chunks larger than 500 kB and Vercel npm allow-scripts warnings; they are non-blocking and outside the FRT-035 write set."
+    ]
+  },
+  "repository": {
+    "branch": "codex/forteca-ui-001-040-clean",
+    "implementation_commits": [
+      "089c3275032f0b6e9d7bda21a085ce5d413f93a7"
+    ],
+    "remote_head": "089c3275032f0b6e9d7bda21a085ce5d413f93a7"
+  },
+  "stage_validation": {
+    "focused_tests": "PASS 23/23: FRT-035 resolver/action ownership plus FRT-032/FRT-033/FRT-034 lifecycle regression package",
+    "typescript": "PASS",
+    "production_build": "PASS locally and on Vercel with known non-blocking warnings",
+    "diff_check": "PASS for named FRT-035 paths; unrelated generated documentation and dist-test-today-sections.cjs remain unstaged",
+    "browser_runtime": "PASS authenticated production ready filter, real start transition, cleanup, retained waiting state and CloseFlow brand; preview deployment READY with separate login session documented",
+    "independent_review": "PARENT_SOURCE_REFERENCE_RUNTIME_REVIEW; no separate reviewer PASS claim"
+  },
+  "root_cause_and_repair": {
+    "root_cause": "The ready-state list had no real start affordance and did not consistently consume persisted completeness when checklist rows were absent; Case Detail also owned a duplicate status/activity transition path.",
+    "repair": "The shared lifecycle resolver now owns readiness/completeness interpretation, the Cases list exposes a real start action, and one transition helper owns case-row mutation plus best-effort activity audit for Cases and Case Detail."
+  },
+  "source_of_truth": {
+    "status": "PASS",
+    "case_row": "authoritative persisted lifecycle state",
+    "resolver": "canonical visible lifecycle/readiness interpretation",
+    "transition_helper": "canonical status mutation and lifecycle event owner",
+    "activity": "audit trail only; not a competing runtime state store"
+  },
+  "interpretation": "Guardian plugin smoke and scoped repository checks completed. Coverage is PARTIAL because the installed plugin is audit-only; no FRT-035 scoped blocker was found. The one-source-of-truth runtime chain, real start mutation, production proof and Vercel deployment evidence are verified.",
+  "created_at": "2026-08-30",
+  "updated_at": "2026-08-30"
+}

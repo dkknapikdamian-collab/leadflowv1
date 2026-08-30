@@ -1,0 +1,110 @@
+{
+  "schema_version": 2,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-035",
+  "reference_file": "docs/ui/reference/forteca-calm-light/035_cases_ready_to_start.webp",
+  "entry_url": "https://closeflowapp.vercel.app/cases?view=ready&frt035=verify",
+  "preview_entry_url": "https://closedockapp-brdqej8i8-dkknapikdamian-7019s-projects.vercel.app/cases?view=ready&frt035=verify",
+  "runtime_url": "https://closeflowapp.vercel.app",
+  "route": "/cases",
+  "state": "Cases — Gotowe do startu with resolver-backed readiness and real start action",
+  "live_runtime": true,
+  "authenticated_session_reused": true,
+  "status": "PASS",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "implementation_commits": [
+    "089c3275032f0b6e9d7bda21a085ce5d413f93a7"
+  ],
+  "current_runtime_commit": "089c3275032f0b6e9d7bda21a085ce5d413f93a7",
+  "remote_head_verified": "089c3275032f0b6e9d7bda21a085ce5d413f93a7",
+  "runtime_deployments": {
+    "preview": {
+      "id": "dpl_He2FDSbVKmFKmEexSwSjxquAEPR5",
+      "url": "https://closedockapp-brdqej8i8-dkknapikdamian-7019s-projects.vercel.app",
+      "status": "READY",
+      "target": null,
+      "runtime_code_commit": "089c3275032f0b6e9d7bda21a085ce5d413f93a7"
+    },
+    "production": {
+      "id": "dpl_2vN9TVCmAVycEBoPmAuJsKsKXKEp",
+      "url": "https://closedockapp-fmwnzb71b-dkknapikdamian-7019s-projects.vercel.app",
+      "alias": "https://closeflowapp.vercel.app",
+      "status": "READY",
+      "target": "production",
+      "runtime_code_commit": "089c3275032f0b6e9d7bda21a085ce5d413f93a7"
+    }
+  },
+  "synthetic_fixtures": {
+    "ready_case": {
+      "case_record_id": "04cdad18-8852-40c4-b90a-01a38f56600e",
+      "title": "FRT035 Ready 1788109000000",
+      "lifecycle": "ready_to_start, started through the list action, then deleted through the existing UI flow",
+      "cleanup": "VERIFIED_DELETED"
+    },
+    "retained_waiting_case": {
+      "case_record_id": "bf6172be-db8f-4128-8895-fd3acd4a9f05",
+      "title": "FRT032 Waiting 1788104506938",
+      "created_for_verification_only": true,
+      "cleanup": "RETAINED_FOR_FRT-034_WAITING_REGRESSION"
+    }
+  },
+  "interaction_proof": {
+    "ready_filter_and_counter": {
+      "status": "PASS",
+      "result": "Authenticated production showed Gotowe with value 1 and rendered the synthetic ready case in the filtered list. After the start transition the same counter returned to 0."
+    },
+    "resolver_backed_readiness": {
+      "status": "PASS",
+      "result": "The shared case lifecycle resolver derives the visible bucket and attention state from the real case source; persisted completeness is used only as a bounded fallback when checklist items are unavailable, while loaded item data remains stronger truth."
+    },
+    "start_action": {
+      "status": "PASS",
+      "result": "The ready row exposed the accessible action Rozpocznij realizację sprawy FRT035 Ready 1788109000000 and the visible label Rozpocznij realizację, alongside Otwórz sprawę."
+    },
+    "start_transition": {
+      "status": "PASS",
+      "result": "Clicking the real list action changed the case to W realizacji, removed it from Gotowe, preserved the open-case count and displayed the user-facing toast Realizacja sprawy rozpoczęta."
+    },
+    "case_cleanup": {
+      "status": "PASS",
+      "result": "The synthetic started case was removed through the existing confirmation flow; the open-case count returned to 1 and only the retained FRT032 waiting case remained."
+    },
+    "waiting_regression": {
+      "status": "PASS",
+      "result": "The retained FRT032 case remained Czeka na klienta and was not converted into ready or blocked state by the FRT-035 transition."
+    },
+    "brand_and_copy": {
+      "status": "PASS",
+      "result": "The authenticated shell displayed CloseFlow and CF. No Forteca name or Vercel hostname appeared in user-facing application copy."
+    },
+    "preview_boundary": {
+      "status": "DOCUMENTED",
+      "result": "The deployed preview loaded successfully and redirected to the application login because the in-app browser session is scoped to closeflowapp.vercel.app. Deployment readiness is verified; authenticated preview mutation proof is not claimed."
+    }
+  },
+  "source_of_truth": {
+    "runtime_state_owner": "src/lib/case-lifecycle-v1.ts",
+    "lifecycle_mutation_owner": "src/lib/case-lifecycle-actions.ts",
+    "case_row_is_authoritative": true,
+    "activity_is_audit_trail_only": true,
+    "duplicate_runtime_state_store_introduced": false,
+    "note": "Readiness, visible attention and status transitions use one runtime chain; evidence and workflow records document that chain but do not store a competing product state."
+  },
+  "safety_proof": {
+    "synthetic_data_only": true,
+    "no_secrets_or_personal_data_recorded": true,
+    "no_fixture_injection": true,
+    "real_workspace_scoped_read": true,
+    "cleanup_verified": true,
+    "retention_reason": "The earlier FRT032 waiting fixture remains available for the waiting-state regression and later stages.",
+    "no_raw_browser_storage_or_cookies_read": true,
+    "workspace_scope_preserved": true
+  },
+  "browser_diagnostic_boundary": {
+    "status": "DOCUMENTED",
+    "finding": "The approved in-app browser was used for visible DOM and action verification; no standalone browser, raw CDP or session extraction was used.",
+    "interpretation": "Production readiness filtering, lifecycle start, toast, cleanup, retained waiting state and visible brand were verified through the live Vercel UI. Preview deployment and public login boundary were verified separately."
+  },
+  "verified_at": "2026-08-30T20:26:53+02:00",
+  "next_action": "FRT-035 accepted; activate FRT-036 Case Add and prove the real case creation modal and refresh path."
+}

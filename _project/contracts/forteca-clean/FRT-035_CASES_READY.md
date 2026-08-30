@@ -1,6 +1,6 @@
 # FRT-035 — CASES READY
 
-CONTRACT_STATUS: ACTIVE
+CONTRACT_STATUS: LOCKED
 STAGE_ID: FRT-035
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/035_cases_ready_to_start.webp
 TARGET_ROUTE: /cases

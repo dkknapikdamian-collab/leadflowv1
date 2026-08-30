@@ -1,0 +1,56 @@
+{
+  "schema_version": 2,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-035",
+  "reference_file": "docs/ui/reference/forteca-calm-light/035_cases_ready_to_start.webp",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_PARENT",
+  "acceptance_basis": {
+    "directive_interpretation": "The owner directive makes Codex the acceptance authority for this technical stage; current runtime, code, tests and browser evidence are authoritative, with deployment/session boundaries recorded explicitly.",
+    "root_cause": "Cases readiness had an owner gap: the visible ready state did not expose a real start mutation, persisted completeness was not used as a bounded fallback when checklist rows were unavailable, and Case Detail duplicated the status/activity transition path.",
+    "repair": "The shared lifecycle resolver is the sole visible readiness source, Cases owns the real start affordance, and a single transition helper owns case-row status mutation and lifecycle audit events for both list and detail contexts.",
+    "review_status": "Parent reviewed the active contract, source/reference chain, one-source-of-truth boundary, focused tests, typecheck/build, Guardian smoke, exact preview/production deployments and authenticated production start/cleanup proof. Independent reviewer PASS is not claimed."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "src/lib/case-lifecycle-actions.ts",
+    "src/lib/case-lifecycle-v1.ts",
+    "src/pages/Cases.tsx",
+    "src/pages/CaseDetail.tsx",
+    "src/styles/closeflow-record-list-source-truth.css",
+    "tests/forteca-frt-035-cases-ready.test.cjs",
+    "audit/evidence/FRT-035_BROWSER_PROOF.json",
+    "audit/evidence/FRT-035_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/WORKFLOW_STATE.json",
+    "_project/contracts/forteca-clean/FRT-035_CASES_READY.md",
+    "_project/runs/forteca-clean/FRT-035_RECEIPT.json"
+  ],
+  "verification": {
+    "focused_tests": "PASS 23/23: FRT-035 plus case lifecycle, all-cases, waiting and blocked regressions",
+    "typecheck": "PASS",
+    "build": "PASS locally and on Vercel with known non-blocking warnings",
+    "guards": "Route/icon/semantic color/typography/branding/source-of-truth/urgent regression PASS; Guardian partial with zero scoped blockers",
+    "browser_proof": "PASS authenticated production ready filter/counter, real start action, W realizacji transition, toast, cleanup, retained waiting case and CloseFlow/CF shell; preview READY and separate login boundary documented",
+    "remote_head": "089c3275032f0b6e9d7bda21a085ce5d413f93a7"
+  },
+  "browser_proof": "audit/evidence/FRT-035_BROWSER_PROOF.json",
+  "guardian": "audit/evidence/FRT-035_GUARDIAN_AUDIT_SUMMARY.json",
+  "implementation_commits": [
+    "089c3275032f0b6e9d7bda21a085ce5d413f93a7"
+  ],
+  "runtime_deployments": {
+    "preview": "dpl_He2FDSbVKmFKmEexSwSjxquAEPR5",
+    "production": "dpl_2vN9TVCmAVycEBoPmAuJsKsKXKEp",
+    "production_alias": "https://closeflowapp.vercel.app"
+  },
+  "remote_branch_sha_verified": true,
+  "next_stage": "FRT-036",
+  "rollback": "Revert 089c3275032f0b6e9d7bda21a085ce5d413f93a7; the stage is isolated to Cases readiness interpretation, lifecycle start ownership, shared transition wiring and focused control-plane evidence.",
+  "task_economy": {
+    "marketplace_router_startup": "USED",
+    "efficiency_planning": "APPLIED",
+    "optional_delegation": "SKIPPED",
+    "delegation_skip_reason": "Authenticated production lifecycle proof required the existing local session and one write owner."
+  }
+}

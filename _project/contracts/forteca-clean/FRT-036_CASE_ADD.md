@@ -1,6 +1,6 @@
 # FRT-036 — CASE ADD
 
-CONTRACT_STATUS: LOCKED
+CONTRACT_STATUS: ACTIVE
 STAGE_ID: FRT-036
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/036_case_add_modal.webp
 TARGET_ROUTE: /cases
@@ -17,4 +17,3 @@ ACCEPTANCE_CRITERIA: Case is created through the real path; controls work; tests
 TEST_PLAN: Form/validation/submit/cancel/relation tests; browser proof; typecheck; build if shared create runtime changes.
 PREDECESSOR: FRT-035
 SUCCESSOR: FRT-037
-
