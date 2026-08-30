@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "recovery_timestamp": "2026-08-30T12:16:06.9455898Z",
+  "recovery_scope": {
+    "worktree": "C:/Users/malim/AppData/Local/Temp/closeflow-forteca-ui-001-040-clean-20260827",
+    "workflow": "FRT-030",
+    "receipt_role": "EVIDENCE_ONLY_NOT_WORKFLOW_SOT"
+  },
+  "branch": "codex/forteca-ui-001-040-clean",
+  "local_head_before": "3458b32f9d485d51f0f33bb65bccd1a81b840edf",
+  "remote_head_before": "3458b32f9d485d51f0f33bb65bccd1a81b840edf",
+  "local_commits_ahead": 0,
+  "staged_files": [],
+  "unstaged_files": [
+    "docs/ui/CLOSEFLOW_STYLE_MAP.generated.md",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.json",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.md",
+    "docs/ui/closeflow-style-map.generated.json"
+  ],
+  "relevant_untracked_files": [
+    "dist-test-today-sections.cjs"
+  ],
+  "change_classification": [
+    {
+      "paths": [
+        "docs/ui/CLOSEFLOW_STYLE_MAP.generated.md",
+        "docs/ui/CLOSEFLOW_UI_MAP.generated.json",
+        "docs/ui/CLOSEFLOW_UI_MAP.generated.md",
+        "docs/ui/closeflow-style-map.generated.json",
+        "dist-test-today-sections.cjs"
+      ],
+      "category": "G",
+      "label": "generated_or_build_artifact",
+      "disposition": "preserved_in_place; not staged or committed"
+    }
+  ],
+  "recovered_implementation_status": {
+    "status": "PRESENT_BUT_NOT_ACCEPTED",
+    "implementation_commit_sha": "d6f7253c",
+    "implementation_is_in_local_history": true,
+    "implementation_commit_is_ancestor_of_recovered_remote_tip": true,
+    "contract_status": "LOCKED",
+    "acceptance_authority": "NOT_ACCEPTED",
+    "runtime_proof": "PARTIAL_BROWSER_PROOF_BLOCKED",
+    "save_reload_proof": "NOT_ESTABLISHED",
+    "control_plane_gate": "PRODUCT_STAGE_EXECUTION_NOT_AUTHORIZED_ON_THIS_BRANCH_BY_AGENTS_OVERRIDE"
+  },
+  "database_state": {
+    "project_ref": "amrxiaetdocrywnnkoct",
+    "health": "ACTIVE_HEALTHY",
+    "read_only_verification": "PASS",
+    "clients_columns_verified": [
+      "address",
+      "owner_id"
+    ],
+    "clients_policies_verified": "SELECT, INSERT, UPDATE and DELETE are workspace-scoped through the existing membership boundary",
+    "mutation_performed": false,
+    "raw_rows_or_secrets_recorded": false,
+    "baseline_advisor_findings_changed": false
+  },
+  "backup_state": {
+    "recovery_safety_copy": "PASS",
+    "target_snapshot": "C:/Users/malim/Desktop/biznesy_ai/_recovery/closeflow-forteca-target/20260830-120642-938",
+    "target_snapshot_verified_file_count": 10,
+    "target_tracked_patch_sha256": "5F3D69CE7BC3C9304560C36AA38F17EB93C3B4588EC674D741317CF50B98AA28",
+    "target_staged_patch_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "parallel_worktree_snapshot": "C:/Users/malim/Desktop/biznesy_ai/_recovery/closeflow-forteca/20260830-135907",
+    "parallel_worktree_snapshot_verified": true,
+    "parallel_worktree_untracked_count": 1357,
+    "parallel_worktree_preserved_file_count": 91
+  },
+  "migration_state": {
+    "frt029_local_migration": "supabase/migrations/20260829100000_frt029_client_address_owner.sql",
+    "frt029_remote_state": "APPLIED",
+    "frt030_migration": "NOT_APPLICABLE_UI_ONLY",
+    "frt031_local_migration": "ABSENT",
+    "frt031_remote_state": "APPLIED_IN_REMOTE_PROJECT_OUTSIDE_THIS_STAGE",
+    "migration_mutation_performed": false
+  },
+  "tests_reused": [
+    {
+      "evidence": "_project/runs/forteca-clean/FRT-030_PROGRESS_RECEIPT.json",
+      "result": "FRT-030 focused 6/6, FRT-029 predecessor 9/9, legacy conflict guard 4/4, TypeScript PASS, production build PASS_WITH_KNOWN_WARNINGS"
+    },
+    {
+      "evidence": "audit/evidence/FRT-030_GUARDIAN_AUDIT_SUMMARY.json",
+      "result": "AUDIT_ONLY/PARTIAL; no PASS claim; zero Guardian writes"
+    },
+    {
+      "evidence": "audit/evidence/FRT-030_BROWSER_PROOF.json",
+      "result": "PARTIAL/BLOCKED; layout and controlled-state observations only; save/reload not proven"
+    }
+  ],
+  "tests_executed": [
+    {
+      "command": "node --test tests/forteca-frt-030-client-edit.test.cjs",
+      "result": "PASS 6/6"
+    },
+    {
+      "command": "node --test tests/forteca-frt-029-client-add.test.cjs",
+      "result": "PASS 9/9"
+    },
+    {
+      "command": "node --test tests/forteca-frt-030-today-responsive-text-layout.test.cjs",
+      "result": "PASS 2/2"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "guardian": {
+    "status": "REUSED_PARTIAL",
+    "mode": "AUDIT_ONLY",
+    "pass_claim": false,
+    "file_writes": 0,
+    "implementation_sha_covered": "d6f7253c",
+    "browser_gate": "BLOCKED_BROWSER_TOOL",
+    "reason_for_no_repeat": "No product source changed after the recorded Guardian run; exact-commit evidence was reused"
+  },
+  "files_preserved": [
+    "docs/ui/CLOSEFLOW_STYLE_MAP.generated.md",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.json",
+    "docs/ui/CLOSEFLOW_UI_MAP.generated.md",
+    "docs/ui/closeflow-style-map.generated.json",
+    "dist-test-today-sections.cjs",
+    "C:/Users/malim/Desktop/biznesy_ai/_recovery/closeflow-forteca-target/20260830-120642-938",
+    "C:/Users/malim/Desktop/biznesy_ai/_recovery/closeflow-forteca/20260830-135907"
+  ],
+  "files_repaired": [],
+  "unrelated_files_untouched": true,
+  "receipt_written": "_project/runs/forteca-clean/FRT-030_RECOVERY_RECEIPT.json",
+  "result": "RECOVERED_AND_RECONCILED; implementation is present and remote-synchronized, but FRT-030 remains active and unaccepted because approved authenticated browser save/reload proof is unavailable and the local control-plane branch gate forbids product-stage execution here",
+  "next_action": "Keep FRT-030 active. Resolve the CONTROL-00 branch/workflow gate and obtain the approved authenticated in-app browser/backend path, then prove populated edit, real save/update, reload consistency and cancel/close before any acceptance or FRT-031 activation. Do not continue FRT-031 through FRT-041 from this blocked state."
+}
