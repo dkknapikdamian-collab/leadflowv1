@@ -228,5 +228,5 @@
   },
   "verified_at": "2026-08-31",
   "status": "PASS",
-  "next_action": "Record FRT-041 PASS and the single final integration-candidate marker in WORKFLOW_STATE.json, lock FRT-041, push and verify the remote branch."
+  "next_action": "PROGRAM_CLOSEOUT remains locked pending an explicit closeout action; no additional product-stage activation is implied by this evidence file."
 }
