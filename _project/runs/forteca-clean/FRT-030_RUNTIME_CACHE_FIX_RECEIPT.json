@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-30T13:24:13.6828501Z",
+  "workflow": {
+    "stage": "FRT-030",
+    "receipt_role": "EVIDENCE_ONLY_NOT_WORKFLOW_SOT",
+    "acceptance_status": "IMPLEMENTED_NOT_ACCEPTED",
+    "acceptance_note": "Implementation and runtime evidence are recorded; canonical workflow acceptance remains owner-controlled and no successor stage was activated."
+  },
+  "implementation": {
+    "branch": "codex/forteca-ui-001-040-clean",
+    "commit_sha": "0eee3122fdbb16d79af6cb42a8a7991de0fb8350",
+    "remote_branch_sha_verified": true,
+    "rollback": "git revert 0eee3122fdbb16d79af6cb42a8a7991de0fb8350"
+  },
+  "root_cause": {
+    "evidence": "Production runtime logs showed GET /api/clients returning 304 while the client contract could parse an empty 304 body as null.",
+    "cause": "Workspace-scoped GET requests were allowed to participate in browser/intermediary HTTP caching even though the application already has scoped in-memory GET deduplication.",
+    "risk": "Stale or empty responses after auth/workspace changes, with shared HTTP cache behavior unsuitable for workspace-scoped data."
+  },
+  "changed_paths": [
+    {
+      "path": "src/lib/supabase-fallback.ts",
+      "change": "Workspace-scoped GET requests now use fetch cache mode no-store."
+    },
+    {
+      "path": "api/clients.ts",
+      "change": "Client API responses now send an explicit private no-store Cache-Control policy."
+    },
+    {
+      "path": "tests/phase0-api-client-http-cache.test.cjs",
+      "change": "Regression guard covers both client fetch policy and API response header."
+    }
+  ],
+  "verification": {
+    "targeted_tests": "PASS 17/17 (FRT-029 client add 9/9, FRT-030 client edit 6/6, cache regression guard 2/2)",
+    "typecheck": "PASS (npx.cmd tsc --noEmit)",
+    "production_build": "PASS with existing Vite chunk-size and dynamic-import warnings",
+    "diff_check": "PASS",
+    "clean_sha_guard": "CF-RUNTIME-00 source truth PASS on a clean temporary worktree at the implementation SHA",
+    "scope_guard_notes": [
+      "The working-tree CF-RUNTIME-00 guard also sees pre-existing generated UI files and dist-test-today-sections.cjs; those files were preserved and not staged.",
+      "The existing P0 workspace-scope source guard still reports unrelated baseline markers; its three runtime tests pass and no spoofable identity headers were reintroduced.",
+      "The existing phase0-api-client-workspace-headers test remains a stale baseline contract because the current security boundary rejects frontend identity headers and trusts verified auth context."
+    ]
+  },
+  "browser_proof": {
+    "provider": "in-app browser",
+    "production_origin": "https://closeflowapp.vercel.app",
+    "authenticated_session_reused": true,
+    "synthetic_data_only": true,
+    "journey": [
+      "created a synthetic client",
+      "opened the real client detail",
+      "edited and saved the address",
+      "reloaded the detail and verified the saved values",
+      "opened edit again and verified cancel closed without mutation",
+      "deleted/archived the synthetic client and verified it was absent from the active list"
+    ],
+    "result": "PASS on the currently deployed production runtime for the CRUD journey; this was completed before the cache-hardening commit was promoted."
+  },
+  "vercel_preview": {
+    "deployment_id": "dpl_3BPWX47FNskB9rKAVsmnT44DbRD5",
+    "deployment_url": "https://closedockapp-in9lgpz6z-dkknapikdamian-7019s-projects.vercel.app",
+    "status": "READY",
+    "commit_sha": "0eee3122fdbb16d79af6cb42a8a7991de0fb8350",
+    "browser_route": "/login",
+    "authenticated": false,
+    "console_error_count": 0,
+    "note": "Preview uses a separate auth context; no auth bypass or session/token inspection was performed."
+  },
+  "data_and_security": {
+    "sql_migration_performed": false,
+    "database_mutations": "Only the authorized synthetic production client CRUD smoke record was created, edited, and archived/deleted.",
+    "secrets_or_personal_data_recorded": false
+  },
+  "task_economy": {
+    "marketplace_router_startup": "USED",
+    "optional_delegation": "SKIPPED",
+    "delegation_skip_reason": "This bounded authenticated browser/runtime verification required the existing local browser session and a single write owner; no available delegated provider could safely reproduce that state."
+  }
+}
