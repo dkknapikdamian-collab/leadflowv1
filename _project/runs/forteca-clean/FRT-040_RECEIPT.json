@@ -1,0 +1,81 @@
+{
+  "schema_version": 2,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-040",
+  "reference_file": "docs/ui/reference/forteca-calm-light/040_case_detail_history.webp",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_PARENT",
+  "acceptance_basis": {
+    "directive_interpretation": "The owner directive makes Codex the acceptance authority for this technical stage; runtime, current code, tests and deployment evidence are authoritative, while lower-authority stale findings are recorded and reconciled.",
+    "root_cause": "CaseDetail loaded the real activity family but its history consumer was a sparse generic list without semantic context, view-only filters or a safe timeline anchor.",
+    "repair": "CaseDetail now derives one ordered history workspace from existing scoped records, normalizes actor/source semantics, supports date/type/author filtering and clears filters without mutation, and keeps the registered detail owner as the visual source.",
+    "review_status": "Parent reviewed the active contract, reference/source chain, one-source-of-truth boundary, focused and predecessor tests, typecheck/build, full runner baseline, Guardian smoke, exact preview/production deployments and authenticated production history proof. Independent reviewer PASS is not claimed."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "src/pages/CaseDetail.tsx",
+    "src/styles/owners/closeflow-rails-and-detail.css",
+    "tests/forteca-frt-040-case-history.test.cjs",
+    "package.json",
+    "src/pages/Leads.tsx",
+    "src/pages/LeadDetail.tsx",
+    "src/components/LeadStartServiceDialog.tsx",
+    "src/pages/Login.tsx",
+    "src/components/QuickAiCapture.tsx",
+    "src/components/quick-lead/QuickLeadCaptureModal.tsx",
+    "src/pages/AiDrafts.tsx",
+    "src/pages/Dashboard.tsx",
+    "src/components/TodayAiAssistant.tsx",
+    "src/pages/Cases.tsx",
+    "scripts/check-visual-stage05-clients.cjs",
+    "scripts/check-visual-stage01-shell.cjs",
+    "scripts/check-today-tiles-event-edit-client-cleanup.cjs",
+    "scripts/check-today-week-client-more-ui-text-cleanup.cjs",
+    "audit/evidence/FRT-040_BROWSER_PROOF.json",
+    "audit/evidence/FRT-040_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/runs/forteca-clean/FRT-040_RECEIPT.json"
+  ],
+  "verification": {
+    "focused_tests": "PASS 4/4: FRT-040 active/accepted contract, real ordered projection, semantic mapper/privacy and registered detail owner",
+    "history_regressions": "PASS 2/2 Stage66, PASS 2/2 Stage68P",
+    "forteca_regressions": "PASS 178/178",
+    "typecheck": "PASS",
+    "build": "PASS locally and on Vercel with known non-blocking dynamic/static import and chunk warnings",
+    "full_repository_runner": "BASELINE_PARTIAL 2164/2821 passed, 655 historical failures retained in test-results/last-test-summary.txt",
+    "guards": "Route/icon/semantic color/typography/component-clone/branding/relation guards PASS; Guardian partial with zero scoped blockers; CSS-owner, patch-layer and runtime-state results are known baseline/out-of-scope findings",
+    "browser_proof": "PASS authenticated production Historia workspace, canonical tabs, 6 real history rows, client filter 0, clear restores 6, timeline anchor and route-family smoke; preview READY with separate login boundary documented",
+    "remote_head": "a131e5a9fa9db363ef494f5e6ee1d6a2cb285e99"
+  },
+  "browser_proof": "audit/evidence/FRT-040_BROWSER_PROOF.json",
+  "guardian": "audit/evidence/FRT-040_GUARDIAN_AUDIT_SUMMARY.json",
+  "implementation_commits": [
+    "e59359187bb0b27d0e115c1a59db3eadc2a4fed2",
+    "0e3d0ce7b698da31dea62ffd1504b27b31980cb4",
+    "a131e5a9fa9db363ef494f5e6ee1d6a2cb285e99"
+  ],
+  "runtime_deployments": {
+    "preview": "dpl_yG1qZhsBDwsbeWnJVZXzbiSxDdbQ",
+    "production": "dpl_BaQBkAZ3D7VeZ8Gy7UAE9qDVaayd",
+    "production_alias": "https://closeflowapp.vercel.app"
+  },
+  "remote_branch_sha_verified": true,
+  "next_stage": "FRT-041",
+  "rollback": "Revert the implementation commits listed above; FRT-040 remains isolated to the CaseDetail history projection, registered detail owner, focused tests and evidence. The fixture-copy and guard reconciliation commits are independently named and revertible.",
+  "source_of_truth": {
+    "runtime_state_owner": "Workspace-scoped activity, task, event, payment, cost and case-item records consumed by CaseDetail",
+    "history_read_model_owner": "src/pages/CaseDetail.tsx buildCaseHistoryItemsStage14D and FRT-040 filter projection",
+    "action_mutation_owners": "Existing scoped related-record handlers; FRT-040 adds no write path",
+    "visual_owner": "src/styles/owners/closeflow-rails-and-detail.css",
+    "canonical_tab_owner": "CaseDetail tab state with Obsługa/Checklisty/Historia",
+    "derived_values_are_projections": true,
+    "evidence_is_documentation_only": true,
+    "duplicate_runtime_state_store_introduced": false
+  },
+  "task_economy": {
+    "marketplace_router_startup": "USED",
+    "efficiency_planning": "APPLIED",
+    "optional_delegation": "SKIPPED",
+    "delegation_skip_reason": "Authenticated production proof required the existing local session and one write owner."
+  }
+}

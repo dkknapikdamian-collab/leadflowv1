@@ -1,0 +1,64 @@
+{
+  "schema_version": 2,
+  "evidence_type": "FORTECA_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-040",
+  "mode": "AUDIT_ONLY",
+  "plugin_first": {
+    "command": "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+    "mode": "AUDIT_ONLY",
+    "fileWrites": 0,
+    "selectedCapabilities": ["repository-baseline"],
+    "selectedSkills": ["ai-code-guardian", "architecture-integrity"],
+    "coverageOutcome": "PARTIAL",
+    "receiptIds": ["guardian-plugin-smoke-coverage", "guardian-plugin-smoke-result"],
+    "blockers": 0
+  },
+  "repository_fallback": {
+    "status": "PARTIAL_WITH_ZERO_SCOPED_BLOCKERS",
+    "checks": {
+      "focused_stage_package": "PASS 4/4: active/accepted contract, canonical tabs, real ordered history projection, semantic actors/source, filters/clear/anchor and registered responsive owner",
+      "forteca_regression_suite": "PASS 178/178: tests/forteca-frt-*.test.cjs",
+      "stage66_history_copy": "PASS 2/2",
+      "stage68p_history_package": "PASS 2/2",
+      "typescript": "PASS",
+      "production_build": "PASS_WITH_KNOWN_WARNINGS",
+      "full_repository_runner": "BASELINE_PARTIAL 2164/2821 passed, 655 historical failures; failures are outside the FRT-040 focused contract and are recorded rather than hidden",
+      "vercel_preview_deployment": "READY",
+      "vercel_production_deployment": "READY",
+      "guard:routes:canonical": "PASS",
+      "guard:ui:ssot-icons": "PASS",
+      "guard:ui:ssot-semantic-colors": "PASS",
+      "guard:ui:ssot-typography": "PASS",
+      "guard:ui:component-clones": "PASS",
+      "check:a18-branding-docs": "PASS",
+      "check:stage232c-clients-relation-tile-source-of-truth": "PASS",
+      "git_diff_check": "PASS",
+      "browser_proof": "PASS authenticated production Historia workspace, route family smoke, real filters/clear, timeline anchor, responsive owner and preview login boundary"
+    },
+    "scope_findings": [],
+    "out_of_scope_baseline_findings": [
+      "guard:ui:ssot-css-owners remains partial on the existing global-shell concern mismatch, nine existing forteca-* owner metadata gaps, UNCLASSIFIED_IMPORTANT=343 and SPECIFICITY_PATCH_IMPORTANT=1399; FRT-040 is inside the registered closeflow-rails-and-detail.css owner and uses canonical VST variables.",
+      "guard:ui:patch-layers remains partial on the existing Clients.tsx NextActionIcon/stage-only usage, ClientCreateDialog direct lucide import and icon-registry direct lucide import; FRT-040 introduced no new patch-layer finding.",
+      "check:cf-runtime-00-source-truth remains partial because unrelated pre-existing generated documentation and dist-test-today-sections.cjs are dirty and outside the FRT-040 allowed write set.",
+      "Build retains the existing supabase-fallback dynamic/static import warning, large chunk warning and npm allow-scripts informational warnings.",
+      "The full repository runner remains a historical baseline with 655 failures; the applicable FRT regression suite is green 178/178."
+    ]
+  },
+  "repository": {
+    "branch": "codex/forteca-ui-001-040-clean",
+    "implementation_commits": [
+      "e59359187bb0b27d0e115c1a59db3eadc2a4fed2",
+      "0e3d0ce7b698da31dea62ffd1504b27b31980cb4",
+      "a131e5a9fa9db363ef494f5e6ee1d6a2cb285e99"
+    ],
+    "remote_head": "a131e5a9fa9db363ef494f5e6ee1d6a2cb285e99"
+  },
+  "root_cause_and_repair": {
+    "root_cause": "The history data loaders existed, but the CaseDetail consumer rendered a sparse generic list and did not expose semantic actor/source context, view-only filters or a safe related timeline anchor.",
+    "repair": "A deterministic CaseDetail history read model and bounded detail-owner workspace were added. Existing records remain authoritative; the new controls only filter the projection and do not write data.",
+    "source_of_truth": "Workspace-scoped records are the only runtime state. CaseDetail is a transient projection; tests, deployments and evidence only prove the same state."
+  },
+  "interpretation": "Guardian plugin smoke and all scoped FRT checks completed with zero FRT-040 blockers. Partial coverage and the historical repository baseline are retained honestly; none is a source-of-truth conflict or acceptance blocker for this stage.",
+  "created_at": "2026-08-31",
+  "updated_at": "2026-08-31"
+}

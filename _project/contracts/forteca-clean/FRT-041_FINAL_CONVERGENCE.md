@@ -1,6 +1,6 @@
 # FRT-041 — FINAL CONVERGENCE
 
-CONTRACT_STATUS: LOCKED
+CONTRACT_STATUS: ACTIVE
 STAGE_ID: FRT-041
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/001..040.webp
 TARGET_ROUTE: ALL_APPROVED_FORTECA_ROUTES
@@ -17,4 +17,3 @@ ACCEPTANCE_CRITERIA: 40/40 references independently accepted; 40/40 route/state 
 TEST_PLAN: Fresh reference/route/action inventory; full applicable Guardian and regression suite; typecheck; lint; build; git diff --check; responsive browser proof across route families; verify every receipt and remote SHA. Reuse only evidence whose exact bindings still match; release gate widens all invalidated evidence.
 PREDECESSOR: FRT-040
 SUCCESSOR: PROGRAM_CLOSEOUT
-

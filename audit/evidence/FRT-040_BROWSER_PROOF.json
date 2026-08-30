@@ -1,0 +1,105 @@
+{
+  "schema_version": 2,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-040",
+  "reference_file": "docs/ui/reference/forteca-calm-light/040_case_detail_history.webp",
+  "entry_url": "https://closeflowapp.vercel.app/cases/bf6172be-db8f-4128-8895-fd3acd4a9f05",
+  "preview_entry_url": "https://closedockapp-l4yvpqqvf-dkknapikdamian-7019s-projects.vercel.app/cases/bf6172be-db8f-4128-8895-fd3acd4a9f05",
+  "runtime_url": "https://closeflowapp.vercel.app",
+  "route": "/cases/:caseId",
+  "state": "Case Detail — tab Historia",
+  "live_runtime": true,
+  "authenticated_session_reused": true,
+  "status": "PASS",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "implementation_commits": [
+    "e59359187bb0b27d0e115c1a59db3eadc2a4fed2",
+    "0e3d0ce7b698da31dea62ffd1504b27b31980cb4",
+    "a131e5a9fa9db363ef494f5e6ee1d6a2cb285e99"
+  ],
+  "current_runtime_commit": "a131e5a9fa9db363ef494f5e6ee1d6a2cb285e99",
+  "remote_head_verified": "a131e5a9fa9db363ef494f5e6ee1d6a2cb285e99",
+  "runtime_deployments": {
+    "preview": {
+      "id": "dpl_yG1qZhsBDwsbeWnJVZXzbiSxDdbQ",
+      "url": "https://closedockapp-l4yvpqqvf-dkknapikdamian-7019s-projects.vercel.app",
+      "status": "READY",
+      "target": "preview",
+      "runtime_code_commit": "a131e5a9fa9db363ef494f5e6ee1d6a2cb285e99"
+    },
+    "production": {
+      "id": "dpl_BaQBkAZ3D7VeZ8Gy7UAE9qDVaayd",
+      "url": "https://closedockapp-n2u4ef03c-dkknapikdamian-7019s-projects.vercel.app",
+      "alias": "https://closeflowapp.vercel.app",
+      "status": "READY",
+      "target": "production",
+      "runtime_code_commit": "a131e5a9fa9db363ef494f5e6ee1d6a2cb285e99"
+    }
+  },
+  "interaction_proof": {
+    "authenticated_shell_and_route": {
+      "status": "PASS",
+      "result": "Production opened the authenticated CloseFlow shell on /cases/:caseId with the retained workspace session. No Vercel or Forteca copy was visible in the user-facing shell."
+    },
+    "canonical_tabs": {
+      "status": "PASS",
+      "result": "The live case detail exposed exactly the canonical tabs Obsługa, Checklisty and Historia; Historia was selected for the proof."
+    },
+    "history_workspace": {
+      "status": "PASS",
+      "result": "The real case rendered the ordered Historia workspace with 6 rows, summary cards, date/type/author controls, semantic actor/source metadata, stats rail and the last-event timeline anchor."
+    },
+    "filter_and_clear_wiring": {
+      "status": "PASS",
+      "result": "Selecting the real Autor=Klient control set aria-pressed=true and reduced the visible rows from 6 to 0; Wyczyść filtry became enabled and restored all 6 rows."
+    },
+    "related_timeline_anchor": {
+      "status": "PASS",
+      "result": "Pokaż na osi czasu points to #case-history-activity-533f0042-aeec-482d-973a-82be8d98f876 and the target exists in the same rendered history workspace."
+    },
+    "route_family_smoke": {
+      "status": "PASS",
+      "routes": [
+        { "route": "/today", "authenticated": true, "shell": "CloseFlow", "no_technical_copy": true },
+        { "route": "/leads", "authenticated": true, "shell": "CloseFlow", "no_technical_copy": true },
+        { "route": "/clients", "authenticated": true, "shell": "CloseFlow", "no_technical_copy": true },
+        { "route": "/cases", "authenticated": true, "shell": "CloseFlow", "no_technical_copy": true }
+      ]
+    },
+    "responsive_owner": {
+      "status": "PASS",
+      "result": "The registered src/styles/owners/closeflow-rails-and-detail.css owner contains the FRT-040 workspace rules and bounded 1000px, 700px and 520px responsive layouts using canonical VST variables."
+    },
+    "preview_boundary": {
+      "status": "DOCUMENTED",
+      "result": "The preview deployment is READY and built the same commit, but the authenticated browser session is scoped to the production alias. Preview correctly resolves the case route to its separate /login boundary; no unauthenticated preview write is claimed."
+    },
+    "safe_fixture_boundary": {
+      "status": "PASS",
+      "result": "The retained synthetic case bf6172be-db8f-4128-8895-fd3acd4a9f05 was read only. History navigation and view-only filters did not mutate the workspace."
+    }
+  },
+  "root_cause_proof": {
+    "status": "PASS",
+    "finding": "CaseDetail already loaded scoped activities, tasks, events, payments, costs and case items, but the Historia consumer exposed only a sparse generic activity list without a semantic timeline workspace or safe filters.",
+    "repair": "CaseDetail now builds one deterministic history projection from those existing records, normalizes actor/source semantics, provides view-only date/type/author filters and uses the existing timeline anchor without introducing a new runtime store or mutation path."
+  },
+  "source_of_truth": {
+    "runtime_state_owner": "Workspace-scoped records returned by the existing activity, task, event, payment, cost and case-item APIs/Supabase readers",
+    "history_projection_owner": "src/pages/CaseDetail.tsx buildCaseHistoryItemsStage14D and filteredCaseHistoryItemsStage040",
+    "mutation_owner": "Existing activity and related-record mutation handlers; FRT-040 adds no write owner",
+    "visual_owner": "src/styles/owners/closeflow-rails-and-detail.css bounded FRT-040 owner block",
+    "canonical_tab_owner": "Existing CaseDetail tab state with Obsługa/Checklisty/Historia",
+    "tests_deployments_and_evidence_are_not_runtime_state": true,
+    "duplicate_runtime_state_store_introduced": false
+  },
+  "safety_proof": {
+    "synthetic_data_only": true,
+    "no_secrets_or_personal_data_recorded": true,
+    "real_workspace_scoped_read": true,
+    "retained_fixture": "bf6172be-db8f-4128-8895-fd3acd4a9f05",
+    "no_raw_browser_storage_or_cookies_read": true
+  },
+  "verified_at": "2026-08-31",
+  "next_action": "Accept FRT-040 and activate FRT-041 final convergence."
+}

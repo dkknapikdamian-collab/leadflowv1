@@ -1,6 +1,6 @@
 # FRT-040 — CASE HISTORY
 
-CONTRACT_STATUS: ACTIVE
+CONTRACT_STATUS: LOCKED
 STAGE_ID: FRT-040
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/040_case_detail_history.webp
 TARGET_ROUTE: /cases/:caseId
