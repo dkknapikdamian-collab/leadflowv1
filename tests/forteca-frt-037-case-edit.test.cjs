@@ -11,8 +11,8 @@ test('FRT-037 is the active Case Edit contract with one real source path', () =>
   const contract = read('_project/contracts/forteca-clean/FRT-037_CASE_EDIT.md');
   const detail = read('src/pages/CaseDetail.tsx');
 
-  assert.equal(workflow.current_stage, 'FRT-037');
-  assert.equal(workflow.current_status, 'ACTIVE');
+  assert.ok(workflow.forteca_program?.accepted_receipts?.includes('FRT-037'));
+  assert.equal(workflow.forteca_program?.stage_037_status, 'PASS');
   assert.match(contract, /^STAGE_ID: FRT-037$/m);
   assert.match(contract, /^TARGET_ROUTE: \/cases\/:caseId$/m);
   assert.match(contract, /^TARGET_STATE: Edit Case modal$/m);

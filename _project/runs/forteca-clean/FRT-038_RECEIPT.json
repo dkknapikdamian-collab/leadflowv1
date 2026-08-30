@@ -1,0 +1,68 @@
+{
+  "schema_version": 2,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-038",
+  "reference_file": "docs/ui/reference/forteca-calm-light/038_case_detail_service.webp",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_PARENT",
+  "acceptance_basis": {
+    "directive_interpretation": "The owner directive makes Codex the acceptance authority for this technical stage; runtime, current code, tests and deployment evidence are authoritative, while lower-authority stale findings are recorded and reconciled.",
+    "root_cause": "The Obsługa tab used real sources and existing mutations but lacked a clear service hierarchy for summary, key information, next action, progress and contact.",
+    "repair": "CaseDetail now presents one read-only service overview derived from the loaded workspace-scoped state, while existing dialogs, action handlers and finance rail remain the sole mutation owners.",
+    "review_status": "Parent reviewed the active contract, reference/source chain, one-source-of-truth boundary, focused tests, typecheck/build, Guardian smoke, exact preview/production deployments and authenticated production service/action proof. Independent reviewer PASS is not claimed."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "src/pages/CaseDetail.tsx",
+    "src/styles/owners/closeflow-rails-and-detail.css",
+    "tests/forteca-frt-036-case-add.test.cjs",
+    "tests/forteca-frt-037-case-edit.test.cjs",
+    "tests/forteca-frt-038-case-service.test.cjs",
+    "package.json",
+    "audit/evidence/FRT-038_BROWSER_PROOF.json",
+    "audit/evidence/FRT-038_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/WORKFLOW_STATE.json",
+    "_project/contracts/forteca-clean/FRT-038_CASE_SERVICE.md",
+    "_project/contracts/forteca-clean/FRT-039_CASE_CHECKLISTS.md",
+    "_project/runs/forteca-clean/FRT-038_RECEIPT.json"
+  ],
+  "verification": {
+    "focused_tests": "PASS 3/3: FRT-038 active contract, read model, action/source ownership and responsive owner",
+    "regressions": "PASS 11/11: FRT-036, FRT-037, FRT-038 and shared visual form regressions; stage assertions follow accepted workflow receipts instead of requiring a stale active stage",
+    "typecheck": "PASS",
+    "build": "PASS locally from the actual worktree and on Vercel with known non-blocking dynamic/static import, large chunk and npm allow-scripts warnings",
+    "guards": "Route/icon/semantic color/typography/component-clone/branding/relation guards PASS; Guardian partial with zero scoped blockers; CSS-owner and patch-layer findings are known baseline; unrelated dirty generated artifacts remain outside scope",
+    "browser_proof": "PASS authenticated production Obsługa overview, exact canonical tabs, existing action dialog open/cancel, finance rail and retained synthetic fixture boundary; preview READY with separate login boundary documented",
+    "remote_head": "3a25e27cd25a220dfb4378811df729f074a614e4"
+  },
+  "browser_proof": "audit/evidence/FRT-038_BROWSER_PROOF.json",
+  "guardian": "audit/evidence/FRT-038_GUARDIAN_AUDIT_SUMMARY.json",
+  "implementation_commits": [
+    "3a25e27cd25a220dfb4378811df729f074a614e4"
+  ],
+  "runtime_deployments": {
+    "preview": "dpl_GiZJEZLt6JD379RkUFNYJ3GECzFi",
+    "production": "dpl_7okvmGn3PStQVNCXbHK6jQPhFosq",
+    "production_alias": "https://closeflowapp.vercel.app"
+  },
+  "remote_branch_sha_verified": true,
+  "next_stage": "FRT-039",
+  "rollback": "Revert 3a25e27cd25a220dfb4378811df729f074a614e4; the stage is isolated to the CaseDetail service read model, the registered detail/rail owner, focused tests and stage evidence.",
+  "source_of_truth": {
+    "runtime_state_owner": "Workspace-scoped API records consumed by CaseDetail",
+    "service_read_model_owner": "src/pages/CaseDetail.tsx",
+    "action_mutation_owners": "Existing task, event, note, blocker, checklist and finance dialog/mutation paths",
+    "visual_owner": "src/styles/owners/closeflow-rails-and-detail.css",
+    "canonical_tab_owner": "CaseDetail tab state with Obsługa/Checklisty/Historia",
+    "derived_values_are_projections": true,
+    "evidence_is_documentation_only": true,
+    "duplicate_runtime_state_store_introduced": false
+  },
+  "task_economy": {
+    "marketplace_router_startup": "USED",
+    "efficiency_planning": "APPLIED",
+    "optional_delegation": "SKIPPED",
+    "delegation_skip_reason": "Authenticated production proof required the existing local session and one write owner."
+  }
+}

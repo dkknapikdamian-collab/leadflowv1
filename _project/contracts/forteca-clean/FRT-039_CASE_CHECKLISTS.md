@@ -1,6 +1,6 @@
 # FRT-039 — CASE CHECKLISTS
 
-CONTRACT_STATUS: LOCKED
+CONTRACT_STATUS: ACTIVE
 STAGE_ID: FRT-039
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/039_case_detail_checklists.webp
 TARGET_ROUTE: /cases/:caseId
@@ -17,4 +17,3 @@ ACCEPTANCE_CRITERIA: Checklist tab is real and action-complete; extra screenshot
 TEST_PLAN: Checklist load/progress/add/status/action tests; browser proof of the canonical tab; typecheck if TS changes; build if shared checklist runtime changes.
 PREDECESSOR: FRT-038
 SUCCESSOR: FRT-040
-

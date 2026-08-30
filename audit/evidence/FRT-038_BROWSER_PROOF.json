@@ -1,0 +1,90 @@
+{
+  "schema_version": 2,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-038",
+  "reference_file": "docs/ui/reference/forteca-calm-light/038_case_detail_service.webp",
+  "entry_url": "https://closeflowapp.vercel.app/cases/bf6172be-db8f-4128-8895-fd3acd4a9f05",
+  "preview_entry_url": "https://closedockapp-61b8o1g98-dkknapikdamian-7019s-projects.vercel.app/cases/bf6172be-db8f-4128-8895-fd3acd4a9f05",
+  "runtime_url": "https://closeflowapp.vercel.app",
+  "route": "/cases/:caseId",
+  "state": "Case Detail — tab Obsługa with real service overview, contextual actions and finance rail",
+  "live_runtime": true,
+  "authenticated_session_reused": true,
+  "status": "PASS",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "implementation_commits": [
+    "3a25e27cd25a220dfb4378811df729f074a614e4"
+  ],
+  "current_runtime_commit": "3a25e27cd25a220dfb4378811df729f074a614e4",
+  "remote_head_verified": "3a25e27cd25a220dfb4378811df729f074a614e4",
+  "runtime_deployments": {
+    "preview": {
+      "id": "dpl_GiZJEZLt6JD379RkUFNYJ3GECzFi",
+      "url": "https://closedockapp-61b8o1g98-dkknapikdamian-7019s-projects.vercel.app",
+      "status": "READY",
+      "target": null,
+      "runtime_code_commit": "3a25e27cd25a220dfb4378811df729f074a614e4"
+    },
+    "production": {
+      "id": "dpl_7okvmGn3PStQVNCXbHK6jQPhFosq",
+      "url": "https://closedockapp-8t4lbvaqz-dkknapikdamian-7019s-projects.vercel.app",
+      "alias": "https://closeflowapp.vercel.app",
+      "status": "READY",
+      "target": "production",
+      "runtime_code_commit": "3a25e27cd25a220dfb4378811df729f074a614e4"
+    }
+  },
+  "interaction_proof": {
+    "authenticated_shell_and_route": {
+      "status": "PASS",
+      "result": "Production opened the CloseFlow shell on /cases/:caseId in the authenticated workspace. The case detail route rendered without exposing Forteca or deployment-host copy to the user."
+    },
+    "canonical_tabs": {
+      "status": "PASS",
+      "result": "The live detail showed exactly the canonical tabs Obsługa, Checklisty and Historia. Obsługa was selected and the existing counters remained data-derived."
+    },
+    "service_overview": {
+      "status": "PASS",
+      "result": "The live Obsługa tab showed Podsumowanie sprawy, status, client, source, last activity, Następny ruch, Stan pracy and Kontakt. Values matched the retained workspace-scoped case and its loaded relations."
+    },
+    "contextual_actions_and_rail": {
+      "status": "PASS",
+      "result": "The overview Dodaj zadanie action opened the existing shared task dialog. The dialog contained the case context and Polish user copy; Anuluj closed it without writing. The existing task/note/event/blocker actions and Rozliczenie sprawy rail remained visible."
+    },
+    "responsive_owner": {
+      "status": "PASS",
+      "result": "The registered detail/rail owner includes explicit <=900px one-column and <=600px single-column fact/stat rules using canonical VST variables; no parallel service stylesheet or hard-coded visual patch was introduced."
+    },
+    "safe_fixture_boundary": {
+      "status": "PASS",
+      "result": "The retained synthetic case bf6172be-db8f-4128-8895-fd3acd4a9f05 was read only for this proof; opening and cancelling the shared task dialog left the case and related records unchanged."
+    },
+    "preview_boundary": {
+      "status": "DOCUMENTED",
+      "result": "Preview is READY and built the same implementation commit. The in-app authenticated session is scoped to the production alias, so no unauthenticated preview write is claimed."
+    }
+  },
+  "root_cause_proof": {
+    "status": "PASS",
+    "finding": "The real service sources and mutations were already present, but the Obsługa tab lacked a calm-light hierarchy that surfaced the case summary, key information, next action, progress and contact before the existing action workspace and rail.",
+    "repair": "CaseDetail now composes a read-only service overview from the already loaded case, client relation, activity, task/event, checklist and history projections. Existing action dialogs and the finance rail remain the mutation owners."
+  },
+  "source_of_truth": {
+    "runtime_state_owner": "Workspace-scoped records returned by /api/cases, /api/case-items, /api/tasks, /api/events, /api/activities, /api/payments and /api/case-costs",
+    "service_projection_owner": "src/pages/CaseDetail.tsx derived state and memoized projections",
+    "mutation_owner": "Existing scoped action-dialog and Supabase-backed mutation paths used by CaseDetail",
+    "visual_owner": "src/styles/owners/closeflow-rails-and-detail.css for the FRT-038 detail/rail composition",
+    "canonical_tabs_owner": "Existing CaseDetail tab state with Obsługa/Checklisty/Historia only",
+    "activity_tests_and_evidence_are_not_runtime_state": true,
+    "duplicate_runtime_state_store_introduced": false
+  },
+  "safety_proof": {
+    "synthetic_data_only": true,
+    "no_secrets_or_personal_data_recorded": true,
+    "real_workspace_scoped_read": true,
+    "retained_fixture": "bf6172be-db8f-4128-8895-fd3acd4a9f05",
+    "no_raw_browser_storage_or_cookies_read": true
+  },
+  "verified_at": "2026-08-30",
+  "next_action": "Accept FRT-038 and activate FRT-039 Case Checklists."
+}

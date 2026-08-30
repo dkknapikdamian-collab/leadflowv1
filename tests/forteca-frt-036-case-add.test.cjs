@@ -12,8 +12,7 @@ test('FRT-036 remains the accepted Case Add contract with one real source path',
   const cases = read('src/pages/Cases.tsx');
   const api = read('api/cases.ts');
 
-  assert.equal(workflow.last_accepted?.id, 'FRT-036');
-  assert.equal(workflow.last_accepted?.status, 'PASS');
+  assert.ok(workflow.forteca_program?.accepted_receipts?.includes('FRT-036'));
   assert.equal(workflow.forteca_program?.stage_036_status, 'PASS');
   assert.match(contract, /^STAGE_ID: FRT-036$/m);
   assert.match(contract, /^TARGET_ROUTE: \/cases$/m);

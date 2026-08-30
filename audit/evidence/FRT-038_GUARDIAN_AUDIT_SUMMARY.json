@@ -1,0 +1,63 @@
+{
+  "schema_version": 2,
+  "evidence_type": "FORTECA_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-038",
+  "mode": "AUDIT_ONLY",
+  "plugin_first": {
+    "command": "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+    "mode": "AUDIT_ONLY",
+    "fileWrites": 0,
+    "selectedCapabilities": [
+      "repository-baseline"
+    ],
+    "selectedSkills": [
+      "ai-code-guardian",
+      "architecture-integrity"
+    ],
+    "coverageOutcome": "PARTIAL",
+    "receiptIds": [
+      "guardian-plugin-smoke-coverage",
+      "guardian-plugin-smoke-result"
+    ],
+    "blockers": 0
+  },
+  "repository_fallback": {
+    "status": "PARTIAL_WITH_ZERO_SCOPED_BLOCKERS",
+    "checks": {
+      "focused_stage_package": "PASS 3/3: active contract, canonical tabs, service read model, existing actions and registered responsive owner",
+      "predecessor_and_visual_regressions": "PASS 11/11: FRT-036, FRT-037, FRT-038 and shared visual form regression tests after workflow lifecycle assertions were reconciled to the single authoritative state",
+      "typescript": "PASS",
+      "production_build": "PASS_WITH_KNOWN_WARNINGS",
+      "vercel_preview_deployment": "READY",
+      "vercel_production_deployment": "READY",
+      "guard:routes:canonical": "PASS",
+      "guard:ui:ssot-icons": "PASS",
+      "guard:ui:ssot-semantic-colors": "PASS",
+      "guard:ui:ssot-typography": "PASS",
+      "guard:ui:component-clones": "PASS",
+      "check:a18-branding-docs": "PASS",
+      "check:stage232c-clients-relation-tile-source-of-truth": "PASS",
+      "git_diff_check": "PASS",
+      "browser_proof": "PASS authenticated production service overview, shared task dialog open/cancel and retained fixture boundary"
+    },
+    "scope_findings": [],
+    "out_of_scope_baseline_findings": [
+      "guard:ui:ssot-css-owners remains partial on the existing global-shell concern mismatch, nine existing forteca-* owner metadata gaps, UNCLASSIFIED_IMPORTANT=343 and SPECIFICITY_PATCH_IMPORTANT=1399; FRT-038 rules are inside the registered closeflow-rails-and-detail.css owner and use canonical VST variables.",
+      "guard:ui:patch-layers remains partial on the same four existing findings: Clients.tsx local NextActionIcon/stage-only usage, ClientCreateDialog.tsx direct lucide import and icon-registry.ts direct lucide import/stage usage; FRT-038 introduced no new patch-layer finding.",
+      "check:cf-runtime-00-source-truth remains partial because unrelated pre-existing generated documentation and dist-test-today-sections.cjs are dirty and outside the FRT-038 allowed write set."
+    ]
+  },
+  "repository": {
+    "branch": "codex/forteca-ui-001-040-clean",
+    "implementation_commit": "3a25e27cd25a220dfb4378811df729f074a614e4",
+    "remote_head": "3a25e27cd25a220dfb4378811df729f074a614e4"
+  },
+  "root_cause_and_repair": {
+    "root_cause": "CaseDetail already loaded real case, action, checklist, activity and finance data, but its Obsługa surface did not provide the reference-aligned service hierarchy before the action workspace.",
+    "repair": "A single read-only service overview was added to the existing CaseDetail service tab. It derives every displayed value from the loaded runtime state, reuses existing action handlers/dialogs and places responsive rules in the registered detail/rail owner.",
+    "source_of_truth": "The workspace-scoped API records remain the only runtime state. CaseDetail is a transient read model and action orchestrator; tests, deployment and evidence only prove that same state."
+  },
+  "interpretation": "Guardian plugin smoke and scoped repository checks completed with zero FRT-038 scoped blockers. Partial coverage is retained honestly for the known repository baseline and unrelated dirty generated artifacts; it is not a source-of-truth conflict or an FRT-038 acceptance blocker.",
+  "created_at": "2026-08-30",
+  "updated_at": "2026-08-30"
+}

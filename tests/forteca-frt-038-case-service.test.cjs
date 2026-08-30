@@ -6,13 +6,15 @@ const { test } = require('node:test');
 const root = path.resolve(__dirname, '..');
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 
-test('FRT-038 is the active Case Service contract with canonical tabs', () => {
+test('FRT-038 is active or accepted Case Service contract with canonical tabs', () => {
   const workflow = JSON.parse(read('_project/WORKFLOW_STATE.json'));
   const contract = read('_project/contracts/forteca-clean/FRT-038_CASE_SERVICE.md');
   const detail = read('src/pages/CaseDetail.tsx');
 
-  assert.equal(workflow.current_stage, 'FRT-038');
-  assert.equal(workflow.current_status, 'ACTIVE');
+  const stageIsActive = workflow.current_stage === 'FRT-038' && workflow.current_status === 'ACTIVE';
+  const stageIsAccepted = workflow.forteca_program?.accepted_receipts?.includes('FRT-038') && workflow.forteca_program?.stage_038_status === 'PASS';
+  assert.ok(stageIsActive || stageIsAccepted, 'FRT-038 must be active or recorded as accepted by the workflow');
+  assert.match(contract, stageIsAccepted ? /^CONTRACT_STATUS: LOCKED$/m : /^CONTRACT_STATUS: ACTIVE$/m);
   assert.match(contract, /^STAGE_ID: FRT-038$/m);
   assert.match(contract, /^TARGET_ROUTE: \/cases\/:caseId$/m);
   assert.match(contract, /^TARGET_STATE: Case Detail — tab Obsługa$/m);

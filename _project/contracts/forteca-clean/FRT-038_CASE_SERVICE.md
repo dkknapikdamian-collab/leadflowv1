@@ -1,6 +1,6 @@
 # FRT-038 — CASE SERVICE
 
-CONTRACT_STATUS: ACTIVE
+CONTRACT_STATUS: LOCKED
 STAGE_ID: FRT-038
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/038_case_detail_service.webp
 TARGET_ROUTE: /cases/:caseId
