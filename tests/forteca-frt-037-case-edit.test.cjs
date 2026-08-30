@@ -51,6 +51,11 @@ test('Case Edit preserves supported fields, relation, refresh and canonical stat
   assert.match(detail, /payload\.clientId = nextClientId \|\| null/);
   assert.match(api, /if \(body\.title !== undefined\)/);
   assert.match(api, /if \(body\.clientId !== undefined\)/);
+  assert.match(api, /const existingCase = await requireScopedRow\('cases', String\(body\.id\), workspaceId, 'CASE_NOT_FOUND'\)/);
+  assert.match(api, /let caseValueChanged = false/);
+  assert.match(api, /caseValueChanged = true/);
+  assert.match(api, /payload\.remaining_amount = Math\.max\(0, nextContractValue - existingPaidAmount\)/);
+  assert.match(api, /body\.remainingAmount !== undefined \|\| body\.remaining_amount !== undefined/);
   assert.match(fallback, /export async function updateCaseInSupabase/);
   assert.match(cases, /getCaseMutationErrorMessage\(error, 'create'\)/);
   assert.match(errors, /operation === 'create'/);

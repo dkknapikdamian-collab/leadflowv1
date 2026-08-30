@@ -551,7 +551,7 @@ export default async function handler(req: any, res: any) {
         res.status(400).json({ error: 'CASE_ID_REQUIRED' });
         return;
       }
-      await requireScopedRow('cases', String(body.id), workspaceId, 'CASE_NOT_FOUND');
+      const existingCase = await requireScopedRow('cases', String(body.id), workspaceId, 'CASE_NOT_FOUND');
 
       const nowIso = new Date().toISOString();
       const normalizedLeadId = body.leadId !== undefined ? asNullableUuid(body.leadId) : undefined;
@@ -577,6 +577,7 @@ export default async function handler(req: any, res: any) {
       const payload: Record<string, unknown> = {
         updated_at: nowIso,
       };
+      let caseValueChanged = false;
 
       if (body.title !== undefined) payload.title = asText(body.title) || 'Sprawa bez tytułu';
       if (body.clientName !== undefined || ensuredClient) payload.client_name = asText(body.clientName || ensuredClient?.name || linkedLead?.name);
@@ -595,6 +596,7 @@ export default async function handler(req: any, res: any) {
         const contractValue = asNumber(body.contractValue ?? body.contract_value);
         payload.contract_value = contractValue;
         payload.expected_revenue = contractValue;
+        caseValueChanged = true;
       }
       if (body.commissionMode !== undefined || body.commission_mode !== undefined) payload.commission_mode = normalizeCommissionMode(body.commissionMode ?? body.commission_mode);
       if (body.commissionBase !== undefined || body.commission_base !== undefined) payload.commission_base = normalizeCommissionBase(body.commissionBase ?? body.commission_base);
@@ -605,9 +607,19 @@ export default async function handler(req: any, res: any) {
         const nextValue = asNumber(body.expectedRevenue ?? body.expected_revenue ?? body.caseValue ?? body.case_value ?? body.dealValue ?? body.deal_value ?? body.value ?? body.totalValue ?? body.total_value);
         payload.expected_revenue = nextValue;
         if (payload.contract_value === undefined) payload.contract_value = nextValue;
+        caseValueChanged = true;
       }
       if (body.paidAmount !== undefined) payload.paid_amount = asNumber(body.paidAmount);
-      if (body.remainingAmount !== undefined) payload.remaining_amount = asNumber(body.remainingAmount);
+      const hasExplicitRemainingAmount = body.remainingAmount !== undefined || body.remaining_amount !== undefined;
+      if (hasExplicitRemainingAmount) payload.remaining_amount = asNumber(body.remainingAmount ?? body.remaining_amount);
+      else if (caseValueChanged) {
+        // Keep the legacy derived cache aligned when the canonical case value changes.
+        // Payment rows remain the source of truth when they exist; this preserves the
+        // no-payment path without allowing a stale remaining_amount to resurrect 0.
+        const existingPaidAmount = asNumber(existingCase.paid_amount ?? existingCase.paidAmount);
+        const nextContractValue = asNumber(payload.contract_value ?? payload.expected_revenue);
+        payload.remaining_amount = Math.max(0, nextContractValue - existingPaidAmount);
+      }
       if (body.currency !== undefined) payload.currency = normalizeCurrency(body.currency);
       if (body.serviceStartedAt !== undefined) payload.service_started_at = toIso(body.serviceStartedAt);
       if (body.startedAt !== undefined) payload.started_at = toIso(body.startedAt);
