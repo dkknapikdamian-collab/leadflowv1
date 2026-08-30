@@ -23,6 +23,7 @@ test('FRT-035 stays locked to the ready-to-start reference and route', () => {
 });
 
 test('ready view derives from the canonical lifecycle predicate and real workspace data', () => {
+  assert.match(source, /description="Zarządzaj realizacją i kompletnością materiałów\."/);
   assert.match(source, /import ['"]\.\.\/styles\/forteca-cases-ready\.css['"]/);
   assert.match(source, /function isReadyToStartCase\(/);
   assert.match(source, /resolveCaseLifecycleV1/);

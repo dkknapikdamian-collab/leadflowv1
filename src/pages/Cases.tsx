@@ -1238,7 +1238,7 @@ export default function Cases() {
         <CloseFlowPageHeaderV2
           pageKey="cases"
           title="Sprawy"
-          description="Zarządzaj realizacją i kompletnością materiałów klientów."
+          description="Zarządzaj realizacją i kompletnością materiałów."
           actions={
             <>
               <div className="head-actions cf-cases-header-actions">
