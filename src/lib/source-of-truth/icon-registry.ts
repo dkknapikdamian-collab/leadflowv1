@@ -1,4 +1,4 @@
-import { Activity, Users, Wallet } from 'lucide-react';
+import { Activity, Rocket, Users, Wallet } from 'lucide-react';
 import { ACTION_ICON_MAP } from '../../components/ui-system/action-icon-registry';
 import { semanticIconConfig } from '../../ui-system/icons/SemanticIcon';
 import type { CloseflowAppLucideIcon } from '../../components/ui-system/icon-registry';
@@ -79,6 +79,11 @@ export const APP_ICONS = {
     icon: ACTION_ICON_MAP.restore,
     label: 'Przywróć',
     semanticGroup: 'action',
+  },
+  rocket: {
+    icon: Rocket,
+    label: 'Gotowe do startu',
+    semanticGroup: 'status',
   },
   search: {
     icon: ACTION_ICON_MAP.search,

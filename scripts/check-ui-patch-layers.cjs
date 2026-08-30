@@ -146,6 +146,7 @@ const LUCIDE_REACT_IMPORT_ALLOWLIST = new Map([
   ['src/components/ui/sonner.tsx', 'existing UI primitive direct icon import debt'],
   ['src/components/ui-system/action-icon-registry.ts', 'central action icon registry'],
   ['src/components/ui-system/icon-registry.ts', 'central icon registry'],
+  ['src/lib/source-of-truth/icon-registry.ts', 'canonical app icon registry'],
   ['src/components/work-item-card.tsx', 'existing direct icon import debt'],
   ['src/lib/calendar-items.ts', 'existing calendar icon mapping debt'],
   ['src/lib/options.ts', 'existing option icon mapping debt'],

@@ -116,6 +116,7 @@ function resolveMetricIconName(icon: ComponentType<{ className?: string }>): Ico
   if (rawName.includes('mail')) return 'mail';
   if (rawName.includes('phone')) return 'phone';
   if (rawName.includes('plus')) return 'add';
+  if (rawName.includes('rocket')) return 'rocket';
   if (rawName.includes('search')) return 'search';
   if (rawName.includes('trash')) return 'trash';
   return 'fileText';
