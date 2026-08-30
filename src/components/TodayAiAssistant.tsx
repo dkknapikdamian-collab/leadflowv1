@@ -197,7 +197,7 @@ export default function TodayAiAssistant(props: TodayAiAssistantProps) {
           onKeyDown={(event) => {
             if (event.key === "Enter" && !event.shiftKey) void askAssistant();
           }}
-          placeholder="Np. Co mam jutro? / Znajdź numer do Marka / Zapisz zadanie jutro 12 rozgraniczenie"
+          placeholder="Np. Co mam jutro? / Znajdź numer do klienta / Zapisz zadanie jutro 12:00"
           aria-label="Pytanie do asystenta AI"
         />
         <button type="button" onClick={() => void askAssistant()} disabled={loading}>

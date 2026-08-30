@@ -296,7 +296,7 @@ export default function QuickAiCapture({ initialText = '', openSignal = 0, draft
             <Textarea
               value={rawText}
               onChange={(event) => setRawText(event.target.value)}
-              placeholder="np. Jan Kowalski dzwonił w sprawie strony WWW, tel. 500 000 000"
+              placeholder="np. Klient dzwonił w sprawie usługi, oddzwonić jutro po 10..."
               className="min-h-32"
             />
             {interimText ? <p className="rounded-lg bg-blue-50 px-3 py-2 text-xs font-medium text-blue-700">Rozpoznaję: {interimText}</p> : null}

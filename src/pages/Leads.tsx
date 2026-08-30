@@ -1686,7 +1686,7 @@ export default function Leads() {
                                           id="forteca-frt-011-lead-name"
                                           value={newLead.name}
                                           onChange={(event) => setNewLead((current) => ({ ...current, name: event.target.value }))}
-                                          placeholder="np. Jan Nowak"
+                                          placeholder="Wpisz imię i nazwisko"
                                         />
                                       </div>
                                     </div>

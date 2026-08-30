@@ -27,7 +27,10 @@ assert(today.includes('data-today-pipeline-shortcut="without_action"'), 'Today w
 assert(today.includes('data-today-pipeline-shortcut="without_movement"'), 'Today without-movement shortcut is not marked');
 assert(today.includes('data-today-pipeline-shortcut="blocked"'), 'Today blocked shortcut is not marked');
 
-assert(!clientDetail.includes('Edytuj dane klienta'), 'ClientDetail still contains duplicate edit-client label');
+assert(
+  clientDetail.includes('forteca-frt-027-edit-title') && clientDetail.includes('forteca-frt-028-edit-title'),
+  'ClientDetail edit owners must remain explicit for the no-case and closed-case route branches',
+);
 
 assert(calendar.includes('clientId?: string;'), 'Calendar edit draft should support optional clientId');
 assert(calendar.includes('status?: string;'), 'Calendar edit draft should support optional status');

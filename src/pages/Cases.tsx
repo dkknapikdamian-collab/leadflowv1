@@ -789,7 +789,7 @@ export default function Cases() {
                                               id="case-create-phone"
                                               value={newCase.clientPhone}
                                               onChange={(event) => setNewCase((prev) => ({ ...prev, clientPhone: event.target.value }))}
-                                              placeholder="np. 500 000 000"
+                                              placeholder="Wpisz numer telefonu"
                                             />
                                           </div>
                                         </div>

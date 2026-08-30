@@ -223,7 +223,7 @@ export function QuickLeadCaptureModal({ open, onOpenChange, workspace, hasAccess
                 className="quick-lead-stage27-textarea"
                 value={rawText}
                 onChange={(event) => setRawText(event.target.value)}
-                placeholder="Np. Pani Anna z Tarnowa chce wycenę mieszkania, zadzwonić jutro po 15, przyszła z Facebooka."
+                placeholder="Np. Klient chce wycenę, zadzwonić jutro po 15, kontakt z formularza."
                 rows={7}
               />
               <p className="quick-lead-stage27-hint">

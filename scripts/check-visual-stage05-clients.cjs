@@ -20,14 +20,14 @@ expectIncludes('src/pages/Clients.tsx', "import '../styles/clients-next-action-l
 expectIncludes('src/pages/Clients.tsx', "import '../styles/closeflow-record-list-source-truth.css';", 'active Clients record-list CSS import');
 expectIncludes('src/pages/Clients.tsx', "import '../styles/closeflow-unified-page-canvas-stage211c.css';", 'active Clients unified canvas CSS import');
 expectIncludes('src/pages/Clients.tsx', "import '../styles/closeflow-canvas-source-truth-stage211e.css';", 'active Clients canvas source CSS import');
-expectIncludes('src/pages/Clients.tsx', 'data-clients-real-view="true"', 'Clients real-view marker');
-expectIncludes('src/pages/Clients.tsx', 'createClientInSupabase', 'client create flow remains present');
+expectIncludes('src/pages/Clients.tsx', 'data-forteca-frt-021-runtime="true"', 'Clients runtime marker');
+expectIncludes('src/components/ClientCreateDialog.tsx', 'createClientInSupabase', 'client create flow remains present');
 expectIncludes('src/pages/Clients.tsx', 'fetchClientsFromSupabase', 'client read flow remains present');
 expectIncludes('src/pages/Clients.tsx', 'fetchLeadsFromSupabase', 'lead counters remain present');
 expectIncludes('src/pages/Clients.tsx', 'fetchCasesFromSupabase', 'case counters remain present');
 expectIncludes('src/pages/Clients.tsx', 'fetchPaymentsFromSupabase', 'payment counters remain present');
 expectIncludes('src/pages/Clients.tsx', 'updateClientInSupabase', 'archive/restore flow remains present');
-expectIncludes('src/pages/Clients.tsx', 'showArchived', 'trash view remains present');
+expectIncludes('src/pages/Clients.tsx', 'isArchivedStage025', 'archived view remains present');
 expectIncludes('src/pages/Clients.tsx', 'setSearch', 'search remains present');
-expectIncludes('src/pages/Clients.tsx', 'Link to={`/clients/${client.id}`}', 'ClientDetail link remains present');
+expectIncludes('src/pages/Clients.tsx', "Link to={'/clients/' + client.id}", 'ClientDetail link remains present');
 console.log('OK: Visual Stage 05 Clients guard passed.');

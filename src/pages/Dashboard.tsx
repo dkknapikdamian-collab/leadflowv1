@@ -244,7 +244,7 @@ export default function Dashboard() {
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
                   <Label htmlFor="title">Nazwa sprawy</Label>
-                  <Input id="title" placeholder="np. Strona WWW dla Firmy X" value={newCaseTitle} onChange={(event) => setNewCaseTitle(event.target.value)} />
+                  <Input id="title" placeholder="np. Usługa dla klienta" value={newCaseTitle} onChange={(event) => setNewCaseTitle(event.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="client">Nazwa klienta</Label>
@@ -252,7 +252,7 @@ export default function Dashboard() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email klienta</Label>
-                  <Input id="email" type="email" placeholder="klient@example.com" value={newClientEmail} onChange={(event) => setNewClientEmail(event.target.value)} />
+                  <Input id="email" type="email" placeholder="adres@email.pl" value={newClientEmail} onChange={(event) => setNewClientEmail(event.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="template">Szablon listy (opcjonalnie)</Label>

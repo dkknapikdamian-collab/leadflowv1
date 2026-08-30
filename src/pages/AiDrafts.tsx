@@ -1135,7 +1135,7 @@ useEffect(() => {
             onCompositionUpdate={(event) => appendVoiceInputTrace('compositionupdate', event)}
             onCompositionEnd={(event) => appendVoiceInputTrace('compositionend', event)}
             onPaste={(event) => appendVoiceInputTrace('paste', event)}
-            placeholder="Np. Dzwonił Marek z Tarnowa, chce ofertę, numer 500 600 700, oddzwonić jutro po 10..."
+            placeholder="Np. Klient dzwonił w sprawie oferty, oddzwonić jutro po 10..."
             className="ai-drafts-quick-capture-textarea lead-form-textarea stage230c-r10-readable-textarea"
             data-stage230b-quick-capture-textarea="true"
             data-stage230c-r8-readable-textarea="true"

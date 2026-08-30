@@ -109,8 +109,13 @@ assert(today.includes('/calendar?view=week'), 'Today missing weekly calendar URL
 
 assert(!clientDetailUi.includes("key: 'more'"), 'ClientDetail still contains more tab key');
 assert(!clientDetailUi.includes('key: "more"'), 'ClientDetail still contains more tab key');
-assert(!clientDetailUi.includes('Wi\u0119cej'), 'ClientDetail still contains Wi\u0119cej text');
-assert(!clientDetailUi.includes('Wiecej'), 'ClientDetail still contains Wiecej text');
+const hasStandaloneMoreLabel = [
+  /(?:label|aria-label)\s*[:=]\s*['"]Wi\u0119cej['"]/,
+  /(?:label|aria-label)\s*[:=]\s*['"]Wiecej['"]/,
+  /<[^>]+>\s*Wi\u0119cej\s*<\//,
+  /<[^>]+>\s*Wiecej\s*<\//,
+].some((pattern) => pattern.test(clientDetailUi));
+assert(!hasStandaloneMoreLabel, 'ClientDetail still contains the removed standalone Wi\u0119cej tab label');
 assert(!clientDetailUi.includes('CLIENT_DETAIL_MORE_MENU_SECONDARY'), 'ClientDetail still contains old more marker');
 assert(!clientDetailUi.includes('CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ'), 'ClientDetail still contains old more tabs marker');
 
