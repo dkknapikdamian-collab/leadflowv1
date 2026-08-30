@@ -2699,6 +2699,8 @@ export default function CaseDetail() {
   }, [nearestOperationalAction, workItems]);
   const lastActivityAt = caseData?.lastActivityAt || caseData?.updatedAt || activities[0]?.createdAt || caseData?.createdAt;
   const sourceLeadLabel = sourceLead ? String(sourceLead.name || sourceLead.company || 'Źródłowy lead') : caseData?.leadId ? 'Źródłowy lead podpięty' : 'Brak źródłowego leada';
+  const caseServiceClientEmail = String(caseData?.clientEmail || (caseData as any)?.client_email || '').trim();
+  const caseServiceClientPhone = String(caseData?.clientPhone || (caseData as any)?.client_phone || '').trim();
   const caseDetailWriteAccessDenied = !hasAccess;
   const caseDetailAccessStatus = String(access?.status || 'inactive');
   const workspaceIdStage231H_R1D2_R6 = String((workspace as any)?.id || (caseData as any)?.workspaceId || (caseData as any)?.workspace_id || (sourceLead as any)?.workspaceId || (sourceLead as any)?.workspace_id || (access as any)?.workspaceId || (access as any)?.workspace_id || (access as any)?.workspace?.id || '').trim();
@@ -2865,6 +2867,14 @@ export default function CaseDetail() {
   const openCaseNoteDialog = () => {
     void handleAddNote();
   };
+
+  const handleCaseServiceNextAction = () => {
+    if (!nextAction) {
+      openCaseTaskDialog();
+      return;
+      }
+      setCaseActionOpenGroup('next');
+    };
 
   const openCasePaymentDialog = (type: 'deposit' | 'partial') => {
     if (!guardCaseDetailWriteAccess('dodać płatności')) return;
@@ -4080,6 +4090,88 @@ async function handleConfirmDeleteCaseRecord() {
           </nav>
         </Tabs>
             </div>
+            <section className="case-service-overview" data-case-service-overview="true" aria-label="Podsumowanie obsługi sprawy">
+              <article className="case-service-overview-card case-service-summary-card" data-case-service-overview-card="summary" data-case-service-summary-card="true">
+                <div className="case-service-card-heading">
+                  <div>
+                    <p className="case-detail-eyebrow">Podsumowanie sprawy</p>
+                    <h2>{getCaseTitle(caseData)}</h2>
+                  </div>
+                  <span className={`case-detail-pill ${getStatusClass(effectiveStatus)}`} data-case-service-status="true">
+                    {getCaseStatusLabel(effectiveStatus)}
+                  </span>
+                </div>
+                <p className="case-service-summary-copy">
+                  Bieżące działania, checklista i historia tej sprawy są zasilane z jej aktualnych danych.
+                </p>
+                <dl className="case-service-facts" data-case-service-key-information="true">
+                  <div>
+                    <dt>Klient</dt>
+                    <dd>{getCaseHeaderClientLabel(caseData)}</dd>
+                  </div>
+                  <div>
+                    <dt>Źródło sprawy</dt>
+                    <dd>{sourceLeadLabel}</dd>
+                  </div>
+                  <div>
+                    <dt>Ostatnia aktywność</dt>
+                    <dd>{formatDateTime(lastActivityAt, 'Brak aktywności')}</dd>
+                  </div>
+                </dl>
+              </article>
+
+              <article className="case-service-overview-card case-service-next-action-card" data-case-service-overview-card="next-action" data-case-service-next-action-card="true">
+                <div className="case-service-card-heading">
+                  <div>
+                    <p className="case-detail-eyebrow">Następny ruch</p>
+                    <h3>{nextAction?.title || 'Brak zaplanowanego ruchu'}</h3>
+                  </div>
+                  {nextAction ? <span className="case-service-card-meta">{nextAction.dateLabel}</span> : null}
+                </div>
+                <p className="case-service-summary-copy">
+                  {nextAction
+                    ? `${nextAction.kind === 'event' ? 'Wydarzenie' : 'Zadanie'} jest przypięte do tej sprawy.`
+                    : 'Dodaj zadanie, aby ustawić kolejny konkretny krok.'}
+                </p>
+                <Button type="button" variant={nextAction ? 'outline' : 'default'} onClick={handleCaseServiceNextAction} data-case-service-next-action-cta="true">
+                  {nextAction?.kind === 'event' ? <CalendarClock className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
+                  {nextAction ? 'Pokaż działanie' : 'Dodaj zadanie'}
+                </Button>
+              </article>
+
+              <article className="case-service-overview-card case-service-state-card" data-case-service-overview-card="state">
+                <div className="case-service-card-heading">
+                  <div>
+                    <p className="case-detail-eyebrow">Stan pracy</p>
+                    <h3>Postęp sprawy</h3>
+                  </div>
+                  <ListChecks className="case-service-card-icon" aria-hidden="true" />
+                </div>
+                <dl className="case-service-stat-list">
+                  <div><dt>Checklisty</dt><dd>{items.length}</dd></div>
+                  <div><dt>Aktywne działania</dt><dd>{workItems.length}</dd></div>
+                  <div><dt>Historia</dt><dd>{caseHistoryItems.length}</dd></div>
+                </dl>
+              </article>
+
+              <article className="case-service-overview-card case-service-contact-card" data-case-service-overview-card="contacts" data-case-service-contacts="true">
+                <div className="case-service-card-heading">
+                  <div>
+                    <p className="case-detail-eyebrow">Kontakt</p>
+                    <h3>Dane klienta</h3>
+                  </div>
+                  <ExternalLink className="case-service-card-icon" aria-hidden="true" />
+                </div>
+                {caseServiceClientEmail || caseServiceClientPhone ? (
+                  <div className="case-service-contact-list">
+                    {caseServiceClientEmail ? <a href={`mailto:${caseServiceClientEmail}`}>{caseServiceClientEmail}</a> : null}
+                    {caseServiceClientPhone ? <a href={`tel:${caseServiceClientPhone.replace(/[^+\d]/g, '')}`}>{caseServiceClientPhone}</a> : null}
+                  </div>
+                ) : (
+                  <p className="case-service-empty-copy" data-case-service-contact-empty="true">Brak danych kontaktowych w sprawie.</p>
+                )}
+              </article>
+            </section>
               <div className="case-service-actions-panel" data-case-service-actions-panel="true">
             <section className="case-detail-section-card stage217-case-operation-workspace" data-stage217-case-operation-workspace="true" data-case-service-tab="true" data-stage220a11-tab-content="service">
               <div className="case-detail-section-head stage217-case-operation-head">
