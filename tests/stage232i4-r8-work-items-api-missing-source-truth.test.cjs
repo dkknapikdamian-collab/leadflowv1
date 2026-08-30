@@ -6,9 +6,9 @@ const root = process.cwd();
 const src = fs.readFileSync(path.join(root, 'api', 'work-items.ts'), 'utf8');
 const vercel = fs.readFileSync(path.join(root, 'vercel.json'), 'utf8');
 
-test('/api/tasks is a rewrite to api/work-items, not api/tasks.ts', () => {
+test('/api/tasks is a rewrite to the consolidated api/system tasks route, not api/tasks.ts', () => {
   assert.match(vercel, /"source"\s*:\s*"\/api\/tasks"/);
-  assert.match(vercel, /"destination"\s*:\s*"\/api\/work-items\?kind=tasks"/);
+  assert.match(vercel, /"destination"\s*:\s*"\/api\/system\?apiRoute=tasks"/);
   assert.equal(fs.existsSync(path.join(root, 'api', 'tasks.ts')), false, 'api/tasks.ts should not be the target in this repo');
 });
 

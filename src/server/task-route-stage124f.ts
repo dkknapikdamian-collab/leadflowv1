@@ -4,6 +4,7 @@ import { deleteByIdScoped, insertWithVariants, selectFirstAvailable, updateByIdS
 import { requireRequestIdentity, resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from './_request-scope.js';
 import { RequestAuthError } from './_supabase-auth.js';
 import { normalizeTaskListContract } from '../lib/data-contract.js';
+import { normalizeTaskStatus } from '../lib/domain-statuses.js';
 import { normalizeCloseFlowDateTimeToUtcIso } from '../lib/calendar-timezone-contract.js';
 import { markGoogleCalendarMutationSyncState } from './google-calendar-mutation-sync-state-marker.js';
 import {
@@ -12,7 +13,9 @@ import {
 
 const STAGE228R17_MISSING_ITEM_DELETE_CONTRACT = 'Task route does not promote deleted/done/missing_item records to lead next action and clears matching deleted next_action_item_id';
 const STAGE232A_R8_TASK_ROUTE_MISSING_ITEM_STATUS_BRIDGE = 'Task route preserves missing_item/blocking_missing_item status and description bridge for LeadDetail Braki UI';
+const STAGE232I4_R16_TASK_ROUTE_STATUS_DOMAIN_SAFE = 'Task route stores missing items with DB-safe status while preserving missing/blocking status in the application contract';
 void STAGE232A_R8_TASK_ROUTE_MISSING_ITEM_STATUS_BRIDGE;
+void STAGE232I4_R16_TASK_ROUTE_STATUS_DOMAIN_SAFE;
 void STAGE228R17_MISSING_ITEM_DELETE_CONTRACT;
 
 const TASK_LIST_SELECT_STAGE124D = [
@@ -75,6 +78,83 @@ function asText(value: unknown) {
   return String(value).trim();
 }
 
+function parseTaskRoutePayloadStage232I4R16(value: unknown): Record<string, unknown> {
+  if (value && typeof value === 'object' && !Array.isArray(value)) return value as Record<string, unknown>;
+  if (typeof value === 'string' && value.trim()) {
+    try {
+      const parsed = JSON.parse(value);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed as Record<string, unknown>;
+    } catch {
+      return {};
+    }
+  }
+  return {};
+}
+
+function readTaskRouteBooleanStage232I4R16(value: unknown, keys: string[]) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const record = value as Record<string, unknown>;
+  return keys.some((key) => {
+    const raw = record[key];
+    return raw === true || raw === 'true' || raw === 1 || raw === '1' || raw === 'yes';
+  });
+}
+
+function isMissingItemTaskStage232I4R16(body: Record<string, unknown> = {}, row: Record<string, unknown> = {}) {
+  const bodyPayload = parseTaskRoutePayloadStage232I4R16(body.payload);
+  const rowPayload = parseTaskRoutePayloadStage232I4R16(row.payload);
+  const values = [
+    body.type,
+    body.status,
+    body.recordType,
+    body.record_type,
+    body.kind,
+    bodyPayload.type,
+    bodyPayload.status,
+    bodyPayload.kind,
+    row.type,
+    row.status,
+    row.record_type,
+    row.recordType,
+    rowPayload.type,
+    rowPayload.status,
+    rowPayload.kind,
+  ].map((value) => asText(value).toLowerCase());
+  return values.some((value) => value.includes('missing') || value.includes('block'))
+    || readTaskRouteBooleanStage232I4R16(body, ['blocksProgress', 'blocks_progress'])
+    || readTaskRouteBooleanStage232I4R16(bodyPayload, ['blocksProgress', 'blocks_progress'])
+    || readTaskRouteBooleanStage232I4R16(row, ['blocksProgress', 'blocks_progress'])
+    || readTaskRouteBooleanStage232I4R16(rowPayload, ['blocksProgress', 'blocks_progress']);
+}
+
+function isBlockingMissingItemStage232I4R16(body: Record<string, unknown> = {}, row: Record<string, unknown> = {}) {
+  const bodyPayload = parseTaskRoutePayloadStage232I4R16(body.payload);
+  const rowPayload = parseTaskRoutePayloadStage232I4R16(row.payload);
+  const rawStatus = asText(body.status ?? row.status).toLowerCase();
+  const rawPriority = asText(body.priority ?? row.priority).toLowerCase();
+  return readTaskRouteBooleanStage232I4R16(body, ['blocksProgress', 'blocks_progress'])
+    || readTaskRouteBooleanStage232I4R16(bodyPayload, ['blocksProgress', 'blocks_progress'])
+    || readTaskRouteBooleanStage232I4R16(row, ['blocksProgress', 'blocks_progress'])
+    || readTaskRouteBooleanStage232I4R16(rowPayload, ['blocksProgress', 'blocks_progress'])
+    || rawStatus === 'blocking_missing_item'
+    || rawPriority === 'high';
+}
+
+function normalizeMissingItemDbStatusStage232I4R16(body: Record<string, unknown> = {}, row: Record<string, unknown> = {}) {
+  const rawStatus = asText(body.status ?? row.status).toLowerCase();
+  if (rawStatus === 'done' || rawStatus === 'completed' || rawStatus === 'complete' || rawStatus === 'resolved') {
+    return normalizeTaskStatus(rawStatus);
+  }
+  // work_items_status_domain_check accepts only the persisted task domain.
+  // missing_item/blocking_missing_item remain application-level meaning carried by type/priority/source.
+  return normalizeTaskStatus('todo');
+}
+
+function isClosedTaskRouteStatusStage232I4R16(value: unknown) {
+  return new Set(['done', 'completed', 'complete', 'finished', 'closed', 'archived', 'deleted', 'cancelled', 'canceled'])
+    .has(asText(value).toLowerCase());
+}
+
 function queryValue(req: any, name: string) {
   return asText(req?.query?.[name]);
 }
@@ -114,11 +194,15 @@ function normalizeTask(row: Record<string, unknown>) {
 
   const normalizedStatusStage232AR8 = String((normalized as any).status || row.status || 'todo');
 
+  const isMissingItemRowStage232I4R16 = isMissingItemTaskStage232I4R16({}, row);
+  const isClosedMissingItemRowStage232I4R16 = isClosedTaskRouteStatusStage232I4R16(rawStatusStage232AR8);
   const taskStatusStage232AR8 = rawStatusStage232AR8.includes('missing') || rawStatusStage232AR8.includes('block')
 
     ? rawStatusStage232AR8
 
-    : normalizedStatusStage232AR8;
+    : isMissingItemRowStage232I4R16 && !isClosedMissingItemRowStage232I4R16
+      ? (isBlockingMissingItemStage232I4R16({}, row) ? 'blocking_missing_item' : 'missing_item')
+      : normalizedStatusStage232AR8;
 
   return {
     ...normalized,
@@ -383,17 +467,22 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
 
       const existingTaskStage232T_R3 = await selectFirstAvailable([
         withWorkspaceFilter(
-          'work_items?select=id,scheduled_at,due_at,start_at,time,status,show_in_tasks,show_in_calendar&id=eq.' + encodeURIComponent(String(body.id)) + '&limit=1',
+          'work_items?select=id,scheduled_at,due_at,start_at,time,type,status,priority,show_in_tasks,show_in_calendar&id=eq.' + encodeURIComponent(String(body.id)) + '&limit=1',
           workspaceId,
         ),
       ]).catch(() => null);
       const existingTaskRowStage232T_R3 = Array.isArray(existingTaskStage232T_R3?.data)
         ? existingTaskStage232T_R3.data[0] as Record<string, unknown> | undefined
         : undefined;
+      const isMissingItemPatchStage232I4R16 = isMissingItemTaskStage232I4R16(body, existingTaskRowStage232T_R3 || {});
       const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
       if (body.title !== undefined) payload.title = body.title;
-      if (body.type !== undefined) payload.type = body.type;
-      if (body.status !== undefined) payload.status = body.status;
+      if (body.type !== undefined) payload.type = isMissingItemPatchStage232I4R16 ? 'missing_item' : body.type;
+      if (body.status !== undefined) {
+        payload.status = isMissingItemPatchStage232I4R16
+          ? normalizeMissingItemDbStatusStage232I4R16(body, existingTaskRowStage232T_R3 || {})
+          : normalizeTaskStatus(body.status);
+      }
       if (body.priority !== undefined) payload.priority = body.priority;
       if (body.date !== undefined) payload.scheduled_at = preserveTaskDatePatchTimeStage232T_R3(body.date, existingTaskRowStage232T_R3);
       if (body.scheduledAt !== undefined) payload.scheduled_at = body.scheduledAt ? normalizeCloseFlowDateTimeToUtcIso(body.scheduledAt) : null;
@@ -415,6 +504,7 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
       }
       if (shouldHideTaskFromCalendarStage229A(nextStatusForCalendarStage229A)) payload.show_in_calendar = false;
       if (shouldHideTaskFromTasksStage229A(nextStatusForCalendarStage229A)) payload.show_in_tasks = false;
+      if (isMissingItemPatchStage232I4R16) payload.show_in_calendar = false;
       if (shouldKeepCompletedLeadCalendarActionVisibleStage232T_R5(body)) {
         payload.show_in_calendar = true;
         payload.show_in_tasks = true;
@@ -549,6 +639,8 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
         ? normalizeCloseFlowDateTimeToUtcIso(String(body.date) + 'T09:00')
         : null;
     const taskRelationsStageFRT019 = await validateTaskRelationsStageFRT019(body, workspaceId);
+    const isMissingItemInsertStage232I4R16 = isMissingItemTaskStage232I4R16(body);
+    const isBlockingMissingItemInsertStage232I4R16 = isBlockingMissingItemStage232I4R16(body);
 
     const taskInsertBaseStageG14 = {
       workspace_id: workspaceId,
@@ -560,7 +652,7 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
       case_id: taskRelationsStageFRT019.caseId,
       client_id: taskRelationsStageFRT019.clientId,
       record_type: 'task',
-      type: body.type || 'task',
+      type: isMissingItemInsertStage232I4R16 ? 'missing_item' : (body.type || 'task'),
       title: body.title,
       description:
         body.description
@@ -570,15 +662,19 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
             : ''
         )
         || '',
-      status: body.status || 'todo',
-      priority: body.priority || 'medium',
+      status: isMissingItemInsertStage232I4R16
+        ? normalizeMissingItemDbStatusStage232I4R16(body)
+        : (body.status || 'todo'),
+      priority: isMissingItemInsertStage232I4R16 && isBlockingMissingItemInsertStage232I4R16
+        ? 'high'
+        : (body.priority || 'medium'),
       scheduled_at: scheduledAt,
       start_at: null,
       end_at: null,
       recurrence: body.recurrenceRule || 'none',
       reminder: body.reminderAt || 'none',
       show_in_tasks: true,
-      show_in_calendar: true,
+      show_in_calendar: isMissingItemInsertStage232I4R16 ? false : true,
       created_at: nowIso,
       updated_at: nowIso,
     };

@@ -45,6 +45,16 @@ test.before(async () => {
     fs.readFileSync(path.join(root, 'src/lib/calendar-timezone-contract.ts'), 'utf8'),
     path.join(tempRoot, 'lib/calendar-timezone-contract.js'),
   );
+  fs.writeFileSync(path.join(tempRoot, 'lib/domain-statuses.js'), `
+export function normalizeTaskStatus(value) {
+  const raw = String(value ?? '').trim().toLowerCase();
+  if (raw === 'done' || raw === 'completed' || raw === 'complete' || raw === 'resolved') return 'done';
+  if (raw === 'cancelled') return 'canceled';
+  if (raw === 'in_progress') return 'in_progress';
+  if (raw === 'scheduled') return 'scheduled';
+  return raw === 'todo' ? 'todo' : 'todo';
+}
+`);
 
   fs.writeFileSync(path.join(tempRoot, 'lib/data-contract.js'), `
 export function normalizeTaskListContract(rows) {
@@ -63,6 +73,16 @@ export function normalizeTaskListContract(rows) {
 export async function resolveRequestWorkspaceId() { return 'workspace-runtime-017'; }
 export async function requireRequestIdentity() { return { userId: globalThis.__fortecaFrt017.userId }; }
 export function withWorkspaceFilter(value) { return value; }
+export async function requireScopedRow(table) {
+  if (table === 'leads') return { linked_case_id: 'case-runtime-017', client_id: 'client-runtime-017' };
+  if (table === 'cases') return { lead_id: 'lead-runtime-017', client_id: 'client-runtime-017' };
+  return {};
+}
+`);
+  fs.writeFileSync(path.join(tempRoot, 'server/_supabase-auth.js'), `
+export class RequestAuthError extends Error {
+  constructor(status, code) { super(code); this.status = status; this.code = code; }
+}
 `);
   fs.writeFileSync(path.join(tempRoot, 'server/google-calendar-mutation-sync-state-marker.js'), `
 export async function markGoogleCalendarMutationSyncState() { return { found: true }; }
@@ -120,7 +140,7 @@ function onlyWorkItemInsert(result) {
   return result.capture.inserts[0].rows[0];
 }
 
-test('FRT-017 POST persists missing_item relation, status fields and description in work_items', { concurrency: false }, async () => {
+test('FRT-017 POST persists missing_item relation, DB-safe status fields and description in work_items', { concurrency: false }, async () => {
   const input = {
     title: 'Brak umowy podpisanej przez klienta',
     type: 'missing_item',
@@ -143,14 +163,14 @@ test('FRT-017 POST persists missing_item relation, status fields and description
   assert.equal(inserted.case_id, input.caseId);
   assert.equal(inserted.client_id, input.clientId);
   assert.equal(inserted.type, 'missing_item');
-  assert.equal(inserted.status, 'missing_item');
+  assert.equal(inserted.status, 'todo');
   assert.equal(inserted.priority, 'high');
   assert.equal(inserted.scheduled_at, new Date(input.scheduledAt).toISOString());
   assert.equal(inserted.description, input.description);
   assert.equal(result.capture.updates.length, 0, 'missing_item must not promote Lead next action');
 });
 
-test('FRT-017 POST persists blocking_missing_item without duplicate insert and normalizes response', { concurrency: false }, async () => {
+test('FRT-017 POST maps blocking_missing_item to a DB-safe row without duplicate insert and normalizes response', { concurrency: false }, async () => {
   const input = {
     title: 'Brak decyzji zakresowej',
     type: 'missing_item',
@@ -168,15 +188,15 @@ test('FRT-017 POST persists blocking_missing_item without duplicate insert and n
   assert.equal(result.statusCode, 200);
   assert.equal(inserted.workspace_id, 'workspace-runtime-017');
   assert.equal(inserted.lead_id, input.leadId);
-  assert.equal(inserted.status, 'blocking_missing_item');
-  assert.equal(inserted.priority, input.priority);
+  assert.equal(inserted.status, 'todo');
+  assert.equal(inserted.priority, 'high');
   assert.equal(inserted.scheduled_at, new Date(input.scheduledAt).toISOString());
   assert.equal(inserted.description, input.description);
   assert.equal(response.id, 'work-item-runtime-017');
   assert.equal(response.workspaceId, 'workspace-runtime-017');
   assert.equal(response.leadId, input.leadId);
   assert.equal(response.status, 'blocking_missing_item');
-  assert.equal(response.priority, input.priority);
+  assert.equal(response.priority, 'high');
   assert.equal(response.scheduledAt, new Date(input.scheduledAt).toISOString());
   assert.equal(response.dueAt, new Date(input.scheduledAt).toISOString());
   assert.equal(response.date, input.scheduledAt.slice(0, 10));
