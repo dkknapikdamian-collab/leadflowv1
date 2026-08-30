@@ -1,6 +1,6 @@
 # FRT-039 — CASE CHECKLISTS
 
-CONTRACT_STATUS: ACTIVE
+CONTRACT_STATUS: LOCKED
 STAGE_ID: FRT-039
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/039_case_detail_checklists.webp
 TARGET_ROUTE: /cases/:caseId

@@ -1,58 +1,58 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 126,
+  "state_revision": 127,
   "last_accepted": {
+    "id": "FRT-039",
+    "status": "PASS",
+    "commit_sha": "949b9e63",
+    "evidence": "_project/runs/forteca-clean/FRT-039_RECEIPT.json; audit/evidence/FRT-039_BROWSER_PROOF.json; audit/evidence/FRT-039_GUARDIAN_AUDIT_SUMMARY.json; Codex parent acceptance after contract/source/reference review, focused Case Checklist tests, typecheck/build/Guardian proof and authenticated production Checklisty/dialog proof; preview and production deployments READY with separate login boundary documented; independent reviewer PASS is not claimed"
+  },
+  "previous_accepted": {
     "id": "FRT-038",
     "status": "PASS",
     "commit_sha": "3a25e27cd25a220dfb4378811df729f074a614e4",
     "evidence": "_project/runs/forteca-clean/FRT-038_RECEIPT.json; audit/evidence/FRT-038_BROWSER_PROOF.json; audit/evidence/FRT-038_GUARDIAN_AUDIT_SUMMARY.json; Codex parent acceptance after contract/source/reference review, focused Case Service tests, typecheck/build/Guardian proof and authenticated production Obsługa/action proof; preview and production deployments READY with separate login boundary documented; independent reviewer PASS is not claimed"
   },
-  "previous_accepted": {
-    "id": "FRT-037",
-    "status": "PASS",
-    "commit_sha": "9a41a51b2c446cc1d7e329460724de11b85677fb",
-    "evidence": "_project/runs/forteca-clean/FRT-037_RECEIPT.json; audit/evidence/FRT-037_BROWSER_PROOF.json; audit/evidence/FRT-037_GUARDIAN_AUDIT_SUMMARY.json; Codex parent acceptance after contract/source/reference review, focused case-edit tests, typecheck/build/Guardian proof and authenticated production update/refresh/zero-value evidence; preview and production deployments READY with separate login boundary documented; independent reviewer PASS is not claimed"
-  },
-  "current_stage": "FRT-039",
-  "current_contract_path": "_project/contracts/forteca-clean/FRT-039_CASE_CHECKLISTS.md",
+  "current_stage": "FRT-040",
+  "current_contract_path": "_project/contracts/forteca-clean/FRT-040_CASE_HISTORY.md",
   "current_status": "ACTIVE",
-  "last_accepted_stage": "FRT-038",
-  "last_accepted_commit": "3a25e27cd25a220dfb4378811df729f074a614e4",
-  "next_stage": "FRT-040",
+  "last_accepted_stage": "FRT-039",
+  "last_accepted_commit": "949b9e63",
+  "next_stage": "FRT-041",
   "branch": "codex/forteca-ui-001-040-clean",
-  "remote_head": "3a25e27cd25a220dfb4378811df729f074a614e4",
-  "next_action": "Implement and prove FRT-039: Case Detail Checklisty real data, progress and item actions; then accept FRT-039 and activate FRT-040.",
+  "remote_head": "949b9e63",
+  "next_action": "Implement and prove FRT-040: Case Detail Historia real activity timeline, semantic event styling and safe related actions; then accept FRT-040 and activate FRT-041.",
   "last_progress": {
-    "stage_id": "FRT-038",
-    "status": "PASS_ACCEPTED_CASE_SERVICE_PRODUCTION_VERIFIED",
-    "evidence": "_project/runs/forteca-clean/FRT-038_RECEIPT.json; audit/evidence/FRT-038_BROWSER_PROOF.json; audit/evidence/FRT-038_GUARDIAN_AUDIT_SUMMARY.json",
-    "commit_sha": "3a25e27cd25a220dfb4378811df729f074a614e4",
-    "browser_blocker": "NONE; authenticated production showed the real Case Service overview, canonical tabs, shared task dialog open/cancel, existing contextual actions, finance rail and retained synthetic fixture boundary. Preview and production deployments are READY; the preview login boundary is documented and no unauthenticated preview mutation proof is claimed.",
-    "created_at": "2026-08-30T23:30:00+02:00",
+    "stage_id": "FRT-039",
+    "status": "PASS_ACCEPTED_CASE_CHECKLISTS_PRODUCTION_VERIFIED",
+    "evidence": "_project/runs/forteca-clean/FRT-039_RECEIPT.json; audit/evidence/FRT-039_BROWSER_PROOF.json; audit/evidence/FRT-039_GUARDIAN_AUDIT_SUMMARY.json",
+    "commit_sha": "949b9e63",
+    "browser_blocker": "NONE; authenticated production showed the real Case Checklist workspace, canonical tabs, data-derived case_items empty state, Polish checklist dialog open/cancel and retained synthetic fixture boundary. Preview and production deployments are READY; the preview login boundary is documented and no unauthenticated preview mutation proof is claimed.",
+    "created_at": "2026-08-30T23:45:00+02:00",
     "updated_at": "2026-08-30"
   },
   "current_workflow": {
-    "id": "FRT-039",
+    "id": "FRT-040",
     "kind": "TECHNICAL_IMPLEMENTATION_STAGE",
-    "contract_path": "_project/contracts/forteca-clean/FRT-039_CASE_CHECKLISTS.md",
+    "contract_path": "_project/contracts/forteca-clean/FRT-040_CASE_HISTORY.md",
     "status": "ACTIVE",
-    "base_sha": "3a25e27cd25a220dfb4378811df729f074a614e4",
+    "base_sha": "949b9e63",
     "base_branch": "codex/forteca-ui-001-040-clean",
     "target_branch": "codex/forteca-ui-001-040-clean",
     "blocker": null,
     "ssot_open_findings": 0,
     "active_stage_count": 1,
-    "terminal_audit": "FRT_030_PASS_ACCEPTED_BROWSER_CRUD_PRODUCTION_VERIFIED; FRT_031_PASS_ACCEPTED_RELATION_CREATE_NAVIGATION_VERIFIED; FRT_032_PASS_ACCEPTED_CASES_ALL_LIST_SEARCH_FILTER_NAVIGATION_VERIFIED; FRT_033_PASS_ACCEPTED_WAITING_BLOCKED_SEPARATION_VERIFIED; FRT_034_PASS_ACCEPTED_BLOCKER_LIFECYCLE_SQL_SAFE_RESOLUTION_VERIFIED; FRT_035_PASS_ACCEPTED_READY_START_LIFECYCLE_VERIFIED; FRT_036_PASS_ACCEPTED_CASE_ADD_PRODUCTION_VERIFIED; FRT_037_PASS_ACCEPTED_CASE_EDIT_PRODUCTION_VERIFIED; FRT_038_PASS_ACCEPTED_CASE_SERVICE_PRODUCTION_VERIFIED; FRT_039_ACTIVE",
+    "terminal_audit": "FRT_030_PASS_ACCEPTED_BROWSER_CRUD_PRODUCTION_VERIFIED; FRT_031_PASS_ACCEPTED_RELATION_CREATE_NAVIGATION_VERIFIED; FRT_032_PASS_ACCEPTED_CASES_ALL_LIST_SEARCH_FILTER_NAVIGATION_VERIFIED; FRT_033_PASS_ACCEPTED_WAITING_BLOCKED_SEPARATION_VERIFIED; FRT_034_PASS_ACCEPTED_BLOCKER_LIFECYCLE_SQL_SAFE_RESOLUTION_VERIFIED; FRT_035_PASS_ACCEPTED_READY_START_LIFECYCLE_VERIFIED; FRT_036_PASS_ACCEPTED_CASE_ADD_PRODUCTION_VERIFIED; FRT_037_PASS_ACCEPTED_CASE_EDIT_PRODUCTION_VERIFIED; FRT_038_PASS_ACCEPTED_CASE_SERVICE_PRODUCTION_VERIFIED; FRT_039_PASS_ACCEPTED_CASE_CHECKLISTS_PRODUCTION_VERIFIED; FRT_040_ACTIVE",
     "guardian_status": "INHERITED_PLUGIN_AUDIT_AND_REPO_BASELINE_ZERO_SCOPED_BLOCKERS",
-    "acceptance_boundary": "Codex is the acceptance authority under the owner directive; FRT-039 requires the real Case Detail Checklisty tab, scoped checklist data, progress, item actions, focused tests, Guardian, browser/runtime evidence and receipt before acceptance"
+    "acceptance_boundary": "Codex is the acceptance authority under the owner directive; FRT-040 requires the real Case Detail Historia timeline, scoped activity data, semantic event styling, safe related actions, focused tests, Guardian, browser/runtime evidence and receipt before acceptance"
   },
   "next_workflow": {
-    "id": "FRT-040",
-    "contract_path": "_project/contracts/forteca-clean/FRT-040_CASE_HISTORY.md",
+    "id": "FRT-041",
+    "contract_path": "_project/contracts/forteca-clean/FRT-041_FINAL_CONVERGENCE.md",
     "status": "LOCKED",
-    "activation": "CODEX_AFTER_FRT_038_ACCEPTANCE",
-    "reason": "FRT-039 is the only active stage; FRT-040 remains locked until the real Case Detail Checklisty data, progress and item actions are accepted."
+    "activation": "CODEX_AFTER_FRT_040_ACCEPTANCE",
+    "reason": "FRT-040 is the only active stage; FRT-041 remains locked until the real Case Detail Historia timeline, semantic event styling and safe related actions are accepted."
   },
   "forteca_program": {
     "program_id": "FORTECA_CALM_LIGHT_001_040",
@@ -100,9 +100,10 @@
     "stage_036_status": "PASS",
     "stage_037_status": "PASS",
     "stage_038_status": "PASS",
-    "active_stage": "FRT-039",
-    "future_stages": "FRT-039 ACTIVE; FRT-040..FRT-041 LOCKED",
-    "accepted_receipts": ["FRT-000", "FRT-001", "FRT-002", "FRT-003", "FRT-004", "FRT-005", "FRT-006", "FRT-007", "FRT-008", "FRT-009", "FRT-010", "FRT-011", "FRT-012", "FRT-013", "FRT-014", "FRT-015", "FRT-016", "FRT-017", "FRT-018", "FRT-019", "FRT-020", "FRT-021", "FRT-022", "FRT-023", "FRT-024", "FRT-025", "FRT-026", "FRT-027", "FRT-028", "FRT-029", "FRT-030", "FRT-031", "FRT-032", "FRT-033", "FRT-034", "FRT-035", "FRT-036", "FRT-037", "FRT-038"],
+    "stage_039_status": "PASS",
+    "active_stage": "FRT-040",
+    "future_stages": "FRT-040 ACTIVE; FRT-041 LOCKED",
+    "accepted_receipts": ["FRT-000", "FRT-001", "FRT-002", "FRT-003", "FRT-004", "FRT-005", "FRT-006", "FRT-007", "FRT-008", "FRT-009", "FRT-010", "FRT-011", "FRT-012", "FRT-013", "FRT-014", "FRT-015", "FRT-016", "FRT-017", "FRT-018", "FRT-019", "FRT-020", "FRT-021", "FRT-022", "FRT-023", "FRT-024", "FRT-025", "FRT-026", "FRT-027", "FRT-028", "FRT-029", "FRT-030", "FRT-031", "FRT-032", "FRT-033", "FRT-034", "FRT-035", "FRT-036", "FRT-037", "FRT-038", "FRT-039"],
     "auth_required_for_frt_000": false,
     "future_receipts_precreated": false
   },
@@ -568,6 +569,13 @@
     "forteca:FRT-038:receipt@_project/runs/forteca-clean/FRT-038_RECEIPT.json:PASS:CODEX_PARENT acceptance authority",
     "forteca:FRT-038:tests@focused-3/3-tsc-build-diff-check-route-icon-color-typography-brand-source-of-truth-pass",
     "forteca:FRT-038:root-cause@real Case Service sources and mutations existed but the Obsługa tab lacked a clear summary/key-information/next-action/progress/contact hierarchy; repaired as one read-only CaseDetail projection",
-    "forteca:FRT-038:ssot@workspace-scoped API records are the only runtime state; CaseDetail derives the overview; existing dialogs/mutations remain action owners; tests, deployment and evidence are proof only; no duplicate runtime store introduced"
+    "forteca:FRT-038:ssot@workspace-scoped API records are the only runtime state; CaseDetail derives the overview; existing dialogs/mutations remain action owners; tests, deployment and evidence are proof only; no duplicate runtime store introduced",
+    "forteca:FRT-039:implementation@949b9e63",
+    "forteca:FRT-039:browser-proof@audit/evidence/FRT-039_BROWSER_PROOF.json:PASS:authenticated production Checklisty workspace, canonical tabs, data-derived case_items empty state, Polish checklist dialog open/cancel and retained fixture boundary",
+    "forteca:FRT-039:guardian-summary@audit/evidence/FRT-039_GUARDIAN_AUDIT_SUMMARY.json:plugin-first partial with zero scoped blockers; known baseline findings retained",
+    "forteca:FRT-039:receipt@_project/runs/forteca-clean/FRT-039_RECEIPT.json:PASS:CODEX_PARENT acceptance authority",
+    "forteca:FRT-039:tests@focused-4/4-regressions-15/15-tsc-build-diff-check-route-icon-color-typography-brand-source-of-truth-pass",
+    "forteca:FRT-039:root-cause@real case_items and scoped actions existed but the Checklisty consumer lacked a progress/risk/grouped-row/summary hierarchy; repaired as one derived CaseDetail projection",
+    "forteca:FRT-039:ssot@workspace-scoped case_items are the only checklist runtime state; CaseDetail derives the workspace and reuses existing mutations; tests, deployment and evidence are proof only; no duplicate runtime store introduced"
   ]
 }

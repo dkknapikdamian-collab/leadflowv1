@@ -1,0 +1,64 @@
+{
+  "schema_version": 2,
+  "evidence_type": "FORTECA_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-039",
+  "mode": "AUDIT_ONLY",
+  "plugin_first": {
+    "command": "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+    "mode": "AUDIT_ONLY",
+    "fileWrites": 0,
+    "selectedCapabilities": [
+      "repository-baseline"
+    ],
+    "selectedSkills": [
+      "ai-code-guardian",
+      "architecture-integrity"
+    ],
+    "coverageOutcome": "PARTIAL",
+    "receiptIds": [
+      "guardian-plugin-smoke-coverage",
+      "guardian-plugin-smoke-result"
+    ],
+    "blockers": 0
+  },
+  "repository_fallback": {
+    "status": "PARTIAL_WITH_ZERO_SCOPED_BLOCKERS",
+    "checks": {
+      "focused_stage_package": "PASS 4/4: active contract, canonical tabs, real case_items read model, derived checklist summary/grouping/actions and registered responsive owner",
+      "predecessor_and_visual_regressions": "PASS 15/15: FRT-036, FRT-037, FRT-038, FRT-039 and shared visual form regression tests after workflow lifecycle assertions were reconciled to the single authoritative state",
+      "typescript": "PASS",
+      "production_build": "PASS_WITH_KNOWN_WARNINGS",
+      "vercel_preview_deployment": "READY",
+      "vercel_production_deployment": "READY",
+      "guard:routes:canonical": "PASS",
+      "guard:ui:ssot-icons": "PASS",
+      "guard:ui:ssot-semantic-colors": "PASS",
+      "guard:ui:ssot-typography": "PASS",
+      "guard:ui:component-clones": "PASS",
+      "check:a18-branding-docs": "PASS",
+      "check:stage232c-clients-relation-tile-source-of-truth": "PASS",
+      "git_diff_check": "PASS",
+      "browser_proof": "PASS authenticated production Checklisty workspace, canonical tabs, real empty case_items state, Polish add dialog open/cancel and retained fixture boundary"
+    },
+    "scope_findings": [],
+    "out_of_scope_baseline_findings": [
+      "guard:ui:ssot-css-owners remains partial on the existing global-shell concern mismatch, nine existing forteca-* owner metadata gaps, UNCLASSIFIED_IMPORTANT=343 and SPECIFICITY_PATCH_IMPORTANT=1399; FRT-039 rules are inside the registered closeflow-rails-and-detail.css owner and use canonical VST variables.",
+      "guard:ui:patch-layers remains partial on the same four existing findings: Clients.tsx local NextActionIcon/stage-only usage, ClientCreateDialog.tsx direct lucide import and icon-registry.ts direct lucide import/stage usage; FRT-039 introduced no new patch-layer finding.",
+      "check:cf-runtime-00-source-truth remains partial because unrelated pre-existing generated documentation and dist-test-today-sections.cjs are dirty and outside the FRT-039 allowed write set.",
+      "Production build retains the existing supabase-fallback dynamic/static import warning, large chunk warning and npm allow-scripts informational warnings."
+    ]
+  },
+  "repository": {
+    "branch": "codex/forteca-ui-001-040-clean",
+    "implementation_commit": "949b9e63",
+    "remote_head": "949b9e63"
+  },
+  "root_cause_and_repair": {
+    "root_cause": "CaseDetail loaded real case_items and retained scoped actions, but the Checklisty consumer rendered only a minimal list/empty state and did not expose a coherent progress, risk, grouped-row or summary projection.",
+    "repair": "A single memoized Checklisty projection was added to CaseDetail and rendered through the registered detail/rail owner. It reuses canonical status/type sources and existing scoped mutation/activity/refresh owners.",
+    "source_of_truth": "Workspace-scoped case_items remain the only checklist runtime state. CaseDetail is a transient read model and action orchestrator; tests, deployment and evidence only prove that same state."
+  },
+  "interpretation": "Guardian plugin smoke and scoped repository checks completed with zero FRT-039 scoped blockers. Partial coverage is retained honestly for the known repository baseline, unrelated dirty generated artifacts and standard build warnings; none is a source-of-truth conflict or an FRT-039 acceptance blocker.",
+  "created_at": "2026-08-30",
+  "updated_at": "2026-08-30"
+}

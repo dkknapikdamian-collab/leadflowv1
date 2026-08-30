@@ -1,0 +1,91 @@
+{
+  "schema_version": 2,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-039",
+  "reference_file": "docs/ui/reference/forteca-calm-light/039_case_detail_checklists.webp",
+  "entry_url": "https://closeflowapp.vercel.app/cases/bf6172be-db8f-4128-8895-fd3acd4a9f05",
+  "preview_entry_url": "https://closedockapp-luwn1gpmy-dkknapikdamian-7019s-projects.vercel.app/cases/bf6172be-db8f-4128-8895-fd3acd4a9f05",
+  "runtime_url": "https://closeflowapp.vercel.app",
+  "route": "/cases/:caseId",
+  "state": "Case Detail — tab Checklisty with the real case_items read model, derived progress and existing item actions",
+  "live_runtime": true,
+  "authenticated_session_reused": true,
+  "status": "PASS",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "implementation_commits": [
+    "949b9e63"
+  ],
+  "current_runtime_commit": "949b9e63",
+  "remote_head_verified": "949b9e63",
+  "runtime_deployments": {
+    "preview": {
+      "id": "dpl_EkVhTHvmZ1isqDJBdTctcg9eNMV3",
+      "url": "https://closedockapp-luwn1gpmy-dkknapikdamian-7019s-projects.vercel.app",
+      "status": "READY",
+      "target": null,
+      "runtime_code_commit": "949b9e63"
+    },
+    "production": {
+      "id": "dpl_DBF7KUv8S9pmRcxzuDknNGJZmsNk",
+      "url": "https://closedockapp-h8crgr0jh-dkknapikdamian-7019s-projects.vercel.app",
+      "alias": "https://closeflowapp.vercel.app",
+      "status": "READY",
+      "target": "production",
+      "runtime_code_commit": "949b9e63"
+    }
+  },
+  "interaction_proof": {
+    "authenticated_shell_and_route": {
+      "status": "PASS",
+      "result": "Production opened the CloseFlow shell on /cases/:caseId in the authenticated workspace. The retained synthetic case rendered without Forteca or deployment-host copy in the user-facing application shell."
+    },
+    "canonical_tabs": {
+      "status": "PASS",
+      "result": "The live detail showed exactly the canonical tabs Obsługa, Checklisty and Historia. Checklisty was selected and its counter remained data-derived."
+    },
+    "checklist_workspace": {
+      "status": "PASS",
+      "result": "The live Checklisty tab showed Checklisty i braki, Kompletność, Blokady, Następny ruch, grouped element space and the internal Podsumowanie checklisty rail. The retained fixture had zero real case_items, so the visible 0/0 state and empty-state copy came from the loaded case_items result rather than a placeholder fixture."
+    },
+    "derived_summary_and_actions": {
+      "status": "PASS",
+      "result": "Summary values were derived from the loaded case_items and existing CaseDetail projections. Dodaj pozycję opened the existing Polish Dodaj brak dialog, and Anuluj closed it without writing."
+    },
+    "responsive_owner": {
+      "status": "PASS",
+      "result": "The registered detail/rail owner contains the bounded FRT-039 checklist workspace rules, responsive <=900px and <=600px layouts, canonical VST variables and no new hard-coded color or !important patch."
+    },
+    "safe_fixture_boundary": {
+      "status": "PASS",
+      "result": "The retained synthetic case bf6172be-db8f-4128-8895-fd3acd4a9f05 was read only for this proof; opening and cancelling the checklist dialog left the case and related records unchanged."
+    },
+    "preview_boundary": {
+      "status": "DOCUMENTED",
+      "result": "Preview is READY and built the same implementation commit. The in-app authenticated session is scoped to the production alias, so preview showed its separate login boundary and no unauthenticated preview write proof is claimed."
+    }
+  },
+  "root_cause_proof": {
+    "status": "PASS",
+    "finding": "The Checklisty tab already loaded real case_items and exposed legacy actions, but its rendered surface was only a sparse empty/list state without the reference-aligned progress, risk, grouped-row and summary hierarchy.",
+    "repair": "CaseDetail now derives the checklist summary, groups, status counts, deadlines and blockers from the existing case_items read model and reuses the existing scoped insert/update/activity-refresh paths for item actions."
+  },
+  "source_of_truth": {
+    "runtime_state_owner": "Workspace-scoped records returned by /api/case-items and the existing CaseDetail case/task/event/activity projections",
+    "checklist_projection_owner": "src/pages/CaseDetail.tsx checklistSummary and Checklisty tab consumer",
+    "status_source_owner": "src/lib/source-of-truth/case-options.ts consumed through the existing CaseDetail status-label/config paths",
+    "mutation_owner": "Existing scoped checklist insert/update handlers, recordActivity and refresh paths used by CaseDetail",
+    "visual_owner": "src/styles/owners/closeflow-rails-and-detail.css for the bounded FRT-039 checklist workspace",
+    "canonical_tabs_owner": "Existing CaseDetail tab state with Obsługa/Checklisty/Historia only",
+    "activity_tests_and_evidence_are_not_runtime_state": true,
+    "duplicate_runtime_state_store_introduced": false
+  },
+  "safety_proof": {
+    "synthetic_data_only": true,
+    "no_secrets_or_personal_data_recorded": true,
+    "real_workspace_scoped_read": true,
+    "retained_fixture": "bf6172be-db8f-4128-8895-fd3acd4a9f05",
+    "no_raw_browser_storage_or_cookies_read": true
+  },
+  "verified_at": "2026-08-30",
+  "next_action": "Accept FRT-039 and activate FRT-040 Case History."
+}

@@ -1,0 +1,67 @@
+{
+  "schema_version": 2,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-039",
+  "reference_file": "docs/ui/reference/forteca-calm-light/039_case_detail_checklists.webp",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_PARENT",
+  "acceptance_basis": {
+    "directive_interpretation": "The owner directive makes Codex the acceptance authority for this technical stage; runtime, current code, tests and deployment evidence are authoritative, while lower-authority stale findings are recorded and reconciled.",
+    "root_cause": "The real case_items source and scoped actions existed, but the Checklisty consumer lacked a reference-aligned progress, risk, grouped-row and summary hierarchy.",
+    "repair": "CaseDetail now presents one derived Checklisty workspace from the loaded case_items state, uses canonical status/type sources, preserves existing scoped item mutations and keeps the registered detail/rail owner as the visual source.",
+    "review_status": "Parent reviewed the active contract, reference/source chain, one-source-of-truth boundary, focused tests, typecheck/build, Guardian smoke, exact preview/production deployments and authenticated production Checklisty/dialog proof. Independent reviewer PASS is not claimed."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "src/pages/CaseDetail.tsx",
+    "src/styles/owners/closeflow-rails-and-detail.css",
+    "tests/forteca-frt-039-case-checklists.test.cjs",
+    "package.json",
+    "audit/evidence/FRT-039_BROWSER_PROOF.json",
+    "audit/evidence/FRT-039_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/WORKFLOW_STATE.json",
+    "_project/contracts/forteca-clean/FRT-039_CASE_CHECKLISTS.md",
+    "_project/contracts/forteca-clean/FRT-040_CASE_HISTORY.md",
+    "_project/runs/forteca-clean/FRT-039_RECEIPT.json"
+  ],
+  "verification": {
+    "focused_tests": "PASS 4/4: FRT-039 lifecycle, real case_items read model, canonical status/action ownership and registered checklist owner",
+    "regressions": "PASS 15/15: FRT-036, FRT-037, FRT-038, FRT-039 and shared visual form regressions; lifecycle assertions follow the authoritative accepted-receipt state",
+    "typecheck": "PASS",
+    "build": "PASS locally from the actual worktree and on Vercel with known non-blocking dynamic/static import, large chunk and npm allow-scripts warnings",
+    "guards": "Route/icon/semantic color/typography/component-clone/branding/relation guards PASS; Guardian partial with zero scoped blockers; CSS-owner and patch-layer findings are known baseline; unrelated dirty generated artifacts remain outside scope",
+    "browser_proof": "PASS authenticated production Checklisty workspace, exact canonical tabs, data-derived empty case_items summary, shared checklist dialog open/cancel and retained synthetic fixture boundary; preview READY with separate login boundary documented",
+    "remote_head": "949b9e63"
+  },
+  "browser_proof": "audit/evidence/FRT-039_BROWSER_PROOF.json",
+  "guardian": "audit/evidence/FRT-039_GUARDIAN_AUDIT_SUMMARY.json",
+  "implementation_commits": [
+    "949b9e63"
+  ],
+  "runtime_deployments": {
+    "preview": "dpl_EkVhTHvmZ1isqDJBdTctcg9eNMV3",
+    "production": "dpl_DBF7KUv8S9pmRcxzuDknNGJZmsNk",
+    "production_alias": "https://closeflowapp.vercel.app"
+  },
+  "remote_branch_sha_verified": true,
+  "next_stage": "FRT-040",
+  "rollback": "Revert 949b9e63; the stage is isolated to the CaseDetail checklist projection, the registered detail/rail owner, focused tests and stage evidence.",
+  "source_of_truth": {
+    "runtime_state_owner": "Workspace-scoped case_items records consumed by CaseDetail",
+    "checklist_read_model_owner": "src/pages/CaseDetail.tsx checklistSummary and Checklisty tab",
+    "status_and_type_owners": "src/lib/source-of-truth/case-options.ts and existing CaseDetail/config facades",
+    "action_mutation_owners": "Existing scoped checklist insert/update/activity/refresh paths",
+    "visual_owner": "src/styles/owners/closeflow-rails-and-detail.css",
+    "canonical_tab_owner": "CaseDetail tab state with Obsługa/Checklisty/Historia",
+    "derived_values_are_projections": true,
+    "evidence_is_documentation_only": true,
+    "duplicate_runtime_state_store_introduced": false
+  },
+  "task_economy": {
+    "marketplace_router_startup": "USED",
+    "efficiency_planning": "APPLIED",
+    "optional_delegation": "SKIPPED",
+    "delegation_skip_reason": "Authenticated production proof required the existing local session and one write owner."
+  }
+}
