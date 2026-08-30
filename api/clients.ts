@@ -201,6 +201,9 @@ async function updateWithSchemaFallback(id: string, workspaceId: string, payload
 }
 
 export default async function handler(req: any, res: any) {
+  // Client responses are workspace-scoped and must never be revalidated or
+  // replayed by a shared/browser cache as another request context changes.
+  res.setHeader('Cache-Control', 'private, no-store, no-cache, must-revalidate, max-age=0');
   try {
     if (req.method === 'GET') {
       const workspaceId = await resolveRequestWorkspaceId(req);

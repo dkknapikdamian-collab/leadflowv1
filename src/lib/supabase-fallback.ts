@@ -360,7 +360,15 @@ async function callApi<T>(path: string, init?: RequestInit): Promise<T> {
   }
 
   const requestPromise = (async () => {
-    const response = await fetch(path, { ...init, headers: { ...(await getAuthHeaders()), 'Content-Type': 'application/json', ...(init?.headers || {}) } });
+    const requestInit: RequestInit = {
+      ...init,
+      headers: { ...(await getAuthHeaders()), 'Content-Type': 'application/json', ...(init?.headers || {}) },
+    };
+    // API reads are already deduplicated by apiGetCache. Do not let the browser
+    // or an intermediary cache a workspace-scoped response and replay a stale
+    // body (or an empty 304) after the auth/workspace context changes.
+    if (useCache) requestInit.cache = 'no-store';
+    const response = await fetch(path, requestInit);
     const text = await response.text();
     let data: unknown = null;
     if (text) {
