@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-30T14:36:00Z",
+  "workflow": {
+    "stage": "FRT-030",
+    "receipt_role": "EVIDENCE_ONLY_NOT_WORKFLOW_SOT",
+    "acceptance_status": "IMPLEMENTED_NOT_ACCEPTED",
+    "acceptance_note": "Production runtime defect was repaired and verified; canonical workflow acceptance remains owner-controlled and no successor stage was activated."
+  },
+  "implementation": {
+    "branch": "codex/forteca-ui-001-040-clean",
+    "commit_sha": "f06f09ed97c0cafc8401a273b9eb44a579e74b22",
+    "remote_branch_sha_verified": true,
+    "rollback": "git revert f06f09ed97c0cafc8401a273b9eb44a579e74b22"
+  },
+  "root_cause": {
+    "evidence": "Authenticated production activity requests returned AUTH_ACTOR_REQUIRED while the client and workspace reads remained available.",
+    "cause": "The verified Supabase /auth/v1/user response exposes the canonical account identifier as id, but the shared request context only read legacy user_id/sub aliases.",
+    "risk": "Operator activity reads and writes that require a verified actor could fail or hide activity data despite a valid authenticated session."
+  },
+  "changed_paths": [
+    {
+      "path": "src/server/_supabase-auth.ts",
+      "change": "The verified request context accepts the canonical Supabase user id while preserving legacy aliases."
+    },
+    {
+      "path": "tests/forteca-frt-030-supabase-auth-context-runtime.test.ts",
+      "change": "Runtime regression coverage uses the canonical Supabase /auth/v1/user response shape."
+    },
+    {
+      "path": "scripts/check-a26-activities-ai-drafts-supabase.cjs",
+      "change": "The A26 guard follows the consolidated activities handler, route, scoped delete contract and actual migration filename."
+    }
+  ],
+  "verification": {
+    "targeted_tests": "PASS 31/31 including canonical auth context, FRT-015 activity privacy, FRT-026 detail, FRT-029 client add, FRT-030 client edit and HTTP cache regressions",
+    "typecheck": "PASS (npx.cmd tsc --noEmit)",
+    "production_build": "PASS locally and on Vercel; existing chunk-size/dynamic-import and npm allow-scripts warnings remain non-blocking",
+    "guards": "PASS A22 Supabase Auth/RLS/workspace guard; PASS A26 activities/AI drafts Supabase guard",
+    "diff_check": "PASS; only existing line-ending warnings on untouched generated files and the changed guard/source were reported",
+    "remote_head_verified": true
+  },
+  "browser_proof": {
+    "provider": "in-app browser",
+    "production_origin": "https://closeflowapp.vercel.app",
+    "authenticated_session_reused": true,
+    "synthetic_data_only": true,
+    "journey": [
+      "opened the production activity screen",
+      "verified no login, not-found or activity API error state",
+      "opened the production clients screen",
+      "verified no login/not-found state and the archived synthetic client stayed absent"
+    ],
+    "result": "PASS after the final production deployment"
+  },
+  "vercel": {
+    "project": "closedockapp",
+    "preview_deployment_id": "dpl_5ARktxx68v2wfTsompK4kVdzo6B3",
+    "preview_status": "READY",
+    "production_deployment_id": "dpl_2Z33GUNVMF47ykodeSZgLPiqnaHs",
+    "production_status": "READY",
+    "production_commit_sha": "f06f09ed97c0cafc8401a273b9eb44a579e74b22",
+    "production_alias": "https://closeflowapp.vercel.app",
+    "runtime_activity_401_after_final_deploy": "NONE_FOUND",
+    "runtime_errors_after_final_deploy": "NONE_FOUND"
+  },
+  "data_and_security": {
+    "sql_migration_performed": false,
+    "database_mutations": "Only the authorized synthetic production client test record was created, edited and archived; no schema mutation was needed.",
+    "secrets_or_personal_data_recorded": false
+  },
+  "task_economy": {
+    "marketplace_router_startup": "USED",
+    "efficiency_planning": "APPLIED",
+    "optional_delegation": "SKIPPED",
+    "delegation_skip_reason": "Authenticated production verification required the existing local browser session and a single write owner; no available delegated provider could safely reproduce that state."
+  }
+}
