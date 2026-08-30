@@ -57,7 +57,7 @@ test('FRT-030 exposes one populated, controlled edit dialog with the reference c
     'label="Notatka"',
     'data-forteca-frt-030-action="cancel"',
     'data-forteca-frt-030-action="delete"',
-    'Usuń klienta',
+    'Zarchiwizuj klienta',
     'data-forteca-frt-030-action="submit"',
     'Zapisz zmiany',
   ]) has(editDialog, snippet, 'FRT-030 dialog contract');
@@ -97,7 +97,10 @@ test('FRT-030 preserves semantic source options and safe delete semantics', () =
   const api = read(apiPath);
   const button = read(buttonPath);
   has(dialog, 'CLIENT_SOURCE_OPTIONS', 'canonical client-source options');
-  has(dialog, 'window.confirm(\'Zarchiwizować tego klienta?\')', 'delete confirmation');
+  has(dialog, "import { ConfirmDialog } from './confirm-dialog';", 'shared archive confirmation dialog');
+  has(dialog, 'title="Czy na pewno zarchiwizować klienta?"', 'archive confirmation copy');
+  has(dialog, 'confirmLabel="Zarchiwizuj klienta"', 'archive confirmation action');
+  assert.doesNotMatch(dialog, /window\.confirm\(/, 'client archive must not use a browser-native confirmation');
   has(dialog, 'variant="destructive"', 'semantic destructive button');
   has(css, '[data-forteca-frt-030-root][data-closeflow-modal-visual-system="true"]', 'scoped FRT-030 style root');
   has(css, 'width: min(583px', 'reference modal width');

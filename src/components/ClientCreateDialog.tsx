@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import { EntityConflictDialog, type EntityConflictCandidate } from './EntityConflictDialog';
+import { ConfirmDialog } from './confirm-dialog';
 import { createStarterCaseForClient } from '../lib/cases/create-client-case';
 import {
   createClientInSupabase,
@@ -529,9 +530,11 @@ export function ClientEditDialog({ open, onOpenChange, client, onUpdated, onDele
   const { workspace, profile, hasAccess } = useWorkspace();
   const [form, setForm] = useState<ClientCreateFormState>(() => buildClientEditForm(client));
   const [saving, setSaving] = useState(false);
+  const [archiveConfirmOpen, setArchiveConfirmOpen] = useState(false);
 
   useEffect(() => {
     if (open) setForm(buildClientEditForm(client));
+    else setArchiveConfirmOpen(false);
   }, [client, open]);
 
   const ownerOptions = useMemo(() => {
@@ -634,11 +637,10 @@ export function ClientEditDialog({ open, onOpenChange, client, onUpdated, onDele
       toast.error('Usuwanie klienta nie jest dostępne w tym widoku.');
       return;
     }
-    if (typeof window !== 'undefined' && !window.confirm('Zarchiwizować tego klienta?')) return;
-
     try {
       setSaving(true);
       await onDeleted();
+      setArchiveConfirmOpen(false);
       onOpenChange(false);
       toast.success('Klient zarchiwizowany');
     } catch (error: any) {
@@ -649,7 +651,8 @@ export function ClientEditDialog({ open, onOpenChange, client, onUpdated, onDele
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className="forteca-frt-030-client-edit-dialog"
         data-forteca-frt-030-root="true"
@@ -762,8 +765,8 @@ export function ClientEditDialog({ open, onOpenChange, client, onUpdated, onDele
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={saving} data-forteca-frt-030-action="cancel">
               Anuluj
             </Button>
-            <Button type="button" variant="destructive" className="forteca-frt-030-delete-button" onClick={() => void handleDelete()} disabled={saving} data-forteca-frt-030-action="delete">
-              Usuń klienta
+            <Button type="button" variant="destructive" className="forteca-frt-030-delete-button" onClick={() => setArchiveConfirmOpen(true)} disabled={saving} data-forteca-frt-030-action="delete">
+              Zarchiwizuj klienta
             </Button>
             <Button type="submit" disabled={saving || !client?.id} data-forteca-frt-030-action="submit">
               {saving ? 'Zapisywanie...' : 'Zapisz zmiany'}
@@ -771,6 +774,19 @@ export function ClientEditDialog({ open, onOpenChange, client, onUpdated, onDele
           </DialogFooter>
         </form>
       </DialogContent>
-    </Dialog>
+      </Dialog>
+
+      <ConfirmDialog
+        open={archiveConfirmOpen}
+        onOpenChange={setArchiveConfirmOpen}
+        title="Czy na pewno zarchiwizować klienta?"
+        description="Klient zostanie przeniesiony do archiwum. Jego dane i powiązane rekordy pozostaną zachowane."
+        confirmLabel="Zarchiwizuj klienta"
+        cancelLabel="Anuluj"
+        confirmTone="destructive"
+        pending={saving}
+        onConfirm={handleDelete}
+      />
+    </>
   );
 }
