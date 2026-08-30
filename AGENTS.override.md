@@ -17,6 +17,8 @@
 - A primary writer subagent cannot accept its own work or start the next stage.
 - The Codex parent controller may independently accept a subagent implementation only after diff review, Visual SOT review, targeted tests, Guardian, browser/runtime proof and required documentation are complete.
 - After an explicit Codex parent PASS, automatic next-stage activation is allowed only when the workflow state and exact contract permit it; future stages remain locked until then.
+- Execution fails closed when the resolved workflow has any non-empty blocker, a `LOCKED` contract, an active-stage count other than one, or a mismatch between the workflow and exact contract.
+- Acceptance is not complete until the exact contract's full criteria are met, including its receipt, commit and remote-verification requirements; a status field alone never authorizes PASS or activation.
 
 ## Resolved execution mode
 
@@ -31,7 +33,7 @@
 Product-stage execution is allowed only when all of the following hold:
 
 1. the executor is on the approved Forteca working branch `codex/forteca-ui-001-040-clean`;
-2. `_project/WORKFLOW_STATE.json` resolves exactly one active contract with a non-blocked status;
+2. `_project/WORKFLOW_STATE.json` resolves exactly one active contract with no blocker, an executable non-`LOCKED` contract status and `active_stage_count=1`;
 3. the exact stage contract permits the requested scope;
 4. AI Code Guardian is loaded for code, security, bugfix and release work;
 5. named-path staging, scoped tests, guards, Visual SOT review, browser/runtime proof and exact evidence are complete;
