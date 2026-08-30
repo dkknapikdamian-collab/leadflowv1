@@ -1246,17 +1246,59 @@ function getCaseRecentMoveMeta(activity: CaseActivity) {
   if (eventType.includes('note')) return { label: 'Notatka', className: 'case-detail-recent-move-dot-note' };
   return { label: 'Ruch', className: 'case-detail-recent-move-dot-note' };
 }
+
+const CASE_CHECKLIST_COMPLETE_STATUSES = new Set(['accepted', 'approved', 'completed']);
+const CASE_CHECKLIST_REVIEW_STATUSES = new Set(['uploaded', 'submitted', 'sent']);
+const CASE_CHECKLIST_MISSING_STATUSES = new Set(['missing', 'rejected']);
+
+function getCaseItemStatusKey(status?: string) {
+  return String(status || '').trim().toLowerCase();
+}
+
+function isCaseChecklistItemComplete(item: CaseItem) {
+  return CASE_CHECKLIST_COMPLETE_STATUSES.has(getCaseItemStatusKey(item.status));
+}
+
+function isCaseChecklistItemInReview(item: CaseItem) {
+  return CASE_CHECKLIST_REVIEW_STATUSES.has(getCaseItemStatusKey(item.status));
+}
+
+function isCaseChecklistItemMissing(item: CaseItem) {
+  return CASE_CHECKLIST_MISSING_STATUSES.has(getCaseItemStatusKey(item.status));
+}
+
+function isCaseChecklistItemOverdue(item: CaseItem, now = Date.now()) {
+  const dueAt = toDate(item.dueDate)?.getTime();
+  return Boolean(dueAt && dueAt < now && !isCaseChecklistItemComplete(item));
+}
+
+function buildCaseChecklistGroups(items: CaseItem[]) {
+  const grouped = new Map<string, CaseItem[]>();
+  for (const item of sortCaseItems(items)) {
+    const key = getCaseItemStatusKey(item.type) || 'other';
+    const current = grouped.get(key) || [];
+    current.push(item);
+    grouped.set(key, current);
+  }
+
+  return Array.from(grouped, ([key, groupItems]) => ({
+    key,
+    label: key === 'other' ? 'Pozostałe' : getItemTypeLabel(key),
+    items: groupItems,
+  }));
+}
+
 function calculateCompletion(items: CaseItem[]) {
   if (items.length === 0) return 0;
-  const accepted = items.filter((item) => item.status === 'accepted').length;
-  return Math.round((accepted / items.length) * 100);
+  const complete = items.filter(isCaseChecklistItemComplete).length;
+  return Math.round((complete / items.length) * 100);
 }
 function resolveCaseStatusFromItems(items: CaseItem[], fallback = 'in_progress') {
   if (items.length === 0) return fallback;
-  const allAccepted = items.every((item) => item.status === 'accepted');
-  const hasBlocked = items.some((item) => item.isRequired && (item.status === 'missing' || item.status === 'rejected'));
-  const hasToApprove = items.some((item) => item.status === 'uploaded');
-  if (allAccepted) return 'ready_to_start';
+  const allComplete = items.every(isCaseChecklistItemComplete);
+  const hasBlocked = items.some((item) => item.isRequired && isCaseChecklistItemMissing(item));
+  const hasToApprove = items.some((item) => isCaseChecklistItemInReview(item));
+  if (allComplete) return 'ready_to_start';
   if (hasBlocked) return 'blocked';
   if (hasToApprove) return 'to_approve';
   return 'waiting_on_client';
@@ -2592,7 +2634,23 @@ export default function CaseDetail() {
   const plannedEvents = useMemo(() => events.filter((event) => !['done', 'completed', 'cancelled', 'canceled', 'archived', 'deleted'].includes(String(event.status || '').toLowerCase())), [events]);
   const missingItems = useMemo(() => items.filter((item) => item.status === 'missing'), [items]);
   const uploadedItems = useMemo(() => items.filter((item) => item.status === 'uploaded'), [items]);
-  const blockers = useMemo(() => items.filter((item) => item.isRequired && (item.status === 'missing' || item.status === 'rejected')), [items]);
+  const blockers = useMemo(() => items.filter((item) => item.isRequired && isCaseChecklistItemMissing(item)), [items]);
+  const checklistSummary = useMemo(() => {
+    const now = Date.now();
+    const completeCount = items.filter(isCaseChecklistItemComplete).length;
+    const reviewCount = items.filter(isCaseChecklistItemInReview).length;
+    const missingCount = items.filter(isCaseChecklistItemMissing).length;
+    const overdueCount = items.filter((item) => isCaseChecklistItemOverdue(item, now)).length;
+    return {
+      completeCount,
+      reviewCount,
+      missingCount,
+      overdueCount,
+      totalCount: items.length,
+      completionPercent,
+      groups: buildCaseChecklistGroups(items),
+    };
+  }, [completionPercent, items]);
   const effectiveStatus = useMemo(() => resolveCaseStatusFromItems(items, caseData?.status || 'in_progress'), [caseData?.status, items]);
   const isCaseClosedByStoredStatusStage231B0R7 = isClosedCaseStatus(caseData?.status);
   const isCaseClosedStage231B0R7 = isCaseClosedByStoredStatusStage231B0R7 || isClosedCaseStatus(effectiveStatus);
@@ -2872,9 +2930,18 @@ export default function CaseDetail() {
     if (!nextAction) {
       openCaseTaskDialog();
       return;
-      }
-      setCaseActionOpenGroup('next');
-    };
+    }
+    setCaseActionOpenGroup('next');
+  };
+
+  const handleCaseChecklistNextAction = () => {
+    if (!nextAction) {
+      openCaseTaskDialog();
+      return;
+    }
+    setActiveTab('service');
+    setCaseActionOpenGroup('next');
+  };
 
   const openCasePaymentDialog = (type: 'deposit' | 'partial') => {
     if (!guardCaseDetailWriteAccess('dodać płatności')) return;
@@ -4406,38 +4473,137 @@ async function handleConfirmDeleteCaseRecord() {
             ) : null}
 
             {activeTab === 'checklists' ? (
-              <section className="case-detail-section-card case-detail-stage220a10-tab-panel case-detail-stage220a10-checklist-panel" data-stage220a11-tab-content="checklists" data-stage220a10-tab-panel="checklists">
+              <section className="case-detail-section-card case-detail-stage220a10-tab-panel case-detail-stage220a10-checklist-panel case-checklist-workspace" data-stage220a11-tab-content="checklists" data-stage220a10-tab-panel="checklists" data-case-checklist-workspace="true">
                 <div className="case-detail-section-head">
                   <div>
+                    <p className="case-detail-eyebrow">Checklisty</p>
                     <h2>Checklisty i braki</h2>
                     <p>Dokumenty, decyzje, informacje i inne rzeczy potrzebne do pracy.</p>
                   </div>
-                  <Button type="button" onClick={() => setIsAddItemOpen(true)}>
+                  <Button type="button" onClick={() => setIsAddItemOpen(true)} data-case-checklist-add-item="true">
                     <Plus className="h-4 w-4" />
-                    Dodaj brak
+                    Dodaj pozycję
                   </Button>
                 </div>
-                <div className="case-detail-checklist-list">
-                  {items.length === 0 ? (
-                    <div className="case-detail-light-empty">Brak checklisty. Dodaj pierwszy wymagany element sprawy.</div>
-                  ) : (
-                    items.map((item) => (
-                      <article key={item.id} className="case-detail-checklist-row">
-                        <div>
-                          <span className="case-detail-kind-pill">{getItemTypeLabel(item.type)}</span>
-                          <h3>{item.title || 'Element sprawy'}</h3>
-                          <p>{item.description || 'Bez opisu'} · Termin: {formatDate(item.dueDate)}</p>
-                        </div>
-                        <span className={`case-detail-pill ${getStatusClass(item.status)}`}>{getItemStatusLabel(item.status)}</span>
-                        <div className="case-detail-row-actions">
-                          <button type="button" onClick={() => handleItemStatusChange(item, 'missing')}>Brak</button>
-                          <button type="button" onClick={() => handleItemStatusChange(item, 'uploaded')}>Wysłane</button>
-                          <button type="button" onClick={() => handleItemStatusChange(item, 'accepted')}>Akceptuj</button>
-                          <button type="button" onClick={() => handleItemStatusChange(item, 'rejected')}>Odrzuć</button>
-                        </div>
-                      </article>
-                    ))
-                  )}
+                <div className="case-checklist-summary-grid" data-case-checklist-summary="true">
+                  <article className="case-checklist-summary-card" data-case-checklist-summary-card="completion">
+                    <div className="case-checklist-summary-card-head">
+                      <div>
+                        <p className="case-detail-eyebrow">Postęp</p>
+                        <h3>Kompletność</h3>
+                      </div>
+                      <ListChecks className="case-checklist-summary-icon" aria-hidden="true" />
+                    </div>
+                    <strong className="case-checklist-summary-value">{checklistSummary.completionPercent}%</strong>
+                    <p className="case-checklist-summary-copy">{checklistSummary.completeCount} z {checklistSummary.totalCount} elementów gotowych</p>
+                    <div className="case-checklist-progress" role="progressbar" aria-label="Kompletność checklisty" aria-valuemin={0} aria-valuemax={100} aria-valuenow={checklistSummary.completionPercent}>
+                      <span data-case-checklist-progress-fill="true" style={{ width: `${checklistSummary.completionPercent}%` }} />
+                    </div>
+                  </article>
+                  <article className="case-checklist-summary-card" data-case-checklist-summary-card="blockers">
+                    <div className="case-checklist-summary-card-head">
+                      <div>
+                        <p className="case-detail-eyebrow">Ryzyko</p>
+                        <h3>Blokady</h3>
+                      </div>
+                      <span className={`case-detail-pill ${blockers.length ? 'case-detail-pill-red' : 'case-detail-pill-green'}`} data-case-checklist-blocker-count="true">{blockers.length}</span>
+                    </div>
+                    <p className="case-checklist-summary-copy">{blockers.length ? 'Wymagane elementy wymagają uwagi.' : 'Brak wymaganych blokad.'}</p>
+                    <span className="case-checklist-summary-meta">{checklistSummary.missingCount} brakujących · {checklistSummary.reviewCount} do weryfikacji</span>
+                  </article>
+                  <article className="case-checklist-summary-card case-checklist-summary-card--next" data-case-checklist-summary-card="next-action">
+                    <div className="case-checklist-summary-card-head">
+                      <div>
+                        <p className="case-detail-eyebrow">Następny ruch</p>
+                        <h3>{nextAction?.title || 'Brak zaplanowanego ruchu'}</h3>
+                      </div>
+                      {nextAction?.kind === 'event' ? <CalendarClock className="case-checklist-summary-icon" aria-hidden="true" /> : <ArrowRight className="case-checklist-summary-icon" aria-hidden="true" />}
+                    </div>
+                    <p className="case-checklist-summary-copy">{nextAction ? `${nextAction.kind === 'event' ? 'Wydarzenie' : 'Zadanie'} · ${nextAction.dateLabel}` : 'Dodaj zadanie, aby ustawić kolejny konkretny krok.'}</p>
+                    <Button type="button" variant={nextAction ? 'outline' : 'default'} onClick={handleCaseChecklistNextAction} data-case-checklist-next-action-cta="true">
+                      {nextAction ? 'Pokaż działanie' : 'Dodaj zadanie'}
+                    </Button>
+                  </article>
+                </div>
+                <div className="case-checklist-content-grid">
+                  <div className="case-checklist-list-column" data-case-checklist-list="true">
+                    <div className="case-checklist-list-heading">
+                      <div>
+                        <p className="case-detail-eyebrow">Elementy sprawy</p>
+                        <h3>Materiały i decyzje</h3>
+                      </div>
+                      <span className="case-checklist-list-count">{checklistSummary.totalCount}</span>
+                    </div>
+                    {items.length === 0 ? (
+                      <div className="case-detail-light-empty" data-case-checklist-empty="true">Brak elementów checklisty. Dodaj pierwszy wymagany element sprawy.</div>
+                    ) : (
+                      checklistSummary.groups.map((group) => (
+                        <section key={group.key} className="case-checklist-group" data-case-checklist-group={group.key}>
+                          <div className="case-checklist-group-heading">
+                            <h4>{group.label}</h4>
+                            <span>{group.items.length}</span>
+                          </div>
+                          <div className="case-checklist-items">
+                            {group.items.map((item) => {
+                              const statusKey = getCaseItemStatusKey(item.status);
+                              const overdue = isCaseChecklistItemOverdue(item);
+                              return (
+                                <article key={item.id} className="case-checklist-item" data-case-checklist-item="true" data-case-checklist-item-id={item.id} data-case-checklist-item-status={statusKey}>
+                                  <span className="case-checklist-item-icon" aria-hidden="true"><EntityIcon entity="template" className="h-4 w-4" /></span>
+                                  <div className="case-checklist-item-main">
+                                    <div className="case-checklist-item-title-row">
+                                      <h4>{item.title || 'Element sprawy'}</h4>
+                                      {item.isRequired ? <span className="case-checklist-required">Wymagane</span> : null}
+                                    </div>
+                                    <p>{item.description || 'Bez opisu'}</p>
+                                    <dl className="case-checklist-item-meta">
+                                      <div><dt>Termin</dt><dd className={overdue ? 'case-checklist-overdue' : undefined}>{formatDate(item.dueDate)}{overdue ? ' · po terminie' : ''}</dd></div>
+                                      <div><dt>Typ</dt><dd>{getItemTypeLabel(item.type)}</dd></div>
+                                    </dl>
+                                  </div>
+                                  <div className="case-checklist-item-actions">
+                                    <span className={`case-detail-pill ${getStatusClass(item.status)}`} data-case-checklist-current-status="true">{getItemStatusLabel(item.status)}</span>
+                                    <div className="case-checklist-action-row" data-case-checklist-actions="true">
+                                      <button type="button" className="case-checklist-action" aria-pressed={statusKey === 'missing'} data-case-checklist-action="missing" onClick={() => handleItemStatusChange(item, 'missing')}>Brak</button>
+                                      <button type="button" className="case-checklist-action" aria-pressed={statusKey === 'uploaded'} data-case-checklist-action="uploaded" onClick={() => handleItemStatusChange(item, 'uploaded')}>Wysłane</button>
+                                      <button type="button" className="case-checklist-action" aria-pressed={statusKey === 'accepted'} data-case-checklist-action="accepted" onClick={() => handleItemStatusChange(item, 'accepted')}>Akceptuj</button>
+                                      <button type="button" className="case-checklist-action case-checklist-action--danger" aria-pressed={statusKey === 'rejected'} data-case-checklist-action="rejected" onClick={() => handleItemStatusChange(item, 'rejected')}>Odrzuć</button>
+                                    </div>
+                                  </div>
+                                </article>
+                              );
+                            })}
+                          </div>
+                        </section>
+                      ))
+                    )}
+                  </div>
+                  <aside className="case-checklist-summary-rail" aria-label="Podsumowanie checklisty" data-case-checklist-summary-rail="true">
+                    <div className="case-checklist-rail-heading">
+                      <div>
+                        <p className="case-detail-eyebrow">Podsumowanie</p>
+                        <h3>Stan checklisty</h3>
+                      </div>
+                      <ListChecks className="case-checklist-summary-icon" aria-hidden="true" />
+                    </div>
+                    <dl className="case-checklist-stat-list">
+                      <div data-case-checklist-stat="ready"><dt>Gotowe</dt><dd>{checklistSummary.completeCount}</dd></div>
+                      <div data-case-checklist-stat="review"><dt>Do weryfikacji</dt><dd>{checklistSummary.reviewCount}</dd></div>
+                      <div data-case-checklist-stat="missing"><dt>Brakujące</dt><dd>{checklistSummary.missingCount}</dd></div>
+                      <div data-case-checklist-stat="overdue"><dt>Przeterminowane</dt><dd>{checklistSummary.overdueCount}</dd></div>
+                      <div data-case-checklist-stat="all"><dt>Wszystkie elementy</dt><dd>{checklistSummary.totalCount}</dd></div>
+                    </dl>
+                    <div className="case-checklist-blockers" data-case-checklist-blockers="true">
+                      <div className="case-checklist-blockers-heading"><h4>Wymagają uwagi</h4><span>{blockers.length}</span></div>
+                      {blockers.length ? (
+                        <ul>
+                          {blockers.slice(0, 5).map((item) => <li key={item.id}>{item.title || 'Element sprawy'}</li>)}
+                        </ul>
+                      ) : (
+                        <p>Brak wymaganych blokad.</p>
+                      )}
+                    </div>
+                  </aside>
                 </div>
               </section>
             ) : null}
