@@ -1,0 +1,62 @@
+{
+  "schema_version": 2,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-034",
+  "reference_file": "docs/ui/reference/forteca-calm-light/034_cases_blocked.webp",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_PARENT",
+  "acceptance_basis": {
+    "directive_interpretation": "Owner directive makes Codex the acceptance authority for this technical stage; current runtime, code, tests and browser evidence are authoritative.",
+    "root_cause": "The blocker form persisted blocking_missing_item directly into work_items.status, which violated the SQL status-domain constraint; the blocked Cases state also required a real blocker lifecycle and resolution proof.",
+    "repair": "Persisted the SQL-safe todo value while preserving blocking_missing_item at the application status layer, verified the real Uzupełnione transition and standardized the visible product brand and archive confirmation copy through shared owners.",
+    "review_status": "Parent reviewed the contract, source, reference chain, focused tests, typecheck/build, Guardian fallback, exact production/preview deployments and authenticated production blocker lifecycle proof."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "src/pages/Cases.tsx",
+    "src/lib/case-items-v1.ts",
+    "src/lib/statuses.ts",
+    "src/lib/brand.ts",
+    "src/components/Layout.tsx",
+    "src/pages/Clients.tsx",
+    "src/components/ClientCreateDialog.tsx",
+    "src/pages/CaseDetail.tsx",
+    "src/App.tsx",
+    "src/pages/PublicLanding.tsx",
+    "public/manifest.webmanifest",
+    "tests/forteca-frt-017-lead-blocker-runtime.test.cjs",
+    "tests/forteca-frt-034-cases-blocked.test.cjs",
+    "tests/closeflow-brand-and-user-copy.test.cjs",
+    "scripts/check-stage232c-clients-relation-tile-source-of-truth.cjs",
+    "tests/stage232c-clients-relation-tile-source-of-truth.test.cjs",
+    "audit/evidence/FRT-034_BROWSER_PROOF.json",
+    "audit/evidence/FRT-034_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/WORKFLOW_STATE.json",
+    "_project/contracts/forteca-clean/FRT-034_CASES_BLOCKED.md",
+    "_project/runs/forteca-clean/FRT-034_RECEIPT.json"
+  ],
+  "verification": {
+    "focused_tests": "PASS combined focused package 44/44",
+    "typecheck": "PASS",
+    "build": "PASS locally and on Vercel with known non-blocking warnings",
+    "guards": "Route/icon/semantic color/typography/branding/source-of-truth/urgent regression PASS; Guardian partial with zero scoped blockers; patch-layer baseline findings classified",
+    "browser_proof": "PASS production blocked counter/filter, waiting separation, blocker creation, SQL-safe persistence, Uzupełnione resolution, cleanup, CloseFlow brand and archive confirmation copy",
+    "remote_head": "6b4821902a9e3934baef32cf6416c599e87ff822"
+  },
+  "browser_proof": "audit/evidence/FRT-034_BROWSER_PROOF.json",
+  "guardian": "audit/evidence/FRT-034_GUARDIAN_AUDIT_SUMMARY.json",
+  "implementation_commits": [
+    "8abca8c8",
+    "6b4821902a9e3934baef32cf6416c599e87ff822"
+  ],
+  "remote_branch_sha_verified": true,
+  "next_stage": "FRT-035",
+  "rollback": "Revert 8abca8c8 and 6b4821902a9e3934baef32cf6416c599e87ff822; the stage is isolated to blocked lifecycle persistence/consumers, shared user-facing brand/archive copy and focused control-plane records.",
+  "task_economy": {
+    "marketplace_router_startup": "USED",
+    "efficiency_planning": "APPLIED",
+    "optional_delegation": "SKIPPED",
+    "delegation_skip_reason": "Authenticated production lifecycle proof required the existing local session and one write owner."
+  }
+}

@@ -1,58 +1,58 @@
 {
   "schema_version": 1,
   "project_id": "closeflow_lead_app",
-  "state_revision": 121,
+  "state_revision": 122,
   "last_accepted": {
+    "id": "FRT-034",
+    "status": "PASS",
+    "commit_sha": "6b4821902a9e3934baef32cf6416c599e87ff822",
+    "evidence": "_project/runs/forteca-clean/FRT-034_RECEIPT.json; audit/evidence/FRT-034_BROWSER_PROOF.json; audit/evidence/FRT-034_GUARDIAN_AUDIT_SUMMARY.json; Codex parent acceptance after contract/source/reference review, focused blocked lifecycle and SQL-safe persistence tests, combined 44/44 tests, typecheck/build/Guardian proof and authenticated production blocker create/resolve/cleanup evidence; independent reviewer PASS is not claimed"
+  },
+  "previous_accepted": {
     "id": "FRT-033",
     "status": "PASS",
     "commit_sha": "0c8909b2f15886fdb8ec7bf058044101e1f73a8a",
-    "evidence": "_project/runs/forteca-clean/FRT-033_RECEIPT.json; audit/evidence/FRT-033_BROWSER_PROOF.json; audit/evidence/FRT-033_GUARDIAN_AUDIT_SUMMARY.json; Codex parent acceptance after contract/source/reference review, focused FRT-033 tests 4/4, combined FRT-030/FRT-031/FRT-032/FRT-033 tests 21/21, typecheck/build/Guardian proof and authenticated production waiting-versus-blocked separation evidence; independent reviewer PASS is not claimed"
+    "evidence": "_project/runs/forteca-clean/FRT-033_RECEIPT.json; FRT-033 accepted with authenticated production waiting counter/filter/row semantics and disjoint blocked filter."
   },
-  "previous_accepted": {
-    "id": "FRT-032",
-    "status": "PASS",
-    "commit_sha": "d24c7ad02c449d3ce0c84eb5a1cf71cc2f026e09",
-    "evidence": "FRT-032 accepted with authenticated production all-cases list/search/shortcut/row-navigation/action evidence; FRT-033 accepted after repairing the waiting-versus-blocked lifecycle overlap."
-  },
-  "current_stage": "FRT-034",
-  "current_contract_path": "_project/contracts/forteca-clean/FRT-034_CASES_BLOCKED.md",
+  "current_stage": "FRT-035",
+  "current_contract_path": "_project/contracts/forteca-clean/FRT-035_CASES_READY.md",
   "current_status": "ACTIVE",
-  "last_accepted_stage": "FRT-033",
-  "last_accepted_commit": "0c8909b2f15886fdb8ec7bf058044101e1f73a8a",
-  "next_stage": "FRT-035",
+  "last_accepted_stage": "FRT-034",
+  "last_accepted_commit": "6b4821902a9e3934baef32cf6416c599e87ff822",
+  "next_stage": "FRT-036",
   "branch": "codex/forteca-ui-001-040-clean",
-  "remote_head": "0c8909b2f15886fdb8ec7bf058044101e1f73a8a",
-  "next_action": "Implement and prove FRT-034: Cases — Zablokowane with truthful blocker/status mapping, real filtering and safe resolution actions; then accept FRT-034 and activate FRT-035.",
+  "remote_head": "6b4821902a9e3934baef32cf6416c599e87ff822",
+  "next_action": "Implement and prove FRT-035: Cases — Gotowe do startu with readiness derived from the real case source and safe start/open actions; then accept FRT-035 and activate FRT-036.",
   "last_progress": {
-    "stage_id": "FRT-033",
-    "status": "PASS_ACCEPTED_PRODUCTION_WAITING_BLOCKED_SEPARATION_VERIFIED",
-    "evidence": "_project/runs/forteca-clean/FRT-033_RECEIPT.json; audit/evidence/FRT-033_BROWSER_PROOF.json; audit/evidence/FRT-033_GUARDIAN_AUDIT_SUMMARY.json",
-    "commit_sha": "0c8909b2f15886fdb8ec7bf058044101e1f73a8a",
-    "browser_blocker": "NONE; authenticated production waiting counter/filter/row semantics and disjoint blocked filter were verified. The retained waiting fixture is synthetic and scoped for subsequent lifecycle proof.",
+    "stage_id": "FRT-034",
+    "status": "PASS_ACCEPTED_PRODUCTION_BLOCKER_LIFECYCLE_VERIFIED",
+    "evidence": "_project/runs/forteca-clean/FRT-034_RECEIPT.json; audit/evidence/FRT-034_BROWSER_PROOF.json; audit/evidence/FRT-034_GUARDIAN_AUDIT_SUMMARY.json",
+    "commit_sha": "6b4821902a9e3934baef32cf6416c599e87ff822",
+    "browser_blocker": "NONE; authenticated production blocked counter/filter, SQL-safe blocker persistence, Uzupełnione resolution, cleanup, disjoint waiting state and CloseFlow/archive-copy regression were verified. The retained waiting fixture is synthetic and scoped for the next ready-state proof.",
     "created_at": "2026-08-30T00:00:00.0000000Z",
     "updated_at": "2026-08-30"
   },
   "current_workflow": {
-    "id": "FRT-034",
+    "id": "FRT-035",
     "kind": "TECHNICAL_IMPLEMENTATION_STAGE",
-    "contract_path": "_project/contracts/forteca-clean/FRT-034_CASES_BLOCKED.md",
+    "contract_path": "_project/contracts/forteca-clean/FRT-035_CASES_READY.md",
     "status": "ACTIVE",
-    "base_sha": "0c8909b2f15886fdb8ec7bf058044101e1f73a8a",
+    "base_sha": "6b4821902a9e3934baef32cf6416c599e87ff822",
     "base_branch": "codex/forteca-ui-001-040-clean",
     "target_branch": "codex/forteca-ui-001-040-clean",
     "blocker": null,
     "ssot_open_findings": 0,
     "active_stage_count": 1,
-    "terminal_audit": "FRT_030_PASS_ACCEPTED_BROWSER_CRUD_PRODUCTION_VERIFIED; FRT_031_PASS_ACCEPTED_RELATION_CREATE_NAVIGATION_VERIFIED; FRT_032_PASS_ACCEPTED_CASES_ALL_LIST_SEARCH_FILTER_NAVIGATION_VERIFIED; FRT_033_PASS_ACCEPTED_WAITING_BLOCKED_SEPARATION_VERIFIED; FRT_034_ACTIVE",
+    "terminal_audit": "FRT_030_PASS_ACCEPTED_BROWSER_CRUD_PRODUCTION_VERIFIED; FRT_031_PASS_ACCEPTED_RELATION_CREATE_NAVIGATION_VERIFIED; FRT_032_PASS_ACCEPTED_CASES_ALL_LIST_SEARCH_FILTER_NAVIGATION_VERIFIED; FRT_033_PASS_ACCEPTED_WAITING_BLOCKED_SEPARATION_VERIFIED; FRT_034_PASS_ACCEPTED_BLOCKER_LIFECYCLE_SQL_SAFE_RESOLUTION_VERIFIED; FRT_035_ACTIVE",
     "guardian_status": "INHERITED_PLUGIN_AUDIT_AND_REPO_BASELINE_ZERO_SCOPED_BLOCKERS",
-    "acceptance_boundary": "Codex is the acceptance authority under the owner directive; FRT-034 requires truthful blocked status and blocker mapping, real workspace filtering, safe resolution/action ownership, focused tests, Guardian, browser/runtime evidence and receipt before acceptance"
+    "acceptance_boundary": "Codex is the acceptance authority under the owner directive; FRT-035 requires readiness derived from the real case source, safe start/open action ownership, focused tests, Guardian, browser/runtime evidence and receipt before acceptance"
   },
   "next_workflow": {
-    "id": "FRT-035",
-    "contract_path": "_project/contracts/forteca-clean/FRT-035_CASES_READY.md",
+    "id": "FRT-036",
+    "contract_path": "_project/contracts/forteca-clean/FRT-036_CASE_ADD.md",
     "status": "LOCKED",
-    "activation": "CODEX_AFTER_FRT_033_ACCEPTANCE",
-    "reason": "FRT-034 is the only active stage; FRT-035 remains locked until blocked semantics, filter and action evidence are accepted."
+    "activation": "CODEX_AFTER_FRT_035_ACCEPTANCE",
+    "reason": "FRT-035 is the only active stage; FRT-036 remains locked until ready-state semantics, filter and action evidence are accepted."
   },
   "forteca_program": {
     "program_id": "FORTECA_CALM_LIGHT_001_040",
@@ -95,9 +95,10 @@
     "stage_031_status": "PASS",
     "stage_032_status": "PASS",
     "stage_033_status": "PASS",
-    "active_stage": "FRT-034",
-    "future_stages": "FRT-034 ACTIVE; FRT-035..FRT-041 LOCKED",
-    "accepted_receipts": ["FRT-000", "FRT-001", "FRT-002", "FRT-003", "FRT-004", "FRT-005", "FRT-006", "FRT-007", "FRT-008", "FRT-009", "FRT-010", "FRT-011", "FRT-012", "FRT-013", "FRT-014", "FRT-015", "FRT-016", "FRT-017", "FRT-018", "FRT-019", "FRT-020", "FRT-021", "FRT-022", "FRT-023", "FRT-024", "FRT-025", "FRT-026", "FRT-027", "FRT-028", "FRT-029", "FRT-030", "FRT-031", "FRT-032", "FRT-033"],
+    "stage_034_status": "PASS",
+    "active_stage": "FRT-035",
+    "future_stages": "FRT-035 ACTIVE; FRT-036..FRT-041 LOCKED",
+    "accepted_receipts": ["FRT-000", "FRT-001", "FRT-002", "FRT-003", "FRT-004", "FRT-005", "FRT-006", "FRT-007", "FRT-008", "FRT-009", "FRT-010", "FRT-011", "FRT-012", "FRT-013", "FRT-014", "FRT-015", "FRT-016", "FRT-017", "FRT-018", "FRT-019", "FRT-020", "FRT-021", "FRT-022", "FRT-023", "FRT-024", "FRT-025", "FRT-026", "FRT-027", "FRT-028", "FRT-029", "FRT-030", "FRT-031", "FRT-032", "FRT-033", "FRT-034"],
     "auth_required_for_frt_000": false,
     "future_receipts_precreated": false
   },
@@ -528,6 +529,13 @@
     "forteca:FRT-033:guardian-summary@audit/evidence/FRT-033_GUARDIAN_AUDIT_SUMMARY.json:plugin-first partial with zero scoped blockers",
     "forteca:FRT-033:receipt@_project/runs/forteca-clean/FRT-033_RECEIPT.json:PASS:CODEX_PARENT acceptance authority",
     "forteca:FRT-033:tests@focused-4/4-combined-21/21-tsc-build-runtime-and-guards-pass",
-    "forteca:FRT-033:root-cause@waiting_on_client was folded into blocked; repaired with a distinct lifecycle bucket, status registry and disjoint Cases counters/filters/actions"
+    "forteca:FRT-033:root-cause@waiting_on_client was folded into blocked; repaired with a distinct lifecycle bucket, status registry and disjoint Cases counters/filters/actions",
+    "forteca:FRT-034:implementation@8abca8c8;6b4821902a9e3934baef32cf6416c599e87ff822",
+    "forteca:FRT-034:browser-proof@audit/evidence/FRT-034_BROWSER_PROOF.json:PASS:authenticated production blocked filter, blocker create/persist/resolve/delete lifecycle, disjoint waiting state and CloseFlow archive-copy regression",
+    "forteca:FRT-034:guardian-summary@audit/evidence/FRT-034_GUARDIAN_AUDIT_SUMMARY.json:plugin-first partial with zero scoped blockers; known baseline/build warnings classified",
+    "forteca:FRT-034:receipt@_project/runs/forteca-clean/FRT-034_RECEIPT.json:PASS:CODEX_PARENT acceptance authority",
+    "forteca:FRT-034:tests@combined-focused-44/44-tsc-build-route-icon-color-typography-brand-source-of-truth-urgent-regression-pass",
+    "forteca:FRT-034:root-cause@blocking_missing_item was persisted into SQL work_items.status despite the todo-only domain constraint; persistence now stores todo while preserving business blocker status at the application boundary",
+    "forteca:FRT-034:brand-sot@CLOSEFLOW_BRAND is the sole visible product-name/mark owner; Forteca remains internal technical naming only"
   ]
 }

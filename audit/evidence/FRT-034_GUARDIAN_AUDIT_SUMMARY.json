@@ -1,0 +1,78 @@
+{
+  "schema_version": 2,
+  "evidence_type": "FORTECA_GUARDIAN_AUDIT_SUMMARY",
+  "stage_id": "FRT-034",
+  "mode": "AUDIT_ONLY",
+  "plugin_first": {
+    "command": "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+    "mode": "AUDIT_ONLY",
+    "fileWrites": 0,
+    "selectedCapabilities": [
+      "repository-baseline"
+    ],
+    "selectedSkills": [
+      "ai-code-guardian",
+      "architecture-integrity"
+    ],
+    "coverageOutcome": "PARTIAL",
+    "receiptIds": [
+      "guardian-plugin-smoke-coverage",
+      "guardian-plugin-smoke-result"
+    ],
+    "blockers": 0
+  },
+  "repository_fallback": {
+    "status": "PARTIAL_WITH_ZERO_SCOPED_BLOCKERS",
+    "checks": {
+      "combined_focused_stage_package": "PASS 44/44",
+      "typescript": "PASS",
+      "production_build": "PASS_WITH_KNOWN_WARNINGS",
+      "vercel_preview_deployment": "READY",
+      "vercel_production_deployment": "READY",
+      "guard:routes:canonical": "PASS",
+      "guard:ui:ssot-icons": "PASS",
+      "guard:ui:ssot-semantic-colors": "PASS",
+      "guard:ui:ssot-typography": "PASS",
+      "check:closeflow-client-case-urgent-regressions": "PASS",
+      "check:a18-branding-docs": "PASS",
+      "check:stage232c-clients-relation-tile-source-of-truth": "PASS",
+      "guard:ui:patch-layers": "FAIL_ON_PRE_EXISTING_BASELINE_FINDINGS"
+    },
+    "scope_findings": [],
+    "out_of_scope_baseline_findings": [
+      "guard:ui:patch-layers retains pre-existing local action-clone and direct-icon findings outside the FRT-034 write set.",
+      "Production build retains the existing supabase-fallback dynamic/static import overlap, chunks larger than 500 kB and Vercel npm allow-scripts warnings."
+    ]
+  },
+  "repository": {
+    "branch": "codex/forteca-ui-001-040-clean",
+    "implementation_commits": [
+      "8abca8c8",
+      "6b4821902a9e3934baef32cf6416c599e87ff822"
+    ],
+    "remote_head": "6b4821902a9e3934baef32cf6416c599e87ff822"
+  },
+  "stage_validation": {
+    "focused_tests": "PASS combined FRT-030/FRT-031/FRT-032/FRT-033/FRT-034 plus brand and source-of-truth tests 44/44",
+    "typescript": "PASS",
+    "production_build": "PASS locally and on Vercel with known non-blocking warnings",
+    "diff_check": "PASS for named FRT-034 paths; unrelated generated documentation and dist-test-today-sections.cjs remain unstaged",
+    "browser_runtime": "PASS authenticated production blocked filter, real blocker create/persist/resolve/delete lifecycle, disjoint waiting filter and archive/brand copy regression",
+    "independent_review": "PARENT_SOURCE_REFERENCE_RUNTIME_REVIEW; no separate reviewer PASS claim"
+  },
+  "root_cause_and_repair": {
+    "root_cause": "The blocker form used a business lifecycle value as the persisted work_items.status even though the SQL status-domain constraint accepts todo and the application status registry maps blocker semantics separately.",
+    "repair": "The persistence path stores the SQL-safe todo value and returns the blocking_missing_item business status to the application layer; blocker resolution and refresh remain on the existing case-item relation."
+  },
+  "interpretation": "Guardian plugin smoke and scoped repository checks completed. Coverage is PARTIAL because the installed plugin is audit-only; no scoped blocker was found. The SQL contract, blocked lifecycle, real resolution action and visible CloseFlow/archive copy are verified.",
+  "color_policy": {
+    "status": "PASS",
+    "semantic_primary_base": "--cf-vst-color-primary",
+    "semantic_delete_base": "--cf-vst-color-delete",
+    "semantic_surface_base": "--cf-vst-surface-card-solid",
+    "stage_literal_color_values": 0,
+    "rule": "Repeated semantic controls resolve through the shared VST family; reference drift does not create per-window color exceptions."
+  },
+  "created_at": "2026-08-30",
+  "updated_at": "2026-08-30"
+}

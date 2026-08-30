@@ -1,0 +1,96 @@
+{
+  "schema_version": 2,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-034",
+  "reference_file": "docs/ui/reference/forteca-calm-light/034_cases_blocked.webp",
+  "entry_url": "https://closeflowapp.vercel.app/cases?view=blocked&frt034=verify",
+  "runtime_url": "https://closeflowapp.vercel.app",
+  "route": "/cases",
+  "state": "Cases — Zablokowane with real blocker lifecycle and disjoint waiting view",
+  "live_runtime": true,
+  "authenticated_session_reused": true,
+  "status": "PASS",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "implementation_commits": [
+    "8abca8c8",
+    "6b4821902a9e3934baef32cf6416c599e87ff822"
+  ],
+  "current_runtime_commit": "6b4821902a9e3934baef32cf6416c599e87ff822",
+  "remote_head_verified": "6b4821902a9e3934baef32cf6416c599e87ff822",
+  "runtime_deployments": {
+    "preview": {
+      "id": "dpl_G8v12mQJErCyAMsVcD2onfux3eEz",
+      "url": "https://closedockapp-3iwvb9fkp-dkknapikdamian-7019s-projects.vercel.app",
+      "status": "READY",
+      "runtime_code_commit": "6b4821902a9e3934baef32cf6416c599e87ff822"
+    },
+    "production": {
+      "id": "dpl_5zDxSEC1sJ9JUfb6ZTeYiY5nZuzy",
+      "url": "https://closedockapp-6fe3rvet5-dkknapikdamian-7019s-projects.vercel.app",
+      "alias": "https://closeflowapp.vercel.app",
+      "status": "READY",
+      "runtime_code_commit": "6b4821902a9e3934baef32cf6416c599e87ff822"
+    }
+  },
+  "synthetic_fixtures": {
+    "retained_waiting_case": {
+      "case_record_id": "bf6172be-db8f-4128-8895-fd3acd4a9f05",
+      "title": "FRT032 Waiting 1788104506938",
+      "created_for_verification_only": true,
+      "cleanup": "RETAINED_FOR_FRT-035_READY_LIFECYCLE_PROOF"
+    },
+    "blocked_case": {
+      "created_for_verification_only": true,
+      "lifecycle": "created, blocked, blocker resolved, then deleted",
+      "cleanup": "VERIFIED_DELETED"
+    }
+  },
+  "interaction_proof": {
+    "blocked_filter_and_counter": {
+      "status": "PASS",
+      "result": "Authenticated production showed the blocked shortcut with value 1 after creating the synthetic blocked case; the blocked row was rendered in the list."
+    },
+    "waiting_filter_separation": {
+      "status": "PASS",
+      "result": "The waiting shortcut remained disjoint from the blocked case; the retained waiting case was not presented as blocked."
+    },
+    "real_blocker_creation": {
+      "status": "PASS",
+      "result": "Case Detail accepted a synthetic blocker with category Dokument, priority Wysoki, due date and blocker scope; the service view showed Braki i blokady 1 and Historia 2."
+    },
+    "sql_safe_persistence": {
+      "status": "PASS",
+      "result": "The application returned the business status blocking_missing_item while persisting the SQL-safe work_items status todo; the previous constraint violation was removed."
+    },
+    "resolve_action": {
+      "status": "PASS",
+      "result": "Uzupełnione changed the real blocker to resolved state; active missing items changed from 1 to 0, history incremented to 3 and the empty state became Brak braków i blokad w tej sprawie."
+    },
+    "case_cleanup": {
+      "status": "PASS",
+      "result": "The synthetic blocked case was removed through the existing Awaryjnie usuń sprawę flow; production returned Sprawa usunięta and the blocked counters returned to zero."
+    },
+    "archive_dialog_and_brand_regression": {
+      "status": "PASS",
+      "result": "On authenticated production Client Detail, the edit flow displayed CloseFlow/CF and the application dialog Czy na pewno zarchiwizować klienta? with user-facing actions Zarchiwizuj klienta and Anuluj. The dialog was cancelled, so no client mutation occurred; no Vercel hostname appeared in the user-facing copy."
+    }
+  },
+  "safety_proof": {
+    "synthetic_data_only": true,
+    "no_secrets_or_personal_data_recorded": true,
+    "no_fixture_injection": true,
+    "real_workspace_scoped_read": true,
+    "cleanup_verified": true,
+    "retention_reason": "Only the earlier synthetic waiting case remains for the immediately following ready-state proof.",
+    "no_raw_browser_storage_or_cookies_read": true,
+    "sql_migration_performed": false,
+    "workspace_scope_preserved": true
+  },
+  "browser_diagnostic_boundary": {
+    "status": "DOCUMENTED",
+    "finding": "The approved in-app browser was used for visible DOM and action verification; no standalone browser, raw CDP or session extraction was used.",
+    "interpretation": "Blocked, waiting, blocker resolution, cleanup, brand and archive-copy outcomes were verified through the live Vercel UI and persisted routes."
+  },
+  "verified_at": "2026-08-30",
+  "next_action": "FRT-034 accepted; activate FRT-035 Cases — Gotowe do startu and prove readiness is derived from real case state."
+}
