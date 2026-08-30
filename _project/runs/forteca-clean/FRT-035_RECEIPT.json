@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-035",
+  "reference_file": "docs/ui/reference/forteca-calm-light/035_cases_ready_to_start.webp",
+  "reference_sha256": "2dbfbb3e802e90f40460bcbeae785ccb4ce780c3859d4752ecca2eeaf7e8e418",
+  "target_route": "/cases",
+  "target_state": "Cases — Gotowe do startu",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_AFTER_PARENT_REVIEW",
+  "acceptance_basis": {
+    "contract": "_project/contracts/forteca-clean/FRT-035_CASES_READY.md",
+    "visual_review": "Parent compared the locked ready-to-start reference, real production DOM and fresh screenshots at wide and compact viewports. Header copy, KPI/filter surface, ready table contract, empty state and responsive geometry are structurally aligned while reference-only sample data is not copied.",
+    "behavior_review": "The ready filter and ready-specific sorting resolve through canonical case lifecycle/status data. The guarded row start/navigation actions are present in source, and the authenticated production workspace truthfully rendered zero ready rows; no row mutation was invoked.",
+    "test_review": "Focused FRT-035 tests passed 4/4. Reused FRT-032 through FRT-034 focused suites passed 15/15 and the Forteca milestone passed 28/28. TypeScript, build, diff-check, semantic color/icon/typography guards and action-icon registry passed. Known baseline guard findings remain outside this stage.",
+    "production_review": "Implementation SHA 3344ce6 is present on dev-rollout-freeze. The Git-integrated Vercel production deployment dpl_A13fgN6NPuzF68PY1eKXCcc8qnZL is READY with the production alias closeflowapp.vercel.app, and authenticated browser proof loaded the corrected ready route.",
+    "review_status": "Parent review completed. The independent source reviewer timed out and was closed without an artifact; previously returned reviewer concerns are recorded and no independent reviewer PASS is claimed."
+  },
+  "root_cause_repairs": [
+    {
+      "finding": "The cases route had no first-class ready-to-start composition tied to one canonical readiness predicate; stats, filters, ordering and actions could diverge.",
+      "repair": "Added a ready view driven by canonical lifecycle/status and blocker/waiting exclusions, with dynamic KPI/filter values, ready-specific ordering, real list projection and guarded start/navigation actions."
+    },
+    {
+      "finding": "The current list projection does not expose every optional metadata field shown by the reference.",
+      "repair": "Used available canonical source fields and explicit honest fallbacks for date, next stage, client/company and owner values. No reference rows, counts or trend values were fabricated and no schema mutation was introduced."
+    },
+    {
+      "finding": "The nine-column ready table could compress text into one-character columns at compact widths.",
+      "repair": "Scoped the ready table grid with bounded minimum tracks, controlled internal scrolling and normal word wrapping; actions remain bounded and readable at 1538x698 and 1280x720."
+    },
+    {
+      "finding": "The route header copy differed from the locked reference.",
+      "repair": "Aligned the description to the exact reference copy: Zarządzaj realizacją i kompletnością materiałów."
+    },
+    {
+      "finding": "Ready rows need a real start affordance rather than a visual-only button.",
+      "repair": "Wired the guarded start path through access/revalidation, the existing case lifecycle update and activity recording, while retaining safe empty-state behavior when no ready row exists."
+    }
+  ],
+  "zero_plaster_policy": {
+    "status": "APPLIED",
+    "rules": [
+      "Counts, rows, labels, dates, readiness and actions derive from real workspace case/client/task/event data and canonical lifecycle helpers.",
+      "No screenshot fixture, reference row, hardcoded reference count, trend or fake backend field was introduced.",
+      "Reference discrepancies do not create per-window exceptions; repeated semantic colors use shared --cf-vst-* owners and the rocket action icon uses the canonical icon registry.",
+      "No unrelated route, table, RLS, function, trigger, schema or production merge was performed."
+    ]
+  },
+  "color_source_of_truth": {
+    "foundation_owner": "src/styles/owners/closeflow-foundation.css",
+    "page_shell_owner": "src/styles/owners/closeflow-page-shell.css",
+    "cases_owner": "src/styles/forteca-cases-ready.css",
+    "action_owner": "src/styles/owners/closeflow-actions.css",
+    "icon_owner": "src/ui-system/icons/SemanticIcon.tsx and src/components/ui-system/ActionIcon.tsx",
+    "stage_literal_color_values": 0,
+    "policy": "Repeated semantic concerns resolve through shared Visual SOT owners; a reference discrepancy never creates a one-off color exception."
+  },
+  "implementation": {
+    "code_changed": true,
+    "files_changed": [
+      "src/pages/Cases.tsx",
+      "src/lib/source-of-truth/icon-registry.ts",
+      "src/components/StatShortcutCard.tsx",
+      "src/styles/forteca-cases-ready.css",
+      "tests/forteca-frt-035-cases-ready.test.cjs"
+    ],
+    "feature_commit_sha": "1bed7c302fbebc512bd6c48386fe7c04aa8e4c5b",
+    "responsive_fix_commit_sha": "297077a41f02086d9a669a8cdb756d00b130b967",
+    "final_implementation_commit_sha": "3344ce6df56b045d2aef8590e79b78611ced5ff0",
+    "migration_limit": "No database migration or unrelated schema mutation was performed."
+  },
+  "tests_executed": [
+    "node tests/forteca-frt-035-cases-ready.test.cjs (4/4 PASS)",
+    "node tests/forteca-frt-032-cases-all.test.cjs, tests/forteca-frt-033-cases-waiting.test.cjs, tests/forteca-frt-034-cases-blocked.test.cjs (15/15 PASS; valid reused evidence)",
+    "npm.cmd run test:forteca-current (28/28 PASS; valid reused evidence)",
+    "npx.cmd tsc --noEmit --pretty false (PASS)",
+    "npm.cmd run build (PASS_WITH_KNOWN_WARNINGS: dynamic/static import overlap and large chunks)",
+    "npm.cmd run guard:ui:ssot-semantic-colors (PASS)",
+    "npm.cmd run guard:ui:ssot-icons (PASS)",
+    "npm.cmd run guard:ui:ssot-typography (PASS)",
+    "npm.cmd run guard:ui:component-clones (PASS)",
+    "npm.cmd run guard:ui:patch-layers (KNOWN_BASELINE_FINDINGS_ONLY; four findings outside FRT-035)",
+    "node scripts/check-closeflow-action-icon-registry.cjs (PASS)",
+    "canonical Guardian smoke (AUDIT_ONLY/PARTIAL; zero writes; zero blockers)",
+    "authenticated production browser proof at 1538x698 and 1280x720 (PASS)"
+  ],
+  "reused_evidence": [
+    "FRT-000 routing, reference manifest, Guardian boundary and Visual SOT owner registry",
+    "FRT-021 Forteca shell and shared semantic token evidence",
+    "FRT-029 through FRT-034 real workspace scope, relation, case status and cases route evidence"
+  ],
+  "limitations_and_follow_up": [
+    "The live authenticated workspace currently contains zero ready-to-start rows, so a row-level start click was not invoked; source/static proof covers the guarded action path without mutating production data.",
+    "No real comparison-period source exists for the reference trend, so the reference trend was not hardcoded.",
+    "The current list projection lacks some optional ready metadata fields; honest fallbacks are used instead of inventing data or expanding schema in this stage.",
+    "Existing status update and activity insertion are not atomic; the implementation preserves the existing contract and warns on history failure rather than claiming atomicity.",
+    "Known historical UI patch-layer, CSS-owner and metric-tile guard findings remain outside the FRT-035 write set."
+  ],
+  "guardian": {
+    "summary_path": "audit/evidence/FRT-035_GUARDIAN_AUDIT_SUMMARY.json",
+    "mode": "AUDIT_ONLY",
+    "raw_outcome": "PARTIAL",
+    "coverageOutcome": "PARTIAL",
+    "pass_claim": false,
+    "blockers": 0,
+    "fileWrites": 0
+  },
+  "marketplace_startup": {
+    "receipt_id": "startup-bbc2cbaea17a0c61569a14ec6e289c7f79a69a055e4fc450872effd17dcec828",
+    "startup_status": "PASS",
+    "startup_binding_status": "BOUND",
+    "mutation_gate": "SUBSTANTIVE_MUTATION_ALLOWED",
+    "substantiveMutationAuthorizedAfterStartup": true,
+    "primary_specialist": "frontend-design-studio",
+    "supporting_owners": ["ai-code-guardian", "agent-efficiency-guardian"],
+    "marketplace_source_sha": "6e89037049612227777d95dbdf777117790961d0"
+  },
+  "browser_proof": {
+    "path": "audit/evidence/FRT-035_BROWSER_PROOF.json",
+    "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+    "live_runtime": true,
+    "auth_required": true,
+    "route": "https://closeflowapp.vercel.app/cases?view=ready&forteca=3344ce6d&refresh=frt035-proof3",
+    "ready_filter": "PASS",
+    "ready_sort": "PASS",
+    "real_ready_case_count": 0,
+    "empty_state": "PASS",
+    "responsive_viewports": ["1538x698", "1280x720"],
+    "screenshot_path": null
+  },
+  "task_economy": {
+    "task_class": "bounded_stage_execution",
+    "marketplace_binding": "BOUND",
+    "provider_pool_reference": "OpenCode/Freebuff",
+    "provider_decision": "NO_PREFERRED_PROVIDER_DELEGATION",
+    "provider_skip_reason": "No callable preferred OpenCode/Freebuff provider was available in the current host context; bounded Codex review was used as an optional sidecar, and no unverified artifact was used for acceptance.",
+    "subagents": [
+      {
+        "id": "01a05169-d71f-7633-b75e-1ebda45f8e81",
+        "role": "independent FRT-035 implementation/reference review",
+        "status": "COMPLETED_CONCERNS_RECORDED_NO_PASS_CLAIM"
+      },
+      {
+        "id": "01a0518c-4dfa-7642-b456-d01bd39c7b38",
+        "role": "read-only canonical ready metadata source review",
+        "status": "TIMED_OUT_AND_CLOSED_WITHOUT_ARTIFACT"
+      }
+    ],
+    "write_owner": "Codex parent reviewed and integrated the bounded implementation, evidence and state."
+  },
+  "remote_head_verified_at_implementation_push": "3344ce6df56b045d2aef8590e79b78611ced5ff0",
+  "branch": "dev-rollout-freeze",
+  "next_action": "Activate FRT-036 as the only active stage and reconcile the real /cases Add Case modal against its locked reference.",
+  "created_at": "2026-08-30T07:42:06.2835973Z"
+}

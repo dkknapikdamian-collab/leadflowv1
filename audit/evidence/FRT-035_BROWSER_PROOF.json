@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-035",
+  "reference_file": "docs/ui/reference/forteca-calm-light/035_cases_ready_to_start.webp",
+  "reference_sha256": "2dbfbb3e802e90f40460bcbeae785ccb4ce780c3859d4752ecca2eeaf7e8e418",
+  "entry_url": "https://closeflowapp.vercel.app/cases?view=ready&forteca=3344ce6d&refresh=frt035-proof3",
+  "route": "/cases",
+  "state": "Cases — Gotowe do startu",
+  "live_runtime": true,
+  "auth_required": true,
+  "data_source": {
+    "mode": "real_authenticated_production_runtime",
+    "workspace_scope_preserved": true,
+    "visible_total_case_count": 9,
+    "visible_waiting_case_count": 1,
+    "visible_blocked_case_count": 2,
+    "visible_ready_case_count": 0,
+    "record_origin": "Counts and the empty ready result were loaded from the authenticated production workspace. No screenshot fixture, hardcoded reference row or synthetic reference count was injected.",
+    "authentication_boundary": "The user supplied the authenticated session. No credentials, cookies or tokens were read or exported."
+  },
+  "visible_structure": {
+    "observed_browser_viewports": [
+      {
+        "width": 1538,
+        "height": 698,
+        "device_pixel_ratio": 1,
+        "screenshot_emitted": true,
+        "page_level_horizontal_overflow": false,
+        "table_internal_horizontal_scroll": false,
+        "single_letter_wrapping": false
+      },
+      {
+        "width": 1280,
+        "height": 720,
+        "device_pixel_ratio": 1,
+        "screenshot_emitted": true,
+        "page_level_horizontal_overflow": false,
+        "table_internal_horizontal_scroll": true,
+        "single_letter_wrapping": false
+      }
+    ],
+    "sidebar_width_px": 256,
+    "page_header": {
+      "title": "Sprawy",
+      "description": "Zarządzaj realizacją i kompletnością materiałów.",
+      "actions": ["Eksportuj", "Dodaj sprawę", "Więcej opcji dodawania sprawy"],
+      "reference_aligned_flat_header": true
+    },
+    "kpi_cards": [
+      {"label": "WSZYSTKIE", "value": 9, "value_source": "canonical workspace case records"},
+      {"label": "CZEKAJĄ NA KLIENTA", "value": 1, "value_source": "canonical waiting_on_client records"},
+      {"label": "ZABLOKOWANE", "value": 2, "value_source": "canonical blocked status or active blocker predicate"},
+      {"label": "GOTOWE DO STARTU", "value": 0, "value_source": "canonical ready-to-start records"}
+    ],
+    "toolbar": {
+      "visible_placeholder": "Szukaj sprawy, klienta lub ID...",
+      "status": "Gotowe do startu",
+      "ready_filter_pressed": true,
+      "sort": "Gotowe od: najnowsze",
+      "other_controls": ["Więcej filtrów", "Eksportuj"]
+    },
+    "table_headers": [
+      "Sprawa",
+      "Klient",
+      "Status",
+      "Kompletność",
+      "Gotowe od",
+      "Następny etap",
+      "Opiekun",
+      "Akcja"
+    ],
+    "table_header_count": 9,
+    "empty_state": "Brak spraw do wyświetlenia. Zmień wyszukiwanie albo kliknij inny filtr.",
+    "browser_logs": []
+  },
+  "interaction_proof": {
+    "ready_filter": {
+      "status": "PASS",
+      "observed": "The ready KPI/filter state is selected and the list resolves to the real authenticated ready-to-start subset."
+    },
+    "ready_sort": {
+      "status": "PASS",
+      "observed": "The ready-specific sort control is selected and routes through the canonical ready_since ordering path."
+    },
+    "empty_state": {
+      "status": "PASS",
+      "observed": "The real workspace currently has zero ready-to-start records and shows the honest empty state instead of reference fixtures."
+    },
+    "row_navigation_and_start_action": {
+      "status": "SOURCE_AND_STATIC_PROOF",
+      "observed": "The source contains guarded case navigation and a revalidated start mutation that updates the real case lifecycle and records activity. No row click was invoked because the authenticated ready result contained zero rows."
+    },
+    "reload_persistence": {
+      "status": "PASS",
+      "observed": "After production navigation/reload the ready filter, canonical counts, exact page copy and empty state remained present once workspace data finished loading."
+    },
+    "runtime_errors": {
+      "status": "PASS",
+      "observed": "The browser error/warn log probe returned an empty list."
+    }
+  },
+  "responsive_visual_proof": {
+    "status": "PASS",
+    "evidence": "Fresh production DOM geometry and screenshots at 1538x698 and 1280x720 showed readable header, KPI/filter controls and normal word wrapping. At 1280px the nine-column table uses controlled internal scrolling rather than page-level overflow.",
+    "row_text_word_break": "normal",
+    "row_text_overflow_wrap": "normal",
+    "literal_pixel_identity_claim": false,
+    "limitation": "The proof covers the supplied wide and compact production viewports; it does not claim literal pixel identity at every viewport."
+  },
+  "visual_comparison": {
+    "reference_reconciled": true,
+    "structural_visual_parity": "IMPLEMENTED_AND_LIVE_VERIFIED",
+    "parent_review": "Parent compared the locked 035 reference, current Cases.tsx/CSS owners, focused tests, fresh authenticated production DOM and screenshots. Reference sample counts/rows were not copied because the live workspace is authoritative."
+  },
+  "safety_proof": {
+    "no_hardcoded_reference_fixtures": true,
+    "raw_database_or_api_mutation_by_agent": false,
+    "destructive_mutation": false,
+    "no_secret_exposure": true,
+    "no_unrelated_schema_or_backend_mutation": true,
+    "semantic_color_source_of_truth_preserved": true,
+    "action_confirmation_boundary_preserved": true
+  },
+  "production_propagation": {
+    "source_commits": [
+      "1bed7c302fbebc512bd6c48386fe7c04aa8e4c5b",
+      "297077a41f02086d9a669a8cdb756d00b130b967",
+      "3344ce6df56b045d2aef8590e79b78611ced5ff0"
+    ],
+    "remote_branch": "dev-rollout-freeze",
+    "remote_head_verified": true,
+    "remote_head_at_implementation_push": "3344ce6df56b045d2aef8590e79b78611ced5ff0",
+    "deployment_id": "dpl_A13fgN6NPuzF68PY1eKXCcc8qnZL",
+    "deployment_host": "closedockapp-8i8o3fboy-dkknapikdamian-7019s-projects.vercel.app",
+    "deployment_alias": "https://closeflowapp.vercel.app/",
+    "deployment_state": "READY",
+    "deployment_target": "production",
+    "github_commit_sha": "3344ce6df56b045d2aef8590e79b78611ced5ff0",
+    "github_commit_message": "fix(FRT-035): align cases header copy with reference",
+    "git_dirty_note": "Vercel metadata reports gitDirty=1 because unrelated generated/backups/temp files were present in the integration worktree; those files were not staged or used as FRT-035 source changes."
+  },
+  "known_review_findings": [
+    "Independent reviewer identified that the current ready predicate consumes the canonical case lifecycle/status and the available task/event items, but the list API does not expose a separate checklist/materials/approval completeness source; no schema invention or hardcoded completeness was added.",
+    "Independent reviewer identified that optional ready_since/status_changed_at/next_stage/next_milestone/city/company fields are not all present in the current list projection; the implementation uses available canonical fields and honest fallbacks such as Brak daty, Brak kolejnego etapu and Brak firmy.",
+    "Independent reviewer identified that status mutation and activity history insertion are not atomic in the existing case lifecycle path; the stage preserves the existing mutation contract and surfaces history failure rather than claiming atomicity.",
+    "Reference trend text ↑ 18% vs. poprzedni miesiąc is not rendered because no real comparison-period source exists; it was intentionally not hardcoded under the zero-plaster policy.",
+    "The parent accepted the stage after review; the timed-out independent reviewer did not provide a completed PASS artifact and no independent reviewer PASS is claimed."
+  ],
+  "known_baseline_findings": [
+    "UI patch-layer guard retains four pre-existing findings outside the FRT-035 write set.",
+    "CSS-owner and metric-tile guard suites retain known historical baseline findings outside the FRT-035 write set.",
+    "Canonical Guardian coverage is PARTIAL in audit-only mode; this is recorded without a full Guardian PASS claim."
+  ],
+  "status": "PASS_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "created_at": "2026-08-30T07:42:06.2835973Z"
+}
