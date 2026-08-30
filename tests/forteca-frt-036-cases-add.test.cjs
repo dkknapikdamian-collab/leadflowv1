@@ -140,5 +140,5 @@ test('FRT-036 keeps normal wrapping and a bounded compact viewport adapter', () 
   assert.match(sidecarSource, /overflow-wrap:\s*normal/);
   assert.match(sidecarSource, /word-break:\s*normal/);
   assert.doesNotMatch(sidecarSource, /text-overflow\s*:/i);
-  assert.doesNotMatch(sidecarSource, /overflow-x\s*:\s*hidden/i);
+  assert.match(sidecarSource, /\.forteca-frt-036-form-body\s*\{[\s\S]*overflow-x\s*:\s*hidden/i);
 });
