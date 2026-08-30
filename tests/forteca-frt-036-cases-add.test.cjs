@@ -116,6 +116,11 @@ test('FRT-036 sidecar has one route-scoped owner and uses Visual SOT tokens', ()
   ]) {
     assert.ok(sidecarSource.includes(selector), 'missing sidecar selector: ' + selector);
   }
+  assert.match(
+    sidecarSource,
+    /\[data-forteca-frt-036-root\]\[data-closeflow-modal-visual-system="true"\]\.forteca-frt-036-case-add \.forteca-frt-036-switch--on/,
+    'on-state switch rule must outrank the shared dialog button reset',
+  );
 
   const css = stripCssComments(sidecarSource);
   const foundation = readRepoFile('src/styles/owners/closeflow-foundation.css');
