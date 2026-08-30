@@ -1,0 +1,80 @@
+{
+  "schema_version": 2,
+  "evidence_type": "FORTECA_GUARDIAN_FINAL_CONVERGENCE_SUMMARY",
+  "stage_id": "FRT-041",
+  "mode": "AUDIT_ONLY",
+  "status": "PASS_WITH_DOCUMENTED_BASELINE",
+  "plugin_first": {
+    "command": "npm.cmd --prefix C:\\Users\\malim\\Desktop\\MCP\\ai-code-guardian run guardian -- --smoke",
+    "mode": "AUDIT_ONLY",
+    "file_writes": 0,
+    "selected_capabilities": ["repository-baseline"],
+    "selected_skills": ["ai-code-guardian", "architecture-integrity"],
+    "coverage_outcome": "PARTIAL",
+    "receipt_ids": ["guardian-plugin-smoke-coverage", "guardian-plugin-smoke-result"],
+    "scoped_blockers": 0
+  },
+  "fresh_frt_audit": {
+    "applicable_regression": "PASS 178/178",
+    "history_regressions": "PASS Stage66 2/2; Stage68P 2/2; FRT-040 4/4",
+    "typecheck": "PASS",
+    "lint": "PASS",
+    "build": "PASS_WITH_KNOWN_WARNINGS",
+    "diff_check": "PASS",
+    "browser": "PASS production route-family smoke and FRT-040 authenticated case-history action wiring; preview login boundary documented",
+    "deployment": "PASS preview and production READY on the same runtime code commit",
+    "scoped_findings": [],
+    "scoped_blockers": 0
+  },
+  "source_of_truth_audit": {
+    "runtime_records_are_authoritative": true,
+    "page_read_models_are_derived": true,
+    "workflow_status_has_one_canonical_owner": true,
+    "evidence_is_non_authoritative": true,
+    "parallel_visual_source_introduced": false,
+    "duplicate_runtime_store_introduced": false,
+    "duplicate_mutation_handler_introduced": false
+  },
+  "known_baseline_findings": [
+    {
+      "check": "guard:ui:ssot-css-owners",
+      "status": "PARTIAL_EXISTING_BASELINE",
+      "details": "Existing global-shell concern mismatch, nine forteca-* owner metadata gaps, UNCLASSIFIED_IMPORTANT=343 and SPECIFICITY_PATCH_IMPORTANT=1399; no FRT-041 owner drift introduced."
+    },
+    {
+      "check": "guard:ui:patch-layers",
+      "status": "PARTIAL_EXISTING_BASELINE",
+      "details": "Existing Clients.tsx NextActionIcon/stage-only usage, ClientCreateDialog direct lucide import and icon-registry direct lucide import; no FRT-041 patch layer introduced."
+    },
+    {
+      "check": "check:cf-runtime-00-source-truth",
+      "status": "PARTIAL_PRE_EXISTING_DIRTY_ARTIFACTS",
+      "details": "Generated UI documentation and dist-test-today-sections.cjs were already dirty outside this stage's write set and were not modified."
+    },
+    {
+      "check": "full repository runner",
+      "status": "BASELINE_PARTIAL",
+      "details": "2164/2821 passed and 655 historical failures remain outside the applicable FRT suite; the applicable FRT suite is green 178/178."
+    },
+    {
+      "check": "production build",
+      "status": "PASS_WITH_KNOWN_WARNINGS",
+      "details": "Existing Supabase fallback dynamic/static import warning, large chunk warning and npm allow-scripts informational warning."
+    }
+  ],
+  "interpretation": "Guardian coverage is partial by plugin contract, but all applicable FRT-041 checks have zero scoped blockers. Baseline findings remain explicit and do not override the current runtime or create a second source of truth.",
+  "repository": {
+    "branch": "codex/forteca-ui-001-040-clean",
+    "runtime_code_commit": "a131e5a9fa9db363ef494f5e6ee1d6a2cb285e99",
+    "control_plane_commit_at_capture": "216c53d7f8dac18f4abea5a1d540261f2739292a",
+    "remote_branch_verified": true
+  },
+  "task_economy": {
+    "marketplace_router_startup": "USED",
+    "efficiency_planning": "APPLIED",
+    "optional_delegation": "SKIPPED",
+    "delegation_skip_reason": "Final acceptance required the existing authenticated browser session and one write owner; no delegated provider could safely reproduce that boundary."
+  },
+  "created_at": "2026-08-31",
+  "updated_at": "2026-08-31"
+}

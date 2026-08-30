@@ -1,0 +1,84 @@
+{
+  "schema_version": 2,
+  "receipt_type": "FORTECA_FINAL_CONVERGENCE_RECEIPT",
+  "stage_id": "FRT-041",
+  "reference_scope": "docs/ui/reference/forteca-calm-light/001..040.webp",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_PARENT",
+  "acceptance_basis": {
+    "directive_interpretation": "The owner directive makes Codex the acceptance authority for resolvable technical convergence; runtime/deployment evidence and current repository state outrank stale lower-authority workflow or historical findings.",
+    "root_cause": "No new runtime root cause remained after the FRT-040 production deployment and the final guard/copy reconciliation; FRT-041 therefore performed evidence, source-of-truth and control-plane convergence without new product design.",
+    "review_status": "Parent reviewed the complete 001–040 reference package, accepted FRT-001..FRT-040 evidence chain, route/state/action inventory, source-of-truth boundaries, fresh applicable tests, typecheck/lint/build/diff checks, Guardian output, Vercel deployments and persistent-browser proof. Independent reviewer PASS is not claimed."
+  },
+  "runtime": {
+    "branch": "codex/forteca-ui-001-040-clean",
+    "runtime_code_commit": "a131e5a9fa9db363ef494f5e6ee1d6a2cb285e99",
+    "runtime_changes_in_frt041": false,
+    "production_alias": "https://closeflowapp.vercel.app",
+    "preview_url": "https://closedockapp-l4yvpqqvf-dkknapikdamian-7019s-projects.vercel.app",
+    "preview_deployment_id": "dpl_yG1qZhsBDwsbeWnJVZXzbiSxDdbQ",
+    "production_deployment_id": "dpl_BaQBkAZ3D7VeZ8Gy7UAE9qDVaayd",
+    "preview_status": "READY",
+    "production_status": "READY",
+    "same_runtime_commit_on_preview_and_production": true
+  },
+  "changed_paths": [
+    { "path": "audit/evidence/FRT-041_FINAL_CONVERGENCE.json", "change": "Final 40-reference, route/state/action, source-of-truth, deployment and regression convergence proof." },
+    { "path": "audit/evidence/FRT-041_GUARDIAN_AUDIT_SUMMARY.json", "change": "Plugin-first Guardian result, applicable checks, zero scoped blockers and explicit baseline findings." },
+    { "path": "_project/runs/forteca-clean/FRT-041_RECEIPT.json", "change": "Canonical stage receipt; WORKFLOW_STATE remains the workflow status owner." },
+    { "path": "_project/WORKFLOW_STATE.json", "change": "Single final workflow transition records FRT-041 PASS and the integration-candidate READY marker." },
+    { "path": "_project/contracts/forteca-clean/FRT-041_FINAL_CONVERGENCE.md", "change": "Locks the accepted final convergence contract after proof." }
+  ],
+  "verification": {
+    "reference_inventory": "PASS 40/40, numbered 001–040, manifest and package integrity verified",
+    "stage_inventory": "PASS FRT-001..FRT-040 accepted with documented deviations where applicable",
+    "browser_evidence_inventory": "PASS 40/40 stage browser proof files; fresh production route-family and FRT-040 history interaction proof included in final evidence",
+    "applicable_regressions": "PASS 178/178 Forteca tests; FRT-040 4/4; Stage66 2/2; Stage68P 2/2",
+    "typecheck": "PASS",
+    "lint": "PASS",
+    "build": "PASS_WITH_KNOWN_WARNINGS",
+    "diff_check": "PASS",
+    "guardian": "PARTIAL_WITH_ZERO_SCOPED_BLOCKERS",
+    "browser": "PASS authenticated production route family and case-history filters/clear/timeline anchor; preview login boundary documented",
+    "remote_verification": "PASS remote branch SHA matched local branch after every pushed transition; runtime deployment commit matched a131e5a9fa9db363ef494f5e6ee1d6a2cb285e99",
+    "full_repository_runner": "BASELINE_PARTIAL 2164/2821 passed, 655 historical failures retained outside the applicable FRT suite"
+  },
+  "acceptance_criteria": {
+    "references": "PASS 40/40",
+    "route_state_proofs": "PASS 40/40",
+    "dead_required_controls": "PASS 0",
+    "user_facing_placeholders_or_fake_identity_copy": "PASS 0 on approved rendered routes",
+    "parallel_visual_source": "PASS 0 introduced or active in FRT-041",
+    "duplicate_visual_concerns": "PASS 0 introduced by FRT-041",
+    "known_reference_deviations": "DOCUMENTED in manifest, README and final convergence evidence"
+  },
+  "source_of_truth": {
+    "runtime_state_owner": "Workspace-scoped records returned by existing Supabase/API readers and existing mutation handlers.",
+    "view_projection_owner": "Existing page components derive transient views from runtime records; no new persisted state store was added.",
+    "visual_owner": "Registered Visual SOT owner files and canonical VST variables.",
+    "workflow_status_owner": "_project/WORKFLOW_STATE.json only.",
+    "evidence_owner": "Evidence and receipts document and verify state; they do not become runtime or workflow state.",
+    "duplicate_runtime_state_store_introduced": false,
+    "duplicate_workflow_status_store_introduced": false
+  },
+  "control_plane": {
+    "next_workflow": "PROGRAM_CLOSEOUT",
+    "next_workflow_status": "LOCKED_PENDING_EXPLICIT_CLOSEOUT_ACTION",
+    "integration_candidate_target": "READY",
+    "no_production_merge_performed": true
+  },
+  "safety": {
+    "synthetic_fixture_only": true,
+    "no_secrets_or_personal_data_recorded": true,
+    "no_raw_browser_storage_or_cookies_read": true,
+    "no_sql_schema_change_needed": true
+  },
+  "task_economy": {
+    "marketplace_router_startup": "USED",
+    "efficiency_planning": "APPLIED",
+    "optional_delegation": "SKIPPED",
+    "delegation_skip_reason": "Final acceptance required the existing authenticated browser session and one write owner; no delegated provider could safely reproduce that boundary."
+  },
+  "recorded_at": "2026-08-31"
+}
