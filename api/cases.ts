@@ -6,7 +6,8 @@ import { normalizeCaseContract } from '../src/lib/data-contract.js';
 import { normalizeCommissionBase, normalizeCommissionMode, normalizeCommissionStatus } from '../src/lib/finance/finance-normalize.js';
 import { CASE_STATUS_VALUES, normalizeCaseStatus } from '../src/lib/domain-statuses.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
-import { readPortalSession, requirePortalSessionContext } from '../src/server/_portal-token.js';
+import { createPortalToken, readPortalSession, requirePortalSessionContext, upsertPortalTokenForCase } from '../src/server/_portal-token.js';
+import { getAppUrlFromRequest, getMailDiagnostics, sendResendEmail } from '../src/server/_mail.js';
 import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 
 const CASE_STATUSES = new Set<string>(CASE_STATUS_VALUES);
@@ -54,6 +55,40 @@ const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', '
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
+}
+
+function escapeHtml(value: string) {
+  return value.replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  }[character] || character));
+}
+
+async function createAndSendClientPortalLink(input: {
+  request: any;
+  caseId: string;
+  workspaceId: string;
+  caseTitle: string;
+  clientEmail: string;
+}) {
+  const plaintextToken = createPortalToken();
+  await upsertPortalTokenForCase(input.caseId, plaintextToken, null, input.workspaceId);
+  const portalUrl = getAppUrlFromRequest(input.request)
+    + '/portal/'
+    + encodeURIComponent(input.caseId)
+    + '/'
+    + encodeURIComponent(plaintextToken);
+  const safeTitle = escapeHtml(input.caseTitle);
+  const emailResult = await sendResendEmail({
+    to: input.clientEmail,
+    subject: 'Dostęp do portalu klienta — ' + input.caseTitle,
+    plain: 'Otwórz portal klienta: ' + portalUrl,
+    html: '<p>Dostęp do sprawy <strong>' + safeTitle + '</strong>:</p><p><a href="' + portalUrl + '">Otwórz portal klienta</a></p>',
+  });
+  return emailResult.ok ? 'sent' : 'failed';
 }
 
 function asNullableUuid(value: unknown) {
@@ -539,6 +574,16 @@ export default async function handler(req: any, res: any) {
         throw new Error('CLIENT_NOT_FOUND');
       }
       const normalizedClientId = asNullableUuid(ensuredClient?.id || body.clientId || linkedLead?.client_id || linkedLead?.clientId);
+      const sendClientLink = Boolean(body.sendClientLink);
+      const clientEmailForPortal = asText(ensuredClient?.email || body.clientEmail || linkedLead?.email).toLowerCase();
+      if (sendClientLink && !clientEmailForPortal) {
+        res.status(422).json({ error: 'CLIENT_EMAIL_REQUIRED_FOR_PORTAL_LINK' });
+        return;
+      }
+      if (sendClientLink && !getMailDiagnostics().hasResendApiKey) {
+        res.status(503).json({ error: 'CLIENT_PORTAL_EMAIL_NOT_CONFIGURED' });
+        return;
+      }
       const wantsPrimaryCase = Boolean(body.primaryForClient || body.primary_for_client);
       const replacePrimaryCase = Boolean(body.replacePrimaryCase || body.replace_primary_case);
       const existingPrimaryCaseId = wantsPrimaryCase && normalizedClientId ? await getClientPrimaryCaseIdForApi(finalWorkspaceId, normalizedClientId) : '';
@@ -576,7 +621,7 @@ export default async function handler(req: any, res: any) {
         remaining_amount: remainingAmount,
         currency: normalizeCurrency(body.currency ?? linkedLead?.currency),
         completeness_percent: Number(body.completenessPercent || 0),
-        portal_ready: Boolean(body.portalReady || false),
+        portal_ready: Boolean(body.portalReady || body.sendClientLink || false),
         created_from_lead: normalizedLeadId ? true : Boolean(body.createdFromLead),
         service_started_at: toIso(body.serviceStartedAt) || (normalizedLeadId ? nowIso : null),
         started_at: toIso(body.startedAt) || (normalizedStatus === 'in_progress' ? nowIso : null),
@@ -612,7 +657,32 @@ export default async function handler(req: any, res: any) {
         }
       }
 
-      res.status(200).json(normalizeCase(inserted as Record<string, unknown>));
+      let portalLinkStatus = 'not_requested';
+      if (sendClientLink) {
+        if (!insertedId) {
+          portalLinkStatus = 'failed';
+        } else {
+          try {
+            portalLinkStatus = await createAndSendClientPortalLink({
+              request: req,
+              caseId: insertedId,
+              workspaceId: finalWorkspaceId,
+              caseTitle: asText((inserted as Record<string, unknown>).title) || asText(body.title) || 'Nowa sprawa',
+              clientEmail: clientEmailForPortal,
+            });
+          } catch {
+            portalLinkStatus = 'failed';
+          }
+        }
+      }
+
+      res.status(200).json({
+        ...normalizeCase(inserted as Record<string, unknown>),
+        portalLink: {
+          requested: sendClientLink,
+          status: portalLinkStatus,
+        },
+      });
       return;
     }
 

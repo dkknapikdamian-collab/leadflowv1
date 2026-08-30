@@ -20,6 +20,10 @@ export type CreateStarterCaseForClientInput = {
   clientPhone?: string;
   workspaceId: string;
   primaryForClient: boolean;
+  status?: string;
+  portalReady?: boolean;
+  sendClientLink?: boolean;
+  serviceProfileId?: string | null;
   contractValue?: number;
   currency?: string;
   startedAt?: string | null;
@@ -65,7 +69,7 @@ export async function createStarterCaseForClient(input: CreateStarterCaseForClie
     clientName: input.clientName,
     clientEmail: input.clientEmail || '',
     clientPhone: input.clientPhone || '',
-    status: 'new',
+    status: input.status || 'new',
     contractValue: typeof input.contractValue === 'number' ? input.contractValue : 0,
     expectedRevenue: 0,
     caseValue: 0,
@@ -76,6 +80,9 @@ export async function createStarterCaseForClient(input: CreateStarterCaseForClie
     commissionStatus: 'not_set',
     startedAt: input.startedAt || null,
     primaryForClient: input.primaryForClient,
+    portalReady: input.portalReady,
+    sendClientLink: input.sendClientLink,
+    serviceProfileId: input.serviceProfileId,
     workspaceId: input.workspaceId,
     ownerId: input.ownerId,
   });
@@ -93,6 +100,7 @@ export async function createStarterCaseForClient(input: CreateStarterCaseForClie
         templateName: input.checklistTemplateName || '',
       },
       activityCreated: false,
+      portalLink: (createdCase as { portalLink?: unknown }).portalLink,
     };
   }
 
@@ -180,7 +188,7 @@ export async function createStarterCaseForClient(input: CreateStarterCaseForClie
       activityCreated = true;
     }
 
-    return { createdCase, createdCaseId, checklist, activityCreated };
+    return { createdCase, createdCaseId, checklist, activityCreated, portalLink: (createdCase as { portalLink?: unknown }).portalLink };
   }
 
   let activityCreated = false;
@@ -223,5 +231,6 @@ export async function createStarterCaseForClient(input: CreateStarterCaseForClie
       templateName: '',
     },
     activityCreated,
+    portalLink: (createdCase as { portalLink?: unknown }).portalLink,
   };
 }

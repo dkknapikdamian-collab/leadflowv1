@@ -1,0 +1,556 @@
+/* LF-UI-SOT-007_OWNER {"schema":"LF-UI-SOT-007.owner.v1","ownerId":"route:cases:add-modal","concerns":[],"scope":"route-scoped","consumerRoots":["src/pages/Cases.tsx"],"role":"scoped-adapter","boundary":"route-component-modal","whyNotGlobal":"This stylesheet owns only the existing Cases add-case modal composition; shared Dialog, form, action, icon and token semantics remain globally owned.","whyNotDuplicate":"Selectors are anchored to the FRT-036 modal marker and consume the shared Visual SOT tokens.","activePatchLayer":false,"historicalImplementationHooks":[]} */
+
+/* FRT-036 bounded adapter: the real /cases create flow, reference composition only. */
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] {
+  box-sizing: border-box;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  width: min(var(--cf-vst-modal-width-md), calc(100vw - (var(--cf-vst-space-lg) * 2))) !important;
+  max-width: none !important;
+  max-height: calc(100dvh - (var(--cf-vst-space-lg) * 2)) !important;
+  padding: var(--cf-vst-modal-padding) !important;
+  overflow: hidden !important;
+  color: var(--cf-vst-text-main) !important;
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+  font-family: var(--cf-vst-font-family-app) !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"]::before,
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"]::after {
+  display: none !important;
+  content: none !important;
+}
+
+.cf-vst-overlay:has(+ [data-forteca-frt-036-root][data-state="open"]) {
+  background: var(--cf-vst-overlay-backdrop) !important;
+  opacity: 1 !important;
+  backdrop-filter: none !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-dialog-header {
+  display: block !important;
+  flex: 0 0 auto;
+  margin: 0 !important;
+  padding: 0 0 var(--cf-vst-space-lg) !important;
+  color: var(--cf-vst-text-strong) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  text-align: left !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-kicker,
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-dialog-header > p {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip-path: inset(50%) !important;
+  border: 0 !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-dialog-header .cf-vst-dialog-title {
+  margin: 0 !important;
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-section-title) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-title) !important;
+  letter-spacing: var(--cf-vst-letter-spacing-tight) !important;
+  white-space: normal !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .cf-vst-dialog-close {
+  top: var(--cf-vst-space-lg) !important;
+  right: var(--cf-vst-space-lg) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: var(--cf-vst-button-height-sm) !important;
+  height: var(--cf-vst-button-height-sm) !important;
+  color: var(--cf-vst-text-muted) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted) !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  opacity: 1 !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .cf-vst-dialog-close:hover {
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+  background: var(--cf-vst-surface-soft) !important;
+  border-color: var(--cf-vst-surface-border) !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .cf-vst-dialog-close svg {
+  width: var(--cf-vst-icon-size-sm) !important;
+  height: var(--cf-vst-icon-size-sm) !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-form {
+  display: flex !important;
+  flex: 1 1 auto;
+  min-height: 0;
+  flex-direction: column !important;
+  gap: 0 !important;
+  color: var(--cf-vst-text-main) !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-form-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding-right: var(--cf-vst-space-2xs);
+  overflow-y: auto;
+  scrollbar-color: var(--cf-vst-surface-border-strong) transparent;
+  scrollbar-width: thin;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-form-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--cf-vst-space-lg) var(--cf-vst-space-xl);
+  min-width: 0;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-field {
+  display: grid;
+  align-content: start;
+  min-width: 0;
+  gap: var(--cf-vst-space-xs);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-field--full {
+  grid-column: 1 / -1;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-field--identity {
+  grid-template-columns: minmax(92px, auto) minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--cf-vst-space-lg);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-identity-label {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  gap: var(--cf-vst-space-xs);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-label,
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-label-row {
+  min-width: 0;
+  color: var(--cf-vst-label-color) !important;
+  -webkit-text-fill-color: var(--cf-vst-label-color) !important;
+  font-size: var(--cf-vst-font-size-label) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+  letter-spacing: var(--cf-vst-letter-spacing-label) !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cf-vst-space-xs);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-label .cf-entity-icon,
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-label .cf-vst-semantic-icon,
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-identity-label > .cf-entity-icon {
+  flex: 0 0 auto;
+  width: var(--cf-vst-icon-size-sm);
+  height: var(--cf-vst-icon-size-sm);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--cf-vst-space-sm);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-counter,
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-field-help {
+  color: var(--cf-vst-text-muted) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-regular) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-field-help {
+  margin: 0 !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-control,
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-control[data-cf-vst-input="true"],
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-control[data-cf-vst-input="textarea"] {
+  box-sizing: border-box;
+  width: 100% !important;
+  min-width: 0;
+  color: var(--cf-vst-text-main) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-main) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  font-weight: var(--cf-vst-font-weight-regular) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-input-border) !important;
+  border-radius: var(--cf-vst-input-radius) !important;
+  box-shadow: none !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-control {
+  height: var(--cf-vst-input-height) !important;
+  padding: 0 var(--cf-vst-space-md) !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-control::placeholder {
+  color: var(--cf-vst-placeholder-color) !important;
+  -webkit-text-fill-color: var(--cf-vst-placeholder-color) !important;
+  opacity: 1 !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-control:focus,
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-control:focus-visible {
+  outline: none !important;
+  border-color: var(--cf-vst-input-focus-border) !important;
+  box-shadow: var(--cf-vst-input-focus-ring) !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-control:disabled {
+  color: var(--cf-vst-text-muted) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted) !important;
+  background: var(--cf-vst-surface-soft) !important;
+  opacity: var(--cf-vst-disabled-opacity) !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-select-wrap,
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-money-wrap,
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-date-wrap,
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-owner-wrap {
+  position: relative;
+  min-width: 0;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-select {
+  appearance: none;
+  padding-right: calc(var(--cf-vst-space-md) + var(--cf-vst-icon-size-xs)) !important;
+  cursor: pointer;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-select--with-prefix {
+  padding-left: calc(var(--cf-vst-space-md) + var(--cf-vst-icon-size-sm) + var(--cf-vst-space-xs)) !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-select-chevron {
+  position: absolute;
+  top: 50%;
+  right: var(--cf-vst-space-md);
+  width: var(--cf-vst-icon-size-xs);
+  height: var(--cf-vst-icon-size-xs);
+  color: var(--cf-vst-text-muted) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted) !important;
+  pointer-events: none;
+  transform: translateY(-50%) rotate(90deg);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-priority-dot {
+  position: absolute;
+  top: 50%;
+  left: var(--cf-vst-space-md);
+  z-index: 1;
+  width: var(--cf-vst-space-sm);
+  height: var(--cf-vst-space-sm);
+  pointer-events: none;
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-priority-dot--low {
+  background: var(--cf-vst-color-task);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-priority-dot--medium {
+  background: var(--cf-vst-color-event);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-priority-dot--high {
+  background: var(--cf-vst-color-delete);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-priority-wrap .forteca-frt-036-select {
+  padding-left: calc(var(--cf-vst-space-md) + var(--cf-vst-space-sm) + var(--cf-vst-space-xs)) !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-money-wrap {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-money-prefix {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: calc(var(--cf-vst-space-xl) + var(--cf-vst-space-md));
+  height: var(--cf-vst-input-height);
+  padding: 0 var(--cf-vst-space-sm);
+  color: var(--cf-vst-text-muted) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-label) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+  background: var(--cf-vst-surface-soft) !important;
+  border: 1px solid var(--cf-vst-input-border) !important;
+  border-right: 0 !important;
+  border-radius: var(--cf-vst-input-radius) 0 0 var(--cf-vst-input-radius) !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-money-input {
+  padding-right: var(--cf-vst-space-md) !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-date-input {
+  padding-right: calc(var(--cf-vst-button-height-sm) + var(--cf-vst-space-lg)) !important;
+  padding-left: calc(var(--cf-vst-icon-size-sm) + var(--cf-vst-space-xl)) !important;
+  appearance: none;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-date-input::-webkit-calendar-picker-indicator {
+  opacity: 0;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-date-icon {
+  position: absolute;
+  top: 50%;
+  left: var(--cf-vst-space-md);
+  z-index: 1;
+  width: var(--cf-vst-icon-size-sm);
+  height: var(--cf-vst-icon-size-sm);
+  color: var(--cf-vst-color-primary) !important;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-clear-date {
+  position: absolute;
+  top: 50%;
+  right: var(--cf-vst-space-2xs);
+  z-index: 1;
+  width: var(--cf-vst-button-height-sm) !important;
+  height: var(--cf-vst-button-height-sm) !important;
+  padding: 0 !important;
+  color: var(--cf-vst-text-muted) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted) !important;
+  transform: translateY(-50%);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-owner-avatar {
+  position: absolute;
+  top: 50%;
+  left: var(--cf-vst-space-md);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--cf-vst-icon-box-sm);
+  height: var(--cf-vst-icon-box-sm);
+  color: var(--cf-vst-color-primary) !important;
+  -webkit-text-fill-color: var(--cf-vst-color-primary) !important;
+  font-size: var(--cf-vst-font-size-micro) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  background: var(--cf-vst-color-primary-soft) !important;
+  border-radius: var(--cf-vst-radius-pill);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-owner-wrap .forteca-frt-036-select {
+  padding-left: calc(var(--cf-vst-space-md) + var(--cf-vst-icon-box-sm) + var(--cf-vst-space-xs)) !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-template-icon {
+  position: absolute;
+  top: 50%;
+  left: var(--cf-vst-space-md);
+  z-index: 1;
+  width: var(--cf-vst-icon-size-sm);
+  height: var(--cf-vst-icon-size-sm);
+  color: var(--cf-vst-color-primary) !important;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-textarea {
+  min-height: 86px !important;
+  height: 86px !important;
+  padding: var(--cf-vst-space-md) !important;
+  resize: vertical;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-switch-row,
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-checklist-switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cf-vst-space-lg);
+  min-width: 0;
+  margin-top: var(--cf-vst-space-lg);
+  padding-top: var(--cf-vst-space-lg);
+  border-top: 1px solid var(--cf-vst-surface-border);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-switch-row > div {
+  display: grid;
+  min-width: 0;
+  gap: var(--cf-vst-space-2xs);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-switch-label {
+  min-width: 0;
+  color: var(--cf-vst-text-main) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-main) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-switch-help {
+  min-width: 0;
+  color: var(--cf-vst-text-muted) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-switch {
+  position: relative;
+  display: inline-flex !important;
+  flex: 0 0 auto;
+  align-items: center;
+  width: 42px !important;
+  min-width: 42px !important;
+  height: 24px !important;
+  min-height: 24px !important;
+  padding: 0 !important;
+  color: var(--cf-vst-text-muted) !important;
+  background: var(--cf-vst-surface-border-strong) !important;
+  border: 1px solid var(--cf-vst-surface-border-strong) !important;
+  border-radius: var(--cf-vst-radius-pill) !important;
+  box-shadow: none !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-switch--on {
+  color: var(--cf-vst-surface-card-solid) !important;
+  background: var(--cf-vst-color-primary) !important;
+  border-color: var(--cf-vst-color-primary) !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-switch-thumb {
+  display: block;
+  width: 16px;
+  height: 16px;
+  margin-left: var(--cf-vst-space-2xs);
+  background: var(--cf-vst-surface-card-solid);
+  border-radius: var(--cf-vst-radius-pill);
+  box-shadow: var(--cf-vst-shadow-card);
+  transform: translateX(0);
+  transition: transform var(--cf-vst-transition-fast);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-switch--on .forteca-frt-036-switch-thumb {
+  transform: translateX(16px);
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-switch:focus-visible {
+  outline: 3px solid var(--cf-vst-color-primary-border) !important;
+  outline-offset: 2px;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-dialog-footer {
+  display: flex !important;
+  flex: 0 0 auto;
+  flex-direction: row !important;
+  justify-content: flex-end !important;
+  gap: var(--cf-vst-modal-footer-gap) !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: var(--cf-vst-space-lg) 0 0 !important;
+  background: var(--cf-vst-surface-card-solid) !important;
+  border-top: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: 0 !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-dialog-footer [data-cf-vst-button] {
+  min-height: var(--cf-vst-button-height-md) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-dialog-footer [data-forteca-frt-036-action="cancel"] {
+  min-width: 82px;
+  color: var(--cf-vst-text-main) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-main) !important;
+  background: var(--cf-vst-surface-card-solid) !important;
+  border-color: var(--cf-vst-surface-border-strong) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-dialog-footer [data-forteca-frt-036-action="submit"] {
+  min-width: 128px;
+  color: var(--cf-vst-surface-card-solid) !important;
+  -webkit-text-fill-color: var(--cf-vst-surface-card-solid) !important;
+  background: var(--cf-vst-color-primary) !important;
+  border-color: var(--cf-vst-color-primary) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+}
+
+[data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-dialog-footer [data-forteca-frt-036-action="submit"]:hover {
+  background: var(--cf-vst-color-primary-strong) !important;
+  border-color: var(--cf-vst-color-primary-strong) !important;
+}
+
+@media (max-width: 720px) {
+  [data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] {
+    width: calc(100vw - (var(--cf-vst-space-lg) * 2)) !important;
+    max-height: calc(100dvh - var(--cf-vst-space-lg)) !important;
+    padding: var(--cf-vst-space-lg) !important;
+  }
+
+  [data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--cf-vst-space-lg);
+  }
+
+  [data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-field--full {
+    grid-column: auto;
+  }
+
+  [data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-field--identity {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--cf-vst-space-xs);
+  }
+
+  [data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-dialog-footer {
+    flex-direction: column-reverse !important;
+    align-items: stretch;
+  }
+
+  [data-forteca-frt-036-root][data-closeflow-modal-visual-system="true"] .forteca-frt-036-dialog-footer [data-cf-vst-button] {
+    width: 100%;
+  }
+}

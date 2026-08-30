@@ -25,6 +25,7 @@ import { StatShortcutCard } from '../components/StatShortcutCard';
 import Layout from '../components/Layout';
 import { EntityTrashButton, modalFooterClass, trashActionIconClass } from '../components/entity-actions';
 import { Input } from '../components/ui/input';
+import { Textarea } from '../components/ui/textarea';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { FilterSelect } from '../components/ui/filter-select';
@@ -44,17 +45,21 @@ import { normalizeCaseStatus } from '../lib/domain-statuses';
 import { caseDetailPath } from '../lib/routes';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import { APP_ICONS } from '../lib/source-of-truth/icon-registry';
+import { createStarterCaseForClient } from '../lib/cases/create-client-case';
+import { normalizeTemplateItems } from '../lib/source-of-truth/template-options';
 import {
-  createCaseInSupabase,
   fetchCasesFromSupabase,
+  fetchCaseTemplatesFromSupabase,
   fetchEventsFromSupabase,
   fetchLeadsFromSupabase,
+  fetchServiceProfilesFromSupabase,
   fetchTasksFromSupabase,
   isSupabaseConfigured,
   fetchClientsFromSupabase,
   insertActivityToSupabase,
   updateCaseInSupabase,
 } from '../lib/supabase-fallback';
+import { CalendarActionIcon, EntityIcon, SemanticIcon } from '../components/ui-system';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-runtime.css';
 import '../styles/closeflow-record-list-source-truth.css';
@@ -62,6 +67,7 @@ import '../styles/forteca-cases-all.css';
 import '../styles/forteca-cases-waiting.css';
 import '../styles/forteca-cases-blocked.css';
 import '../styles/forteca-cases-ready.css';
+import '../styles/forteca-cases-add.css';
 // LF-UI-SOT-007 shared-source contract: import '../styles/closeflow-unified-page-canvas-stage211c.css' is provided once by App.tsx.
 const CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES = 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES';
 const CLIENT_CASE_FORMS_STAGE23_HUMAN_COPY = 'Podaj nazwę klienta. Podaj tytuł sprawy. Wybierz klienta albo utwórz nowego. Nie udało się zapisać. Spróbuj ponownie. Rozpocznij obsługę.';
@@ -104,6 +110,40 @@ type ClientOption = {
   email: string;
   phone: string;
   source: 'case' | 'lead' | 'client';
+};
+
+type CaseAddDraft = {
+  title: string;
+  clientId: string;
+  clientName: string;
+  clientEmail: string;
+  clientPhone: string;
+  caseType: string;
+  priority: '' | 'low' | 'medium' | 'high';
+  contractValue: string;
+  status: string;
+  plannedDate: string;
+  ownerId: string;
+  description: string;
+  checklistTemplateId: string;
+  createChecklist: boolean;
+  sendClientLink: boolean;
+};
+
+type CaseAddTemplateOption = {
+  id: string;
+  name: string;
+  items: Array<{
+    title: string;
+    description: string;
+    type: string;
+    isRequired: boolean;
+  }>;
+};
+
+type CaseAddServiceProfileOption = {
+  id: string;
+  name: string;
 };
 
 type CaseView =
@@ -183,6 +223,78 @@ function buildClientOptions(cases: CaseRecord[], leads: any[], clients: any[] = 
   }
 
   return [...map.values()].sort((left, right) => left.name.localeCompare(right.name, 'pl', { sensitivity: 'base' }));
+}
+
+function readCaseAddText(value: unknown, keys: string[]) {
+  if (!value || typeof value !== 'object') return '';
+  const row = value as Record<string, unknown>;
+  for (const key of keys) {
+    const candidate = row[key];
+    if (typeof candidate === 'string' || typeof candidate === 'number') {
+      const text = String(candidate).trim();
+      if (text) return text;
+    }
+  }
+  return '';
+}
+
+function readCaseAddTemplate(value: unknown): CaseAddTemplateOption | null {
+  const id = readCaseAddText(value, ['id']);
+  const name = readCaseAddText(value, ['name', 'title']);
+  const rawItems = value && typeof value === 'object' && Array.isArray((value as Record<string, unknown>).items)
+    ? (value as Record<string, unknown>).items
+    : [];
+  const items = normalizeTemplateItems(rawItems as Array<Partial<{
+    title: string;
+    description: string;
+    type: 'file' | 'text' | 'decision' | 'access' | 'meeting' | 'payment' | 'materials' | 'other';
+    isRequired: boolean;
+  }>>)
+    .filter((item) => item.title)
+    .map((item) => ({
+      title: item.title,
+      description: item.description || '',
+      type: item.type || 'file',
+      isRequired: item.isRequired !== false,
+    }));
+  return id && name && items.length ? { id, name, items } : null;
+}
+
+function createDefaultCaseAddDraft(ownerId = ''): CaseAddDraft {
+  return {
+    title: '',
+    clientId: '',
+    clientName: '',
+    clientEmail: '',
+    clientPhone: '',
+    caseType: '',
+    priority: '',
+    contractValue: '',
+    status: '',
+    plannedDate: '',
+    ownerId,
+    description: '',
+    checklistTemplateId: '',
+    createChecklist: true,
+    sendClientLink: true,
+  };
+}
+
+function parseCaseAddMoney(value: string) {
+  const compact = value.trim().replace(/\s/g, '');
+  if (!compact) return null;
+  const normalized = compact.includes(',')
+    ? compact.replace(/\./g, '').replace(',', '.')
+    : compact;
+  if (!/^\d+(?:\.\d{1,2})?$/.test(normalized)) return null;
+  const amount = Number(normalized);
+  return Number.isFinite(amount) ? amount : null;
+}
+
+function parseCaseAddDate(value: string) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== value ? null : date.toISOString();
 }
 
 function caseNeedsAttention(caseRecord: CaseRecord) {
@@ -534,15 +646,15 @@ export default function Cases() {
   const [startCasePendingId, setStartCasePendingId] = useState<string | null>(null);
   const [isCreateCaseOpen, setIsCreateCaseOpen] = useState(false);
   const [createCasePending, setCreateCasePending] = useState(false);
-  const [showCreateClientFields, setShowCreateClientFields] = useState(false);
-  const [newCase, setNewCase] = useState({
-    title: '',
-    clientName: '',
-    clientEmail: '',
-    clientPhone: '',
-    clientId: '',
-    status: 'in_progress',
-  });
+  const [newCase, setNewCase] = useState<CaseAddDraft>(() => createDefaultCaseAddDraft(
+    String(workspace?.ownerId || profile?.id || '').trim(),
+  ));
+  const [caseAddTemplates, setCaseAddTemplates] = useState<CaseAddTemplateOption[]>([]);
+  const [caseAddTemplatesLoading, setCaseAddTemplatesLoading] = useState(false);
+  const [caseAddTemplatesError, setCaseAddTemplatesError] = useState('');
+  const [caseAddServiceProfiles, setCaseAddServiceProfiles] = useState<CaseAddServiceProfileOption[]>([]);
+  const [caseAddServiceProfilesLoading, setCaseAddServiceProfilesLoading] = useState(false);
+  const [caseAddServiceProfilesError, setCaseAddServiceProfilesError] = useState('');
 
   const refreshCases = async () => {
     const results = await Promise.allSettled([
@@ -730,6 +842,22 @@ export default function Cases() {
     return [...owners.entries()].sort((left, right) => left[1].localeCompare(right[1], 'pl'));
   }, [cases, profile, workspace]);
 
+  const caseAddOwnerOptions = useMemo(() => {
+    const options = [
+      {
+        value: String(workspace?.ownerId || '').trim(),
+        label: 'Właściciel workspace',
+      },
+      {
+        value: String(profile?.id || '').trim(),
+        label: String(profile?.fullName || profile?.email || 'Mój profil').trim(),
+      },
+      ...caseOwnerOptions.map(([value, label]) => ({ value, label })),
+    ].filter((option) => option.value);
+
+    return Array.from(new Map(options.map((option) => [option.value, option])).values());
+  }, [caseOwnerOptions, profile?.email, profile?.fullName, profile?.id, workspace?.ownerId]);
+
   const caseClientFilterOptions = useMemo(() => {
     const clients = new Map<string, string>();
     for (const record of cases) {
@@ -740,6 +868,69 @@ export default function Cases() {
     }
     return [...clients.entries()].sort((left, right) => left[1].localeCompare(right[1], 'pl'));
   }, [cases, clientsById]);
+
+  useEffect(() => {
+    if (!isCreateCaseOpen) return;
+
+    let cancelled = false;
+    setCaseAddTemplatesLoading(true);
+    setCaseAddTemplatesError('');
+    setCaseAddServiceProfilesLoading(true);
+    setCaseAddServiceProfilesError('');
+
+    Promise.allSettled([
+      fetchCaseTemplatesFromSupabase({ includeArchived: false }),
+      fetchServiceProfilesFromSupabase({ includeArchived: false }),
+    ]).then(([templatesResult, serviceProfilesResult]) => {
+      if (cancelled) return;
+
+      if (templatesResult.status === 'fulfilled') {
+        const templates = templatesResult.value
+          .map(readCaseAddTemplate)
+          .filter((template): template is CaseAddTemplateOption => Boolean(template));
+        setCaseAddTemplates(templates);
+        setNewCase((current) => ({
+          ...current,
+          checklistTemplateId: current.checklistTemplateId && templates.some((template) => template.id === current.checklistTemplateId)
+            ? current.checklistTemplateId
+            : '',
+          createChecklist: templates.length > 0,
+        }));
+      } else {
+        setCaseAddTemplates([]);
+        setCaseAddTemplatesError('Nie udało się pobrać szablonów checklisty.');
+        setNewCase((current) => ({ ...current, checklistTemplateId: '', createChecklist: false }));
+      }
+
+      if (serviceProfilesResult.status === 'fulfilled') {
+        const profiles = serviceProfilesResult.value
+          .map((row) => ({
+            id: readCaseAddText(row, ['id']),
+            name: readCaseAddText(row, ['name', 'title']),
+          }))
+          .filter((option) => option.id && option.name);
+        setCaseAddServiceProfiles(profiles);
+        setNewCase((current) => ({
+          ...current,
+          caseType: current.caseType && profiles.some((profileOption) => profileOption.id === current.caseType)
+            ? current.caseType
+            : '',
+        }));
+      } else {
+        setCaseAddServiceProfiles([]);
+        setCaseAddServiceProfilesError('Nie udało się pobrać typów spraw.');
+        setNewCase((current) => ({ ...current, caseType: '' }));
+      }
+    }).finally(() => {
+      if (cancelled) return;
+      setCaseAddTemplatesLoading(false);
+      setCaseAddServiceProfilesLoading(false);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isCreateCaseOpen]);
 
   useEffect(() => {
     if (stage23PrefillHandledRef.current) return;
@@ -760,32 +951,17 @@ export default function Cases() {
       clientPhone: String(client?.phone || ''),
       title: prev.title.trim() ? cleanCaseListTitle(prev.title) : String(client?.name || client?.company || 'Sprawa bez nazwy'),
     }));
-    setShowCreateClientFields(false);
     setIsCreateCaseOpen(true);
   }, [clientCandidates, searchParams]);
 
   useEffect(() => {
     if (searchParams.get('quick') !== 'case') return;
 
-    setShowCreateClientFields(false);
     setIsCreateCaseOpen(true);
     const nextParams = new URLSearchParams(searchParams);
     nextParams.delete('quick');
     setSearchParams(nextParams, { replace: true });
   }, [searchParams, setSearchParams]);
-
-  const clientSuggestions = useMemo(() => {
-    const normalizedQuery = newCase.clientName.trim().toLowerCase();
-    const base = normalizedQuery
-      ? clientOptions.filter((option) => {
-          return [option.name, option.email, option.phone]
-            .filter(Boolean)
-            .some((value) => value.toLowerCase().includes(normalizedQuery));
-        })
-      : clientOptions;
-
-    return base.slice(0, 6);
-  }, [clientOptions, newCase.clientName]);
 
   const filteredCases = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -1180,51 +1356,62 @@ export default function Cases() {
     if (!hasAccess) return toast.error('Trial wygasł.');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
-    if (!newCase.title.trim()) return toast.error('Podaj tytuł sprawy.');
-    if (!newCase.clientId && !newCase.clientName.trim()) return toast.error('Wybierz klienta albo utwórz nowego.');
 
+    const selectedClient = clientOptions.find((option) => option.id === newCase.clientId);
+    const selectedTemplate = caseAddTemplates.find((template) => template.id === newCase.checklistTemplateId);
+    const selectedServiceProfile = caseAddServiceProfiles.find((option) => option.id === newCase.caseType);
+    const contractValue = newCase.contractValue.trim() ? parseCaseAddMoney(newCase.contractValue) : 0;
+    const plannedDateIso = newCase.plannedDate ? parseCaseAddDate(newCase.plannedDate) : null;
+
+    if (!newCase.title.trim()) return toast.error('Podaj nazwę sprawy.');
+    if (!selectedClient?.id) return toast.error('Wybierz klienta.');
+    if (newCase.caseType && !selectedServiceProfile) return toast.error('Wybierz dostępny typ sprawy.');
+    if (newCase.priority && !['low', 'medium', 'high'].includes(newCase.priority)) return toast.error('Wybierz dostępny priorytet.');
+    if (newCase.contractValue.trim() && contractValue === null) return toast.error('Podaj prawidłową wartość sprawy.');
+    if (newCase.plannedDate && !plannedDateIso) return toast.error('Podaj prawidłowy termin.');
     try {
       setCreateCasePending(true);
-      await createCaseInSupabase({
+      const createResult = await createStarterCaseForClient({
         title: newCase.title.trim(),
-        clientId: newCase.clientId || null,
-        clientName: newCase.clientName.trim(),
-        clientEmail: newCase.clientEmail.trim(),
-        clientPhone: newCase.clientPhone.trim(),
-        status: newCase.status,
-        createdFromLead: false,
-        portalReady: false,
+        clientId: selectedClient.id,
+        clientName: selectedClient.name,
+        clientEmail: selectedClient.email,
+        clientPhone: selectedClient.phone,
         workspaceId,
+        primaryForClient: !cases.some((record) => String(record.clientId || '') === selectedClient.id),
+        status: newCase.status,
+        portalReady: newCase.sendClientLink,
+        sendClientLink: newCase.sendClientLink,
+        serviceProfileId: selectedServiceProfile?.id || null,
+        contractValue: contractValue ?? 0,
+        currency: 'PLN',
+        plannedAt: plannedDateIso,
+        ownerId: newCase.ownerId || null,
+        caseType: selectedServiceProfile?.name || undefined,
+        priority: newCase.priority || undefined,
+        note: newCase.description.trim(),
+        createChecklist: Boolean(selectedTemplate),
+        checklistTemplateId: selectedTemplate?.id,
+        checklistTemplateName: selectedTemplate?.name,
+        checklistItems: selectedTemplate?.items,
       });
+      if (!createResult.createdCaseId) throw new Error('CASE_CREATE_ID_MISSING');
       await refreshCases();
-      toast.success('Sprawa utworzona');
+      const portalLinkStatus = (createResult.portalLink as { status?: string } | undefined)?.status;
+      if (portalLinkStatus === 'failed') {
+        toast.warning('Sprawa utworzona, ale nie udało się wysłać linku do portalu.');
+      } else if (portalLinkStatus === 'sent') {
+        toast.success('Sprawa utworzona i link do portalu wysłany.');
+      } else {
+        toast.success('Sprawa utworzona');
+      }
       setIsCreateCaseOpen(false);
-      setShowCreateClientFields(false);
-      setNewCase({
-        title: '',
-        clientName: '',
-        clientEmail: '',
-        clientPhone: '',
-        clientId: '',
-        status: 'in_progress',
-      });
+      setNewCase(createDefaultCaseAddDraft(String(workspace?.ownerId || profile?.id || '').trim()));
     } catch (error: any) {
-      toast.error('Nie udało się zapisać. Spróbuj ponownie.');
+      toast.error(`Nie udało się utworzyć sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setCreateCasePending(false);
     }
-  }
-
-  function handleSelectClientSuggestion(option: ClientOption) {
-    setNewCase((prev) => ({
-      ...prev,
-      title: prev.title.trim() ? cleanCaseListTitle(prev.title) : option.name || 'Sprawa bez nazwy',
-      clientName: option.name,
-      clientEmail: option.email,
-      clientPhone: option.phone,
-      clientId: option.id || '',
-    }));
-    setShowCreateClientFields(false);
   }
 
   return (
@@ -1262,11 +1449,11 @@ export default function Cases() {
                   {isWaitingView || isBlockedView || isReadyView ? 'Eksportuj' : 'Import CSV'}
                 </Button>
                 <Dialog open={isCreateCaseOpen} onOpenChange={(open) => {
-                            setIsCreateCaseOpen(open);
-                            if (!open) {
-                              setShowCreateClientFields(false);
-                            }
-                          }}>
+                  setIsCreateCaseOpen(open);
+                  if (!open) {
+                    setNewCase(createDefaultCaseAddDraft(String(workspace?.ownerId || profile?.id || '').trim()));
+                  }
+                }}>
                             <div className="cf-cases-add-group" data-cf-cases-add-group="true">
                               <DialogTrigger asChild>
                                 <Button className="cf-cases-add-button" disabled={!workspaceReady}>
@@ -1285,147 +1472,252 @@ export default function Cases() {
                                 <ChevronDown aria-hidden="true" />
                               </button>
                             </div>
-                            <DialogContent className="client-case-form-content case-form-stage23-content" data-case-form-stage23="true" data-client-case-form-visual-rebuild={CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES}>
-                              <DialogHeader className="client-case-form-header">
-                                <span className="client-case-form-kicker">SPRAWA</span>
-                                <DialogTitle>Nowa sprawa</DialogTitle>
-                                <p>Utwórz krótką sprawę operacyjną. Klient z kontekstu zostanie przypięty automatycznie.</p>
+                            <DialogContent
+                              aria-describedby="forteca-frt-036-case-add-description"
+                              className="forteca-frt-036-case-add"
+                              data-forteca-frt-036-root="true"
+                              data-forteca-frt-036-runtime="true"
+                              data-client-case-form-visual-rebuild={CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES}
+                            >
+                              <DialogHeader className="forteca-frt-036-dialog-header">
+                                <span className="forteca-frt-036-kicker">SPRAWA</span>
+                                <DialogTitle>Dodaj sprawę</DialogTitle>
+                                <p id="forteca-frt-036-case-add-description">Uzupełnij dane sprawy i przypisz ją do klienta.</p>
                               </DialogHeader>
 
-                              <form onSubmit={handleCreateCase} className="client-case-form" data-case-form-fields="case">
-                                <section className="client-case-form-section">
-                                  <div className="client-case-form-section-head">
-                                    <h3>Dane sprawy</h3>
-                                    <p>Tytuł, klient i status startowy. Bez duplikowania pól z klienta.</p>
-                                  </div>
+                              <form onSubmit={handleCreateCase} className="forteca-frt-036-form" data-forteca-frt-036-form="true" noValidate>
+                                <div className="forteca-frt-036-form-body">
+                                  <div className="forteca-frt-036-form-grid">
+                                    <div className="forteca-frt-036-field forteca-frt-036-field--full forteca-frt-036-field--identity">
+                                      <div className="forteca-frt-036-identity-label">
+                                        <EntityIcon entity="client" size="sm" tone="soft" />
+                                        <Label htmlFor="forteca-frt-036-client" className="forteca-frt-036-label">Klient <span aria-hidden="true">*</span></Label>
+                                      </div>
+                                      <div className="forteca-frt-036-select-wrap">
+                                        <select
+                                          id="forteca-frt-036-client"
+                                          required
+                                          value={newCase.clientId}
+                                          onChange={(event) => {
+                                            const option = clientOptions.find((candidate) => candidate.id === event.target.value);
+                                            setNewCase((current) => ({
+                                              ...current,
+                                              clientId: event.target.value,
+                                              clientName: option?.name || '',
+                                              clientEmail: option?.email || '',
+                                              clientPhone: option?.phone || '',
+                                            }));
+                                          }}
+                                          disabled={createCasePending || !clientOptions.some((option) => option.id)}
+                                          className="forteca-frt-036-control forteca-frt-036-select"
+                                        >
+                                          <option value="">Wybierz klienta…</option>
+                                          {clientOptions.filter((option) => option.id).map((option) => (
+                                            <option key={option.key} value={option.id}>{option.name}</option>
+                                          ))}
+                                        </select>
+                                        <SemanticIcon role="navigation" size="xs" className="forteca-frt-036-select-chevron" />
+                                      </div>
+                                    </div>
 
-                                  <div className="client-case-form-grid">
-                                    <div className="client-case-form-field client-case-form-field-wide">
-                                      <Label>Tytuł sprawy</Label>
+                                    <div className="forteca-frt-036-field forteca-frt-036-field--full forteca-frt-036-field--identity">
+                                      <div className="forteca-frt-036-identity-label">
+                                        <EntityIcon entity="case" size="sm" tone="soft" />
+                                        <Label htmlFor="forteca-frt-036-title" className="forteca-frt-036-label">Nazwa sprawy <span aria-hidden="true">*</span></Label>
+                                      </div>
                                       <Input
+                                        id="forteca-frt-036-title"
+                                        required
+                                        autoFocus
                                         value={newCase.title}
-                                        onChange={(event) => setNewCase((prev) => ({ ...prev, title: event.target.value }))}
-                                        placeholder="np. Wdrożenie klienta X"
+                                        onChange={(event) => setNewCase((current) => ({ ...current, title: event.target.value }))}
+                                        placeholder="Wpisz nazwę sprawy…"
+                                        disabled={createCasePending}
+                                        className="forteca-frt-036-control"
                                       />
                                     </div>
 
-                                    <div className="client-case-form-field client-case-form-field-wide">
-                                      <Label>Klient</Label>
-                                      {newCase.clientId ? (
-                                        <div className="client-case-form-locked-client" data-case-form-client-prefilled="true">
-                                          <strong>{newCase.clientName || 'Klient z kontekstu'}</strong>
-                                          <span>Sprawa będzie przypięta do tego klienta. Nie musisz wybierać go drugi raz.</span>
-                                          <button
+                                    <div className="forteca-frt-036-field">
+                                      <Label htmlFor="forteca-frt-036-type" className="forteca-frt-036-label"><EntityIcon entity="task" size="sm" tone="soft" />Typ sprawy</Label>
+                                      <div className="forteca-frt-036-select-wrap">
+                                        <select
+                                          id="forteca-frt-036-type"
+                                          value={newCase.caseType}
+                                          onChange={(event) => setNewCase((current) => ({ ...current, caseType: event.target.value }))}
+                                          disabled={createCasePending || caseAddServiceProfilesLoading || !caseAddServiceProfiles.length}
+                                          className="forteca-frt-036-control forteca-frt-036-select"
+                                        >
+                                          <option value="">{caseAddServiceProfilesLoading ? 'Ładowanie typów…' : caseAddServiceProfiles.length ? 'Wybierz typ sprawy…' : 'Brak dostępnych typów'}</option>
+                                          {caseAddServiceProfiles.map((option) => <option key={option.id} value={option.id}>{option.name}</option>)}
+                                        </select>
+                                        <SemanticIcon role="navigation" size="xs" className="forteca-frt-036-select-chevron" />
+                                      </div>
+                                      {caseAddServiceProfilesError ? <p className="forteca-frt-036-field-help" role="status">{caseAddServiceProfilesError}</p> : null}
+                                    </div>
+
+                                    <div className="forteca-frt-036-field">
+                                      <Label htmlFor="forteca-frt-036-priority" className="forteca-frt-036-label"><SemanticIcon role="risk_alert" size="sm" tone="danger" />Priorytet</Label>
+                                      <div className="forteca-frt-036-select-wrap forteca-frt-036-priority-wrap">
+                                        {newCase.priority ? <span className={`forteca-frt-036-priority-dot forteca-frt-036-priority-dot--${newCase.priority}`} aria-hidden="true" /> : null}
+                                        <select
+                                          id="forteca-frt-036-priority"
+                                          value={newCase.priority}
+                                          onChange={(event) => setNewCase((current) => ({ ...current, priority: event.target.value as CaseAddDraft['priority'] }))}
+                                          disabled={createCasePending}
+                                          className="forteca-frt-036-control forteca-frt-036-select"
+                                        >
+                                          <option value="">Wybierz priorytet…</option>
+                                          <option value="low">Niski</option>
+                                          <option value="medium">Średni</option>
+                                          <option value="high">Wysoki</option>
+                                        </select>
+                                        <SemanticIcon role="navigation" size="xs" className="forteca-frt-036-select-chevron" />
+                                      </div>
+                                    </div>
+
+                                    <div className="forteca-frt-036-field">
+                                      <Label htmlFor="forteca-frt-036-value" className="forteca-frt-036-label"><EntityIcon entity="payment" size="sm" tone="soft" />Wartość (PLN)</Label>
+                                      <div className="forteca-frt-036-money-wrap">
+                                        <span className="forteca-frt-036-money-prefix">PLN</span>
+                                        <Input
+                                          id="forteca-frt-036-value"
+                                          value={newCase.contractValue}
+                                          onChange={(event) => setNewCase((current) => ({ ...current, contractValue: event.target.value }))}
+                                          placeholder="Wpisz wartość…"
+                                          inputMode="decimal"
+                                          disabled={createCasePending}
+                                          className="forteca-frt-036-control forteca-frt-036-money-input"
+                                        />
+                                      </div>
+                                    </div>
+
+                                    <div className="forteca-frt-036-field">
+                                      <Label htmlFor="forteca-frt-036-status" className="forteca-frt-036-label"><EntityIcon entity="case" size="sm" tone="soft" />Etap operacyjny</Label>
+                                      <div className="forteca-frt-036-select-wrap">
+                                        <select
+                                          id="forteca-frt-036-status"
+                                          value={newCase.status}
+                                          onChange={(event) => setNewCase((current) => ({ ...current, status: event.target.value }))}
+                                          disabled={createCasePending}
+                                          className="forteca-frt-036-control forteca-frt-036-select"
+                                        >
+                                          <option value="">Wybierz etap…</option>
+                                          <option value="in_progress">W realizacji</option>
+                                          <option value="waiting_on_client">Czeka na klienta</option>
+                                          <option value="blocked">Zablokowana</option>
+                                          <option value="ready_to_start">Gotowa do startu</option>
+                                        </select>
+                                        <SemanticIcon role="navigation" size="xs" className="forteca-frt-036-select-chevron" />
+                                      </div>
+                                    </div>
+
+                                    <div className="forteca-frt-036-field">
+                                      <Label htmlFor="forteca-frt-036-date" className="forteca-frt-036-label"><EntityIcon entity="event" size="sm" tone="soft" />Termin</Label>
+                                      <div className="forteca-frt-036-date-wrap">
+                                        <CalendarActionIcon size="sm" className="forteca-frt-036-date-icon" />
+                                        <Input
+                                          id="forteca-frt-036-date"
+                                          type="date"
+                                          value={newCase.plannedDate}
+                                          onChange={(event) => setNewCase((current) => ({ ...current, plannedDate: event.target.value }))}
+                                          disabled={createCasePending}
+                                          className="forteca-frt-036-control forteca-frt-036-date-input"
+                                        />
+                                        {newCase.plannedDate ? (
+                                          <Button
                                             type="button"
-                                            onClick={() => setNewCase((prev) => ({ ...prev, clientId: '', clientName: '', clientEmail: '', clientPhone: '' }))}
+                                            variant="ghost"
+                                            size="icon"
+                                            className="forteca-frt-036-clear-date"
+                                            aria-label="Wyczyść termin"
+                                            onClick={() => setNewCase((current) => ({ ...current, plannedDate: '' }))}
+                                            disabled={createCasePending}
                                           >
-                                            Zmień klienta
-                                          </button>
-                                        </div>
-                                      ) : (
-                                        <>
-                                          <div className="client-case-form-client-row">
-                                            <Input
-                                              value={newCase.clientName}
-                                              onChange={(event) => setNewCase((prev) => ({ ...prev, clientName: event.target.value, clientId: '' }))}
-                                              placeholder="Wpisz klienta, a system podpowie z klientów, leadów i spraw"
-                                            />
-                                            <Button
-                                              type="button"
-                                              variant={showCreateClientFields ? 'default' : 'outline'}
-                                              size="icon"
-                                              onClick={() => setShowCreateClientFields((prev) => !prev)}
-                                              title="Dodaj nowego klienta"
-                                            >
-                                              <Plus className="h-4 w-4" />
-                                            </Button>
-                                          </div>
-
-                                          {clientSuggestions.length > 0 ? (
-                                            <div className="client-case-form-suggestions">
-                                              {clientSuggestions.map((option) => (
-                                                <button
-                                                  key={option.key}
-                                                  type="button"
-                                                  onClick={() => handleSelectClientSuggestion(option)}
-                                                >
-                                                  <span>
-                                                    <strong>{option.name}</strong>
-                                                    <small>{[option.email, option.phone].filter(Boolean).join(' • ') || 'Dane klienta zapisane w systemie'}</small>
-                                                  </span>
-                                                  <Badge variant="outline">{option.source === 'lead' ? 'Z leada' : option.source === 'client' ? 'Klient' : 'Ze sprawy'}</Badge>
-                                                </button>
-                                              ))}
-                                            </div>
-                                          ) : null}
-                                        </>
-                                      )}
-
-                                      {!showCreateClientFields && !newCase.clientId && (newCase.clientEmail || newCase.clientPhone) ? (
-                                        <p className="client-case-form-hint">
-                                          Wybrany klient: {[newCase.clientEmail, newCase.clientPhone].filter(Boolean).join(' • ')}
-                                        </p>
-                                      ) : null}
-                                    </div>
-
-                                    {showCreateClientFields && !newCase.clientId ? (
-                                      <div className="client-case-form-inline-client client-case-form-field-wide">
-                                        <p>Nowy klient dla tej sprawy</p>
-                                        <div className="client-case-form-grid">
-                                          <div className="client-case-form-field">
-                                            <Label>E-mail klienta</Label>
-                                            <Input
-                                              value={newCase.clientEmail}
-                                              onChange={(event) => setNewCase((prev) => ({ ...prev, clientEmail: event.target.value }))}
-                                              placeholder="np. klient@firma.pl"
-                                            />
-                                          </div>
-                                          <div className="client-case-form-field">
-                                            <Label>Telefon klienta</Label>
-                                            <Input
-                                              value={newCase.clientPhone}
-                                              onChange={(event) => setNewCase((prev) => ({ ...prev, clientPhone: event.target.value }))}
-                                              placeholder="np. 500 000 000"
-                                            />
-                                          </div>
-                                        </div>
+                                            <span aria-hidden="true">×</span>
+                                          </Button>
+                                        ) : null}
                                       </div>
-                                    ) : null}
-
-                                    <div className="client-case-form-field">
-                                      <Label>Status</Label>
-                                      <select
-                                        className="client-case-form-select"
-                                        value={newCase.status}
-                                        onChange={(event) => setNewCase((prev) => ({ ...prev, status: event.target.value }))}
-                                      >
-                                        <option value="in_progress">W realizacji</option>
-                                        <option value="waiting_on_client">Czeka na klienta</option>
-                                        <option value="blocked">Zablokowana</option>
-                                        <option value="ready_to_start">Gotowa do startu</option>
-                                      </select>
                                     </div>
 
-                                    <div className="client-case-form-field">
-                                      <Label>Powiązany lead</Label>
-                                      <Input value="Jeśli tworzysz sprawę z leada, użyj flow Rozpocznij obsługę w LeadDetail." disabled />
-                                    </div>
-
-                                    <div className="client-case-form-field client-case-form-field-wide">
-                                      <Label>Opis</Label>
-                                      <div className="client-case-form-disabled-note">
-                                        Opis sprawy nie jest zapisywany w obecnym modelu danych. Ten etap nie udaje pola, którego backend nie obsługuje.
+                                    <div className="forteca-frt-036-field">
+                                      <Label htmlFor="forteca-frt-036-owner" className="forteca-frt-036-label"><SemanticIcon role="person" size="sm" tone="person" />Opiekun</Label>
+                                      <div className="forteca-frt-036-owner-wrap">
+                                        {newCase.ownerId ? <span className="forteca-frt-036-owner-avatar" aria-hidden="true">{(caseAddOwnerOptions.find((option) => option.value === newCase.ownerId)?.label || 'OP').slice(0, 2).toUpperCase()}</span> : null}
+                                        <select
+                                          id="forteca-frt-036-owner"
+                                          value={newCase.ownerId}
+                                          onChange={(event) => setNewCase((current) => ({ ...current, ownerId: event.target.value }))}
+                                          disabled={createCasePending || !caseAddOwnerOptions.length}
+                                          className="forteca-frt-036-control forteca-frt-036-select"
+                                        >
+                                          <option value="">Wybierz opiekuna…</option>
+                                          {caseAddOwnerOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                                        </select>
+                                        <SemanticIcon role="navigation" size="xs" className="forteca-frt-036-select-chevron" />
                                       </div>
+                                    </div>
+
+                                    <div className="forteca-frt-036-field forteca-frt-036-field--full">
+                                      <div className="forteca-frt-036-label-row">
+                                        <Label htmlFor="forteca-frt-036-description" className="forteca-frt-036-label"><SemanticIcon role="note" size="sm" tone="note" />Krótki opis</Label>
+                                        <span className="forteca-frt-036-counter">{newCase.description.length}/500</span>
+                                      </div>
+                                      <Textarea
+                                        id="forteca-frt-036-description"
+                                        value={newCase.description}
+                                        maxLength={500}
+                                        onChange={(event) => setNewCase((current) => ({ ...current, description: event.target.value }))}
+                                        placeholder="Wpisz krótki opis sprawy…"
+                                        disabled={createCasePending}
+                                        className="forteca-frt-036-control forteca-frt-036-textarea"
+                                      />
+                                    </div>
+
+                                    <div className="forteca-frt-036-field forteca-frt-036-field--full">
+                                      <Label htmlFor="forteca-frt-036-template" className="forteca-frt-036-label"><EntityIcon entity="template" size="sm" tone="soft" />Szablon checklisty</Label>
+                                      <div className="forteca-frt-036-select-wrap">
+                                        <EntityIcon entity="template" size="sm" tone="soft" className="forteca-frt-036-template-icon" />
+                                        <select
+                                          id="forteca-frt-036-template"
+                                          value={newCase.checklistTemplateId}
+                                          onChange={(event) => setNewCase((current) => ({ ...current, checklistTemplateId: event.target.value }))}
+                                          disabled={createCasePending || caseAddTemplatesLoading || !caseAddTemplates.length}
+                                          className="forteca-frt-036-control forteca-frt-036-select forteca-frt-036-select--with-prefix"
+                                        >
+                                          <option value="">{caseAddTemplatesLoading ? 'Ładowanie szablonów…' : caseAddTemplates.length ? 'Wybierz szablon checklisty…' : 'Brak dostępnych szablonów'}</option>
+                                          {caseAddTemplates.map((template) => <option key={template.id} value={template.id}>{template.name}</option>)}
+                                        </select>
+                                        <SemanticIcon role="navigation" size="xs" className="forteca-frt-036-select-chevron" />
+                                      </div>
+                                      {caseAddTemplatesError ? <p className="forteca-frt-036-field-help" role="status">{caseAddTemplatesError}</p> : null}
                                     </div>
                                   </div>
-                                </section>
 
-                                <DialogFooter className={modalFooterClass('client-case-form-footer')}>
-                                  <Button type="button" variant="outline" onClick={() => setIsCreateCaseOpen(false)}>
+                                  <div className="forteca-frt-036-switch-row">
+                                    <div>
+                                      <span className="forteca-frt-036-switch-label">Wyślij link do portalu po utworzeniu</span>
+                                      <span className="forteca-frt-036-switch-help">Klient otrzyma dostęp do portalu z tą sprawą.</span>
+                                    </div>
+                                    <Button
+                                      type="button"
+                                      role="switch"
+                                      aria-checked={newCase.sendClientLink}
+                                      aria-label="Wyślij link do portalu po utworzeniu"
+                                      className={newCase.sendClientLink ? 'forteca-frt-036-switch forteca-frt-036-switch--on' : 'forteca-frt-036-switch'}
+                                      onClick={() => setNewCase((current) => ({ ...current, sendClientLink: !current.sendClientLink }))}
+                                      disabled={createCasePending}
+                                    >
+                                      <span className="forteca-frt-036-switch-thumb" />
+                                    </Button>
+                                  </div>
+                                </div>
+
+                                <DialogFooter className={modalFooterClass('forteca-frt-036-dialog-footer')}>
+                                  <Button type="button" variant="outline" onClick={() => setIsCreateCaseOpen(false)} disabled={createCasePending} data-forteca-frt-036-action="cancel">
                                     Anuluj
                                   </Button>
-                                  <Button type="submit" disabled={createCasePending || !workspaceReady}>
-                                    {createCasePending ? 'Zapisywanie...' : 'Zapisz sprawę'}
+                                  <Button type="submit" disabled={createCasePending || !workspaceReady} data-forteca-frt-036-action="submit">
+                                    {createCasePending ? 'Tworzenie…' : <><Plus aria-hidden="true" />Utwórz sprawę</>}
                                   </Button>
                                 </DialogFooter>
                               </form>
