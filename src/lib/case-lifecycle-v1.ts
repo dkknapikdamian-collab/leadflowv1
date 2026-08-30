@@ -26,6 +26,7 @@ export type CaseLifecycleInputV1 = {
 
 export type CaseLifecycleBucketV1 =
   | 'blocked'
+  | 'waiting_on_client'
   | 'waiting_approval'
   | 'ready_to_start'
   | 'in_progress'
@@ -118,7 +119,22 @@ export function resolveCaseLifecycleV1(input: CaseLifecycleInputV1): CaseLifecyc
     };
   }
 
-  if (missingRequiredCount > 0 || status === 'blocked' || status === 'waiting_on_client') {
+  if (status === 'waiting_on_client') {
+    return {
+      bucket: 'waiting_on_client',
+      label: 'Czeka na klienta',
+      headline: 'Sprawa czeka na odpowiedź albo materiały od klienta.',
+      nextOperatorAction: 'Wyślij przypomnienie do klienta i ustaw kolejny termin kontaktu.',
+      riskLevel: 'high',
+      completenessPercent,
+      missingRequiredCount,
+      waitingApprovalCount,
+      openActionCount,
+      hasNextStep,
+    };
+  }
+
+  if (missingRequiredCount > 0 || status === 'blocked') {
     return {
       bucket: 'blocked',
       label: 'Zablokowana',

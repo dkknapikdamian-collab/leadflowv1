@@ -202,19 +202,20 @@ function resolveCaseListLifecycle(
 function lifecycleBadgeVariant(bucket: string): 'default' | 'secondary' | 'destructive' | 'outline' {
   if (bucket === 'blocked') return 'destructive';
   if (bucket === 'ready_to_start' || bucket === 'completed') return 'secondary';
-  if (bucket === 'needs_next_step' || bucket === 'waiting_approval') return 'outline';
+  if (bucket === 'needs_next_step' || bucket === 'waiting_on_client' || bucket === 'waiting_approval') return 'outline';
   return 'default';
 }
 
 function lifecycleCompactLabel(record: CaseRecord, lifecycle: ReturnType<typeof resolveCaseLifecycleV1>) {
-  if (record.status === 'waiting_on_client' || lifecycle.bucket === 'waiting_approval') return 'Czeka na klienta';
-  if (record.status === 'blocked' || lifecycle.bucket === 'blocked') return 'Wymaga uwagi';
+  if (lifecycle.bucket === 'waiting_on_client') return 'Czeka na klienta';
+  if (lifecycle.bucket === 'waiting_approval') return 'Do akceptacji';
+  if (lifecycle.bucket === 'blocked') return 'Wymaga uwagi';
   return 'Brak blokerów';
 }
 
 function lifecycleCompactVariant(record: CaseRecord, lifecycle: ReturnType<typeof resolveCaseLifecycleV1>) {
-  if (record.status === 'waiting_on_client' || lifecycle.bucket === 'waiting_approval') return 'amber';
-  if (record.status === 'blocked' || lifecycle.bucket === 'blocked') return 'red';
+  if (lifecycle.bucket === 'waiting_on_client' || lifecycle.bucket === 'waiting_approval') return 'amber';
+  if (lifecycle.bucket === 'blocked') return 'red';
   return 'green';
 }
 
@@ -381,7 +382,7 @@ export default function Cases() {
       total: activeCases.length,
       open: activeCases.length,
       all: cases.length,
-      waiting: lifecycleRows.filter((entry) => entry.bucket === 'blocked' || entry.bucket === 'waiting_approval').length,
+      waiting: lifecycleRows.filter((entry) => entry.bucket === 'waiting_on_client').length,
       blocked: lifecycleRows.filter((entry) => entry.bucket === 'blocked').length,
       approval: lifecycleRows.filter((entry) => entry.bucket === 'waiting_approval').length,
       ready: lifecycleRows.filter((entry) => entry.bucket === 'ready_to_start').length,
@@ -465,7 +466,7 @@ export default function Cases() {
         caseView === 'open'
         || caseView === 'closed'
         || caseView === 'all'
-        || (caseView === 'waiting' && (lifecycle.bucket === 'blocked' || lifecycle.bucket === 'waiting_approval'))
+        || (caseView === 'waiting' && lifecycle.bucket === 'waiting_on_client')
         || (caseView === 'blocked' && lifecycle.bucket === 'blocked')
         || (caseView === 'approval' && lifecycle.bucket === 'waiting_approval')
         || (caseView === 'ready' && lifecycle.bucket === 'ready_to_start')
@@ -759,7 +760,7 @@ const toggleCaseView = (view: CaseView) => {
             value={stats.waiting}
             icon={Clock}
             tone="amber"
-            active={caseView === 'waiting' || caseView === 'approval'}
+            active={caseView === 'waiting'}
             onClick={() => toggleCaseView('waiting')}
           />
           <StatShortcutCard
