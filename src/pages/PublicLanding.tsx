@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, BellRing, FileText, Mail, Mic, Users, type LucideIcon } from 'lucide-react';
 import { SemanticIcon, type SemanticIconRole } from '../components/ui-system';
+import { CLOSEFLOW_BRAND } from '../lib/brand';
 import '../styles/closeflow-public-landing.css';
 
 type PublicLandingFeature = {
@@ -106,9 +107,9 @@ const FAQ = [
 
 function HeroMockup() {
   return (
-    <div className="public-landing-mockup" aria-label="Podgląd widoku Dziś w CloseFlow">
+    <div className="public-landing-mockup" aria-label={'Podgląd widoku Dziś w ' + CLOSEFLOW_BRAND.name}>
       <div className="public-landing-mockup-topbar">
-        <span>CloseFlow</span>
+        <span>{CLOSEFLOW_BRAND.name}</span>
         <strong>Dziś</strong>
       </div>
       <div className="public-landing-mockup-header">
@@ -160,9 +161,9 @@ export default function PublicLanding() {
   return (
     <main className="public-landing-page">
       <header className="public-landing-nav">
-        <Link to="/" className="public-landing-brand" aria-label="CloseFlow">
-          <span>CF</span>
-          <strong>CloseFlow</strong>
+        <Link to="/" className="public-landing-brand" aria-label={CLOSEFLOW_BRAND.name}>
+          <span>{CLOSEFLOW_BRAND.mark}</span>
+          <strong>{CLOSEFLOW_BRAND.name}</strong>
         </Link>
         <nav aria-label="Menu strony startowej">
           <a href="#jak-dziala">Jak działa</a>

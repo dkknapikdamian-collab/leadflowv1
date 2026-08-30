@@ -51,16 +51,20 @@ check(
   'clientsWithCases must derive from the shared relation counter',
 );
 check(
-  /label="Aktywni"[\s\S]*?value=\{activeCount\}[\s\S]*?helper="niearchiwalni klienci"/s.test(clients),
-  'Aktywni tile must show all non-archived clients',
+  /forteca-frt-021-kpi-label">Wszyscy<\/span>[\s\S]*?forteca-frt-021-kpi-value">\{allLiveClientsStage021\.length\}[\s\S]*?forteca-frt-021-kpi-helper">niearchiwalni klienci/s.test(clients),
+  'Wszyscy tile must show all non-archived clients',
 );
 check(
-  !/label="Aktywni"[\s\S]*?value=\{clientsWithCases\}/s.test(clients),
-  'Aktywni tile must not use clientsWithCases',
+  /forteca-frt-021-kpi-label">Aktywni<\/span>[\s\S]*?forteca-frt-021-kpi-value">\{activeClientsStage021\.length\}/s.test(clients),
+  'Aktywni tile must use the current active-status source',
 );
 check(
-  /label="Bez sprawy"[\s\S]*?value=\{clientsWithoutCases\}[\s\S]*?applyClientRelationFilterStage232C\('without_case'\)/s.test(clients),
+  /forteca-frt-021-kpi-label">Bez sprawy<\/span>[\s\S]*?forteca-frt-021-kpi-value">\{clientsWithoutCases\}/s.test(clients),
   'Bez sprawy tile must apply the real without_case filter',
+);
+check(
+  includes("applyClientRelationFilterStage232C('without_case')"),
+  'Bez sprawy tile must use the shared relation filter handler',
 );
 check(
   /clientRelationFilterStage232C === 'without_case'[\s\S]*?\(countersByClientId\.get\(client\.id\)\?\.cases \|\| 0\) === 0/s.test(clients),
@@ -87,16 +91,12 @@ check(
   'Prowizja tile must not use relationValue',
 );
 check(
-  includes('topClientCommissionEntriesStage232C') && includes('items={topClientCommissionEntriesStage232C.map'),
-  'TopValueRecordsCard must use active commission entries',
+  includes('activeCommissionRowsStage024') && includes('activeCommissionValueStage024') && includes("applyClientRelationFilterStage232C('active_commission')"),
+  'Active commission view must use the current active commission source',
 );
 check(
-  !/items=\{topClientValueEntries\.map/s.test(clients),
-  'Najwyzsza prowizja must not use clientValueByClientId/topClientValueEntries',
-);
-check(
-  /SimpleFiltersCard[\s\S]*?applyClientRelationFilterStage232C\('without_case'\)[\s\S]*?applyClientRelationFilterStage232C\('needs_contact'\)[\s\S]*?applyClientRelationFilterStage232C\('active_commission'\)[\s\S]*?applyClientRelationFilterStage232C\('archived'\)/s.test(clients),
-  'SimpleFiltersCard must use the same relation filter handler as top tiles',
+  ['without_case', 'needs_contact', 'active_commission', 'archived'].every((filter) => includes("applyClientRelationFilterStage232C('" + filter + "')")),
+  'All relation views must use the shared relation filter handler',
 );
 check(
   /return clients\s*\.filter\(\(client\) => \{/s.test(clients),

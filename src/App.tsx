@@ -16,6 +16,7 @@ import EmailVerificationGate from './components/EmailVerificationGate';
 import ClientDetailStatic from './pages/ClientDetail';
 import LeadDetailStatic from './pages/LeadDetail';
 import { CLOSEFLOW_ROUTES, caseDetailPath, loginPath, templatesPath, todayPath } from './lib/routes';
+import { CLOSEFLOW_BRAND } from './lib/brand';
 import './index.css';
 import './styles/closeflow-visual-source-truth.css';
 // STAGE200 disabled legacy visual/sidebar layer: import './styles/closeflow-viewport-zoom-80-source-truth-stage157.css';
@@ -104,7 +105,7 @@ export default function App() {
   const [profileLoading, setProfileLoading] = useState(true);
 
   useEffect(() => {
-    document.title = 'CloseFlow';
+    document.title = CLOSEFLOW_BRAND.name;
   }, []);
 
   useEffect(() => {

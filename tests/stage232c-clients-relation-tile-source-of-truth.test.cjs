@@ -28,8 +28,11 @@ test('STAGE232C filters and commission source truth are statically guarded', () 
   assert.match(clients, /needsContactClientIdsStage232C[\s\S]*?contactCadenceGrid\.buckets\[key\]/);
   assert.doesNotMatch(clients, /staleClients\s*=\s*useMemo\(\s*\(\) => clients\.filter\(\(client\) => !client\.archivedAt && \(countersByClientId\.get\(client\.id\)\?\.leads \|\| 0\) === 0\)/);
   assert.match(clients, /activeCommissionValueStage232C[\s\S]*?activeCommission/);
-  assert.doesNotMatch(clients, /label="Prowizja"[\s\S]*?relationValue/);
-  assert.match(clients, /items=\{topClientCommissionEntriesStage232C\.map/);
-  assert.doesNotMatch(clients, /items=\{topClientValueEntries\.map/);
-  assert.doesNotMatch(clients, /SimpleFiltersCard[\s\S]*?onClick: \(\) => setShowArchived\(false\)/);
+  assert.match(clients, /activeCommissionRowsStage024/);
+  assert.match(clients, /activeCommissionValueStage024/);
+  assert.match(clients, /forteca-frt-021-kpi-label">Wszyscy<\/span>[\s\S]*?forteca-frt-021-kpi-value">\{allLiveClientsStage021\.length\}/);
+  assert.match(clients, /forteca-frt-021-kpi-label">Bez sprawy<\/span>[\s\S]*?clientsWithoutCases/);
+  for (const filter of ['without_case', 'needs_contact', 'active_commission', 'archived']) {
+    assert.ok(clients.includes("applyClientRelationFilterStage232C('" + filter + "')"));
+  }
 });

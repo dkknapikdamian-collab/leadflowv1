@@ -26,6 +26,7 @@ import { AlertTriangle,
   Users,
   X
 } from 'lucide-react';
+import { CLOSEFLOW_BRAND } from '../lib/brand';
 /* STAGE16O_LAYOUT_PLAN_VISIBILITY_STATIC_CONTRACTS
  * canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi)
  * ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkiców', path: '/ai-drafts' }] : [])
@@ -512,7 +513,7 @@ export default function Layout({ children }: LayoutProps) {
   );
 
   const activeItem = navItems.find((item) => isNavItemActive(location.pathname, item.path));
-  const currentTitle = activeItem?.label || 'CloseFlow';
+  const currentTitle = activeItem?.label || CLOSEFLOW_BRAND.name;
   const isTodayRoute = location.pathname === '/';
   const isLeadsRoute = location.pathname === '/leads';
   const isClientsRoute = location.pathname === '/clients';
@@ -611,18 +612,18 @@ export default function Layout({ children }: LayoutProps) {
         data-shell-sidebar="true"
         data-sidebar-layout-contract="stage195-inline"
       >
-        <Link to="/" className="brand" aria-label="CloseFlow - przejdź do Dziś">
+        <Link to="/" className="brand" aria-label={CLOSEFLOW_BRAND.homeAriaLabel}>
           <span className={`brand-logo ${isFortecaShellRoute ? 'forteca-shell-logo' : ''}`} aria-hidden="true">
-            {isFortecaShellRoute ? 'F' : 'CF'}
+            {CLOSEFLOW_BRAND.mark}
           </span>
           <span className="brand-title">
-            <strong>{isFortecaShellRoute ? 'Forteca' : 'CloseFlow'}</strong>
+            <strong>{CLOSEFLOW_BRAND.name}</strong>
           </span>
         </Link>
 
         <nav
           className="nav-scroll"
-          aria-label="Główne menu CloseFlow"
+          aria-label={'Główne menu ' + CLOSEFLOW_BRAND.name}
         >
           {renderNavGroups()}
         </nav>
@@ -646,9 +647,9 @@ export default function Layout({ children }: LayoutProps) {
       </aside>
 
       <div className="mobile-top" data-shell-mobile-top="true">
-        <Link to="/" className="mobile-brand" aria-label="CloseFlow - przejdź do Dziś">
-          <span className={`brand-logo ${isFortecaShellRoute ? 'forteca-shell-logo' : ''}`} aria-hidden="true">{isFortecaShellRoute ? 'F' : 'CF'}</span>
-          <span>{isFortecaShellRoute ? 'Forteca' : 'CloseFlow'}</span>
+        <Link to="/" className="mobile-brand" aria-label={CLOSEFLOW_BRAND.homeAriaLabel}>
+          <span className={`brand-logo ${isFortecaShellRoute ? 'forteca-shell-logo' : ''}`} aria-hidden="true">{CLOSEFLOW_BRAND.mark}</span>
+          <span>{CLOSEFLOW_BRAND.name}</span>
         </Link>
         <button type="button" className="mobile-menu-btn" onClick={() => setMobileMenuOpen(true)} aria-label="Otwórz menu">
           <Menu className="h-6 w-6" />
@@ -661,9 +662,9 @@ export default function Layout({ children }: LayoutProps) {
           <div className="mobile-drawer-panel">
             <div className="mobile-drawer-head">
               <Link to="/" onClick={() => setMobileMenuOpen(false)} className="brand mobile-drawer-brand">
-                <span className={`brand-logo ${isFortecaShellRoute ? 'forteca-shell-logo' : ''}`} aria-hidden="true">{isFortecaShellRoute ? 'F' : 'CF'}</span>
+                <span className={`brand-logo ${isFortecaShellRoute ? 'forteca-shell-logo' : ''}`} aria-hidden="true">{CLOSEFLOW_BRAND.mark}</span>
                 <span className="brand-title">
-                  <strong>{isFortecaShellRoute ? 'Forteca' : 'CloseFlow'}</strong>
+                  <strong>{CLOSEFLOW_BRAND.name}</strong>
                   <span>Lead &rarr; klient &rarr; sprawa</span>
                 </span>
               </Link>
@@ -676,7 +677,7 @@ export default function Layout({ children }: LayoutProps) {
               <UserCard userInitial={userInitial} name={userName} email={userEmail} />
             </div>
 
-            <nav className="mobile-drawer-nav" aria-label="Menu mobilne CloseFlow">
+            <nav className="mobile-drawer-nav" aria-label={'Menu mobilne ' + CLOSEFLOW_BRAND.name}>
               {renderNavGroups(true, () => setMobileMenuOpen(false))}
             </nav>
 

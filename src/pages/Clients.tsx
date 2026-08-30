@@ -1299,12 +1299,12 @@ export default function Clients() {
     const relationCount = counters.leads + counters.cases + counters.payments;
     const relationText = relationCount > 0
       ? '\n\nTen klient ma powiązania: leady ' + counters.leads + ', sprawy ' + counters.cases + ', rozliczenia ' + counters.payments + '. Dane nie zostaną trwale skasowane.'
-      : 'Rekord zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.';
+      : 'Rekord zniknie z aktywnej listy, ale będzie można go przywrócić z archiwum.';
 
     setClientArchiveConfirm({
       mode: 'archive',
       client,
-      title: 'Przenieść klienta do kosza?',
+      title: 'Czy na pewno zarchiwizować klienta?',
       description: (client.name || 'Klient') + ' zostanie ukryty z aktywnej listy. ' + relationText,
     });
   };
@@ -1344,12 +1344,12 @@ export default function Clients() {
         });
       }
 
-      toast.success(mode === 'archive' ? 'Klient przeniesiony do kosza' : 'Klient przywrócony');
+      toast.success(mode === 'archive' ? 'Klient zarchiwizowany' : 'Klient przywrócony');
       setClientArchiveConfirm(null);
       await reload();
     } catch (error: any) {
       toast.error(mode === 'archive'
-        ? 'Nie udało się przenieść klienta do kosza.'
+        ? 'Nie udało się zarchiwizować klienta.'
         : 'Nie udało się przywrócić klienta.'
       );
     } finally {
@@ -1937,7 +1937,7 @@ export default function Clients() {
                       {openActionClientIdStage021 === client.id ? (
                         <div className="forteca-frt-024-action-menu" role="menu">
                           <Link to={'/clients/' + client.id} role="menuitem" onClick={() => setOpenActionClientIdStage021(null)}>Otwórz klienta</Link>
-                          <button type="button" role="menuitem" onClick={(event) => { setOpenActionClientIdStage021(null); handleArchiveClient(event, client, counters); }}>Przenieś do kosza</button>
+                          <button type="button" role="menuitem" onClick={(event) => { setOpenActionClientIdStage021(null); handleArchiveClient(event, client, counters); }}>Zarchiwizuj klienta</button>
                         </div>
                       ) : null}
                     </div>
@@ -2137,7 +2137,7 @@ export default function Clients() {
                   {openActionClientIdStage021 === client.id ? (
                     <div className="forteca-frt-023-action-menu" role="menu">
                       <Link to={'/clients/' + client.id} role="menuitem" onClick={() => setOpenActionClientIdStage021(null)}>Otwórz klienta</Link>
-                      <button type="button" role="menuitem" onClick={(event) => { setOpenActionClientIdStage021(null); handleArchiveClient(event, client, counters); }}>Przenieś do kosza</button>
+                      <button type="button" role="menuitem" onClick={(event) => { setOpenActionClientIdStage021(null); handleArchiveClient(event, client, counters); }}>Zarchiwizuj klienta</button>
                     </div>
                   ) : null}
                 </div>
@@ -2340,7 +2340,7 @@ export default function Clients() {
                     {openActionClientIdStage021 === client.id ? (
                       <div className="forteca-frt-022-action-menu" role="menu">
                         <Link to={'/clients/' + client.id} role="menuitem" onClick={() => setOpenActionClientIdStage021(null)}>Otwórz klienta</Link>
-                        <button type="button" role="menuitem" onClick={(event) => { setOpenActionClientIdStage021(null); handleArchiveClient(event, client, counters); }}>Przenieś do kosza</button>
+                        <button type="button" role="menuitem" onClick={(event) => { setOpenActionClientIdStage021(null); handleArchiveClient(event, client, counters); }}>Zarchiwizuj klienta</button>
                       </div>
                     ) : null}
                   </div>
@@ -2391,7 +2391,7 @@ export default function Clients() {
           }}
           title={clientArchiveConfirm?.title || 'Potwierdź zmianę'}
           description={clientArchiveConfirm?.description || 'Potwierdź operację na kliencie.'}
-          confirmLabel={archivePendingId ? 'Zapisywanie...' : clientArchiveConfirm?.mode === 'restore' ? 'Przywróć klienta' : 'Przenieś do kosza'}
+          confirmLabel={archivePendingId ? 'Zapisywanie...' : clientArchiveConfirm?.mode === 'restore' ? 'Przywróć klienta' : 'Zarchiwizuj klienta'}
           cancelLabel="Anuluj"
           confirmTone={clientArchiveConfirm?.mode === 'restore' ? 'default' : 'destructive'}
           pending={Boolean(archivePendingId)}
@@ -2721,7 +2721,7 @@ export default function Clients() {
                             else handleArchiveClient(event, client, counters);
                           }}
                         >
-                          {isArchived ? 'Przywróć klienta' : 'Przenieś do kosza'}
+                          {isArchived ? 'Przywróć klienta' : 'Zarchiwizuj klienta'}
                         </button>
                       </div>
                     ) : null}

@@ -4385,7 +4385,7 @@ async function handleConfirmDeleteCaseRecord() {
         open={deleteCaseOpen}
         onOpenChange={setDeleteCaseOpen}
         title="Awaryjnie usunąć sprawę?"
-        description={`Awaryjne usunięcie sprawy „${getCaseHeaderClientLabel(caseData)} — ${getCaseHeaderCaseLabel(caseData)}” usunie rekord i powiązania. Normalne zrobioneenie procesu wykonuj przez Zamknij sprawę.`}
+        description={`Awaryjne usunięcie sprawy „${getCaseHeaderClientLabel(caseData)} — ${getCaseHeaderCaseLabel(caseData)}” usunie rekord i powiązania. Normalne zakończenie procesu wykonuj przez „Zamknij sprawę”.`}
         confirmLabel="Awaryjnie usuń"
         cancelLabel="Anuluj"
         confirmTone="destructive"

@@ -297,6 +297,7 @@
 .task-row .task-form-action-chip,
 .task-row [role="button"],
 .task-form-action-chip {
+  /* STAGE_A18_TASK_ACTION_CONTRAST: task-row actions stay readable on white cards. */
   border-color: #cbd5e1;
   background: #ffffff;
   color: #334155;
