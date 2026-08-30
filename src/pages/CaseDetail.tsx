@@ -102,6 +102,7 @@ import {
 } from '../lib/supabase-fallback';
 import { deleteCaseWithRelations, isClosedCaseStatus } from '../lib/cases';
 import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
+import { transitionCaseLifecycleStatusV1 } from '../lib/case-lifecycle-actions';
 import { getEventMainDate, getTaskMainDate } from '../lib/scheduling';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
@@ -3501,8 +3502,8 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
     if (!caseId) return;
     try {
       const previousStatus = caseData?.status || null;
-      await updateCaseInSupabase({ id: caseId, status, lastActivityAt: new Date().toISOString() });
-      await recordActivity(status === 'completed' ? 'case_lifecycle_completed' : previousStatus === 'completed' ? 'case_lifecycle_reopened' : 'case_lifecycle_started', {
+      await transitionCaseLifecycleStatusV1({
+        caseId,
         status,
         previousStatus,
         source: 'case_detail_v1_command_center',

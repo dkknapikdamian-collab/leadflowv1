@@ -590,6 +590,26 @@
   border-color: var(--cf-vst-color-delete);
   background: var(--cf-vst-color-delete-soft);
 }
+
+#root .cf-html-view.main-cases-html .cf-case-row-start-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: auto;
+  min-width: 10.6rem;
+  min-height: 2.05rem;
+  padding: 0 0.78rem;
+  border-radius: 0.72rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  #root .cf-html-view.main-cases-html .cf-case-row-start-action {
+    width: 100%;
+    min-width: 0;
+  }
+}
 #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line {
   grid-template-columns: minmax(2.15rem, 2.5rem) minmax(0, 1fr) minmax(5rem, auto);
   align-items: center;

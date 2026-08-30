@@ -34,6 +34,7 @@ import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { deleteCaseWithRelations, isClosedCaseStatus } from '../lib/cases';
 import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
+import { transitionCaseLifecycleStatusV1 } from '../lib/case-lifecycle-actions';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { getCaseOwnerRiskBadges, ownerRiskTone } from '../lib/owner-control/owner-risk-rules';
 import { readOwnerRiskSettings } from '../lib/owner-control/owner-risk-settings';
@@ -156,8 +157,9 @@ function buildClientOptions(cases: CaseRecord[], leads: any[], clients: any[] = 
   return [...map.values()].sort((left, right) => left.name.localeCompare(right.name, 'pl', { sensitivity: 'base' }));
 }
 
-function caseNeedsAttention(caseRecord: CaseRecord) {
-  return caseRecord.status === 'blocked' || caseRecord.status === 'waiting_on_client' || (caseRecord.completenessPercent || 0) < 35;
+function caseNeedsAttention(caseRecord: CaseRecord, lifecycleCompletenessPercent = caseRecord.completenessPercent || 0, lifecycleBucket?: string) {
+  if (lifecycleBucket === 'ready_to_start') return false;
+  return caseRecord.status === 'blocked' || caseRecord.status === 'waiting_on_client' || lifecycleCompletenessPercent < 35;
 }
 
 function toUpdatedDate(value: CaseRecord['updatedAt']) {
@@ -194,6 +196,7 @@ function resolveCaseListLifecycle(
 ) {
   return resolveCaseLifecycleV1({
     status: record.status,
+    completenessPercent: record.completenessPercent,
     tasks: tasksByCaseId.get(String(record.id || '')) || [],
     events: eventsByCaseId.get(String(record.id || '')) || [],
   });
@@ -210,6 +213,7 @@ function lifecycleCompactLabel(record: CaseRecord, lifecycle: ReturnType<typeof 
   if (lifecycle.bucket === 'waiting_on_client') return 'Czeka na klienta';
   if (lifecycle.bucket === 'waiting_approval') return 'Do akceptacji';
   if (lifecycle.bucket === 'blocked') return 'Wymaga uwagi';
+  if (lifecycle.bucket === 'ready_to_start') return 'Gotowa do startu';
   return 'Brak blokerów';
 }
 
@@ -260,6 +264,7 @@ export default function Cases() {
   const [caseView, setCaseView] = useState<CaseView>('open');
   const [caseToDelete, setCaseToDelete] = useState<CaseRecord | null>(null);
   const [deletePending, setDeletePending] = useState(false);
+  const [startPendingCaseId, setStartPendingCaseId] = useState<string | null>(null);
   const [isCreateCaseOpen, setIsCreateCaseOpen] = useState(false);
   const [createCasePending, setCreateCasePending] = useState(false);
   const [showCreateClientFields, setShowCreateClientFields] = useState(false);
@@ -491,13 +496,38 @@ export default function Cases() {
     setCaseViewStage231B0R9(view);
   };
 
-const toggleCaseView = (view: CaseView) => {
+  const toggleCaseView = (view: CaseView) => {
     if (caseView === view) {
       setCaseViewStage231B0R9('open');
       return;
     }
     setCaseViewStage231B0R9(view);
   };
+
+  async function handleStartCase(record: CaseRecord) {
+    const caseId = String(record.id || '');
+    if (!caseId || startPendingCaseId) return;
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
+
+    try {
+      setStartPendingCaseId(caseId);
+      await transitionCaseLifecycleStatusV1({
+        caseId,
+        status: 'in_progress',
+        previousStatus: record.status || null,
+        source: 'cases_ready_v1_command_board',
+      });
+      await refreshCases();
+      toast.success('Realizacja sprawy rozpoczęta');
+    } catch (error: any) {
+      toast.error(`Nie udało się rozpocząć realizacji: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setStartPendingCaseId(null);
+    }
+  }
 
   async function handleDeleteCase() {
     if (!caseToDelete) return;
@@ -810,10 +840,10 @@ const toggleCaseView = (view: CaseView) => {
                 {filteredCases.map((record, index) => {
 
                   const isCaseClosedStage231B0R13 = isClosedCaseStatus(record.status);
-const attention = isCaseClosedStage231B0R13 ? false : caseNeedsAttention(record);
-                  const percent = Math.round(record.completenessPercent || 0);
                   const updatedAt = toUpdatedDate(record.updatedAt);
                   const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
+                  const attention = isCaseClosedStage231B0R13 ? false : caseNeedsAttention(record, lifecycle.completenessPercent, lifecycle.bucket);
+                  const percent = lifecycle.completenessPercent;
                   const statusLabel = getCaseStatusLabel(record.status);
                   const statusTone = isCaseClosedStage231B0R13 ? 'green' : getCaseStatusTone(record.status);
                   const compactLifecycleLabel = lifecycleCompactLabel(record, lifecycle);
@@ -879,6 +909,23 @@ const metaParts = [
                         {updatedAt ? <span className="sub next-action-date">{format(updatedAt, 'd MMM yyyy', { locale: pl })}</span> : null}
                       </span>
                       <span className="lead-actions cf-case-row-actions-stage220a28">
+                        {lifecycle.bucket === 'ready_to_start' ? (
+                          <Button
+                            type="button"
+                            variant="default"
+                            className="btn primary cf-case-row-start-action"
+                            data-case-row-start-action="true"
+                            aria-label={`Rozpocznij realizację sprawy ${record.title || ''}`}
+                            disabled={Boolean(startPendingCaseId)}
+                            onClick={(event) => {
+                              event.preventDefault();
+                              event.stopPropagation();
+                              void handleStartCase(record);
+                            }}
+                          >
+                            {startPendingCaseId === record.id ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : 'Rozpocznij realizację'}
+                          </Button>
+                        ) : null}
                         <Button variant="outline" className="btn ghost cf-icon-action-button cf-case-row-open-indicator" asChild data-stage220a28-case-row-open-icon="true">
                           <Link to={caseDetailPath(record.id)} aria-label={`Otwórz sprawę ${record.title || ''}`}><ChevronRight className="h-4 w-4" /></Link>
                         </Button>

@@ -1,6 +1,6 @@
 # FRT-035 — CASES READY
 
-CONTRACT_STATUS: LOCKED
+CONTRACT_STATUS: ACTIVE
 STAGE_ID: FRT-035
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/035_cases_ready_to_start.webp
 TARGET_ROUTE: /cases
@@ -17,4 +17,3 @@ ACCEPTANCE_CRITERIA: Ready state derives from the real source and controls are w
 TEST_PLAN: Readiness/filter/action tests; browser proof; typecheck if TS changes; build if shared case runtime changes.
 PREDECESSOR: FRT-034
 SUCCESSOR: FRT-036
-

@@ -18,6 +18,7 @@ export type CaseLifecycleActionV1 = {
 
 export type CaseLifecycleInputV1 = {
   status?: string;
+  completenessPercent?: number;
   items?: CaseLifecycleItemV1[];
   tasks?: CaseLifecycleActionV1[];
   events?: CaseLifecycleActionV1[];
@@ -74,8 +75,14 @@ function countWaitingApproval(items: CaseLifecycleItemV1[]) {
   return items.filter((item) => normalizeStatus(item.status) === 'uploaded').length;
 }
 
-function computeCompleteness(items: CaseLifecycleItemV1[]) {
-  if (!items.length) return 0;
+function clampCompleteness(value: unknown) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return 0;
+  return Math.max(0, Math.min(100, Math.round(parsed)));
+}
+
+function computeCompleteness(items: CaseLifecycleItemV1[], persistedCompletenessPercent?: number) {
+  if (!items.length) return clampCompleteness(persistedCompletenessPercent);
   return Math.round((countAccepted(items) / items.length) * 100);
 }
 
@@ -85,7 +92,7 @@ export function resolveCaseLifecycleV1(input: CaseLifecycleInputV1): CaseLifecyc
   const openActionCount = actions.filter(isOpenAction).length;
   const hasNextStep = actions.some((action) => isOpenAction(action) && hasActionDate(action));
   const status = normalizeStatus(input.status || '');
-  const completenessPercent = computeCompleteness(items);
+  const completenessPercent = computeCompleteness(items, input.completenessPercent);
   const missingRequiredCount = countMissingRequired(items);
   const waitingApprovalCount = countWaitingApproval(items);
 
@@ -169,7 +176,7 @@ export function resolveCaseLifecycleV1(input: CaseLifecycleInputV1): CaseLifecyc
       bucket: 'ready_to_start',
       label: 'Gotowa do startu',
       headline: 'Wymagane rzeczy są domknięte. Można rozpocząć realizację.',
-      nextOperatorAction: 'Kliknij start realizacji albo dodaj pierwszy krok operacyjny.',
+      nextOperatorAction: 'Rozpocznij realizację albo otwórz sprawę, żeby dodać pierwszy krok operacyjny.',
       riskLevel: hasNextStep ? 'low' : 'medium',
       completenessPercent,
       missingRequiredCount,
