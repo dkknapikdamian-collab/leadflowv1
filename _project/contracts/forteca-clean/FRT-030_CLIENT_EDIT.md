@@ -1,6 +1,6 @@
 # FRT-030 — CLIENT EDIT
 
-CONTRACT_STATUS: ACTIVE
+CONTRACT_STATUS: LOCKED
 STAGE_ID: FRT-030
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/030_client_edit_modal.webp
 TARGET_ROUTE: /clients/:clientId

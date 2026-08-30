@@ -15,6 +15,9 @@ import {
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { modalFooterClass } from './entity-actions';
+import { ClientEntityIcon } from './ui-system/EntityIcon';
+
+import '../styles/forteca-client-new-case.css';
 
 type CreateClientCaseDialogProps = {
   open: boolean;
@@ -36,6 +39,7 @@ export function CreateClientCaseDialog({
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [saving, setSaving] = useState(false);
+  const clientDisplayName = String(client?.name || client?.company || 'Klient').trim() || 'Klient';
 
   useEffect(() => {
     if (!open) setTitle('');
@@ -64,7 +68,7 @@ export function CreateClientCaseDialog({
       const { createdCaseId } = await createStarterCaseForClient({
         title: preparedTitle,
         clientId,
-        clientName: String(client?.name || client?.company || 'Klient').trim(),
+        clientName: clientDisplayName,
         clientEmail: String(client?.email || '').trim(),
         clientPhone: String(client?.phone || '').trim(),
         workspaceId,
@@ -88,31 +92,46 @@ export function CreateClientCaseDialog({
 
   return (
     <Dialog open={open} onOpenChange={(nextOpen) => !saving && onOpenChange(nextOpen)}>
-      <DialogContent aria-describedby="create-client-case-description">
-        <DialogHeader>
-          <DialogTitle>Dodaj sprawę</DialogTitle>
+      <DialogContent
+        className="forteca-frt-031-client-case-dialog"
+        data-forteca-frt-031-root="true"
+        data-forteca-frt-031-runtime="true"
+        aria-describedby="create-client-case-description"
+      >
+        <DialogHeader className="forteca-frt-031-dialog-header">
+          <DialogTitle>Nowa sprawa</DialogTitle>
           <DialogDescription id="create-client-case-description">
-            Wpisz nazwę sprawy. Po zapisaniu od razu przejdziesz do jej finansów.
+            Sprawa zostanie powiązana z wybranym klientem. Po zapisaniu od razu przejdziesz do jej finansów.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
-          <div className="space-y-2">
-            <Label htmlFor="create-client-case-title">Nazwa sprawy</Label>
-            <Input
-              id="create-client-case-title"
-              autoFocus
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
-              placeholder="Np. Podział działki"
-              disabled={saving}
-            />
+        <form onSubmit={handleSubmit} className="forteca-frt-031-client-case-form" data-forteca-frt-031-form="true">
+          <div className="forteca-frt-031-form-fields" data-forteca-frt-031-fields="true">
+            <div className="forteca-frt-031-client-context" data-forteca-frt-031-field="client" aria-label="Klient">
+              <ClientEntityIcon size="sm" tone="soft" />
+              <div className="forteca-frt-031-client-context-copy">
+                <span>Klient</span>
+                <strong>{clientDisplayName}</strong>
+              </div>
+            </div>
+            <div className="forteca-frt-031-title-field" data-forteca-frt-031-field="title">
+              <Label htmlFor="create-client-case-title">Nazwa sprawy *</Label>
+              <Input
+                id="create-client-case-title"
+                className="forteca-frt-031-input"
+                autoFocus
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                placeholder="Np. Podział działki"
+                disabled={saving}
+              />
+            </div>
           </div>
-          <DialogFooter className={modalFooterClass()}>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
+          <DialogFooter className={`${modalFooterClass()} forteca-frt-031-dialog-footer`}>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={saving} data-forteca-frt-031-action="cancel">
               Anuluj
             </Button>
-            <Button type="submit" disabled={saving || !title.trim()}>
-              {saving ? 'Dodawanie…' : 'Dodaj sprawę'}
+            <Button type="submit" disabled={saving || !title.trim()} data-forteca-frt-031-action="submit">
+              {saving ? 'Tworzenie…' : 'Utwórz sprawę'}
             </Button>
           </DialogFooter>
         </form>
