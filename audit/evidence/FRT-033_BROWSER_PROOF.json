@@ -1,0 +1,75 @@
+{
+  "schema_version": 2,
+  "evidence_type": "FORTECA_BROWSER_PROOF",
+  "stage_id": "FRT-033",
+  "reference_file": "docs/ui/reference/forteca-calm-light/033_cases_waiting_for_client.webp",
+  "entry_url": "https://closeflowapp.vercel.app/cases?view=waiting&frt033=verify",
+  "runtime_url": "https://closeflowapp.vercel.app",
+  "route": "/cases",
+  "state": "Cases — Czeka na klienta with a disjoint Zablokowane view",
+  "live_runtime": true,
+  "authenticated_session_reused": true,
+  "status": "PASS",
+  "branch": "codex/forteca-ui-001-040-clean",
+  "implementation_commits": [
+    "0c8909b2f15886fdb8ec7bf058044101e1f73a8a"
+  ],
+  "current_runtime_commit": "0c8909b2f15886fdb8ec7bf058044101e1f73a8a",
+  "remote_head_verified": "0c8909b2f15886fdb8ec7bf058044101e1f73a8a",
+  "runtime_deployments": {
+    "preview": {
+      "id": "dpl_Huui1LQUyFsPKDXFPESvuvRRZKDZ",
+      "url": "https://closedockapp-2b12t6ffj-dkknapikdamian-7019s-projects.vercel.app",
+      "status": "READY",
+      "runtime_code_commit": "0c8909b2f15886fdb8ec7bf058044101e1f73a8a"
+    },
+    "production": {
+      "id": "dpl_3XYnjgq3rvXi7LrjLqoP5k4LvVDk",
+      "url": "https://closedockapp-nk1bduyan-dkknapikdamian-7019s-projects.vercel.app",
+      "alias": "https://closeflowapp.vercel.app",
+      "status": "READY",
+      "runtime_code_commit": "0c8909b2f15886fdb8ec7bf058044101e1f73a8a"
+    }
+  },
+  "synthetic_fixture": {
+    "case_record_id": "bf6172be-db8f-4128-8895-fd3acd4a9f05",
+    "created_for_verification_only": true,
+    "cleanup": "RETAINED_FOR_SUBSEQUENT_CASE_LIFECYCLE_PROOF"
+  },
+  "interaction_proof": {
+    "waiting_filter_and_counter": {
+      "status": "PASS",
+      "result": "On authenticated production, the visible Czeka na klienta shortcut resolved to /cases?view=waiting, showed value 1 and rendered the retained synthetic waiting case."
+    },
+    "waiting_row_semantics": {
+      "status": "PASS",
+      "result": "The rendered row used the Czeka na klienta lifecycle label and exposed the real next action Wyślij przypomnienie do klienta i ustaw kolejny termin kontaktu."
+    },
+    "blocked_filter_separation": {
+      "status": "PASS",
+      "result": "After selecting the visible Zablokowane shortcut, production showed value 0 and Brak otwartych spraw / Brak spraw do pokazania; the retained waiting case was absent."
+    },
+    "existing_case_owner": {
+      "status": "PASS",
+      "result": "The existing Cases list, row navigation and row-action owners remain in place; FRT-032 covers their authenticated production navigation/action proof and FRT-033 changes only lifecycle resolution and filter ownership."
+    }
+  },
+  "safety_proof": {
+    "synthetic_data_only": true,
+    "no_secrets_or_personal_data_recorded": true,
+    "no_fixture_injection": true,
+    "real_workspace_scoped_read": true,
+    "cleanup_verified": false,
+    "retention_reason": "The synthetic waiting case is retained for the immediately following blocked/ready lifecycle proofs and will be removed during final cleanup.",
+    "no_raw_browser_storage_or_cookies_read": true,
+    "sql_migration_performed": false,
+    "workspace_scope_preserved": true
+  },
+  "browser_diagnostic_boundary": {
+    "status": "DOCUMENTED",
+    "finding": "The approved in-app browser was used for visible DOM and action verification; no standalone browser, raw CDP or session extraction was used.",
+    "interpretation": "Waiting and blocked outcomes were verified through the live UI and persisted route; no screenshot fixture was injected."
+  },
+  "verified_at": "2026-08-30",
+  "next_action": "FRT-033 accepted; activate FRT-034 Cases — Zablokowane and prove truthful blocker state and safe resolution actions."
+}

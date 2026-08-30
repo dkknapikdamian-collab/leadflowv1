@@ -1,0 +1,50 @@
+{
+  "schema_version": 2,
+  "receipt_type": "FORTECA_STAGE_RECEIPT",
+  "stage_id": "FRT-033",
+  "reference_file": "docs/ui/reference/forteca-calm-light/033_cases_waiting_for_client.webp",
+  "result": "PASS",
+  "stage_status": "ACCEPTED_WITH_GUARDIAN_PARTIAL_AND_PARENT_REVIEW",
+  "acceptance_authority": "CODEX_PARENT",
+  "acceptance_basis": {
+    "directive_interpretation": "Owner directive makes Codex the acceptance authority for this technical stage; current runtime, code, tests and browser evidence are authoritative.",
+    "root_cause": "The canonical lifecycle resolver folded waiting_on_client into blocked, while Cases counters and filters reused that mixed bucket; the UI therefore could not truthfully distinguish waiting-for-client from blocked cases.",
+    "repair": "Added a distinct waiting_on_client lifecycle bucket and status-repository value, mapped its Polish label/headline/next action, and changed Cases counters, filters, card state and lifecycle copy to use disjoint waiting and blocked buckets.",
+    "review_status": "Parent reviewed the contract, source, reference chain, focused tests, typecheck/build, Guardian fallback, exact production/preview deployments and authenticated production waiting-versus-blocked proof."
+  },
+  "code_changed": true,
+  "files_changed": [
+    "src/lib/case-lifecycle-v1.ts",
+    "src/pages/Cases.tsx",
+    "src/lib/source-of-truth/status-repository.ts",
+    "tests/forteca-frt-033-cases-waiting-client.test.cjs",
+    "audit/evidence/FRT-033_BROWSER_PROOF.json",
+    "audit/evidence/FRT-033_GUARDIAN_AUDIT_SUMMARY.json",
+    "_project/WORKFLOW_STATE.json",
+    "_project/contracts/forteca-clean/FRT-033_CASES_WAITING_CLIENT.md",
+    "_project/contracts/forteca-clean/FRT-034_CASES_BLOCKED.md",
+    "_project/runs/forteca-clean/FRT-033_RECEIPT.json"
+  ],
+  "verification": {
+    "focused_tests": "PASS FRT-033 4/4; combined FRT-030/FRT-031/FRT-032/FRT-033 21/21",
+    "typecheck": "PASS",
+    "build": "PASS locally and on Vercel with known non-blocking warnings",
+    "guards": "Route/icon/semantic color/typography/urgent regression PASS; Guardian partial with zero scoped blockers; patch-layer baseline findings classified",
+    "browser_proof": "PASS production waiting counter/filter/row semantics and disjoint blocked filter; preview READY and login shell reachable",
+    "remote_head": "0c8909b2f15886fdb8ec7bf058044101e1f73a8a"
+  },
+  "browser_proof": "audit/evidence/FRT-033_BROWSER_PROOF.json",
+  "guardian": "audit/evidence/FRT-033_GUARDIAN_AUDIT_SUMMARY.json",
+  "implementation_commits": [
+    "0c8909b2f15886fdb8ec7bf058044101e1f73a8a"
+  ],
+  "remote_branch_sha_verified": true,
+  "next_stage": "FRT-034",
+  "rollback": "Revert 0c8909b2f15886fdb8ec7bf058044101e1f73a8a; the stage is isolated to lifecycle mapping, Cases consumers, status registry, focused evidence and control-plane records.",
+  "task_economy": {
+    "marketplace_router_startup": "USED",
+    "efficiency_planning": "APPLIED",
+    "optional_delegation": "SKIPPED",
+    "delegation_skip_reason": "Authenticated production browser proof required the existing local session and one write owner."
+  }
+}

@@ -1,6 +1,6 @@
 # FRT-034 — CASES BLOCKED
 
-CONTRACT_STATUS: LOCKED
+CONTRACT_STATUS: ACTIVE
 STAGE_ID: FRT-034
 REFERENCE_FILE: docs/ui/reference/forteca-calm-light/034_cases_blocked.webp
 TARGET_ROUTE: /cases
@@ -17,4 +17,3 @@ ACCEPTANCE_CRITERIA: Blocked state is truthful and action-safe; no dead CTA; tes
 TEST_PLAN: Blocker/status/filter/action tests; browser proof; typecheck if TS changes; build if shared blocker runtime changes.
 PREDECESSOR: FRT-033
 SUCCESSOR: FRT-035
-
