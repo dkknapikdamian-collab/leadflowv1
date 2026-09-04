@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "project": "CLOSEFLOW_LEAD_APP",
-  "next_rotation": "B",
-  "last_rotation": "A",
-  "last_run_at": "2026-09-04 16:01 Europe/Warsaw",
+  "next_rotation": "C",
+  "last_rotation": "B",
+  "last_run_at": "2026-09-04 16:58 Europe/Warsaw",
   "last_audited_app_sha": "2abb05c43362cd02294d9e6c8ef3d0b64c1b021c",
   "stage_audit_cursor": {
     "next_stage": "FRT-036",
-    "last_stage_checked": null
+    "last_stage_checked": "FRT-036"
   },
   "finding_promotion_status": {}
 }
