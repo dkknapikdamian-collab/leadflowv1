@@ -16,172 +16,172 @@ Audit-memory only. This file is not a canonical execution queue.
 - FINDING_FINGERPRINT: `frt036:create-case-commits-before-post-create-checklist-activity-refresh:single-catch-reports-create-failure:no-request-idempotency`
 
 ### PROBLEM_STATEMENT
-
-The FRT-036 Add Case flow treats the base case insert, optional checklist/activity enrichment, and the subsequent list refresh as one logical failure boundary even though they are not one atomic operation. `createStarterCaseForClient()` persists the case first and may then throw while reading/inserting checklist items or inserting the creation activity. `handleCreateCase()` also awaits `refreshCases()` after a successful create. Any of those post-insert failures reaches the same catch block that reports `Nie udało się utworzyć sprawy` while the case may already exist in canonical persistence.
+The FRT-036 Add Case flow treats the base case insert, optional checklist/activity enrichment, and subsequent list refresh as one logical failure boundary although they are not atomic. A post-insert failure can therefore report creation failure after canonical persistence already succeeded.
 
 ### USER_OR_SYSTEM_IMPACT
-
-A transient or deterministic failure after the base insert can leave a real case in the database while the UI tells the operator that creation failed and keeps the creation flow retryable. A normal retry can therefore create a second case for the same intended user action. The persisted record may also be missing requested checklist/activity enrichment. This violates UI/backend truth and makes retry behavior unsafe for a core business entity.
+A real case can exist while the UI tells the operator creation failed. A normal retry can create another case for the same intended action and post-create enrichment can be incomplete.
 
 ### EXPECTED_INVARIANT
-
-For one user create intent, the system must expose one truthful terminal state. Before persistence, failures may be reported as creation failure. After the base case is durably created, subsequent enrichment or refresh failures must never be represented as if no case was created. Retrying the same logical create after an ambiguous response must not silently create a duplicate canonical case.
+One create intent must expose one truthful canonical outcome. Once a canonical case ID exists, later enrichment/refresh failures must not be represented as base-create failure, and replay of the same logical intent must not silently duplicate the case.
 
 ### OBSERVED_BEHAVIOR
-
-1. `handleCreateCase()` awaits `createStarterCaseForClient()` and then `refreshCases()` inside one try/catch.
-2. The catch always reports `Nie udało się utworzyć sprawy`.
-3. `createStarterCaseForClient()` calls `createCaseInSupabase()` before optional checklist reads/inserts and activity insertion.
-4. Failures in those later operations are thrown after the case ID already exists.
-5. A rejected case-list fetch in `refreshCases()` is also thrown after successful creation.
-6. The current POST `/api/cases` path performs a new case insert and the audited path exposes no create-intent/idempotency key that would make a retry of the same UI action return the already-created case.
+`handleCreateCase()` includes create plus `refreshCases()` in one failure boundary; `createStarterCaseForClient()` can persist before later checklist/activity work; the POST create path performs a new insert and the audited path exposes no create-intent identity.
 
 ### CURRENT_EVIDENCE
-
-Current at `2abb05c43362cd02294d9e6c8ef3d0b64c1b021c`, tree `5140e605174dcaf61bcec7ece854fbfd24d50d3b`:
-
-- `src/pages/Cases.tsx` — semantic anchor `handleCreateCase`: base create, `await refreshCases()`, success messaging, and a shared catch that reports creation failure.
-- `src/pages/Cases.tsx` — semantic anchor `refreshCases`: rejected canonical case fetch throws.
-- `src/lib/cases/create-client-case.ts` — semantic anchor `createStarterCaseForClient`: `createCaseInSupabase()` precedes checklist read/insert and activity insertion; later failures can propagate after persistence.
-- `api/cases.ts` — semantic anchor POST handler: validates workspace/client/owner and then performs `insertCaseWithSchemaFallback(payload)`; no audited create-intent/idempotency token is consumed before insertion.
-- `tests/forteca-frt-036-cases-add.test.cjs` — focused test asserts the create path and presence of `await refreshCases()`, but does not verify post-insert failure classification, duplicate-safe retry, or partial-enrichment recovery.
+Current at validation SHA `2abb05c43362cd02294d9e6c8ef3d0b64c1b021c`, tree `5140e605174dcaf61bcec7ece854fbfd24d50d3b`: `src/pages/Cases.tsx` (`handleCreateCase`, `refreshCases`), `src/lib/cases/create-client-case.ts` (`createStarterCaseForClient`), `api/cases.ts` POST create branch, and `tests/forteca-frt-036-cases-add.test.cjs`.
 
 ### REPRODUCTION_OR_VERIFICATION
-
-Shortest deterministic verification strategy:
-
-1. Instrument or mock the existing create path so the base case insert returns a real created case ID.
-2. Force exactly one post-insert operation to reject: checklist existing-item read, checklist item insert, activity insert, or the canonical case-list refresh.
-3. Submit Add Case once.
-4. Verify the canonical case record exists.
-5. Observe that the current UI path enters the generic create-failure catch.
-6. Retry the same form submission and verify whether a second canonical case is inserted. The repaired behavior must either resume/complete the existing create intent or clearly report `case created; follow-up failed` without issuing an unsafe duplicate create.
+Make base insert return a real case ID, force one post-insert operation to fail, verify the case exists, then replay the same logical submit. Repaired behavior must keep canonical case count at one and expose truthful partial-success/recovery state.
 
 ### ROOT_CAUSE
-
-Class: `PARTIAL_COMMIT / FALSE_FAILURE / NON_IDEMPOTENT_RETRY_BOUNDARY`.
-
-The create orchestration conflates irreversible base persistence with fallible post-create enrichment and read-model refresh. Error ownership is defined by the outer UI try/catch rather than by the actual commit boundary. The POST create path also lacks a visible request identity that could make ambiguous retries safe.
+`PARTIAL_COMMIT / FALSE_FAILURE / NON_IDEMPOTENT_RETRY_BOUNDARY`: irreversible persistence, fallible enrichment and read-model refresh share an outer failure owner that does not correspond to the commit boundary.
 
 ### AFFECTED_FLOW_AND_OWNERS
-
-Flow: `/cases` Add Case modal → `handleCreateCase` → `createStarterCaseForClient` → `createCaseInSupabase` / POST `api/cases.ts` → canonical `cases` persistence → optional checklist/activity writes → `refreshCases` → visible list/result.
-
-Current semantic owners at last check:
-
-- UI orchestration: `src/pages/Cases.tsx`
-- case-create orchestration: `src/lib/cases/create-client-case.ts`
-- canonical case mutation/API boundary: `api/cases.ts` and the existing Supabase request owner it calls
-- focused acceptance coverage: `tests/forteca-frt-036-cases-add.test.cjs`
-- legal workflow owner: active stage `FRT-036`
+`/cases` Add Case → UI orchestration → case-create orchestration → POST `api/cases.ts` → canonical `cases` persistence → checklist/activity → list refresh. Legal workflow owner: active FRT-036.
 
 ### COUNTEREVIDENCE_CHECKED
-
-- The API validates workspace write access and scopes the case payload to the resolved workspace; this finding is not an isolation/auth finding.
-- Portal email failure is already converted to `portalLink.status=failed` and can be surfaced as a warning; that is evidence the product already recognizes post-create partial success for one side effect.
-- The focused FRT-036 test checks that refresh is called, but it does not prove correct failure semantics when refresh rejects after persistence.
-- No current runtime reproduction was executed in this audit; the defect is source-proven from deterministic control flow. Runtime frequency is therefore `INSUFFICIENT_EVIDENCE`, not assumed.
+Workspace scoping exists; portal-mail failure already uses partial-success semantics. No runtime reproduction was executed, so runtime frequency remains `INSUFFICIENT_EVIDENCE`.
 
 ### REPAIR_OBJECTIVE
-
-Make the case-create commit boundary explicit and make retry semantics safe. Once a canonical case ID has been created, the UI must never claim that the case itself failed to be created. Post-create enrichment and refresh must have separate truthful outcomes, and an ambiguous retry must not create a second case for the same logical submit intent.
+Make base-create commit truth explicit, classify post-create failures separately, and make retry of one logical create intent duplicate-safe.
 
 ### IMPLEMENTATION_BLUEPRINT
-
-1. Re-read current HEAD and remap these semantic owners before editing; do not apply stale line-number patches.
-2. Define the create operation result around the canonical base-case commit: once a case ID exists, preserve and return that identity even if later enrichment cannot fully complete.
-3. Separate base-create failure from post-create enrichment failure. Checklist/activity failures after base persistence must produce a partial-success/recovery result that includes the created case ID and the failed follow-up class.
-4. Separate canonical mutation truth from list refresh truth in `handleCreateCase`. A refresh failure after creation must not be rendered as `case creation failed`; keep or reconcile the created ID and offer/retry refresh independently.
-5. Introduce or reuse one bounded create-intent/idempotency mechanism at the canonical mutation owner so retransmission of the same pending submit cannot silently insert a second case. Do not create a second store or router. The request identity must be scoped to workspace and one logical create intent and must return/reconcile the previously created case on replay.
-6. Preserve current workspace/client/owner validation and portal-link partial-success semantics.
-7. Add deterministic tests at the lowest useful layer for: pre-insert failure, base insert success + checklist read failure, base insert success + checklist insert failure, base insert success + activity failure, base insert success + refresh failure, and replay of the same create intent.
-8. Run the FRT-036 focused matrix plus relevant case-create/API tests and exact browser proof before stage acceptance.
+1. Re-read fresh HEAD and semantically remap owners.
+2. Preserve created case identity immediately after canonical persistence.
+3. Return post-create enrichment failures as partial-success/recovery, not base-create failure.
+4. Reconcile list refresh independently from base creation.
+5. Add/reuse one workspace-scoped create-intent/idempotency mechanism at the existing canonical mutation owner.
+6. Preserve workspace/client/owner and portal-link semantics.
+7. Add deterministic failure-injection and replay tests.
+8. Require exact candidate browser/DB/Guardian/receipt proof.
 
 ### CURRENT_CODE_ANCHORS
-
-`CURRENT_AT_LAST_CHECK` only:
-
-- `src/pages/Cases.tsx` → `handleCreateCase`, `refreshCases`
-- `src/lib/cases/create-client-case.ts` → `createStarterCaseForClient`
-- `api/cases.ts` → POST case-create branch, `insertCaseWithSchemaFallback`
-- `tests/forteca-frt-036-cases-add.test.cjs` → `FRT-036 keeps write behavior on the existing scoped create path`
-
-STALE-CODE SAFETY: before repair, resolve fresh canonical branch/HEAD/tree, re-read the active workflow/contract, and semantically remap all owners above. Paths and symbols are anchors from the last check, not timeless patch instructions.
+`CURRENT_AT_LAST_CHECK`: `src/pages/Cases.tsx` (`handleCreateCase`, `refreshCases`); `src/lib/cases/create-client-case.ts` (`createStarterCaseForClient`); `api/cases.ts` POST branch; focused FRT-036 test. STALE-CODE SAFETY: resolve fresh canonical HEAD/tree/workflow and remap semantics before repair; these are not timeless line-number instructions.
 
 ### IN_SCOPE
-
-- truthful base-create vs post-create result classification
-- checklist/activity partial-success handling for this create flow
-- list refresh failure after successful create
-- duplicate-safe retry/idempotency for one Add Case create intent
-- focused regression/browser evidence required by FRT-036
+Truthful create/post-create outcomes, post-create recovery, duplicate-safe retry, focused acceptance evidence.
 
 ### OUT_OF_SCOPE
-
-- redesigning the Cases page
-- changing unrelated case lifecycle/status behavior
-- broad database refactors
-- replacing canonical Supabase persistence
-- redesigning portal token/mail architecture beyond preserving current partial-success behavior
-- unrelated Forteca stages
+Cases redesign, unrelated lifecycle changes, broad DB refactor, replacement persistence, unrelated Forteca stages.
 
 ### DEPENDENCIES_AND_LEGAL_REPAIR_BOUNDARY
-
-The current canonical workflow already owns this behavior in active `FRT-036 — CASE ADD`: its mission explicitly covers real case mutation, validation and list refresh, and its allowed write set includes the existing case-create dialog/mutation and focused tests/guards. No new workflow owner is required. Any production repair remains subject to FRT-036 scope, current capability routing, and required Guardian/test/browser/receipt gates.
+Active FRT-036 already owns case mutation/list refresh and is the legal repair boundary. Production repair remains subject to current capability routing and Guardian/test/browser/receipt gates.
 
 ### TEST_PLAN
-
-Positive:
-
-- normal create persists exactly one workspace-scoped case, returns its ID, completes requested enrichment, refreshes the list and shows success;
-- portal email failure after create remains a truthful warning without reverting the created-case truth.
-
-Negative/failure-boundary:
-
-- base insert failure produces create failure and no case;
-- checklist existing-read failure after base insert reports partial success/recovery with the same created case ID;
-- checklist item failure after base insert does not report that the case was not created;
-- activity failure after base insert does not report that the case was not created;
-- list refresh failure after base insert does not report create failure and does not discard the created-case identity.
-
-Retry/idempotency:
-
-- replay the same create intent after each post-insert failure and prove canonical case count increases by zero;
-- a distinct new create intent with the same business fields can still create a new case when explicitly submitted as a new intent.
-
-Regression:
-
-- workspace/client/owner scope guards remain fail-closed;
-- `primaryForClient` conflict behavior remains intact;
-- client portal email prerequisites remain pre-insert where currently required;
-- existing FRT-036 focused visual/form tests remain green;
-- no second case store/router/state owner is introduced.
+Pre-insert failure → no case; each post-insert failure → created identity retained; refresh failure → no false create failure; replay same intent → zero additional cases; deliberately new intent with identical fields → distinct case allowed; workspace/client/owner and portal behavior unchanged.
 
 ### ACCEPTANCE_GATES
-
-- Exactly one canonical case exists for one replayed create intent across tested post-insert failures.
-- UI never emits the generic create-failure message after the canonical case ID is known to exist.
-- Every post-create failure class has a truthful user-visible/recoverable outcome bound to the created case ID.
-- Fresh list refresh can be retried/reconciled without reissuing base creation.
-- Existing workspace/client/owner authorization behavior remains unchanged or stronger.
-- Focused deterministic tests pass on exact candidate SHA.
-- Real browser + canonical DB evidence proves one submit/retry scenario and visible result reconciliation.
-- Required Guardian result and FRT-036 receipt bind to the exact candidate SHA before stage acceptance.
+Exactly one canonical case per replayed intent; no generic create-failure after known persistence; truthful recoverable post-create states; refresh retry without re-creating; focused tests + browser/DB + Guardian + FRT-036 receipt bound to exact candidate SHA.
 
 ### REGRESSION_RISKS_AND_ROLLBACK
-
-Risks: over-broad retry logic could suppress legitimate distinct creates; moving errors could hide failed checklist/activity enrichment; an idempotency token with wrong scope could collide across workspaces or user intents. Keep the repair bounded to one create intent and preserve explicit follow-up failure state. Roll back the repair commit through the project’s normal non-destructive revert path if exact candidate tests/browser/DB evidence shows lost creates, cross-intent collisions, or broken workspace scoping.
+Avoid collisions between distinct intents and hiding failed enrichment. Keep identity workspace-scoped. Roll back by normal non-destructive revert if exact proof shows lost creates, collisions or scope regression.
 
 ### DONE_PROOF_REQUIRED
+Exact candidate SHA/tree; failure-injection results; duplicate-safe replay; authenticated browser proof; canonical DB count; required Guardian evidence; FRT-036 receipt/workflow acceptance on the same candidate.
 
-- exact candidate SHA/tree
-- deterministic failure-injection test results for every listed boundary
-- duplicate-safe replay proof
-- real authenticated browser proof for Add Case
-- canonical DB evidence showing one case for one logical retry scenario
-- Guardian coverage/result evidence required by current routing
-- FRT-036 stage receipt and workflow acceptance bound to the same candidate
+### FINDING_FINGERPRINT
+`frt036:create-case-commits-before-post-create-checklist-activity-refresh:single-catch-reports-create-failure:no-request-idempotency`
 
 ### HISTORY
+- `2026-09-04 18:05 Europe/Warsaw` — validated in rotation C and promoted into FRT-036; no production code changed by the Quality Loop.
 
-- `2026-09-04 18:05 Europe/Warsaw` — validated during rotation C against `2abb05c4...`; source control flow proves false failure after partial commit and unsafe retry potential. Promoted to the existing active FRT-036 repair boundary; no production code changed by the Quality Loop.
+---
+
+## CFL-WORKSPACE-WRITE-ACCESS-FAILOPEN-001 — Workspace entitlement lookup failure grants synthetic trial write access
+
+- FINDING_ID: `CFL-WORKSPACE-WRITE-ACCESS-FAILOPEN-001`
+- TITLE: `Workspace entitlement lookup failure grants synthetic trial write access`
+- SEVERITY: `HIGH`
+- LIFECYCLE: `OPEN_VALIDATED`
+- FIRST_SEEN_SHA: `425ab6b23b71b6b919143f0f982dc6d1adcad96c`
+- LAST_CHECKED_SHA: `425ab6b23b71b6b919143f0f982dc6d1adcad96c`
+- CURRENT_TREE: `e4c3f9dd13e73b32b016f3d208faf3aed14d9ad3`
+- FIRST_SEEN_AT: `2026-09-04 20:58 Europe/Warsaw`
+- LAST_CHECKED_AT: `2026-09-04 20:58 Europe/Warsaw`
+- FINDING_FINGERPRINT: `access-gate:string-workspace:lookup-error-or-no-row->null->synthetic-trial_active->write-allowed`
+
+### PROBLEM_STATEMENT
+The canonical workspace write-access gate fails open when it receives a workspace ID string and cannot obtain the corresponding workspace entitlement row. `selectWorkspaceAccessRow()` catches lookup failures and returns `null` unless explicitly called with `failClosed`. `resolveWorkspaceAccessInput()` then converts that missing result into a synthetic `{ id, access_status: 'trial_active' }`. `assertWorkspaceWriteAccess()` consequently authorizes the mutation. The current case mutation API invokes this gate for every non-GET request using the resolved workspace ID, so an entitlement lookup failure can bypass a real blocked billing/access state.
+
+### USER_OR_SYSTEM_IMPACT
+A workspace whose authoritative state is expired, canceled, payment-failed, inactive, missing, or temporarily unreadable can receive mutation permission as `trial_active` if the entitlement lookup fails. This does not by itself prove cross-workspace data access because request/workspace scoping is separate, but it does break the canonical write-authority boundary and can permit writes that product/billing policy intends to block.
+
+### EXPECTED_INVARIANT
+A write-authority decision must be based on an authoritative workspace entitlement row or another explicitly authoritative policy source. Failure to read that authority must fail closed with an unavailable/denied result. A missing or unreadable entitlement row must never be upgraded to an allowed synthetic state.
+
+### OBSERVED_BEHAVIOR
+1. `selectWorkspaceAccessRow(workspaceId)` catches query errors and returns `null` when `failClosed` is not set.
+2. `resolveWorkspaceAccessInput(workspaceId)` calls that default fail-open form.
+3. If no row is returned, it constructs `{ id: workspaceId, access_status: 'trial_active' }`.
+4. `normalizeWorkspaceAccessStatus()` preserves `trial_active`.
+5. `isAllowedWriteStatus()` returns true for `trial_active`.
+6. `assertWorkspaceWriteAccess()` therefore returns true.
+7. `api/cases.ts` calls `await assertWorkspaceWriteAccess(workspaceId, req)` before POST/PATCH/DELETE case mutations.
+
+### CURRENT_EVIDENCE
+Current at SHA `425ab6b23b71b6b919143f0f982dc6d1adcad96c`, tree `e4c3f9dd13e73b32b016f3d208faf3aed14d9ad3`:
+- `src/server/_access-gate.ts` — `selectWorkspaceAccessRow`, `resolveWorkspaceAccessInput`, `normalizeWorkspaceAccessStatus`, `isAllowedWriteStatus`, `assertWorkspaceWriteAccess`.
+- `api/cases.ts` — non-GET `P0_SERVICE_ROLE_SCOPE_MUTATION_GATE` calls `assertWorkspaceWriteAccess(workspaceId, req)` before case mutations.
+- The same access-gate module already uses `{ failClosed: true }` for AI entitlement lookup, demonstrating that fail-closed lookup semantics are supported but are not applied to the general write gate.
+
+### REPRODUCTION_OR_VERIFICATION
+Shortest deterministic source/runtime test:
+1. Call `assertWorkspaceWriteAccess(validWorkspaceId)` with `selectFirstAvailable` forced to throw or return no workspace row.
+2. Observe current result: write access resolves through synthetic `trial_active` instead of throwing `WORKSPACE_ACCESS_UNAVAILABLE`/access denied.
+3. At API level, authenticate a request to an owned workspace whose entitlement lookup is forced unavailable and attempt POST/PATCH/DELETE `/api/cases`.
+4. Repaired behavior must reject the mutation before persistence and produce zero DB changes.
+
+### ROOT_CAUSE
+Class: `AUTHORITY_FAIL_OPEN / SYNTHETIC_DEFAULT / ERROR_COLLAPSE`. Compatibility logic collapses two materially different states — authoritative active trial and inability to read authority — into the same allowed `trial_active` value. The comment assumes ownership/scoping checks are sufficient, but ownership and billing/write entitlement are different authorities.
+
+### AFFECTED_FLOW_AND_OWNERS
+Flow: authenticated mutation → resolved workspace → shared `assertWorkspaceWriteAccess` → workspace entitlement lookup → mutation API → service-role persistence. Current semantic owner is `src/server/_access-gate.ts`; `api/cases.ts` is one confirmed consumer. Because the gate is shared, other mutation consumers must be enumerated before repair rather than patched individually.
+
+### COUNTEREVIDENCE_CHECKED
+- `api/cases.ts` separately resolves/scopes workspace and relationships; this reduces cross-tenant risk but does not satisfy billing/write entitlement authority.
+- `normalizeWorkspaceAccessStatus()` contains legitimate compatibility normalization for historical stored statuses; this finding does not require deleting those mappings when an authoritative row was successfully read.
+- `assertWorkspaceAiAllowed()` already requests `selectWorkspaceAccessRow(..., { failClosed: true })`, proving the module recognizes authority-unavailable as a distinct fail-closed state in another sensitive path.
+- No live production outage or unauthorized mutation was reproduced in this run; exploit frequency/production occurrence is `INSUFFICIENT_EVIDENCE`. The authorization defect itself is source-proven.
+
+### REPAIR_OBJECTIVE
+Make general workspace write authorization fail closed when the authoritative workspace row cannot be read or does not exist, while preserving explicitly supported historical status/plan normalization only after an authoritative row is available.
+
+### IMPLEMENTATION_BLUEPRINT
+1. Resolve fresh HEAD/workflow and enumerate current callers of `assertWorkspaceWriteAccess` before editing.
+2. At the shared access-gate owner, distinguish `lookup unavailable`, `workspace missing`, and `authoritative row present` instead of returning synthetic `trial_active` for the first two.
+3. Require the string-workspace path used by mutation APIs to read entitlement with fail-closed semantics. Map lookup infrastructure failure to a stable unavailable response (for example existing `WORKSPACE_ACCESS_UNAVAILABLE` semantics) and missing workspace to the project’s canonical denied/not-found authority response.
+4. Preserve compatibility normalization only for fields from an authoritative row; do not infer active trial solely from a workspace ID.
+5. Do not add per-endpoint fallback gates or a second entitlement owner.
+6. Add deterministic unit coverage for thrown lookup, missing row, trial-active row, free row, paid-active row, expired row, canceled row, payment-failed row and inactive row.
+7. Add at least one mutation-boundary regression proving POST/PATCH/DELETE cannot persist when entitlement authority is unavailable.
+8. Re-run affected access/billing and mutation tests plus required Guardian/security evidence before closeout.
+
+### CURRENT_CODE_ANCHORS
+`CURRENT_AT_LAST_CHECK` only:
+- `src/server/_access-gate.ts` → `selectWorkspaceAccessRow`, `resolveWorkspaceAccessInput`, `assertWorkspaceWriteAccess`, `assertWorkspaceAiAllowed`
+- `api/cases.ts` → `P0_SERVICE_ROLE_SCOPE_MUTATION_GATE`
+STALE-CODE SAFETY: before repair, resolve fresh canonical HEAD/tree/workflow and semantically remap the shared gate and all current callers. Do not implement from stale line numbers or assume the case API is the only consumer.
+
+### IN_SCOPE
+Shared workspace write-entitlement lookup semantics; unavailable/missing authority behavior; existing callers; deterministic negative mutation tests; current billing/access compatibility after authoritative read.
+
+### OUT_OF_SCOPE
+Authentication redesign; workspace identity resolution redesign; RLS replacement; pricing/plan changes; unrelated Forteca UI; AI-specific entitlement behavior except as counterevidence; production data migration unless fresh evidence proves it is required.
+
+### DEPENDENCIES_AND_LEGAL_REPAIR_BOUNDARY
+The active FRT-036 contract owns Case Add mutation behavior but its allowed write set does not clearly own the shared cross-application billing/access authority gate. No separate currently active canonical repair owner was proven in this run. Promotion status is therefore `CANONICAL_STAGE_QUEUE_MISSING` until fresh workflow provides an existing legal security/access repair boundary or explicitly expands a canonical owner. Do not smuggle this shared repair into FRT-036 solely because `/api/cases` is a consumer.
+
+### TEST_PLAN
+Positive: authoritative `trial_active`, supported Free and valid paid rows retain allowed writes according to current policy. Negative: lookup throws → denied/unavailable and zero mutation; workspace row missing → denied and zero mutation; `trial_expired`, `payment_failed`, `inactive`, `canceled` remain denied. Regression: historical status/plan normalization still works when the row exists; workspace scoping remains unchanged; AI fail-closed path remains unchanged or stronger; at least one real mutation endpoint proves no persistence under authority-unavailable.
+
+### ACCEPTANCE_GATES
+No mutation path can obtain write permission solely from a workspace ID when entitlement lookup fails or returns no authoritative row; deterministic gate tests cover all listed states; affected mutation regression proves zero persistence on unavailable authority; no second access SOT is introduced; required Security Review/Guardian evidence binds to the exact candidate SHA.
+
+### REGRESSION_RISKS_AND_ROLLBACK
+Fail-closing may expose previously masked legacy workspaces with missing rows or infrastructure/schema faults. That is expected authority behavior but can surface operational errors. Distinguish unavailable from legitimately blocked states so operators can diagnose without granting access. Roll back only by normal non-destructive revert if exact tests show authoritative active workspaces are incorrectly denied; never restore synthetic allow-on-lookup-failure as the fix.
+
+### DONE_PROOF_REQUIRED
+Exact candidate SHA/tree; complete caller map; deterministic shared-gate tests; mutation-boundary zero-write proof for lookup failure/missing row; regression proof for valid trial/free/paid states and blocked states; required executable Guardian/security receipt when available; canonical workflow/repair receipt owning the shared gate.
+
+### HISTORY
+- `2026-09-04 20:58 Europe/Warsaw` — validated in rotation F against `425ab6b2...`; source proves a general write-authority lookup failure is converted into allowed synthetic `trial_active`. No production code changed. Promotion preflight found no proven legal shared-access repair owner in the active FRT-036 boundary.
