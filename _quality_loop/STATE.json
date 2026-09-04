@@ -1,13 +1,19 @@
 {
   "schema_version": 1,
   "project": "CLOSEFLOW_LEAD_APP",
-  "next_rotation": "C",
-  "last_rotation": "B",
-  "last_run_at": "2026-09-04 16:58 Europe/Warsaw",
-  "last_audited_app_sha": "2abb05c43362cd02294d9e6c8ef3d0b64c1b021c",
+  "next_rotation": "D",
+  "last_rotation": "C",
+  "last_run_at": "2026-09-04 18:07 Europe/Warsaw",
+  "last_audited_app_sha": "425ab6b23b71b6b919143f0f982dc6d1adcad96c",
   "stage_audit_cursor": {
     "next_stage": "FRT-036",
     "last_stage_checked": "FRT-036"
   },
-  "finding_promotion_status": {}
+  "finding_promotion_status": {
+    "CFL-FRT036-PARTIAL-CREATE-FALSE-FAILURE-001": {
+      "status": "PROMOTED",
+      "canonical_ref": "_project/contracts/forteca-clean/FRT-036_CASE_ADD.md@425ab6b23b71b6b919143f0f982dc6d1adcad96c",
+      "promoted_at": "2026-09-04 18:07 Europe/Warsaw"
+    }
+  }
 }
