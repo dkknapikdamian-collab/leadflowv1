@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "project": "CLOSEFLOW_LEAD_APP",
-  "next_rotation": "A",
-  "last_rotation": "I",
-  "last_run_at": "2026-09-04 23:58 Europe/Warsaw",
+  "next_rotation": "B",
+  "last_rotation": "A",
+  "last_run_at": "2026-09-05 01:00 Europe/Warsaw",
   "last_audited_app_sha": "425ab6b23b71b6b919143f0f982dc6d1adcad96c",
   "stage_audit_cursor": {
     "next_stage": "FRT-036",
@@ -18,7 +18,7 @@
     "CFL-WORKSPACE-WRITE-ACCESS-FAILOPEN-001": {
       "status": "CANONICAL_STAGE_QUEUE_MISSING",
       "canonical_ref": null,
-      "checked_at": "2026-09-04 23:58 Europe/Warsaw"
+      "checked_at": "2026-09-05 01:00 Europe/Warsaw"
     }
   }
 }
