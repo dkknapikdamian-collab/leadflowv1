@@ -19,53 +19,33 @@ PREDECESSOR: FRT-035
 SUCCESSOR: FRT-037
 
 ## QUALITY LOOP PROMOTION — CFL-FRT036-PARTIAL-CREATE-FALSE-FAILURE-001
-
 PROMOTION_STATUS: REPAIR_QUEUED_IN_CURRENT_STAGE
-VALIDATED_AT_APP_SHA: 2abb05c43362cd02294d9e6c8ef3d0b64c1b021c
-VALIDATED_TREE: 5140e605174dcaf61bcec7ece854fbfd24d50d3b
+Repair invariant: one Add Case submit intent has one truthful canonical outcome. Once a canonical case ID exists, checklist/activity/list-refresh failures must not be represented as base-create failure, and replay of the same pending intent must not silently insert another case.
+Mandatory proof: pre-insert failure→no case; post-insert failures→created identity retained and truthful recovery; replay same intent→zero additional cases; deliberately new intent may create a distinct case; workspace/client/owner/portal semantics preserved; focused tests + authenticated browser/DB + Guardian + receipt on exact candidate SHA.
+
+## QUALITY LOOP PROMOTION — CFL-FRT036-CLIENT-CREATED-BEFORE-CASE-PREFLIGHT-001
+PROMOTION_STATUS: REPAIR_QUEUED_IN_CURRENT_STAGE
+VALIDATED_AT_APP_SHA: 425ab6b23b71b6b919143f0f982dc6d1adcad96c
+VALIDATED_TREE: e4c3f9dd13e73b32b016f3d208faf3aed14d9ad3
 
 ### Repair invariant
-
-One Add Case submit intent must have one truthful canonical outcome. Before the base case insert, a failure may be reported as case creation failure. Once a canonical case ID exists, later checklist/activity enrichment or list-refresh failures must not be represented as if the case itself was not created, and replay of the same pending create intent must not silently insert a duplicate case.
+A rejected Add Case preflight must not silently persist a new client. Client relation creation and case creation are one logical Add Case intent even if they use separate canonical tables.
 
 ### Current defect class
-
-`PARTIAL_COMMIT / FALSE_FAILURE / NON_IDEMPOTENT_RETRY_BOUNDARY`.
-
-At the validated SHA, the real create orchestration persists the base case before optional checklist/activity work, while the UI also performs `refreshCases()` after creation. These fallible post-insert operations share the same outer create-failure catch. Therefore a persisted case can coexist with the message `Nie udało się utworzyć sprawy`, leaving a normal retry able to issue another create. Portal-email failure already uses partial-success semantics and must remain truthful rather than being regressed.
+`PRECONDITION_ORDERING / CROSS-ENTITY_PARTIAL_COMMIT`.
+At validation SHA, POST `/api/cases` may call `ensureClientForCase()` and insert a new client before later portal-email/configuration or primary-case preflight returns without inserting the case.
 
 ### Smallest repair objective
-
-Keep one existing canonical case-create path and make its commit boundary explicit:
-
-1. Preserve the created case identity immediately after canonical base persistence succeeds.
-2. Classify checklist/activity failures after persistence as post-create partial failure/recovery, not base-create failure.
-3. Treat list refresh failure after persistence as refresh/reconciliation failure, not create failure; retain the created case identity and retry/reconcile the read model independently.
-4. Add or reuse one bounded workspace-scoped create-intent/idempotency mechanism at the existing canonical mutation owner so retransmission of the same logical pending submit returns/reconciles the already-created case rather than inserting another. Do not create a second store/router/state owner.
-5. Preserve current workspace/client/owner scope checks, primary-case conflict semantics, and existing portal-link partial-success behavior.
-
-### Semantic anchors — current at validation only
-
-Before implementation, re-read fresh HEAD and remap by semantics rather than line number:
-
-- `src/pages/Cases.tsx` — `handleCreateCase`, `refreshCases`
-- `src/lib/cases/create-client-case.ts` — `createStarterCaseForClient`
-- `api/cases.ts` — POST case-create branch and existing insert owner
-- `tests/forteca-frt-036-cases-add.test.cjs` — focused create-path coverage
+Keep the existing client and case owners. Evaluate every rejectable precondition that does not require a persisted new client before client insertion. If any necessary failure can remain after client persistence, make that boundary explicitly atomic/compensating and truthful rather than leaving an unintended client.
 
 ### Mandatory repair tests
-
-- pre-insert failure → no case and truthful create failure;
-- base insert success + checklist existing-read failure → created case remains truthfully acknowledged/recoverable;
-- base insert success + checklist item failure → no false base-create failure;
-- base insert success + activity failure → no false base-create failure;
-- base insert success + list refresh failure → no false base-create failure and no second create required to reconcile UI;
-- replay the same create intent after each post-insert failure → canonical case count increases by zero;
-- a deliberately new create intent with identical business fields can still create a distinct case;
-- workspace/client/owner authorization and primary-case conflict behavior remain unchanged or stronger;
-- current portal email failure remains partial success/warning;
-- existing FRT-036 focused tests plus exact browser/DB proof pass.
+- new client + missing portal email → rejection with client delta=0 and case delta=0;
+- new client + mail provider unavailable → rejection with client delta=0 and case delta=0;
+- primary-case conflict path → no unintended new client;
+- case insert failure after preflight → no silently orphaned client, or exact proven compensation;
+- valid new-client create → exactly one client and one linked case;
+- existing-client create → no duplicate client;
+- workspace/lead/owner scope remains unchanged or stronger.
 
 ### Acceptance addition
-
-FRT-036 cannot be accepted while a source-proven path can persist a case and report that creation failed. Acceptance requires exact-candidate proof of one canonical case for one replayed create intent, truthful post-create failure messaging/recovery, deterministic failure-injection tests, real authenticated browser plus canonical DB evidence, required Guardian evidence, and the normal FRT-036 receipt bound to the same candidate SHA.
+FRT-036 cannot be accepted while an Add Case request can return a pre-case rejection after silently persisting a new client. Acceptance requires exact-candidate failure-injection, canonical client/case DB count proof, authenticated browser proof, required Guardian evidence and the normal FRT-036 receipt.
