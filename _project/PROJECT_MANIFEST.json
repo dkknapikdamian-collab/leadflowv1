@@ -14,6 +14,8 @@
   "plans_root": "docs/plans",
   "findings_root": "audit/findings",
   "evidence_root": "audit/evidence",
+  "roadmap": "obsidian:10_PROJEKTY/CloseFlow_Lead_App/STAGES/LF-V1_MASTER_EXECUTION_ROADMAP.md",
+  "stage_contract_index": "_project/contracts/forteca-clean/README.md",
   "obsidian": {
     "project_registry": "00_SYSTEM/PROJECTS.json",
     "project_entry": "10_PROJEKTY/CloseFlow_Lead_App/00_AI_START_SPIS_TRESCI.md",
