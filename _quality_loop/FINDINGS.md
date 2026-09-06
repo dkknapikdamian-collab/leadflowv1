@@ -101,3 +101,83 @@ Exact candidate SHA/tree; deterministic preflight-failure client/case count delt
 
 ### HISTORY
 - `2026-09-05 03:58 Europe/Warsaw` — validated in rotation C from current source ordering; promoted to active FRT-036 contract; no production code changed by Quality Loop.
+
+---
+
+## CFL-RELEASE-EXACT-SHA-CI-STATUS-DIVERGENCE-001 — Exact-SHA required CI fails while external deployment statuses remain green
+
+- FINDING_ID: `CFL-RELEASE-EXACT-SHA-CI-STATUS-DIVERGENCE-001`
+- TITLE: `Exact-SHA required CI fails while external deployment statuses remain green`
+- SEVERITY: `HIGH`
+- LIFECYCLE: `OPEN_VALIDATED`
+- FIRST_SEEN_SHA: `9003da4415ca30a483795a759ff293a62e0a8605`
+- LAST_CHECKED_SHA: `9003da4415ca30a483795a759ff293a62e0a8605`
+- CURRENT_TREE: `aac4a136a599291e8b86860a33f02f2ba6734bd4`
+- FIRST_SEEN_AT: `2026-09-06 06:00 Europe/Warsaw`
+- LAST_CHECKED_AT: `2026-09-06 07:02 Europe/Warsaw`
+- FINDING_FINGERPRINT: `release:exact-sha-9003da44:vercel-production-deploy-run-33979220850:quality-gate-lint-failure:build-tests-guards-deploy-skipped:external-vercel-statuses-green`
+
+### PROBLEM_STATEMENT
+The exact current application SHA has conflicting release evidence. GitHub Actions workflow `Vercel Production Deploy` run `33979220850` is completed with conclusion `failure`. Its `ci / quality-gate` job fails at `Lint`, after which Build, Forteca tests, architecture/security/release guards and the deploy job are skipped. At the same SHA, external Vercel commit statuses can still report successful deployments. A green external deployment status therefore cannot by itself prove this candidate passed the repository release gate.
+
+### USER_OR_SYSTEM_IMPACT
+Any release decision, automation or audit that treats aggregate/external deployment status as sufficient can falsely classify a candidate as release-ready while required CI never completed. This is an evidence-integrity and release-readiness blocker; whether production users currently receive a broken artifact is `INSUFFICIENT_EVIDENCE`.
+
+### EXPECTED_INVARIANT
+Release readiness must bind to one exact candidate SHA and require the canonical quality/release workflow to complete successfully. External provider deployment success may supplement but must not override a failed required CI gate.
+
+### OBSERVED_BEHAVIOR
+For SHA `9003da4415ca30a483795a759ff293a62e0a8605`, workflow run `33979220850` is `completed/failure`. Job `ci / quality-gate` has `Lint=failure`; Build, Forteca current suite and all subsequent guards are skipped. The `deploy` job is skipped. Separate Vercel statuses for the same commit report successful deployments.
+
+### CURRENT_EVIDENCE
+GitHub Actions run `33979220850` and its jobs endpoint on the exact current SHA/tree. H revalidation independently re-fetched both and confirmed the failure was unchanged. The exact lint diagnostic text remains unavailable in current evidence.
+
+### REPRODUCTION_OR_VERIFICATION
+Open exact-SHA workflow run `33979220850`: verify `conclusion=failure`; inspect jobs: `Lint=failure`, downstream build/tests/guards skipped, deploy skipped. Compare with external Vercel commit statuses on the same SHA. Repaired release truth: one exact candidate must have the canonical required workflow fully green before release-ready classification.
+
+### ROOT_CAUSE
+`RELEASE_EVIDENCE_AUTHORITY_DIVERGENCE`: provider deployment status and repository quality-gate status represent different authorities, while current evidence allows them to disagree. The concrete cause of the lint failure is `INSUFFICIENT_EVIDENCE`.
+
+### AFFECTED_FLOW_AND_OWNERS
+`push exact SHA → repository quality gate → build/tests/guards → canonical deploy → external provider status → release-readiness decision`. Legal repair owner is not established by the active FRT-036 case-create contract.
+
+### COUNTEREVIDENCE_CHECKED
+External Vercel statuses are green, so a deploy artifact may exist. That does not prove Build/Forteca tests/guards passed because the repository workflow shows they were skipped. No evidence proves the failed workflow is intentionally non-blocking for canonical release truth.
+
+### REPAIR_OBJECTIVE
+Restore one deterministic exact-SHA release authority: identify and repair the lint failure under the legal workflow owner, rerun the canonical workflow, and require full green quality-gate plus deploy evidence before release-ready classification.
+
+### IMPLEMENTATION_BLUEPRINT
+1. Retrieve the exact lint diagnostic for run `33979220850` or reproduce lint on the exact SHA.
+2. Resolve the canonical stage/recovery/precondition owner before any production-code repair.
+3. Apply only the smallest legal repair.
+4. Rerun the full canonical workflow on the resulting exact candidate SHA.
+5. Bind release evidence to that workflow and preserve provider status as supplemental evidence only.
+
+### CURRENT_CODE_ANCHORS
+`.github/workflows/vercel-production-deploy.yml`; referenced `.github/workflows/ci.yml`; exact run `33979220850`. STALE-CODE SAFETY: re-fetch workflow definitions and candidate SHA before repair.
+
+### IN_SCOPE
+Exact-SHA CI/release evidence, lint blocker diagnosis, quality-gate/deploy truth and release-readiness classification.
+
+### OUT_OF_SCOPE
+Broad CI redesign, unrelated application refactors, Vercel provider redesign, FRT-036 case-create behavior unless the lint failure is proven to belong there.
+
+### DEPENDENCIES_AND_LEGAL_REPAIR_BOUNDARY
+`CANONICAL_STAGE_QUEUE_MISSING` for the repair until fresh canonical workflow identifies a legal release/CI owner. Do not attach the repair to FRT-036 merely because FRT-036 is active.
+
+### TEST_PLAN
+Negative: a candidate with lint failure must not be classified release-ready even if external Vercel status is green. Positive: exact candidate runs Lint, Build, Forteca tests, all required guards and deploy successfully. Regression: release status aggregation cannot mask a failed required workflow.
+
+### ACCEPTANCE_GATES
+Same exact candidate SHA: `Lint=PASS`; `Build=PASS`; `Forteca current suite=PASS`; all required guards=PASS; deploy job executes and succeeds; provider deployment evidence agrees; no failed required workflow remains for the candidate.
+
+### REGRESSION_RISKS_AND_ROLLBACK
+Changing release-gate ownership can accidentally block valid deployments or duplicate CI authority. Preserve one canonical gate; do not add a parallel release router. Any repair rollback must use normal revert, never force/reset/clean.
+
+### DONE_PROOF_REQUIRED
+Exact repair candidate SHA/tree; exact lint diagnostic and repair mapping; full successful canonical workflow receipt with build/tests/guards/deploy; matching deployment/provider receipt; release-readiness decision bound to that exact SHA.
+
+### HISTORY
+- `2026-09-06 06:00 Europe/Warsaw` — first observed in rotation G as exact-SHA release/evidence conflict.
+- `2026-09-06 07:02 Europe/Warsaw` — independently revalidated in rotation H; workflow failure and skipped downstream steps remain unchanged; finding persisted to audit memory; no production code changed.
