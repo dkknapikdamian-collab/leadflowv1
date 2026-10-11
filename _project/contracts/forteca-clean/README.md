@@ -68,3 +68,10 @@ Every `FRT-*.md` contract contains exactly these required decision fields:
 `EXPECTED_ROOT_CAUSE_OR_GAP`, `ACCEPTANCE_CRITERIA`, `TEST_PLAN`,
 `PREDECESSOR`, `SUCCESSOR`.
 
+
+
+## Open technical security audit intake — 2026-10-11 (non-executable)
+- Repo-owned findings and proposed A0–A4 follow-up: [audit/findings/AUDIT_2026-10-11_INTAKE_STAGES.md](../../../audit/findings/AUDIT_2026-10-11_INTAKE_STAGES.md).
+- **P0 triage required** for reported unauthenticated service-role API paths before accepting any related case/lead/task/event API mutation or security-sensitive release. Verify exact canonical `dev-rollout-freeze` SHA and actual runtime; the uploaded audit alone does not establish current production vulnerability.
+- During FRT-036 case mutation review, explicitly evaluate LF-01 and LF-05 relevance and record evidenced disposition; do not silently carry an open P0 into final release.
+- This reference neither modifies the active FRT-036 contract nor creates/promotes a separate stage. `_project/WORKFLOW_STATE.json` remains authoritative.
