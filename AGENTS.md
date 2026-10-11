@@ -48,3 +48,7 @@ For those classes: `AI_CODE_GUARDIAN_REQUIRED=YES`. If the required capability c
 CloseFlow is an owner control system for leads, clients, cases, tasks, calendar, follow-ups and finances. Do not rewrite accepted visual baselines or change SQL, cost, Google Calendar, LeadListCard, ClientDetail or finance behavior outside the accepted stage scope.
 
 For SQL/migrations use the canonical project SQL ledger and concrete executable migrations. For historical evidence, read only the specific linked report/receipt required by the current task.
+
+
+## Bounded audit-intake preflight for relevant stages (2026-10-11)
+When planning or accepting an API/tenant/security/SQL/Firestore/release stage, check the open evidence queue at `audit/findings/AUDIT_2026-10-11_INTAKE_STAGES.md` and record an exact-SHA disposition for LF-01..LF-05. Prioritize the reported unauthenticated service-role APIs for current runtime triage. A report without live proof is not a confirmed current production defect; and a plan is not a repair. The canonical stage owner and `_project/WORKFLOW_STATE.json` still decide stage order. Do not silently skip unresolved P0 findings at stage acceptance.
